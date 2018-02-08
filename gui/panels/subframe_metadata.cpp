@@ -25,9 +25,9 @@
 
 //! The model for MetadatView.
 
-class MetadataModel : public TableModel {
+class MetadataModel : public CheckTableModel {
 public:
-    MetadataModel() : TableModel("meta") {}
+    MetadataModel() : CheckTableModel("meta") {}
 
     void reset();
     void onClicked(const QModelIndex &);
@@ -36,6 +36,8 @@ public:
     int rowCount() const final { return Metadata::numAttributes(false); }
     int highlighted() const final { return 0; }// gSession->dataset().highlight().clusterIndex(); }
     void setHighlight(int i) final { ; } //gSession->dataset().highlight().setCluster(i); }
+    bool activated(int row) const { return 0; } // TODO
+    void setActivated(int row, bool on) { ; } //TODO }
 
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const { return {}; }
@@ -97,20 +99,22 @@ QVariant MetadataModel::data(const QModelIndex& index, int role) const {
 
 //! Main item in SubframeMetadata: View and control the list of Metadata.
 
-class MetadataView : public TableView {
+class MetadataView : public CheckTableView {
 public:
     MetadataView();
 
 private:
+    void currentChanged(QModelIndex const& current, QModelIndex const&) override final {
+        gotoCurrent(current); }
     int sizeHintForColumn(int) const final;
     MetadataModel* model() { return static_cast<MetadataModel*>(model_); }
 };
 
 MetadataView::MetadataView()
-    : TableView(new MetadataModel())
+    : CheckTableView(new MetadataModel())
 {
     connect(gSession, &Session::sigClusters, this, &TableView::onData);
-    connect(this, &MetadataView::clicked, model(), &MetadataModel::onClicked);
+    connect(this, &MetadataView::clicked, model(), &CheckTableModel::onClicked);
 }
 
 int MetadataView::sizeHintForColumn(int col) const {
