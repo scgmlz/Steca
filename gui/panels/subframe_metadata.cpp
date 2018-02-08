@@ -100,15 +100,15 @@ public:
 
 private:
     int sizeHintForColumn(int) const final;
-    MetadataModel* model() const final { return static_cast<MetadataModel*>(TableView::model()); }
+    MetadataModel* model_;
 };
 
 MetadataView::MetadataView() : TableView() {
     setHeaderHidden(true);
-    auto metadataModel = new MetadataModel();
-    setModel(metadataModel);
-    connect(gSession, &Session::sigHighlight, model(), &MetadataModel::reset);
-    connect(this, &MetadataView::clicked, model(), &MetadataModel::onClicked);
+    model_ = new MetadataModel();
+    setModel(model_);
+    connect(gSession, &Session::sigHighlight, model_, &MetadataModel::reset);
+    connect(this, &MetadataView::clicked, model_, &MetadataModel::onClicked);
 }
 
 int MetadataView::sizeHintForColumn(int col) const {

@@ -41,6 +41,7 @@ public:
 
 class TableView : public QTreeView {
 public:
+    //TableView() = delete;
     TableView();
     void setModel(class TableModel* model);
 protected:
