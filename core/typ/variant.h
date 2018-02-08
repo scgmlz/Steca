@@ -17,8 +17,6 @@
 
 #include "core/typ/vec.h"
 
-// Help with QVariant
-
 bool isNumeric(QVariant const&);
 
 // The usual comparators: <0, 0, >0
