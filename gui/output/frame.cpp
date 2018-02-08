@@ -40,15 +40,15 @@ typedef vec<showcol_t> showcol_vec;
 
 class ShowColsWidget : public QWidget {
 public:
-    ShowColsWidget(DataTable&, showcol_vec&);
+    ShowColsWidget(DataView&, showcol_vec&);
 private:
-    DataTable& table_;
+    DataView& table_;
     showcol_vec& showCols_;
     QBoxLayout* box_;
     CRadioButton rbHidden_, rbAll_, rbNone_, rbInten_, rbTth_, rbFWHM_;
 };
 
-ShowColsWidget::ShowColsWidget(DataTable& table, showcol_vec& showCols)
+ShowColsWidget::ShowColsWidget(DataView& table, showcol_vec& showCols)
     : table_(table)
     , showCols_(showCols)
     , rbHidden_("rbHidden", "")
@@ -164,14 +164,14 @@ ShowColsWidget::ShowColsWidget(DataTable& table, showcol_vec& showCols)
 //  local class TabTable (only used by Frame implementation)
 // ************************************************************************** //
 
-//! A DataTable that can be scrolled and that has a ShowColsWidget for selecting data columns.
+//! A DataView that can be scrolled and that has a ShowColsWidget for selecting data columns.
 
 //! Used as a tab in several output dialogs.
 
 class TabTable : public QWidget {
 public:
     TabTable(const QStringList& headers, const QStringList& outHeaders, cmp_vec const&);
-    DataTable* table;
+    DataView* table;
 private:
     ShowColsWidget* showColumnsWidget_;
     showcol_vec showCols_;
@@ -184,7 +184,7 @@ TabTable::TabTable(const QStringList& headers, const QStringList& outHeaders, co
     ASSERT(headers.count() == cmps.count());
     int numCols = headers.count();
 
-    grid_->addWidget((table = new DataTable(numCols)), 0, 0);
+    grid_->addWidget((table = new DataView(numCols)), 0, 0);
     grid_->setColumnStretch(0, 1);
 
     table->setColumns(headers, outHeaders, cmps);

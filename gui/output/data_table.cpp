@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/output/data_table.cpp
-//! @brief     Implements classes DataTable
+//! @brief     Implements classes DataView
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -20,14 +20,14 @@
 
 
 // ************************************************************************** //
-//  local class TabularModel
+//  local class DataModel
 // ************************************************************************** //
 
-//! Model for the DataTable view.
+//! Model for the DataView view.
 
-class TabularModel : public TableModel {
+class DataModel : public TableModel {
 public:
-    TabularModel(int numCols_);
+    DataModel(int numCols_);
 
     void clear();
     void moveColumn(int from, int to);
@@ -61,7 +61,7 @@ private:
     vec<numRow> rows_;
 };
 
-TabularModel::TabularModel(int numColumns_)
+DataModel::DataModel(int numColumns_)
     : TableModel(), numCols_(numColumns_), sortColumn_(-1) {
     colIndexMap_.resize(numCols_);
     for_i (numCols_)
@@ -71,7 +71,7 @@ TabularModel::TabularModel(int numColumns_)
 
 // The first column contains row numbers. The rest numCols columns contain data.
 
-QVariant TabularModel::data(const QModelIndex& index, int role) const {
+QVariant DataModel::data(const QModelIndex& index, int role) const {
     int indexRow = index.row(), indexCol = index.column();
     int numRows = rowCount(), numCols = columnCount();
 
@@ -110,7 +110,7 @@ QVariant TabularModel::data(const QModelIndex& index, int role) const {
     return QVariant();
 }
 
-QVariant TabularModel::headerData(int section, Qt::Orientation, int role) const {
+QVariant DataModel::headerData(int section, Qt::Orientation, int role) const {
     if (section < 0 || headers_.count() < section)
         return QVariant();
 
@@ -120,38 +120,38 @@ QVariant TabularModel::headerData(int section, Qt::Orientation, int role) const 
     return QVariant();
 }
 
-void TabularModel::moveColumn(int from, int to) {
+void DataModel::moveColumn(int from, int to) {
     ASSERT(from < colIndexMap_.count() && to < colIndexMap_.count());
     qSwap(colIndexMap_[from], colIndexMap_[to]);
 }
 
-void TabularModel::setColumns(const QStringList& headers, cmp_vec const& cmps) {
+void DataModel::setColumns(const QStringList& headers, cmp_vec const& cmps) {
     ASSERT(headers.count() == numCols_ && cmps.count() == numCols_);
     headers_ = headers;
     cmpFunctions_ = cmps;
 }
 
-void TabularModel::setSortColumn(int col) {
+void DataModel::setSortColumn(int col) {
     sortColumn_ = col < 0 ? col : colIndexMap_.at(col);
 }
 
-void TabularModel::clear() {
+void DataModel::clear() {
     beginResetModel();
     rows_.clear();
     endResetModel();
 }
 
-void TabularModel::addRow(row_t const& row, bool sort) {
+void DataModel::addRow(row_t const& row, bool sort) {
     rows_.append(numRow(rows_.count() + 1, row));
     if (sort)
         sortData();
 }
 
-row_t const& TabularModel::row(int index) {
+row_t const& DataModel::row(int index) {
     return rows_.at(index).row;
 }
 
-void TabularModel::sortData() {
+void DataModel::sortData() {
     auto _cmpRows = [this](int col, row_t const& r1, row_t const& r2) {
         col = colIndexMap_.at(col);
         return cmpFunctions_.at(col)(r1.at(col), r2.at(col));
@@ -191,11 +191,11 @@ void TabularModel::sortData() {
 }
 
 // ************************************************************************** //
-//  class DataTable
+//  class DataView
 // ************************************************************************** //
 
-DataTable::DataTable(int numDataColumns)
-    : model_(new TabularModel(numDataColumns)) {
+DataView::DataView(int numDataColumns)
+    : model_(new DataModel(numDataColumns)) {
     setModel(model_.get());
     setHeader(new QHeaderView(Qt::Horizontal));
     setAlternatingRowColors(true);
@@ -210,7 +210,7 @@ DataTable::DataTable(int numDataColumns)
     setColumnWidth(0, w);
 }
 
-void DataTable::setColumns(
+void DataView::setColumns(
     const QStringList& headers, const QStringList& outHeaders, cmp_vec const& cmps) {
     model_->setColumns(headers, cmps);
     ASSERT(headers.count() == outHeaders.count());
@@ -234,22 +234,22 @@ void DataTable::setColumns(
     });
 }
 
-void DataTable::clear() {
+void DataView::clear() {
     model_->clear();
 }
 
-void DataTable::addRow(row_t const& row, bool sort) {
+void DataView::addRow(row_t const& row, bool sort) {
     model_->addRow(row, sort);
 }
 
-void DataTable::sortData() {
+void DataView::sortData() {
     model_->sortData();
 }
 
-int DataTable::rowCount() const {
+int DataView::rowCount() const {
     return model_->rowCount();
 }
 
-const row_t& DataTable::row(int i) const {
+const row_t& DataView::row(int i) const {
     return model_->row(i);
 }

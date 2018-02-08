@@ -59,7 +59,7 @@ protected:
     Params* params_;
     QTabWidget* tabs_;
     vec<PeakInfos> calcPoints_, interpPoints_;
-    class DataTable* table_;
+    class DataView* table_;
     void calculate();
     void interpolate();
     virtual void displayPeak(int reflIndex, bool interpolated);

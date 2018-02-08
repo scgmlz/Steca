@@ -48,4 +48,7 @@ protected:
     int mWidth() const;
 };
 
+class CTableView : public TableView {
+};
+
 #endif // MODEL_VIEW_H

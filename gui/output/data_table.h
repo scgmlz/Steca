@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/output/data_table.h
-//! @brief     Defines classes DataTable
+//! @brief     Defines classes DataView
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -21,9 +21,9 @@
 
 //! A data table view, for use in the 'Points' tab of an output Frame.
 
-class DataTable : public QTreeView {
+class DataView : public QTreeView {
 public:
-    DataTable(int numDataColumns);
+    DataView(int numDataColumns);
 
     void clear();
     void setColumns(const QStringList& headers, const QStringList& outHeaders, cmp_vec const&);
@@ -35,7 +35,7 @@ public:
     row_t const& row(int) const;
 
 private:
-    std::unique_ptr<class TabularModel> model_;
+    std::unique_ptr<class DataModel> model_;
     QStringList outHeaders_;
 };
 
