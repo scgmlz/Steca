@@ -33,6 +33,8 @@ public:
     void onFilesChanged();
     void onHighlight();
     void onActivated();
+    int highlighted() final { return gSession->dataset().highlight().fileIndex(); }
+    void setHighlight(int i) final { gSession->dataset().highlight().setFile(i); }
 
 private:
     int columnCount() const final { return 3; }
@@ -119,9 +121,6 @@ private:
         gotoCurrent(current); }
     int sizeHintForColumn(int) const final;
     FilesModel* model() { return static_cast<FilesModel*>(model_); }
-    // interaction with data
-    int data_highlighted() final { return gSession->dataset().highlight().fileIndex(); }
-    void data_setHighlight(int i) final { gSession->dataset().highlight().setFile(i); }
 };
 
 FilesView::FilesView()

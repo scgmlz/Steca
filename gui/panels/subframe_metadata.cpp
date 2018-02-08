@@ -34,6 +34,9 @@ public:
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return Metadata::numAttributes(false); }
+    int highlighted() final { return 0; }// gSession->dataset().highlight().clusterIndex(); }
+    void setHighlight(int i) final { ; } //gSession->dataset().highlight().setCluster(i); }
+
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const { return {}; }
     vec<bool> const& rowsChecked() const { return rowsChecked_; }
@@ -101,9 +104,6 @@ public:
 private:
     int sizeHintForColumn(int) const final;
     MetadataModel* model() { return static_cast<MetadataModel*>(model_); }
-    // interaction with data
-    int data_highlighted() final { return 0; }// gSession->dataset().highlight().clusterIndex(); }
-    void data_setHighlight(int i) final { ; } //gSession->dataset().highlight().setCluster(i); }
 };
 
 MetadataView::MetadataView()

@@ -39,6 +39,9 @@ public:
 
     int columnCount() const final { return numCols_ + 1; }
     int rowCount() const final { return rows_.count(); }
+    int highlighted() final { return 0; }// gSession->dataset().highlight().clusterIndex(); }
+    void setHighlight(int i) final { ; } //gSession->dataset().highlight().setCluster(i); }
+
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const;
 

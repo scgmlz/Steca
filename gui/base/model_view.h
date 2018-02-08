@@ -30,8 +30,11 @@ public:
     int columnCount(const QModelIndex& /*unused*/) const { return columnCount(); }
     int rowCount(const QModelIndex& /*unused*/) const { return rowCount(); }
 
+    // interaction with data
     virtual int columnCount() const = 0;
     virtual int rowCount() const = 0;
+    virtual int highlighted() = 0;
+    virtual void setHighlight(int i) = 0;
 };
 
 
@@ -51,9 +54,6 @@ protected:
     void gotoCurrent(QModelIndex const&);
     void updateScroll();
     void highlight(bool primaryCall, int row);
-    // interaction with data
-    virtual int data_highlighted() = 0;
-    virtual void data_setHighlight(int i) = 0;
 };
 
 class CTableView : public TableView {

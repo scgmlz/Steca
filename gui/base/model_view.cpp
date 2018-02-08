@@ -58,23 +58,23 @@ int TableView::mWidth() const {
 //! called by the constructor, which would result in undefined behavior.
 
 void TableView::gotoCurrent(QModelIndex const& current) {
-    if (current.row()==data_highlighted())
+    if (current.row()==model_->highlighted())
         return; // the following would prevent execution of "onClicked"
-    data_setHighlight(current.row());
+    model_->setHighlight(current.row());
     updateScroll();
 }
 
 //! Highlights one cluster. Called either from GUI > currentChanged, or through Console command.
 void TableView::highlight(bool primaryCall, int row) {
-    if (row==data_highlighted())
+    if (row==model_->highlighted())
         return; // the following would prevent execution of "onClicked"
     gConsole->log2(primaryCall, name_+".highlight="+QString::number(row));
-    data_setHighlight(row);
+    model_->setHighlight(row);
     updateScroll();
 }
 
 void TableView::updateScroll() {
-    int row = data_highlighted();
+    int row = model_->highlighted();
     if (row>=0)
-        scrollTo(model()->index(row,0));
+        scrollTo(model_->index(row,0));
 }

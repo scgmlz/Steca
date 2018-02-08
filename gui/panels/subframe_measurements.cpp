@@ -37,6 +37,8 @@ public:
     void activateCluster(bool, int, bool);
     int metaCount() const { return metaInfoNums_.count(); }
     int rowCount() const final { return gSession->dataset().countClusters(); }
+    int highlighted() final { return gSession->dataset().highlight().clusterIndex(); }
+    void setHighlight(int i) final { gSession->dataset().highlight().setCluster(i); }
 
     enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
 
@@ -198,9 +200,6 @@ private:
     void onMetaSelection();
     int sizeHintForColumn(int) const override final;
     ExperimentModel* model() { return static_cast<ExperimentModel*>(model_); }
-    // interaction with data
-    int data_highlighted() final { return gSession->dataset().highlight().clusterIndex(); }
-    void data_setHighlight(int i) final { gSession->dataset().highlight().setCluster(i); }
 };
 
 ExperimentView::ExperimentView()

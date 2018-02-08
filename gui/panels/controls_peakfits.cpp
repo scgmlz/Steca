@@ -40,6 +40,9 @@ public:
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return gSession->peaks().count(); }
+    int highlighted() final { return gSession->peaks().selectedIndex(); }
+    void setHighlight(int i) final { gSession->peaks().select(i); }
+
     QVariant data(const QModelIndex&, int) const;
 
     enum { COL_ID = 1, COL_TYPE, NUM_COLUMNS };
@@ -104,9 +107,6 @@ public:
 
 private:
     PeaksModel* model() { return static_cast<PeaksModel*>(model_); };
-    // interaction with data
-    int data_highlighted() final { return gSession->peaks().selectedIndex(); }
-    void data_setHighlight(int i) final { gSession->peaks().select(i); }
 };
 
 PeaksView::PeaksView()
