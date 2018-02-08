@@ -16,7 +16,7 @@
 #define DATA_TABLE_H
 
 #include "core/typ/variant.h"
-#include "core/def/special_pointers.h"
+#include <memory>
 #include <QTreeView>
 
 //! A data table view, for use in the 'Points' tab of an output Frame.
@@ -35,7 +35,7 @@ public:
     row_t const& row(int) const;
 
 private:
-    scoped<class TabularModel*> model_;
+    std::unique_ptr<class TabularModel> model_;
     QStringList outHeaders_;
 };
 

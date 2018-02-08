@@ -15,7 +15,6 @@
 #ifndef BASELINE_H
 #define BASELINE_H
 
-#include "core/def/special_pointers.h"
 #include "core/fit/fit_fun.h"
 #include "core/typ/curve.h"
 #include "core/typ/range.h"

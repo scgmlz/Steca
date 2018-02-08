@@ -137,7 +137,7 @@ PeakInfo Session::makePeakInfo(
 
     // fit peak, and retrieve peak parameters:
     Curve curve = curveMinusBg(lens, gmaSector);
-    scoped<PeakFunction*> peakFunction = FunctionRegistry::clone(peak.peakFunction());
+    std::unique_ptr<PeakFunction> peakFunction( FunctionRegistry::clone(peak.peakFunction()) );
     peakFunction->fit(curve);
     const Range& rgeTth = peakFunction->range();
     qpair fitresult = peakFunction->fittedPeak();

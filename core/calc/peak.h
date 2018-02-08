@@ -15,7 +15,7 @@
 #ifndef PEAK_H
 #define PEAK_H
 
-#include "core/def/special_pointers.h"
+#include <memory>
 #include "core/fit/fit_fun.h"
 #include "core/typ/curve.h"
 #include "core/typ/range.h"
@@ -28,6 +28,7 @@
 
 class Peak {
 public:
+    Peak() = delete;
     Peak(const QString& functionName = "Raw");
 
     static Peak* from_json(JsonObj const&) THROWS;
@@ -46,7 +47,7 @@ public:
     JsonObj to_json() const;
 
 private:
-    scoped<PeakFunction*> peakFunction_; //!< pimpl (pointer to implementation)
+    std::unique_ptr<PeakFunction> peakFunction_; //!< pimpl (pointer to implementation)
 };
 
 

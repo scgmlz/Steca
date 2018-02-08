@@ -50,7 +50,7 @@ void Peak::fit(Curve const& curve) {
 }
 
 void Peak::setPeakFunction(const QString& peakFunctionName) {
-    bool haveRange = !peakFunction_.isNull();
+    bool haveRange = (bool)peakFunction_;
     Range oldRange;
     if (haveRange)
         oldRange = peakFunction_->range();
@@ -65,8 +65,7 @@ JsonObj Peak::to_json() const {
 
 Peak* Peak::from_json(JsonObj const& obj) THROWS {
     QString functionName = obj.loadString("type");
-    Peak* ret = new Peak();
-    ret->setPeakFunction(functionName);
+    Peak* ret = new Peak(functionName);
     ret->peakFunction_->from_json(obj); // may throw
     return ret;
 }
