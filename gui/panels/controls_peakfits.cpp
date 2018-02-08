@@ -38,7 +38,7 @@ public:
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return gSession->peaks().count(); }
     int highlighted() const final { return gSession->peaks().selectedIndex(); }
-    void setHighlight(int row) final { qDebug() << "SET HIGHLIGHT " << row; gSession->peaks().select(row); }
+    void setHighlight(int row) final { gSession->peaks().select(row); }
 
     QVariant data(const QModelIndex&, int) const;
 
@@ -304,7 +304,7 @@ ControlsPeakfits::ControlsPeakfits()
     update();
 
     connect(gSession, &Session::sigPeaks, this, &ControlsPeakfits::onPeaks);
-    connect(gSession, &Session::sigPeakHighlight, peaksView_, &PeaksView::onData);
+    connect(gSession, &Session::sigPeakHighlight, peaksView_, &PeaksView::onHighlight);
 }
 
 void ControlsPeakfits::onPeaks() {

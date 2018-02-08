@@ -34,14 +34,6 @@ void TableModel::resetModel() {
     endResetModel();
 }
 
-void TableModel::onClicked(const QModelIndex& cell) {
-    int row = cell.row();
-    int col = cell.column();
-    if (row < 0 || row >= rowCount())
-        return;
-    setHighlight(row);
-}
-
 // ************************************************************************** //
 //  class CheckTableModel
 // ************************************************************************** //
