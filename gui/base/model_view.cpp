@@ -20,6 +20,53 @@
 //  class TableModel
 // ************************************************************************** //
 
+void TableModel::onHighlight() {
+    emit dataChanged(createIndex(0,0),createIndex(rowCount()-1,columnCount()-1));
+}
+
+//! Redraws the entire table, and sets currentIndex to (0,0) [?] which may be unwanted
+
+//! Prefer this over dataChanged if and only rowCount may have shrinked,
+//! and be aware that it resets the currentIndex so that arrow keys will start from row 0.
+
+void TableModel::resetModel() {
+    beginResetModel();
+    endResetModel();
+}
+
+// ************************************************************************** //
+//  class CheckTableModel
+// ************************************************************************** //
+
+CheckTableModel::CheckTableModel(const QString& _name) : TableModel(_name) {
+    gConsole->learn(name()+".activate", [this](const QString& val)->void {
+            activateAndLog(false, val.toInt(), true); });
+    gConsole->learn(name()+".desactivate", [this](const QString& val)->void {
+            activateAndLog(false, val.toInt(), false); });
+}
+
+void CheckTableModel::onActivated() {
+    emit dataChanged(createIndex(0,1),createIndex(rowCount()-1,1));
+}
+
+void CheckTableModel::onClicked(const QModelIndex& cell) {
+    int row = cell.row();
+    int col = cell.column();
+    if (row < 0 || row >= rowCount())
+        return;
+    if (col==1) {
+        activateAndLog(true, row, !activated(row));
+    }
+    setHighlight(row);
+}
+
+void CheckTableModel::activateAndLog(bool primaryCall, int row, bool on) {
+    setActivated(row, on);
+    gConsole->log2(primaryCall, name() + ( on ? "activate" : "desactivate") + QString::number(row));
+}
+
+
+
 // ************************************************************************** //
 //  class TableView
 // ************************************************************************** //
@@ -27,8 +74,8 @@
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual" // TODO try without
 
-TableView::TableView(const QString& name, TableModel* model)
-    : name_(name), model_(model)
+TableView::TableView(TableModel* model)
+    : name_(model->name()), model_(model)
 {
     // set model
     ASSERT(model);
@@ -39,6 +86,7 @@ TableView::TableView(const QString& name, TableModel* model)
                 resizeColumnToContents(i);
         });
     // other settings
+    setHeaderHidden(true);
     setSelectionMode(QAbstractItemView::NoSelection);
     setAlternatingRowColors(true);
 }
@@ -77,4 +125,23 @@ void TableView::updateScroll() {
     int row = model_->highlighted();
     if (row>=0)
         scrollTo(model_->index(row,0));
+}
+
+void TableView::onHighlight() {
+    model_->onHighlight();
+    updateScroll();
+}
+
+void TableView::reset() {
+    model_->resetModel();
+    updateScroll();
+}
+
+// ************************************************************************** //
+//  class CheckTableView
+// ************************************************************************** //
+
+void CheckTableView::onActivated() {
+    model()->onActivated();
+    updateScroll();
 }

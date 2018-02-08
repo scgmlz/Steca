@@ -39,7 +39,7 @@ public:
 
     int columnCount() const final { return numCols_ + 1; }
     int rowCount() const final { return rows_.count(); }
-    int highlighted() final { return 0; }// gSession->dataset().highlight().clusterIndex(); }
+    int highlighted() const final { return 0; }// gSession->dataset().highlight().clusterIndex(); }
     void setHighlight(int i) final { ; } //gSession->dataset().highlight().setCluster(i); }
 
     QVariant data(const QModelIndex&, int) const;
@@ -65,7 +65,8 @@ private:
 };
 
 DataModel::DataModel(int numColumns_)
-    : TableModel(), numCols_(numColumns_), sortColumn_(-1) {
+    : TableModel("data"), numCols_(numColumns_), sortColumn_(-1)
+{
     colIndexMap_.resize(numCols_);
     for_i (numCols_)
         colIndexMap_[i] = i;

@@ -33,14 +33,14 @@ QString safeRealText(qreal val) { return qIsFinite(val) ? QString::number(val) :
 
 class PeaksModel : public TableModel {
 public:
-    PeaksModel() : TableModel() {}
+    PeaksModel() : TableModel("peaks") {}
 
     void addPeak(const QString& functionName);
     void removePeak();
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return gSession->peaks().count(); }
-    int highlighted() final { return gSession->peaks().selectedIndex(); }
+    int highlighted() const final { return gSession->peaks().selectedIndex(); }
     void setHighlight(int i) final { gSession->peaks().select(i); }
 
     QVariant data(const QModelIndex&, int) const;
@@ -110,9 +110,8 @@ private:
 };
 
 PeaksView::PeaksView()
-    : TableView("peak", new PeaksModel())
+    : TableView(new PeaksModel())
 {
-    setHeaderHidden(true);
 }
 
 void PeaksView::addPeak(const QString& functionName) {

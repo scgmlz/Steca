@@ -26,19 +26,17 @@
 
 //! The model for ExperimentView.
 
-class ExperimentModel : public TableModel { // < QAbstractTableModel < QAbstractItemModel
+class ExperimentModel : public CheckTableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
-    ExperimentModel();
-    void onClicked(const QModelIndex &);
-    void onClustersChanged();
-    void onHighlight();
-    void onActivated();
+    ExperimentModel() : CheckTableModel("measurement") {}
     void onMetaSelection();
     void activateCluster(bool, int, bool);
     int metaCount() const { return metaInfoNums_.count(); }
     int rowCount() const final { return gSession->dataset().countClusters(); }
-    int highlighted() final { return gSession->dataset().highlight().clusterIndex(); }
-    void setHighlight(int i) final { gSession->dataset().highlight().setCluster(i); }
+    int highlighted() const final { return gSession->dataset().highlight().clusterIndex(); }
+    void setHighlight(int row) final { gSession->dataset().highlight().setCluster(row); }
+    bool activated(int row) const { return gSession->dataset().clusterAt(row).isActivated(); }
+    void setActivated(int row, bool on) { gSession->dataset().activateCluster(row, on); }
 
     enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
 
@@ -53,45 +51,6 @@ private:
     // useful is to be determined. The cache for the activation state is gone.
     vec<int> metaInfoNums_; //!< indices of metadata items selected for display
 };
-
-ExperimentModel::ExperimentModel() {
-    gConsole->learn("activateMeasurement", [this](const QString& val)->void {
-            activateCluster(false, val.toInt(), true); });
-    gConsole->learn("desactivateMeasurement", [this](const QString& val)->void {
-            activateCluster(false, val.toInt(), false); });
-}
-
-void ExperimentModel::onClicked(const QModelIndex& cell) {
-    int row = cell.row();
-    int col = cell.column();
-    if (row < 0 || row >= rowCount())
-        return;
-    if (col==1) {
-        activateCluster(true, row, !gSession->dataset().clusterAt(row).isActivated());
-    }
-    gSession->dataset().highlight().setCluster(row);
-}
-
-void ExperimentModel::activateCluster(bool primaryCall, int row, bool on) {
-    gSession->dataset().activateCluster(row, on);
-    gConsole->log2(primaryCall, QString( on ? "activate" : "desactivate") + "Measurement="
-                   + QString::number(row));
-}
-
-void ExperimentModel::onClustersChanged() {
-    // Prefer the following over dataChanged because rowCount may have shrinked.
-    // It resets the currentIndex so that arrow keys will start from row 0.
-    // Therefore it is acceptable only here since we reset the highlight anyway.
-    resetModel();
-}
-
-void ExperimentModel::onHighlight() {
-    emit dataChanged(createIndex(0,0),createIndex(rowCount()-1,columnCount()-1));
-}
-
-void ExperimentModel::onActivated() {
-    emit dataChanged(createIndex(0,1),createIndex(rowCount()-1,1));
-}
 
 void ExperimentModel::onMetaSelection() {
     beginResetModel(); // needed because columnCount may have shrinked
@@ -119,8 +78,7 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
                 ret += "-" + QString::number(cluster.totalOffset()+cluster.count());
             return ret;
         } else if (col>=COL_ATTRS && col < COL_ATTRS+metaCount()) {
-            return cluster.avgeMetadata()->attributeStrValue(
-                metaInfoNums_.at(col-COL_ATTRS));
+            return cluster.avgeMetadata()->attributeStrValue(metaInfoNums_.at(col-COL_ATTRS));
         } else
             return {};
     }
@@ -153,14 +111,13 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
         return QColor(Qt::black);
     }
     case Qt::BackgroundRole: {
-        if (row==gSession->dataset().highlight().clusterIndex())
+        if (row==highlighted())
             return QColor(Qt::cyan);
         return QColor(Qt::white);
     }
     case Qt::CheckStateRole: {
-        if (col==COL_CHECK) {
-            return cluster.isActivated() ? Qt::Checked : Qt::Unchecked;
-        }
+        if (col==COL_CHECK)
+            return activated(row) ? Qt::Checked : Qt::Unchecked;
         return {};
     }
     default:
@@ -187,49 +144,30 @@ QVariant ExperimentModel::headerData(int col, Qt::Orientation ori, int role) con
 
 //! Main item in SubframeMeasurement: View and control of measurements list.
 
-class ExperimentView : public TableView { // < QTreeView < QAbstractItemView
+class ExperimentView : public CheckTableView { // < QTreeView < QAbstractItemView
 public:
     ExperimentView();
 
 private:
     void currentChanged(QModelIndex const& current, QModelIndex const&) override final {
         gotoCurrent(current); }
-    void onClustersChanged();
-    void onHighlight();
-    void onActivated();
     void onMetaSelection();
     int sizeHintForColumn(int) const override final;
     ExperimentModel* model() { return static_cast<ExperimentModel*>(model_); }
 };
 
 ExperimentView::ExperimentView()
-    : TableView("measurement", new ExperimentModel())
+    : CheckTableView(new ExperimentModel())
 {
-    setHeaderHidden(true);
     setSelectionMode(QAbstractItemView::NoSelection);
 
-    connect(gSession, &Session::sigClusters, this, &ExperimentView::onClustersChanged);
-    connect(gSession, &Session::sigHighlight, this, &ExperimentView::onHighlight);
-    connect(gSession, &Session::sigActivated, this, &ExperimentView::onActivated);
+    connect(gSession, &Session::sigClusters, this, &TableView::reset);
+    connect(gSession, &Session::sigHighlight, this, &TableView::onHighlight);
+    connect(gSession, &Session::sigActivated, this, &CheckTableView::onActivated);
     connect(gSession, &Session::sigMetaSelection, this, &ExperimentView::onMetaSelection);
-    connect(this, &ExperimentView::clicked, model(), &ExperimentModel::onClicked);
+    connect(this, &ExperimentView::clicked, model(), &CheckTableModel::onClicked);
     gConsole->learn("highlightMeasurement", [this](const QString& val)->void {
             highlight(false, val.toInt()); });
-}
-
-void ExperimentView::onClustersChanged() {
-    model()->onClustersChanged();
-    updateScroll();
-}
-
-void ExperimentView::onHighlight() {
-    model()->onHighlight();
-    updateScroll();
-}
-
-void ExperimentView::onActivated() {
-    model()->onActivated();
-    updateScroll();
 }
 
 void ExperimentView::onMetaSelection() {

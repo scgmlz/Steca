@@ -27,14 +27,14 @@
 
 class MetadataModel : public TableModel {
 public:
-    MetadataModel();
+    MetadataModel() : TableModel("meta") {}
 
     void reset();
     void onClicked(const QModelIndex &);
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return Metadata::numAttributes(false); }
-    int highlighted() final { return 0; }// gSession->dataset().highlight().clusterIndex(); }
+    int highlighted() const final { return 0; }// gSession->dataset().highlight().clusterIndex(); }
     void setHighlight(int i) final { ; } //gSession->dataset().highlight().setCluster(i); }
 
     QVariant data(const QModelIndex&, int) const;
@@ -49,9 +49,9 @@ private:
 };
 
 
-MetadataModel::MetadataModel() {
-    rowsChecked_.fill(false, Metadata::numAttributes(false));
-}
+//MetadataModel::MetadataModel() {
+// TODO RESTORE    rowsChecked_.fill(false, Metadata::numAttributes(false));
+// }
 
 void MetadataModel::reset() {
     const Cluster* cluster = gSession->dataset().highlight().cluster();
@@ -107,9 +107,8 @@ private:
 };
 
 MetadataView::MetadataView()
-    : TableView("meta", new MetadataModel())
+    : TableView(new MetadataModel())
 {
-    setHeaderHidden(true);
     connect(gSession, &Session::sigClusters, model(), &MetadataModel::reset);
     connect(this, &MetadataView::clicked, model(), &MetadataModel::onClicked);
 }

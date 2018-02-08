@@ -19,13 +19,16 @@
 #include <QTreeView>
 #include <QAbstractTableModel>
 
-
-//! The pure virtual base class of all models of rectangular table form
+//! Pure virtual base class of all models of rectangular table form
 
 class TableModel : public QAbstractTableModel {
 public:
-    //! Redraws the entire table, and sets currentIndex to (0,0) [?] which may be unwanted
-    void resetModel() { beginResetModel(); endResetModel(); }
+    TableModel() = delete;
+    TableModel(const QString& name) : name_(name) {}
+    //? virtual void onClicked(const QModelIndex& cell);
+    void onHighlight();
+
+    void resetModel();
 
     int columnCount(const QModelIndex& /*unused*/) const { return columnCount(); }
     int rowCount(const QModelIndex& /*unused*/) const { return rowCount(); }
@@ -33,12 +36,30 @@ public:
     // interaction with data
     virtual int columnCount() const = 0;
     virtual int rowCount() const = 0;
-    virtual int highlighted() = 0;
+    virtual int highlighted() const = 0;
     virtual void setHighlight(int i) = 0;
+
+    QString name() const { return name_; }
+
+private:
+    QString name_;
 };
 
+//! Pure virtual base class for rectangular table models with rows that can be checked.
 
-//! The pure virtual base class of all views of rectangular table form
+class CheckTableModel : public TableModel {
+public:
+    CheckTableModel(const QString& name);
+    void onActivated();
+    void onClicked(const QModelIndex& cell); //? final;
+    virtual bool activated(int row) const = 0;
+    virtual void setActivated(int row, bool on) = 0;
+private:
+    void activateAndLog(bool primaryCall, int row, bool on);
+
+};
+
+//! Pure virtual base class of all views of rectangular table form
 
 //! Based on QTreeView, with hidden 1st column.
 //! QTreeView inherits from QAbstractItemView.
@@ -46,7 +67,9 @@ public:
 class TableView : public QTreeView {
 public:
     TableView() = delete;
-    TableView(const QString&, TableModel*);
+    TableView(TableModel*);
+    void reset();
+    void onHighlight();
 protected:
     int mWidth() const;
     QString name_;
@@ -56,7 +79,15 @@ protected:
     void highlight(bool primaryCall, int row);
 };
 
-class CTableView : public TableView {
+//! Pure virtual base class for rectangular table models with rows that can be checked.
+
+class CheckTableView : public TableView {
+public:
+    CheckTableView(TableModel* model) : TableView(model) {}
+    void onActivated();
+private:
+    CheckTableModel* model() { return static_cast<CheckTableModel*>(model_); }
+
 };
 
 #endif // MODEL_VIEW_H

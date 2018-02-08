@@ -27,46 +27,19 @@
 
 //! The model for FilesView
 
-class FilesModel : public TableModel { // < QAbstractTableModel < QAbstractItemModel
+class FilesModel : public CheckTableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
-    void onClicked(const QModelIndex &);
-    void onFilesChanged();
-    void onHighlight();
-    void onActivated();
-    int highlighted() final { return gSession->dataset().highlight().fileIndex(); }
+    FilesModel() : CheckTableModel("file") {}
+    int highlighted() const final { return gSession->dataset().highlight().fileIndex(); }
     void setHighlight(int i) final { gSession->dataset().highlight().setFile(i); }
+    bool activated(int i) const { return gSession->dataset().fileAt(i).activated(); }
+    void setActivated(int i, bool on) { gSession->dataset().setFileActivation(i, on); }
 
 private:
     int columnCount() const final { return 3; }
     int rowCount() const final { return gSession->dataset().countFiles(); }
     QVariant data(const QModelIndex&, int) const final;
 };
-
-//! Selects or unselects all measurements in a file.
-void FilesModel::onClicked(const QModelIndex& cell) {
-    int row = cell.row();
-    int col = cell.column();
-    if (row < 0 || row >= rowCount())
-        return;
-    if (col==1)
-        gSession->dataset().cycleFileActivation(row);
-    else if (col==2)
-        gSession->dataset().highlight().setFile(row);
-}
-
-void FilesModel::onFilesChanged() {
-    resetModel(); // repaint everything, and reset currentIndex to origin
-}
-
-//! Update highlight display upon sigHighlight.
-void FilesModel::onHighlight() {
-    emit dataChanged(createIndex(0,0),createIndex(rowCount()-1,columnCount()-1));
-}
-
-//! Update activation check display upon sigActivated.
-void FilesModel::onActivated() {
-    emit dataChanged(createIndex(0,1),createIndex(rowCount()-1,1));
-}
 
 //! Returns role-specific information about one table cell.
 QVariant FilesModel::data(const QModelIndex& index, int role) const {
@@ -75,34 +48,22 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
         return {};
     const Datafile& file = gSession->dataset().fileAt(row);
     int col = index.column();
-    switch (role) {
-    case Qt::EditRole:
-        return {};
-    case Qt::DisplayRole:
-        if (col==2)
-            return file.name();
-        return {};
-    case Qt::ToolTipRole:
-        if (col>=2)
-            return QString("File %1\ncontains %2 measurements.here numbered %3 to %4")
-                .arg(file.name())
-                .arg(file.count())
-                .arg(gSession->dataset().offset(file)+1)
-                .arg(gSession->dataset().offset(file)+file.count());
-        return {};
-    case Qt::CheckStateRole: {
-        if (col==1)
-            return file.activated();
-        return {};
-    }
-    case Qt::BackgroundRole: {
-        if (row==gSession->dataset().highlight().fileIndex())
+    if (role==Qt::DisplayRole && col==2)
+        return file.name();
+    else if (role==Qt::ToolTipRole && col>=2)
+        return QString("File %1\ncontains %2 measurements.here numbered %3 to %4")
+            .arg(file.name())
+            .arg(file.count())
+            .arg(gSession->dataset().offset(file)+1)
+            .arg(gSession->dataset().offset(file)+file.count());
+    else if (role==Qt::CheckStateRole && col==1)
+        return activated(row);
+    else if (role==Qt::BackgroundRole) {
+        if (row==highlighted())
             return QColor(Qt::cyan);
         return QColor(Qt::white);
     }
-    default:
-        return {};
-    }
+    return {};
 }
 
 
@@ -112,7 +73,7 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
 
 //! Main item in SubframeFiles: View and control the list of DataFile's
 
-class FilesView : public TableView { // < QTreeView < QAbstractItemView
+class FilesView : public CheckTableView {
 public:
     FilesView();
 
@@ -124,13 +85,11 @@ private:
 };
 
 FilesView::FilesView()
-    : TableView("file", new FilesModel())
+    : CheckTableView(new FilesModel())
 {
-    setHeaderHidden(true);
-
-    connect(gSession, &Session::sigFiles, model(), &FilesModel::onFilesChanged);
-    connect(gSession, &Session::sigHighlight, model(), &FilesModel::onHighlight);
-    connect(gSession, &Session::sigActivated, model(), &FilesModel::onActivated);
+    connect(gSession, &Session::sigFiles, this, &TableView::reset);
+    connect(gSession, &Session::sigHighlight, this, &TableView::onHighlight);
+    connect(gSession, &Session::sigActivated, this, &CheckTableView::onActivated);
     connect(this, &FilesView::clicked, model(), &FilesModel::onClicked);
 }
 

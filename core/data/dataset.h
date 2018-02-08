@@ -81,7 +81,7 @@ public:
     void setBinning(int by);
     void setDropIncomplete(bool on);
     void activateCluster(int index, bool on);
-    void cycleFileActivation(int index);
+    void setFileActivation(int index, bool on);
 
     // Const methods:
     int countFiles() const;
