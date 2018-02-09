@@ -15,7 +15,87 @@
 #include "controls_baseline.h"
 #include "core/session.h"
 #include "gui/base/layout.h"
+#include "gui/base/model_view.h"
 #include "gui/mainwin.h"
+
+// ************************************************************************** //
+//  local class BaseRangesModel, used in BaseRangesView
+// ************************************************************************** //
+
+//! Model for BaseRangesView.
+
+class BaseRangesModel : public TableModel {
+public:
+    BaseRangesModel() : TableModel("peaks") {}
+
+    int columnCount() const final { return NUM_COLUMNS; }
+    int rowCount() const final { return gSession->baseline().ranges().count(); }
+    int highlighted() const final { return 0; } //?gSession->baseline().ranges().selectedIndex(); }
+    void setHighlight(int row) final {} //? gSession->baseline().ranges().select(row); }
+
+    QVariant data(const QModelIndex&, int) const;
+
+    enum { COL_RANGE = 1, NUM_COLUMNS };
+};
+
+QVariant BaseRangesModel::data(const QModelIndex& index, int role) const {
+    int row = index.row();
+    if (row < 0 || rowCount() <= row)
+        return {};
+    const Range& range = gSession->baseline().ranges().at(row);
+    switch (role) {
+    case Qt::DisplayRole: {
+        int col = index.column();
+        if (col < 1)
+            return {};
+        switch (col) {
+        case COL_RANGE:
+            return range.to_s();
+        default:
+            return {};
+        }
+    }
+    case Qt::ForegroundRole: {
+        if (range.isEmpty())
+            return QColor(Qt::red);
+        return QColor(Qt::black);
+    }
+    case Qt::BackgroundRole: {
+//        if (row==highlighted())
+//            return QColor(Qt::cyan);
+        return QColor(Qt::white);
+    }
+    default:
+        return {};
+    }
+}
+
+
+// ************************************************************************** //
+//  local class BaseRangesView
+// ************************************************************************** //
+
+//! List view of user-defined Bragg peaks.
+
+class BaseRangesView final : public TableView {
+public:
+    BaseRangesView();
+private:
+    void currentChanged(QModelIndex const& current, QModelIndex const&) override final {
+        gotoCurrent(current); }
+};
+
+BaseRangesView::BaseRangesView()
+    : TableView(new BaseRangesModel())
+{
+    connect(gSession, &Session::sigBaseline, this, &BaseRangesView::onData);
+    // connect(gSession, &Session::sigBaseHighlight, this, &BaseRangesView::onHighlight);
+}
+
+// ************************************************************************** //
+//  class ControlsBaseline
+// ************************************************************************** //
+
 
 ControlsBaseline::ControlsBaseline() {
     auto* box = newQ::VBoxLayout();
@@ -35,5 +115,6 @@ ControlsBaseline::ControlsBaseline() {
     hb->addWidget(&spinDegree_);
     hb->addStretch();
 
+    box->addWidget(new BaseRangesView());
     box->addStretch(1);
 }

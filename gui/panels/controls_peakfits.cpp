@@ -309,7 +309,7 @@ ControlsPeakfits::ControlsPeakfits()
     connect(gGui->trigger_removePeak, &QAction::triggered, [this]() {
             gSession->peaks().remove(); });
 
-    box->addWidget((peaksView_ = new PeaksView()));
+    box->addWidget(new PeaksView());
 
     hb = newQ::HBoxLayout();
     box->addLayout(hb);

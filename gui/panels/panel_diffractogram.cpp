@@ -60,7 +60,7 @@ void DiffractogramPlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
     Range range(plot_.fromPixels(mouseDownPos_, cursorPos_));
     switch (plot_.getTool()) {
     case DiffractogramPlot::eTool::BACKGROUND:
-        if (Qt::LeftButton == e->button())
+        if (e->button()==Qt::LeftButton)
             gSession->baseline().addRange(range);
         else
             gSession->baseline().removeRange(range);
@@ -109,16 +109,16 @@ void DiffractogramPlotOverlay::updateCursorRegion() {
 // ************************************************************************** //
 
 DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
-    : diffractogram_(diffractogram), showBgFit_(false) {
-
-    overlay_ = new DiffractogramPlotOverlay(*this);
-
+    : diffractogram_(diffractogram)
+    , showBgFit_(false)
+    , overlay_(new DiffractogramPlotOverlay(*this))
+{
     QCPAxisRect* ar = axisRect();
 
     // fix margins
     QFontMetrics fontMetrics(font());
-    int em = fontMetrics.width('M'), ascent = fontMetrics.ascent();
-
+    int em = fontMetrics.width('M');
+    int ascent = fontMetrics.ascent();
     QMargins margins(6 * em, ascent, em, 2 * ascent);
     ar->setAutoMargins(QCP::msNone);
     ar->setMargins(margins);
@@ -130,30 +130,26 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
 
     // graphs in the "main" layer; in the display order
     bgGraph_ = addGraph();
-    dgramGraph_ = addGraph();
-    dgramBgFittedGraph2_ = addGraph();
-    dgramBgFittedGraph2_->setVisible(false);
-    dgramBgFittedGraph_ = addGraph();
-
     bgGraph_->setPen(QPen(QColor(0x21, 0xa1, 0x21, 0xff), 2));
 
-    dgramBgFittedGraph_->setPen(QPen(Qt::black, 2));
-
-    dgramBgFittedGraph2_->setLineStyle(QCPGraph::LineStyle::lsNone);
-    dgramBgFittedGraph2_->setScatterStyle(
-        QCPScatterStyle(QCPScatterStyle::ScatterShape::ssDisc, QColor(255, 0, 0), 4));
-
+    dgramGraph_ = addGraph();
     dgramGraph_->setLineStyle(QCPGraph::LineStyle::lsNone);
     dgramGraph_->setScatterStyle(
         QCPScatterStyle(QCPScatterStyle::ScatterShape::ssDisc, Qt::gray, 2));
 
-    // background regions
-    addLayer("bg", layer("background"), QCustomPlot::limAbove);
-    // peaks
-    addLayer("refl", layer("main"), QCustomPlot::limAbove);
-    // peaks
-    addLayer("marks", layer("refl"), QCustomPlot::limAbove);
+    dgramBgFittedGraph2_ = addGraph();
+    dgramBgFittedGraph2_->setVisible(false);
+    dgramBgFittedGraph2_->setLineStyle(QCPGraph::LineStyle::lsNone);
+    dgramBgFittedGraph2_->setScatterStyle(
+        QCPScatterStyle(QCPScatterStyle::ScatterShape::ssDisc, QColor(255, 0, 0), 4));
 
+    dgramBgFittedGraph_ = addGraph();
+    dgramBgFittedGraph_->setPen(QPen(Qt::black, 2));
+
+    // background layers
+    addLayer("bg", layer("baseline"), QCustomPlot::limAbove);
+    addLayer("refl", layer("main"), QCustomPlot::limAbove);
+    addLayer("marks", layer("refl"), QCustomPlot::limAbove);
     setCurrentLayer("marks");
 
     guesses_ = addGraph();
