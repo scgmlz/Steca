@@ -42,10 +42,6 @@ private:
 
     DiffractogramPlot& plot_;
 
-    const QColor removeColor_{0xf8, 0xf8, 0xff, 0x90};
-    const QColor baselineColor_{0x98, 0xfb, 0x98, 0x70};
-    const QColor peakColor_{0x87, 0xce, 0xfa, 0x70};
-
     int marginLeft_, marginRight_;
     int cursorPos_, mouseDownPos_;
     bool hasCursor_, mouseDown_;
