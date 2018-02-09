@@ -33,8 +33,6 @@ public:
 
 private:
     void onNormChanged();
-    void onFittingTab(eFittingTab tab);
-
     void onHighlight();
 
     class DiffractogramPlot* plot_;
@@ -96,19 +94,7 @@ Diffractogram::Diffractogram() {
 
     connect(gSession, &Session::sigDataHighlight, this, &Diffractogram::onHighlight);
     connect(gSession, &Session::sigNorm, this, &Diffractogram::onNormChanged);
-    connect(gGui, &MainWin::sigFittingTab, [this](eFittingTab tab) { onFittingTab(tab); });
 
-    connect(gGui->toggle_selRegions, &QAction::toggled, [this](bool on) {
-        using eTool = DiffractogramPlot::eTool;
-        if      (on && gGui->fittingTab()==eFittingTab::BACKGROUND)
-            plot_->setTool(eTool::BACKGROUND);
-        else if (on && gGui->fittingTab()==eFittingTab::REFLECTIONS)
-            plot_->setTool(eTool::PEAK_REGION);
-        else
-            plot_->setTool(eTool::NONE);
-        });
-
-    gGui->toggle_selRegions->setChecked(true);
     gGui->toggle_showBackground->setChecked(true);
     intenAvg_.setChecked(true);
 }
@@ -120,23 +106,6 @@ void Diffractogram::onNormChanged() {
     else
         intenSum_.setChecked(true);
     plot_->renderAll();
-}
-
-void Diffractogram::onFittingTab(eFittingTab tab) {
-    bool on = gGui->toggle_selRegions->isChecked();
-    switch (tab) {
-    case eFittingTab::BACKGROUND:
-        gGui->toggle_selRegions->setIcon(QIcon(":/icon/selRegion"));
-        plot_->setTool(
-            on ? DiffractogramPlot::eTool::BACKGROUND : DiffractogramPlot::eTool::NONE);
-        break;
-    case eFittingTab::REFLECTIONS:
-        gGui->toggle_selRegions->setIcon(QIcon(":/icon/reflRegion"));
-        plot_->setTool(
-            on ? DiffractogramPlot::eTool::PEAK_REGION : DiffractogramPlot::eTool::NONE);
-        break;
-    default: plot_->setTool(DiffractogramPlot::eTool::NONE);
-    }
 }
 
 void Diffractogram::onHighlight() {

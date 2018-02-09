@@ -103,29 +103,14 @@ MainWin::MainWin()
     trigger_removeFile->setEnabled(false);
     QObject::connect(trigger_removeFile, &QAction::triggered, []() {
             gSession->dataset().removeFile(); });
-    QObject::connect(gSession, &Session::sigFiles, [this]() {
-            trigger_removeFile->setEnabled(gSession->dataset().countFiles()); });
 
     trigger_corrFile = newT::Trigger("trigger_corrFile", "Add correction file", ":/icon/add");
     trigger_corrFile->setShortcut(Qt::SHIFT | Qt::CTRL | Qt::Key_O);
     connect(trigger_corrFile, &QAction::triggered, this, &MainWin::loadCorrFile);
-    QObject::connect(gSession, &Session::sigCorr, [this]() {
-            bool hasFile = gSession->hasCorrFile();
-            trigger_corrFile->setIcon(QIcon(hasFile ? ":/icon/rem" : ":/icon/add"));
-            QString text = QString(hasFile ? "Remove" : "Add") + " correction file";
-            trigger_corrFile->setText(text);
-            trigger_corrFile->setToolTip(text.toLower());
-        });
-
     toggle_enableCorr = newT::Toggle(
         "toggle_enableCorr", "Enable correction file", false, ":/icon/useCorrection");
     connect(toggle_enableCorr, &QAction::toggled, [this](bool on) {
             gSession->corrset().tryEnable(on); });
-    QObject::connect(gSession, &Session::sigCorr, [this]() {
-            toggle_enableCorr->setEnabled(gSession->hasCorrFile());
-            toggle_enableCorr->setChecked(gSession->corrset().isEnabled());
-        });
-
     trigger_rotateImage = newT::Trigger("trigger_rotateImage", "Rotate", ":/icon/rotate0");
     trigger_rotateImage->setShortcut(Qt::CTRL | Qt::Key_R);
     connect(trigger_rotateImage, &QAction::triggered, [this]() {
@@ -146,22 +131,29 @@ MainWin::MainWin()
         "toggle_fixedIntenImage", "Global intensity scale", false, ":/icon/scale");
     connect(toggle_fixedIntenImage, &QAction::toggled, [this](bool on) {
         isFixedIntenImageScale_ = on;
-        emit sigDisplayChanged(); });
+        emit gSession->sigImage();
+        emit gSession->sigDiffractogram();
+        });
 
     toggle_fixedIntenDgram = newT::Toggle(
         "toggle_fixedIntenDgram", "Fixed intensity scale", false);
     connect(toggle_fixedIntenDgram, &QAction::toggled, [this](bool on) {
         isFixedIntenDgramScale_ = on;
-        emit sigDisplayChanged(); });
+        emit gSession->sigImage();
+        emit gSession->sigDiffractogram();
+        });
 
     toggle_combinedDgram = newT::Toggle("toggle_combinedDgram", "All measurements", true);
     toggle_combinedDgram->setChecked(false);
     connect(toggle_combinedDgram, &QAction::toggled, [this](bool on) {
         isCombinedDgram_ = on;
-        emit sigDisplayChanged(); });
+        emit gSession->sigImage();
+        emit gSession->sigDiffractogram();
+        });
 
     toggle_selRegions = newT::Toggle(
         "toggle_selRegions", "Select regions", false, ":/icon/selRegion");
+    // for peaks, ->setIcon(QIcon(":/icon/reflRegion"));
 
     toggle_showBackground = newT::Toggle(
         "toggle_showBackground", "Show fitted background", false, ":/icon/showBackground");
@@ -177,17 +169,34 @@ MainWin::MainWin()
 
     trigger_removePeak = newT::Trigger("trigger_removePeak", "Remove peak", ":/icon/rem");
     trigger_removePeak->setEnabled(false);
-    QObject::connect(gSession, &Session::sigPeaks, [this]() {
-            trigger_removePeak->setEnabled(gSession->peaks().count()); });
 
     trigger_outputPolefigures = newT::Trigger("trigger_outputPolefigures", "Pole figures...");
-    QObject::connect(gSession, &Session::sigPeaks, [this]()
-                     { trigger_outputPolefigures->setEnabled(gSession->peaks().count()); });
 
     trigger_outputDiagrams = newT::Trigger("trigger_outputDiagrams", "Diagrams...");
 
     trigger_outputDiffractograms = newT::Trigger(
         "trigger_outputDiffractograms", "Diffractograms...");
+
+    // connect signals
+    QObject::connect(gSession, &Session::sigFiles, [this]() {
+            trigger_removeFile->setEnabled(gSession->dataset().countFiles());
+        });
+    QObject::connect(gSession, &Session::sigCorr, [this]() {
+            bool hasFile = gSession->hasCorrFile();
+            trigger_corrFile->setIcon(QIcon(hasFile ? ":/icon/rem" : ":/icon/add"));
+            QString text = QString(hasFile ? "Remove" : "Add") + " correction file";
+            trigger_corrFile->setText(text);
+            trigger_corrFile->setToolTip(text.toLower());
+            toggle_enableCorr->setEnabled(gSession->hasCorrFile());
+            toggle_enableCorr->setChecked(gSession->corrset().isEnabled());
+            emit gSession->sigDiffractogram();
+            emit gSession->sigImage();
+        });
+    QObject::connect(gSession, &Session::sigPeaks, [this]() {
+            trigger_removePeak->setEnabled(gSession->peaks().count());
+            trigger_outputPolefigures->setEnabled(gSession->peaks().count());
+            emit gSession->sigDiffractogram();
+        });
 
     initMenu();
     initLayout();
@@ -368,6 +377,7 @@ void MainWin::connectActions() {
     connectToggle(toggle_viewMetadata, &MainWin::viewMetadata);
 
     connectTrigger(trigger_viewReset, &MainWin::viewReset);
+
 }
 
 void MainWin::online() {
@@ -647,10 +657,6 @@ void MainWin::loadCorrFile() {
         QDir::setCurrent(QFileInfo(fileName).absolutePath());
         gSession->corrset().loadFile(fileName);
     }
-}
-
-void MainWin::setFittingTab(eFittingTab tab) { // TODO rm
-    emit sigFittingTab((fittingTab_ = tab));
 }
 
 void MainWin::setImageRotate(ImageTransform rot) {

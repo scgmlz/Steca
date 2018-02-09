@@ -27,10 +27,6 @@ extern class MainWin* gGui; //!< global pointer to _the_ main window
 // make connects shorter
 #define _SLOT_(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
 
-//! Indicates active setup tab, which determines which fit is to be shown in the diffractogram view.
-enum class eFittingTab { NONE, BACKGROUND, REFLECTIONS, };
-
-
 //! The main window.
 
 //! This is a singleton class that specializes QMainWindow.
@@ -56,14 +52,14 @@ public:
     void loadCorrFile() THROWS;
 
     void setNorm(eNorm);
-    void setFittingTab(eFittingTab);
 
     // const methods:
     bool isFixedIntenImageScale() const { return isFixedIntenImageScale_; }
     bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
     bool isCombinedDgram() const { return isCombinedDgram_; }
 
-    eFittingTab fittingTab() const { return fittingTab_; }
+    bool baselineEditable { false };
+    bool peaksEditable { false };
 
     QAction *trigger_about,
         *trigger_online,
@@ -107,10 +103,6 @@ public:
     QString saveDir; //!< setting: default directory for data export
     QString saveFmt; //!< setting: default format for data export
 
-signals:
-    void sigDisplayChanged();
-    void sigFittingTab(eFittingTab);
-
 private:
     QDockWidget *dockFiles_, *dockMeasurements_, *dockDatasetInfo_;
     QByteArray initialState_;
@@ -144,7 +136,6 @@ private:
     bool isFixedIntenImageScale_;
     bool isFixedIntenDgramScale_;
     bool isCombinedDgram_;
-    eFittingTab fittingTab_ = eFittingTab::NONE;
     Settings settings_;
 };
 

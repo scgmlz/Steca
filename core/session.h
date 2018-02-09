@@ -105,6 +105,7 @@ signals:
     void sigActivated();     //!< selection of active clusters has changed
     void sigDetector();      //!< detector geometry has changed
     void sigDiffractogram(); //!< diffractogram must be repainted
+    void sigImage();         //!< image must be repainted
     void sigBaseline();      //!< baseline settings have changed
     void sigNorm();          //!< normalization has changed
     void sigPeaks();         //!< list of peaks or selected peak has changed

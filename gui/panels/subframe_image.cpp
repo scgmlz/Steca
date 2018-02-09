@@ -164,9 +164,9 @@ ImageTab::ImageTab() {
     connect(gGui->toggle_enableCorr, &QAction::toggled, [this](bool /*unused*/) { render(); });
     connect(gGui->toggle_showBins, &QAction::toggled, [this](bool /*unused*/) { render(); });
 
-    connect(gGui, &MainWin::sigDisplayChanged, this, &ImageTab::render);
     connect(gSession, &Session::sigDetector, this, &ImageTab::render);
     connect(gSession, &Session::sigNorm, this, &ImageTab::render);
+    connect(gSession, &Session::sigImage, this, &ImageTab::render);
 }
 
 QPixmap ImageTab::makePixmap(shp_Image image) {

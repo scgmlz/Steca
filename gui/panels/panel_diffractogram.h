@@ -31,8 +31,6 @@ private:
     void subtractRange(const Range&) final;
     bool addModeColor(QColor&) const final;
     bool subtractModeColor(QColor&) const final;
-
-    class DiffractogramPlot& parent_;
 };
 
 

@@ -21,31 +21,30 @@
 
 DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& parent)
     : PlotOverlay(parent)
-    , parent_(parent)
 {
 }
 
 void DiffractogramPlotOverlay::addRange(const Range& range) {
-    if        (parent_.getTool()==DiffractogramPlot::eTool::BACKGROUND) {
+    if        (gGui->baselineEditable) {
         gSession->baseline().addRange(range);
-    } else if (parent_.getTool()==DiffractogramPlot::eTool::PEAK_REGION) {
+    } else if (gGui->peaksEditable) {
         if (Peak* peak = gSession->peaks().selectedPeak())
             peak->setRange(range);
     }
 }
 void DiffractogramPlotOverlay::subtractRange(const Range& range) {
-    if        (parent_.getTool()==DiffractogramPlot::eTool::BACKGROUND) {
+    if        (gGui->baselineEditable) {
         gSession->baseline().removeRange(range);
-    } else if (parent_.getTool()==DiffractogramPlot::eTool::PEAK_REGION) {
+    } else if (gGui->peaksEditable) {
         ; // do nothing
     }
 }
 
 bool DiffractogramPlotOverlay::addModeColor(QColor& color) const {
-    if (gGui->fittingTab()==eFittingTab::BACKGROUND) {
+    if        (gGui->baselineEditable) {
         color = {0x98, 0xfb, 0x98, 0x70}; // medium green
         return true;
-    } else if  (gGui->fittingTab()==eFittingTab::REFLECTIONS) {
+    } else if (gGui->peaksEditable) {
         color = {0x87, 0xce, 0xfa, 0x70}; // medium blue
         return true;
     }
@@ -53,7 +52,7 @@ bool DiffractogramPlotOverlay::addModeColor(QColor& color) const {
 }
 
 bool DiffractogramPlotOverlay::subtractModeColor(QColor& color) const {
-    if (gGui->fittingTab()==eFittingTab::BACKGROUND) {
+    if        (gGui->baselineEditable) {
         color = {0xf8, 0xf8, 0xff, 0x90}; // almost white
         return true;
     }
@@ -125,12 +124,9 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
     });
 
     connect(gSession, &Session::sigBaseline, [this]() { renderAll(); });
-    connect(gSession, &Session::sigPeaks, [this]() { renderAll(); });
     connect(gSession, &Session::sigPeakHighlight, [this]() { renderAll(); });
-    connect(gSession, &Session::sigCorr, this, &DiffractogramPlot::renderAll);
     connect(gSession, &Session::sigActivated, this, &DiffractogramPlot::renderAll);
     connect(gSession, &Session::sigDetector, this, &DiffractogramPlot::renderAll);
-    connect(gGui, &MainWin::sigDisplayChanged, this, &DiffractogramPlot::renderAll);
     connect(gSession, &Session::sigDiffractogram, this, &DiffractogramPlot::renderAll);
     connect(gSession, &Session::sigBaseline, this, &DiffractogramPlot::renderAll);
 
