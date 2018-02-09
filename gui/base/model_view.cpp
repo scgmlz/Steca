@@ -40,6 +40,7 @@ void TableModel::onClicked(const QModelIndex& cell) {
     if (row < 0 || row >= rowCount())
         return;
     setHighlight(row);
+    gConsole->log(name() + ".highlight=" + QString::number(row));
 }
 
 // ************************************************************************** //
@@ -49,7 +50,7 @@ void TableModel::onClicked(const QModelIndex& cell) {
 CheckTableModel::CheckTableModel(const QString& _name) : TableModel(_name) {
     gConsole->learn(name()+".activate", [this](const QString& val)->void {
             activateAndLog(false, val.toInt(), true); });
-    gConsole->learn(name()+".desactivate", [this](const QString& val)->void {
+    gConsole->learn(name()+".deactivate", [this](const QString& val)->void {
             activateAndLog(false, val.toInt(), false); });
 }
 
@@ -68,7 +69,8 @@ void CheckTableModel::onClicked(const QModelIndex& cell) {
 
 void CheckTableModel::activateAndLog(bool primaryCall, int row, bool on) {
     setActivated(row, on);
-    gConsole->log2(primaryCall, name() + ( on ? "activate" : "desactivate") + QString::number(row));
+    gConsole->log2(primaryCall,
+                   name() + ( on ? ".activate=" : ".deactivate=") + QString::number(row));
 }
 
 
