@@ -164,8 +164,6 @@ ExperimentView::ExperimentView()
     connect(gSession, &Session::sigActivated, this, &CheckTableView::onActivated);
     connect(gSession, &Session::sigMetaSelection, this, &ExperimentView::onMetaSelection);
     connect(this, &ExperimentView::clicked, model(), &CheckTableModel::onClicked);
-    gConsole->learn("highlightMeasurement", [this](const QString& val)->void {
-            highlight(false, val.toInt()); });
 }
 
 void ExperimentView::onMetaSelection() {

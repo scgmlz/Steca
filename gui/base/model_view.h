@@ -23,7 +23,7 @@
 class TableModel : public QAbstractTableModel {
 public:
     TableModel() = delete;
-    TableModel(const QString& name) : name_(name) {}
+    TableModel(const QString& name);
     void refreshModel(); // within rectangle plus one row
     void resetModel(); // complete reset, including cursor position
     virtual void onClicked(const QModelIndex& cell);

@@ -20,6 +20,13 @@
 //  class TableModel
 // ************************************************************************** //
 
+TableModel::TableModel(const QString& name)
+    : name_(name)
+{
+    gConsole->learn(name_+".highlight", [this](const QString& val)->void {
+            highlight(false, val.toInt()); });
+}
+
 void TableModel::refreshModel() {
     emit dataChanged(createIndex(0,0),createIndex(rowCount(),columnCount()-1));
 }
