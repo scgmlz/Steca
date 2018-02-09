@@ -56,8 +56,8 @@ public:
 
 private:
     const int position_; //! position in file_
-    shp_Metadata md_;
-    shp_Image image_;
+    shp_Metadata md_; // TODO -> unique
+    shp_Image image_; // TODO -> unique
 };
 
 typedef QSharedPointer<const Measurement> shp_Measurement;

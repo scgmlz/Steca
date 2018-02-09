@@ -40,7 +40,7 @@ public:
 
 private:
     QFileInfo fileInfo_;
-    vec<shp_Measurement> measurements_;
+    vec<shp_Measurement> measurements_; // TODO EASY -> unique_ptr
     size2d imageSize_;
 };
 
