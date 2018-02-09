@@ -98,17 +98,17 @@ ControlsBaseline::ControlsBaseline() {
 
     QBoxLayout* hb = newQ::HBoxLayout();
     box->addLayout(hb);
-    hb->addWidget(new XIconButton(gGui->toggle_showBackground));
-    hb->addWidget(new XIconButton(gGui->trigger_clearBackground));
     hb->addWidget(new QLabel("Pol. degree:"));
-
-    connect(&spinDegree_, _SLOT_(QSpinBox, valueChanged, int), [](int degree_) {
-            gSession->baseline().setPolynomDegree(degree_); });
-    connect(gSession, &Session::sigBaseline, [this]() {
-            spinDegree_.setValue(gSession->baseline().polynomDegree()); });
     hb->addWidget(&spinDegree_);
-    hb->addStretch();
+    hb->addStretch(1);
+    hb->addWidget(new XIconButton(gGui->trigger_clearBackground));
 
     box->addWidget(new BaseRangesView());
     box->addStretch(1);
+
+    connect(&spinDegree_, _SLOT_(QSpinBox, valueChanged, int), [](int degree_) {
+            gSession->baseline().setPolynomDegree(degree_); });
+
+    connect(gSession, &Session::sigBaseline, [this]() {
+            spinDegree_.setValue(gSession->baseline().polynomDegree()); });
 }

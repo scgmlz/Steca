@@ -83,6 +83,8 @@ Diffractogram::Diffractogram() {
     hb->addWidget(&enableZoom_);
     hb->addStretch();
 
+
+    hb->addWidget(new XIconButton(gGui->toggle_showBackground));
     hb->addWidget(&combine_);
     hb->addWidget(&fixInten_);
 

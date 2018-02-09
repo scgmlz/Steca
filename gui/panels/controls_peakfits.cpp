@@ -296,8 +296,6 @@ ControlsPeakfits::ControlsPeakfits()
 
     QBoxLayout* hb = newQ::HBoxLayout();
     box->addLayout(hb);
-
-    hb->addWidget(new XIconButton(gGui->toggle_showBackground));
     hb->addStretch();
 
     hb->addWidget(new XIconButton(gGui->trigger_addPeak));
