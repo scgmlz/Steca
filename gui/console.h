@@ -16,6 +16,7 @@
 #define CONSOLE_H
 
 #include "core/typ/singleton.h"
+#include <functional> // no auto rm
 #include <stack>
 #include <QTextStream>
 
