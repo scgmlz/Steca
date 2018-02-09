@@ -62,7 +62,6 @@ public:
     DiffractogramPlot(class Diffractogram&);
 
     void setTool(eTool);
-    Range fromPixels(int, int);
     void plot(Curve const&, Curve const&, Curve const&, curve_vec const&, int);
     void plotEmpty();
     void renderAll();

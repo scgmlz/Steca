@@ -56,7 +56,9 @@ void DiffractogramPlotOverlay::mousePressEvent(QMouseEvent* e) {
 void DiffractogramPlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
     mouseDown_ = false;
     update();
-    Range range(plot_.fromPixels(mouseDownPos_, cursorPos_));
+    double xmin = plot_.xAxis->pixelToCoord(mouseDownPos_);
+    double xmax = plot_.xAxis->pixelToCoord(cursorPos_);
+    Range range(xmin, xmax);
     switch (plot_.getTool()) {
     case DiffractogramPlot::eTool::BACKGROUND:
         if (e->button()==Qt::LeftButton)
@@ -204,10 +206,6 @@ void DiffractogramPlot::setTool(eTool tool) {
     renderAll();
 }
 
-Range DiffractogramPlot::fromPixels(int pix1, int pix2) {
-    return Range::safeFrom(xAxis->pixelToCoord(pix1), xAxis->pixelToCoord(pix2));
-}
-
 void DiffractogramPlot::clearReflLayer() {
     for (QCPGraph* g : reflGraph_)
         removeGraph(g);
@@ -222,7 +220,6 @@ void DiffractogramPlot::enterZoom(bool on) {
 //! Paints a colored rectangle in the background layer, to indicate area of baseline or peak fit
 void DiffractogramPlot::addBgItem(const Range& range, const QColor& color) {
     setCurrentLayer("bg");
-
     QCPItemRect* ir = new QCPItemRect(this);
     ir->setPen(QPen(color));
     ir->setBrush(QBrush(color));
