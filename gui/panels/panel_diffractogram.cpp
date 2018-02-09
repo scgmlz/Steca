@@ -14,6 +14,7 @@
 
 #include "panel_diffractogram.h"
 #include "core/session.h"
+#include "gui/console.h"
 
 // ************************************************************************** //
 //  class DiffractogramPlotOverlay
@@ -28,8 +29,11 @@ void DiffractogramPlotOverlay::addRange(const Range& range) {
     if        (gGui->baselineEditable) {
         gSession->baseline().addRange(range);
     } else if (gGui->peaksEditable) {
-        if (Peak* peak = gSession->peaks().selectedPeak())
+        if (Peak* peak = gSession->peaks().selectedPeak()) {
             peak->setRange(range);
+            gConsole->log("peakRangeMin="+QString::number(range.min));
+            gConsole->log("peakRangeMax="+QString::number(range.max));
+        }
     }
 }
 void DiffractogramPlotOverlay::subtractRange(const Range& range) {
