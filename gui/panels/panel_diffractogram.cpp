@@ -66,7 +66,10 @@ void DiffractogramPlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
             gSession->baseline().removeRange(range);
         break;
     case DiffractogramPlot::eTool::PEAK_REGION:
-        plot_.setNewReflRange(range);
+        if (e->button()==Qt::LeftButton) {
+            if (Peak* peak = gSession->peaks().selectedPeak())
+                peak->setRange(range);
+        }
         break;
     case DiffractogramPlot::eTool::NONE:
         break;
@@ -245,14 +248,6 @@ void DiffractogramPlot::plotEmpty() {
 
 Range DiffractogramPlot::fromPixels(int pix1, int pix2) {
     return Range::safeFrom(xAxis->pixelToCoord(pix1), xAxis->pixelToCoord(pix2));
-}
-
-void DiffractogramPlot::setNewReflRange(const Range& range) {
-    Peak* peak = gSession->peaks().selectedPeak();
-    if (!peak)
-        return;
-    peak->setRange(range);
-    renderAll();
 }
 
 void DiffractogramPlot::clearReflLayer() {
