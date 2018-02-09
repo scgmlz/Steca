@@ -24,7 +24,7 @@ TableModel::TableModel(const QString& name)
     : name_(name)
 {
     gConsole->learn(name_+".highlight", [this](const QString& val)->void {
-            highlight(false, val.toInt()); });
+            setHighlight(val.toInt()); });
 }
 
 void TableModel::refreshModel() {
@@ -43,7 +43,6 @@ void TableModel::resetModel() {
 
 void TableModel::onClicked(const QModelIndex& cell) {
     int row = cell.row();
-    int col = cell.column();
     if (row < 0 || row >= rowCount())
         return;
     setHighlight(row);

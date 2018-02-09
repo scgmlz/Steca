@@ -85,7 +85,6 @@ public:
     void onActivated();
 private:
     CheckTableModel* model() { return static_cast<CheckTableModel*>(model_); }
-
 };
 
 #endif // MODEL_VIEW_H

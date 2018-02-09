@@ -101,7 +101,7 @@ PeaksView::PeaksView()
 {
     connect(gSession, &Session::sigPeaks, this, &PeaksView::onData);
     connect(gSession, &Session::sigPeakHighlight, this, &PeaksView::onHighlight);
-    connect(this, &TableView::clicked, model(), &TableModel::onClicked);
+    connect(this, &TableView::clicked, model_, &TableModel::onClicked);
 }
 
 // ************************************************************************** //
