@@ -16,36 +16,23 @@
 #define PANEL_DIFFRACTOGRAM_H
 
 #include "gui/mainwin.h" // for eFittingTab
-#include "QCustomPlot/qcustomplot.h"
+#include "gui/base/plot_overlay.h"
 
-class DiffractogramPlot;
+//! Listens to mouse events to select subranges of a DiffractogramPlot.
 
-//! Listens to mouse events to select subranges of the diffractogram plot.
+//! Equips PlotOverlay with domain-specific colors and setter functions.
 
-class DiffractogramPlotOverlay : public QWidget {
+class DiffractogramPlotOverlay : public PlotOverlay {
 public:
-    DiffractogramPlotOverlay(DiffractogramPlot&);
-
-    void setMargins(int left, int right);
+    DiffractogramPlotOverlay(class DiffractogramPlot&);
 
 private:
-    void enterEvent(QEvent*) final;
-    void leaveEvent(QEvent*) final;
-    void mousePressEvent(QMouseEvent*) final;
-    void mouseReleaseEvent(QMouseEvent*) final;
-    void mouseMoveEvent(QMouseEvent*) final;
-    void paintEvent(QPaintEvent*) final;
-    void paintMousedZone();
-    void paintCursor();
+    void addRange(const Range&) final;
+    void subtractRange(const Range&) final;
+    bool addModeColor(QColor&) const final;
+    bool subtractModeColor(QColor&) const final;
 
-    void updateCursorRegion();
-
-    DiffractogramPlot& plot_;
-
-    int marginLeft_, marginRight_;
-    int cursorPos_, mouseDownPos_;
-    bool hasCursor_, mouseDown_;
-    Qt::MouseButton mouseButton_;
+    class DiffractogramPlot& parent_;
 };
 
 

@@ -19,111 +19,47 @@
 //  class DiffractogramPlotOverlay
 // ************************************************************************** //
 
-DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& plot_)
-    : QWidget(&plot_)
-    , plot_(plot_)
-    , cursorPos_(0)
-    , mouseDownPos_(0)
-    , hasCursor_(false)
-    , mouseDown_(false)
+DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& parent)
+    : PlotOverlay(parent)
+    , parent_(parent)
 {
-    setMouseTracking(true);
-    setMargins(0, 0);
 }
 
-void DiffractogramPlotOverlay::setMargins(int left, int right) {
-    marginLeft_ = left;
-    marginRight_ = right;
+void DiffractogramPlotOverlay::addRange(const Range& range) {
+    if        (parent_.getTool()==DiffractogramPlot::eTool::BACKGROUND) {
+        gSession->baseline().addRange(range);
+    } else if (parent_.getTool()==DiffractogramPlot::eTool::PEAK_REGION) {
+        if (Peak* peak = gSession->peaks().selectedPeak())
+            peak->setRange(range);
+    }
 }
-
-void DiffractogramPlotOverlay::enterEvent(QEvent*) {
-    hasCursor_ = true;
-    updateCursorRegion();
-}
-
-void DiffractogramPlotOverlay::leaveEvent(QEvent*) {
-    hasCursor_ = false;
-    updateCursorRegion();
-}
-
-void DiffractogramPlotOverlay::mousePressEvent(QMouseEvent* e) {
-    mouseDownPos_ = cursorPos_;
-    mouseDown_ = true;
-    mouseButton_ = e->button();
-    update();
-}
-
-void DiffractogramPlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
-    mouseDown_ = false;
-    update();
-    double xmin = plot_.xAxis->pixelToCoord(mouseDownPos_);
-    double xmax = plot_.xAxis->pixelToCoord(cursorPos_);
-    Range range(xmin, xmax);
-    switch (plot_.getTool()) {
-    case DiffractogramPlot::eTool::BACKGROUND:
-        if (e->button()==Qt::LeftButton)
-            gSession->baseline().addRange(range);
-        else
-            gSession->baseline().removeRange(range);
-        break;
-    case DiffractogramPlot::eTool::PEAK_REGION:
-        if (e->button()==Qt::LeftButton) {
-            if (Peak* peak = gSession->peaks().selectedPeak())
-                peak->setRange(range);
-        }
-        break;
-    case DiffractogramPlot::eTool::NONE:
-        break;
+void DiffractogramPlotOverlay::subtractRange(const Range& range) {
+    if        (parent_.getTool()==DiffractogramPlot::eTool::BACKGROUND) {
+        gSession->baseline().removeRange(range);
+    } else if (parent_.getTool()==DiffractogramPlot::eTool::PEAK_REGION) {
+        ; // do nothing
     }
 }
 
-void DiffractogramPlotOverlay::mouseMoveEvent(QMouseEvent* e) {
-    updateCursorRegion();
-    cursorPos_ = qBound(marginLeft_, e->x(), width() - marginRight_);
-    updateCursorRegion();
-    if (mouseDown_)
-        update();
-}
-
-void DiffractogramPlotOverlay::paintEvent(QPaintEvent*) {
-    if (mouseDown_)
-        paintMousedZone();
-    if (hasCursor_)
-        paintCursor();
-}
-
-void DiffractogramPlotOverlay::paintMousedZone() {
-    QRect g = geometry();
-    g.setLeft(qMin(mouseDownPos_, cursorPos_));
-    g.setRight(qMax(mouseDownPos_, cursorPos_));
-    QColor color;
+bool DiffractogramPlotOverlay::addModeColor(QColor& color) const {
     if (gGui->fittingTab()==eFittingTab::BACKGROUND) {
-        if      (mouseButton_==Qt::LeftButton) // background range in the making
-            color = {0x98, 0xfb, 0x98, 0x70}; // medium green
-        else if (mouseButton_==Qt::RightButton) // gap in background range in the making
-            color = {0xf8, 0xf8, 0xff, 0x90}; // almost white
+        color = {0x98, 0xfb, 0x98, 0x70}; // medium green
+        return true;
     } else if  (gGui->fittingTab()==eFittingTab::REFLECTIONS) {
-        if      (mouseButton_==Qt::LeftButton) // peak range in the making
-            color = {0x87, 0xce, 0xfa, 0x70}; // medium blue
-        else
-            return; // gap not allowed
+        color = {0x87, 0xce, 0xfa, 0x70}; // medium blue
+        return true;
     }
-    QPainter(this).fillRect(g, color);
+    return false;
 }
 
-void DiffractogramPlotOverlay::paintCursor() {
-    QRect g = geometry();
-    QLineF cursor(cursorPos_, g.top(), cursorPos_, g.bottom());
-    QPainter painter(this);
-    painter.setPen(Qt::red);
-    painter.drawLine(cursor);
+bool DiffractogramPlotOverlay::subtractModeColor(QColor& color) const {
+    if (gGui->fittingTab()==eFittingTab::BACKGROUND) {
+        color = {0xf8, 0xf8, 0xff, 0x90}; // almost white
+        return true;
+    }
+    return false;
 }
 
-void DiffractogramPlotOverlay::updateCursorRegion() {
-    const QRect& g = geometry();
-    // updating 2 pixels seems to work both on Linux & Mac
-    update(cursorPos_ - 1, g.top(), 2, g.height());
-}
 
 // ************************************************************************** //
 //  class DiffractogramPlot
