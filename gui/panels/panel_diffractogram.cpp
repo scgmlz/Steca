@@ -49,8 +49,7 @@ void DiffractogramPlotOverlay::leaveEvent(QEvent*) {
 void DiffractogramPlotOverlay::mousePressEvent(QMouseEvent* e) {
     mouseDownPos_ = cursorPos_;
     mouseDown_ = true;
-    addColor_ = (gGui->fittingTab() == eFittingTab::BACKGROUND) ? bgColor_ : reflColor_;
-    color_ = e->button() == Qt::LeftButton ? addColor_ : removeColor_;
+    mouseButton_ = e->button();
     update();
 }
 
@@ -85,20 +84,37 @@ void DiffractogramPlotOverlay::mouseMoveEvent(QMouseEvent* e) {
 }
 
 void DiffractogramPlotOverlay::paintEvent(QPaintEvent*) {
-    QPainter painter(this);
+    if (mouseDown_)
+        paintMousedZone();
+    if (hasCursor_)
+        paintCursor();
+}
+
+void DiffractogramPlotOverlay::paintMousedZone() {
     QRect g = geometry();
-
-    if (mouseDown_) {
-        g.setLeft(qMin(mouseDownPos_, cursorPos_));
-        g.setRight(qMax(mouseDownPos_, cursorPos_));
-        painter.fillRect(g, color_);
+    g.setLeft(qMin(mouseDownPos_, cursorPos_));
+    g.setRight(qMax(mouseDownPos_, cursorPos_));
+    QColor color;
+    if (gGui->fittingTab()==eFittingTab::BACKGROUND) {
+        if      (mouseButton_==Qt::LeftButton) // background range in the making
+            color = {0x98, 0xfb, 0x98, 0x70}; // light green
+        else if (mouseButton_==Qt::RightButton) // gap in background range in the making
+            color = {0xf8, 0xf8, 0xff, 0x90}; // almost white
+    } else if  (gGui->fittingTab()==eFittingTab::REFLECTIONS) {
+        if      (mouseButton_==Qt::LeftButton) // peak range in the making
+            color = {0x87, 0xce, 0xfa, 0x70}; // light blue
+        else
+            return; // gap not allowed
     }
+    QPainter(this).fillRect(g, color);
+}
 
-    if (hasCursor_) {
-        QLineF cursor(cursorPos_, g.top(), cursorPos_, g.bottom());
-        painter.setPen(Qt::red);
-        painter.drawLine(cursor);
-    }
+void DiffractogramPlotOverlay::paintCursor() {
+    QRect g = geometry();
+    QLineF cursor(cursorPos_, g.top(), cursorPos_, g.bottom());
+    QPainter painter(this);
+    painter.setPen(Qt::red);
+    painter.drawLine(cursor);
 }
 
 void DiffractogramPlotOverlay::updateCursorRegion() {
@@ -171,6 +187,8 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
     });
 
     connect(gSession, &Session::sigBaseline, [this]() { renderAll(); });
+    connect(gSession, &Session::sigPeaks, [this]() { renderAll(); });
+    connect(gSession, &Session::sigPeakHighlight, [this]() { renderAll(); });
     connect(gSession, &Session::sigCorr, this, &DiffractogramPlot::renderAll);
     connect(gSession, &Session::sigActivated, this, &DiffractogramPlot::renderAll);
     connect(gSession, &Session::sigDetector, this, &DiffractogramPlot::renderAll);

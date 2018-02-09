@@ -35,19 +35,21 @@ private:
     void mouseReleaseEvent(QMouseEvent*) final;
     void mouseMoveEvent(QMouseEvent*) final;
     void paintEvent(QPaintEvent*) final;
+    void paintMousedZone();
+    void paintCursor();
 
     void updateCursorRegion();
 
     DiffractogramPlot& plot_;
 
-    QColor addColor_, color_;
     const QColor removeColor_{0xf8, 0xf8, 0xff, 0x90};
-    const QColor bgColor_{0x98, 0xfb, 0x98, 0x70};
-    const QColor reflColor_{0x87, 0xce, 0xfa, 0x70};
+    const QColor baselineColor_{0x98, 0xfb, 0x98, 0x70};
+    const QColor peakColor_{0x87, 0xce, 0xfa, 0x70};
 
     int marginLeft_, marginRight_;
     int cursorPos_, mouseDownPos_;
     bool hasCursor_, mouseDown_;
+    Qt::MouseButton mouseButton_;
 };
 
 
