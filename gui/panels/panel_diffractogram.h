@@ -72,14 +72,11 @@ public:
     eTool getTool() const { return tool_; }
 
 private:
-    void addBgItem(const Range&);
+    void addBgItem(const Range&, const QColor&);
     void resizeEvent(QResizeEvent*);
     void onPeakData();
 
     Diffractogram& diffractogram_;
-
-    const QColor BgColor_{0x98, 0xfb, 0x98, 0x50};
-    const QColor reflRgeColor_{0x87, 0xce, 0xfa, 0x50};
 
     eTool tool_;
     bool showBgFit_;

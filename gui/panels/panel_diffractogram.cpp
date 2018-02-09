@@ -97,12 +97,12 @@ void DiffractogramPlotOverlay::paintMousedZone() {
     QColor color;
     if (gGui->fittingTab()==eFittingTab::BACKGROUND) {
         if      (mouseButton_==Qt::LeftButton) // background range in the making
-            color = {0x98, 0xfb, 0x98, 0x70}; // light green
+            color = {0x98, 0xfb, 0x98, 0x70}; // medium green
         else if (mouseButton_==Qt::RightButton) // gap in background range in the making
             color = {0xf8, 0xf8, 0xff, 0x90}; // almost white
     } else if  (gGui->fittingTab()==eFittingTab::REFLECTIONS) {
         if      (mouseButton_==Qt::LeftButton) // peak range in the making
-            color = {0x87, 0xce, 0xfa, 0x70}; // light blue
+            color = {0x87, 0xce, 0xfa, 0x70}; // medium blue
         else
             return; // gap not allowed
     }
@@ -220,20 +220,8 @@ void DiffractogramPlot::enterZoom(bool on) {
 }
 
 //! Paints a colored rectangle in the background layer, to indicate area of baseline or peak fit
-void DiffractogramPlot::addBgItem(const Range& range) {
+void DiffractogramPlot::addBgItem(const Range& range, const QColor& color) {
     setCurrentLayer("bg");
-
-    QColor color;
-    switch (gGui->fittingTab()) {
-    case eFittingTab::BACKGROUND:
-        color = BgColor_;
-        break;
-    case eFittingTab::REFLECTIONS:
-        color = reflRgeColor_;
-        break;
-    default:
-        break;
-    }
 
     QCPItemRect* ir = new QCPItemRect(this);
     ir->setPen(QPen(color));
@@ -284,20 +272,16 @@ void DiffractogramPlot::onPeakData() {
 void DiffractogramPlot::renderAll() {
     clearItems();
 
-    switch (tool_) {
-    case eTool::BACKGROUND: {
+    if        (tool_==eTool::BACKGROUND) {
         const Ranges& rs = gSession->baseline().ranges();
         for_i (rs.count())
-            addBgItem(rs.at(i));
-        break;
-    }
-    case eTool::PEAK_REGION: {
-        Peak* peak = gSession->peaks().selectedPeak();
-        addBgItem(peak ? peak->range() : Range());
-        break;
-    }
-    case eTool::NONE:
-        break;
+            addBgItem(rs.at(i), {0x98, 0xfb, 0x98, 0x50}); // light green
+    } else if (tool_==eTool::PEAK_REGION) {
+        for_i (gSession->peaks().count()) {
+            addBgItem(gSession->peaks().at(i).range(), i==gSession->peaks().selectedIndex() ?
+                      QColor(0x87, 0xce, 0xfa, 0x70) : // medium blue
+                      QColor(0x87, 0xce, 0xfa, 0x50)); // light blue
+        }
     }
 
     if (!gSession->dataset().highlight().cluster()) {
