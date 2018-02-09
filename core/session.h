@@ -106,7 +106,6 @@ signals:
     void sigDetector();      //!< detector geometry has changed
     void sigDiffractogram(); //!< diffractogram must be repainted
     void sigBaseline();      //!< baseline settings have changed
-    // void sigBaseHighlight(); //!< highlighted baseline range has changed
     void sigNorm();          //!< normalization has changed
     void sigPeaks();         //!< list of peaks or selected peak has changed
     void sigPeakHighlight(); //!< highlighted Peak has changed

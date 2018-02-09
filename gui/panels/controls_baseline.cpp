@@ -30,8 +30,8 @@ public:
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return gSession->baseline().ranges().count(); }
-    int highlighted() const final { return 0; } //?gSession->baseline().ranges().selectedIndex(); }
-    void setHighlight(int row) final {} //? gSession->baseline().ranges().select(row); }
+    int highlighted() const final { return 0; } // dummy
+    void setHighlight(int row) final {}         // no need to select and highlight ranges
 
     QVariant data(const QModelIndex&, int) const;
 
@@ -61,15 +61,12 @@ QVariant BaseRangesModel::data(const QModelIndex& index, int role) const {
         return QColor(Qt::black);
     }
     case Qt::BackgroundRole: {
-//        if (row==highlighted())
-//            return QColor(Qt::cyan);
         return QColor(Qt::white);
     }
     default:
         return {};
     }
 }
-
 
 // ************************************************************************** //
 //  local class BaseRangesView
@@ -89,13 +86,11 @@ BaseRangesView::BaseRangesView()
     : TableView(new BaseRangesModel())
 {
     connect(gSession, &Session::sigBaseline, this, &BaseRangesView::onData);
-    // connect(gSession, &Session::sigBaseHighlight, this, &BaseRangesView::onHighlight);
 }
 
 // ************************************************************************** //
 //  class ControlsBaseline
 // ************************************************************************** //
-
 
 ControlsBaseline::ControlsBaseline() {
     auto* box = newQ::VBoxLayout();
