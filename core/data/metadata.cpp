@@ -14,7 +14,6 @@
 
 #include "metadata.h"
 #include "core/def/idiomatic_for.h"
-#include "core/typ/exception.h"
 
 // metadata attributes
 

@@ -16,17 +16,14 @@
 #define CONTROLS_H
 
 #include <functional> // no auto rm
-#include <QAction>
 #include <QCheckBox>
 #include <QComboBox>
-#include <QFile>
 #include <QFileDialog>
 #include <QLabel>
 #include <QLayout>
 #include <QLineEdit>
 #include <QRadioButton>
 #include <QSpinBox>
-#include <QString>
 #include <QToolButton>
 
 //! Contains functions that return new QActions.

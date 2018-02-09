@@ -14,12 +14,9 @@
 
 #include "gui/console.h"
 #include "core/def/debug.h"
-#include <map>
-#include <QApplication>
 #include <QDateTime>
 #include <QFile>
 #include <QSocketNotifier>
-#include <QTimer>
 
 Console* gConsole; //!< global
 

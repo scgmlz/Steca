@@ -16,7 +16,6 @@
 #define JSON_H
 
 #include "core/def/numbers.h"
-#include <QString>
 #include <QJsonObject>
 
 QJsonValue qreal_to_json(const qreal num);

@@ -15,8 +15,6 @@
 #ifndef CLUSTER_H
 #define CLUSTER_H
 
-#include "core/typ/angles.h"
-#include "core/data/image.h"
 #include "core/data/measurement.h"
 #include <QSharedPointer> // no auto rm
 

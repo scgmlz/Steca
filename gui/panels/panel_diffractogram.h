@@ -16,7 +16,6 @@
 #define PANEL_DIFFRACTOGRAM_H
 
 #include "gui/mainwin.h" // for eFittingTab
-#include "gui/base/controls.h"
 #include "QCustomPlot/qcustomplot.h"
 
 class DiffractogramPlot;

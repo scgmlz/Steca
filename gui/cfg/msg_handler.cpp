@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "gui/cfg/msg_handler.h"
 #include "gui/console.h"
 #include <iostream>
 #include <QMessageBox>

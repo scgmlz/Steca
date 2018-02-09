@@ -16,7 +16,6 @@
 #include "gui/output/dialog_panels.h"
 #include "gui/base/filedialog.h"
 #include "gui/mainwin.h"
-#include <QDir>
 
 static QString const DAT_SFX(".dat"), DAT_SEP(" "), // suffix, separator
     CSV_SFX(".csv"), CSV_SEP(", ");

@@ -13,9 +13,7 @@
 // ************************************************************************** //
 
 #include "core/data/rawfile.h"
-#include "core/typ/exception.h"
 #include <QStringBuilder> // for ".." % ..
-#include <QFileInfo>
 
 namespace load {
 Rawfile loadCaress(const QString& filePath) THROWS;

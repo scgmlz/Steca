@@ -15,12 +15,8 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include <QString>
 #include "core/typ/singleton.h"
-#include <deque>
 #include <stack>
-#include <functional>
-#include <QObject>
 #include <QTextStream>
 
 extern class Console* gConsole; //!< global

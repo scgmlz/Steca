@@ -15,7 +15,6 @@
 #include "core/fit/fit_fun.h"
 #include "core/def/idiomatic_for.h"
 #include "core/fit/fit_methods.h"
-#include "core/typ/curve.h"
 
 namespace { // file-scope functions
 

@@ -32,7 +32,6 @@
 #include <QApplication>
 #include <QLoggingCategory>
 #include <QStyleFactory>
-#include <QTextStream>
 
 const char* version =
 #include "../VERSION"

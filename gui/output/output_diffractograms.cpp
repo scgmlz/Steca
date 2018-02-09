@@ -15,10 +15,8 @@
 #include "gui/output/output_diffractograms.h"
 #include "core/session.h"
 #include "gui/base/filedialog.h"
-#include "gui/base/controls.h"
 #include "gui/output/dialog_panels.h"
 #include "gui/output/tab_save.h"
-#include "gui/mainwin.h"
 #include <cmath>
 #include <QMessageBox>
 

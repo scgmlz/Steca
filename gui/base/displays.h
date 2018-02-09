@@ -17,7 +17,6 @@
 
 #include <QLabel>
 #include <QLineEdit>
-#include <QString>
 
 namespace widgetUtils {
 void setWidth(QWidget* w, int ndigits, bool withDot);

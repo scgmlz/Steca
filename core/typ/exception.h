@@ -16,7 +16,6 @@
 #define EXCEPTION_H
 
 #include <QException>
-#include <QString>
 
 //! The sole exception type used in this software.
 class Exception : public QException {

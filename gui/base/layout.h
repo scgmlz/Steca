@@ -16,10 +16,7 @@
 #define LAYOUT_H
 
 #include <QDockWidget>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
 #include <QGridLayout>
-#include <QString>
 
 //! Contains functions that return new Qt layouts.
 namespace newQ {

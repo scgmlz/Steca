@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "core/calc/baseline.h"
 #include "core/session.h"
 
 void Baseline::fromJson(const JsonObj obj) {

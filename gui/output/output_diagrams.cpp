@@ -15,7 +15,6 @@
 #include "gui/output/output_diagrams.h"
 #include "core/session.h"
 #include "gui/base/filedialog.h"
-#include "gui/base/controls.h"
 #include "gui/mainwin.h"
 #include "gui/output/data_table.h"
 #include "gui/output/dialog_panels.h"

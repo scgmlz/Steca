@@ -15,8 +15,6 @@
 #ifndef SUBFRAME_IMAGE_H
 #define SUBFRAME_IMAGE_H
 
-#include "core/calc/lens.h"
-#include "core/data/cluster.h"
 #include "gui/base/controls.h"
 
 //! Part of the main window that shows a detector image, with associated controls.

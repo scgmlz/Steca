@@ -15,7 +15,6 @@
 #include "mainwin.h"
 #include "../manifest.h"
 #include "core/session.h"
-#include "gui/base/controls.h"
 #include "gui/console.h"
 #include "gui/output/output_diagrams.h"
 #include "gui/output/output_diffractograms.h"
@@ -28,11 +27,9 @@
 #include "gui/panels/subframe_setup.h"
 #include "gui/popup/about.h"
 #include "gui/base/filedialog.h"
-#include <QAction>
 #include <QApplication>
 #include <QCloseEvent>
 #include <QDesktopServices>
-#include <QDir>
 #include <QJsonDocument>
 #include <QMenuBar>
 #include <QMessageBox>

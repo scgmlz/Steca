@@ -12,9 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "core/calc/peak.h"
-#include "core/fit/fit_fun.h"
-#include "core/def/idiomatic_for.h"
 #include "core/session.h"
 
 Peak::Peak(const QString& functionName) : peakFunction_(nullptr) {

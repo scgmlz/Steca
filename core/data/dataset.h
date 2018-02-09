@@ -16,7 +16,6 @@
 #define DATASET_H
 
 #include "core/data/angle_map.h"
-#include "core/data/rawfile.h"
 #include "core/data/experiment.h"
 #include "core/typ/async.h"
 #include "core/typ/cache.h"

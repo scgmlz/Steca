@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "measurement.h"
 #include "core/session.h"
 #include <qmath.h>
 

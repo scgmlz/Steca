@@ -14,8 +14,6 @@
 
 #include "core/def/idiomatic_for.h"
 #include "core/data/rawfile.h"
-#include "core/data/metadata.h"
-#include "core/typ/exception.h"
 #include <QDataStream>
 #include <QDir>
 

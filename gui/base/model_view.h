@@ -17,7 +17,6 @@
 
 #include "core/def/debug.h"
 #include <QTreeView>
-#include <QAbstractTableModel>
 
 //! Pure virtual base class of all models of rectangular table form
 

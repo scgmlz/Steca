@@ -16,9 +16,7 @@
 #define EXPERIMENT_H
 
 #include "core/data/cluster.h" // no auto rm
-#include "core/typ/curve.h"
 #include <QSharedPointer> // required by some compilers
-#include <vector>
 
 //! The list of activated Cluster|s, and cached averages
 

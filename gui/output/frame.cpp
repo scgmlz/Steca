@@ -15,10 +15,8 @@
 #include "gui/output/frame.h"
 #include "core/calc/calc_polefigure.h"
 #include "core/session.h"
-#include "gui/base/controls.h"
 #include "gui/output/data_table.h"
 #include "gui/output/dialog_panels.h"
-#include "gui/output/tab_save.h"
 #include "gui/mainwin.h" // defines _SLOT_
 #include <QProgressBar>
 #include <QScrollArea>

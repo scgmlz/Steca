@@ -12,9 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "cluster.h"
-#include "measurement.h"
-#include "metadata.h"
 #include "core/session.h"
 #include "core/typ/matrix.h"
 #include <qmath.h>

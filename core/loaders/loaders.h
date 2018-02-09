@@ -16,11 +16,7 @@
 #define LOADERS_H
 
 #include "core/data/rawfile.h"
-#include "core/def/macros.h"
-#include <QString>
 
-class Rawfile;
-class QFileInfo;
 
 //! Functions loadRawfile and loadComment, and their dependences.
 

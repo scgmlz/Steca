@@ -16,7 +16,6 @@
 #define ABOUT_H
 
 #include "gui/base/controls.h"
-#include <QDialog>
 
 //! Modal dialog that informs about the software
 class AboutBox : public QDialog {

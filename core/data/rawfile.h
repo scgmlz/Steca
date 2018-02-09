@@ -15,14 +15,9 @@
 #ifndef RAWFILE_H
 #define RAWFILE_H
 
-#include "core/data/image.h"
 #include "core/data/measurement.h"
-#include "core/typ/array2d.h"
-#include <QString>
-#include "core/typ/types.h"
 #include <QFileInfo>
 
-class Metadata;
 
 //! A file (loaded from a disk file) that contains a data sequence.
 class Rawfile final {

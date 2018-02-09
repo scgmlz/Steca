@@ -19,7 +19,6 @@
 #include "gui/cfg/settings.h"
 #include "gui/base/layout.h"
 #include "gui/base/controls.h"
-#include <memory>
 #include <QGroupBox>
 
 //! A panel with grid layout

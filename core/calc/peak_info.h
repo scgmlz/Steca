@@ -16,10 +16,8 @@
 #define PEAK_INFO_H
 
 #include "core/data/metadata.h"
-#include "core/typ/angles.h"
 #include "core/typ/range.h"
 #include "core/typ/types.h"
-#include "core/typ/variant.h"
 
 //! Metadata, peak fit results, and pole figure angles.
 

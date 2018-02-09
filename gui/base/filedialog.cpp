@@ -14,8 +14,6 @@
 
 #include "core/loaders/loaders.h"
 #include "gui/base/controls.h"
-#include <QApplication>
-#include <QEventLoop>
 #include <QFileSystemModel>
 #include <QMessageBox>
 #include <QSortFilterProxyModel>

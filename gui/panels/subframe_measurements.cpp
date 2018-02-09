@@ -18,7 +18,6 @@
 #include "gui/base/model_view.h"
 #include "gui/console.h"
 #include "gui/mainwin.h"
-#include <QHeaderView>
 
 // ************************************************************************** //
 //  local class ExperimentModel

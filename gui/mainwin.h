@@ -16,11 +16,8 @@
 #define MAINWIN_H
 
 #include "core/calc/lens.h"
-#include "core/calc/peak.h"
 #include "core/data/rawfile.h"
-#include "core/data/cluster.h"
 #include "core/typ/singleton.h"
-#include <QString>
 #include "gui/cfg/settings.h"
 #include <QMainWindow>
 #include <QNetworkAccessManager>

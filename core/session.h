@@ -21,7 +21,6 @@
 #include "core/calc/peak_info.h"
 #include "core/data/corrset.h"
 #include "core/data/dataset.h"
-#include <vector>
 
 extern class Session* gSession;
 

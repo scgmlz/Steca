@@ -17,12 +17,8 @@
 
 #include <memory>
 #include "core/fit/fit_fun.h"
-#include "core/typ/curve.h"
-#include "core/typ/range.h"
-#include "core/typ/realpair.h"
 #include "core/typ/types.h" // for fwhm_t
 #include <QSharedPointer> // no auto rm
-#include <QStringList>
 
 //! Wraps a PeakFunction (pimpl idiom)
 

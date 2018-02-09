@@ -16,9 +16,7 @@
 #include "gui/base/displays.h"
 #include "gui/console.h"
 #include "gui/mainwin.h" // for _SLOT_
-#include "core/def/numbers.h"
 #include <QApplication> // for qApp for new Action
-#include <QDebug>
 #include <QtGlobal> // to define Q_OS_WIN
 
 QAction* newT::Trigger(const QString& name, const QString& text, const QString& iconFile) {
