@@ -58,6 +58,8 @@ public:
 
     QJsonObject to_json() const;
     void from_json(JsonObj const&) THROWS;
+
+    QString to_s() const;
 };
 
 //! A set of *sorted* *non-overlapping* ranges

@@ -42,7 +42,7 @@ public:
 
     QVariant data(const QModelIndex&, int) const;
 
-    enum { COL_ID = 1, COL_TYPE, NUM_COLUMNS };
+    enum { COL_ID = 1, COL_TYPE, COL_RANGE, NUM_COLUMNS };
 };
 
 QVariant PeaksModel::data(const QModelIndex& index, int role) const {
@@ -60,6 +60,8 @@ QVariant PeaksModel::data(const QModelIndex& index, int role) const {
             return QString::number(row + 1);
         case COL_TYPE:
             return peak.functionName();
+        case COL_RANGE:
+            return peak.range().to_s();
         default:
             return {};
         }
