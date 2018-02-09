@@ -90,6 +90,7 @@ MetadataView::MetadataView()
     : CheckTableView(new MetadataModel())
 {
     connect(gSession, &Session::sigClusters, this, &TableView::onData);
+    connect(gSession, &Session::sigMetaSelection, this, &TableView::onHighlight);
     connect(this, &MetadataView::clicked, model(), &CheckTableModel::onClicked);
 }
 
