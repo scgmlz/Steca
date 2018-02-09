@@ -100,14 +100,12 @@ Diffractogram::Diffractogram() {
 
     connect(gGui->toggle_selRegions, &QAction::toggled, [this](bool on) {
         using eTool = DiffractogramPlot::eTool;
-        auto tool = eTool::NONE;
-        if (on)
-            switch (gGui->fittingTab()) {
-            case eFittingTab::BACKGROUND: tool = eTool::BACKGROUND; break;
-            case eFittingTab::REFLECTIONS: tool = eTool::PEAK_REGION; break;
-            default: break;
-            }
-        plot_->setTool(tool);
+        if      (on && gGui->fittingTab()==eFittingTab::BACKGROUND)
+            plot_->setTool(eTool::BACKGROUND);
+        else if (on && gGui->fittingTab()==eFittingTab::REFLECTIONS)
+            plot_->setTool(eTool::PEAK_REGION);
+        else
+            plot_->setTool(eTool::NONE);
         });
 
     gGui->toggle_selRegions->setChecked(true);

@@ -186,66 +186,6 @@ void DiffractogramPlot::setTool(eTool tool) {
     renderAll();
 }
 
-void DiffractogramPlot::plot(
-    Curve const& dgram, Curve const& dgramBgFitted, Curve const& bg, curve_vec const& refls,
-    int currReflIndex) {
-    if (dgram.isEmpty()) {
-        plotEmpty();
-        return;
-    }
-    const Range& tthRange = dgram.rgeX();
-
-    Range intenRange;
-    if (gGui->isFixedIntenDgramScale()) {
-        intenRange = gSession->highlightsLens()->rgeInten();
-    } else {
-        intenRange = dgramBgFitted.rgeY();
-        intenRange.extendBy(dgram.rgeY());
-    }
-
-    xAxis->setRange(tthRange.min, tthRange.max);
-    yAxis->setRange(qMin(0., intenRange.min), intenRange.max);
-    yAxis->setNumberFormat("g");
-    xAxis->setVisible(true);
-    yAxis->setVisible(true);
-
-    if (showBgFit_) {
-        bgGraph_->setData(bg.xs().sup(), bg.ys().sup());
-    } else {
-        bgGraph_->clearData();
-    }
-
-    dgramGraph_->setData(dgram.xs().sup(), dgram.ys().sup());
-    dgramBgFittedGraph_->setData(dgramBgFitted.xs().sup(), dgramBgFitted.ys().sup());
-    dgramBgFittedGraph2_->setData(dgramBgFitted.xs().sup(), dgramBgFitted.ys().sup());
-
-    clearReflLayer();
-    setCurrentLayer("refl");
-
-    for_i (refls.count()) {
-        const Curve& r = refls.at(i);
-        QCPGraph* graph = addGraph();
-        reflGraph_.append(graph);
-        graph->setPen(QPen(Qt::green, i == currReflIndex ? 2 : 1));
-        graph->setData(r.xs().sup(), r.ys().sup());
-    }
-
-    replot();
-}
-
-void DiffractogramPlot::plotEmpty() {
-    xAxis->setVisible(false);
-    yAxis->setVisible(false);
-
-    bgGraph_->clearData();
-    dgramGraph_->clearData();
-    dgramBgFittedGraph_->clearData();
-    dgramBgFittedGraph2_->clearData();
-
-    clearReflLayer();
-    replot();
-}
-
 Range DiffractogramPlot::fromPixels(int pix1, int pix2) {
     return Range::safeFrom(xAxis->pixelToCoord(pix1), xAxis->pixelToCoord(pix2));
 }
@@ -319,7 +259,6 @@ void DiffractogramPlot::onPeakData() {
             fits_->addData(fp.x + fw2, fp.y / 2);
         }
     }
-
     renderAll();
 }
 
@@ -400,4 +339,64 @@ void DiffractogramPlot::calcPeaks() {
         }
         refls_.append(c);
     }
+}
+
+void DiffractogramPlot::plot(
+    Curve const& dgram, Curve const& dgramBgFitted, Curve const& bg, curve_vec const& refls,
+    int currReflIndex) {
+    if (dgram.isEmpty()) {
+        plotEmpty();
+        return;
+    }
+    const Range& tthRange = dgram.rgeX();
+
+    Range intenRange;
+    if (gGui->isFixedIntenDgramScale()) {
+        intenRange = gSession->highlightsLens()->rgeInten();
+    } else {
+        intenRange = dgramBgFitted.rgeY();
+        intenRange.extendBy(dgram.rgeY());
+    }
+
+    xAxis->setRange(tthRange.min, tthRange.max);
+    yAxis->setRange(qMin(0., intenRange.min), intenRange.max);
+    yAxis->setNumberFormat("g");
+    xAxis->setVisible(true);
+    yAxis->setVisible(true);
+
+    if (showBgFit_) {
+        bgGraph_->setData(bg.xs().sup(), bg.ys().sup());
+    } else {
+        bgGraph_->clearData();
+    }
+
+    dgramGraph_->setData(dgram.xs().sup(), dgram.ys().sup());
+    dgramBgFittedGraph_->setData(dgramBgFitted.xs().sup(), dgramBgFitted.ys().sup());
+    dgramBgFittedGraph2_->setData(dgramBgFitted.xs().sup(), dgramBgFitted.ys().sup());
+
+    clearReflLayer();
+    setCurrentLayer("refl");
+
+    for_i (refls.count()) {
+        const Curve& r = refls.at(i);
+        QCPGraph* graph = addGraph();
+        reflGraph_.append(graph);
+        graph->setPen(QPen(Qt::green, i == currReflIndex ? 2 : 1));
+        graph->setData(r.xs().sup(), r.ys().sup());
+    }
+
+    replot();
+}
+
+void DiffractogramPlot::plotEmpty() {
+    xAxis->setVisible(false);
+    yAxis->setVisible(false);
+
+    bgGraph_->clearData();
+    dgramGraph_->clearData();
+    dgramBgFittedGraph_->clearData();
+    dgramBgFittedGraph2_->clearData();
+
+    clearReflLayer();
+    replot();
 }
