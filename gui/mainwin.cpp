@@ -151,10 +151,6 @@ MainWin::MainWin()
         emit gSession->sigDiffractogram();
         });
 
-    toggle_selRegions = newT::Toggle(
-        "toggle_selRegions", "Select regions", false, ":/icon/selRegion");
-    // for peaks, ->setIcon(QIcon(":/icon/reflRegion"));
-
     toggle_showBackground = newT::Toggle(
         "toggle_showBackground", "Show fitted background", false, ":/icon/showBackground");
 
@@ -271,8 +267,7 @@ void MainWin::initMenu() {
 
     QMenu* menuDgram = _actionsToMenu(
         "&Diffractogram",
-        {   toggle_selRegions,
-                toggle_showBackground,
+        {   toggle_showBackground,
                 trigger_clearBackground,
                 trigger_clearPeaks,
                 _separator(),

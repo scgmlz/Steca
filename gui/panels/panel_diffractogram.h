@@ -38,22 +38,13 @@ private:
 
 class DiffractogramPlot : public QCustomPlot {
 public:
-    enum class eTool {
-        NONE,
-        BACKGROUND,
-        PEAK_REGION,
-    };
-
     DiffractogramPlot(class Diffractogram&);
 
-    void setTool(eTool);
     void plot(Curve const&, Curve const&, Curve const&, curve_vec const&, int);
     void plotEmpty();
     void renderAll();
     void clearReflLayer();
     void enterZoom(bool);
-
-    eTool getTool() const { return tool_; }
 
 private:
     void addBgItem(const Range&, const QColor&);
@@ -62,7 +53,6 @@ private:
 
     Diffractogram& diffractogram_;
 
-    eTool tool_;
     bool showBgFit_;
     QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *dgramBgFittedGraph2_, *guesses_,
         *fits_;

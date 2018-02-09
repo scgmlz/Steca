@@ -89,7 +89,6 @@ public:
         *toggle_fixedIntenImage,
         *toggle_fixedIntenDgram,
         *toggle_combinedDgram,
-        *toggle_selRegions,
         *toggle_showBackground,
         *trigger_clearBackground,
         *trigger_clearPeaks,

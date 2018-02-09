@@ -98,7 +98,6 @@ ControlsBaseline::ControlsBaseline() {
 
     QBoxLayout* hb = newQ::HBoxLayout();
     box->addLayout(hb);
-    hb->addWidget(new XIconButton(gGui->toggle_selRegions));
     hb->addWidget(new XIconButton(gGui->toggle_showBackground));
     hb->addWidget(new XIconButton(gGui->trigger_clearBackground));
     hb->addWidget(new QLabel("Pol. degree:"));

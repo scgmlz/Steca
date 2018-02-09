@@ -129,13 +129,6 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
     connect(gSession, &Session::sigDetector, this, &DiffractogramPlot::renderAll);
     connect(gSession, &Session::sigDiffractogram, this, &DiffractogramPlot::renderAll);
     connect(gSession, &Session::sigBaseline, this, &DiffractogramPlot::renderAll);
-
-    tool_ = eTool::NONE;
-}
-
-void DiffractogramPlot::setTool(eTool tool) {
-    tool_ = tool;
-    renderAll();
 }
 
 void DiffractogramPlot::clearReflLayer() {
@@ -201,16 +194,13 @@ void DiffractogramPlot::onPeakData() {
 void DiffractogramPlot::renderAll() {
     clearItems();
 
-    if        (tool_==eTool::BACKGROUND) {
-        const Ranges& rs = gSession->baseline().ranges();
-        for_i (rs.count())
-            addBgItem(rs.at(i), {0x98, 0xfb, 0x98, 0x50}); // light green
-    } else if (tool_==eTool::PEAK_REGION) {
-        for_i (gSession->peaks().count()) {
-            addBgItem(gSession->peaks().at(i).range(), i==gSession->peaks().selectedIndex() ?
-                      QColor(0x87, 0xce, 0xfa, 0x70) : // medium blue
-                      QColor(0x87, 0xce, 0xfa, 0x50)); // light blue
-        }
+    const Ranges& rs = gSession->baseline().ranges();
+    for_i (rs.count())
+        addBgItem(rs.at(i), {0x98, 0xfb, 0x98, 0x50}); // light green
+    for_i (gSession->peaks().count()) {
+        addBgItem(gSession->peaks().at(i).range(), i==gSession->peaks().selectedIndex() ?
+                  QColor(0x87, 0xce, 0xfa, 0x70) : // medium blue
+                  QColor(0x87, 0xce, 0xfa, 0x50)); // light blue
     }
 
     if (!gSession->dataset().highlight().cluster()) {
