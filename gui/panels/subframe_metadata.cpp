@@ -58,9 +58,10 @@ QVariant MetadataModel::data(const QModelIndex& index, int role) const {
         case COL_TAG:
             return Metadata::attributeTag(row, false);
         case COL_VALUE:
-            if (!gSession->dataset().countFiles())
+            const Cluster* highlight = gSession->dataset().highlight().cluster();
+            if (!highlight)
                 return "-";
-            return gSession->dataset().highlight().cluster()->avgeMetadata()->attributeStrValue(row);
+            return highlight->avgeMetadata()->attributeStrValue(row);
         }
         break;
     }
