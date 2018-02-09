@@ -28,7 +28,6 @@ public:
     MetadataModel() : CheckTableModel("meta") {}
 
     void reset();
-    void onClicked(const QModelIndex &);
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return Metadata::numAttributes(false); }

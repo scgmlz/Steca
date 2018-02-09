@@ -26,6 +26,7 @@ public:
     TableModel(const QString& name) : name_(name) {}
     void refreshModel(); // within rectangle plus one row
     void resetModel(); // complete reset, including cursor position
+    virtual void onClicked(const QModelIndex& cell);
 
     int columnCount(const QModelIndex& /*unused*/) const { return columnCount(); }
     int rowCount(const QModelIndex& /*unused*/) const { return rowCount(); }
@@ -48,7 +49,7 @@ class CheckTableModel : public TableModel {
 public:
     CheckTableModel(const QString& name);
     void onActivated();
-    void onClicked(const QModelIndex& cell);
+    void onClicked(const QModelIndex& cell) final;
     virtual bool activated(int row) const = 0;
     virtual void setActivated(int row, bool on) = 0;
 private:

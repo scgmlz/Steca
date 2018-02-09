@@ -34,6 +34,14 @@ void TableModel::resetModel() {
     endResetModel();
 }
 
+void TableModel::onClicked(const QModelIndex& cell) {
+    int row = cell.row();
+    int col = cell.column();
+    if (row < 0 || row >= rowCount())
+        return;
+    setHighlight(row);
+}
+
 // ************************************************************************** //
 //  class CheckTableModel
 // ************************************************************************** //
@@ -51,14 +59,11 @@ void CheckTableModel::onActivated() {
 }
 
 void CheckTableModel::onClicked(const QModelIndex& cell) {
+    TableModel::onClicked(cell);
     int row = cell.row();
     int col = cell.column();
-    if (row < 0 || row >= rowCount())
-        return;
-    if (col==1) {
+    if (col==1)
         activateAndLog(true, row, !activated(row));
-    }
-    setHighlight(row);
 }
 
 void CheckTableModel::activateAndLog(bool primaryCall, int row, bool on) {
