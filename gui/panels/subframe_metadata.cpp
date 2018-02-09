@@ -50,7 +50,6 @@ QVariant MetadataModel::data(const QModelIndex& index, int role) const {
     int col = index.column();
     switch (role) {
     case Qt::CheckStateRole:
-        qDebug() << "COUNT " << rowCount() << " ROW " << row;
         if (col==COL_CHECK)
             return activated(row) ? Qt::Checked : Qt::Unchecked;
         break;

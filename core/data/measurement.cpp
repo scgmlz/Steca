@@ -26,12 +26,6 @@ Measurement::Measurement(
         image_->setInten(i, intens.at(i));
 }
 
-/* TODO replace in Cluster
-int Measurement::totalPosition() const {
-    return file_.offset_ + position_;
-}
-*/
-
 Range Measurement::rgeGma() const {
     return gSession->angleMap(*this)->rgeGma();
 }
