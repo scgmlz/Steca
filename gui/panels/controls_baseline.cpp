@@ -26,7 +26,7 @@
 
 class BaseRangesModel : public TableModel {
 public:
-    BaseRangesModel() : TableModel("peaks") {}
+    BaseRangesModel() : TableModel("baseline") {}
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return gSession->baseline().ranges().count(); }
