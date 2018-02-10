@@ -127,12 +127,10 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
         renderAll();
     });
 
-    connect(gSession, &Session::sigBaseline, [this]() { renderAll(); });
     connect(gSession, &Session::sigPeakHighlight, [this]() { renderAll(); });
     connect(gSession, &Session::sigActivated, this, &DiffractogramPlot::renderAll);
     connect(gSession, &Session::sigDetector, this, &DiffractogramPlot::renderAll);
     connect(gSession, &Session::sigDiffractogram, this, &DiffractogramPlot::renderAll);
-    connect(gSession, &Session::sigBaseline, this, &DiffractogramPlot::renderAll);
 }
 
 void DiffractogramPlot::clearReflLayer() {

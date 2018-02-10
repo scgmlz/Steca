@@ -156,6 +156,7 @@ MainWin::MainWin()
 
     trigger_clearBackground = newT::Trigger(
         "trigger_clearBackground", "Clear background regions", ":/icon/clear");
+    trigger_clearBackground->setEnabled(false);
     connect(trigger_clearBackground, &QAction::triggered, [this]() {
             gSession->baseline().setRanges({}); });
 
@@ -191,6 +192,10 @@ MainWin::MainWin()
     QObject::connect(gSession, &Session::sigPeaks, [this]() {
             trigger_removePeak->setEnabled(gSession->peaks().count());
             trigger_outputPolefigures->setEnabled(gSession->peaks().count());
+            emit gSession->sigDiffractogram();
+        });
+    QObject::connect(gSession, &Session::sigBaseline, [this]() {
+            trigger_clearBackground->setEnabled(gSession->baseline().ranges().count());
             emit gSession->sigDiffractogram();
         });
 
