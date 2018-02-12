@@ -63,8 +63,8 @@ public:
     bool baselineEditable { false };
     bool peaksEditable { false };
 
-    Triggers triggers;
-    Toggles toggles;
+    Triggers* triggers;
+    Toggles* toggles;
 
     // TODO relagate this to TabSave or similar
     QString saveDir; //!< setting: default directory for data export

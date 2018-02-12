@@ -41,7 +41,9 @@ MainWin* gGui; //!< global pointer to _the_ main window
 // ************************************************************************** //
 
 MainWin::MainWin()
-    : isFixedIntenImageScale_(false)
+    : triggers(new Triggers)
+    , toggles(new Toggles)
+    , isFixedIntenImageScale_(false)
     , isFixedIntenDgramScale_(false)
     , isCombinedDgram_(false)
     , settings_("main_settings")
