@@ -12,11 +12,13 @@
 //
 // ************************************************************************** //
 
-#include "gui/panels/subframe_diffractogram.h"
+#include "subframe_diffractogram.h"
+#include "core/session.h"
 #include "gui/panels/panel_diffractogram.h"
 #include "gui/base/layout.h"
 #include "gui/base/controls.h"
-#include "core/session.h"
+#include "gui/toggles.h"
+#include "gui/triggers.h"
 
 
 // ************************************************************************** //

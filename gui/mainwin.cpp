@@ -15,6 +15,8 @@
 #include "mainwin.h"
 #include "../manifest.h"
 #include "core/session.h"
+#include "gui/toggles.h"
+#include "gui/triggers.h"
 #include "gui/capture_and_replay/console.h"
 #include "gui/panels/subframe_diffractogram.h"
 #include "gui/panels/subframe_files.h"

@@ -19,8 +19,6 @@
 #include "core/data/rawfile.h"
 #include "core/typ/singleton.h"
 #include "gui/cfg/settings.h"
-#include "gui/toggles.h"
-#include "gui/triggers.h"
 #include <QMainWindow>
 
 extern class MainWin* gGui; //!< global pointer to _the_ main window
@@ -63,8 +61,8 @@ public:
     bool baselineEditable { false };
     bool peaksEditable { false };
 
-    Triggers* triggers;
-    Toggles* toggles;
+    class Triggers* triggers;
+    class Toggles* toggles;
 
     // TODO relagate this to TabSave or similar
     QString saveDir; //!< setting: default directory for data export
@@ -105,8 +103,8 @@ private:
     bool isCombinedDgram_;
     Settings settings_;
 
-    friend class Toggles;
-    friend class Triggers;
+    friend Toggles;
+    friend Triggers;
 };
 
 #endif // MAINWIN_H

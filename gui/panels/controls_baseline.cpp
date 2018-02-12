@@ -17,6 +17,8 @@
 #include "gui/base/layout.h"
 #include "gui/base/model_view.h"
 #include "gui/mainwin.h"
+#include "gui/toggles.h"
+#include "gui/triggers.h"
 
 // ************************************************************************** //
 //  local class BaseRangesModel, used in BaseRangesView

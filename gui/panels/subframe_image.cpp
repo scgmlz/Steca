@@ -17,6 +17,8 @@
 #include "gui/cfg/colors.h"
 #include "gui/base/layout.h"
 #include "gui/mainwin.h"
+#include "gui/toggles.h"
+#include "gui/triggers.h"
 #include <qmath.h>
 #include <QPainter>
 
