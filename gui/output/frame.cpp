@@ -21,8 +21,6 @@
 #include <QProgressBar>
 #include <QScrollArea>
 
-namespace {
-
 struct showcol_t {
     QString name;
     CCheckBox* cb;
@@ -38,7 +36,7 @@ typedef vec<showcol_t> showcol_vec;
 
 class ShowColsWidget : public QWidget {
 public:
-    ShowColsWidget(DataView&, showcol_vec&);
+    ShowColsWidget(const QString& name, DataView&, showcol_vec&);
 private:
     DataView& table_;
     showcol_vec& showCols_;
@@ -46,15 +44,15 @@ private:
     CRadioButton rbHidden_, rbAll_, rbNone_, rbInten_, rbTth_, rbFWHM_;
 };
 
-ShowColsWidget::ShowColsWidget(DataView& table, showcol_vec& showCols)
+ShowColsWidget::ShowColsWidget(const QString& name, DataView& table, showcol_vec& showCols)
     : table_(table)
     , showCols_(showCols)
-    , rbHidden_("rbHidden", "")
-    , rbAll_("rbAll", "all")
-    , rbNone_("rbNone", "none")
-    , rbInten_("rbInten", "Intensity")
-    , rbTth_("rbTth", "2θ")
-    , rbFWHM_("rbFWHM", "fwhm")
+    , rbHidden_(name+".rbHidden", "")
+    , rbAll_(name+".rbAll", "all")
+    , rbNone_(name+".rbNone", "none")
+    , rbInten_(name+".rbInten", "Intensity")
+    , rbTth_(name+".rbTth", "2θ")
+    , rbFWHM_(name+".rbFWHM", "fwhm")
 {
     using eReflAttr = PeakInfo::eReflAttr;
 
@@ -72,7 +70,7 @@ ShowColsWidget::ShowColsWidget(DataView& table, showcol_vec& showCols)
 
     for_i (showCols.count()) {
         showcol_t& item = showCols[i];
-        box_->addWidget((item.cb = new CCheckBox("cb", item.name)));
+        box_->addWidget((item.cb = new CCheckBox(name+".cb"+QString::number(i), item.name)));
     }
 
     auto _all = [this]() {
@@ -168,15 +166,18 @@ ShowColsWidget::ShowColsWidget(DataView& table, showcol_vec& showCols)
 
 class TabTable : public QWidget {
 public:
-    TabTable(const QStringList& headers, const QStringList& outHeaders, cmp_vec const&);
+    TabTable(const QString& name, const QStringList& headers,
+             const QStringList& outHeaders, cmp_vec const&);
+    ~TabTable();
     DataView* table;
 private:
     ShowColsWidget* showColumnsWidget_;
     showcol_vec showCols_;
 };
 
-TabTable::TabTable(const QStringList& headers, const QStringList& outHeaders, const cmp_vec& cmps){
-
+TabTable::TabTable(const QString& name, const QStringList& headers,
+                   const QStringList& outHeaders, const cmp_vec& cmps)
+{
     QGridLayout* grid_ = newQ::GridLayout();
     setLayout(grid_);
     ASSERT(headers.count() == cmps.count());
@@ -195,12 +196,15 @@ TabTable::TabTable(const QStringList& headers, const QStringList& outHeaders, co
 
     auto scrollArea = new QScrollArea;
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    scrollArea->setWidget((showColumnsWidget_ = new ShowColsWidget(*table, showCols_)));
+    scrollArea->setWidget((showColumnsWidget_ = new ShowColsWidget(name, *table, showCols_)));
 
     grid_->addWidget(scrollArea, 0, 1);
 }
 
-} // local methods
+TabTable::~TabTable() {
+    delete showColumnsWidget_;
+    delete table;
+}
 
 
 // ************************************************************************** //
@@ -305,15 +309,18 @@ Frame::Frame(const QString& name, const QString& title, Params* params)
     tabs_->addTab(tabPoints, "Points");
     tabPoints->setLayout(newQ::VBoxLayout());
 
-    auto tabTable = new TabTable(PeakInfo::dataTags(false),
-                                 PeakInfo::dataTags(true),
-                                 PeakInfo::dataCmps());
-    tabPoints->layout()->addWidget(tabTable);
-    table_ = tabTable->table;
+    tabTable_ = new TabTable(
+        name, PeakInfo::dataTags(false), PeakInfo::dataTags(true), PeakInfo::dataCmps());
+    tabPoints->layout()->addWidget(tabTable_);
+    table_ = tabTable_->table;
 
     int reflCount = gSession->peaks().count();
     calcPoints_.resize(reflCount);
     interpPoints_.resize(reflCount);
+}
+
+Frame::~Frame() {
+    delete tabTable_;
 }
 
 void Frame::calculate() {

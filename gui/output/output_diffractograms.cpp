@@ -112,14 +112,18 @@ DiffractogramsFrame::DiffractogramsFrame()
     btnCalculate_->hide();
     btnInterpolate_->hide();
 
-    auto* tab = new QWidget();
-    tabs_->addTab(tab, "Save");
-    tab->setLayout(newQ::VBoxLayout());
+    tabs_->addTab(&tab, "Save");
+    tab.setLayout(newQ::VBoxLayout());
     tabSave_ = new TabDiffractogramsSave();
-    tab->layout()->addWidget(tabSave_);
+    tab.layout()->addWidget(tabSave_);
     connect(tabSave_->actSave, &QAction::triggered, [this]() { save(); });
 
     show();
+}
+
+DiffractogramsFrame::~DiffractogramsFrame() {
+    qDebug() << "~DiffractogramsFrame";
+    delete tabSave_;
 }
 
 void DiffractogramsFrame::save() {

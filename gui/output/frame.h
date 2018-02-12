@@ -52,6 +52,7 @@ private:
 class Frame : public QDialog, private CModal {
 public:
     Frame(const QString& name, const QString& title, Params*);
+    ~Frame();
 protected:
     QAction *actClose_, *actCalculate_, *actInterpolate_;
     QToolButton *btnClose_, *btnCalculate_, *btnInterpolate_;
@@ -68,6 +69,7 @@ protected:
     bool getInterpolated() const;
 private:
     void updatePeak();
+    class TabTable* tabTable_;
 };
 
 #endif // FRAME_H

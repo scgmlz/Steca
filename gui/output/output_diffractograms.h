@@ -16,14 +16,17 @@
 #define OUTPUT_DIFFRACTOGRAMS_H
 
 #include "frame.h"
+#include <QWidget>
 
 //! The modal dialog for saving diffractograms.
 
 class DiffractogramsFrame : public Frame {
 public:
     DiffractogramsFrame();
+    ~DiffractogramsFrame();
 
 private:
+    QWidget tab;
     class TabDiffractogramsSave* tabSave_;
 
     void save();
