@@ -100,7 +100,6 @@ MainWin::MainWin()
     trigger_removeFile = newT::Trigger(
         "trigger_removeFile", "Remove highlighted file", ":/icon/rem");
     trigger_removeFile->setShortcut(QKeySequence::Delete);
-    trigger_removeFile->setEnabled(false);
     QObject::connect(trigger_removeFile, &QAction::triggered, []() {
             gSession->dataset().removeFile(); });
 
@@ -156,7 +155,6 @@ MainWin::MainWin()
 
     trigger_clearBackground = newT::Trigger(
         "trigger_clearBackground", "Clear background regions", ":/icon/clear");
-    trigger_clearBackground->setEnabled(false);
     connect(trigger_clearBackground, &QAction::triggered, [this]() {
             gSession->baseline().setRanges({}); });
 
@@ -165,7 +163,6 @@ MainWin::MainWin()
     trigger_addPeak = newT::Trigger("trigger_addPeak", "Add peak", ":/icon/add");
 
     trigger_removePeak = newT::Trigger("trigger_removePeak", "Remove peak", ":/icon/rem");
-    trigger_removePeak->setEnabled(false);
 
     trigger_outputPolefigures = newT::Trigger("trigger_outputPolefigures", "Pole figures...");
 
@@ -176,26 +173,25 @@ MainWin::MainWin()
 
     // connect signals
     QObject::connect(gSession, &Session::sigFiles, [this]() {
-            trigger_removeFile->setEnabled(gSession->dataset().countFiles());
+            updateActionEnabling();
         });
     QObject::connect(gSession, &Session::sigCorr, [this]() {
-            bool hasFile = gSession->hasCorrFile();
-            trigger_corrFile->setIcon(QIcon(hasFile ? ":/icon/rem" : ":/icon/add"));
-            QString text = QString(hasFile ? "Remove" : "Add") + " correction file";
+            bool hasCorr = gSession->hasCorrFile();
+            trigger_corrFile->setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
+            QString text = QString(hasCorr ? "Remove" : "Add") + " correction file";
             trigger_corrFile->setText(text);
             trigger_corrFile->setToolTip(text.toLower());
-            toggle_enableCorr->setEnabled(gSession->hasCorrFile());
             toggle_enableCorr->setChecked(gSession->corrset().isEnabled());
+            updateActionEnabling();
             emit gSession->sigDiffractogram();
             emit gSession->sigImage();
         });
     QObject::connect(gSession, &Session::sigPeaks, [this]() {
-            trigger_removePeak->setEnabled(gSession->peaks().count());
-            trigger_outputPolefigures->setEnabled(gSession->peaks().count());
+            updateActionEnabling();
             emit gSession->sigDiffractogram();
         });
     QObject::connect(gSession, &Session::sigBaseline, [this]() {
-            trigger_clearBackground->setEnabled(gSession->baseline().ranges().count());
+            updateActionEnabling();
             emit gSession->sigDiffractogram();
         });
 
@@ -203,6 +199,7 @@ MainWin::MainWin()
     initLayout();
     connectActions();
     readSettings();
+    updateActionEnabling();
 
     saveDir = settings_.readStr("export_directory");
     saveFmt = settings_.readStr("export_format");
@@ -256,7 +253,7 @@ void MainWin::initMenu() {
                 trigger_quit,
         });
 
-    QMenu* menuImage = _actionsToMenu(
+    menuImage_ = _actionsToMenu(
         "&Image",
         {   trigger_rotateImage,
                 toggle_mirrorImage,
@@ -266,11 +263,8 @@ void MainWin::initMenu() {
                 toggle_stepScale,
                 toggle_showBins,
         });
-    menuImage->setEnabled(false);
-    QObject::connect(gSession, &Session::sigFiles, [menuImage]()
-                     { menuImage->setEnabled(gSession->dataset().countFiles()); });
 
-    QMenu* menuDgram = _actionsToMenu(
+    menuDgram_ = _actionsToMenu(
         "&Diffractogram",
         {   toggle_showBackground,
                 trigger_clearBackground,
@@ -282,19 +276,13 @@ void MainWin::initMenu() {
                 toggle_combinedDgram,
                 toggle_fixedIntenDgram,
         });
-    menuDgram->setEnabled(false);
-    QObject::connect(gSession, &Session::sigFiles, [menuDgram]()
-                     { menuDgram->setEnabled(gSession->dataset().countFiles()); });
 
-    QMenu* menuOutput = _actionsToMenu(
+    menuOutput_ = _actionsToMenu(
         "&Output",
         {   trigger_outputPolefigures,
                 trigger_outputDiagrams,
                 trigger_outputDiffractograms,
         });
-    menuOutput->setEnabled(false);
-    QObject::connect(gSession, &Session::sigActivated, [menuOutput]()
-                     { menuOutput->setEnabled(gSession->experiment().size()); });
 
     _actionsToMenu(
         "&View",
@@ -692,4 +680,21 @@ void MainWin::setImageMirror(bool on) {
     toggle_mirrorImage->setChecked(on);
     gSession->setImageTransformMirror(on);
     emit gSession->sigDetector();
+}
+
+void MainWin::updateActionEnabling() {
+    bool hasFile = gSession->dataset().countFiles();
+    bool hasCorr = gSession->hasCorrFile();
+    bool hasPeak = gSession->peaks().count();
+    bool hasBase = gSession->baseline().ranges().count();
+    trigger_removeFile->setEnabled(hasFile);
+    toggle_enableCorr->setEnabled(hasCorr);
+    trigger_removePeak->setEnabled(hasPeak);
+    trigger_clearBackground->setEnabled(hasBase);
+    trigger_outputDiagrams->setEnabled(hasFile && hasPeak);
+    trigger_outputDiffractograms->setEnabled(hasFile);
+    trigger_outputPolefigures->setEnabled(hasFile && hasPeak);
+    menuDgram_->setEnabled(hasFile);
+    menuImage_->setEnabled(hasFile);
+    menuOutput_->setEnabled(hasFile);
 }

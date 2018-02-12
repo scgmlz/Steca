@@ -106,6 +106,9 @@ private:
     QDockWidget *dockFiles_, *dockMeasurements_, *dockDatasetInfo_;
     QByteArray initialState_;
     QNetworkAccessManager netMan_;
+    QMenu* menuDgram_;
+    QMenu* menuImage_;
+    QMenu* menuOutput_;
 
     void initMenu();
     void initLayout();
@@ -131,6 +134,7 @@ private:
     void setImageMirror(bool);
     void configActions();
     void sessionFromJson(QByteArray const&) THROWS;
+    void updateActionEnabling();
 
     bool isFixedIntenImageScale_;
     bool isFixedIntenDgramScale_;
