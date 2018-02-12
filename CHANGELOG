@@ -7,6 +7,7 @@ New features:
 * Red display and new toggle "if incomplete keep/drop" to handle incomplete measurement groups.
 * To prevent crashes, functions that need data are disabled if no data are loaded.
 * Diffractograms can be saved into multiple, numbered files
+* Copy&paste from rectangular selections in data tables (re?)enabled.
 
 Internal improvements:
 
