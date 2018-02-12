@@ -16,6 +16,7 @@
 #define CONTROLS_H
 
 #include "gui/capture_and_replay/enhance_widgets.h"
+#include <QAction>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QFileDialog>
@@ -25,6 +26,12 @@
 #include <QRadioButton>
 #include <QSpinBox>
 #include <QToolButton>
+
+class CTrigger : public QAction {
+public:
+    CTrigger() = delete;
+    CTrigger(const QString& name, const QString& text, const QString& iconFile="");
+};
 
 //! Contains functions that return new QActions.
 

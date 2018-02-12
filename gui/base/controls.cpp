@@ -19,15 +19,19 @@
 #include <QApplication> // for qApp for new Action
 #include <QtGlobal> // to define Q_OS_WIN
 
-QAction* newT::Trigger(const QString& name, const QString& text, const QString& iconFile) {
-    QAction* ret = new QAction(text, qApp);
-    ret->setToolTip(text.toLower());
+CTrigger::CTrigger(const QString& name, const QString& text, const QString& iconFile)
+    : QAction(text, qApp)
+{
+    setToolTip(text.toLower());
     if (iconFile!="")
-        ret->setIcon(QIcon(iconFile));
-    gConsole->learn(name, [ret](const QString& /*unused*/)->void { ret->trigger(); });
-    QObject::connect(ret, &QAction::triggered, [name]()->void { gConsole->log(name+"!"); });
-    return ret;
+        setIcon(QIcon(iconFile));
+    gConsole->learn(name, [this](const QString& /*unused*/)->void { trigger(); });
+    QObject::connect(this, &QAction::triggered, [name]()->void { gConsole->log(name+"!"); });
 };
+
+QAction* newT::Trigger(const QString& name, const QString& text, const QString& iconFile) {
+    return new CTrigger(name, text, iconFile);
+}
 
 QAction* newT::Toggle(
     const QString& name, const QString& text, bool value, const QString& iconFile)
