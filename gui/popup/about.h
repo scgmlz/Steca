@@ -20,7 +20,7 @@
 //! Modal dialog that informs about the software
 class AboutBox : public QDialog {
 public:
-    AboutBox(QWidget*);
+    AboutBox();
 protected:
     QCheckBox *cbShowAtStartup_, *cbCheckUpdatesAtStartup_;
     QDoubleSpinBox *detDistance_, *detPixelSize_;

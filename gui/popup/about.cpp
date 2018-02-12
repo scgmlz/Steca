@@ -16,11 +16,12 @@
 #include "manifest.h"
 #include "gui/cfg/settings.h"
 #include "gui/base/layout.h"
+#include "gui/mainwin.h"
 #include <QApplication>
 #include <QDate>
 #include <QDialogButtonBox>
 
-AboutBox::AboutBox(QWidget* parent) : QDialog(parent, Qt::Dialog) {
+AboutBox::AboutBox() : QDialog(gGui, Qt::Dialog) {
     Settings s("config");
 
     int PAD = 12;

@@ -16,16 +16,12 @@
 #include "../manifest.h"
 #include "core/session.h"
 #include "gui/capture_and_replay/console.h"
-#include "gui/output/output_diagrams.h"
-#include "gui/output/output_diffractograms.h"
-#include "gui/output/output_polefigures.h"
 #include "gui/panels/subframe_diffractogram.h"
 #include "gui/panels/subframe_files.h"
 #include "gui/panels/subframe_image.h"
 #include "gui/panels/subframe_measurements.h"
 #include "gui/panels/subframe_metadata.h"
 #include "gui/panels/subframe_setup.h"
-#include "gui/popup/about.h"
 #include "gui/base/filedialog.h"
 #include <QApplication>
 #include <QCloseEvent>
@@ -60,104 +56,48 @@ MainWin::MainWin()
 
     // create actions
 
-    trigger_about = new CTrigger("trigger_about", "About " + qApp->applicationName());
-
-    trigger_online = new CTrigger("trigger_online", "Open docs in external browser");
-
-    trigger_checkUpdate = new CTrigger("trigger_checkUpdate", "Check for update");
-
-    trigger_quit = new CTrigger("trigger_quit", "Quit", "", QKeySequence::Quit);
-
     toggle_viewStatusbar = new CToggle("toggle_viewStatusbar", "Statusbar", true, "", Qt::Key_F12);
     toggle_viewFiles = new CToggle("toggle_viewFiles", "Files", true, "", Qt::Key_F8);
     toggle_viewDatasets = new CToggle("toggle_viewDatasets", "Datasets", true, "", Qt::Key_F9);
     toggle_viewMetadata = new CToggle("toggle_viewMetadata", "Metadata", true, "", Qt::Key_F10);
+    toggle_enableCorr = new CToggle("toggle_enableCorr", "Enable correction file", false, ":/icon/useCorrection");
+    toggle_mirrorImage = new CToggle("toggle_mirrorImage", "Mirror", false, ":/icon/mirrorHorz");
+    toggle_linkCuts = new CToggle("toggle_linkCuts", "Link cuts", false, ":/icon/link");
+    toggle_showOverlay = new CToggle("toggle_showOverlay", "Show overlay", false, ":/icon/crop");
+    toggle_stepScale = new CToggle("toggle_stepScale", "Scale in steps", false, ":/icon/steps");
+    toggle_showBins = new CToggle("toggle_showBins", "Show bins", false, ":/icon/angle");
+    toggle_fixedIntenImage = new CToggle("toggle_fixedIntenImage", "Global intensity scale", false, ":/icon/scale");
+    toggle_fixedIntenDgram = new CToggle("toggle_fixedIntenDgram", "Fixed intensity scale", false);
+    toggle_combinedDgram = new CToggle("toggle_combinedDgram", "All measurements", true);
+    toggle_combinedDgram->setChecked(false);
+    toggle_showBackground = new CToggle(
+        "toggle_showBackground", "Show fitted background", false, ":/icon/showBackground");
 
-    trigger_viewReset = new CTrigger("trigger_viewReset", "Reset");
 
 #ifndef Q_OS_OSX
     toggle_fullScreen = new CToggle("toggle_fullScreen", "FullScreen", false, "", Qt::Key_F11);
 #endif
 
-    trigger_loadSession = new CTrigger("trigger_loadSession", "Load session...");
-    trigger_saveSession = new CTrigger("trigger_saveSession", "Save session...");
-    trigger_clearSession = new CTrigger("trigger_clearSession", "Clear session");
 
-    trigger_addFiles = new CTrigger("trigger_addFiles", "Add files...", ":/icon/add",
-                                    Qt::CTRL | Qt::Key_O);
-
-    trigger_removeFile = new CTrigger(
-        "trigger_removeFile", "Remove highlighted file", ":/icon/rem", QKeySequence::Delete);
-    QObject::connect(trigger_removeFile, &QAction::triggered, []() {
-            gSession->dataset().removeFile(); });
-
-    trigger_corrFile = new CTrigger("trigger_corrFile", "Add correction file", ":/icon/add",
-                                    Qt::SHIFT | Qt::CTRL | Qt::Key_O);
-    connect(trigger_corrFile, &QAction::triggered, this, &MainWin::loadCorrFile);
-    toggle_enableCorr = new CToggle(
-        "toggle_enableCorr", "Enable correction file", false, ":/icon/useCorrection");
     connect(toggle_enableCorr, &QAction::toggled, [this](bool on) {
             gSession->corrset().tryEnable(on); });
-    trigger_rotateImage = new CTrigger(
-        "trigger_rotateImage", "Rotate", ":/icon/rotate0", Qt::CTRL | Qt::Key_R);
-    connect(trigger_rotateImage, &QAction::triggered, [this]() {
-        setImageRotate(gSession->imageTransform().nextRotate()); });
-
-    toggle_mirrorImage = new CToggle("toggle_mirrorImage", "Mirror", false, ":/icon/mirrorHorz");
     connect(toggle_mirrorImage, &QAction::toggled, [this](bool on) { setImageMirror(on); });
-
-    toggle_linkCuts = new CToggle("toggle_linkCuts", "Link cuts", false, ":/icon/link");
-
-    toggle_showOverlay = new CToggle("toggle_showOverlay", "Show overlay", false, ":/icon/crop");
-
-    toggle_stepScale = new CToggle("toggle_stepScale", "Scale in steps", false, ":/icon/steps");
-
-    toggle_showBins = new CToggle("toggle_showBins", "Show bins", false, ":/icon/angle");
-
-    toggle_fixedIntenImage = new CToggle(
-        "toggle_fixedIntenImage", "Global intensity scale", false, ":/icon/scale");
     connect(toggle_fixedIntenImage, &QAction::toggled, [this](bool on) {
         isFixedIntenImageScale_ = on;
         emit gSession->sigImage();
         emit gSession->sigDiffractogram();
         });
-
-    toggle_fixedIntenDgram = new CToggle(
-        "toggle_fixedIntenDgram", "Fixed intensity scale", false);
     connect(toggle_fixedIntenDgram, &QAction::toggled, [this](bool on) {
         isFixedIntenDgramScale_ = on;
         emit gSession->sigImage();
         emit gSession->sigDiffractogram();
         });
-
-    toggle_combinedDgram = new CToggle("toggle_combinedDgram", "All measurements", true);
-    toggle_combinedDgram->setChecked(false);
     connect(toggle_combinedDgram, &QAction::toggled, [this](bool on) {
         isCombinedDgram_ = on;
         emit gSession->sigImage();
         emit gSession->sigDiffractogram();
         });
 
-    toggle_showBackground = new CToggle(
-        "toggle_showBackground", "Show fitted background", false, ":/icon/showBackground");
-
-    trigger_clearBackground = new CTrigger(
-        "trigger_clearBackground", "Clear background regions", ":/icon/clear");
-    connect(trigger_clearBackground, &QAction::triggered, [this]() {
-            gSession->baseline().setRanges({}); });
-
-    trigger_clearPeaks = new CTrigger("trigger_clearPeaks", "Clear peaks", ":/icon/clear");
-
-    trigger_addPeak = new CTrigger("trigger_addPeak", "Add peak", ":/icon/add");
-
-    trigger_removePeak = new CTrigger("trigger_removePeak", "Remove peak", ":/icon/rem");
-
-    trigger_outputPolefigures = new CTrigger("trigger_outputPolefigures", "Pole figures...");
-
-    trigger_outputDiagrams = new CTrigger("trigger_outputDiagrams", "Diagrams...");
-
-    trigger_outputDiffractograms = new CTrigger(
-        "trigger_outputDiffractograms", "Diffractograms...");
 
     // connect signals
     QObject::connect(gSession, &Session::sigFiles, [this]() {
@@ -165,10 +105,10 @@ MainWin::MainWin()
         });
     QObject::connect(gSession, &Session::sigCorr, [this]() {
             bool hasCorr = gSession->hasCorrFile();
-            trigger_corrFile->setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
+            triggers.corrFile.setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
             QString text = QString(hasCorr ? "Remove" : "Add") + " correction file";
-            trigger_corrFile->setText(text);
-            trigger_corrFile->setToolTip(text.toLower());
+            triggers.corrFile.setText(text);
+            triggers.corrFile.setToolTip(text.toLower());
             toggle_enableCorr->setChecked(gSession->corrset().isEnabled());
             updateActionEnabling();
             emit gSession->sigDiffractogram();
@@ -226,24 +166,24 @@ void MainWin::initMenu() {
 
     _actionsToMenu(
         "&File",
-        {   trigger_addFiles,
-                trigger_removeFile,
+        {   &triggers.addFiles,
+                &triggers.removeFile,
                 _separator(),
-                trigger_corrFile,
+                &triggers.corrFile,
                 toggle_enableCorr,
                 _separator(),
-                trigger_loadSession,
-                trigger_saveSession,
-                trigger_clearSession,
+                &triggers.loadSession,
+                &triggers.saveSession,
+                &triggers.clearSession,
 #ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
                 _separator(),
 #endif
-                trigger_quit,
+                &triggers.quit,
         });
 
     menuImage_ = _actionsToMenu(
         "&Image",
-        {   trigger_rotateImage,
+        {   &triggers.rotateImage,
                 toggle_mirrorImage,
                 toggle_fixedIntenImage,
                 toggle_linkCuts,
@@ -255,11 +195,11 @@ void MainWin::initMenu() {
     menuDgram_ = _actionsToMenu(
         "&Diffractogram",
         {   toggle_showBackground,
-                trigger_clearBackground,
-                trigger_clearPeaks,
+                &triggers.clearBackground,
+                &triggers.clearPeaks,
                 _separator(),
-                trigger_addPeak,
-                trigger_removePeak,
+                &triggers.addPeak,
+                &triggers.removePeak,
                 _separator(),
                 toggle_combinedDgram,
                 toggle_fixedIntenDgram,
@@ -267,9 +207,9 @@ void MainWin::initMenu() {
 
     menuOutput_ = _actionsToMenu(
         "&Output",
-        {   trigger_outputPolefigures,
-                trigger_outputDiagrams,
-                trigger_outputDiffractograms,
+        {   &triggers.outputPolefigures,
+                &triggers.outputDiagrams,
+                &triggers.outputDiffractograms,
         });
 
     _actionsToMenu(
@@ -283,14 +223,14 @@ void MainWin::initMenu() {
 #endif
                 toggle_viewStatusbar,
                 _separator(),
-                trigger_viewReset,
+                &triggers.viewReset,
         });
 
     _actionsToMenu(
         "&Help",
-        {   trigger_about, // Mac puts About into the Apple menu
-                trigger_online,
-                trigger_checkUpdate,
+        {   &triggers.about, // Mac puts About into the Apple menu
+                &triggers.online,
+                &triggers.checkUpdate,
         });
 }
 
@@ -321,27 +261,7 @@ void MainWin::initLayout() {
 //! Connect signals to slots. Part of the MainWin initialization.
 void MainWin::connectActions() {
 
-#define connectTrigger(action, fun) QObject::connect(action, &QAction::triggered, this, fun)
 #define connectToggle(action, fun)  QObject::connect(action, &QAction::toggled, this, fun)
-
-    connectTrigger(trigger_loadSession, &MainWin::loadSession);
-    connectTrigger(trigger_saveSession, &MainWin::saveSession);
-    QObject::connect(trigger_clearSession, &QAction::triggered, gSession,  &Session::clear);
-
-    connectTrigger(trigger_addFiles, &MainWin::addFiles);
-
-    connectTrigger(trigger_quit, &QMainWindow::close);
-
-    QObject::connect(trigger_outputPolefigures, &QAction::triggered,
-                     [this](){PoleFiguresFrame().exec();});
-    QObject::connect(trigger_outputDiagrams, &QAction::triggered,
-                     [this](){DiagramsFrame().exec();});
-    QObject::connect(trigger_outputDiffractograms, &QAction::triggered,
-                     [this](){DiffractogramsFrame().exec();});
-
-    QObject::connect(trigger_about, &QAction::triggered, [this](){AboutBox(this).exec();});
-    connectTrigger(trigger_online, &MainWin::online);
-    connectTrigger(trigger_checkUpdate, &MainWin::checkUpdate);
 
     connectToggle(toggle_viewStatusbar, &MainWin::viewStatusbar);
 #ifndef Q_OS_OSX
@@ -351,9 +271,6 @@ void MainWin::connectActions() {
     connectToggle(toggle_viewFiles, &MainWin::viewFiles);
     connectToggle(toggle_viewDatasets, &MainWin::viewDatasets);
     connectToggle(toggle_viewMetadata, &MainWin::viewMetadata);
-
-    connectTrigger(trigger_viewReset, &MainWin::viewReset);
-
 }
 
 void MainWin::online() {
@@ -658,7 +575,7 @@ void MainWin::setImageRotate(ImageTransform rot) {
         break;
     }
 
-    trigger_rotateImage->setIcon(QIcon(rotateIconFile));
+    triggers.rotateImage.setIcon(QIcon(rotateIconFile));
     toggle_mirrorImage->setIcon(QIcon(mirrorIconFile));
     gSession->setImageTransformRotate(rot);
     gSession->setImageCut(true, false, gSession->imageCut());
@@ -675,13 +592,13 @@ void MainWin::updateActionEnabling() {
     bool hasCorr = gSession->hasCorrFile();
     bool hasPeak = gSession->peaks().count();
     bool hasBase = gSession->baseline().ranges().count();
-    trigger_removeFile->setEnabled(hasFile);
     toggle_enableCorr->setEnabled(hasCorr);
-    trigger_removePeak->setEnabled(hasPeak);
-    trigger_clearBackground->setEnabled(hasBase);
-    trigger_outputDiagrams->setEnabled(hasFile && hasPeak);
-    trigger_outputDiffractograms->setEnabled(hasFile);
-    trigger_outputPolefigures->setEnabled(hasFile && hasPeak);
+    triggers.removeFile.setEnabled(hasFile);
+    triggers.removePeak.setEnabled(hasPeak);
+    triggers.clearBackground.setEnabled(hasBase);
+    triggers.outputDiagrams.setEnabled(hasFile && hasPeak);
+    triggers.outputDiffractograms.setEnabled(hasFile);
+    triggers.outputPolefigures.setEnabled(hasFile && hasPeak);
     menuDgram_->setEnabled(hasFile);
     menuImage_->setEnabled(hasFile);
     menuOutput_->setEnabled(hasFile);

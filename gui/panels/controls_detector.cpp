@@ -91,7 +91,7 @@ ControlsDetector::ControlsDetector()
     _add({ new QLabel("beam offset X"), &beamOffsetI_, new QLabel("pix") });
     _add({ new QLabel("Y"), &beamOffsetJ_, new QLabel("pix") });
     _add({ new QLabel("image rotate"),
-                new XIconButton(gGui->trigger_rotateImage),
+                new XIconButton(&gGui->triggers.rotateImage),
                 new QLabel("mirror"),
                 new XIconButton(gGui->toggle_mirrorImage) });
     _add({ new XIconButton(gGui->toggle_linkCuts),

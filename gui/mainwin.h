@@ -19,6 +19,7 @@
 #include "core/data/rawfile.h"
 #include "core/typ/singleton.h"
 #include "gui/cfg/settings.h"
+#include "gui/triggers.h"
 #include <QMainWindow>
 #include <QNetworkAccessManager>
 
@@ -52,6 +53,8 @@ public:
     void loadCorrFile() THROWS;
 
     void setNorm(eNorm);
+    void setImageRotate(ImageTransform);
+    void viewReset();
 
     // const methods:
     bool isFixedIntenImageScale() const { return isFixedIntenImageScale_; }
@@ -78,25 +81,8 @@ public:
     QAction* toggle_viewFiles;
     QAction* toggle_viewMetadata;
     QAction* toggle_viewStatusbar;
-    QAction* trigger_about;
-    QAction* trigger_addFiles;
-    QAction* trigger_addPeak;
-    QAction* trigger_checkUpdate;
-    QAction* trigger_clearBackground;
-    QAction* trigger_clearPeaks;
-    QAction* trigger_clearSession;
-    QAction* trigger_corrFile;
-    QAction* trigger_loadSession;
-    QAction* trigger_online;
-    QAction* trigger_outputDiagrams;
-    QAction* trigger_outputDiffractograms;
-    QAction* trigger_outputPolefigures;
-    QAction* trigger_quit;
-    QAction* trigger_removeFile;
-    QAction* trigger_removePeak;
-    QAction* trigger_rotateImage;
-    QAction* trigger_saveSession;
-    QAction* trigger_viewReset;
+
+    Triggers triggers;
 
     // TODO relagate this to TabSave or similar
     QString saveDir; //!< setting: default directory for data export
@@ -127,10 +113,8 @@ private:
     void viewFiles(bool);
     void viewDatasets(bool);
     void viewMetadata(bool);
-    void viewReset();
 
     void collectDatasetsFromSelectionBy(const vec<int>, const int);
-    void setImageRotate(ImageTransform);
     void setImageMirror(bool);
     void configActions();
     void sessionFromJson(QByteArray const&) THROWS;
