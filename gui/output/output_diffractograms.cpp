@@ -105,8 +105,9 @@ TabDiffractogramsSave::TabDiffractogramsSave()
 //  class DiffractogramsFrame
 // ************************************************************************** //
 
-DiffractogramsFrame::DiffractogramsFrame(const QString& title, QWidget* parent)
-    : Frame(title, new Params(PANELS), parent) {
+DiffractogramsFrame::DiffractogramsFrame()
+    : Frame("dgram", "Diffractograms", new Params(PANELS))
+{
     tabs_->removeTab(0);
     btnCalculate_->hide();
     btnInterpolate_->hide();

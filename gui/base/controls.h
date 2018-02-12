@@ -15,7 +15,7 @@
 #ifndef CONTROLS_H
 #define CONTROLS_H
 
-#include <functional> // no auto rm
+#include "gui/capture_and_replay/enhance_widgets.h"
 #include <QCheckBox>
 #include <QComboBox>
 #include <QFileDialog>
@@ -45,17 +45,6 @@ public:
 class XIconButton : public QToolButton {
 public:
     XIconButton(QAction*);
-};
-
-//! Mix-in for control widgets that can be changed by a console command.
-class CSettable {
-public:
-    CSettable() = delete;
-    CSettable(const QString& name, std::function<void(const QString&)> setter);
-    ~CSettable();
-    QString name() const { return name_; }
-private:
-    const QString name_;
 };
 
 //! Named QSpinBox that can be set by console command.
@@ -90,7 +79,7 @@ public:
 };
 
 //! QFileDialog, for modal use, with console commands to select files and to close the dialog.
-class CFileDialog : public QFileDialog {
+class CFileDialog : public QFileDialog, private CModal {
 public:
     CFileDialog(QWidget *parent = Q_NULLPTR, const QString &caption = QString(),
                 const QString &directory = QString(), const QString &filter = QString());

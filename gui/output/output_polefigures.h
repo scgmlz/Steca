@@ -20,7 +20,7 @@
 //! The modal dialog for generating and saving pole figures
 class PoleFiguresFrame : public Frame {
 public:
-    PoleFiguresFrame(const QString& title, QWidget*);
+    PoleFiguresFrame();
 
 private:
     class TabGraph* tabGraph_;

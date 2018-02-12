@@ -274,8 +274,9 @@ void TabPoleFiguresSave::rawReflSettings(bool on) {
 static const Params::ePanels PANELS =
     Params::ePanels(Params::REFLECTION | Params::GAMMA | Params::POINTS | Params::INTERPOLATION);
 
-PoleFiguresFrame::PoleFiguresFrame(const QString& title, QWidget* parent)
-    : Frame(title, new Params(PANELS), parent) {
+PoleFiguresFrame::PoleFiguresFrame()
+    : Frame("polfig", "Pole figure", new Params(PANELS))
+{
     {
         auto* tab = new QWidget();
         tabs_->addTab(tab, "Graph");

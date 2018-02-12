@@ -21,7 +21,7 @@
 
 class DiffractogramsFrame : public Frame {
 public:
-    DiffractogramsFrame(const QString& title, QWidget*);
+    DiffractogramsFrame();
 
 private:
     class TabDiffractogramsSave* tabSave_;

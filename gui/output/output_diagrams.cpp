@@ -153,8 +153,8 @@ TabDiagramsSave::TabDiagramsSave()
 //  class DiagramsFrame
 // ************************************************************************** //
 
-DiagramsFrame::DiagramsFrame(const QString& title, QWidget* parent)
-    : Frame(title, new Params(PANELS), parent)
+DiagramsFrame::DiagramsFrame()
+    : Frame("diagrams", "Diagrams", new Params(PANELS))
 {
     btnInterpolate_->hide();
 

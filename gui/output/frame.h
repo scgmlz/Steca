@@ -16,6 +16,7 @@
 #define FRAME_H
 
 #include "core/calc/peak_info.h"
+#include "gui/capture_and_replay/enhance_widgets.h"
 #include <QDialog>
 
 class QBoxLayout;
@@ -48,9 +49,9 @@ private:
 
 //! A rich modal dialog, for the polefig, diagram, and diffractogram outputs.
 
-class Frame : public QDialog {
+class Frame : public QDialog, private CModal {
 public:
-    Frame(const QString& title, Params*, QWidget*);
+    Frame(const QString& name, const QString& title, Params*);
 protected:
     QAction *actClose_, *actCalculate_, *actInterpolate_;
     QToolButton *btnClose_, *btnCalculate_, *btnInterpolate_;

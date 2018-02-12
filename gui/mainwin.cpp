@@ -357,11 +357,11 @@ void MainWin::connectActions() {
     connectTrigger(trigger_quit, &QMainWindow::close);
 
     QObject::connect(trigger_outputPolefigures, &QAction::triggered,
-                     [this](){PoleFiguresFrame("Pole Figures", this).exec();});
+                     [this](){PoleFiguresFrame().exec();});
     QObject::connect(trigger_outputDiagrams, &QAction::triggered,
-                     [this](){DiagramsFrame("Diagrams", this).exec();});
+                     [this](){DiagramsFrame().exec();});
     QObject::connect(trigger_outputDiffractograms, &QAction::triggered,
-                     [this](){DiffractogramsFrame("Diffractograms", this).exec();});
+                     [this](){DiffractogramsFrame().exec();});
 
     QObject::connect(trigger_about, &QAction::triggered, [this](){AboutBox(this).exec();});
     connectTrigger(trigger_online, &MainWin::online);

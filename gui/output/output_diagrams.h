@@ -20,7 +20,7 @@
 //! The modal dialog for viewing and saving diagrams
 class DiagramsFrame : public Frame {
 public:
-    DiagramsFrame(const QString& title, QWidget*);
+    DiagramsFrame();
 
 private:
     class TabPlot* tabPlot_;

@@ -60,16 +60,6 @@ XIconButton::XIconButton(QAction* action) {
     setToolButtonStyle(Qt::ToolButtonIconOnly);
 }
 
-CSettable::CSettable(const QString& name, std::function<void(const QString&)> setter)
-    : name_(name)
-{
-    gConsole->learn(name, setter);
-}
-
-CSettable::~CSettable() {
-    gConsole->forget(name_);
-}
-
 // A QSpinBox controls an integer value. Therefore normally we need no extra width for a dot.
 // However, sometimes we want to make a QSpinBox exactly as wide as a given QDoubleSpinBox,
 // for nice vertical alignement. Then we use withDot=true.
@@ -133,8 +123,8 @@ CComboBox::CComboBox(const QString& _name, const QStringList& items)
 CFileDialog::CFileDialog(QWidget *parent, const QString &caption,
                          const QString &directory, const QString &filter)
     : QFileDialog(parent, caption, directory, filter)
+    , CModal("fdia")
 {
-    gConsole->call("@push fdia");
     gConsole->learn("files", [this](const QString& val)->void {
             QStringList list = val.split(';');
             QString tmp = '"' + list.join("\" \"") + '"';
@@ -145,8 +135,6 @@ CFileDialog::CFileDialog(QWidget *parent, const QString &caption,
 
 CFileDialog::~CFileDialog() {
     gConsole->log("files="+selectedFiles().join(';'));
-    gConsole->log("@close");
-    gConsole->call("@pop");
 }
 
 int CFileDialog::exec() {
