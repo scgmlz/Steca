@@ -21,7 +21,7 @@
 #include "gui/panels/subframe_diffractogram.h"
 #include "gui/panels/subframe_files.h"
 #include "gui/panels/subframe_image.h"
-#include "gui/panels/subframe_measurements.h"
+#include "gui/panels/subframe_clusters.h"
 #include "gui/panels/subframe_metadata.h"
 #include "gui/panels/subframe_setup.h"
 #include "gui/base/filedialog.h"
@@ -194,7 +194,7 @@ void MainWin::initMenu() {
 
 void MainWin::initLayout() {
     addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_ = new SubframeFiles()));
-    addDockWidget(Qt::LeftDockWidgetArea, (dockClusters_ = new SubframeMeasurements()));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockClusters_ = new SubframeClusters()));
     addDockWidget(Qt::LeftDockWidgetArea, (dockMetadata_ = new SubframeMetadata()));
 
     auto splMain = new QSplitter(Qt::Vertical);

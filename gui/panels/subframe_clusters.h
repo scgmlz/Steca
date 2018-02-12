@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/subframe_measurements.h
-//! @brief     Defines class SubframeMeasurements
+//! @file      gui/panels/subframe_clusters.h
+//! @brief     Defines class SubframeClusters
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef SUBFRAME_MEASUREMENTS_H
-#define SUBFRAME_MEASUREMENTS_H
+#ifndef SUBFRAME_CLUSTERS_H
+#define SUBFRAME_CLUSTERS_H
 
 #include "gui/base/layout.h"
 
@@ -22,9 +22,9 @@
 //! Shows the measurements in the selected files, and allow to select some of them
 //! and to combine them by a constant factor
 
-class SubframeMeasurements : public DockWidget {
+class SubframeClusters : public DockWidget {
 public:
-    SubframeMeasurements();
+    SubframeClusters();
 };
 
-#endif // SUBFRAME_MEASUREMENTS_H
+#endif // SUBFRAME_CLUSTERS_H

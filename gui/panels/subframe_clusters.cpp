@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/subframe_measurements.cpp
-//! @brief     Implements class SubframeMeasurements, with local model and view
+//! @brief     Implements class SubframeClusters, with local model and view
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "gui/panels/subframe_measurements.h"
+#include "gui/panels/subframe_clusters.h"
 #include "core/session.h"
 #include "gui/base/controls.h"
 #include "gui/base/model_view.h"
@@ -227,10 +227,10 @@ ExperimentControls::ExperimentControls() {
 }
 
 // ************************************************************************** //
-//  class SubframeMeasurements
+//  class SubframeClusters
 // ************************************************************************** //
 
-SubframeMeasurements::SubframeMeasurements() : DockWidget("Measurements", "dock-cluster") {
+SubframeClusters::SubframeClusters() : DockWidget("Measurements", "dock-cluster") {
     box_->addWidget(new ExperimentView()); // list of Cluster|s
     box_->addWidget(new ExperimentControls()); // controls row
 }
