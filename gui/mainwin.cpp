@@ -173,7 +173,7 @@ void MainWin::initMenu() {
     _actionsToMenu(
         "&View",
         {   &toggles->viewFiles,
-                &toggles->viewDatasets,
+                &toggles->viewClusters,
                 &toggles->viewMetadata,
                 _separator(),
 #ifndef Q_OS_OSX
@@ -194,8 +194,8 @@ void MainWin::initMenu() {
 
 void MainWin::initLayout() {
     addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_ = new SubframeFiles()));
-    addDockWidget(Qt::LeftDockWidgetArea, (dockMeasurements_ = new SubframeMeasurements()));
-    addDockWidget(Qt::LeftDockWidgetArea, (dockDatasetInfo_ = new SubframeMetadata()));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockClusters_ = new SubframeMeasurements()));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockMetadata_ = new SubframeMetadata()));
 
     auto splMain = new QSplitter(Qt::Vertical);
     splMain->setChildrenCollapsible(false);
@@ -303,43 +303,15 @@ void MainWin::saveSettings() {
     s.setValue("state", saveState());
 }
 
-void MainWin::viewStatusbar(bool on) {
-    statusBar()->setVisible(on);
-    toggles->viewStatusbar.setChecked(on);
-}
-
-void MainWin::viewFullScreen(bool on) {
-    if (on)
-        showFullScreen();
-    else
-        showNormal();
-#ifndef Q_OS_OSX
-    toggles->fullScreen.setChecked(on);
-#endif
-}
-
-void MainWin::viewFiles(bool on) {
-    dockFiles_->setVisible(on);
-    toggles->viewFiles.setChecked(on);
-}
-
-void MainWin::viewDatasets(bool on) {
-    dockMeasurements_->setVisible(on);
-    toggles->viewDatasets.setChecked(on);
-}
-
-void MainWin::viewMetadata(bool on) {
-    dockDatasetInfo_->setVisible(on);
-    toggles->viewMetadata.setChecked(on);
-}
-
 void MainWin::viewReset() {
     restoreState(initialState_);
-    viewStatusbar(true);
-    viewFullScreen(false);
-    viewFiles(true);
-    viewDatasets(true);
-    viewMetadata(true);
+#ifndef Q_OS_OSX
+    toggles->fullScreen.setChecked(false);
+#endif
+    toggles->viewStatusbar.setChecked(true);
+    toggles->viewClusters.setChecked(true);
+    toggles->viewFiles.setChecked(true);
+    toggles->viewMetadata.setChecked(true);
 }
 
 void MainWin::saveSessionTo(QFileInfo const& fileInfo) {

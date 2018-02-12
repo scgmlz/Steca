@@ -69,7 +69,7 @@ public:
     QString saveFmt; //!< setting: default format for data export
 
 private:
-    QDockWidget *dockFiles_, *dockMeasurements_, *dockDatasetInfo_;
+    QDockWidget *dockFiles_, *dockClusters_, *dockMetadata_;
     QByteArray initialState_;
     QMenu* menuDgram_;
     QMenu* menuImage_;
@@ -85,12 +85,6 @@ private:
 
     void saveSessionTo(QFileInfo const&);
     QByteArray serializeSession() const;
-
-    void viewStatusbar(bool);
-    void viewFullScreen(bool);
-    void viewFiles(bool);
-    void viewDatasets(bool);
-    void viewMetadata(bool);
 
     void collectDatasetsFromSelectionBy(const vec<int>, const int);
     void setImageMirror(bool);
