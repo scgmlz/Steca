@@ -14,7 +14,10 @@
 
 #include "gui/dialogs/data_table.h"
 #include "core/def/idiomatic_for.h"
+#include <QApplication>
+#include <QClipboard>
 #include <QHeaderView>
+#include <QKeyEvent>
 
 // ************************************************************************** //
 //  class DataModel
@@ -159,6 +162,8 @@ DataView::DataView(int numDataColumns)
     setModel(model_.get());
     setHeader(new QHeaderView(Qt::Horizontal));
     setAlternatingRowColors(true);
+    setSelectionBehavior(QAbstractItemView::SelectItems);
+    setSelectionMode(QAbstractItemView::ContiguousSelection);
 
     QHeaderView* h = header();
 
@@ -212,4 +217,36 @@ int DataView::rowCount() const {
 
 const row_t& DataView::row(int i) const {
     return model_->row(i);
+}
+
+void DataView::keyPressEvent(QKeyEvent *event) {
+    if (event->key() == Qt::Key_C && event->modifiers() & Qt::ControlModifier) {
+        QApplication::clipboard()->setText(exportSelection());
+    } else {
+        QTreeView::keyPressEvent(event);
+    }
+}
+
+QString DataView::exportSelection() {
+    // https://stackoverflow.com/questions/1230222
+    QItemSelectionModel* selection = selectionModel();
+    QModelIndexList indexes = selection->selectedIndexes();
+    QString ret;
+    QModelIndex previous = indexes.first();
+    indexes.removeFirst();
+    foreach(QModelIndex current, indexes) {
+        QVariant data = model_->data(current);
+        QString text = data.toString();
+        // At this point `text` contains the text in one cell
+        ret.append(text);
+        // If you are at the start of the row the row number of the previous index
+        // isn't the same.  Text is followed by a row separator, which is a newline.
+        if (current.row() != previous.row())
+            ret.append('\n');
+        // Otherwise it's the same row, so append a column separator, which is a tab.
+        else
+            ret.append('\t');
+        previous = current;
+    }
+    return ret;
 }

@@ -77,6 +77,8 @@ public:
     row_t const& row(int) const;
 
 private:
+    void keyPressEvent(QKeyEvent *event);
+    QString exportSelection();
     std::unique_ptr<DataModel> model_;
     QStringList outHeaders_;
 };
