@@ -66,52 +66,40 @@ MainWin::MainWin()
 
     trigger_checkUpdate = new CTrigger("trigger_checkUpdate", "Check for update");
 
-    trigger_quit = new CTrigger("trigger_quit", "Quit");
-    trigger_quit->setShortcut(QKeySequence::Quit);
+    trigger_quit = new CTrigger("trigger_quit", "Quit", "", QKeySequence::Quit);
 
-    toggle_viewStatusbar = new CToggle("toggle_viewStatusbar", "Statusbar", true);
-    toggle_viewStatusbar->setShortcut(Qt::Key_F12);
-
-    toggle_viewFiles = new CToggle("toggle_viewFiles", "Files", true);
-    toggle_viewFiles->setShortcut(Qt::Key_F8);
-
-    toggle_viewDatasets = new CToggle("toggle_viewDatasets", "Datasets", true);
-    toggle_viewDatasets->setShortcut(Qt::Key_F9);
-
-    toggle_viewMetadata = new CToggle("toggle_viewMetadata", "Metadata", true);
-    toggle_viewMetadata->setShortcut(Qt::Key_F10);
+    toggle_viewStatusbar = new CToggle("toggle_viewStatusbar", "Statusbar", true, "", Qt::Key_F12);
+    toggle_viewFiles = new CToggle("toggle_viewFiles", "Files", true, "", Qt::Key_F8);
+    toggle_viewDatasets = new CToggle("toggle_viewDatasets", "Datasets", true, "", Qt::Key_F9);
+    toggle_viewMetadata = new CToggle("toggle_viewMetadata", "Metadata", true, "", Qt::Key_F10);
 
     trigger_viewReset = new CTrigger("trigger_viewReset", "Reset");
 
 #ifndef Q_OS_OSX
-    toggle_fullScreen = new CToggle("toggle_fullScreen", "FullScreen", false);
-    toggle_fullScreen->setShortcut(Qt::Key_F11);
+    toggle_fullScreen = new CToggle("toggle_fullScreen", "FullScreen", false, "", Qt::Key_F11);
 #endif
 
     trigger_loadSession = new CTrigger("trigger_loadSession", "Load session...");
-
     trigger_saveSession = new CTrigger("trigger_saveSession", "Save session...");
-
     trigger_clearSession = new CTrigger("trigger_clearSession", "Clear session");
 
-    trigger_addFiles = new CTrigger("trigger_addFiles", "Add files...", ":/icon/add");
-    trigger_addFiles->setShortcut(Qt::CTRL | Qt::Key_O);
+    trigger_addFiles = new CTrigger("trigger_addFiles", "Add files...", ":/icon/add",
+                                    Qt::CTRL | Qt::Key_O);
 
     trigger_removeFile = new CTrigger(
-        "trigger_removeFile", "Remove highlighted file", ":/icon/rem");
-    trigger_removeFile->setShortcut(QKeySequence::Delete);
+        "trigger_removeFile", "Remove highlighted file", ":/icon/rem", QKeySequence::Delete);
     QObject::connect(trigger_removeFile, &QAction::triggered, []() {
             gSession->dataset().removeFile(); });
 
-    trigger_corrFile = new CTrigger("trigger_corrFile", "Add correction file", ":/icon/add");
-    trigger_corrFile->setShortcut(Qt::SHIFT | Qt::CTRL | Qt::Key_O);
+    trigger_corrFile = new CTrigger("trigger_corrFile", "Add correction file", ":/icon/add",
+                                    Qt::SHIFT | Qt::CTRL | Qt::Key_O);
     connect(trigger_corrFile, &QAction::triggered, this, &MainWin::loadCorrFile);
     toggle_enableCorr = new CToggle(
         "toggle_enableCorr", "Enable correction file", false, ":/icon/useCorrection");
     connect(toggle_enableCorr, &QAction::toggled, [this](bool on) {
             gSession->corrset().tryEnable(on); });
-    trigger_rotateImage = new CTrigger("trigger_rotateImage", "Rotate", ":/icon/rotate0");
-    trigger_rotateImage->setShortcut(Qt::CTRL | Qt::Key_R);
+    trigger_rotateImage = new CTrigger(
+        "trigger_rotateImage", "Rotate", ":/icon/rotate0", Qt::CTRL | Qt::Key_R);
     connect(trigger_rotateImage, &QAction::triggered, [this]() {
         setImageRotate(gSession->imageTransform().nextRotate()); });
 

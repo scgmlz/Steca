@@ -33,6 +33,8 @@ class CTrigger : public QAction {
 public:
     CTrigger() = delete;
     CTrigger(const QString& name, const QString& text, const QString& iconFile="");
+    CTrigger(const QString& name, const QString& text, const QString& iconFile,
+             const QKeySequence& shortcut);
 };
 
 //! A Toggle, for use in buttons or menu entries, that can also be switched by console command.
@@ -40,6 +42,8 @@ class CToggle : public QAction {
 public:
     CToggle() = delete;
     CToggle(const QString& name, const QString& text, bool on, const QString& iconFile="");
+    CToggle(const QString& name, const QString& text, bool on, const QString& iconFile,
+            const QKeySequence& shortcut);
 };
 
 //! QToolButton with text display and associated QAction.

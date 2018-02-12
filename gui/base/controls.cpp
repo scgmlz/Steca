@@ -19,6 +19,10 @@
 #include <QApplication> // for qApp for new Action
 #include <QtGlobal> // to define Q_OS_WIN
 
+// ************************************************************************** //
+//  class Trigger
+// ************************************************************************** //
+
 CTrigger::CTrigger(const QString& name, const QString& text, const QString& iconFile)
     : QAction(text, qApp)
 {
@@ -28,6 +32,17 @@ CTrigger::CTrigger(const QString& name, const QString& text, const QString& icon
     gConsole->learn(name, [this](const QString& /*unused*/)->void { trigger(); });
     QObject::connect(this, &QAction::triggered, [name]()->void { gConsole->log(name+"!"); });
 };
+
+CTrigger::CTrigger(
+    const QString& name, const QString& text, const QString& iconFile, const QKeySequence& shortcut)
+    : CTrigger(name, text, iconFile)
+{
+    setShortcut(shortcut);
+}
+
+// ************************************************************************** //
+//  class Toggle
+// ************************************************************************** //
 
 CToggle::CToggle(const QString& name, const QString& text, bool on, const QString& iconFile)
     : QAction(text, qApp)
@@ -48,6 +63,18 @@ CToggle::CToggle(const QString& name, const QString& text, bool on, const QStrin
             gConsole->log(name+"="+(val ? "y" : "n")); });
 };
 
+CToggle::CToggle(const QString& name, const QString& text, bool on, const QString& iconFile,
+                 const QKeySequence& shortcut)
+    : CToggle(name, text, on, iconFile)
+{
+    setShortcut(shortcut);
+}
+
+// ************************************************************************** //
+//  classes with no console connection
+// ************************************************************************** //
+
+
 XTextButton::XTextButton(QAction* action) {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonTextOnly);
@@ -57,6 +84,10 @@ XIconButton::XIconButton(QAction* action) {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonIconOnly);
 }
+
+// ************************************************************************** //
+//  control widget classes with console connection
+// ************************************************************************** //
 
 // A QSpinBox controls an integer value. Therefore normally we need no extra width for a dot.
 // However, sometimes we want to make a QSpinBox exactly as wide as a given QDoubleSpinBox,
@@ -117,6 +148,10 @@ CComboBox::CComboBox(const QString& _name, const QStringList& items)
     connect(this, _SLOT_(QComboBox, currentIndexChanged, int), [this](int val)->void {
             gConsole->log2(hasFocus(), name()+"="+QString::number(val)); });
 }
+
+// ************************************************************************** //
+//  class CFileDialog
+// ************************************************************************** //
 
 CFileDialog::CFileDialog(QWidget *parent, const QString &caption,
                          const QString &directory, const QString &filter)
