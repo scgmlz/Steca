@@ -17,8 +17,8 @@
 #include "gui/base/model_view.h"
 #include "gui/base/controls.h"
 #include "gui/mainwin.h"
-#include "gui/toggles.h"
-#include "gui/triggers.h"
+#include "gui/actions/toggles.h"
+#include "gui/actions/triggers.h"
 
 
 // ************************************************************************** //

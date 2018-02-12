@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/menus.cpp
+//! @file      gui/actions/menus.cpp
 //! @brief     Implements class Menus
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -14,8 +14,8 @@
 
 #include "menus.h"
 #include "gui/mainwin.h"
-#include "gui/triggers.h"
-#include "gui/toggles.h"
+#include "gui/actions/triggers.h"
+#include "gui/actions/toggles.h"
 
 //! Initialize the menu bar.
 Menus::Menus(QMenuBar* mbar)

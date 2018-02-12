@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/menus.h
+//! @file      gui/actions/menus.h
 //! @brief     Defines class Menus
 //!
 //! @homepage  https://github.com/scgmlz/Steca

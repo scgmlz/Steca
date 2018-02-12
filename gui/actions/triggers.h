@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/triggers.h
+//! @file      gui/actions/triggers.h
 //! @brief     Defines class Triggers
 //!
 //! @homepage  https://github.com/scgmlz/Steca

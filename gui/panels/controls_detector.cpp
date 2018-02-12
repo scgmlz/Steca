@@ -17,8 +17,8 @@
 #include "gui/base/displays.h"
 #include "gui/base/layout.h"
 #include "gui/mainwin.h"
-#include "gui/toggles.h"
-#include "gui/triggers.h"
+#include "gui/actions/toggles.h"
+#include "gui/actions/triggers.h"
 
 ControlsDetector::ControlsDetector()
     : detDistance_("detDistance", 6, Geometry::MIN_DETECTOR_DISTANCE)

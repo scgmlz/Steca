@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/subframe_measurements.cpp
+//! @file      gui/panels/subframe_clusters.cpp
 //! @brief     Implements class SubframeClusters, with local model and view
 //!
 //! @homepage  https://github.com/scgmlz/Steca

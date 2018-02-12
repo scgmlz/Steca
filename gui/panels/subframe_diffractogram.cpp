@@ -17,8 +17,8 @@
 #include "gui/panels/panel_diffractogram.h"
 #include "gui/base/layout.h"
 #include "gui/base/controls.h"
-#include "gui/toggles.h"
-#include "gui/triggers.h"
+#include "gui/actions/toggles.h"
+#include "gui/actions/triggers.h"
 
 
 // ************************************************************************** //
