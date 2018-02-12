@@ -40,6 +40,7 @@ private:
 };
 
 void CommandRegistry::learn(const QString& name, std::function<void(const QString&)> f) {
+    qDebug() << "registry " << name_ << " learns " << name;
     if (commands_.find(name)!=commands_.end())
         qDebug(("Duplicate command '"+name+"'").toLatin1()); // TODO RESTORE qFatal
     commands_[name] = f;

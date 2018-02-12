@@ -21,6 +21,7 @@
 class PoleFiguresFrame : public Frame {
 public:
     PoleFiguresFrame();
+    ~PoleFiguresFrame();
 
 private:
     class TabGraph* tabGraph_;

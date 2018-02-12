@@ -295,6 +295,11 @@ PoleFiguresFrame::PoleFiguresFrame()
     show();
 }
 
+PoleFiguresFrame::~PoleFiguresFrame() {
+    delete tabSave_;
+    delete tabGraph_;
+}
+
 void PoleFiguresFrame::displayPeak(int reflIndex, bool interpolated) {
     Frame::displayPeak(reflIndex, interpolated);
     if (!interpPoints_.isEmpty() && !calcPoints_.isEmpty())
