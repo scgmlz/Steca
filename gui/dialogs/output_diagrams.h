@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/output/output_diagrams.h
+//! @file      gui/dialogs/output_diagrams.h
 //! @brief     Defines class DiagramsFrame
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -15,7 +15,7 @@
 #ifndef OUTPUT_DIAGRAMS_H
 #define OUTPUT_DIAGRAMS_H
 
-#include "gui/output/frame.h"
+#include "gui/dialogs/frame.h"
 
 //! The modal dialog for viewing and saving diagrams
 class DiagramsFrame : public Frame {

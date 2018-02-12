@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/output/frame.h
+//! @file      gui/dialogs/frame.h
 //! @brief     Defines classes Params, Frame
 //!
 //! @homepage  https://github.com/scgmlz/Steca

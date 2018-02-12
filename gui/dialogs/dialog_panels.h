@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/output/dialog_panels.h
+//! @file      gui/dialogs/dialog_panels.h
 //! @brief     Defines PanelPeak, PanelGammaSlices. and several other panel classes
 //!
 //! @homepage  https://github.com/scgmlz/Steca

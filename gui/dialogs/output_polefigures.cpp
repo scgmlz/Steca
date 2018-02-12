@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/output/output_polefigures.cpp
+//! @file      gui/dialogs/output_polefigures.cpp
 //! @brief     Implements class PoleFiguresFrame
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,13 +12,13 @@
 //
 // ************************************************************************** //
 
-#include "gui/output/output_polefigures.h"
+#include "gui/dialogs/output_polefigures.h"
 #include "core/session.h"
 #include "gui/base/filedialog.h"
 #include "gui/cfg/colors.h"
 #include "gui/mainwin.h"
-#include "gui/output/dialog_panels.h"
-#include "gui/output/tab_save.h"
+#include "gui/dialogs/dialog_panels.h"
+#include "gui/dialogs/tab_save.h"
 #include <qmath.h>
 #include <QPainter>
 

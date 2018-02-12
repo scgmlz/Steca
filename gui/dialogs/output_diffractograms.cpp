@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/output/output_diffractograms.cpp
+//! @file      gui/dialogs/output_diffractograms.cpp
 //! @brief     Implements class DiffractogramsFrame
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,11 +12,11 @@
 //
 // ************************************************************************** //
 
-#include "gui/output/output_diffractograms.h"
+#include "gui/dialogs/output_diffractograms.h"
 #include "core/session.h"
 #include "gui/base/filedialog.h"
-#include "gui/output/dialog_panels.h"
-#include "gui/output/tab_save.h"
+#include "gui/dialogs/dialog_panels.h"
+#include "gui/dialogs/tab_save.h"
 #include <cmath>
 #include <QMessageBox>
 

@@ -16,10 +16,10 @@
 #include "../manifest.h"
 #include "core/session.h"
 #include "gui/mainwin.h"
-#include "gui/output/output_diagrams.h"
-#include "gui/output/output_diffractograms.h"
-#include "gui/output/output_polefigures.h"
-#include "gui/popup/about.h"
+#include "gui/dialogs/output_diagrams.h"
+#include "gui/dialogs/output_diffractograms.h"
+#include "gui/dialogs/output_polefigures.h"
+#include "gui/dialogs/about.h"
 #include <QDesktopServices>
 
 Triggers::Triggers() {

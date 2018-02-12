@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/output/data_table.cpp
+//! @file      gui/dialogs/data_table.cpp
 //! @brief     Implements classes DataView
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "gui/output/data_table.h"
+#include "gui/dialogs/data_table.h"
 #include "core/def/idiomatic_for.h"
 #include <QHeaderView>
 

@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/output/output_diagrams.cpp
+//! @file      gui/dialogs/output_diagrams.cpp
 //! @brief     Implements class DiagramsFrame
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,13 +12,13 @@
 //
 // ************************************************************************** //
 
-#include "gui/output/output_diagrams.h"
+#include "gui/dialogs/output_diagrams.h"
 #include "core/session.h"
 #include "gui/base/filedialog.h"
 #include "gui/mainwin.h"
-#include "gui/output/data_table.h"
-#include "gui/output/dialog_panels.h"
-#include "gui/output/tab_save.h"
+#include "gui/dialogs/data_table.h"
+#include "gui/dialogs/dialog_panels.h"
+#include "gui/dialogs/tab_save.h"
 #include "QCustomPlot/qcustomplot.h"
 
 // sorts xs and ys the same way, by (x,y)

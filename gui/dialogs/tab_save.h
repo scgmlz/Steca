@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/output/tab_save.h
+//! @file      gui/dialogs/tab_save.h
 //! @brief     Defines class TabSave
 //!
 //! @homepage  https://github.com/scgmlz/Steca

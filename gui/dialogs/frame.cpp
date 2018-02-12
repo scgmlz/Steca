@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/output/frame.cpp
+//! @file      gui/dialogs/frame.cpp
 //! @brief     Implements classes Params, Frame, and local classes ShowColsWidget, TabTable
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,11 +12,11 @@
 //
 // ************************************************************************** //
 
-#include "gui/output/frame.h"
+#include "gui/dialogs/frame.h"
 #include "core/calc/calc_polefigure.h"
 #include "core/session.h"
-#include "gui/output/data_table.h"
-#include "gui/output/dialog_panels.h"
+#include "gui/dialogs/data_table.h"
+#include "gui/dialogs/dialog_panels.h"
 #include "gui/mainwin.h" // defines _SLOT_
 #include <QProgressBar>
 #include <QScrollArea>

@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/output/tab_save.cpp
+//! @file      gui/dialogs/tab_save.cpp
 //! @brief     Implements classes Params, TabSave
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "gui/output/tab_save.h"
-#include "gui/output/dialog_panels.h"
+#include "gui/dialogs/tab_save.h"
+#include "gui/dialogs/dialog_panels.h"
 #include "gui/base/filedialog.h"
 #include "gui/mainwin.h"
 

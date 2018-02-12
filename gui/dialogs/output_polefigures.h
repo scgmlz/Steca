@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/output/output_polefigures.h
+//! @file      gui/dialogs/output_polefigures.h
 //! @brief     Defines class PoleFiguresFrame
 //!
 //! @homepage  https://github.com/scgmlz/Steca
