@@ -228,25 +228,19 @@ void DataView::keyPressEvent(QKeyEvent *event) {
 }
 
 QString DataView::exportSelection() {
-    // https://stackoverflow.com/questions/1230222
-    QItemSelectionModel* selection = selectionModel();
-    QModelIndexList indexes = selection->selectedIndexes();
+    // TODO: improve https://stackoverflow.com/questions/1230222
     QString ret;
-    QModelIndex previous = indexes.first();
-    indexes.removeFirst();
+    QModelIndexList indexes = selectionModel()->selectedIndexes();
+    int previous_row = -1;
     foreach(QModelIndex current, indexes) {
-        QVariant data = model_->data(current);
-        QString text = data.toString();
-        // At this point `text` contains the text in one cell
-        ret.append(text);
-        // If you are at the start of the row the row number of the previous index
-        // isn't the same.  Text is followed by a row separator, which is a newline.
-        if (current.row() != previous.row())
+        if (previous_row==-1)
+            ; // pass
+        else if (current.row() != previous_row)
             ret.append('\n');
-        // Otherwise it's the same row, so append a column separator, which is a tab.
         else
             ret.append('\t');
-        previous = current;
+        ret.append(model_->data(current, Qt::DisplayRole).toString());
+        previous_row = current.row();
     }
     return ret;
 }
