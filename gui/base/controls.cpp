@@ -14,7 +14,7 @@
 
 #include "gui/base/controls.h"
 #include "gui/base/displays.h"
-#include "gui/console.h"
+#include "gui/capture_and_replay/console.h"
 #include "gui/mainwin.h" // for _SLOT_
 #include <QApplication> // for qApp for new Action
 #include <QtGlobal> // to define Q_OS_WIN

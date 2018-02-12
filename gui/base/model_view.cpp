@@ -14,7 +14,7 @@
 
 #include "model_view.h"
 #include "core/def/idiomatic_for.h"
-#include "gui/console.h"
+#include "gui/capture_and_replay/console.h"
 
 // ************************************************************************** //
 //  class TableModel

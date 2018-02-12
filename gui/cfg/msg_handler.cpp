@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "gui/console.h"
+#include "gui/capture_and_replay/console.h"
 #include <iostream>
 #include <QMessageBox>
 #include <QApplication>

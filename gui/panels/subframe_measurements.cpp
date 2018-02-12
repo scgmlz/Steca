@@ -16,7 +16,7 @@
 #include "core/session.h"
 #include "gui/base/controls.h"
 #include "gui/base/model_view.h"
-#include "gui/console.h"
+#include "gui/capture_and_replay/console.h"
 #include "gui/mainwin.h"
 
 // ************************************************************************** //

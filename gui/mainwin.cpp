@@ -15,7 +15,7 @@
 #include "mainwin.h"
 #include "../manifest.h"
 #include "core/session.h"
-#include "gui/console.h"
+#include "gui/capture_and_replay/console.h"
 #include "gui/output/output_diagrams.h"
 #include "gui/output/output_diffractograms.h"
 #include "gui/output/output_polefigures.h"

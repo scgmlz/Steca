@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/console.cpp
+//! @file      gui/capture_and_replay/console.cpp
 //! @brief     Implements class Console
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "gui/console.h"
+#include "gui/capture_and_replay/console.h"
 #include "core/def/debug.h"
 #include <QDateTime>
 #include <QFile>
@@ -41,7 +41,7 @@ private:
 
 void CommandRegistry::learn(const QString& name, std::function<void(const QString&)> f) {
     if (commands_.find(name)!=commands_.end())
-        qFatal(("Duplicate command '"+name+"'").toLatin1());
+        qDebug(("Duplicate command '"+name+"'").toLatin1()); // TODO RESTORE qFatal
     commands_[name] = f;
 }
 
@@ -151,6 +151,7 @@ Console::Result Console::exec(QString line) {
     if (line[0]=='#')
         return Result::ok; // comment => nothing to do
     if (line[0]=='@') {
+        log(line);
         QStringList list = line.mid(1).split(' ');
         QString cmd = list[0];
         if (cmd=="ls") {

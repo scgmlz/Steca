@@ -21,7 +21,7 @@
 
 #include "../manifest.h"
 #include "gui/cfg/msg_handler.h"
-#include "gui/console.h"
+#include "gui/capture_and_replay/console.h"
 #include "gui/mainwin.h"
 
 #define OPTPARSE_IMPLEMENTATION

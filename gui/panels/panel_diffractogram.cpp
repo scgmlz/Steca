@@ -14,7 +14,7 @@
 
 #include "panel_diffractogram.h"
 #include "core/session.h"
-#include "gui/console.h"
+#include "gui/capture_and_replay/console.h"
 
 // ************************************************************************** //
 //  class DiffractogramPlotOverlay
