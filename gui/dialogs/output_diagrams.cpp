@@ -185,6 +185,11 @@ DiagramsFrame::DiagramsFrame()
     show();
 }
 
+DiagramsFrame::~DiagramsFrame() {
+    delete tabSave_;
+    delete tabPlot_;
+}
+
 DiagramsFrame::eReflAttr DiagramsFrame::xAttr() const {
     ASSERT(params_->panelDiagram);
     return eReflAttr(params_->panelDiagram->xAxis.currentIndex());

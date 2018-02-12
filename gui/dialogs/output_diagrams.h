@@ -21,6 +21,7 @@
 class DiagramsFrame : public Frame {
 public:
     DiagramsFrame();
+    ~DiagramsFrame();
 
 private:
     class TabPlot* tabPlot_;
