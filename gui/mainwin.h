@@ -22,7 +22,6 @@
 #include "gui/toggles.h"
 #include "gui/triggers.h"
 #include <QMainWindow>
-#include <QNetworkAccessManager>
 
 extern class MainWin* gGui; //!< global pointer to _the_ main window
 
@@ -74,7 +73,6 @@ public:
 private:
     QDockWidget *dockFiles_, *dockMeasurements_, *dockDatasetInfo_;
     QByteArray initialState_;
-    QNetworkAccessManager netMan_;
     QMenu* menuDgram_;
     QMenu* menuImage_;
     QMenu* menuOutput_;

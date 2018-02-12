@@ -28,6 +28,7 @@
 #include <QJsonDocument>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QSplitter>
 #include <QStatusBar>
@@ -218,7 +219,7 @@ void MainWin::checkUpdate() {
     QString ver = qApp->applicationVersion();
     QString qry = ver % "\t| " % QSysInfo::prettyProductName();
     req.setUrl(QUrl(QString(STECA2_VERSION_URL) % "?" % qry));
-    QNetworkReply* reply = netMan_.get(req);
+    QNetworkReply* reply = QNetworkAccessManager().get(req);
 
     connect(reply, &QNetworkReply::finished, [this, reply]() {
         if (QNetworkReply::NoError != reply->error()) {
