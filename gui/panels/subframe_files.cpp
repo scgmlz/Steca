@@ -129,7 +129,7 @@ SubframeFiles::SubframeFiles() : DockWidget("Files", "dock-files") {
     corrFile_->setReadOnly(true);
     h->addWidget(corrFile_);
     h->addWidget(new XIconButton(&gGui->triggers.corrFile));
-    h->addWidget(new XIconButton(gGui->toggle_enableCorr));
+    h->addWidget(new XIconButton(&gGui->toggles.enableCorr));
 
     connect(gSession, &Session::sigCorr, [corrFile_]() {
             corrFile_->setText( gSession->corrset().hasFile() ?

@@ -122,7 +122,7 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
     fits_->setLineStyle(QCPGraph::lsNone);
     fits_->setPen(QPen(Qt::red));
 
-    connect(gGui->toggle_showBackground, &QAction::toggled, [this](bool on) {
+    connect(&gGui->toggles.showBackground, &QAction::toggled, [this](bool on) {
         showBgFit_ = on;
         renderAll();
     });

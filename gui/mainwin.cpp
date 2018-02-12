@@ -25,7 +25,6 @@
 #include "gui/base/filedialog.h"
 #include <QApplication>
 #include <QCloseEvent>
-#include <QDesktopServices>
 #include <QJsonDocument>
 #include <QMenuBar>
 #include <QMessageBox>
@@ -54,51 +53,6 @@ MainWin::MainWin()
     QDir::setCurrent(QDir::homePath());
     setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
 
-    // create actions
-
-    toggle_viewStatusbar = new CToggle("toggle_viewStatusbar", "Statusbar", true, "", Qt::Key_F12);
-    toggle_viewFiles = new CToggle("toggle_viewFiles", "Files", true, "", Qt::Key_F8);
-    toggle_viewDatasets = new CToggle("toggle_viewDatasets", "Datasets", true, "", Qt::Key_F9);
-    toggle_viewMetadata = new CToggle("toggle_viewMetadata", "Metadata", true, "", Qt::Key_F10);
-    toggle_enableCorr = new CToggle("toggle_enableCorr", "Enable correction file", false, ":/icon/useCorrection");
-    toggle_mirrorImage = new CToggle("toggle_mirrorImage", "Mirror", false, ":/icon/mirrorHorz");
-    toggle_linkCuts = new CToggle("toggle_linkCuts", "Link cuts", false, ":/icon/link");
-    toggle_showOverlay = new CToggle("toggle_showOverlay", "Show overlay", false, ":/icon/crop");
-    toggle_stepScale = new CToggle("toggle_stepScale", "Scale in steps", false, ":/icon/steps");
-    toggle_showBins = new CToggle("toggle_showBins", "Show bins", false, ":/icon/angle");
-    toggle_fixedIntenImage = new CToggle("toggle_fixedIntenImage", "Global intensity scale", false, ":/icon/scale");
-    toggle_fixedIntenDgram = new CToggle("toggle_fixedIntenDgram", "Fixed intensity scale", false);
-    toggle_combinedDgram = new CToggle("toggle_combinedDgram", "All measurements", true);
-    toggle_combinedDgram->setChecked(false);
-    toggle_showBackground = new CToggle(
-        "toggle_showBackground", "Show fitted background", false, ":/icon/showBackground");
-
-
-#ifndef Q_OS_OSX
-    toggle_fullScreen = new CToggle("toggle_fullScreen", "FullScreen", false, "", Qt::Key_F11);
-#endif
-
-
-    connect(toggle_enableCorr, &QAction::toggled, [this](bool on) {
-            gSession->corrset().tryEnable(on); });
-    connect(toggle_mirrorImage, &QAction::toggled, [this](bool on) { setImageMirror(on); });
-    connect(toggle_fixedIntenImage, &QAction::toggled, [this](bool on) {
-        isFixedIntenImageScale_ = on;
-        emit gSession->sigImage();
-        emit gSession->sigDiffractogram();
-        });
-    connect(toggle_fixedIntenDgram, &QAction::toggled, [this](bool on) {
-        isFixedIntenDgramScale_ = on;
-        emit gSession->sigImage();
-        emit gSession->sigDiffractogram();
-        });
-    connect(toggle_combinedDgram, &QAction::toggled, [this](bool on) {
-        isCombinedDgram_ = on;
-        emit gSession->sigImage();
-        emit gSession->sigDiffractogram();
-        });
-
-
     // connect signals
     QObject::connect(gSession, &Session::sigFiles, [this]() {
             updateActionEnabling();
@@ -109,7 +63,7 @@ MainWin::MainWin()
             QString text = QString(hasCorr ? "Remove" : "Add") + " correction file";
             triggers.corrFile.setText(text);
             triggers.corrFile.setToolTip(text.toLower());
-            toggle_enableCorr->setChecked(gSession->corrset().isEnabled());
+            toggles.enableCorr.setChecked(gSession->corrset().isEnabled());
             updateActionEnabling();
             emit gSession->sigDiffractogram();
             emit gSession->sigImage();
@@ -125,7 +79,6 @@ MainWin::MainWin()
 
     initMenu();
     initLayout();
-    connectActions();
     readSettings();
     updateActionEnabling();
 
@@ -170,7 +123,7 @@ void MainWin::initMenu() {
                 &triggers.removeFile,
                 _separator(),
                 &triggers.corrFile,
-                toggle_enableCorr,
+                &toggles.enableCorr,
                 _separator(),
                 &triggers.loadSession,
                 &triggers.saveSession,
@@ -184,25 +137,25 @@ void MainWin::initMenu() {
     menuImage_ = _actionsToMenu(
         "&Image",
         {   &triggers.rotateImage,
-                toggle_mirrorImage,
-                toggle_fixedIntenImage,
-                toggle_linkCuts,
-                toggle_showOverlay,
-                toggle_stepScale,
-                toggle_showBins,
+                &toggles.mirrorImage,
+                &toggles.fixedIntenImage,
+                &toggles.linkCuts,
+                &toggles.showOverlay,
+                &toggles.stepScale,
+                &toggles.showBins,
         });
 
     menuDgram_ = _actionsToMenu(
         "&Diffractogram",
-        {   toggle_showBackground,
+        {   &toggles.showBackground,
                 &triggers.clearBackground,
                 &triggers.clearPeaks,
                 _separator(),
                 &triggers.addPeak,
                 &triggers.removePeak,
                 _separator(),
-                toggle_combinedDgram,
-                toggle_fixedIntenDgram,
+                &toggles.combinedDgram,
+                &toggles.fixedIntenDgram,
         });
 
     menuOutput_ = _actionsToMenu(
@@ -214,14 +167,14 @@ void MainWin::initMenu() {
 
     _actionsToMenu(
         "&View",
-        {   toggle_viewFiles,
-                toggle_viewDatasets,
-                toggle_viewMetadata,
+        {   &toggles.viewFiles,
+                &toggles.viewDatasets,
+                &toggles.viewMetadata,
                 _separator(),
 #ifndef Q_OS_OSX
-                toggle_fullScreen,
+                &toggles.fullScreen,
 #endif
-                toggle_viewStatusbar,
+                &toggles.viewStatusbar,
                 _separator(),
                 &triggers.viewReset,
         });
@@ -256,25 +209,6 @@ void MainWin::initLayout() {
     splTop->setStretchFactor(1, 1);
 
     statusBar();
-}
-
-//! Connect signals to slots. Part of the MainWin initialization.
-void MainWin::connectActions() {
-
-#define connectToggle(action, fun)  QObject::connect(action, &QAction::toggled, this, fun)
-
-    connectToggle(toggle_viewStatusbar, &MainWin::viewStatusbar);
-#ifndef Q_OS_OSX
-    connectToggle(toggle_fullScreen, &MainWin::viewFullScreen);
-#endif
-
-    connectToggle(toggle_viewFiles, &MainWin::viewFiles);
-    connectToggle(toggle_viewDatasets, &MainWin::viewDatasets);
-    connectToggle(toggle_viewMetadata, &MainWin::viewMetadata);
-}
-
-void MainWin::online() {
-    QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL));
 }
 
 void MainWin::checkUpdate() {
@@ -366,7 +300,7 @@ void MainWin::saveSettings() {
 
 void MainWin::viewStatusbar(bool on) {
     statusBar()->setVisible(on);
-    toggle_viewStatusbar->setChecked(on);
+    toggles.viewStatusbar.setChecked(on);
 }
 
 void MainWin::viewFullScreen(bool on) {
@@ -375,23 +309,23 @@ void MainWin::viewFullScreen(bool on) {
     else
         showNormal();
 #ifndef Q_OS_OSX
-    toggle_fullScreen->setChecked(on);
+    toggles.fullScreen.setChecked(on);
 #endif
 }
 
 void MainWin::viewFiles(bool on) {
     dockFiles_->setVisible(on);
-    toggle_viewFiles->setChecked(on);
+    toggles.viewFiles.setChecked(on);
 }
 
 void MainWin::viewDatasets(bool on) {
     dockMeasurements_->setVisible(on);
-    toggle_viewDatasets->setChecked(on);
+    toggles.viewDatasets.setChecked(on);
 }
 
 void MainWin::viewMetadata(bool on) {
     dockDatasetInfo_->setVisible(on);
-    toggle_viewMetadata->setChecked(on);
+    toggles.viewMetadata.setChecked(on);
 }
 
 void MainWin::viewReset() {
@@ -576,13 +510,13 @@ void MainWin::setImageRotate(ImageTransform rot) {
     }
 
     triggers.rotateImage.setIcon(QIcon(rotateIconFile));
-    toggle_mirrorImage->setIcon(QIcon(mirrorIconFile));
+    toggles.mirrorImage.setIcon(QIcon(mirrorIconFile));
     gSession->setImageTransformRotate(rot);
     gSession->setImageCut(true, false, gSession->imageCut());
 }
 
 void MainWin::setImageMirror(bool on) {
-    toggle_mirrorImage->setChecked(on);
+    toggles.mirrorImage.setChecked(on);
     gSession->setImageTransformMirror(on);
     emit gSession->sigDetector();
 }
@@ -592,7 +526,7 @@ void MainWin::updateActionEnabling() {
     bool hasCorr = gSession->hasCorrFile();
     bool hasPeak = gSession->peaks().count();
     bool hasBase = gSession->baseline().ranges().count();
-    toggle_enableCorr->setEnabled(hasCorr);
+    toggles.enableCorr.setEnabled(hasCorr);
     triggers.removeFile.setEnabled(hasFile);
     triggers.removePeak.setEnabled(hasPeak);
     triggers.clearBackground.setEnabled(hasBase);

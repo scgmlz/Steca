@@ -19,6 +19,7 @@
 #include "core/data/rawfile.h"
 #include "core/typ/singleton.h"
 #include "gui/cfg/settings.h"
+#include "gui/toggles.h"
 #include "gui/triggers.h"
 #include <QMainWindow>
 #include <QNetworkAccessManager>
@@ -39,7 +40,6 @@ public:
     MainWin();
     ~MainWin();
 
-    void online();
     void checkUpdate();
 
     void addFiles();
@@ -64,25 +64,8 @@ public:
     bool baselineEditable { false };
     bool peaksEditable { false };
 
-    QAction* toggle_combinedDgram;
-    QAction* toggle_enableCorr;
-    QAction* toggle_fixedIntenDgram;
-    QAction* toggle_fixedIntenImage;
-#ifndef Q_OS_OSX // Mac has its own
-    QAction* toggle_fullScreen;
-#endif
-    QAction* toggle_linkCuts;
-    QAction* toggle_mirrorImage;
-    QAction* toggle_showBackground;
-    QAction* toggle_showBins;
-    QAction* toggle_showOverlay;
-    QAction* toggle_stepScale;
-    QAction* toggle_viewDatasets;
-    QAction* toggle_viewFiles;
-    QAction* toggle_viewMetadata;
-    QAction* toggle_viewStatusbar;
-
     Triggers triggers;
+    Toggles toggles;
 
     // TODO relagate this to TabSave or similar
     QString saveDir; //!< setting: default directory for data export
@@ -98,7 +81,6 @@ private:
 
     void initMenu();
     void initLayout();
-    void connectActions();
 
     void closeEvent(QCloseEvent*);
 
@@ -124,6 +106,9 @@ private:
     bool isFixedIntenDgramScale_;
     bool isCombinedDgram_;
     Settings settings_;
+
+    friend class Toggles;
+    friend class Triggers;
 };
 
 #endif // MAINWIN_H
