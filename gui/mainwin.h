@@ -65,7 +65,7 @@ public:
     class Toggles* toggles;
     class Menus* menus;
 
-    // TODO relagate this to TabSave or similar
+    // TODO relegate this to TabSave or similar
     QString saveDir; //!< setting: default directory for data export
     QString saveFmt; //!< setting: default format for data export
 

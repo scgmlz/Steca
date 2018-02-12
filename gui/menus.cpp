@@ -13,11 +13,12 @@
 // ************************************************************************** //
 
 #include "menus.h"
+#include "gui/mainwin.h"
 #include "gui/triggers.h"
 #include "gui/toggles.h"
 
 //! Initialize the menu bar.
-Menus::Menus(QMenuBar* mbar, Triggers* triggers, Toggles* toggles)
+Menus::Menus(QMenuBar* mbar)
     : mbar_(mbar)
 {
 #ifdef Q_OS_OSX
@@ -25,6 +26,9 @@ Menus::Menus(QMenuBar* mbar, Triggers* triggers, Toggles* toggles)
 #else
     mbar->setNativeMenuBar(true);
 #endif
+
+    Triggers* triggers = gGui->triggers;
+    Toggles* toggles = gGui->toggles;
 
     actionsToMenu(
         "&File",

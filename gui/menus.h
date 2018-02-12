@@ -20,7 +20,7 @@
 class Menus {
 public:
     Menus() = delete;
-    Menus(QMenuBar*, class Triggers* triggers, class Toggles* toggles);
+    Menus(QMenuBar*);
     QMenu* dgram_;
     QMenu* image_;
     QMenu* output_;

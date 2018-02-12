@@ -44,10 +44,7 @@ MainWin* gGui; //!< global pointer to _the_ main window
 // ************************************************************************** //
 
 MainWin::MainWin()
-    : triggers(new Triggers)
-    , toggles(new Toggles)
-    , menus(new Menus(menuBar(), triggers, toggles))
-    , isFixedIntenImageScale_(false)
+    : isFixedIntenImageScale_(false)
     , isFixedIntenDgramScale_(false)
     , isCombinedDgram_(false)
     , settings_("main_settings")
@@ -55,6 +52,10 @@ MainWin::MainWin()
     gSession = Session::instance();
     gConsole = Console::instance();
     gGui = this;
+
+    triggers = new Triggers();
+    toggles = new Toggles();
+    menus = new Menus(menuBar());
 
     setWindowIcon(QIcon(":/icon/retroStier"));
     QDir::setCurrent(QDir::homePath());
