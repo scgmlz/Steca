@@ -219,6 +219,7 @@ const row_t& DataView::row(int i) const {
     return model_->row(i);
 }
 
+//! To enable copying to external applications
 void DataView::keyPressEvent(QKeyEvent *event) {
     if (event->key() == Qt::Key_C && event->modifiers() & Qt::ControlModifier) {
         QApplication::clipboard()->setText(exportSelection());
@@ -227,6 +228,7 @@ void DataView::keyPressEvent(QKeyEvent *event) {
     }
 }
 
+//! Encodes selected items as a string with separators '\t' and '\n', for use in keyPressEvent.
 QString DataView::exportSelection() {
     // TODO: improve https://stackoverflow.com/questions/1230222
     QString ret;
