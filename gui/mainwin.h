@@ -61,42 +61,42 @@ public:
     bool baselineEditable { false };
     bool peaksEditable { false };
 
-    QAction *trigger_about,
-        *trigger_online,
-        *trigger_checkUpdate,
-        *trigger_quit,
-        *toggle_viewStatusbar,
-        *toggle_viewFiles,
-        *toggle_viewDatasets,
-        *toggle_viewMetadata,
-        *trigger_viewReset,
+    QAction* toggle_combinedDgram;
+    QAction* toggle_enableCorr;
+    QAction* toggle_fixedIntenDgram;
+    QAction* toggle_fixedIntenImage;
 #ifndef Q_OS_OSX // Mac has its own
-        *toggle_fullScreen,
+    QAction* toggle_fullScreen;
 #endif
-        *trigger_loadSession,
-        *trigger_saveSession,
-        *trigger_clearSession,
-        *trigger_addFiles,
-        *trigger_removeFile,
-        *trigger_corrFile,
-        *toggle_enableCorr,
-        *trigger_rotateImage,
-        *toggle_mirrorImage,
-        *toggle_linkCuts,
-        *toggle_showOverlay,
-        *toggle_stepScale,
-        *toggle_showBins,
-        *toggle_fixedIntenImage,
-        *toggle_fixedIntenDgram,
-        *toggle_combinedDgram,
-        *toggle_showBackground,
-        *trigger_clearBackground,
-        *trigger_clearPeaks,
-        *trigger_addPeak,
-        *trigger_removePeak,
-        *trigger_outputPolefigures,
-        *trigger_outputDiagrams,
-        *trigger_outputDiffractograms;
+    QAction* toggle_linkCuts;
+    QAction* toggle_mirrorImage;
+    QAction* toggle_showBackground;
+    QAction* toggle_showBins;
+    QAction* toggle_showOverlay;
+    QAction* toggle_stepScale;
+    QAction* toggle_viewDatasets;
+    QAction* toggle_viewFiles;
+    QAction* toggle_viewMetadata;
+    QAction* toggle_viewStatusbar;
+    QAction* trigger_about;
+    QAction* trigger_addFiles;
+    QAction* trigger_addPeak;
+    QAction* trigger_checkUpdate;
+    QAction* trigger_clearBackground;
+    QAction* trigger_clearPeaks;
+    QAction* trigger_clearSession;
+    QAction* trigger_corrFile;
+    QAction* trigger_loadSession;
+    QAction* trigger_online;
+    QAction* trigger_outputDiagrams;
+    QAction* trigger_outputDiffractograms;
+    QAction* trigger_outputPolefigures;
+    QAction* trigger_quit;
+    QAction* trigger_removeFile;
+    QAction* trigger_removePeak;
+    QAction* trigger_rotateImage;
+    QAction* trigger_saveSession;
+    QAction* trigger_viewReset;
 
     // TODO relagate this to TabSave or similar
     QString saveDir; //!< setting: default directory for data export

@@ -48,14 +48,6 @@ CToggle::CToggle(const QString& name, const QString& text, bool on, const QStrin
             gConsole->log(name+"="+(val ? "y" : "n")); });
 };
 
-QAction* newT::Trigger(const QString& name, const QString& text, const QString& iconFile) {
-    return new CTrigger(name, text, iconFile);
-}
-
-QAction* newT::Toggle(const QString& name, const QString& text, bool on, const QString& iconFile) {
-    return new CToggle(name, text, on, iconFile);
-}
-
 XTextButton::XTextButton(QAction* action) {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonTextOnly);

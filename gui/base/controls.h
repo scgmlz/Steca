@@ -42,15 +42,6 @@ public:
     CToggle(const QString& name, const QString& text, bool on, const QString& iconFile="");
 };
 
-//! Contains functions that return new QActions.
-
-namespace newT {
-
-QAction* Trigger(const QString& name, const QString& text, const QString& iconFile="");
-QAction* Toggle(const QString& name, const QString& text, bool value, const QString& iconFile="");
-
-} // namespace newT
-
 //! QToolButton with text display and associated QAction.
 class XTextButton : public QToolButton {
 public:

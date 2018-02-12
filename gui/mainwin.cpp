@@ -60,73 +60,73 @@ MainWin::MainWin()
 
     // create actions
 
-    trigger_about = newT::Trigger("trigger_about", "About " + qApp->applicationName());
+    trigger_about = new CTrigger("trigger_about", "About " + qApp->applicationName());
 
-    trigger_online = newT::Trigger("trigger_online", "Open docs in external browser");
+    trigger_online = new CTrigger("trigger_online", "Open docs in external browser");
 
-    trigger_checkUpdate = newT::Trigger("trigger_checkUpdate", "Check for update");
+    trigger_checkUpdate = new CTrigger("trigger_checkUpdate", "Check for update");
 
-    trigger_quit = newT::Trigger("trigger_quit", "Quit");
+    trigger_quit = new CTrigger("trigger_quit", "Quit");
     trigger_quit->setShortcut(QKeySequence::Quit);
 
-    toggle_viewStatusbar = newT::Toggle("toggle_viewStatusbar", "Statusbar", true);
+    toggle_viewStatusbar = new CToggle("toggle_viewStatusbar", "Statusbar", true);
     toggle_viewStatusbar->setShortcut(Qt::Key_F12);
 
-    toggle_viewFiles = newT::Toggle("toggle_viewFiles", "Files", true);
+    toggle_viewFiles = new CToggle("toggle_viewFiles", "Files", true);
     toggle_viewFiles->setShortcut(Qt::Key_F8);
 
-    toggle_viewDatasets = newT::Toggle("toggle_viewDatasets", "Datasets", true);
+    toggle_viewDatasets = new CToggle("toggle_viewDatasets", "Datasets", true);
     toggle_viewDatasets->setShortcut(Qt::Key_F9);
 
-    toggle_viewMetadata = newT::Toggle("toggle_viewMetadata", "Metadata", true);
+    toggle_viewMetadata = new CToggle("toggle_viewMetadata", "Metadata", true);
     toggle_viewMetadata->setShortcut(Qt::Key_F10);
 
-    trigger_viewReset = newT::Trigger("trigger_viewReset", "Reset");
+    trigger_viewReset = new CTrigger("trigger_viewReset", "Reset");
 
 #ifndef Q_OS_OSX
-    toggle_fullScreen = newT::Toggle("toggle_fullScreen", "FullScreen", false);
+    toggle_fullScreen = new CToggle("toggle_fullScreen", "FullScreen", false);
     toggle_fullScreen->setShortcut(Qt::Key_F11);
 #endif
 
-    trigger_loadSession = newT::Trigger("trigger_loadSession", "Load session...");
+    trigger_loadSession = new CTrigger("trigger_loadSession", "Load session...");
 
-    trigger_saveSession = newT::Trigger("trigger_saveSession", "Save session...");
+    trigger_saveSession = new CTrigger("trigger_saveSession", "Save session...");
 
-    trigger_clearSession = newT::Trigger("trigger_clearSession", "Clear session");
+    trigger_clearSession = new CTrigger("trigger_clearSession", "Clear session");
 
-    trigger_addFiles = newT::Trigger("trigger_addFiles", "Add files...", ":/icon/add");
+    trigger_addFiles = new CTrigger("trigger_addFiles", "Add files...", ":/icon/add");
     trigger_addFiles->setShortcut(Qt::CTRL | Qt::Key_O);
 
-    trigger_removeFile = newT::Trigger(
+    trigger_removeFile = new CTrigger(
         "trigger_removeFile", "Remove highlighted file", ":/icon/rem");
     trigger_removeFile->setShortcut(QKeySequence::Delete);
     QObject::connect(trigger_removeFile, &QAction::triggered, []() {
             gSession->dataset().removeFile(); });
 
-    trigger_corrFile = newT::Trigger("trigger_corrFile", "Add correction file", ":/icon/add");
+    trigger_corrFile = new CTrigger("trigger_corrFile", "Add correction file", ":/icon/add");
     trigger_corrFile->setShortcut(Qt::SHIFT | Qt::CTRL | Qt::Key_O);
     connect(trigger_corrFile, &QAction::triggered, this, &MainWin::loadCorrFile);
-    toggle_enableCorr = newT::Toggle(
+    toggle_enableCorr = new CToggle(
         "toggle_enableCorr", "Enable correction file", false, ":/icon/useCorrection");
     connect(toggle_enableCorr, &QAction::toggled, [this](bool on) {
             gSession->corrset().tryEnable(on); });
-    trigger_rotateImage = newT::Trigger("trigger_rotateImage", "Rotate", ":/icon/rotate0");
+    trigger_rotateImage = new CTrigger("trigger_rotateImage", "Rotate", ":/icon/rotate0");
     trigger_rotateImage->setShortcut(Qt::CTRL | Qt::Key_R);
     connect(trigger_rotateImage, &QAction::triggered, [this]() {
         setImageRotate(gSession->imageTransform().nextRotate()); });
 
-    toggle_mirrorImage = newT::Toggle("toggle_mirrorImage", "Mirror", false, ":/icon/mirrorHorz");
+    toggle_mirrorImage = new CToggle("toggle_mirrorImage", "Mirror", false, ":/icon/mirrorHorz");
     connect(toggle_mirrorImage, &QAction::toggled, [this](bool on) { setImageMirror(on); });
 
-    toggle_linkCuts = newT::Toggle("toggle_linkCuts", "Link cuts", false, ":/icon/link");
+    toggle_linkCuts = new CToggle("toggle_linkCuts", "Link cuts", false, ":/icon/link");
 
-    toggle_showOverlay = newT::Toggle("toggle_showOverlay", "Show overlay", false, ":/icon/crop");
+    toggle_showOverlay = new CToggle("toggle_showOverlay", "Show overlay", false, ":/icon/crop");
 
-    toggle_stepScale = newT::Toggle("toggle_stepScale", "Scale in steps", false, ":/icon/steps");
+    toggle_stepScale = new CToggle("toggle_stepScale", "Scale in steps", false, ":/icon/steps");
 
-    toggle_showBins = newT::Toggle("toggle_showBins", "Show bins", false, ":/icon/angle");
+    toggle_showBins = new CToggle("toggle_showBins", "Show bins", false, ":/icon/angle");
 
-    toggle_fixedIntenImage = newT::Toggle(
+    toggle_fixedIntenImage = new CToggle(
         "toggle_fixedIntenImage", "Global intensity scale", false, ":/icon/scale");
     connect(toggle_fixedIntenImage, &QAction::toggled, [this](bool on) {
         isFixedIntenImageScale_ = on;
@@ -134,7 +134,7 @@ MainWin::MainWin()
         emit gSession->sigDiffractogram();
         });
 
-    toggle_fixedIntenDgram = newT::Toggle(
+    toggle_fixedIntenDgram = new CToggle(
         "toggle_fixedIntenDgram", "Fixed intensity scale", false);
     connect(toggle_fixedIntenDgram, &QAction::toggled, [this](bool on) {
         isFixedIntenDgramScale_ = on;
@@ -142,7 +142,7 @@ MainWin::MainWin()
         emit gSession->sigDiffractogram();
         });
 
-    toggle_combinedDgram = newT::Toggle("toggle_combinedDgram", "All measurements", true);
+    toggle_combinedDgram = new CToggle("toggle_combinedDgram", "All measurements", true);
     toggle_combinedDgram->setChecked(false);
     connect(toggle_combinedDgram, &QAction::toggled, [this](bool on) {
         isCombinedDgram_ = on;
@@ -150,25 +150,25 @@ MainWin::MainWin()
         emit gSession->sigDiffractogram();
         });
 
-    toggle_showBackground = newT::Toggle(
+    toggle_showBackground = new CToggle(
         "toggle_showBackground", "Show fitted background", false, ":/icon/showBackground");
 
-    trigger_clearBackground = newT::Trigger(
+    trigger_clearBackground = new CTrigger(
         "trigger_clearBackground", "Clear background regions", ":/icon/clear");
     connect(trigger_clearBackground, &QAction::triggered, [this]() {
             gSession->baseline().setRanges({}); });
 
-    trigger_clearPeaks = newT::Trigger("trigger_clearPeaks", "Clear peaks", ":/icon/clear");
+    trigger_clearPeaks = new CTrigger("trigger_clearPeaks", "Clear peaks", ":/icon/clear");
 
-    trigger_addPeak = newT::Trigger("trigger_addPeak", "Add peak", ":/icon/add");
+    trigger_addPeak = new CTrigger("trigger_addPeak", "Add peak", ":/icon/add");
 
-    trigger_removePeak = newT::Trigger("trigger_removePeak", "Remove peak", ":/icon/rem");
+    trigger_removePeak = new CTrigger("trigger_removePeak", "Remove peak", ":/icon/rem");
 
-    trigger_outputPolefigures = newT::Trigger("trigger_outputPolefigures", "Pole figures...");
+    trigger_outputPolefigures = new CTrigger("trigger_outputPolefigures", "Pole figures...");
 
-    trigger_outputDiagrams = newT::Trigger("trigger_outputDiagrams", "Diagrams...");
+    trigger_outputDiagrams = new CTrigger("trigger_outputDiagrams", "Diagrams...");
 
-    trigger_outputDiffractograms = newT::Trigger(
+    trigger_outputDiffractograms = new CTrigger(
         "trigger_outputDiffractograms", "Diffractograms...");
 
     // connect signals
