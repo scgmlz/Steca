@@ -15,6 +15,7 @@
 #include "mainwin.h"
 #include "../manifest.h"
 #include "core/session.h"
+#include "gui/menus.h"
 #include "gui/toggles.h"
 #include "gui/triggers.h"
 #include "gui/capture_and_replay/console.h"
@@ -45,6 +46,7 @@ MainWin* gGui; //!< global pointer to _the_ main window
 MainWin::MainWin()
     : triggers(new Triggers)
     , toggles(new Toggles)
+    , menus(new Menus(menuBar(), triggers, toggles))
     , isFixedIntenImageScale_(false)
     , isFixedIntenDgramScale_(false)
     , isCombinedDgram_(false)
@@ -82,7 +84,6 @@ MainWin::MainWin()
             emit gSession->sigDiffractogram();
         });
 
-    initMenu();
     initLayout();
     readSettings();
     updateActionEnabling();
@@ -96,101 +97,6 @@ MainWin::~MainWin() {
     settings_.saveStr("export_format", saveFmt);
 }
 
-//! Initialize the menu bar.
-void MainWin::initMenu() {
-
-    QMenuBar* mbar = menuBar();
-
-    auto _separator = [mbar]()->QAction* {
-        QAction* ret = new QAction(mbar);
-        ret->setSeparator(true);
-        return ret;
-    };
-
-    auto _actionsToMenu = [mbar](const char* menuName, QList<QAction*> actions)->QMenu* {
-        QMenu* menu = mbar->addMenu(menuName);
-        menu->addActions(actions);
-        QString prefix = QString("%1: ").arg(menu->title().remove('&'));
-        for (auto action : actions)
-            action->setToolTip(prefix + action->toolTip());
-        return menu;
-    };
-
-#ifdef Q_OS_OSX
-    mbar->setNativeMenuBar(false);
-#else
-    mbar->setNativeMenuBar(true);
-#endif
-
-    _actionsToMenu(
-        "&File",
-        {   &triggers->addFiles,
-                &triggers->removeFile,
-                _separator(),
-                &triggers->corrFile,
-                &toggles->enableCorr,
-                _separator(),
-                &triggers->loadSession,
-                &triggers->saveSession,
-                &triggers->clearSession,
-#ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
-                _separator(),
-#endif
-                &triggers->quit,
-        });
-
-    menuImage_ = _actionsToMenu(
-        "&Image",
-        {   &triggers->rotateImage,
-                &toggles->mirrorImage,
-                &toggles->fixedIntenImage,
-                &toggles->linkCuts,
-                &toggles->showOverlay,
-                &toggles->stepScale,
-                &toggles->showBins,
-        });
-
-    menuDgram_ = _actionsToMenu(
-        "&Diffractogram",
-        {   &toggles->showBackground,
-                &triggers->clearBackground,
-                &triggers->clearPeaks,
-                _separator(),
-                &triggers->addPeak,
-                &triggers->removePeak,
-                _separator(),
-                &toggles->combinedDgram,
-                &toggles->fixedIntenDgram,
-        });
-
-    menuOutput_ = _actionsToMenu(
-        "&Output",
-        {   &triggers->outputPolefigures,
-                &triggers->outputDiagrams,
-                &triggers->outputDiffractograms,
-        });
-
-    _actionsToMenu(
-        "&View",
-        {   &toggles->viewFiles,
-                &toggles->viewClusters,
-                &toggles->viewMetadata,
-                _separator(),
-#ifndef Q_OS_OSX
-                &toggles->fullScreen,
-#endif
-                &toggles->viewStatusbar,
-                _separator(),
-                &triggers->viewReset,
-        });
-
-    _actionsToMenu(
-        "&Help",
-        {   &triggers->about, // Mac puts About into the Apple menu
-                &triggers->online,
-                &triggers->checkUpdate,
-        });
-}
 
 void MainWin::initLayout() {
     addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_ = new SubframeFiles()));
@@ -510,7 +416,7 @@ void MainWin::updateActionEnabling() {
     triggers->outputDiagrams.setEnabled(hasFile && hasPeak);
     triggers->outputDiffractograms.setEnabled(hasFile);
     triggers->outputPolefigures.setEnabled(hasFile && hasPeak);
-    menuDgram_->setEnabled(hasFile);
-    menuImage_->setEnabled(hasFile);
-    menuOutput_->setEnabled(hasFile);
+    menus->dgram_->setEnabled(hasFile);
+    menus->image_->setEnabled(hasFile);
+    menus->output_->setEnabled(hasFile);
 }

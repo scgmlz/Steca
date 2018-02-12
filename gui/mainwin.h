@@ -63,6 +63,7 @@ public:
 
     class Triggers* triggers;
     class Toggles* toggles;
+    class Menus* menus;
 
     // TODO relagate this to TabSave or similar
     QString saveDir; //!< setting: default directory for data export
@@ -71,9 +72,6 @@ public:
 private:
     QDockWidget *dockFiles_, *dockClusters_, *dockMetadata_;
     QByteArray initialState_;
-    QMenu* menuDgram_;
-    QMenu* menuImage_;
-    QMenu* menuOutput_;
 
     void initMenu();
     void initLayout();
@@ -97,8 +95,9 @@ private:
     bool isCombinedDgram_;
     Settings settings_;
 
-    friend Toggles;
     friend Triggers;
+    friend Toggles;
+    friend Menus;
 };
 
 #endif // MAINWIN_H
