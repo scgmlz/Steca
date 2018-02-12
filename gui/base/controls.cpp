@@ -29,30 +29,32 @@ CTrigger::CTrigger(const QString& name, const QString& text, const QString& icon
     QObject::connect(this, &QAction::triggered, [name]()->void { gConsole->log(name+"!"); });
 };
 
+CToggle::CToggle(const QString& name, const QString& text, bool on, const QString& iconFile)
+    : QAction(text, qApp)
+{
+    setToolTip(text.toLower());
+    if (iconFile!="")
+        setIcon(QIcon(iconFile));
+    setCheckable(true);
+    setChecked(on);
+    gConsole->learn(name, [this](const QString& val)->void {
+            if (val=="y")
+                setChecked(true);
+            else if (val=="n")
+                setChecked(false);
+            else
+                qWarning() << "Invalid toggle setter argument '"+val+"'"; } );
+    QObject::connect(this, &QAction::toggled, [name](bool val)->void {
+            gConsole->log(name+"="+(val ? "y" : "n")); });
+};
+
 QAction* newT::Trigger(const QString& name, const QString& text, const QString& iconFile) {
     return new CTrigger(name, text, iconFile);
 }
 
-QAction* newT::Toggle(
-    const QString& name, const QString& text, bool value, const QString& iconFile)
-{
-    QAction* ret = new QAction(text, qApp);
-    ret->setToolTip(text.toLower());
-    if (iconFile!="")
-        ret->setIcon(QIcon(iconFile));
-    ret->setCheckable(true);
-    ret->setChecked(value);
-    gConsole->learn(name, [ret](const QString& val)->void {
-            if (val=="y")
-                ret->setChecked(true);
-            else if (val=="n")
-                ret->setChecked(false);
-            else
-                qWarning() << "Invalid toggle setter argument '"+val+"'"; } );
-    QObject::connect(ret, &QAction::toggled, [name](bool val)->void {
-            gConsole->log(name+"="+(val ? "y" : "n")); });
-    return ret;
-};
+QAction* newT::Toggle(const QString& name, const QString& text, bool on, const QString& iconFile) {
+    return new CToggle(name, text, on, iconFile);
+}
 
 XTextButton::XTextButton(QAction* action) {
     setDefaultAction(action);
