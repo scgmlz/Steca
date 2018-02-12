@@ -45,8 +45,8 @@ private:
 ImageWidget::ImageWidget() : scale_(0) {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    connect(&gGui->toggles.showOverlay, &QAction::toggled, [this](bool /*unused*/) { update(); });
-    connect(&gGui->toggles.stepScale, &QAction::toggled, [this](bool /*unused*/) { setScale(); });
+    connect(&gGui->toggles->showOverlay, &QAction::toggled, [this](bool /*unused*/) { update(); });
+    connect(&gGui->toggles->stepScale, &QAction::toggled, [this](bool /*unused*/) { setScale(); });
 }
 
 void ImageWidget::setPixmap(QPixmap const& pixmap) {
@@ -63,7 +63,7 @@ void ImageWidget::setScale() {
         scale_ = qMin(qreal(sz.width() - 2) / os.width(), qreal(sz.height() - 2) / os.height());
     }
 
-    if (gGui->toggles.stepScale.isChecked() && scale_ > 0)
+    if (gGui->toggles->stepScale.isChecked() && scale_ > 0)
         scale_ = (scale_ >= 1) ? qFloor(scale_) : 1.0 / qCeil(1.0 / scale_);
 
     if (original_.isNull() || !(scale_ > 0))
@@ -90,7 +90,7 @@ void ImageWidget::paintEvent(QPaintEvent*) {
     p.drawPixmap(rect.left(), rect.top(), scaled_);
 
     // overlay
-    if (gGui->toggles.showOverlay.isChecked()) {
+    if (gGui->toggles->showOverlay.isChecked()) {
         p.setPen(Qt::lightGray);
 
         // cut
@@ -154,15 +154,15 @@ ImageTab::ImageTab() {
 
     controls_ = newQ::HBoxLayout();
     box_->addLayout(controls_);
-    controls_->addWidget(new XIconButton(&gGui->toggles.fixedIntenImage));
-    controls_->addWidget(new XIconButton(&gGui->toggles.stepScale));
-    controls_->addWidget(new XIconButton(&gGui->toggles.showOverlay));
+    controls_->addWidget(new XIconButton(&gGui->toggles->fixedIntenImage));
+    controls_->addWidget(new XIconButton(&gGui->toggles->stepScale));
+    controls_->addWidget(new XIconButton(&gGui->toggles->showOverlay));
 
     imageView_ = new ImageWidget();
     box_->addWidget(imageView_);
 
-    connect(&gGui->toggles.enableCorr, &QAction::toggled, [this](bool /*unused*/) { render(); });
-    connect(&gGui->toggles.showBins, &QAction::toggled, [this](bool /*unused*/) { render(); });
+    connect(&gGui->toggles->enableCorr, &QAction::toggled, [this](bool /*unused*/) { render(); });
+    connect(&gGui->toggles->showBins, &QAction::toggled, [this](bool /*unused*/) { render(); });
 
     connect(gSession, &Session::sigDetector, this, &ImageTab::render);
     connect(gSession, &Session::sigNorm, this, &ImageTab::render);
@@ -268,7 +268,7 @@ DataImageTab::DataImageTab() {
 
     controls_->addStretch(1);
 
-    controls_->addWidget(new XIconButton(&gGui->toggles.showBins));
+    controls_->addWidget(new XIconButton(&gGui->toggles->showBins));
     controls_->addWidget(new QLabel("γ count"));
     controls_->addWidget(&numSlices_);
     connect(&numSlices_, _SLOT_(QSpinBox, valueChanged, int),
@@ -325,7 +325,7 @@ void DataImageTab::render() {
         const Measurement* measurement = gSession->dataset().highlight().measurement();
 
         numBin_.setEnabled(true);
-        if (gGui->toggles.showBins.isChecked()) {
+        if (gGui->toggles->showBins.isChecked()) {
             Range rgeTth = lens->rgeTth();
             int count = lens->makeCurve().count();
             numBin_.setMaximum(count - 1);

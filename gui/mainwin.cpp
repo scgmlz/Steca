@@ -62,11 +62,11 @@ MainWin::MainWin()
         });
     QObject::connect(gSession, &Session::sigCorr, [this]() {
             bool hasCorr = gSession->hasCorrFile();
-            triggers.corrFile.setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
+            triggers->corrFile.setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
             QString text = QString(hasCorr ? "Remove" : "Add") + " correction file";
-            triggers.corrFile.setText(text);
-            triggers.corrFile.setToolTip(text.toLower());
-            toggles.enableCorr.setChecked(gSession->corrset().isEnabled());
+            triggers->corrFile.setText(text);
+            triggers->corrFile.setToolTip(text.toLower());
+            toggles->enableCorr.setChecked(gSession->corrset().isEnabled());
             updateActionEnabling();
             emit gSession->sigDiffractogram();
             emit gSession->sigImage();
@@ -122,71 +122,71 @@ void MainWin::initMenu() {
 
     _actionsToMenu(
         "&File",
-        {   &triggers.addFiles,
-                &triggers.removeFile,
+        {   &triggers->addFiles,
+                &triggers->removeFile,
                 _separator(),
-                &triggers.corrFile,
-                &toggles.enableCorr,
+                &triggers->corrFile,
+                &toggles->enableCorr,
                 _separator(),
-                &triggers.loadSession,
-                &triggers.saveSession,
-                &triggers.clearSession,
+                &triggers->loadSession,
+                &triggers->saveSession,
+                &triggers->clearSession,
 #ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
                 _separator(),
 #endif
-                &triggers.quit,
+                &triggers->quit,
         });
 
     menuImage_ = _actionsToMenu(
         "&Image",
-        {   &triggers.rotateImage,
-                &toggles.mirrorImage,
-                &toggles.fixedIntenImage,
-                &toggles.linkCuts,
-                &toggles.showOverlay,
-                &toggles.stepScale,
-                &toggles.showBins,
+        {   &triggers->rotateImage,
+                &toggles->mirrorImage,
+                &toggles->fixedIntenImage,
+                &toggles->linkCuts,
+                &toggles->showOverlay,
+                &toggles->stepScale,
+                &toggles->showBins,
         });
 
     menuDgram_ = _actionsToMenu(
         "&Diffractogram",
-        {   &toggles.showBackground,
-                &triggers.clearBackground,
-                &triggers.clearPeaks,
+        {   &toggles->showBackground,
+                &triggers->clearBackground,
+                &triggers->clearPeaks,
                 _separator(),
-                &triggers.addPeak,
-                &triggers.removePeak,
+                &triggers->addPeak,
+                &triggers->removePeak,
                 _separator(),
-                &toggles.combinedDgram,
-                &toggles.fixedIntenDgram,
+                &toggles->combinedDgram,
+                &toggles->fixedIntenDgram,
         });
 
     menuOutput_ = _actionsToMenu(
         "&Output",
-        {   &triggers.outputPolefigures,
-                &triggers.outputDiagrams,
-                &triggers.outputDiffractograms,
+        {   &triggers->outputPolefigures,
+                &triggers->outputDiagrams,
+                &triggers->outputDiffractograms,
         });
 
     _actionsToMenu(
         "&View",
-        {   &toggles.viewFiles,
-                &toggles.viewDatasets,
-                &toggles.viewMetadata,
+        {   &toggles->viewFiles,
+                &toggles->viewDatasets,
+                &toggles->viewMetadata,
                 _separator(),
 #ifndef Q_OS_OSX
-                &toggles.fullScreen,
+                &toggles->fullScreen,
 #endif
-                &toggles.viewStatusbar,
+                &toggles->viewStatusbar,
                 _separator(),
-                &triggers.viewReset,
+                &triggers->viewReset,
         });
 
     _actionsToMenu(
         "&Help",
-        {   &triggers.about, // Mac puts About into the Apple menu
-                &triggers.online,
-                &triggers.checkUpdate,
+        {   &triggers->about, // Mac puts About into the Apple menu
+                &triggers->online,
+                &triggers->checkUpdate,
         });
 }
 
@@ -303,7 +303,7 @@ void MainWin::saveSettings() {
 
 void MainWin::viewStatusbar(bool on) {
     statusBar()->setVisible(on);
-    toggles.viewStatusbar.setChecked(on);
+    toggles->viewStatusbar.setChecked(on);
 }
 
 void MainWin::viewFullScreen(bool on) {
@@ -312,23 +312,23 @@ void MainWin::viewFullScreen(bool on) {
     else
         showNormal();
 #ifndef Q_OS_OSX
-    toggles.fullScreen.setChecked(on);
+    toggles->fullScreen.setChecked(on);
 #endif
 }
 
 void MainWin::viewFiles(bool on) {
     dockFiles_->setVisible(on);
-    toggles.viewFiles.setChecked(on);
+    toggles->viewFiles.setChecked(on);
 }
 
 void MainWin::viewDatasets(bool on) {
     dockMeasurements_->setVisible(on);
-    toggles.viewDatasets.setChecked(on);
+    toggles->viewDatasets.setChecked(on);
 }
 
 void MainWin::viewMetadata(bool on) {
     dockDatasetInfo_->setVisible(on);
-    toggles.viewMetadata.setChecked(on);
+    toggles->viewMetadata.setChecked(on);
 }
 
 void MainWin::viewReset() {
@@ -512,14 +512,14 @@ void MainWin::setImageRotate(ImageTransform rot) {
         break;
     }
 
-    triggers.rotateImage.setIcon(QIcon(rotateIconFile));
-    toggles.mirrorImage.setIcon(QIcon(mirrorIconFile));
+    triggers->rotateImage.setIcon(QIcon(rotateIconFile));
+    toggles->mirrorImage.setIcon(QIcon(mirrorIconFile));
     gSession->setImageTransformRotate(rot);
     gSession->setImageCut(true, false, gSession->imageCut());
 }
 
 void MainWin::setImageMirror(bool on) {
-    toggles.mirrorImage.setChecked(on);
+    toggles->mirrorImage.setChecked(on);
     gSession->setImageTransformMirror(on);
     emit gSession->sigDetector();
 }
@@ -529,13 +529,13 @@ void MainWin::updateActionEnabling() {
     bool hasCorr = gSession->hasCorrFile();
     bool hasPeak = gSession->peaks().count();
     bool hasBase = gSession->baseline().ranges().count();
-    toggles.enableCorr.setEnabled(hasCorr);
-    triggers.removeFile.setEnabled(hasFile);
-    triggers.removePeak.setEnabled(hasPeak);
-    triggers.clearBackground.setEnabled(hasBase);
-    triggers.outputDiagrams.setEnabled(hasFile && hasPeak);
-    triggers.outputDiffractograms.setEnabled(hasFile);
-    triggers.outputPolefigures.setEnabled(hasFile && hasPeak);
+    toggles->enableCorr.setEnabled(hasCorr);
+    triggers->removeFile.setEnabled(hasFile);
+    triggers->removePeak.setEnabled(hasPeak);
+    triggers->clearBackground.setEnabled(hasBase);
+    triggers->outputDiagrams.setEnabled(hasFile && hasPeak);
+    triggers->outputDiffractograms.setEnabled(hasFile);
+    triggers->outputPolefigures.setEnabled(hasFile && hasPeak);
     menuDgram_->setEnabled(hasFile);
     menuImage_->setEnabled(hasFile);
     menuOutput_->setEnabled(hasFile);

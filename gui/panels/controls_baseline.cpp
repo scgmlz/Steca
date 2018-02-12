@@ -101,7 +101,7 @@ ControlsBaseline::ControlsBaseline() {
     hb->addWidget(new QLabel("Pol. degree:"));
     hb->addWidget(&spinDegree_);
     hb->addStretch(1);
-    hb->addWidget(new XIconButton(&gGui->triggers.clearBackground));
+    hb->addWidget(new XIconButton(&gGui->triggers->clearBackground));
 
     box->addWidget(new BaseRangesView());
     box->addStretch(1);

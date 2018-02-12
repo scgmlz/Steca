@@ -112,8 +112,8 @@ SubframeFiles::SubframeFiles() : DockWidget("Files", "dock-files") {
     box_->addLayout(h);
 
     h->addStretch();
-    h->addWidget(new XIconButton(&gGui->triggers.addFiles));
-    h->addWidget(new XIconButton(&gGui->triggers.removeFile));
+    h->addWidget(new XIconButton(&gGui->triggers->addFiles));
+    h->addWidget(new XIconButton(&gGui->triggers->removeFile));
 
     box_->addWidget(new FilesView());
 
@@ -128,8 +128,8 @@ SubframeFiles::SubframeFiles() : DockWidget("Files", "dock-files") {
     auto* corrFile_ = new QLineEdit();
     corrFile_->setReadOnly(true);
     h->addWidget(corrFile_);
-    h->addWidget(new XIconButton(&gGui->triggers.corrFile));
-    h->addWidget(new XIconButton(&gGui->toggles.enableCorr));
+    h->addWidget(new XIconButton(&gGui->triggers->corrFile));
+    h->addWidget(new XIconButton(&gGui->toggles->enableCorr));
 
     connect(gSession, &Session::sigCorr, [corrFile_]() {
             corrFile_->setText( gSession->corrset().hasFile() ?

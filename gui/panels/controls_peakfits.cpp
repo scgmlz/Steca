@@ -299,12 +299,12 @@ ControlsPeakfits::ControlsPeakfits()
     box->addLayout(hb);
     hb->addStretch();
 
-    hb->addWidget(new XIconButton(&gGui->triggers.addPeak));
-    connect(&gGui->triggers.addPeak, &QAction::triggered, [this]() {
+    hb->addWidget(new XIconButton(&gGui->triggers->addPeak));
+    connect(&gGui->triggers->addPeak, &QAction::triggered, [this]() {
             gSession->peaks().add(comboReflType_.currentText()); });
 
-    hb->addWidget(new XIconButton(&gGui->triggers.removePeak));
-    connect(&gGui->triggers.removePeak, &QAction::triggered, [this]() {
+    hb->addWidget(new XIconButton(&gGui->triggers->removePeak));
+    connect(&gGui->triggers->removePeak, &QAction::triggered, [this]() {
             gSession->peaks().remove(); });
 
     box->addWidget(new PeaksView());

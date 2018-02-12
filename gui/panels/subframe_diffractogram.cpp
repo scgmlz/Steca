@@ -43,8 +43,8 @@ private:
     CDoubleSpinBox intenScale_{"intenScale", 6, 0.001};
     QAction* actZoom_{ new CToggle("actZoom", "zoom", false) };
     XTextButton enableZoom_{actZoom_};
-    CCheckBox combine_{"dgram:combine", &gGui->toggles.combinedDgram};
-    CCheckBox fixInten_{"dgram:fixInten", &gGui->toggles.fixedIntenDgram};
+    CCheckBox combine_{"dgram:combine", &gGui->toggles->combinedDgram};
+    CCheckBox fixInten_{"dgram:fixInten", &gGui->toggles->fixedIntenDgram};
 };
 
 
@@ -84,7 +84,7 @@ Diffractogram::Diffractogram() {
     hb->addStretch();
 
 
-    hb->addWidget(new XIconButton(&gGui->toggles.showBackground));
+    hb->addWidget(new XIconButton(&gGui->toggles->showBackground));
     hb->addWidget(&combine_);
     hb->addWidget(&fixInten_);
 
@@ -97,7 +97,7 @@ Diffractogram::Diffractogram() {
     connect(gSession, &Session::sigDataHighlight, this, &Diffractogram::onHighlight);
     connect(gSession, &Session::sigNorm, this, &Diffractogram::onNormChanged);
 
-    gGui->toggles.showBackground.setChecked(true);
+    gGui->toggles->showBackground.setChecked(true);
     intenAvg_.setChecked(true);
 }
 
