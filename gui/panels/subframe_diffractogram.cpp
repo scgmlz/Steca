@@ -43,8 +43,8 @@ private:
     CRadioButton intenSum_{"intenSum", "sum"};
     CRadioButton intenAvg_{"intenAvg", "avg ×"};
     CDoubleSpinBox intenScale_{"intenScale", 6, 0.001};
-    QAction* actZoom_{ new CToggle("actZoom", "zoom", false) };
-    XTextButton enableZoom_{actZoom_};
+    CToggle actZoom_ {"actZoom", "zoom", false, ":/icon/zoom"};
+    XIconButton enableZoom_{&actZoom_};
     CCheckBox combine_{"dgram:combine", &gGui->toggles->combinedDgram};
     CCheckBox fixInten_{"dgram:fixInten", &gGui->toggles->fixedIntenDgram};
 };
@@ -90,7 +90,7 @@ Diffractogram::Diffractogram() {
     hb->addWidget(&combine_);
     hb->addWidget(&fixInten_);
 
-    connect(actZoom_, &QAction::toggled, this, [this](bool on) {
+    connect(&actZoom_, &QAction::toggled, this, [this](bool on) {
         plot_->setInteraction(QCP::iRangeDrag, on);
         plot_->setInteraction(QCP::iRangeZoom, on);
         plot_->enterZoom(on);
@@ -113,7 +113,7 @@ void Diffractogram::onNormChanged() {
 }
 
 void Diffractogram::onHighlight() {
-    actZoom_->setChecked(false);
+    actZoom_.setChecked(false);
     plot_->renderAll();
 }
 

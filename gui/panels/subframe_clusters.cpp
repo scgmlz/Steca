@@ -195,7 +195,7 @@ private:
             "Combine this number of measurements into one group"};
     CToggle dropIncompleteAction_ {"dropIncomplete",
             "Drop measurement groups that do not have the full number of members",
-            false, ":/icon/rotate3" }; //dropIncomplete" };
+            false, ":/icon/dropIncomplete" };
     XIconButton dropIncompleteButton_ { &dropIncompleteAction_ };
 };
 
@@ -220,6 +220,7 @@ ExperimentControls::ExperimentControls() {
     connect(gSession, &Session::sigClusters, [=]() {
             combineMeasurements_.setValue(gSession->dataset().binning());
             dropIncompleteAction_.setEnabled(gSession->dataset().hasIncomplete()); });
+    dropIncompleteAction_.setEnabled(false);
 }
 
 // ************************************************************************** //
