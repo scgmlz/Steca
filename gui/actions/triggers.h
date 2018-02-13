@@ -35,7 +35,8 @@ public:
     CTrigger loadSession {"loadSession", "Load session..."};
     CTrigger online  {"online", "Open docs in external browser"};
     CTrigger outputDiagrams {"outputDiagrams", "Diagrams..."};
-    CTrigger outputDiffractograms {"outputDiffractograms", "Diffractograms..."};
+    CTrigger outputDiffractograms {"exportDiffractograms", "Export diffractograms...",
+            ":/icon/filesave" };
     CTrigger outputPolefigures {"outputPolefigures", "Pole figures..."};
     CTrigger quit {"quit", "Quit", "", QKeySequence::Quit};
     CTrigger removeFile {"removeFile", "Remove highlighted file", ":/icon/rem",

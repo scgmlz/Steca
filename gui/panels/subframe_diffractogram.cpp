@@ -47,6 +47,7 @@ private:
     XIconButton enableZoom_{&actZoom_};
     CCheckBox combine_{"dgram:combine", &gGui->toggles->combinedDgram};
     CCheckBox fixInten_{"dgram:fixInten", &gGui->toggles->fixedIntenDgram};
+    XIconButton export_{&gGui->triggers->outputDiffractograms};
 };
 
 
@@ -81,14 +82,15 @@ Diffractogram::Diffractogram() {
             gSession->setIntenScaleAvg(gSession->intenScaledAvg(), val);
     });
 
-
     hb->addWidget(&enableZoom_);
     hb->addStretch();
-
 
     hb->addWidget(new XIconButton(&gGui->toggles->showBackground));
     hb->addWidget(&combine_);
     hb->addWidget(&fixInten_);
+    hb->addStretch();
+
+    hb->addWidget(&export_);
 
     connect(&actZoom_, &QAction::toggled, this, [this](bool on) {
         plot_->setInteraction(QCP::iRangeDrag, on);

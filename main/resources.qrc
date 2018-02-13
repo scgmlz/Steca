@@ -10,6 +10,7 @@
         <file alias="cutRight">icons/cut_right.svg</file>
         <file alias="cutTop">icons/cut_top.svg</file>
         <file alias="dropIncomplete">icons/dropIncomplete.svg</file>
+        <file alias="filesave">icons/filesave.svg</file>
         <file alias="left">icons/left.svg</file>
         <file alias="link">icons/link.svg</file>
         <file alias="mirrorHorz">icons/mirror_horz.svg</file>
