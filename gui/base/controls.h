@@ -35,6 +35,8 @@ public:
     CTrigger(const QString& name, const QString& text, const QString& iconFile="");
     CTrigger(const QString& name, const QString& text, const QString& iconFile,
              const QKeySequence& shortcut);
+private:
+    QString tooltip_;
 };
 
 //! A Toggle, for use in buttons or menu entries, that can also be switched by console command.
@@ -44,6 +46,8 @@ public:
     CToggle(const QString& name, const QString& text, bool on, const QString& iconFile="");
     CToggle(const QString& name, const QString& text, bool on, const QString& iconFile,
             const QKeySequence& shortcut);
+private:
+    QString tooltip_;
 };
 
 //! QToolButton with text display and associated QAction.

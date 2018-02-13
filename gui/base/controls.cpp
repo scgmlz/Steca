@@ -25,12 +25,18 @@
 
 CTrigger::CTrigger(const QString& name, const QString& text, const QString& iconFile)
     : QAction(text, qApp)
+    , tooltip_(text.toLower())
 {
-    setToolTip(text.toLower());
     if (iconFile!="")
         setIcon(QIcon(iconFile));
     gConsole->learn(name, [this](const QString& /*unused*/)->void { trigger(); });
     QObject::connect(this, &QAction::triggered, [name]()->void { gConsole->log(name+"!"); });
+    QObject::connect(this, &QAction::changed, [this, name]()->void {
+            QString txt = tooltip_;
+            if (!isEnabled())
+                txt += "\nThis trigger is currently inoperative.";
+            setToolTip(txt); });
+    emit changed();
 };
 
 CTrigger::CTrigger(
@@ -46,8 +52,8 @@ CTrigger::CTrigger(
 
 CToggle::CToggle(const QString& name, const QString& text, bool on, const QString& iconFile)
     : QAction(text, qApp)
+    , tooltip_(text.toLower())
 {
-    setToolTip(text.toLower());
     if (iconFile!="")
         setIcon(QIcon(iconFile));
     setCheckable(true);
@@ -61,6 +67,16 @@ CToggle::CToggle(const QString& name, const QString& text, bool on, const QStrin
                 qWarning() << "Invalid toggle setter argument '"+val+"'"; } );
     QObject::connect(this, &QAction::toggled, [name](bool val)->void {
             gConsole->log(name+"="+(val ? "y" : "n")); });
+    QObject::connect(this, &QAction::changed, [this, name]()->void {
+            QString txt = tooltip_;
+            if (!isEnabled())
+                txt += "\nThis toggle is currently inoperative.";
+            else if (isChecked())
+                txt += "\nThis toggle is currently checked. Click to uncheck.";
+            else
+                txt += "\nThis toggle is currently unchecked. Click to check.";
+            setToolTip(txt); });
+    emit changed();
 };
 
 CToggle::CToggle(const QString& name, const QString& text, bool on, const QString& iconFile,
