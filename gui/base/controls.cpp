@@ -92,12 +92,15 @@ XIconButton::XIconButton(QAction* action) {
 // A QSpinBox controls an integer value. Therefore normally we need no extra width for a dot.
 // However, sometimes we want to make a QSpinBox exactly as wide as a given QDoubleSpinBox,
 // for nice vertical alignement. Then we use withDot=true.
-CSpinBox::CSpinBox(const QString& _name, int ndigits, bool withDot, int min, int max)
+CSpinBox::CSpinBox(const QString& _name, int ndigits, bool withDot, int min, int max,
+                   const QString& tooltip)
     : CSettable(_name, [this](const QString& val)->void { setValue(val.toInt()); })
 {
     widgetUtils::setWidth(this, ndigits, withDot);
     setMinimum(min);
     setMaximum(max > min ? max : min);
+    if (tooltip!="")
+        setToolTip(tooltip);
     connect(this, _SLOT_(QSpinBox, valueChanged, int), [this](int val)->void {
             gConsole->log2(hasFocus(), name()+"="+QString::number(val)); });
 }

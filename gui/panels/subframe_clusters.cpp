@@ -191,7 +191,8 @@ class ExperimentControls : public QWidget {
 public:
     ExperimentControls();
 private:
-    CSpinBox combineMeasurements_ {"combineMeasurements", 4, false, 1};
+    CSpinBox combineMeasurements_ {"combineMeasurements", 4, false, 1, INT_MAX,
+            "Combine this number of measurements into one group"};
     QLabel remainderModeLabel_ {"if incomplete:"};
     CComboBox remainderMode_ {"remainderMode", {"keep", "drop"}};
 };
@@ -204,7 +205,6 @@ ExperimentControls::ExperimentControls() {
     // 'combine' control
     layout->addWidget(new QLabel("combine:"));
     layout->addWidget(&combineMeasurements_);
-    combineMeasurements_.setToolTip("Combine and average number of cluster");
     connect(&combineMeasurements_, _SLOT_(QSpinBox, valueChanged, int),
             [this](int num) { gSession->dataset().setBinning(num); });
 

@@ -240,10 +240,14 @@ public:
     DataImageTab();
     void render() final;
 private:
-    CSpinBox spinN_{"spinN", 4, false, 1};
-    CSpinBox numSlices_{"numSlices", 4, false, 0};
-    CSpinBox numSlice_{"numSlice", 4, false, 1};
-    CSpinBox numBin_{"numBin", 4, false, 1};
+    CSpinBox spinN_{"spinN", 4, false, 1, INT_MAX,
+            "Number of measurement within the current group of measurements"};
+    CSpinBox numSlices_{"numSlices", 4, false, 0, INT_MAX,
+            "Number of γ slices (0: no slicing, take entire image)" };
+    CSpinBox numSlice_{"numSlice", 4, false, 1, INT_MAX,
+            "Number of γ slice to be shown" };
+    CSpinBox numBin_{"numBin", 4, false, 1, INT_MAX,
+            "Number of 2θ bin to be shown" };
     CDoubleSpinBox minGamma_{"minGamma", 6};
     CDoubleSpinBox maxGamma_{"maxGamma", 6};
 };

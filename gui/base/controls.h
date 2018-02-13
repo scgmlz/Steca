@@ -61,7 +61,8 @@ public:
 //! Named QSpinBox that can be set by console command.
 class CSpinBox : public QSpinBox, private CSettable {
 public:
-    CSpinBox(const QString& name, int ndigits, bool withDot, int min = INT_MIN, int max = INT_MAX);
+    CSpinBox(const QString& name, int ndigits, bool withDot, int min = INT_MIN, int max = INT_MAX,
+             const QString& tooltip="");
 };
 
 //! Named QDoubleSpinBox that can be set by console command.
