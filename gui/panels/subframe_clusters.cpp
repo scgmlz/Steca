@@ -193,8 +193,10 @@ public:
 private:
     CSpinBox combineMeasurements_ {"combineMeasurements", 4, false, 1, INT_MAX,
             "Combine this number of measurements into one group"};
-    QLabel remainderModeLabel_ {"if incomplete:"};
-    CComboBox remainderMode_ {"remainderMode", {"keep", "drop"}};
+    CToggle dropIncompleteAction_ {"dropIncomplete",
+            "Drop measurement groups that do not have the full number of members",
+            false, ":/icon/rotate3" }; //dropIncomplete" };
+    XIconButton dropIncompleteButton_ { &dropIncompleteAction_ };
 };
 
 ExperimentControls::ExperimentControls() {
@@ -209,21 +211,15 @@ ExperimentControls::ExperimentControls() {
             [this](int num) { gSession->dataset().setBinning(num); });
 
     // 'if incomplete' control
+    layout->addWidget(&dropIncompleteButton_);
+    connect(&dropIncompleteAction_, &QAction::toggled,
+            [this](bool on) { gSession->dataset().setDropIncomplete(on); });
     layout->addStretch(1);
-    layout->addWidget(&remainderModeLabel_);
-    layout->addWidget(&remainderMode_);
-    connect(&remainderMode_, _SLOT_(QComboBox, currentIndexChanged, int),
-            [this](int index) { gSession->dataset().setDropIncomplete(index); });
 
     // back connection, to change controls from saved session
     connect(gSession, &Session::sigClusters, [=]() {
             combineMeasurements_.setValue(gSession->dataset().binning());
-            if (gSession->dataset().hasIncomplete()) {
-                remainderModeLabel_.show(); remainderMode_.show();
-            } else {
-                remainderModeLabel_.hide(); remainderMode_.hide();
-            }
-        });
+            dropIncompleteAction_.setEnabled(gSession->dataset().hasIncomplete()); });
 }
 
 // ************************************************************************** //
