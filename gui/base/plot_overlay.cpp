@@ -57,7 +57,7 @@ void PlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
     update();
     double xmin = plot_.xAxis->pixelToCoord(mouseDownPos_);
     double xmax = plot_.xAxis->pixelToCoord(cursorPos_);
-    Range range(xmin, xmax);
+    Range range = Range::safeFrom(xmin, xmax);
     if      (e->button()==Qt::LeftButton)
         addRange(range);
     else if (e->button()==Qt::RightButton)
