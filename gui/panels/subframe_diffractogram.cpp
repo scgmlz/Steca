@@ -46,7 +46,7 @@ private:
     CToggle actZoom_ {"actZoom", "zoom", false, ":/icon/zoom"};
     XIconButton enableZoom_{&actZoom_};
     CCheckBox combine_{"dgram:combine", &gGui->toggles->combinedDgram};
-    CCheckBox fixInten_{"dgram:fixInten", &gGui->toggles->fixedIntenDgram};
+    XIconButton fixInten_{&gGui->toggles->fixedIntenDgram};
     XIconButton export_{&gGui->triggers->outputDiffractograms};
 };
 

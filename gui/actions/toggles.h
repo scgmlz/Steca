@@ -25,8 +25,8 @@ public:
     Toggles();
     CToggle combinedDgram {"combinedDgram", "All measurements", false};
     CToggle enableCorr {"enableCorr", "Enable correction file", false, ":/icon/useCorrection"};
-    CToggle fixedIntenDgram {"fixedIntenDgram", "Fixed intensity scale", false};
-    CToggle fixedIntenImage {"fixedIntenImage", "Global intensity scale", false, ":/icon/scale"};
+    CToggle fixedIntenDgram {"dfg.fixInt", "Fixed intensity scale", false, ":/icon/scale"};
+    CToggle fixedIntenImage {"img.fixInt", "Global intensity scale", false, ":/icon/scale"};
     CToggle linkCuts {"linkCuts", "Link cuts", false, ":/icon/link"};
     CToggle mirrorImage {"mirrorImage", "Mirror", false, ":/icon/mirrorHorz"};
     CToggle showBackground {"showBackground", "Show fitted background", false,
