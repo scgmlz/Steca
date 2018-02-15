@@ -47,7 +47,7 @@ private:
     QBoxLayout* box_;
 };
 
-//! A rich modal dialog, for the polefig, diagram, and diffractogram outputs.
+//! A rich modal dialog, for the polefig and diagram outputs.
 
 class Frame : public QDialog, private CModal {
 public:

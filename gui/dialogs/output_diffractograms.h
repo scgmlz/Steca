@@ -18,9 +18,30 @@
 #include "frame.h"
 #include <QWidget>
 
+//! TODO: merge into DiffractogramsFrame
+
+class DFrame : public QDialog, private CModal {
+public:
+    DFrame(const QString& name, const QString& title);
+    ~DFrame();
+protected:
+    QAction *actClose_, *actCalculate_, *actInterpolate_;
+    QToolButton *btnClose_, *btnCalculate_, *btnInterpolate_;
+    QProgressBar* progressBar_;
+    QBoxLayout* box_;
+    QHBoxLayout* parameterControls_;
+    class PanelPeak* panelPeak;
+    class PanelGammaSlices* panelGammaSlices;
+    class PanelGammaRange* panelGammaRange;
+    class PanelPoints* panelPoints;
+    QTabWidget* tabs_;
+    vec<PeakInfos> calcPoints_;
+    void calculate();
+};
+
 //! The modal dialog for saving diffractograms.
 
-class DiffractogramsFrame : public Frame {
+class DiffractogramsFrame : public DFrame {
 public:
     DiffractogramsFrame();
     ~DiffractogramsFrame();

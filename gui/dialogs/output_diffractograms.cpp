@@ -17,6 +17,7 @@
 #include "gui/base/filedialog.h"
 #include "gui/dialogs/dialog_panels.h"
 #include "gui/dialogs/tab_save.h"
+#include "gui/mainwin.h"
 #include <cmath>
 #include <QMessageBox>
 
@@ -100,17 +101,73 @@ TabDiffractogramsSave::TabDiffractogramsSave()
     rbAll_.setChecked(true);
 }
 
+// ************************************************************************** //
+//  local class DFrame
+// ************************************************************************** //
+
+DFrame::DFrame(const QString& name, const QString& title)
+    : QDialog(gGui)
+    , CModal(name)
+{
+    setModal(true);
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+    setWindowTitle(title);
+
+    setLayout((box_ = newQ::VBoxLayout()));
+
+    parameterControls_ = newQ::HBoxLayout();
+    box_->addLayout(parameterControls_);
+
+    tabs_ = new QTabWidget();
+    tabs_->setTabPosition(QTabWidget::North);
+    box_->addWidget(tabs_);
+    box_->setStretch(box_->count() - 1, 1);
+
+    auto hb = newQ::HBoxLayout();
+    box_->addLayout(hb);
+
+    actClose_ = new CTrigger("actClose", "Close");
+    actCalculate_ = new CTrigger("actCalculate", "Calculate");
+
+    hb->addWidget((btnClose_ = new XTextButton(actClose_)));
+    hb->addStretch(1);
+    hb->addWidget((progressBar_ = new QProgressBar));
+    hb->setStretchFactor(progressBar_, 333);
+    hb->addStretch(1);
+    hb->addWidget((btnCalculate_ = new XTextButton(actCalculate_)));
+
+    progressBar_->hide();
+
+    connect(actClose_, &QAction::triggered, [this]() { close(); });
+    connect(actCalculate_, &QAction::triggered, [this]() { calculate(); });
+
+}
+
+DFrame::~DFrame() {
+}
+
+void DFrame::calculate() {
+    TakesLongTime __;
+
+    const PanelGammaSlices* ps = panelGammaSlices;
+    int gammaSlices = ps->numSlices.value();
+
+    const PanelGammaRange* pr = panelGammaRange;
+    Range rgeGamma;
+    if (pr->cbLimitGamma.isChecked())
+        rgeGamma.safeSet(pr->minGamma.value(), pr->maxGamma.value());
+}
+
 
 // ************************************************************************** //
 //  class DiffractogramsFrame
 // ************************************************************************** //
 
 DiffractogramsFrame::DiffractogramsFrame()
-    : Frame("dgram", "Diffractograms", new Params(PANELS))
+    : DFrame("dgram", "Diffractograms")
 {
     tabs_->removeTab(0);
     btnCalculate_->hide();
-    btnInterpolate_->hide();
 
     tabs_->addTab(&tab, "Save");
     tab.setLayout(newQ::VBoxLayout());
