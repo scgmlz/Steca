@@ -20,6 +20,7 @@
 #include "gui/mainwin.h"
 #include <cmath>
 #include <QMessageBox>
+#include <QProgressBar>
 
 namespace {
 
@@ -61,8 +62,6 @@ QString numberedName(const QString& templatedName, int num, int maxNum) {
 }
 
 } // local method
-
-static const Params::ePanels PANELS = Params::ePanels(Params::GAMMA);
 
 
 // ************************************************************************** //
@@ -214,11 +213,9 @@ void DiffractogramsFrame::saveAll(bool oneFile) {
             return;
     }
 
-    ASSERT(params_->panelGammaSlices);
-    int gmaSlices = params_->panelGammaSlices->numSlices.value();
+    int gmaSlices = panelGammaSlices->numSlices.value();
 
-    ASSERT(params_->panelGammaRange);
-    const PanelGammaRange* pr = params_->panelGammaRange;
+    const PanelGammaRange* pr = panelGammaRange;
     Range rgeGma;
     if (pr->cbLimitGamma.isChecked())
         rgeGma.safeSet(pr->minGamma.value(), pr->maxGamma.value());

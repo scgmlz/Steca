@@ -26,18 +26,11 @@ public:
     ~DiffractogramsFrame();
 
 private:
-    QAction *actClose_, *actCalculate_, *actInterpolate_;
-    QToolButton *btnClose_, *btnCalculate_, *btnInterpolate_;
+    QAction *actClose_;
+    QToolButton *btnClose_;
     QProgressBar* progressBar_;
-    class PanelPeak* panelPeak;
     class PanelGammaSlices* panelGammaSlices;
     class PanelGammaRange* panelGammaRange;
-    class PanelPoints* panelPoints;
-    QTabWidget* tabs_;
-    vec<PeakInfos> calcPoints_;
-    void calculate();
-
-    QWidget tab;
     class TabDiffractogramsSave* tabSave_;
 
     void save();
