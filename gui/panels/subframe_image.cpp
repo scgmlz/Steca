@@ -211,7 +211,7 @@ QImage ImageTab::makeImage(shp_Image image, bool curvedScale) {
         return {};
 
     shp_ImageLens imageLens = gSession->imageLens(*image, true, false);
-    const size2d size = imageLens->size();
+    const size2d size = imageLens->imgSize();
     if (size.isEmpty())
         return {};
 
