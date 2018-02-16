@@ -121,10 +121,6 @@ shp_SequenceLens Session::defaultClusterLens(Sequence const& seq) const {
     return dataseqLens(seq, norm_, true, true);
 }
 
-shp_SequenceLens Session::highlightsLens() const {
-    return dataseqLens(*dataset().highlight().cluster(), norm_, true, true);
-}
-
 Curve Session::curveMinusBg(SequenceLens const& lens, const Range& rgeGma) const {
     Curve curve = lens.makeCurve(rgeGma);
     const Polynom f = Polynom::fromFit(baseline().polynomDegree(), curve, baseline().ranges());
@@ -218,7 +214,7 @@ qreal Session::calcAvgBackground(Sequence const& seq) const {
     const shp_SequenceLens& lens = dataseqLens(seq, eNorm::NONE, true, true);
     Curve gmaCurve = lens->makeCurve(); // had argument averaged=true
     Polynom bgPolynom = Polynom::fromFit(baseline().polynomDegree(), gmaCurve, baseline().ranges());
-    return bgPolynom.avgY(lens->rgeTth());
+    return bgPolynom.avgY(seq.rgeTth());
 }
 
 qreal Session::calcAvgBackground() const {

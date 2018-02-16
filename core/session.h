@@ -64,6 +64,7 @@ public:
     void setNorm(eNorm);
 
     // Const methods: // TODO expand corrset() calls in calling code
+    bool hasData() const { return dataset().countFiles(); }
     bool hasCorrFile() const { return corrset().hasFile(); }
     const Image* intensCorr() const { return corrset().intensCorr(); }
 
@@ -84,7 +85,6 @@ public:
 
     shp_ImageLens imageLens(const Image&, bool trans, bool cut) const;
     shp_SequenceLens defaultClusterLens(Sequence const& seq) const;
-    shp_SequenceLens highlightsLens() const;
 
     PeakInfos makePeakInfos(Peak const&, int gmaSlices, const Range&, Progress*) const;
 

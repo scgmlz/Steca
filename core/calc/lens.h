@@ -71,9 +71,6 @@ public:
 
     size2d size() const;
 
-    Range rgeTth() const;
-    Range rgeInten() const;
-
     Curve makeCurve() const;
     Curve makeCurve(const Range&) const;
 

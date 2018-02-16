@@ -122,16 +122,6 @@ size2d SequenceLens::size() const {
     return LensBase::transCutSize(gSession->experiment().imageSize());
 }
 
-Range SequenceLens::rgeTth() const {
-    return seq_.rgeTth();
-}
-
-Range SequenceLens::rgeInten() const {
-    // fixes the scale
-    // TODO consider return gSession->experiment().rgeInten();
-    return seq_.rgeInten();
-}
-
 Curve SequenceLens::makeCurve() const {
     return makeCurve(seq_.rgeGma());
 }

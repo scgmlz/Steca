@@ -337,7 +337,7 @@ void DataImageTab::render() {
 
         numBin_.setEnabled(true);
         if (gGui->toggles->showBins.isChecked()) {
-            Range rgeTth = lens->rgeTth();
+            Range rgeTth = cluster->rgeTth();
             int count = lens->makeCurve().count();
             numBin_.setMaximum(count - 1);
             qreal min = rgeTth.min;
