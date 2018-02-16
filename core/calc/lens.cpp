@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/calc/lens.cpp
-//! @brief     Implements LensBase, ImageLens, SequenceLens
+//! @brief     Implements ImageLens, SequenceLens
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,32 +15,22 @@
 #include "core/session.h"
 
 // ************************************************************************** //
-//   class LensBase
-// ************************************************************************** //
-
-LensBase::LensBase(bool trans, bool cut)
-    : trans_(trans)
-    , cut_(cut)
-{}
-
-size2d LensBase::transCutSize(size2d size) const {
-    if (trans_ && gSession->imageTransform().isTransposed())
-        size = size.transposed();
-    if (cut_)
-        size = size - gSession->imageCut().marginSize();
-    return size;
-}
-
-// ************************************************************************** //
 //   class ImageLens
 // ************************************************************************** //
 
 ImageLens::ImageLens(const Image& image, bool trans, bool cut)
-    : LensBase(trans, cut)
-    , image_(image) {}
+    : cut_(cut)
+    , trans_(trans)
+    , image_(image)
+{}
 
 size2d ImageLens::imgSize() const {
-    return LensBase::transCutSize(image_.size());
+    size2d ret = image_.size();
+    if (trans_ && gSession->imageTransform().isTransposed())
+        ret = ret.transposed();
+    if (cut_)
+        ret = ret - gSession->imageCut().marginSize();
+    return ret;
 }
 
 void ImageLens::doTrans(int& x, int& y) const {
@@ -107,8 +97,7 @@ const Range& ImageLens::rgeInten(bool fixed) const {
 // ************************************************************************** //
 
 SequenceLens::SequenceLens(Sequence const& seq, eNorm norm, bool trans, bool cut)
-    : LensBase(trans, cut)
-    , normFactor_(1)
+    : normFactor_(1)
     , seq_(seq)
 {
     setNorm(norm);
