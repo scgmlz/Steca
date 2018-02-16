@@ -210,19 +210,19 @@ QImage ImageTab::makeImage(shp_Image image, bool curvedScale) {
     if (!image)
         return {};
 
-    shp_ImageLens imageLens = gSession->imageLens(*image, true, false);
-    const size2d size = imageLens->imgSize();
+    ImageLens imageLens(*image, true, false);
+    const size2d size = imageLens.imgSize();
     if (size.isEmpty())
         return {};
 
     QImage ret(QSize(size.w, size.h), QImage::Format_RGB32);
 
-    const Range rgeInten = imageLens->rgeInten(gGui->isFixedIntenImageScale());
+    const Range rgeInten = imageLens.rgeInten(gGui->isFixedIntenImageScale());
     inten_t maxInten = inten_t(rgeInten.max);
 
     for_ij (size.w, size.h)
         ret.setPixel(i, j,
-                    colormap::intenImage(imageLens->imageInten(i, j), maxInten, curvedScale));
+                     colormap::intenImage(imageLens.imageInten(i, j), maxInten, curvedScale));
     return ret;
 }
 

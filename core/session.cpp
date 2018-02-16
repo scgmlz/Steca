@@ -109,10 +109,6 @@ shp_AngleMap Session::angleMap(const Measurement& one) const {
     return map;
 }
 
-shp_ImageLens Session::imageLens(const Image& image, bool trans, bool cut) const {
-    return shp_ImageLens(new ImageLens(image, trans, cut));
-}
-
 //! Fits peak to the given gamma sector and constructs a PeakInfo.
 PeakInfo Session::makePeakInfo(const Cluster* cluster, const qreal normFactor,
                                const Peak& peak, const Range& gmaSector) const {

@@ -85,8 +85,6 @@ public:
     static shp_AngleMap angleMap(const Session& session, const Measurement& ds) {
         return session.angleMap(ds); }
 
-    shp_ImageLens imageLens(const Image&, bool trans, bool cut) const;
-
     PeakInfos makePeakInfos(const Peak&, int gmaSlices, const Range&, Progress*) const;
 
     bool intenScaledAvg() const { return intenScaledAvg_; }
