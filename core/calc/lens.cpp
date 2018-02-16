@@ -18,19 +18,16 @@
 //   class LensBase
 // ************************************************************************** //
 
-LensBase::LensBase(bool trans, bool cut,
-    ImageTransform const& imageTransform, ImageCut const& imageCut)
+LensBase::LensBase(bool trans, bool cut)
     : trans_(trans)
     , cut_(cut)
-    , imageTransform_(imageTransform)
-    , imageCut_(imageCut)
-    , intensCorr_(gSession->intensCorr()) {}
+{}
 
 size2d LensBase::transCutSize(size2d size) const {
-    if (trans_ && imageTransform_.isTransposed())
+    if (trans_ && gSession->imageTransform().isTransposed())
         size = size.transposed();
     if (cut_)
-        size = size - imageCut_.marginSize();
+        size = size - gSession->imageCut().marginSize();
     return size;
 }
 
@@ -39,7 +36,7 @@ void LensBase::doTrans(int& x, int& y) const {
     int w = s.w;
     int h = s.h;
 
-    switch (imageTransform_.val) {
+    switch (gSession->imageTransform().val) {
     case ImageTransform::ROTATE_0: break;
     case ImageTransform::ROTATE_1:
         qSwap(x, y);
@@ -65,8 +62,8 @@ void LensBase::doTrans(int& x, int& y) const {
 }
 
 void LensBase::doCut(int& i, int& j) const {
-    i += imageCut_.left;
-    j += imageCut_.top;
+    i += gSession->imageCut().left;
+    j += gSession->imageCut().top;
 }
 
 
@@ -75,7 +72,7 @@ void LensBase::doCut(int& i, int& j) const {
 // ************************************************************************** //
 
 ImageLens::ImageLens(const Image& image, bool trans, bool cut)
-    : LensBase(trans, cut, gSession->imageTransform(), gSession->imageCut())
+    : LensBase(trans, cut)
     , image_(image) {}
 
 size2d ImageLens::size() const {
@@ -88,8 +85,8 @@ inten_t ImageLens::imageInten(int i, int j) const {
     if (cut_)
         doCut(i, j);
     inten_t inten = image_.inten(i, j);
-    if (intensCorr_)
-        inten *= intensCorr_->inten(i, j);
+    if (gSession->intensCorr())
+        inten *= gSession->intensCorr()->inten(i, j);
     return inten;
 }
 
@@ -109,12 +106,11 @@ const Range& ImageLens::rgeInten(bool fixed) const {
 //   class SequenceLens
 // ************************************************************************** //
 
-SequenceLens::SequenceLens(
-    Sequence const& seq, eNorm norm, bool trans, bool cut,
-    ImageTransform const& imageTransform, ImageCut const& imageCut)
-    : LensBase(trans, cut, imageTransform, imageCut)
+SequenceLens::SequenceLens(Sequence const& seq, eNorm norm, bool trans, bool cut)
+    : LensBase(trans, cut)
     , normFactor_(1)
-    , seq_(seq) {
+    , seq_(seq)
+{
     setNorm(norm);
 }
 
@@ -127,15 +123,16 @@ Curve SequenceLens::makeCurve() const {
 }
 
 Curve SequenceLens::makeCurve(const Range& rgeGma) const {
-    inten_vec intens = seq_.collectIntens(intensCorr_, rgeGma);
-    Curve res;
+    inten_vec intens = seq_.collectIntens(gSession->intensCorr(), rgeGma);
     int count = intens.count();
-    if (count) {
-        Range rgeTth = seq_.rgeTth();
-        deg minTth = rgeTth.min, deltaTth = rgeTth.width() / count;
-        for_i (count)
-            res.append(minTth + deltaTth * i, qreal(intens.at(i) * normFactor_));
-    }
+    if (!count)
+        return {};
+    Curve res;
+    Range rgeTth = seq_.rgeTth();
+    deg minTth = rgeTth.min;
+    deg deltaTth = rgeTth.width() / count;
+    for_i (count)
+        res.append(minTth + deltaTth * i, qreal(intens.at(i) * normFactor_));
     return res;
 }
 

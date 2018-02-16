@@ -114,7 +114,7 @@ shp_ImageLens Session::imageLens(const Image& image, bool trans, bool cut) const
 }
 
 shp_SequenceLens Session::dataseqLens(Sequence const& seq, eNorm norm, bool trans, bool cut) const {
-    return shp_SequenceLens(new SequenceLens(seq, norm, trans, cut, imageTransform_, imageCut_));
+    return shp_SequenceLens(new SequenceLens(seq, norm, trans, cut));
 }
 
 shp_SequenceLens Session::defaultClusterLens(Sequence const& seq) const {
