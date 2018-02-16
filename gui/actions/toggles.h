@@ -23,7 +23,7 @@
 class Toggles {
 public:
     Toggles();
-    CToggle combinedDgram {"combinedDgram", "All measurements", false};
+    CToggle combinedDgram {"dfg.all", "All measurements", false, ":/icon/all"};
     CToggle enableCorr {"enableCorr", "Enable correction file", false, ":/icon/useCorrection"};
     CToggle fixedIntenDgram {"dfg.fixInt", "Fixed intensity scale", false, ":/icon/scale"};
     CToggle fixedIntenImage {"img.fixInt", "Global intensity scale", false, ":/icon/scale"};

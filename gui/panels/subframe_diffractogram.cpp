@@ -45,7 +45,7 @@ private:
     CDoubleSpinBox intenScale_{"intenScale", 6, 0.001};
     CToggle actZoom_ {"actZoom", "zoom", false, ":/icon/zoom"};
     XIconButton enableZoom_{&actZoom_};
-    CCheckBox combine_{"dgram:combine", &gGui->toggles->combinedDgram};
+    XIconButton combine_{&gGui->toggles->combinedDgram};
     XIconButton fixInten_{&gGui->toggles->fixedIntenDgram};
     XIconButton export_{&gGui->triggers->outputDiffractograms};
 };
@@ -85,9 +85,9 @@ Diffractogram::Diffractogram() {
     hb->addWidget(&enableZoom_);
     hb->addStretch();
 
-    hb->addWidget(new XIconButton(&gGui->toggles->showBackground));
     hb->addWidget(&combine_);
     hb->addWidget(&fixInten_);
+    hb->addWidget(new XIconButton(&gGui->toggles->showBackground));
     hb->addStretch();
 
     hb->addWidget(&export_);
