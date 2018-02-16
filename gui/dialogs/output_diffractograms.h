@@ -29,8 +29,6 @@ private:
     QAction *actClose_, *actCalculate_, *actInterpolate_;
     QToolButton *btnClose_, *btnCalculate_, *btnInterpolate_;
     QProgressBar* progressBar_;
-    QBoxLayout* box_;
-    QHBoxLayout* parameterControls_;
     class PanelPeak* panelPeak;
     class PanelGammaSlices* panelGammaSlices;
     class PanelGammaRange* panelGammaRange;

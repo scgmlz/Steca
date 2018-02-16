@@ -113,44 +113,38 @@ DiffractogramsFrame::DiffractogramsFrame()
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowTitle("Diffractograms");
 
-    setLayout((box_ = newQ::VBoxLayout()));
+    QVBoxLayout* vbox = newQ::VBoxLayout();
+    setLayout(vbox);
 
-    parameterControls_ = newQ::HBoxLayout();
-    box_->addLayout(parameterControls_);
+    auto hb_gamma = newQ::HBoxLayout();
+    vbox->addLayout(hb_gamma);
 
-    tabs_ = new QTabWidget();
-    tabs_->setTabPosition(QTabWidget::North);
-    box_->addWidget(tabs_);
-    box_->setStretch(box_->count() - 1, 1);
+    tabSave_ = new TabDiffractogramsSave();
+    vbox->addWidget(tabSave_);
 
-    auto hb = newQ::HBoxLayout();
-    box_->addLayout(hb);
+    vbox->setStretch(vbox->count() - 1, 1);
+
+    auto hb_bottom = newQ::HBoxLayout();
+    vbox->addLayout(hb_bottom);
 
     actClose_ = new CTrigger("actClose", "Close");
 
-    hb->addWidget((btnClose_ = new XTextButton(actClose_)));
-    hb->addStretch(1);
-    hb->addWidget((progressBar_ = new QProgressBar));
-    hb->setStretchFactor(progressBar_, 333);
-    hb->addStretch(1);
+    hb_bottom->addWidget((btnClose_ = new XTextButton(actClose_)));
+    hb_bottom->addStretch(1);
+    hb_bottom->addWidget((progressBar_ = new QProgressBar));
+    hb_bottom->setStretchFactor(progressBar_, 333);
+    hb_bottom->addStretch(1);
 
     progressBar_->hide();
 
-    connect(actClose_, &QAction::triggered, [this]() { close(); });
-
-    parameterControls_->addWidget((panelGammaSlices = new PanelGammaSlices()));
-    parameterControls_->addWidget((panelGammaRange = new PanelGammaRange()));
-    parameterControls_->addStretch();
+    hb_gamma->addWidget((panelGammaSlices = new PanelGammaSlices()));
+    hb_gamma->addWidget((panelGammaRange = new PanelGammaRange()));
+    hb_gamma->addStretch();
 
     panelGammaSlices->updateValues();
     panelGammaRange->updateValues();
 
-    tabs_->removeTab(0);
-
-    tabs_->addTab(&tab, "Save");
-    tab.setLayout(newQ::VBoxLayout());
-    tabSave_ = new TabDiffractogramsSave();
-    tab.layout()->addWidget(tabSave_);
+    connect(actClose_, &QAction::triggered, [this]() { close(); });
     connect(tabSave_->actSave, &QAction::triggered, [this]() { save(); });
 
     show();
