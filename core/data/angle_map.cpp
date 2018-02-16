@@ -19,7 +19,7 @@
 
 namespace {
 
-static int lowerBound(vec<deg> const& vec, deg x, int i1, int i2) {
+static int lowerBound(const vec<deg>& vec, deg x, int i1, int i2) {
     ASSERT(i1 < i2);
     if (1 == i2 - i1)
         return i1;
@@ -29,7 +29,7 @@ static int lowerBound(vec<deg> const& vec, deg x, int i1, int i2) {
         : lowerBound(vec, x, i1, mid); // ... we should be so lucky
 }
 
-static int upperBound(vec<deg> const& vec, deg x, int i1, int i2) {
+static int upperBound(const vec<deg>& vec, deg x, int i1, int i2) {
     ASSERT(i1 < i2);
     if (1 == i2 - i1)
         return i2;

@@ -382,7 +382,7 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(const QString& filePath, int i
 }
 
 void PoleFiguresFrame::writeErrorMask(
-    const QString& filePath, PeakInfos reflInfo, vec<qreal> const& output) {
+    const QString& filePath, PeakInfos reflInfo, const vec<qreal>& output) {
     QFile* file = file_dialog::OutputFile("file", this, filePath);
     if (!file)
         return;
@@ -401,7 +401,7 @@ void PoleFiguresFrame::writeErrorMask(
 }
 
 void PoleFiguresFrame::writePoleFile(
-    const QString& filePath, PeakInfos reflInfo, vec<qreal> const& output)
+    const QString& filePath, PeakInfos reflInfo, const vec<qreal>& output)
 {
     QFile* file = file_dialog::OutputFile("file", this, filePath);
     if (!file)
@@ -421,7 +421,7 @@ void PoleFiguresFrame::writePoleFile(
 }
 
 void PoleFiguresFrame::writeListFile(
-    const QString& filePath, PeakInfos reflInfo, vec<qreal> const& output)
+    const QString& filePath, PeakInfos reflInfo, const vec<qreal>& output)
 {
     QFile* file = file_dialog::OutputFile("file", this, filePath);
     QTextStream stream(file);

@@ -147,7 +147,7 @@ void searchInQuadrants(
     }
 }
 
-itf_t inverseDistanceWeighing(vec<qreal> const& distances, const info_vec& infos) {
+itf_t inverseDistanceWeighing(const vec<qreal>& distances, const info_vec& infos) {
     int N = NUM_QUADRANTS;
     // Generally, only distances.count() == values.count() > 0 is needed for this
     // algorithm. However, in this context we expect exactly the following:

@@ -65,7 +65,7 @@ public:
     TabPlot();
     void set(PeakInfos);
     void plot(
-        vec<qreal> const& xs, vec<qreal> const& ys, vec<qreal> const& ysLo, vec<qreal> const& ysUp);
+        const vec<qreal>& xs, const vec<qreal>& ys, const vec<qreal>& ysLo, const vec<qreal>& ysUp);
 private:
     QCPGraph *graph_, *graphLo_, *graphUp_;
 };
@@ -77,7 +77,7 @@ TabPlot::TabPlot() {
 }
 
 void TabPlot::plot(
-    vec<qreal> const& xs, vec<qreal> const& ys, vec<qreal> const& ysLo, vec<qreal> const& ysUp) {
+    const vec<qreal>& xs, const vec<qreal>& ys, const vec<qreal>& ysLo, const vec<qreal>& ysUp) {
     ASSERT(xs.count() == ys.count());
 
     int count = xs.count();
