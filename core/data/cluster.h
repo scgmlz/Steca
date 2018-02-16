@@ -79,6 +79,13 @@ public:
     bool isIncomplete() const;
     bool isActivated() const { return activated_; }
 
+    Curve toCurve() const;
+    Curve toCurve(const Range&) const;
+    Curve toCurve(qreal) const;
+    Curve toCurve(qreal, const Range&) const;
+    qreal normFactor() const;
+    qreal normFactor(eNorm norm) const;
+
 private:
     const class Datafile& file_;
     const int index_; //!< index in total list of Cluster|s

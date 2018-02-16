@@ -50,6 +50,8 @@ public:
     Baseline& baseline() { return baseline_; }
     const Baseline& baseline() const { return baseline_; }
 
+    eNorm norm() const { return norm_; }
+
     // Modifying methods:
     void clear();
 

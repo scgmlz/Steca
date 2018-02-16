@@ -250,3 +250,64 @@ int Cluster::totalOffset() const {
 bool Cluster::isIncomplete() const {
     return count()<gSession->dataset().binning();
 }
+
+Curve Cluster::toCurve() const {
+    return toCurve(rgeGma());
+};
+
+Curve Cluster::toCurve(const Range& _rgeGma) const {
+    double _normFactor = normFactor();
+    return toCurve(_normFactor, rgeGma());
+};
+
+Curve Cluster::toCurve(qreal _normFactor) const {
+    return toCurve(_normFactor, rgeGma());
+};
+
+Curve Cluster::toCurve(qreal _normFactor, const Range& _rgeGma) const {
+    inten_vec intens = collectIntens(gSession->intensCorr(), _rgeGma);
+    int count = intens.count();
+    if (!count)
+        return {};
+    Curve res;
+    Range _rgeTth = rgeTth();
+    deg minTth = _rgeTth.min;
+    deg deltaTth = _rgeTth.width() / count;
+    for_i (count)
+        res.append(minTth + deltaTth * i, qreal(intens.at(i) * _normFactor));
+    return res;
+};
+
+qreal Cluster::normFactor() const {
+    return normFactor(gSession->norm());
+};
+
+qreal Cluster::normFactor(eNorm norm) const {
+    qreal num = 1, den = 1;
+
+    switch (norm) {
+    case eNorm::MONITOR:
+        num = gSession->experiment().avgMonitorCount();
+        den = avgMonitorCount();
+        break;
+    case eNorm::DELTA_MONITOR:
+        num = gSession->experiment().avgDeltaMonitorCount();
+        den = avgDeltaMonitorCount();
+        break;
+    case eNorm::DELTA_TIME:
+        num = gSession->experiment().avgDeltaTime();
+        den = avgDeltaTime();
+        break;
+    case eNorm::BACKGROUND:
+        num = gSession->calcAvgBackground();
+        den = gSession->calcAvgBackground(*this);
+        break;
+    case eNorm::NONE:
+        break;
+    }
+
+    qreal ret = inten_t((num > 0 && den > 0) ? num / den : NAN);
+    if (qIsNaN(ret))
+        qWarning() << "Bad normalisation value";
+    return ret;
+}
