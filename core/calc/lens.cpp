@@ -19,8 +19,8 @@
 // ************************************************************************** //
 
 ImageLens::ImageLens(const Image& image, bool trans, bool cut)
-    : cut_(cut)
-    , trans_(trans)
+    : trans_(trans)
+    , cut_(cut)
     , image_(image)
 {}
 
@@ -96,7 +96,7 @@ const Range& ImageLens::rgeInten(bool fixed) const {
 //   class SequenceLens
 // ************************************************************************** //
 
-SequenceLens::SequenceLens(Sequence const& seq, eNorm norm, bool trans, bool cut)
+SequenceLens::SequenceLens(Sequence const& seq, eNorm norm)
     : normFactor_(1)
     , seq_(seq)
 {

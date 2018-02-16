@@ -36,9 +36,9 @@ public:
 private:
     void doTrans(int& i, int& j) const;
     void doCut(int& i, int& j) const;
-    const Image& image_;
     size2d transCutSize(size2d) const;
     bool trans_, cut_;
+    const Image& image_;
     mutable Range rgeInten_;
 };
 
@@ -49,12 +49,10 @@ typedef QSharedPointer<const ImageLens> shp_ImageLens;
 
 class SequenceLens {
 public:
-    SequenceLens(Sequence const&, eNorm, bool trans, bool cut);
+    SequenceLens(Sequence const&, eNorm);
 
     Curve makeCurve() const;
     Curve makeCurve(const Range&) const;
-
-    Sequence const& sequence() const { return seq_; }
 
 private:
     void setNorm(eNorm);

@@ -134,9 +134,9 @@ private:
     void updateImageSize(); //!< Clears image size if session has no files
     void setImageSize(size2d const&) THROWS; //!< Ensures same size for all images
 
-    shp_SequenceLens dataseqLens(Sequence const&, eNorm, bool trans, bool cut) const;
+    shp_SequenceLens dataseqLens(Sequence const&, eNorm) const;
     Curve curveMinusBg(SequenceLens const&, const Range&) const;
-    PeakInfo makePeakInfo(SequenceLens const&, Peak const&, const Range&) const;
+    PeakInfo makePeakInfo(const Cluster*, SequenceLens const&, Peak const&, const Range&) const;
 };
 
 #endif // SESSION_H

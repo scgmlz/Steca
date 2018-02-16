@@ -113,12 +113,12 @@ shp_ImageLens Session::imageLens(const Image& image, bool trans, bool cut) const
     return shp_ImageLens(new ImageLens(image, trans, cut));
 }
 
-shp_SequenceLens Session::dataseqLens(Sequence const& seq, eNorm norm, bool trans, bool cut) const {
-    return shp_SequenceLens(new SequenceLens(seq, norm, trans, cut));
+shp_SequenceLens Session::dataseqLens(Sequence const& seq, eNorm norm) const {
+    return shp_SequenceLens(new SequenceLens(seq, norm));
 }
 
 shp_SequenceLens Session::defaultClusterLens(Sequence const& seq) const {
-    return dataseqLens(seq, norm_, true, true);
+    return dataseqLens(seq, norm_);
 }
 
 Curve Session::curveMinusBg(SequenceLens const& lens, const Range& rgeGma) const {
@@ -129,8 +129,8 @@ Curve Session::curveMinusBg(SequenceLens const& lens, const Range& rgeGma) const
 }
 
 //! Fits peak to the given gamma sector and constructs a PeakInfo.
-PeakInfo Session::makePeakInfo(
-    SequenceLens const& lens, Peak const& peak, const Range& gmaSector) const {
+PeakInfo Session::makePeakInfo(const Cluster* cluster, SequenceLens const& lens,
+                               Peak const& peak, const Range& gmaSector) const {
 
     // fit peak, and retrieve peak parameters:
     Curve curve = curveMinusBg(lens, gmaSector);
@@ -144,10 +144,9 @@ PeakInfo Session::makePeakInfo(
 
     // compute alpha, beta:
     deg alpha, beta;
-    Sequence const& seq = lens.sequence();
-    seq.calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
+    cluster->calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
 
-    shp_Metadata metadata = seq.avgeMetadata();
+    shp_Metadata metadata = cluster->avgeMetadata();
 
     return rgeTth.contains(fitresult.x)
         ? PeakInfo(
@@ -176,7 +175,7 @@ PeakInfos Session::makePeakInfos(
         if (progress)
             progress->step();
 
-        const shp_SequenceLens& lens = dataseqLens(*cluster, norm_, true, true);
+        const shp_SequenceLens& lens = dataseqLens(*cluster, norm_);
 
         Range rge = (gmaSlices > 0) ? cluster->rgeGma() : cluster->rgeGmaFull();
         if (rgeGma.isValid())
@@ -189,7 +188,7 @@ PeakInfos Session::makePeakInfos(
         for_i (int(gmaSlices)) {
             qreal min = rge.min + i * step;
             Range gmaStripe(min, min + step);
-            const PeakInfo refInfo = makePeakInfo(*lens, peak, gmaStripe);
+            const PeakInfo refInfo = makePeakInfo(cluster, *lens, peak, gmaStripe);
             if (!qIsNaN(refInfo.inten()))
                 ret.append(refInfo);
         }
@@ -211,7 +210,7 @@ void Session::setNorm(eNorm norm) {
 }
 
 qreal Session::calcAvgBackground(Sequence const& seq) const {
-    const shp_SequenceLens& lens = dataseqLens(seq, eNorm::NONE, true, true);
+    const shp_SequenceLens& lens = dataseqLens(seq, eNorm::NONE);
     Curve gmaCurve = lens->makeCurve(); // had argument averaged=true
     Polynom bgPolynom = Polynom::fromFit(baseline().polynomDegree(), gmaCurve, baseline().ranges());
     return bgPolynom.avgY(seq.rgeTth());
