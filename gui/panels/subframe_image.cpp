@@ -253,6 +253,7 @@ private:
 };
 
 DataImageTab::DataImageTab() {
+    controls_->addWidget(new XIconButton(&gGui->toggles->showBins));
     controls_->addWidget(&spinN_);
     connect(&spinN_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
             gSession->dataset().highlight().setMeasurement(val-1); });
@@ -274,7 +275,6 @@ DataImageTab::DataImageTab() {
 
     controls_->addStretch(1);
 
-    controls_->addWidget(new XIconButton(&gGui->toggles->showBins));
     controls_->addWidget(new QLabel("γ count"));
     controls_->addWidget(&numSlices_);
     connect(&numSlices_, _SLOT_(QSpinBox, valueChanged, int),
@@ -338,7 +338,7 @@ void DataImageTab::render() {
             qreal min = rgeTth.min;
             qreal wdt = rgeTth.width();
             qreal num = qreal(numBin_.value());
-           pixMap = makePixmap(
+            pixMap = makePixmap(
                 *measurement, rge,
                 Range(min + wdt * (num / count), min + wdt * ((num + 1) / count)));
         } else {
