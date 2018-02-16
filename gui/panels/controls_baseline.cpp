@@ -80,7 +80,7 @@ class BaseRangesView final : public TableView {
 public:
     BaseRangesView();
 private:
-    void currentChanged(QModelIndex const& current, QModelIndex const&) override final {
+    void currentChanged(const QModelIndex& current, const QModelIndex&) override final {
         gotoCurrent(current); }
 };
 

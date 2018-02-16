@@ -31,7 +31,7 @@ public:
 
     Geometry();
 
-    COMPARABLE(Geometry const&);
+    COMPARABLE(const Geometry&);
 
     qreal detectorDistance; // the distance from the sample to the detector
     qreal pixSize; // size of the detector pixel
@@ -45,8 +45,8 @@ public:
 
     ImageCut();
     ImageCut(int left, int top, int right, int bottom);
-    COMPARABLE(ImageCut const&);
-    void update(bool topLeftFirst, bool linked, ImageCut const& cut, size2d size);
+    COMPARABLE(const ImageCut&);
+    void update(bool topLeftFirst, bool linked, const ImageCut& cut, size2d size);
 
     size2d marginSize() const;
 };
@@ -56,10 +56,10 @@ public:
 //! Needed for caching such coordinate maps.
 class ImageKey {
 public:
-    ImageKey(Geometry const&, size2d const&, ImageCut const&, IJ const& midPix, deg midTth);
+    ImageKey(const Geometry&, const size2d&, const ImageCut&, const IJ& midPix, deg midTth);
 
-    COMPARABLE(ImageKey const&);
-    bool operator<(ImageKey const& that) const { return compare(that) < 0; }
+    COMPARABLE(const ImageKey&);
+    bool operator<(const ImageKey& that) const { return compare(that) < 0; }
 
     Geometry geometry;
     size2d size;

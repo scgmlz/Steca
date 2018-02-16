@@ -42,8 +42,8 @@ private:
     void paintEvent(QPaintEvent*);
 
     QPointF p(deg alpha, deg beta) const;
-    deg alpha(QPointF const&) const;
-    deg beta(QPointF const&) const;
+    deg alpha(const QPointF&) const;
+    deg beta(const QPointF&) const;
 
     void circle(QPointF c, qreal r);
 
@@ -118,11 +118,11 @@ QPointF TabGraph::p(deg alpha, deg beta) const {
     return QPointF(r * cos(betaRad), -r * sin(betaRad));
 }
 
-deg TabGraph::alpha(QPointF const& p) const {
+deg TabGraph::alpha(const QPointF& p) const {
     return sqrt(p.x() * p.x() + p.y() * p.y()) / r_ * alphaMax_;
 }
 
-deg TabGraph::beta(QPointF const& p) const {
+deg TabGraph::beta(const QPointF& p) const {
     deg b = rad(atan2(p.y(), p.x())).toDeg();
     return b <= 0 ? -b : 360 - b;
 }

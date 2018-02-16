@@ -29,9 +29,9 @@ struct size2d {
 
     int count() const { return w * h; }
 
-    COMPARABLE(size2d const&)
+    COMPARABLE(const size2d&)
 
-    friend size2d operator-(size2d const& s1, size2d const& s2) {
+    friend size2d operator-(const size2d& s1, const size2d& s2) {
         int w = s1.w - s2.w;
         int h = s1.h - s2.h;
         return size2d(qMax(w, 0), qMax(h, 0));
@@ -48,7 +48,7 @@ template <typename T> class Array2D {
     typedef T* col_t;
     col_t* ts_;
 
-    void alloc(size2d const& size) {
+    void alloc(const size2d& size) {
         free();
 
         if (!(size_ = size).isEmpty()) {
@@ -71,8 +71,8 @@ public:
     // empty array
     Array2D() : size_(0, 0), ts_(nullptr) {}
 
-    Array2D(Array2D const&) = delete;
-    Array2D& operator=(Array2D const&) = delete;
+    Array2D(const Array2D&) = delete;
+    Array2D& operator=(const Array2D&) = delete;
 
     virtual ~Array2D() { free(); }
 
@@ -80,13 +80,13 @@ public:
     bool isEmpty() const { return size_.isEmpty(); }
 
     // 2D image size
-    size2d const& size() const { return size_; }
+    const size2d& size() const { return size_; }
 
     // make empty
     void clear() { alloc(size2d(0, 0)); }
 
     // allocate and fill with a value
-    void fill(T const& val, size2d const& size) {
+    void fill(const T& val, const size2d& size) {
         alloc(size);
         for (int i = 0; i < size_.w; ++i)
             for (int j = 0; j < size_.h; ++j)
@@ -94,22 +94,22 @@ public:
     }
 
     // allocate and fill with a default value
-    void resize(size2d const& size) { fill(T(), size); }
+    void resize(const size2d& size) { fill(T(), size); }
 
     // access using 1D index
-    T const& at(int i) const { return at(i % size_.w, i / size_.h); }
+    const T& at(int i) const { return at(i % size_.w, i / size_.h); }
 
     // access using 2D index
-    T const& at(int i, int j) const {
+    const T& at(int i, int j) const {
         ASSERT(i < size_.w && j < size_.h);
         return ts_[i][j];
     }
 
     // set using 1D index
-    void setAt(int i, T const& val) { setAt(i % size_.w, i / size_.h, val); }
+    void setAt(int i, const T& val) { setAt(i % size_.w, i / size_.h, val); }
 
     // set using 2D index
-    void setAt(int i, int j, T const& val) {
+    void setAt(int i, int j, const T& val) {
         ASSERT(i < size_.w && j < size_.h);
         ts_[i][j] = val;
     }

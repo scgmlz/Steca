@@ -22,14 +22,14 @@ struct itf_t {
     itf_t() : itf_t(inten_t(NAN), deg(NAN), fwhm_t(NAN)) {}
     itf_t(inten_t _inten, deg _tth, fwhm_t _fwhm) : inten(_inten), tth(_tth), fwhm(_fwhm) {}
 
-    void operator+=(itf_t const&); // used once to compute average
+    void operator+=(const itf_t&); // used once to compute average
 
     inten_t inten;
     deg tth;
     fwhm_t fwhm;
 };
 
-void itf_t::operator+=(itf_t const& that) {
+void itf_t::operator+=(const itf_t& that) {
     inten += that.inten;
     tth += that.tth;
     fwhm += that.fwhm;
@@ -107,7 +107,7 @@ bool inRadius(deg alpha, deg beta, deg centerAlpha, deg centerBeta, deg radius) 
 
 // Adds data from peak infos within radius from alpha and beta
 // to the peak parameter lists.
-void searchPoints(deg alpha, deg beta, deg radius, PeakInfos const& infos, itfs_t& itfs) {
+void searchPoints(deg alpha, deg beta, deg radius, const PeakInfos& infos, itfs_t& itfs) {
     // REVIEW Use value trees to improve performance.
     for (const PeakInfo& info : infos) {
         if (inRadius(info.alpha(), info.beta(), alpha, beta, radius))
@@ -117,7 +117,7 @@ void searchPoints(deg alpha, deg beta, deg radius, PeakInfos const& infos, itfs_
 
 // Searches closest PeakInfos to given alpha and beta in quadrants.
 void searchInQuadrants(
-    Quadrants const& quadrants, deg alpha, deg beta, deg searchRadius, PeakInfos const& infos,
+    const Quadrants& quadrants, deg alpha, deg beta, deg searchRadius, const PeakInfos& infos,
     info_vec& foundInfos, vec<qreal>& distances) {
     ASSERT(quadrants.count() <= NUM_QUADRANTS);
     // Take only peak infos with beta within +/- BETA_LIMIT degrees into
@@ -147,7 +147,7 @@ void searchInQuadrants(
     }
 }
 
-itf_t inverseDistanceWeighing(vec<qreal> const& distances, info_vec const& infos) {
+itf_t inverseDistanceWeighing(vec<qreal> const& distances, const info_vec& infos) {
     int N = NUM_QUADRANTS;
     // Generally, only distances.count() == values.count() > 0 is needed for this
     // algorithm. However, in this context we expect exactly the following:
@@ -182,7 +182,7 @@ itf_t inverseDistanceWeighing(vec<qreal> const& distances, info_vec const& infos
 }
 
 // Interpolates peak infos to a single point using idw.
-itf_t interpolateValues(deg searchRadius, PeakInfos const& infos, deg alpha, deg beta) {
+itf_t interpolateValues(deg searchRadius, const PeakInfos& infos, deg alpha, deg beta) {
     info_vec interpolationInfos;
     vec<qreal> distances;
     searchInQuadrants(
@@ -224,7 +224,7 @@ itf_t interpolateValues(deg searchRadius, PeakInfos const& infos, deg alpha, deg
 
 //! Interpolates infos to equidistant grid in alpha and beta.
 PeakInfos interpolateInfos(
-    PeakInfos const& infos, deg alphaStep, deg betaStep, deg idwRadius, deg averagingAlphaMax,
+    const PeakInfos& infos, deg alphaStep, deg betaStep, deg idwRadius, deg averagingAlphaMax,
     deg averagingRadius, qreal inclusionTreshold, Progress* progress) {
     // Two interpolation methods are used here:
     // If grid point alpha <= averagingAlphaMax, points within averagingRadius
@@ -276,7 +276,7 @@ PeakInfos interpolateInfos(
                 if (!itfs.isEmpty()) {
                     // If inclusionTreshold < 1, we'll only use a fraction of largest
                     // peak parameter values.
-                    std::sort(itfs.begin(), itfs.end(), [](itf_t const& i1, itf_t const& i2) {
+                    std::sort(itfs.begin(), itfs.end(), [](const itf_t& i1, const itf_t& i2) {
                         return i1.inten < i2.inten;
                     });
 

@@ -119,7 +119,7 @@ int TableView::mWidth() const {
 //! We cannot place currentChanged in this pure virtual class, because then it would be
 //! called by the constructor, which would result in undefined behavior.
 
-void TableView::gotoCurrent(QModelIndex const& current) {
+void TableView::gotoCurrent(const QModelIndex& current) {
     if (current.row()==model_->highlighted())
         return; // the following would prevent execution of "onClicked"
     model_->setHighlight(current.row());

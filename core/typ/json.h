@@ -29,9 +29,9 @@ private:
     using super = QJsonObject;
 public:
     JsonObj();
-    JsonObj(QJsonObject const&);
+    JsonObj(const QJsonObject&);
 
-    super const& sup() const { return *this; }
+    const super& sup() const { return *this; }
 
     JsonObj loadObj(const QString& key, bool defEmpty = false) const THROWS;
 

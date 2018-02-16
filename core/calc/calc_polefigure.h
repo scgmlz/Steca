@@ -19,7 +19,7 @@
 #include "core/typ/async.h"
 
 PeakInfos interpolateInfos(
-    PeakInfos const&, deg alphaStep, deg betaStep, deg idwRadius,
+    const PeakInfos&, deg alphaStep, deg betaStep, deg idwRadius,
     deg averagingAlphaMax, deg averagingRadius, qreal inclusionTreshold, Progress*);
 
 #endif // CALC_POLEFIGURE_H

@@ -52,7 +52,7 @@ void Session::updateImageSize() {
         imageSize_ = size2d(0, 0);
 }
 
-void Session::setImageSize(size2d const& size) THROWS {
+void Session::setImageSize(const size2d& size) THROWS {
     if (!(!size.isEmpty())) THROW("image is empty or has ill defined size");
     if (imageSize_.isEmpty())
         imageSize_ = size; // the first one
@@ -68,17 +68,17 @@ void Session::setImageTransformMirror(bool on) {
     imageTransform_ = imageTransform_.mirror(on);
 }
 
-void Session::setImageTransformRotate(ImageTransform const& rot) {
+void Session::setImageTransformRotate(const ImageTransform& rot) {
     imageTransform_ = imageTransform_.rotateTo(rot);
 }
 
-void Session::setImageCut(bool isTopOrLeft, bool linked, ImageCut const& cut) {
+void Session::setImageCut(bool isTopOrLeft, bool linked, const ImageCut& cut) {
     imageCut_.update(isTopOrLeft, linked, cut, imageSize_);
     corrset().clearIntens(); // lazy
     emit sigDetector();
 }
 
-void Session::setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPixOffset) {
+void Session::setGeometry(qreal detectorDistance, qreal pixSize, const IJ& midPixOffset) {
     geometry_.detectorDistance = detectorDistance;
     geometry_.pixSize = pixSize;
     geometry_.midPixOffset = midPixOffset;
@@ -94,14 +94,14 @@ IJ Session::midPix() const {
     size2d sz = imageSize();
     IJ mid(sz.w / 2, sz.h / 2);
 
-    IJ const& off = geometry_.midPixOffset;
+    const IJ& off = geometry_.midPixOffset;
     mid.i += off.i;
     mid.j += off.j;
 
     return mid;
 }
 
-shp_AngleMap Session::angleMap(Measurement const& one) const {
+shp_AngleMap Session::angleMap(const Measurement& one) const {
     ImageKey key(geometry_, imageSize_, imageCut_, midPix(), one.midTth());
     shp_AngleMap map = angleMapCache_.value(key);
     if (map.isNull())
@@ -113,11 +113,11 @@ shp_ImageLens Session::imageLens(const Image& image, bool trans, bool cut) const
     return shp_ImageLens(new ImageLens(image, trans, cut));
 }
 
-SequenceLens Session::defaultClusterLens(Sequence const& seq) const {
+SequenceLens Session::defaultClusterLens(const Sequence& seq) const {
     return SequenceLens(seq, norm_);
 }
 
-Curve Session::curveMinusBg(SequenceLens const& lens, const Range& rgeGma) const {
+Curve Session::curveMinusBg(const SequenceLens& lens, const Range& rgeGma) const {
     Curve curve = lens.makeCurve(rgeGma);
     const Polynom f = Polynom::fromFit(baseline().polynomDegree(), curve, baseline().ranges());
     curve.subtract([f](qreal x) {return f.y(x);});
@@ -125,8 +125,8 @@ Curve Session::curveMinusBg(SequenceLens const& lens, const Range& rgeGma) const
 }
 
 //! Fits peak to the given gamma sector and constructs a PeakInfo.
-PeakInfo Session::makePeakInfo(const Cluster* cluster, SequenceLens const& lens,
-                               Peak const& peak, const Range& gmaSector) const {
+PeakInfo Session::makePeakInfo(const Cluster* cluster, const SequenceLens& lens,
+                               const Peak& peak, const Range& gmaSector) const {
 
     // fit peak, and retrieve peak parameters:
     Curve curve = curveMinusBg(lens, gmaSector);
@@ -160,7 +160,7 @@ PeakInfo Session::makePeakInfo(const Cluster* cluster, SequenceLens const& lens,
 //! TODO? gammaStep separately?
 
 PeakInfos Session::makePeakInfos(
-    Peak const& peak, int gmaSlices, const Range& rgeGma, Progress* progress) const {
+    const Peak& peak, int gmaSlices, const Range& rgeGma, Progress* progress) const {
 
     if (progress)
         progress->setTotal(experiment().size());
@@ -205,7 +205,7 @@ void Session::setNorm(eNorm norm) {
     emit gSession->sigNorm();
 }
 
-qreal Session::calcAvgBackground(Sequence const& seq) const {
+qreal Session::calcAvgBackground(const Sequence& seq) const {
     Curve gmaCurve = SequenceLens(seq, eNorm::NONE).makeCurve();
     Polynom bgPolynom = Polynom::fromFit(baseline().polynomDegree(), gmaCurve, baseline().ranges());
     return bgPolynom.avgY(seq.rgeTth());

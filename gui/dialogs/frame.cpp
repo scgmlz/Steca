@@ -167,7 +167,7 @@ ShowColsWidget::ShowColsWidget(const QString& name, DataView& table, showcol_vec
 class TabTable : public QWidget {
 public:
     TabTable(const QString& name, const QStringList& headers,
-             const QStringList& outHeaders, cmp_vec const&);
+             const QStringList& outHeaders, const cmp_vec&);
     ~TabTable();
     DataView* table;
 private:

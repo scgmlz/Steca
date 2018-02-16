@@ -32,7 +32,7 @@ class ImageWidget final : public QWidget {
 public:
     ImageWidget();
 
-    void setPixmap(QPixmap const&);
+    void setPixmap(const QPixmap&);
     void setScale();
 
 private:
@@ -51,7 +51,7 @@ ImageWidget::ImageWidget() : scale_(0) {
     connect(&gGui->toggles->stepScale, &QAction::toggled, [this](bool /*unused*/) { setScale(); });
 }
 
-void ImageWidget::setPixmap(QPixmap const& pixmap) {
+void ImageWidget::setPixmap(const QPixmap& pixmap) {
     original_ = pixmap;
     setScale();
 }
@@ -142,7 +142,7 @@ public:
 protected:
     QBoxLayout* controls_;
     QPixmap makePixmap(shp_Image);
-    QPixmap makePixmap(class Measurement const&, const Range&, const Range&);
+    QPixmap makePixmap(const class Measurement&, const Range&, const Range&);
     QPixmap makeBlankPixmap();
     QImage makeImage(shp_Image, bool curvedScale);
     ImageWidget* imageView_;
@@ -176,13 +176,13 @@ QPixmap ImageTab::makePixmap(shp_Image image) {
 }
 
 QPixmap ImageTab::makePixmap(
-    Measurement const& cluster, const Range& rgeGma, const Range& rgeTth) {
+    const Measurement& cluster, const Range& rgeGma, const Range& rgeTth) {
     QImage im = makeImage(cluster.image(), !gGui->isFixedIntenImageScale());
     shp_AngleMap angleMap = gSession->angleMap(cluster);
 
     const QSize& size = im.size();
     for_ij (size.width(), size.height()) {
-        ScatterDirection const& a = angleMap->at(i, j);
+        const ScatterDirection& a = angleMap->at(i, j);
         QColor color = im.pixel(i, j);
         if (rgeGma.contains(a.gma)) {
             if (rgeTth.contains(a.tth)) {

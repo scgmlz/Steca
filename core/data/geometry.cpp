@@ -34,7 +34,7 @@ qreal const Geometry::DEF_DETECTOR_PIXEL_SIZE = 1;
 Geometry::Geometry()
     : detectorDistance(DEF_DETECTOR_DISTANCE), pixSize(DEF_DETECTOR_PIXEL_SIZE), midPixOffset() {}
 
-int Geometry::compare(Geometry const& that) const {
+int Geometry::compare(const Geometry& that) const {
     RET_COMPARE_VALUE(detectorDistance)
     RET_COMPARE_VALUE(pixSize)
     RET_COMPARE_COMPARABLE(midPixOffset)
@@ -52,7 +52,7 @@ ImageCut::ImageCut() : ImageCut(0, 0, 0, 0) {}
 ImageCut::ImageCut(int left_, int top_, int right_, int bottom_)
     : left(left_), top(top_), right(right_), bottom(bottom_) {}
 
-void ImageCut::update(bool topLeftFirst, bool linked, ImageCut const& cut, size2d size) {
+void ImageCut::update(bool topLeftFirst, bool linked, const ImageCut& cut, size2d size) {
     if (size.isEmpty()) {
         *this = ImageCut();
         return;
@@ -80,7 +80,7 @@ void ImageCut::update(bool topLeftFirst, bool linked, ImageCut const& cut, size2
     *this = ImageCut(_left, _top, _right, _bottom);
 }
 
-int ImageCut::compare(ImageCut const& that) const {
+int ImageCut::compare(const ImageCut& that) const {
     RET_COMPARE_VALUE(left)
     RET_COMPARE_VALUE(top)
     RET_COMPARE_VALUE(right)
@@ -99,11 +99,11 @@ size2d ImageCut::marginSize() const {
 // ************************************************************************** //
 
 ImageKey::ImageKey(
-    Geometry const& geometry_, size2d const& size_, ImageCut const& cut_,
-    IJ const& midPix_, deg midTth_)
+    const Geometry& geometry_, const size2d& size_, const ImageCut& cut_,
+    const IJ& midPix_, deg midTth_)
     : geometry(geometry_), size(size_), cut(cut_), midPix(midPix_), midTth(midTth_) {}
 
-int ImageKey::compare(ImageKey const& that) const {
+int ImageKey::compare(const ImageKey& that) const {
     RET_COMPARE_COMPARABLE(geometry)
     RET_COMPARE_COMPARABLE(size)
     RET_COMPARE_COMPARABLE(cut)

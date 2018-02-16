@@ -36,11 +36,11 @@ public:
 
     qreal avgY(const Range&, qreal const* parValues = nullptr) const;
 
-    void fit(Curve const&, const Ranges&);
-    static Polynom fromFit(int degree, Curve const&, const Ranges&);
+    void fit(const Curve&, const Ranges&);
+    static Polynom fromFit(int degree, const Curve&, const Ranges&);
 
     JsonObj to_json() const final;
-    void from_json(JsonObj const&) THROWS final;
+    void from_json(const JsonObj&) THROWS final;
 
     QString name() const final { return "polynom"; }
 };
@@ -53,16 +53,16 @@ public:
     PeakFunction();
 
     void reset();
-    void fit(Curve const& curve) { return fit(curve, range_); }
-    virtual void fit(Curve const&, const Range&);
-    void from_json(JsonObj const&) THROWS;
+    void fit(const Curve& curve) { return fit(curve, range_); }
+    virtual void fit(const Curve&, const Range&);
+    void from_json(const JsonObj&) THROWS;
     virtual void setRange(const Range& range) { range_ = range; }
     virtual void setGuessedPeak(const qpair& peak) { guessedPeak_ = peak; }
     virtual void setGuessedFWHM(const fwhm_t fwhm) { guessedFWHM_ = fwhm; }
 
     PeakFunction* clone() const;
     const Range& range() const { return range_; }
-    qpair const& guessedPeak() const { return guessedPeak_; }
+    const qpair& guessedPeak() const { return guessedPeak_; }
     fwhm_t guessedFWHM() const { return guessedFWHM_; }
     virtual qpair fittedPeak() const = 0;
     virtual fwhm_t fittedFWHM() const = 0;
@@ -76,7 +76,7 @@ protected:
     qpair guessedPeak_;
     fwhm_t guessedFWHM_;
 
-    Curve prepareFit(Curve const&, const Range&);
+    Curve prepareFit(const Curve&, const Range&);
 };
 
 
@@ -88,7 +88,7 @@ class FunctionRegistry : public IRegistry<initializer_type>, public ISingleton<F
 public:
     void register_fct(const initializer_type f);
     static PeakFunction* name2new(const QString&) THROWS;
-    static PeakFunction* clone(PeakFunction const& old);
+    static PeakFunction* clone(const PeakFunction& old);
 };
 
 #endif // FIT_FUN_H

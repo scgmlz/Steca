@@ -18,7 +18,7 @@ Peak::Peak(const QString& functionName) : peakFunction_(nullptr) {
     setPeakFunction(functionName);
 }
 
-PeakFunction const& Peak::peakFunction() const {
+const PeakFunction& Peak::peakFunction() const {
     ASSERT(peakFunction_);
     return *peakFunction_;
 }
@@ -34,7 +34,7 @@ void Peak::invalidateGuesses() {
     emit gSession->sigPeaks();
 }
 
-void Peak::setGuessPeak(qpair const& peak) {
+void Peak::setGuessPeak(const qpair& peak) {
     peakFunction_->setGuessedPeak(peak);
 }
 
@@ -42,7 +42,7 @@ void Peak::setGuessFWHM(fwhm_t fwhm) {
     peakFunction_->setGuessedFWHM(fwhm);
 }
 
-void Peak::fit(Curve const& curve) {
+void Peak::fit(const Curve& curve) {
     peakFunction_->fit(curve);
 }
 
@@ -60,7 +60,7 @@ JsonObj Peak::to_json() const {
     return peakFunction_->to_json();
 }
 
-Peak* Peak::from_json(JsonObj const& obj) THROWS {
+Peak* Peak::from_json(const JsonObj& obj) THROWS {
     QString functionName = obj.loadString("type");
     Peak* ret = new Peak(functionName);
     ret->peakFunction_->from_json(obj); // may throw

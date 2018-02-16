@@ -18,7 +18,7 @@
 Rawfile::Rawfile(const QString& fileName) : fileInfo_(fileName) {}
 
 //! The loaders use this function to push cluster
-void Rawfile::addDataset(const Metadata& md, size2d const& sz, inten_vec const& ivec) {
+void Rawfile::addDataset(const Metadata& md, const size2d& sz, const inten_vec& ivec) {
     if (measurements_.isEmpty())
         imageSize_ = sz;
     else if (sz != imageSize_)
@@ -34,7 +34,7 @@ QVector<const Measurement*> const Rawfile::measurements() const
     return ret;
 }
 
-QFileInfo const& Rawfile::fileInfo() const {
+const QFileInfo& Rawfile::fileInfo() const {
     return fileInfo_;
 }
 

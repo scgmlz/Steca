@@ -24,7 +24,7 @@
 #define context(ctx) ""
 #endif
 
-void messageHandler(QtMsgType type, QMessageLogContext const& ctx, const QString& msg) {
+void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString& msg) {
     switch (type) {
     case QtDebugMsg:
         std::cerr << ".... " << msg.toStdString() << "\n" << std::flush;

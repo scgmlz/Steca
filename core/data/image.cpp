@@ -14,11 +14,11 @@
 
 #include "core/data/image.h"
 
-Image::Image(size2d const& size) {
+Image::Image(const size2d& size) {
     fill(0, size);
 }
 
-Image::Image(inten_arr const& that) : Image(that.size()) {
+Image::Image(const inten_arr& that) : Image(that.size()) {
     addIntens(that);
 }
 

@@ -117,7 +117,7 @@ QString const PeakInfo::reflStringTag(int attr, bool out) {
 //  class PeakInfos
 // ************************************************************************** //
 
-void PeakInfos::append(PeakInfo const& info) {
+void PeakInfos::append(const PeakInfo& info) {
     vec<PeakInfo>::append(info);
     invalidate();
 }

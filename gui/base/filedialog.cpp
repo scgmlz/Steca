@@ -20,7 +20,7 @@
 
 namespace {
 
-typedef QModelIndex const& rcidx;
+typedef const QModelIndex& rcidx;
 
 // ************************************************************************** //
 //  class OpenFileProxyModel (file scope)

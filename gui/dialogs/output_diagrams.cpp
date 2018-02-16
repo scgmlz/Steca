@@ -311,7 +311,7 @@ void DiagramsFrame::writeAllDataOutputFile(const QString& filePath, const QStrin
     for_i (calcPoints_.at(getReflIndex()).count()) {
         const row_t& row = table_->row(i);
         for_i (row.count()) {
-            QVariant const& var = row.at(i);
+            const QVariant& var = row.at(i);
             if (isNumeric(var))
                 stream << var.toDouble();
             else

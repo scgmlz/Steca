@@ -20,7 +20,7 @@ ImageTransform ImageTransform::mirror(bool on) const {
     return on ? ImageTransform(val | MIRROR) : ImageTransform(val & ~MIRROR);
 }
 
-ImageTransform ImageTransform::rotateTo(ImageTransform const& rot) const {
+ImageTransform ImageTransform::rotateTo(const ImageTransform& rot) const {
     return ImageTransform((val & MIRROR) | (rot.val & 3));
 }
 

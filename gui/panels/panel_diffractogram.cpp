@@ -269,7 +269,7 @@ void DiffractogramPlot::calcPeaks() {
 }
 
 void DiffractogramPlot::plot(
-    Curve const& dgram, Curve const& dgramBgFitted, Curve const& bg, curve_vec const& refls,
+    const Curve& dgram, const Curve& dgramBgFitted, const Curve& bg, const curve_vec& refls,
     int currReflIndex) {
     if (dgram.isEmpty()) {
         plotEmpty();

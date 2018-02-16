@@ -80,13 +80,13 @@ private:
     void readSettings();
     void saveSettings();
 
-    void saveSessionTo(QFileInfo const&);
+    void saveSessionTo(const QFileInfo&);
     QByteArray serializeSession() const;
 
     void collectDatasetsFromSelectionBy(const vec<int>, const int);
     void setImageMirror(bool);
     void configActions();
-    void sessionFromJson(QByteArray const&) THROWS;
+    void sessionFromJson(const QByteArray&) THROWS;
     void updateActionEnabling();
 
     bool isFixedIntenImageScale_;

@@ -16,7 +16,7 @@
 #include <qmath.h>
 
 Measurement::Measurement(
-    const int position, const Metadata& md, size2d const& size, inten_vec const& intens)
+    const int position, const Metadata& md, const size2d& size, const inten_vec& intens)
     : position_(position)
     , md_(new Metadata(md))
     , image_(new Image(size))
@@ -52,7 +52,7 @@ void Measurement::collectIntens(
 
     const shp_AngleMap& angleMap = gSession->angleMap(*this);
     ASSERT(!angleMap.isNull());
-    AngleMap const& map = *angleMap;
+    const AngleMap& map = *angleMap;
 
     vec<int> const* gmaIndexes = nullptr;
     int gmaIndexMin = 0, gmaIndexMax = 0;

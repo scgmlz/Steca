@@ -28,13 +28,13 @@ public:
     Rawfile(Rawfile&&) = default;
     Rawfile(const QString& fileName);
 
-    void addDataset(const Metadata&, size2d const&, inten_vec const&);
+    void addDataset(const Metadata&, const size2d&, const inten_vec&);
 
     QVector<const Measurement*> const measurements() const;
     int count() const { return measurements_.count(); }
     size2d imageSize() const { return imageSize_; }
 
-    QFileInfo const& fileInfo() const;
+    const QFileInfo& fileInfo() const;
     QString fileName() const;
     shp_Image foldedImage() const;
 

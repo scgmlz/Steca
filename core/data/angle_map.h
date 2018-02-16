@@ -34,10 +34,10 @@ public:
 class AngleMap {
 public:
     AngleMap() = delete;
-    AngleMap(ImageKey const&);
+    AngleMap(const ImageKey&);
 
-    ScatterDirection const& at(int i) const { return arrAngles_.at(i); }
-    ScatterDirection const& at(int i, int j) const { return arrAngles_.at(i, j); }
+    const ScatterDirection& at(int i) const { return arrAngles_.at(i); }
+    const ScatterDirection& at(int i, int j) const { return arrAngles_.at(i, j); }
 
     Range rgeTth() const { return rgeTth_; }
     Range rgeGma() const { return rgeGma_; }

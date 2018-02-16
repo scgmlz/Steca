@@ -56,9 +56,9 @@ public:
     void setMetaSelected(int, bool);
 
     void setImageTransformMirror(bool);
-    void setImageTransformRotate(ImageTransform const&);
-    void setImageCut(bool isTopOrLeft, bool linked, ImageCut const&);
-    void setGeometry(qreal detectorDistance, qreal pixSize, IJ const& midPixOffset);
+    void setImageTransformRotate(const ImageTransform&);
+    void setImageCut(bool isTopOrLeft, bool linked, const ImageCut&);
+    void setGeometry(qreal detectorDistance, qreal pixSize, const IJ& midPixOffset);
     void setGammaRange(const Range&);
     void setIntenScaleAvg(bool, qreal);
     void setNorm(eNorm);
@@ -71,27 +71,27 @@ public:
     const Experiment& experiment() const { return dataset().experiment(); }
 
     size2d imageSize() const;
-    ImageTransform const& imageTransform() const { return imageTransform_; }
-    ImageCut const& imageCut() const { return imageCut_; }
+    const ImageTransform& imageTransform() const { return imageTransform_; }
+    const ImageCut& imageCut() const { return imageCut_; }
 
-    Geometry const& geometry() const { return geometry_; }
+    const Geometry& geometry() const { return geometry_; }
     IJ midPix() const;
 
     const Range& gammaRange() const { return gammaRange_; }
 
-    shp_AngleMap angleMap(Measurement const&) const;
-    static shp_AngleMap angleMap(Session const& session, Measurement const& ds) {
+    shp_AngleMap angleMap(const Measurement&) const;
+    static shp_AngleMap angleMap(const Session& session, const Measurement& ds) {
         return session.angleMap(ds); }
 
     shp_ImageLens imageLens(const Image&, bool trans, bool cut) const;
-    SequenceLens defaultClusterLens(Sequence const& seq) const;
+    SequenceLens defaultClusterLens(const Sequence& seq) const;
 
-    PeakInfos makePeakInfos(Peak const&, int gmaSlices, const Range&, Progress*) const;
+    PeakInfos makePeakInfos(const Peak&, int gmaSlices, const Range&, Progress*) const;
 
     bool intenScaledAvg() const { return intenScaledAvg_; }
     qreal intenScale() const { return intenScale_; }
 
-    qreal calcAvgBackground(Sequence const&) const;
+    qreal calcAvgBackground(const Sequence&) const;
     qreal calcAvgBackground() const;
 
     bool metaSelected(int i) const { return metaSelection_[i]; }
@@ -132,10 +132,10 @@ private:
     mutable cache_lazy<ImageKey, AngleMap> angleMapCache_ {360};
 
     void updateImageSize(); //!< Clears image size if session has no files
-    void setImageSize(size2d const&) THROWS; //!< Ensures same size for all images
+    void setImageSize(const size2d&) THROWS; //!< Ensures same size for all images
 
-    Curve curveMinusBg(SequenceLens const&, const Range&) const;
-    PeakInfo makePeakInfo(const Cluster*, SequenceLens const&, Peak const&, const Range&) const;
+    Curve curveMinusBg(const SequenceLens&, const Range&) const;
+    PeakInfo makePeakInfo(const Cluster*, const SequenceLens&, const Peak&, const Range&) const;
 };
 
 #endif // SESSION_H

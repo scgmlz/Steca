@@ -221,7 +221,7 @@ void MainWin::viewReset() {
     toggles->viewMetadata.setChecked(true);
 }
 
-void MainWin::saveSessionTo(QFileInfo const& fileInfo) {
+void MainWin::saveSessionTo(const QFileInfo& fileInfo) {
     QFile* file = file_dialog::OutputFile("file", this, fileInfo.filePath());
     if (!file)
         return;
@@ -281,7 +281,7 @@ void MainWin::sessionFromFile(const QString& filePath) THROWS {
     sessionFromJson(file.readAll());
 }
 
-void MainWin::sessionFromJson(QByteArray const& json) THROWS {
+void MainWin::sessionFromJson(const QByteArray& json) THROWS {
     QJsonParseError parseError;
     QJsonDocument doc(QJsonDocument::fromJson(json, &parseError));
     if (!(QJsonParseError::NoError == parseError.error))

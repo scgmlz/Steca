@@ -592,7 +592,7 @@ QString loadCaressComment(const QString& filePath) {
                 delete[] c_comment;
             }
         }
-    } catch (Exception const&) {}
+    } catch (const Exception&) {}
 
     return s_comment;
 }

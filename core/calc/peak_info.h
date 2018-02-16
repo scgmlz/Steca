@@ -80,7 +80,7 @@ class PeakInfos : public vec<PeakInfo> {
 public:
     PeakInfos() { invalidate(); }
 
-    void append(PeakInfo const&);
+    void append(const PeakInfo&);
 
     inten_t averageInten() const;
     const Range& rgeInten() const;

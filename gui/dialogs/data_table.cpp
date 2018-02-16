@@ -60,7 +60,7 @@ QVariant DataModel::data(const QModelIndex& index, int role) const {
             return Qt::AlignRight;
 
         if (--indexCol < numCols && indexRow < numRows) {
-            QVariant const& var = rows_.at(indexRow).row.at(indexCol);
+            const QVariant& var = rows_.at(indexRow).row.at(indexCol);
             if (isNumeric(var))
                 return Qt::AlignRight;
         }
@@ -88,7 +88,7 @@ void DataModel::moveColumn(int from, int to) {
     qSwap(colIndexMap_[from], colIndexMap_[to]);
 }
 
-void DataModel::setColumns(const QStringList& headers, cmp_vec const& cmps) {
+void DataModel::setColumns(const QStringList& headers, const cmp_vec& cmps) {
     ASSERT(headers.count() == numCols_ && cmps.count() == numCols_);
     headers_ = headers;
     cmpFunctions_ = cmps;
@@ -104,24 +104,24 @@ void DataModel::clear() {
     endResetModel();
 }
 
-void DataModel::addRow(row_t const& row, bool sort) {
+void DataModel::addRow(const row_t& row, bool sort) {
     rows_.append(numRow(rows_.count() + 1, row));
     if (sort)
         sortData();
 }
 
-row_t const& DataModel::row(int index) {
+const row_t& DataModel::row(int index) {
     return rows_.at(index).row;
 }
 
 void DataModel::sortData() {
-    auto _cmpRows = [this](int col, row_t const& r1, row_t const& r2) {
+    auto _cmpRows = [this](int col, const row_t& r1, const row_t& r2) {
         col = colIndexMap_.at(col);
         return cmpFunctions_.at(col)(r1.at(col), r2.at(col));
     };
 
     // sort by sortColumn first, then left-to-right
-    auto _cmp = [this, _cmpRows](numRow const& r1, numRow const& r2) {
+    auto _cmp = [this, _cmpRows](const numRow& r1, const numRow& r2) {
         if (0 <= sortColumn_) {
             int c = _cmpRows(sortColumn_, r1.row, r2.row);
             if (c < 0)
@@ -176,7 +176,7 @@ DataView::DataView(int numDataColumns)
 }
 
 void DataView::setColumns(
-    const QStringList& headers, const QStringList& outHeaders, cmp_vec const& cmps) {
+    const QStringList& headers, const QStringList& outHeaders, const cmp_vec& cmps) {
     model_->setColumns(headers, cmps);
     ASSERT(headers.count() == outHeaders.count());
     outHeaders_ = outHeaders;
@@ -203,7 +203,7 @@ void DataView::clear() {
     model_->clear();
 }
 
-void DataView::addRow(row_t const& row, bool sort) {
+void DataView::addRow(const row_t& row, bool sort) {
     model_->addRow(row, sort);
 }
 

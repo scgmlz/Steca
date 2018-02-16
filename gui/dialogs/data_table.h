@@ -28,11 +28,11 @@ public:
 
     void clear();
     void moveColumn(int from, int to);
-    void setColumns(const QStringList& headers, cmp_vec const&);
+    void setColumns(const QStringList& headers, const cmp_vec&);
     void setSortColumn(int);
-    void addRow(row_t const&, bool sort = true);
+    void addRow(const row_t&, bool sort = true);
     void sortData();
-    row_t const& row(int);
+    const row_t& row(int);
 
     int columnCount() const final { return numCols_ + 1; }
     int rowCount() const final { return rows_.count(); }
@@ -51,9 +51,9 @@ private:
     cmp_vec cmpFunctions_;
 
     struct numRow {
-        typedef numRow const& rc;
+        typedef const numRow& rc;
         numRow() : n(0), row() {}
-        numRow(int n_, row_t const& row_) : n(n_), row(row_) {}
+        numRow(int n_, const row_t& row_) : n(n_), row(row_) {}
         int n;
         row_t row;
     };
@@ -68,13 +68,13 @@ public:
     DataView(int numDataColumns);
 
     void clear();
-    void setColumns(const QStringList& headers, const QStringList& outHeaders, cmp_vec const&);
-    void addRow(row_t const&, bool sort);
+    void setColumns(const QStringList& headers, const QStringList& outHeaders, const cmp_vec&);
+    void addRow(const row_t&, bool sort);
     void sortData();
 
     QStringList outHeaders() const { return outHeaders_; }
     int rowCount() const;
-    row_t const& row(int) const;
+    const row_t& row(int) const;
 
 private:
     void keyPressEvent(QKeyEvent *event);

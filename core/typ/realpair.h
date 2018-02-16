@@ -26,13 +26,13 @@ class qpair {
     qpair() { invalidate(); }
     qpair(qreal x_, qreal y_) : x(x_), y(y_) {}
 
-    COMPARABLE(qpair const&);
+    COMPARABLE(const qpair&);
 
     void invalidate(); // x,y <- NAN
     bool isValid() const { return !qIsNaN(x) && !qIsNaN(y); }
 
     QJsonObject to_json() const;
-    void from_json(class JsonObj const&) THROWS;
+    void from_json(const class JsonObj&) THROWS;
 };
 
 #endif // REALPAIR_H

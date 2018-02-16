@@ -127,7 +127,7 @@ QJsonObject Range::to_json() const {
     return { { "min", qreal_to_json(min) }, { "max", qreal_to_json(max) } };
 }
 
-void Range::from_json(JsonObj const& obj) THROWS {
+void Range::from_json(const JsonObj& obj) THROWS {
     min = obj.loadQreal("min");
     max = obj.loadQreal("max");
 }
@@ -199,7 +199,7 @@ QJsonArray Ranges::to_json() const {
     return arr;
 }
 
-void Ranges::from_json(QJsonArray const& arr) THROWS {
+void Ranges::from_json(const QJsonArray& arr) THROWS {
     for_i (arr.count()) {
         Range range;
         range.from_json(arr.at(i).toObject());

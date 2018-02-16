@@ -40,7 +40,7 @@ class DiffractogramPlot : public QCustomPlot {
 public:
     DiffractogramPlot(class Diffractogram&);
 
-    void plot(Curve const&, Curve const&, Curve const&, curve_vec const&, int);
+    void plot(const Curve&, const Curve&, const Curve&, const curve_vec&, int);
     void plotEmpty();
     void renderAll();
     void clearReflLayer();

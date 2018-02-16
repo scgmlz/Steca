@@ -72,7 +72,7 @@ protected:
     int mWidth() const;
     QString name_;
     TableModel* model_;
-    void gotoCurrent(QModelIndex const&);
+    void gotoCurrent(const QModelIndex&);
     void updateScroll();
     void highlight(bool primaryCall, int row);
 };

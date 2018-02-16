@@ -27,16 +27,16 @@ public:
     Peak() = delete;
     Peak(const QString& functionName = "Raw");
 
-    static Peak* from_json(JsonObj const&) THROWS;
+    static Peak* from_json(const JsonObj&) THROWS;
 
     void setPeakFunction(const QString&);
     void setRange(const Range&);
     void invalidateGuesses();
-    void setGuessPeak(qpair const& peak);
+    void setGuessPeak(const qpair& peak);
     void setGuessFWHM(fwhm_t fwhm);
-    void fit(Curve const&);
+    void fit(const Curve&);
 
-    PeakFunction const& peakFunction() const;
+    const PeakFunction& peakFunction() const;
     QString functionName() const { return peakFunction_->name(); }
     bool isRaw() const { return peakFunction_->isRaw(); }
     const Range& range() const { return peakFunction_->range(); }

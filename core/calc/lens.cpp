@@ -96,7 +96,7 @@ const Range& ImageLens::rgeInten(bool fixed) const {
 //   class SequenceLens
 // ************************************************************************** //
 
-SequenceLens::SequenceLens(Sequence const& seq, eNorm norm)
+SequenceLens::SequenceLens(const Sequence& seq, eNorm norm)
     : normFactor_(1)
     , seq_(seq)
 {

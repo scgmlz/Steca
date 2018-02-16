@@ -37,7 +37,7 @@ QJsonValue qreal_to_json(const qreal num) {
 
 JsonObj::JsonObj() {}
 
-JsonObj::JsonObj(QJsonObject const& obj) : super(obj) {}
+JsonObj::JsonObj(const QJsonObject& obj) : super(obj) {}
 
 JsonObj JsonObj::loadObj(const QString& key, bool defEmpty) const THROWS {
     const QJsonValue& val = value(key);

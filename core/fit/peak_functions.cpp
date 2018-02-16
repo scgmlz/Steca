@@ -35,7 +35,7 @@ public:
     fwhm_t fwhmError() const;
 
     void setRange(const Range&);
-    void fit(Curve const&, const Range&);
+    void fit(const Curve&, const Range&);
 
     QString name() const final { return "Raw"; }
     bool isRaw() const final { return true; }
@@ -83,7 +83,7 @@ void Raw::setRange(const Range& range) {
     prepareY();
 }
 
-void Raw::fit(Curve const& curve, const Range& range) {
+void Raw::fit(const Curve& curve, const Range& range) {
     fittedCurve_ = prepareFit(curve, range); // do no more than this
     prepareY();
 }
@@ -116,7 +116,7 @@ public:
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const;
 
-    void setGuessedPeak(qpair const&);
+    void setGuessedPeak(const qpair&);
     void setGuessedFWHM(fwhm_t);
 
     qpair fittedPeak() const;
@@ -171,7 +171,7 @@ qreal Gaussian::dy(qreal x, int parIndex, qreal const* parValues) const {
     qFatal("impossible case");
 }
 
-void Gaussian::setGuessedPeak(qpair const& qpair) {
+void Gaussian::setGuessedPeak(const qpair& qpair) {
     PeakFunction::setGuessedPeak(qpair);
     setValue(parXSHIFT, qpair.x);
     setValue(parAMPL, qpair.y);
@@ -216,7 +216,7 @@ public:
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const;
 
-    void setGuessedPeak(qpair const&);
+    void setGuessedPeak(const qpair&);
     void setGuessedFWHM(fwhm_t);
 
     qpair fittedPeak() const;
@@ -270,7 +270,7 @@ qreal Lorentzian::dy(qreal x, int parIndex, qreal const* parValues) const {
     qFatal("impossible case");
 }
 
-void Lorentzian::setGuessedPeak(qpair const& qpair) {
+void Lorentzian::setGuessedPeak(const qpair& qpair) {
     PeakFunction::setGuessedPeak(qpair);
     setValue(parXSHIFT, qpair.x);
     setValue(parAMPL, qpair.y);
@@ -315,7 +315,7 @@ public:
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const;
 
-    void setGuessedPeak(qpair const&);
+    void setGuessedPeak(const qpair&);
     void setGuessedFWHM(fwhm_t);
 
     qpair fittedPeak() const;
@@ -387,7 +387,7 @@ qreal PseudoVoigt1::dy(qreal x, int parIndex, qreal const* parValues) const {
     qFatal("impossible case");
 }
 
-void PseudoVoigt1::setGuessedPeak(qpair const& qpair) {
+void PseudoVoigt1::setGuessedPeak(const qpair& qpair) {
     PeakFunction::setGuessedPeak(qpair);
     setValue(parXSHIFT, qpair.x);
     setValue(parAMPL, qpair.y);
@@ -431,7 +431,7 @@ public:
     qreal y(qreal x, qreal const* parValues = nullptr) const;
     qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const;
 
-    void setGuessedPeak(qpair const&);
+    void setGuessedPeak(const qpair&);
     void setGuessedFWHM(fwhm_t);
 
     qpair fittedPeak() const;
@@ -516,7 +516,7 @@ qreal PseudoVoigt2::dy(qreal x, int parIndex, qreal const* parValues) const {
     qFatal("impossible case");
 }
 
-void PseudoVoigt2::setGuessedPeak(qpair const& qpair) {
+void PseudoVoigt2::setGuessedPeak(const qpair& qpair) {
     PeakFunction::setGuessedPeak(qpair);
     setValue(parXSHIFT, qpair.x);
     setValue(parAMPL, qpair.y);

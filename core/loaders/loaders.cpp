@@ -25,7 +25,7 @@ QString loadCaressComment(const QString& filePath);
 namespace {
 
 // peek at up to maxLen bytes (to establish the file type)
-static QByteArray peek(int pos, int maxLen, QFileInfo const& info) {
+static QByteArray peek(int pos, int maxLen, const QFileInfo& info) {
     QFile file(info.filePath());
     if (file.open(QFile::ReadOnly) && file.seek(pos))
         return file.read(maxLen);
@@ -33,19 +33,19 @@ static QByteArray peek(int pos, int maxLen, QFileInfo const& info) {
 }
 
 // Caress file format
-bool couldBeCaress(QFileInfo const& info) {
+bool couldBeCaress(const QFileInfo& info) {
     static QByteArray const header("\020\012DEFCMD DAT");
     return header == peek(0, header.size(), info);
 }
 
 // Mar file format
-bool couldBeMar(QFileInfo const& info) {
+bool couldBeMar(const QFileInfo& info) {
     static QByteArray const header("mar research");
     return header == peek(0x80, header.size(), info);
 }
 
 // Text .dat file with metadata for tiff files
-bool couldBeTiffDat(QFileInfo const& info) {
+bool couldBeTiffDat(const QFileInfo& info) {
     QFile file(info.filePath());
     if (!file.open(QFile::ReadOnly))
         return false;
@@ -91,7 +91,7 @@ QSharedPointer<Rawfile> loadRawfile(const QString& filePath) THROWS {
     return ret;
 }
 
-QString loadComment(QFileInfo const& info) {
+QString loadComment(const QFileInfo& info) {
     const QString& path = info.absoluteFilePath();
     if (couldBeCaress(info))
         return "[car] " + loadCaressComment(path);

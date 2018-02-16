@@ -28,8 +28,8 @@ public:
     Settings(const QString& group = "");
     ~Settings();
 
-    QVariant readVariant(const QString& key, QVariant const& def);
-    void saveVariant(const QString& key, QVariant const& val) { setValue(key, val); }
+    QVariant readVariant(const QString& key, const QVariant& def);
+    void saveVariant(const QString& key, const QVariant& val) { setValue(key, val); }
 
     void read(const QString& key, QAction*, bool def = false);
     void save(const QString& key, QAction*);

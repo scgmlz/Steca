@@ -47,7 +47,7 @@ ScatterDirection::ScatterDirection() : ScatterDirection(0, 0) {}
 ScatterDirection::ScatterDirection(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
 
 
-AngleMap::AngleMap(ImageKey const& key) : key_(key) { calculate(); }
+AngleMap::AngleMap(const ImageKey& key) : key_(key) { calculate(); }
 
 void AngleMap::getGmaIndexes(
     const Range& rgeGma, vec<int> const*& indexes, int& minIndex, int& maxIndex) const {

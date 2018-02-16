@@ -85,9 +85,9 @@ public:
 
     void clear() { trim(0); }
 
-    virtual shp insert(Key const&, shp p) = 0;
-    virtual shp take(Key const&) = 0;
-    virtual shp value(Key const&) = 0;
+    virtual shp insert(const Key&, shp p) = 0;
+    virtual shp take(const Key&) = 0;
+    virtual shp value(const Key&) = 0;
 };
 
 // if full, takes a hit, trims a lot
@@ -138,7 +138,7 @@ public:
 
     void trim(int n) { _trim(n); }
 
-    shp insert(Key const& key, shp p) {
+    shp insert(const Key& key, shp p) {
         ASSERT(!super::mapKey_.contains(key));
         if (rollOver_)
             trim(0);
@@ -149,9 +149,9 @@ public:
         return p;
     }
 
-    shp take(Key const& key) { return super::mapKey_.take(key).p; }
+    shp take(const Key& key) { return super::mapKey_.take(key).p; }
 
-    shp value(Key const& key) {
+    shp value(const Key& key) {
         auto it = super::mapKey_.find(key);
         if (super::mapKey_.end() == it)
             return shp();

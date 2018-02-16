@@ -73,11 +73,11 @@ qreal Polynom::avgY(const Range& rgeX, qreal const* parValues) const {
     return (1 / w) * (maqpair - minY);
 }
 
-void Polynom::fit(Curve const& curve, const Ranges& ranges) {
+void Polynom::fit(const Curve& curve, const Ranges& ranges) {
     FitWrapper().fit(*this, curve.intersect(ranges));
 }
 
-Polynom Polynom::fromFit(int degree, Curve const& curve, const Ranges& ranges) {
+Polynom Polynom::fromFit(int degree, const Curve& curve, const Ranges& ranges) {
     Polynom poly(degree);
     poly.fit(curve, ranges);
     return poly;
@@ -89,7 +89,7 @@ JsonObj Polynom::to_json() const {
     return ret;
 }
 
-void Polynom::from_json(JsonObj const& obj) THROWS {
+void Polynom::from_json(const JsonObj& obj) THROWS {
     Function::from_json(obj);
 }
 
@@ -105,7 +105,7 @@ void PeakFunction::reset() {
     setGuessedFWHM(guessedFWHM_);
 }
 
-void PeakFunction::fit(Curve const& curve, const Range& range) {
+void PeakFunction::fit(const Curve& curve, const Range& range) {
     const Curve c = prepareFit(curve, range);
     if (c.isEmpty())
         return;
@@ -137,7 +137,7 @@ void PeakFunction::fit(Curve const& curve, const Range& range) {
     FitWrapper().fit(*this, c);
 }
 
-Curve PeakFunction::prepareFit(Curve const& curve, const Range& range) {
+Curve PeakFunction::prepareFit(const Curve& curve, const Range& range) {
     reset();
     return curve.intersect(range);
 }
@@ -151,7 +151,7 @@ JsonObj PeakFunction::to_json() const {
     return ret;
 }
 
-void PeakFunction::from_json(JsonObj const& obj) THROWS {
+void PeakFunction::from_json(const JsonObj& obj) THROWS {
     Function::from_json(obj);
     range_ = obj.loadRange("range");
     guessedPeak_.from_json(obj.loadObj("guessed peak"));
@@ -173,7 +173,7 @@ PeakFunction* FunctionRegistry::name2new(const QString& peakFunctionName) {
     return make_new();
 }
 
-PeakFunction* FunctionRegistry::clone(PeakFunction const& old) {
+PeakFunction* FunctionRegistry::clone(const PeakFunction& old) {
     PeakFunction* ret = name2new(old.name());
     *ret = old;
     return ret;
