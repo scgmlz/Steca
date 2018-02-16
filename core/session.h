@@ -29,9 +29,6 @@ extern class Session* gSession;
 //! One instance of this class coexists with the main window. It is accessible from everywhere
 //! through the global pointer gSession.
 
-//! The original idea was that core and GUI only communicate via function calls between
-//! Session and MainWin. In the big refactoring after v2.0.5, this has been given up.
-
 class Session final : public QObject, public ISingleton<Session> {
     Q_OBJECT
 public:

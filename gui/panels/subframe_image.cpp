@@ -313,8 +313,6 @@ void DataImageTab::render() {
         numBin_.setEnabled(false);
         pixMap = makeBlankPixmap();
     } else {
-        // 1 - based
-
         Range rge;
         if (nSlices > 0) {
             int nSlice = qMax(1, numSlice_.value());
