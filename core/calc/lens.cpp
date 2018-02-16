@@ -114,10 +114,6 @@ SequenceLens::SequenceLens(Sequence const& seq, eNorm norm, bool trans, bool cut
     setNorm(norm);
 }
 
-size2d SequenceLens::size() const {
-    return LensBase::transCutSize(gSession->experiment().imageSize());
-}
-
 Curve SequenceLens::makeCurve() const {
     return makeCurve(seq_.rgeGma());
 }

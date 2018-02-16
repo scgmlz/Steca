@@ -28,8 +28,6 @@ class Image;
 class LensBase {
 public:
     LensBase(bool trans, bool cut);
-    virtual ~LensBase() {}
-    virtual size2d size() const = 0;
 
 protected:
     size2d transCutSize(size2d) const;
@@ -63,8 +61,6 @@ typedef QSharedPointer<const ImageLens> shp_ImageLens;
 class SequenceLens : public LensBase {
 public:
     SequenceLens(Sequence const&, eNorm, bool trans, bool cut);
-
-    size2d size() const;
 
     Curve makeCurve() const;
     Curve makeCurve(const Range&) const;
