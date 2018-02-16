@@ -71,7 +71,6 @@ public:
 
     size2d size() const;
 
-    Range rgeGma() const;
     Range rgeTth() const;
     Range rgeInten() const;
 

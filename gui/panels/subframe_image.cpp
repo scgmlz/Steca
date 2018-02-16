@@ -307,15 +307,20 @@ void DataImageTab::render() {
     numSlice_.setMaximum(qMax(1, nSlices));
     numSlice_.setEnabled(nSlices > 0);
 
-    if (gSession->dataset().highlight().cluster()) {
+    const Cluster* cluster = gSession->dataset().highlight().cluster();
+    if (!cluster) {
+        numBin_.setMaximum(0);
+        numBin_.setEnabled(false);
+        pixMap = makeBlankPixmap();
+    } else {
         // 1 - based
-        shp_SequenceLens lens = gSession->highlightsLens();
+        shp_SequenceLens lens = gSession->defaultClusterLens(*cluster);
 
         Range rge;
         if (nSlices > 0) {
             int nSlice = qMax(1, numSlice_.value());
             int iSlice = nSlice - 1;
-            const Range rgeGma = lens->rgeGma();
+            const Range rgeGma = cluster->rgeGma();
             const qreal min = rgeGma.min;
             const qreal wn = rgeGma.width() / nSlices;
             rge = Range(min + iSlice * wn, min + (iSlice + 1) * wn);
@@ -344,11 +349,6 @@ void DataImageTab::render() {
         } else {
             pixMap = makePixmap(measurement->image());
         }
-
-    } else {
-        numBin_.setMaximum(0);
-        numBin_.setEnabled(false);
-        pixMap = makeBlankPixmap();
     }
 
     imageView_->setPixmap(pixMap);

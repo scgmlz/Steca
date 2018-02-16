@@ -181,7 +181,7 @@ void DiffractogramsFrame::saveCurrent() {
     const Curve& curve = lens->makeCurve();
     if (curve.isEmpty())
         qFatal("curve is empty");
-    writeCurve(stream, curve, cluster, lens->rgeGma(), tabSave_->separator());
+    writeCurve(stream, curve, cluster, cluster->rgeGma(), tabSave_->separator());
 }
 
 void DiffractogramsFrame::saveAll(bool oneFile) {
@@ -229,8 +229,7 @@ void DiffractogramsFrame::saveAll(bool oneFile) {
         progress.step();
 
         shp_SequenceLens lens = gSession->defaultClusterLens(*cluster);
-
-        Range rge = (gmaSlices > 0) ? lens->rgeGma() : Range::infinite();
+        Range rge = (gmaSlices > 0) ? cluster->rgeGma() : Range::infinite();
         if (rgeGma.isValid())
             rge = rge.intersect(rgeGma);
 
