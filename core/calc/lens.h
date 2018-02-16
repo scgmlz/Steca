@@ -49,7 +49,7 @@ typedef QSharedPointer<const ImageLens> shp_ImageLens;
 
 class SequenceLens {
 public:
-    SequenceLens(Sequence const&, eNorm);
+    SequenceLens(const Sequence&, eNorm);
 
     Curve makeCurve() const;
     Curve makeCurve(const Range&) const;
@@ -58,7 +58,7 @@ private:
     void setNorm(eNorm);
     inten_t normFactor_;
 
-    Sequence const& seq_;
+    const Sequence& seq_;
 };
 
 #endif // LENS_H
