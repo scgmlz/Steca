@@ -102,16 +102,16 @@ TabDiffractogramsSave::TabDiffractogramsSave()
 }
 
 // ************************************************************************** //
-//  local class DFrame
+//  class DiffractogramsFrame
 // ************************************************************************** //
 
-DFrame::DFrame(const QString& name, const QString& title)
+DiffractogramsFrame::DiffractogramsFrame()
     : QDialog(gGui)
-    , CModal(name)
+    , CModal("dgram")
 {
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-    setWindowTitle(title);
+    setWindowTitle("Diffractograms");
 
     setLayout((box_ = newQ::VBoxLayout()));
 
@@ -137,15 +137,14 @@ DFrame::DFrame(const QString& name, const QString& title)
     progressBar_->hide();
 
     connect(actClose_, &QAction::triggered, [this]() { close(); });
-}
 
-// ************************************************************************** //
-//  class DiffractogramsFrame
-// ************************************************************************** //
+    parameterControls_->addWidget((panelGammaSlices = new PanelGammaSlices()));
+    parameterControls_->addWidget((panelGammaRange = new PanelGammaRange()));
+    parameterControls_->addStretch();
 
-DiffractogramsFrame::DiffractogramsFrame()
-    : DFrame("dgram", "Diffractograms")
-{
+    panelGammaSlices->updateValues();
+    panelGammaRange->updateValues();
+
     tabs_->removeTab(0);
 
     tabs_->addTab(&tab, "Save");
