@@ -17,6 +17,7 @@
 
 #include "core/calc/lens.h"
 #include "core/data/rawfile.h"
+#include "core/data/image_transform.h"
 #include "core/typ/singleton.h"
 #include "gui/cfg/settings.h"
 #include <QMainWindow>

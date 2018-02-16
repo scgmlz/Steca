@@ -18,9 +18,7 @@
 #include "core/typ/curve.h"
 #include "core/data/geometry.h"
 #include "core/typ/types.h"
-#include "core/data/image_transform.h"
 
-class Sequence;
 class Image;
 
 //! A lens for a single Image.
@@ -41,7 +39,5 @@ private:
     const Image& image_;
     mutable Range rgeInten_;
 };
-
-typedef QSharedPointer<const ImageLens> shp_ImageLens;
 
 #endif // LENS_H

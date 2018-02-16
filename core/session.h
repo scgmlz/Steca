@@ -21,6 +21,7 @@
 #include "core/calc/peak_info.h"
 #include "core/data/corrset.h"
 #include "core/data/dataset.h"
+#include "core/data/image_transform.h"
 
 extern class Session* gSession;
 
