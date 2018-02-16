@@ -177,7 +177,7 @@ void DiffractogramsFrame::saveCurrent() {
     QTextStream stream(file);
     const Cluster* cluster = gSession->dataset().highlight().cluster();
     ASSERT(cluster);
-    const Curve& curve = gSession->defaultClusterLens(*cluster).makeCurve();
+    const Curve& curve = cluster->toCurve();
     if (curve.isEmpty())
         qFatal("curve is empty");
     writeCurve(stream, curve, cluster, cluster->rgeGma(), tabSave_->separator());
@@ -227,7 +227,7 @@ void DiffractogramsFrame::saveAll(bool oneFile) {
         ++picNum;
         progress.step();
 
-        SequenceLens lens = gSession->defaultClusterLens(*cluster);
+        qreal normFactor = cluster->normFactor();
         Range rge = (gmaSlices > 0) ? cluster->rgeGma() : Range::infinite();
         if (rgeGma.isValid())
             rge = rge.intersect(rgeGma);
@@ -247,7 +247,7 @@ void DiffractogramsFrame::saveAll(bool oneFile) {
 
             const qreal min = rge.min + i * step;
             const Range gmaStripe(min, min + step);
-            const Curve& curve = lens.makeCurve(gmaStripe);
+            const Curve& curve = cluster->toCurve(normFactor, gmaStripe);
             ASSERT(!curve.isEmpty());
             *stream << "Picture Nr: " << picNum << '\n';
             if (gmaSlices > 1)

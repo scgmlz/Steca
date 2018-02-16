@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/calc/lens.cpp
-//! @brief     Implements ImageLens, SequenceLens
+//! @brief     Implements ImageLens
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -89,63 +89,4 @@ const Range& ImageLens::rgeInten(bool fixed) const {
             rgeInten_.extendBy(qreal(imageInten(i, j)));
     }
     return rgeInten_;
-}
-
-
-// ************************************************************************** //
-//   class SequenceLens
-// ************************************************************************** //
-
-SequenceLens::SequenceLens(const Sequence& seq, eNorm norm)
-    : normFactor_(1)
-    , seq_(seq)
-{
-    setNorm(norm);
-}
-
-Curve SequenceLens::makeCurve() const {
-    return makeCurve(seq_.rgeGma());
-}
-
-Curve SequenceLens::makeCurve(const Range& rgeGma) const {
-    inten_vec intens = seq_.collectIntens(gSession->intensCorr(), rgeGma);
-    int count = intens.count();
-    if (!count)
-        return {};
-    Curve res;
-    Range rgeTth = seq_.rgeTth();
-    deg minTth = rgeTth.min;
-    deg deltaTth = rgeTth.width() / count;
-    for_i (count)
-        res.append(minTth + deltaTth * i, qreal(intens.at(i) * normFactor_));
-    return res;
-}
-
-void SequenceLens::setNorm(eNorm norm) {
-    qreal num = 1, den = 1;
-
-    switch (norm) {
-    case eNorm::MONITOR:
-        num = gSession->experiment().avgMonitorCount();
-        den = seq_.avgMonitorCount();
-        break;
-    case eNorm::DELTA_MONITOR:
-        num = gSession->experiment().avgDeltaMonitorCount();
-        den = seq_.avgDeltaMonitorCount();
-        break;
-    case eNorm::DELTA_TIME:
-        num = gSession->experiment().avgDeltaTime();
-        den = seq_.avgDeltaTime();
-        break;
-    case eNorm::BACKGROUND:
-        num = gSession->calcAvgBackground();
-        den = gSession->calcAvgBackground(seq_);
-        break;
-    case eNorm::NONE:
-        break;
-    }
-
-    normFactor_ = inten_t((num > 0 && den > 0) ? num / den : NAN);
-    if (qIsNaN(normFactor_))
-        qWarning() << "Bad normalisation value";
 }

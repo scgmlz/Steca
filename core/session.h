@@ -86,7 +86,6 @@ public:
         return session.angleMap(ds); }
 
     shp_ImageLens imageLens(const Image&, bool trans, bool cut) const;
-    SequenceLens defaultClusterLens(const Sequence& seq) const;
 
     PeakInfos makePeakInfos(const Peak&, int gmaSlices, const Range&, Progress*) const;
 
@@ -136,8 +135,7 @@ private:
     void updateImageSize(); //!< Clears image size if session has no files
     void setImageSize(const size2d&) THROWS; //!< Ensures same size for all images
 
-    Curve curveMinusBg(const SequenceLens&, const Range&) const;
-    PeakInfo makePeakInfo(const Cluster*, const SequenceLens&, const Peak&, const Range&) const;
+    PeakInfo makePeakInfo(const Cluster*, const qreal, const Peak&, const Range&) const;
 };
 
 #endif // SESSION_H

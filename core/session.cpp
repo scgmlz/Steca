@@ -113,23 +113,15 @@ shp_ImageLens Session::imageLens(const Image& image, bool trans, bool cut) const
     return shp_ImageLens(new ImageLens(image, trans, cut));
 }
 
-SequenceLens Session::defaultClusterLens(const Sequence& seq) const {
-    return SequenceLens(seq, norm_);
-}
-
-Curve Session::curveMinusBg(const SequenceLens& lens, const Range& rgeGma) const {
-    Curve curve = lens.makeCurve(rgeGma);
-    const Polynom f = Polynom::fromFit(baseline().polynomDegree(), curve, baseline().ranges());
-    curve.subtract([f](qreal x) {return f.y(x);});
-    return curve;
-}
-
 //! Fits peak to the given gamma sector and constructs a PeakInfo.
-PeakInfo Session::makePeakInfo(const Cluster* cluster, const SequenceLens& lens,
+PeakInfo Session::makePeakInfo(const Cluster* cluster, const qreal normFactor,
                                const Peak& peak, const Range& gmaSector) const {
 
     // fit peak, and retrieve peak parameters:
-    Curve curve = curveMinusBg(lens, gmaSector);
+    Curve curve = cluster->toCurve(normFactor, gmaSector);
+    const Polynom f = Polynom::fromFit(baseline().polynomDegree(), curve, baseline().ranges());
+    curve.subtract([f](qreal x) {return f.y(x);});
+
     std::unique_ptr<PeakFunction> peakFunction( FunctionRegistry::clone(peak.peakFunction()) );
     peakFunction->fit(curve);
     const Range& rgeTth = peakFunction->range();
@@ -171,7 +163,7 @@ PeakInfos Session::makePeakInfos(
         if (progress)
             progress->step();
 
-        const SequenceLens lens = defaultClusterLens(*cluster);
+        const qreal normFactor = cluster->normFactor();
 
         Range rge = (gmaSlices > 0) ? cluster->rgeGma() : cluster->rgeGmaFull();
         if (rgeGma.isValid())
@@ -184,7 +176,7 @@ PeakInfos Session::makePeakInfos(
         for_i (int(gmaSlices)) {
             qreal min = rge.min + i * step;
             Range gmaStripe(min, min + step);
-            const PeakInfo refInfo = makePeakInfo(cluster, lens, peak, gmaStripe);
+            const PeakInfo refInfo = makePeakInfo(cluster, normFactor, peak, gmaStripe);
             if (!qIsNaN(refInfo.inten()))
                 ret.append(refInfo);
         }
@@ -206,7 +198,7 @@ void Session::setNorm(eNorm norm) {
 }
 
 qreal Session::calcAvgBackground(const Sequence& seq) const {
-    Curve gmaCurve = SequenceLens(seq, eNorm::NONE).makeCurve();
+    Curve gmaCurve = seq.toCurve(1.);
     Polynom bgPolynom = Polynom::fromFit(baseline().polynomDegree(), gmaCurve, baseline().ranges());
     return bgPolynom.avgY(seq.rgeTth());
 }

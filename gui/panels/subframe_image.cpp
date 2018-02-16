@@ -337,7 +337,7 @@ void DataImageTab::render() {
         numBin_.setEnabled(true);
         if (gGui->toggles->showBins.isChecked()) {
             Range rgeTth = cluster->rgeTth();
-            int count =  gSession->defaultClusterLens(*cluster).makeCurve().count();
+            int count =  cluster->toCurve().count();
             numBin_.setMaximum(count - 1);
             qreal min = rgeTth.min;
             qreal wdt = rgeTth.width();

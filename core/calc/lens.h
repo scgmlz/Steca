@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/calc/lens.h
-//! @brief     Defines ImageLens, SequenceLens
+//! @brief     Defines ImageLens
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -43,22 +43,5 @@ private:
 };
 
 typedef QSharedPointer<const ImageLens> shp_ImageLens;
-
-
-//! A lens for a sequence of Image's.
-
-class SequenceLens {
-public:
-    SequenceLens(const Sequence&, eNorm);
-
-    Curve makeCurve() const;
-    Curve makeCurve(const Range&) const;
-
-private:
-    void setNorm(eNorm);
-    inten_t normFactor_;
-
-    const Sequence& seq_;
-};
 
 #endif // LENS_H

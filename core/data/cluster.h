@@ -53,6 +53,13 @@ public:
     inten_vec collectIntens(const Image* intensCorr, const Range&) const;
     void calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const;
 
+    Curve toCurve() const;
+    Curve toCurve(const Range&) const;
+    Curve toCurve(qreal) const;
+    Curve toCurve(qreal, const Range&) const;
+    qreal normFactor() const;
+    qreal normFactor(eNorm norm) const;
+
 private:
     QVector<const Measurement*> members_;
     shp_Metadata md_; //!< averaged Metadata, cached, computed only once
@@ -78,13 +85,6 @@ public:
     int totalOffset() const;
     bool isIncomplete() const;
     bool isActivated() const { return activated_; }
-
-    Curve toCurve() const;
-    Curve toCurve(const Range&) const;
-    Curve toCurve(qreal) const;
-    Curve toCurve(qreal, const Range&) const;
-    qreal normFactor() const;
-    qreal normFactor(eNorm norm) const;
 
 private:
     const class Datafile& file_;

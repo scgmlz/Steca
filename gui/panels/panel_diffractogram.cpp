@@ -224,9 +224,7 @@ void DiffractogramPlot::calcDgram() {
     if (gGui->isCombinedDgram())
         dgram_ = gSession->experiment().avgCurve();
     else
-        dgram_ = gSession->defaultClusterLens(
-            *gSession->dataset().highlight().cluster()
-            ).makeCurve(gSession->gammaRange());
+        dgram_ = gSession->dataset().highlight().cluster()->toCurve(gSession->gammaRange());
 }
 
 void DiffractogramPlot::calcBackground() {
