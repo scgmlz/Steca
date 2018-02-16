@@ -31,7 +31,19 @@ size2d LensBase::transCutSize(size2d size) const {
     return size;
 }
 
-void LensBase::doTrans(int& x, int& y) const {
+// ************************************************************************** //
+//   class ImageLens
+// ************************************************************************** //
+
+ImageLens::ImageLens(const Image& image, bool trans, bool cut)
+    : LensBase(trans, cut)
+    , image_(image) {}
+
+size2d ImageLens::size() const {
+    return LensBase::transCutSize(image_.size());
+}
+
+void ImageLens::doTrans(int& x, int& y) const {
     size2d s = size();
     int w = s.w;
     int h = s.h;
@@ -61,23 +73,11 @@ void LensBase::doTrans(int& x, int& y) const {
     }
 }
 
-void LensBase::doCut(int& i, int& j) const {
+void ImageLens::doCut(int& i, int& j) const {
     i += gSession->imageCut().left;
     j += gSession->imageCut().top;
 }
 
-
-// ************************************************************************** //
-//   class ImageLens
-// ************************************************************************** //
-
-ImageLens::ImageLens(const Image& image, bool trans, bool cut)
-    : LensBase(trans, cut)
-    , image_(image) {}
-
-size2d ImageLens::size() const {
-    return LensBase::transCutSize(image_.size());
-}
 
 inten_t ImageLens::imageInten(int i, int j) const {
     if (trans_)
