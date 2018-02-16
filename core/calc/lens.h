@@ -33,7 +33,6 @@ public:
 
 protected:
     size2d transCutSize(size2d) const;
-
     void doTrans(int& i, int& j) const;
     void doCut(int& i, int& j) const;
 
@@ -43,6 +42,7 @@ protected:
     const Image* intensCorr_;
 };
 
+
 //! A lens for a single Image.
 
 class ImageLens : public LensBase {
@@ -50,9 +50,7 @@ public:
     ImageLens(const Image&, bool trans, bool cut);
 
     size2d size() const;
-
     inten_t imageInten(int i, int j) const;
-
     const Range& rgeInten(bool fixed) const;
 
 private:
@@ -74,7 +72,6 @@ public:
     size2d size() const;
 
     Range rgeGma() const;
-    Range rgeGmaFull() const;
     Range rgeTth() const;
     Range rgeInten() const;
 

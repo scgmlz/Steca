@@ -126,10 +126,6 @@ Range SequenceLens::rgeGma() const {
     return seq_.rgeGma();
 }
 
-Range SequenceLens::rgeGmaFull() const {
-    return seq_.rgeGmaFull();
-}
-
 Range SequenceLens::rgeTth() const {
     return seq_.rgeTth();
 }

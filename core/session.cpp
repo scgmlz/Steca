@@ -182,7 +182,7 @@ PeakInfos Session::makePeakInfos(
 
         const shp_SequenceLens& lens = dataseqLens(*cluster, norm_, true, true);
 
-        Range rge = (gmaSlices > 0) ? lens->rgeGma() : lens->rgeGmaFull();
+        Range rge = (gmaSlices > 0) ? cluster->rgeGma() : cluster->rgeGmaFull();
         if (rgeGma.isValid())
             rge = rge.intersect(rgeGma);
         if (rge.isEmpty())
