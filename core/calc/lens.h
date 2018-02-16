@@ -61,6 +61,4 @@ private:
     Sequence const& seq_;
 };
 
-typedef QSharedPointer<SequenceLens> shp_SequenceLens;
-
 #endif // LENS_H

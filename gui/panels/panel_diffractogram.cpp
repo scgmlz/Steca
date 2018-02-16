@@ -226,7 +226,7 @@ void DiffractogramPlot::calcDgram() {
     else
         dgram_ = gSession->defaultClusterLens(
             *gSession->dataset().highlight().cluster()
-            )->makeCurve(gSession->gammaRange());
+            ).makeCurve(gSession->gammaRange());
 }
 
 void DiffractogramPlot::calcBackground() {

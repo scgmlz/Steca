@@ -314,7 +314,6 @@ void DataImageTab::render() {
         pixMap = makeBlankPixmap();
     } else {
         // 1 - based
-        shp_SequenceLens lens = gSession->defaultClusterLens(*cluster);
 
         Range rge;
         if (nSlices > 0) {
@@ -338,7 +337,7 @@ void DataImageTab::render() {
         numBin_.setEnabled(true);
         if (gGui->toggles->showBins.isChecked()) {
             Range rgeTth = cluster->rgeTth();
-            int count = lens->makeCurve().count();
+            int count =  gSession->defaultClusterLens(*cluster).makeCurve().count();
             numBin_.setMaximum(count - 1);
             qreal min = rgeTth.min;
             qreal wdt = rgeTth.width();

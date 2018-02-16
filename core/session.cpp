@@ -113,12 +113,8 @@ shp_ImageLens Session::imageLens(const Image& image, bool trans, bool cut) const
     return shp_ImageLens(new ImageLens(image, trans, cut));
 }
 
-shp_SequenceLens Session::dataseqLens(Sequence const& seq, eNorm norm) const {
-    return shp_SequenceLens(new SequenceLens(seq, norm));
-}
-
-shp_SequenceLens Session::defaultClusterLens(Sequence const& seq) const {
-    return dataseqLens(seq, norm_);
+SequenceLens Session::defaultClusterLens(Sequence const& seq) const {
+    return SequenceLens(seq, norm_);
 }
 
 Curve Session::curveMinusBg(SequenceLens const& lens, const Range& rgeGma) const {
@@ -175,7 +171,7 @@ PeakInfos Session::makePeakInfos(
         if (progress)
             progress->step();
 
-        const shp_SequenceLens& lens = dataseqLens(*cluster, norm_);
+        const SequenceLens lens = defaultClusterLens(*cluster);
 
         Range rge = (gmaSlices > 0) ? cluster->rgeGma() : cluster->rgeGmaFull();
         if (rgeGma.isValid())
@@ -188,7 +184,7 @@ PeakInfos Session::makePeakInfos(
         for_i (int(gmaSlices)) {
             qreal min = rge.min + i * step;
             Range gmaStripe(min, min + step);
-            const PeakInfo refInfo = makePeakInfo(cluster, *lens, peak, gmaStripe);
+            const PeakInfo refInfo = makePeakInfo(cluster, lens, peak, gmaStripe);
             if (!qIsNaN(refInfo.inten()))
                 ret.append(refInfo);
         }
@@ -210,8 +206,7 @@ void Session::setNorm(eNorm norm) {
 }
 
 qreal Session::calcAvgBackground(Sequence const& seq) const {
-    const shp_SequenceLens& lens = dataseqLens(seq, eNorm::NONE);
-    Curve gmaCurve = lens->makeCurve(); // had argument averaged=true
+    Curve gmaCurve = SequenceLens(seq, eNorm::NONE).makeCurve();
     Polynom bgPolynom = Polynom::fromFit(baseline().polynomDegree(), gmaCurve, baseline().ranges());
     return bgPolynom.avgY(seq.rgeTth());
 }
