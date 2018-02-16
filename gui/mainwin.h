@@ -49,7 +49,6 @@ public:
     void sessionFromFile(const QString&) THROWS;
     void loadCorrFile() THROWS;
 
-    void setNorm(eNorm);
     void setImageRotate(ImageTransform);
     void viewReset();
 
