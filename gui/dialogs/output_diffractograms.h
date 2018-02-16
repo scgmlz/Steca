@@ -23,7 +23,6 @@
 class DFrame : public QDialog, private CModal {
 public:
     DFrame(const QString& name, const QString& title);
-    ~DFrame();
 protected:
     QAction *actClose_, *actCalculate_, *actInterpolate_;
     QToolButton *btnClose_, *btnCalculate_, *btnInterpolate_;

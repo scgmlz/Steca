@@ -127,37 +127,17 @@ DFrame::DFrame(const QString& name, const QString& title)
     box_->addLayout(hb);
 
     actClose_ = new CTrigger("actClose", "Close");
-    actCalculate_ = new CTrigger("actCalculate", "Calculate");
 
     hb->addWidget((btnClose_ = new XTextButton(actClose_)));
     hb->addStretch(1);
     hb->addWidget((progressBar_ = new QProgressBar));
     hb->setStretchFactor(progressBar_, 333);
     hb->addStretch(1);
-    hb->addWidget((btnCalculate_ = new XTextButton(actCalculate_)));
 
     progressBar_->hide();
 
     connect(actClose_, &QAction::triggered, [this]() { close(); });
-    connect(actCalculate_, &QAction::triggered, [this]() { calculate(); });
-
 }
-
-DFrame::~DFrame() {
-}
-
-void DFrame::calculate() {
-    TakesLongTime __;
-
-    const PanelGammaSlices* ps = panelGammaSlices;
-    int gammaSlices = ps->numSlices.value();
-
-    const PanelGammaRange* pr = panelGammaRange;
-    Range rgeGamma;
-    if (pr->cbLimitGamma.isChecked())
-        rgeGamma.safeSet(pr->minGamma.value(), pr->maxGamma.value());
-}
-
 
 // ************************************************************************** //
 //  class DiffractogramsFrame
@@ -167,7 +147,6 @@ DiffractogramsFrame::DiffractogramsFrame()
     : DFrame("dgram", "Diffractograms")
 {
     tabs_->removeTab(0);
-    btnCalculate_->hide();
 
     tabs_->addTab(&tab, "Save");
     tab.setLayout(newQ::VBoxLayout());
@@ -181,10 +160,11 @@ DiffractogramsFrame::DiffractogramsFrame()
 DiffractogramsFrame::~DiffractogramsFrame() {
     qDebug() << "~DiffractogramsFrame";
     delete tabSave_;
+    delete panelGammaSlices;
+    delete panelGammaRange;
 }
 
 void DiffractogramsFrame::save() {
-
     if (tabSave_->currentChecked())
         saveCurrent();
     else if (tabSave_->allSequentialChecked())
