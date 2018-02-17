@@ -50,7 +50,6 @@ public:
     qreal avgDeltaTime() const;
 
     size2d imageSize() const;
-    inten_vec collectIntens(const Image* intensCorr, const Range&) const;
     void calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const;
 
     Curve toCurve() const;
@@ -64,6 +63,7 @@ private:
     QVector<const Measurement*> members_;
     shp_Metadata md_; //!< averaged Metadata, cached, computed only once
 
+    inten_vec collectIntens(const Image* intensCorr, const Range&) const;
     void compute_metadata() const;
 };
 

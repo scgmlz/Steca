@@ -46,6 +46,8 @@ size2d Measurement::imageSize() const {
     return image_->size();
 }
 
+//! Computes intens and counts.
+//! Called only by Sequence::collectIntens.
 void Measurement::collectIntens(
     const Image* intensCorr, inten_vec& intens, vec<int>& counts,
     const Range& rgeGma, deg minTth, deg deltaTth) const

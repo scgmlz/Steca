@@ -19,6 +19,7 @@
 
 namespace {
 
+//! Returns index i for which v[i-1]<x<=v[i], provided i1<=i<i2.
 static int lowerBound(const vec<deg>& vec, deg x, int i1, int i2) {
     ASSERT(i1 < i2);
     if (i2-i1 == 1)
@@ -29,6 +30,7 @@ static int lowerBound(const vec<deg>& vec, deg x, int i1, int i2) {
         : lowerBound(vec, x, i1, mid); // ... we should be so lucky
 }
 
+//! Returns index i for which v[i-1]<=x<v[i], provided i1<i<=i2.
 static int upperBound(const vec<deg>& vec, deg x, int i1, int i2) {
     ASSERT(i1 < i2);
     if (i2-i1 == 1)
