@@ -21,9 +21,9 @@ namespace {
 
 static int lowerBound(const vec<deg>& vec, deg x, int i1, int i2) {
     ASSERT(i1 < i2);
-    if (1 == i2 - i1)
+    if (i2-i1 == 1)
         return i1;
-    int mid = (i1 + i2) / 2;
+    int mid = (i1+i2) / 2;
     return vec.at(mid - 1) < x // x may be NaN ...
         ? lowerBound(vec, x, mid, i2)
         : lowerBound(vec, x, i1, mid); // ... we should be so lucky
@@ -31,9 +31,9 @@ static int lowerBound(const vec<deg>& vec, deg x, int i1, int i2) {
 
 static int upperBound(const vec<deg>& vec, deg x, int i1, int i2) {
     ASSERT(i1 < i2);
-    if (1 == i2 - i1)
+    if (i2-i1 == 1)
         return i2;
-    int mid = (i1 + i2) / 2;
+    int mid = (i1+i2) / 2;
     return vec.at(mid) > x // x may be NaN ...
         ? upperBound(vec, x, i1, mid)
         : upperBound(vec, x, mid, i2); // ... we should be so lucky
