@@ -48,35 +48,31 @@ AngleMap::AngleMap(const ImageKey& key)
 {
     key_.computeAngles(arrAngles_);
 
-    rgeTth_.invalidate();
-    rgeGma_.invalidate();
-    rgeGmaFull_.invalidate();
-
     const size2d& size = key_.size;
     const ImageCut& cut = key_.cut;
     ASSERT(size.w > cut.left + cut.right);
     ASSERT(size.h > cut.top + cut.bottom);
-
     const int countWithoutCut = (size.w - cut.left - cut.right) * (size.h - cut.top - cut.bottom);
     ASSERT(countWithoutCut > 0);
 
+    // compute ranges rgeTth_, rgeGma_, rgeGmaFull_, and arrays gmas_, gmaIndexes_:
+    rgeTth_.invalidate();
+    rgeGma_.invalidate();
+    rgeGmaFull_.invalidate();
     gmas_.resize(countWithoutCut);
     gmaIndexes_.resize(countWithoutCut);
-
     int gi = 0;
-
     for (int i = cut.left, iEnd = size.w - cut.right; i < iEnd; ++i) {
         for (int j = cut.top, jEnd = size.h - cut.bottom; j < jEnd; ++j) {
-            const ScatterDirection& as = arrAngles_.at(i, j);
-
-            gmas_[gi] = as.gma;
+            const ScatterDirection& dir = arrAngles_.at(i, j);
+            gmas_[gi] = dir.gma;
             gmaIndexes_[gi] = i + j * size.w;
             ++gi;
-
-            rgeTth_.extendBy(as.tth);
-            rgeGmaFull_.extendBy(as.gma);
-            if (as.tth >= key_.midTth)
-                rgeGma_.extendBy(as.gma); // gma range at mid tth
+            rgeTth_.extendBy(dir.tth);
+            rgeGmaFull_.extendBy(dir.gma);
+            // TODO URGENT: THIS IS WRONG: seems correct only for tth<=90deg
+            if (dir.tth >= key_.midTth)
+                rgeGma_.extendBy(dir.gma); // gma range at mid tth
         }
     }
 
