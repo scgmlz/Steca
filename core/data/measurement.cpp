@@ -49,8 +49,7 @@ size2d Measurement::imageSize() const {
 //! Computes intens and counts.
 //! Called only by Sequence::collectIntens.
 void Measurement::collectIntens(
-    const Image* intensCorr, inten_vec& intens, vec<int>& counts,
-    const Range& rgeGma, deg minTth, deg deltaTth) const
+    inten_vec& intens, vec<int>& counts, const Range& rgeGma, deg minTth, deg deltaTth) const
 {
     const shp_AngleMap& angleMap = gSession->angleMap(*this);
     ASSERT(!angleMap.isNull());
@@ -75,7 +74,7 @@ void Measurement::collectIntens(
         if (qIsNaN(inten))
             continue;
 
-        inten_t corr = intensCorr ? intensCorr->inten(ind) : 1;
+        inten_t corr = gSession->hasCorrFile() ? gSession->intensCorr()->inten(ind) : 1;
         if (qIsNaN(corr))
             continue;
 

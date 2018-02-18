@@ -50,9 +50,7 @@ public:
     shp_Image image() const { return image_; }
     size2d imageSize() const;
 
-    void collectIntens(
-        const Image* intensCorr, /*non-const*/ inten_vec&, /*non-const*/ vec<int>&, const Range&,
-        deg minTth, deg deltaTth) const;
+    void collectIntens(inten_vec&, vec<int>&, const Range&, deg minTth, deg deltaTth) const;
 
 private:
     const int position_; //! position in file_

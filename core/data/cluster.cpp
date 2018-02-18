@@ -124,7 +124,7 @@ Curve Sequence::toCurve(qreal _normFactor) const {
 };
 
 Curve Sequence::toCurve(qreal _normFactor, const Range& _rgeGma) const {
-    inten_vec intens = collectIntens(gSession->intensCorr(), _rgeGma);
+    inten_vec intens = collectIntens(_rgeGma);
     int count = intens.count();
     if (!count)
         return {};
@@ -172,7 +172,7 @@ qreal Sequence::normFactor(eNorm norm) const {
 }
 
 //! Called only by toCurve(..).
-inten_vec Sequence::collectIntens(const Image* intensCorr, const Range& rgeGma) const {
+inten_vec Sequence::collectIntens(const Range& rgeGma) const {
     const Range tthRge = rgeTth();
     const deg tthWdt = tthRge.width();
 
@@ -194,7 +194,7 @@ inten_vec Sequence::collectIntens(const Image* intensCorr, const Range& rgeGma) 
     deg minTth = tthRge.min, deltaTth = tthWdt / numBins;
 
     for (const Measurement* one : members_)
-        one->collectIntens(intensCorr, intens, counts, rgeGma, minTth, deltaTth);
+        one->collectIntens(intens, counts, rgeGma, minTth, deltaTth);
 
     // sum or average
     if (gSession->intenScaledAvg()) {
