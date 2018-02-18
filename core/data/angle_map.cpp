@@ -76,20 +76,18 @@ AngleMap::AngleMap(const ImageKey& key)
         }
     }
 
+    // compute indices of sorted gmas_:
     vec<int> is(countWithoutCut);
     for_i (is.count())
         is[i] = i;
-
     std::sort(is.begin(), is.end(), [this](int i1, int i2) {
-        qreal gma1 = gmas_.at(i1), gma2 = gmas_.at(i2);
-        return gma1 < gma2;
-    });
-
+        return gmas_.at(i1) < gmas_.at(i2); });
+    // sort gmas_:
     vec<deg> gv(countWithoutCut);
     for_i (countWithoutCut)
         gv[i] = gmas_.at(is.at(i));
     gmas_ = gv;
-
+    // sort gmaIndexes_:
     vec<int> uv(countWithoutCut);
     for_i (countWithoutCut)
         uv[i] = gmaIndexes_.at(is.at(i));
