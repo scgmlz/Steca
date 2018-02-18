@@ -14,7 +14,6 @@
 
 #include "angle_map.h"
 #include "core/def/idiomatic_for.h"
-#include <qmath.h>
 #include <iostream> // for debugging
 
 namespace {
@@ -44,67 +43,25 @@ static int upperBound(const vec<deg>& vec, deg x, int i1, int i2) {
 } // local methods
 
 
-ScatterDirection::ScatterDirection() : ScatterDirection(0, 0) {}
-
-ScatterDirection::ScatterDirection(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
-
-
-AngleMap::AngleMap(const ImageKey& key) : key_(key) { calculate(); }
-
-void AngleMap::getGmaIndexes(
-    const Range& rgeGma, vec<int> const*& indexes, int& minIndex, int& maxIndex) const {
-    indexes = &gmaIndexes;
-    minIndex = lowerBound(gmas, rgeGma.min, 0, gmas.count());
-    maxIndex = upperBound(gmas, rgeGma.max, 0, gmas.count());
-}
-
-void AngleMap::calculate() {
-    const Geometry& geometry = key_.geometry;
-    const size2d& size = key_.size;
-    const ImageCut& cut = key_.cut;
-    const IJ& midPix = key_.midPix;
-    const deg midTth = key_.midTth;
-
-    const qreal pixSize = geometry.pixSize, detDist = geometry.detectorDistance;
-
-    arrAngles_.resize(size);
+AngleMap::AngleMap(const ImageKey& key)
+    : key_ {key}
+{
+    key_.computeAngles(arrAngles_);
 
     rgeTth_.invalidate();
     rgeGma_.invalidate();
     rgeGmaFull_.invalidate();
 
+    const size2d& size = key_.size;
+    const ImageCut& cut = key_.cut;
     ASSERT(size.w > cut.left + cut.right);
     ASSERT(size.h > cut.top + cut.bottom);
 
     const int countWithoutCut = (size.w - cut.left - cut.right) * (size.h - cut.top - cut.bottom);
     ASSERT(countWithoutCut > 0);
 
-    gmas.resize(countWithoutCut);
-    gmaIndexes.resize(countWithoutCut);
-
-    // The following is new with respect to Steca1
-    // detector coordinates: d_x, ... (d_z = const)
-    // beam coordinates: b_x, ..; b_y = d_y
-
-    const qreal d_midTth = midTth.toRad(), cos_midTth = cos(d_midTth), sin_midTth = sin(d_midTth);
-
-    const qreal d_z = detDist;
-    const qreal b_x1 = d_z * sin_midTth;
-    const qreal b_z1 = d_z * cos_midTth;
-
-    for_int (i, size.w) {
-        const qreal d_x = (i - midPix.i) * pixSize;
-        const qreal b_x = b_x1 + d_x * cos_midTth;
-        const qreal b_z = b_z1 - d_x * sin_midTth;
-        const qreal b_x2 = b_x * b_x;
-        for_int (j, size.h) {
-            const qreal b_y = (midPix.j - j) * pixSize; // == d_y
-            const qreal b_r = sqrt(b_x2 + b_y * b_y);
-            const rad gma = atan2(b_y, b_x);
-            const rad tth = atan2(b_r, b_z);
-            arrAngles_.setAt(i, j, ScatterDirection(tth.toDeg(), gma.toDeg()));
-        }
-    }
+    gmas_.resize(countWithoutCut);
+    gmaIndexes_.resize(countWithoutCut);
 
     int gi = 0;
 
@@ -112,13 +69,13 @@ void AngleMap::calculate() {
         for (int j = cut.top, jEnd = size.h - cut.bottom; j < jEnd; ++j) {
             const ScatterDirection& as = arrAngles_.at(i, j);
 
-            gmas[gi] = as.gma;
-            gmaIndexes[gi] = i + j * size.w;
+            gmas_[gi] = as.gma;
+            gmaIndexes_[gi] = i + j * size.w;
             ++gi;
 
             rgeTth_.extendBy(as.tth);
             rgeGmaFull_.extendBy(as.gma);
-            if (as.tth >= midTth)
+            if (as.tth >= key_.midTth)
                 rgeGma_.extendBy(as.gma); // gma range at mid tth
         }
     }
@@ -128,17 +85,25 @@ void AngleMap::calculate() {
         is[i] = i;
 
     std::sort(is.begin(), is.end(), [this](int i1, int i2) {
-        qreal gma1 = gmas.at(i1), gma2 = gmas.at(i2);
+        qreal gma1 = gmas_.at(i1), gma2 = gmas_.at(i2);
         return gma1 < gma2;
     });
 
     vec<deg> gv(countWithoutCut);
     for_i (countWithoutCut)
-        gv[i] = gmas.at(is.at(i));
-    gmas = gv;
+        gv[i] = gmas_.at(is.at(i));
+    gmas_ = gv;
 
     vec<int> uv(countWithoutCut);
     for_i (countWithoutCut)
-        uv[i] = gmaIndexes.at(is.at(i));
-    gmaIndexes = uv;
+        uv[i] = gmaIndexes_.at(is.at(i));
+    gmaIndexes_ = uv;
+}
+
+void AngleMap::getGmaIndexes(
+    const Range& rgeGma, vec<int> const*& indexes, int& minIndex, int& maxIndex) const
+{
+    indexes = &gmaIndexes_;
+    minIndex = lowerBound(gmas_, rgeGma.min, 0, gmas_.count());
+    maxIndex = upperBound(gmas_, rgeGma.max, 0, gmas_.count());
 }

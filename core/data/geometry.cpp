@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/data/geometry.cpp
-//! @brief     Implements classes Geometry, ImageCut, ImageKey
+//! @brief     Implements classes Geometry, ImageCut, ScatterDirection, ImageKey
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -14,6 +14,8 @@
 
 #include "core/data/geometry.h"
 #include "core/def/comparators.h"
+#include "core/def/idiomatic_for.h"
+#include <qmath.h>
 #include <iostream> // for debugging
 
 #define RET_COMPARE_COMPARABLE(o)                                                 \
@@ -94,6 +96,16 @@ size2d ImageCut::marginSize() const {
     return size2d(left + right, top + bottom);
 }
 
+
+// ************************************************************************** //
+//  class ScatterDirection
+// ************************************************************************** //
+
+ScatterDirection::ScatterDirection() : ScatterDirection(0, 0) {}
+
+ScatterDirection::ScatterDirection(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
+
+
 // ************************************************************************** //
 //  class ImageKey
 // ************************************************************************** //
@@ -113,3 +125,27 @@ int ImageKey::compare(const ImageKey& that) const {
 }
 
 EQ_NE_OPERATOR(ImageKey)
+
+void ImageKey::computeAngles(Array2D<ScatterDirection>& ret) const {
+    // detector coordinates: d_x, ... (d_z = const)
+    // beam coordinates: b_x, ..; b_y = d_y
+    const qreal t = midTth.toRad();
+    const qreal c = cos(t);
+    const qreal s = sin(t);
+    const qreal d_z = geometry.detectorDistance;
+    const qreal b_x1 = d_z * s;
+    const qreal b_z1 = d_z * c;
+    for_int (i, size.w) {
+        const qreal d_x = (i - midPix.i) * geometry.pixSize;
+        const qreal b_x = b_x1 + d_x * c;
+        const qreal b_z = b_z1 - d_x * s;
+        const qreal b_x2 = b_x * b_x;
+        for_int (j, size.h) {
+            const qreal b_y = (midPix.j - j) * geometry.pixSize; // == d_y
+            const qreal b_r = sqrt(b_x2 + b_y * b_y);
+            const rad gma = atan2(b_y, b_x);
+            const rad tth = atan2(b_r, b_z);
+            ret.setAt(i, j, ScatterDirection(tth.toDeg(), gma.toDeg()));
+        }
+    }
+}

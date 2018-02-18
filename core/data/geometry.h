@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/data/geometry.h
-//! @brief     Defines classes Geometry, ImageCut, ImageKey
+//! @brief     Defines classes Geometry, ImageCut, ScatterDirection, ImageKey
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -38,6 +38,7 @@ public:
     IJ midPixOffset;
 };
 
+
 //! Image cut (margins)
 class ImageCut {
 public:
@@ -51,6 +52,18 @@ public:
     size2d marginSize() const;
 };
 
+
+//! A pair of angles (gamma, 2theta) that designate a scattering direction.
+class ScatterDirection {
+public:
+    ScatterDirection();
+    ScatterDirection(deg, deg);
+
+    deg tth;
+    deg gma;
+};
+
+
 //! Holds geometry parameters that define a mapping of image coordinates onto (gamma,2theta).
 
 //! Needed for caching such coordinate maps.
@@ -60,6 +73,8 @@ public:
 
     COMPARABLE(const ImageKey&);
     bool operator<(const ImageKey& that) const { return compare(that) < 0; }
+
+    void computeAngles(Array2D<ScatterDirection>&) const;
 
     Geometry geometry;
     size2d size;

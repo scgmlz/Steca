@@ -18,17 +18,6 @@
 #include "core/data/geometry.h"
 #include <QSharedPointer> // no auto rm
 
-//! A pair of angles (gamma, 2theta) that designate a scattering direction.
-
-class ScatterDirection {
-public:
-    ScatterDirection();
-    ScatterDirection(deg, deg);
-
-    deg tth;
-    deg gma;
-};
-
 //! Holds (gamma, 2theta) for all pixels in a detector image, and caches sorted gamma values.
 
 class AngleMap {
@@ -46,17 +35,12 @@ public:
     void getGmaIndexes(const Range&, vec<int> const*&, int&, int&) const;
 
 private:
-    void calculate();
-
     ImageKey key_;
-
     Array2D<ScatterDirection> arrAngles_;
-
     Range rgeTth_;
     Range rgeGma_, rgeGmaFull_;
-
-    vec<deg> gmas; //!< sorted gamma values
-    vec<int> gmaIndexes;
+    vec<deg> gmas_; //!< sorted gamma values
+    vec<int> gmaIndexes_;
 };
 
 typedef QSharedPointer<AngleMap> shp_AngleMap;
