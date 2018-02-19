@@ -328,7 +328,6 @@ void DataImageTab::render() {
         gSession->setGammaRange(rge);
 
         const Measurement* measurement = gSession->dataset().highlight().measurement();
-
         numBin_.setEnabled(true);
         if (gGui->toggles->showBins.isChecked()) {
             Range rgeTth = cluster->rgeTth();
