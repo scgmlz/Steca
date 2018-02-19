@@ -26,6 +26,9 @@ Session::Session()
     : metaSelection_( std::vector<bool>(Metadata::size(), false) )
 {
     register_peak_functions();
+
+    // Some signals imply other signals:
+    connect(this, &Session::sigGamma, this, &Session::sigDiffractogram);
 }
 
 void Session::clear() {

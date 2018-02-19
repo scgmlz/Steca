@@ -101,6 +101,7 @@ signals:
     void sigCorr();          //!< corr file has been loaded or unloaded or enabled or disabled
     void sigActivated();     //!< selection of active clusters has changed
     void sigDetector();      //!< detector geometry has changed
+    void sigGamma();         //!< gamma selection has changed
     void sigDiffractogram(); //!< diffractogram must be repainted
     void sigImage();         //!< image must be repainted
     void sigBaseline();      //!< baseline settings have changed
