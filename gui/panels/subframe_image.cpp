@@ -244,7 +244,7 @@ private:
             "Number of measurement within the current group of measurements"};
     CSpinBox numSlices_{"numSlices", 4, false, 0, INT_MAX,
             "Number of γ slices (0: no slicing, take entire image)" };
-    CSpinBox numSlice_{"numSlice", 4, false, 1, INT_MAX,
+    CSpinBox idxSlice_{"numSlice", 4, false, 1, INT_MAX,
             "Number of γ slice to be shown" };
     CSpinBox numBin_{"numBin", 4, false, 1, INT_MAX,
             "Number of 2θ bin to be shown" };
@@ -277,13 +277,11 @@ DataImageTab::DataImageTab() {
 
     controls_->addWidget(new QLabel("γ count"));
     controls_->addWidget(&numSlices_);
-    connect(&numSlices_, _SLOT_(QSpinBox, valueChanged, int),
-            [this](int /*unused*/) { render(); });
+    connect(&numSlices_, _SLOT_(QSpinBox, valueChanged, int), [this](int) { render(); });
 
     controls_->addWidget(new QLabel("#"));
-    controls_->addWidget(&numSlice_);
-    connect(&numSlice_, _SLOT_(QSpinBox, valueChanged, int),
-            [this](int /*unused*/) { render(); });
+    controls_->addWidget(&idxSlice_);
+    connect(&idxSlice_, _SLOT_(QSpinBox, valueChanged, int), [this](int) { render(); });
 
     controls_->addWidget(new QLabel("min"));
     controls_->addWidget(&minGamma_);
@@ -295,7 +293,7 @@ DataImageTab::DataImageTab() {
 
     controls_->addWidget(new QLabel("bin#"));
     controls_->addWidget(&numBin_);
-    connect(&numBin_, _SLOT_(QSpinBox, valueChanged, int), [this](int /*unused*/) { render(); });
+    connect(&numBin_, _SLOT_(QSpinBox, valueChanged, int), [this](int) { render(); });
 
     connect(gSession, &Session::sigDataHighlight, this, &ImageTab::render);
 }
@@ -304,8 +302,8 @@ void DataImageTab::render() {
     QPixmap pixMap;
 
     const int nSlices = numSlices_.value();
-    numSlice_.setMaximum(qMax(1, nSlices));
-    numSlice_.setEnabled(nSlices > 0);
+    idxSlice_.setMaximum(qMax(1, nSlices));
+    idxSlice_.setEnabled(nSlices > 0);
 
     const Cluster* cluster = gSession->dataset().highlight().cluster();
     if (!cluster) {
@@ -315,8 +313,7 @@ void DataImageTab::render() {
     } else {
         Range rge;
         if (nSlices > 0) {
-            int nSlice = qMax(1, numSlice_.value());
-            int iSlice = nSlice - 1;
+            int iSlice = qMax(1, idxSlice_.value()) - 1;
             const Range rgeGma = cluster->rgeGma();
             const qreal min = rgeGma.min;
             const qreal wn = rgeGma.width() / nSlices;
