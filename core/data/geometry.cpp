@@ -129,6 +129,7 @@ EQ_NE_OPERATOR(ImageKey)
 void ImageKey::computeAngles(Array2D<ScatterDirection>& ret) const {
     // detector coordinates: d_x, ... (d_z = const)
     // beam coordinates: b_x, ..; b_y = d_y
+    ret.resize(size);
     const qreal t = midTth.toRad();
     const qreal c = cos(t);
     const qreal s = sin(t);
