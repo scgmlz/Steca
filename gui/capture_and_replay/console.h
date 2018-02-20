@@ -33,7 +33,7 @@ public:
     void forget(const QString& name);
     void readFile(const QString& fName);
     void call(const QString&);
-    bool hasCommandsOnStack() { return !commandLifo_.empty(); }
+    bool hasCommandsOnStack() const { return !commandLifo_.empty(); }
     void commandsFromStack();
     void log(const QString&);
     void log2(bool, const QString&);
