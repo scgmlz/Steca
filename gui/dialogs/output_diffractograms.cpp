@@ -156,6 +156,9 @@ DiffractogramsFrame::~DiffractogramsFrame() {
     delete panelGammaRange;
 }
 
+void DiffractogramsFrame::cmd(const QString&) { // TODO get rid of this
+}
+
 void DiffractogramsFrame::save() {
     if (tabSave_->currentChecked())
         saveCurrent();

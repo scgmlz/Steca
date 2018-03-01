@@ -25,11 +25,12 @@
 
 CTrigger::CTrigger(const QString& name, const QString& text, const QString& iconFile)
     : QAction(text, qApp)
+    , CSettable(name)
     , tooltip_(text.toLower())
 {
     if (iconFile!="")
         setIcon(QIcon(iconFile));
-    gConsole->learn(name, [this](const QString& /*unused*/)->void { trigger(); });
+    gConsole->learn(name, this);
     QObject::connect(this, &QAction::triggered, [name]()->void { gConsole->log(name+"!"); });
     QObject::connect(this, &QAction::changed, [this, name]()->void {
             QString txt = tooltip_;
@@ -46,25 +47,25 @@ CTrigger::CTrigger(
     setShortcut(shortcut);
 }
 
+void CTrigger::cmd(const QString&)
+{
+    trigger();
+}
+
 // ************************************************************************** //
 //  class Toggle
 // ************************************************************************** //
 
 CToggle::CToggle(const QString& name, const QString& text, bool on, const QString& iconFile)
     : QAction(text, qApp)
+    , CSettable(name)
     , tooltip_(text.toLower())
 {
     if (iconFile!="")
         setIcon(QIcon(iconFile));
     setCheckable(true);
     setChecked(on);
-    gConsole->learn(name, [this](const QString& val)->void {
-            if (val=="y")
-                setChecked(true);
-            else if (val=="n")
-                setChecked(false);
-            else
-                qWarning() << "Invalid toggle setter argument '"+val+"'"; } );
+    gConsole->learn(name, this);
     QObject::connect(this, &QAction::toggled, [name](bool val)->void {
             gConsole->log(name+"="+(val ? "y" : "n")); });
     QObject::connect(this, &QAction::changed, [this, name]()->void {
@@ -84,6 +85,16 @@ CToggle::CToggle(const QString& name, const QString& text, bool on, const QStrin
     : CToggle(name, text, on, iconFile)
 {
     setShortcut(shortcut);
+}
+
+void CToggle::cmd(const QString& val)
+{
+    if (val=="y")
+        setChecked(true);
+    else if (val=="n")
+        setChecked(false);
+    else
+        qWarning() << "Invalid toggle setter argument '"+val+"'";
 }
 
 // ************************************************************************** //
@@ -110,7 +121,7 @@ XIconButton::XIconButton(QAction* action) {
 // for nice vertical alignement. Then we use withDot=true.
 CSpinBox::CSpinBox(const QString& _name, int ndigits, bool withDot, int min, int max,
                    const QString& tooltip)
-    : CSettable(_name, [this](const QString& val)->void { setValue(val.toInt()); })
+    : CSettable(_name)
 {
     widgetUtils::setWidth(this, ndigits, withDot);
     setMinimum(min);
@@ -121,8 +132,12 @@ CSpinBox::CSpinBox(const QString& _name, int ndigits, bool withDot, int min, int
             gConsole->log2(hasFocus(), name()+"="+QString::number(val)); });
 }
 
+void CSpinBox::cmd(const QString& val) {
+    setValue(val.toInt());
+}
+
 CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, qreal min, qreal max)
-    : CSettable(_name, [this](const QString& val)->void { setValue(val.toDouble()); })
+    : CSettable(_name)
 {
     widgetUtils::setWidth(this, ndigits, true);
     ASSERT(min<=max);
@@ -132,9 +147,13 @@ CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, qreal min, qre
             gConsole->log2(hasFocus(), name()+"="+QString::number(val)); });
 }
 
+void CDoubleSpinBox::cmd(const QString& val) {
+    setValue(val.toDouble());
+}
+
 CCheckBox::CCheckBox(const QString& _name, QAction* action)
     : QCheckBox(action ? action->text().toLower() : "")
-    , CSettable(_name, [this](const QString& val)->void { setChecked(val.toInt()); })
+    , CSettable(_name)
 {
     if (!action)
         return;
@@ -152,20 +171,32 @@ CCheckBox::CCheckBox(const QString& name, const QString& text)
     setText(text);
 }
 
+void CCheckBox::cmd(const QString& val) {
+    setChecked(val.toInt());
+}
+
 CRadioButton::CRadioButton(const QString& _name, const QString& text)
     : QRadioButton(text)
-    , CSettable(_name, [this](const QString& val)->void { setChecked(val.toInt()); })
+    , CSettable(_name)
 {
     connect(this, _SLOT_(QRadioButton, toggled, bool), [this](bool val)->void {
             gConsole->log2(hasFocus(), name()+"="+(val?"y":"n")); });
 }
 
+void CRadioButton::cmd(const QString& val) {
+    setChecked(val.toInt());
+}
+
 CComboBox::CComboBox(const QString& _name, const QStringList& items)
-    : CSettable(_name, [this](const QString& val)->void { setCurrentIndex(val.toInt()); })
+    : CSettable(_name)
 {
     addItems(items);
     connect(this, _SLOT_(QComboBox, currentIndexChanged, int), [this](int val)->void {
             gConsole->log2(hasFocus(), name()+"="+QString::number(val)); });
+}
+
+void CComboBox::cmd(const QString& val) {
+    setCurrentIndex(val.toInt());
 }
 
 // ************************************************************************** //
@@ -177,12 +208,6 @@ CFileDialog::CFileDialog(QWidget *parent, const QString &caption,
     : QFileDialog(parent, caption, directory, filter)
     , CModal("fdia")
 {
-    gConsole->learn("files", [this](const QString& val)->void {
-            QStringList list = val.split(';');
-            QString tmp = '"' + list.join("\" \"") + '"';
-            selectFile(tmp);
-        });
-    gConsole->learn("close", [this](const QString& val)->void { accept(); });
 }
 
 CFileDialog::~CFileDialog() {
@@ -197,4 +222,14 @@ int CFileDialog::exec() {
         return QDialog::Accepted;
     } else
         return QFileDialog::exec();
+}
+
+void CFileDialog::cmd(const QString& val) {
+    if (val=="close") {
+        accept();
+    } else {
+        QStringList list = val.split(';');
+        QString tmp = '"' + list.join("\" \"") + '"';
+        selectFile(tmp);
+    }
 }

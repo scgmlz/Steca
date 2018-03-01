@@ -323,6 +323,9 @@ Frame::~Frame() {
     delete tabTable_;
 }
 
+void Frame::cmd(const QString&) { // TODO get rid of this
+}
+
 void Frame::calculate() {
     TakesLongTime __;
 

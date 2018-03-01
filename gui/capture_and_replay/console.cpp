@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "gui/capture_and_replay/console.h"
+#include "console.h"
 #include "core/def/debug.h"
 #include <QDateTime>
 #include <QFile>
@@ -29,40 +29,40 @@ class CommandRegistry {
 public:
     CommandRegistry() = delete;
     CommandRegistry(const QString& _name) : name_(_name) {}
-    void learn(const QString&, std::function<void(const QString&)>);
+    void learn(const QString&, CSettable*);
     void forget(const QString&);
-    std::function<void(const QString&)>* find(const QString& name);
+    CSettable* find(const QString& name);
     void dump(QTextStream&);
     QString name() const { return name_; }
 private:
     const QString name_;
-    std::map<const QString, std::function<void(const QString&)>> commands_;
+    std::map<const QString, CSettable*> widgets_;
 };
 
-void CommandRegistry::learn(const QString& name, std::function<void(const QString&)> f) {
+void CommandRegistry::learn(const QString& name, CSettable* widget) {
     qDebug() << "registry " << name_ << " learns " << name;
-    if (commands_.find(name)!=commands_.end())
+    if (widgets_.find(name)!=widgets_.end())
         qDebug(("Duplicate command '"+name+"'").toLatin1()); // TODO RESTORE qFatal
-    commands_[name] = f;
+    widgets_[name] = widget;
 }
 
 void CommandRegistry::forget(const QString& name) {
-    auto it = commands_.find(name);
-    if (it==commands_.end())
+    auto it = widgets_.find(name);
+    if (it==widgets_.end())
         qFatal(("Cannot deregister command '"+name+"'").toLatin1());
-    commands_.erase(it);
+    widgets_.erase(it);
 }
 
-std::function<void(const QString&)>* CommandRegistry::find(const QString& name) {
-    auto entry = commands_.find(name);
-    if (entry==commands_.end())
+CSettable* CommandRegistry::find(const QString& name) {
+    auto entry = widgets_.find(name);
+    if (entry==widgets_.end())
         return {};
-    return &entry->second;
+    return entry->second;
 }
 
 void CommandRegistry::dump(QTextStream& stream) {
     stream << "commands:\n";
-    for (auto it: commands_)
+    for (auto it: widgets_)
         stream << " " << it.first << "\n";
 }
 
@@ -189,20 +189,20 @@ Console::Result Console::exec(QString line) {
         QStringList list = line.split('=');
         QString cmd = list[0];
         QString val = list[1];
-        std::function<void(const QString&)>* f = registry().find(cmd);
+        CSettable* f = registry().find(cmd);
         if (!f) {
             qterr << "command '" << cmd << "' not found\n";
             return Result::err;
         }
-        (*f)(val); // execute command
+        f->cmd(val); // execute command
         return Result::ok;
     }
     qterr << "invalid command '" << line << "'\n";
     return Result::err;
 }
 
-void Console::learn(const QString& name, std::function<void(const QString&)> f) {
-    registry().learn(name, f);
+void Console::learn(const QString& name, CSettable* widget) {
+    registry().learn(name, widget);
 }
 
 void Console::forget(const QString& name) {

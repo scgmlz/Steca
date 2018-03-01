@@ -29,23 +29,25 @@
 
 
 //! A trigger, for use in buttons or menu entries, that can also be activated by console command.
-class CTrigger : public QAction {
+class CTrigger : public QAction, private CSettable {
 public:
     CTrigger() = delete;
     CTrigger(const QString& name, const QString& text, const QString& iconFile="");
     CTrigger(const QString& name, const QString& text, const QString& iconFile,
              const QKeySequence& shortcut);
+    void cmd(const QString&);
 private:
     QString tooltip_;
 };
 
 //! A Toggle, for use in buttons or menu entries, that can also be switched by console command.
-class CToggle : public QAction {
+class CToggle : public QAction, private CSettable {
 public:
     CToggle() = delete;
     CToggle(const QString& name, const QString& text, bool on, const QString& iconFile="");
     CToggle(const QString& name, const QString& text, bool on, const QString& iconFile,
             const QKeySequence& shortcut);
+    void cmd(const QString&);
 private:
     QString tooltip_;
 };
@@ -67,12 +69,14 @@ class CSpinBox : public QSpinBox, private CSettable {
 public:
     CSpinBox(const QString& name, int ndigits, bool withDot, int min = INT_MIN, int max = INT_MAX,
              const QString& tooltip="");
+    void cmd(const QString&);
 };
 
 //! Named QDoubleSpinBox that can be set by console command.
 class CDoubleSpinBox : public QDoubleSpinBox, private CSettable {
 public:
     CDoubleSpinBox(const QString& name, int ndigits, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
+    void cmd(const QString&);
 };
 
 //! Named QCheckBox that can be set by console command.
@@ -80,18 +84,21 @@ class CCheckBox : public QCheckBox, private CSettable {
 public:
     CCheckBox(const QString& name, QAction*);
     CCheckBox(const QString& name, const QString& text);
+    void cmd(const QString&);
 };
 
 //! Named QRadioButton that can be set by console command.
 class CRadioButton : public QRadioButton, private CSettable {
 public:
     CRadioButton(const QString& name, const QString& text);
+    void cmd(const QString&);
 };
 
 //! Named QComboBox that can be set by console command.
 class CComboBox : public QComboBox, private CSettable {
 public:
     CComboBox(const QString& name, const QStringList& items = {});
+    void cmd(const QString&);
 };
 
 //! QFileDialog, for modal use, with console commands to select files and to close the dialog.
@@ -101,6 +108,7 @@ public:
                 const QString &directory = QString(), const QString &filter = QString());
     ~CFileDialog();
     int exec() override;
+    void cmd(const QString&);
 };
 
 #endif // CONTROLS_H

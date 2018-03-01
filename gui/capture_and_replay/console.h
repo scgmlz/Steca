@@ -16,7 +16,7 @@
 #define CONSOLE_H
 
 #include "core/typ/singleton.h"
-#include <functional> // no auto rm
+#include "gui/capture_and_replay/enhance_widgets.h"
 #include <stack>
 #include <QTextStream>
 
@@ -29,7 +29,7 @@ class Console : public QObject, public ISingleton<Console>
 public:
     Console();
     ~Console();
-    void learn(const QString& name, std::function<void(const QString&)> setter);
+    void learn(const QString& name, CSettable*);
     void forget(const QString& name);
     void readFile(const QString& fName);
     void call(const QString&);

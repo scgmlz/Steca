@@ -16,14 +16,16 @@
 #define MODEL_VIEW_H
 
 #include "core/def/debug.h"
+#include "gui/capture_and_replay/enhance_widgets.h"
 #include <QTreeView>
 
 //! Pure virtual base class of all models of rectangular table form
 
-class TableModel : public QAbstractTableModel {
+class TableModel : public QAbstractTableModel, public CSettable {
 public:
     TableModel() = delete;
     TableModel(const QString& name);
+    void cmd(const QString&);
     void refreshModel(); // within rectangle plus one row
     void resetModel(); // complete reset, including cursor position
     virtual void onClicked(const QModelIndex& cell);
@@ -36,11 +38,6 @@ public:
     virtual int rowCount() const = 0;
     virtual int highlighted() const = 0;
     virtual void setHighlight(int i) = 0;
-
-    QString name() const { return name_; }
-
-private:
-    QString name_;
 };
 
 //! Pure virtual base class for rectangular table models with rows that can be checked.
@@ -48,6 +45,7 @@ private:
 class CheckTableModel : public TableModel {
 public:
     CheckTableModel(const QString& name);
+    void cmd(const QString&);
     void onActivated();
     void onClicked(const QModelIndex& cell) final;
     virtual bool activated(int row) const = 0;

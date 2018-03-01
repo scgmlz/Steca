@@ -19,10 +19,10 @@
 //  class CSettable
 // ************************************************************************** //
 
-CSettable::CSettable(const QString& name, std::function<void(const QString&)> setter)
+CSettable::CSettable(const QString& name)
     : INamed(name)
 {
-    gConsole->learn(name, setter);
+    gConsole->learn(name, this);
 }
 
 CSettable::~CSettable() {
@@ -34,7 +34,7 @@ CSettable::~CSettable() {
 // ************************************************************************** //
 
 CModal::CModal(const QString& name)
-    : INamed(name)
+    : CSettable(name)
 {
     gConsole->call("@push "+name);
 }

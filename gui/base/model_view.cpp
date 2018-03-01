@@ -21,10 +21,12 @@
 // ************************************************************************** //
 
 TableModel::TableModel(const QString& name)
-    : name_(name)
+    : CSettable(name)
 {
-    gConsole->learn(name_+".highlight", [this](const QString& val)->void {
-            setHighlight(val.toInt()); });
+}
+
+void TableModel::cmd(const QString& val) {
+    setHighlight(val.toInt());
 }
 
 void TableModel::refreshModel() {
@@ -46,7 +48,7 @@ void TableModel::onClicked(const QModelIndex& cell) {
     if (row < 0 || row >= rowCount())
         return;
     setHighlight(row);
-    gConsole->log(name() + ".highlight=" + QString::number(row));
+    gConsole->log(name() + "=" + QString::number(row)); // TODO specialize to highlight...
 }
 
 // ************************************************************************** //
@@ -54,10 +56,15 @@ void TableModel::onClicked(const QModelIndex& cell) {
 // ************************************************************************** //
 
 CheckTableModel::CheckTableModel(const QString& _name) : TableModel(_name) {
+}
+
+void CheckTableModel::cmd(const QString& val) {
+    /* TODO implement split ...
     gConsole->learn(name()+".activate", [this](const QString& val)->void {
             activateAndLog(false, val.toInt(), true); });
     gConsole->learn(name()+".deactivate", [this](const QString& val)->void {
             activateAndLog(false, val.toInt(), false); });
+    */
 }
 
 //! Refreshes the check box column.

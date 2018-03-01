@@ -32,12 +32,13 @@ private:
 //! Mix-in for control widgets that can be changed by a console command.
 class CSettable : public INamed {
 public:
-    CSettable(const QString& name, std::function<void(const QString&)> setter);
+    CSettable(const QString& name);
     ~CSettable();
+    virtual void cmd(const QString&) = 0;
 };
 
 //! Mix-in for modal dialogs.
-class CModal : public INamed {
+class CModal : public CSettable { // TODO try private
 public:
     CModal(const QString& name);
     ~CModal();

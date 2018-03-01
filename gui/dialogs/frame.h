@@ -53,6 +53,7 @@ class Frame : public QDialog, private CModal {
 public:
     Frame(const QString& name, const QString& title, Params*);
     ~Frame();
+    void cmd(const QString&) final;
 protected:
     QAction *actClose_, *actCalculate_, *actInterpolate_;
     QToolButton *btnClose_, *btnCalculate_, *btnInterpolate_;
