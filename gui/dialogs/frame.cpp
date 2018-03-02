@@ -256,6 +256,7 @@ Params::Params(ePanels panels)
 Frame::Frame(const QString& name, const QString& title, Params* params)
     : QDialog(gGui)
     , CModal(name)
+    , CSettable(name)
 {
 
     setModal(true);

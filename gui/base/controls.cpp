@@ -239,6 +239,7 @@ CFileDialog::CFileDialog(QWidget *parent, const QString &caption,
                          const QString &directory, const QString &filter)
     : QFileDialog(parent, caption, directory, filter)
     , CModal("fdia")
+    , CSettable("fdia")
 {
 }
 

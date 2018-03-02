@@ -49,7 +49,7 @@ private:
 
 //! A rich modal dialog, for the polefig and diagram outputs.
 
-class Frame : public QDialog, private CModal {
+class Frame : public QDialog, private CModal, private CSettable {
 public:
     Frame(const QString& name, const QString& title, Params*);
     ~Frame();

@@ -103,7 +103,7 @@ public:
 };
 
 //! QFileDialog, for modal use, with console commands to select files and to close the dialog.
-class CFileDialog : public QFileDialog, private CModal {
+class CFileDialog : public QFileDialog, private CModal, CSettable {
 public:
     CFileDialog(QWidget *parent = Q_NULLPTR, const QString &caption = QString(),
                 const QString &directory = QString(), const QString &filter = QString());

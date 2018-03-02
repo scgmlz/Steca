@@ -38,7 +38,7 @@ public:
 };
 
 //! Mix-in for modal dialogs.
-class CModal : public CSettable { // TODO try private
+class CModal { // TODO try private
 public:
     CModal(const QString& name);
     ~CModal();

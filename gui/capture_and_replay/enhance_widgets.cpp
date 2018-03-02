@@ -25,7 +25,8 @@ CSettable::CSettable(const QString& name)
     gConsole->learn(name, this);
 }
 
-CSettable::~CSettable() {
+CSettable::~CSettable()
+{
     gConsole->forget(name());
 }
 
@@ -34,7 +35,6 @@ CSettable::~CSettable() {
 // ************************************************************************** //
 
 CModal::CModal(const QString& name)
-    : CSettable(name)
 {
     gConsole->call("@push "+name);
 }
@@ -42,5 +42,5 @@ CModal::CModal(const QString& name)
 CModal::~CModal()
 {
     gConsole->log("@close");
-    gConsole->call("@pop "+name());
+    gConsole->call("@pop");
 }
