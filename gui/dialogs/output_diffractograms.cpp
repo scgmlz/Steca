@@ -156,7 +156,7 @@ DiffractogramsFrame::~DiffractogramsFrame() {
     delete panelGammaRange;
 }
 
-void DiffractogramsFrame::cmd(const QString&) { // TODO get rid of this
+void DiffractogramsFrame::onCommand(const QStringList&) { // TODO get rid of this
 }
 
 void DiffractogramsFrame::save() {

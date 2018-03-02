@@ -31,7 +31,8 @@ CTrigger::CTrigger(const QString& name, const QString& text, const QString& icon
     if (iconFile!="")
         setIcon(QIcon(iconFile));
     gConsole->learn(name, this);
-    QObject::connect(this, &QAction::triggered, [name]()->void { gConsole->log(name+"!"); });
+    QObject::connect(this, &QAction::triggered, [name]()->void {
+            gConsole->log(name+" trigger"); });
     QObject::connect(this, &QAction::changed, [this, name]()->void {
             QString txt = tooltip_;
             if (!isEnabled())
@@ -47,8 +48,10 @@ CTrigger::CTrigger(
     setShortcut(shortcut);
 }
 
-void CTrigger::cmd(const QString&)
+void CTrigger::onCommand(const QStringList& args)
 {
+    if (args[0]!="trigger")
+        THROW("Unexpected command");
     trigger();
 }
 
@@ -67,7 +70,7 @@ CToggle::CToggle(const QString& name, const QString& text, bool on, const QStrin
     setChecked(on);
     gConsole->learn(name, this);
     QObject::connect(this, &QAction::toggled, [name](bool val)->void {
-            gConsole->log(name+"="+(val ? "y" : "n")); });
+            gConsole->log(name+" switch "+(val ? "on" : "off")); });
     QObject::connect(this, &QAction::changed, [this, name]()->void {
             QString txt = tooltip_;
             if (!isEnabled())
@@ -87,14 +90,18 @@ CToggle::CToggle(const QString& name, const QString& text, bool on, const QStrin
     setShortcut(shortcut);
 }
 
-void CToggle::cmd(const QString& val)
+void CToggle::onCommand(const QStringList& args)
 {
-    if (val=="y")
+    if (args[0]!="switch")
+        THROW("Unexpected command");
+    if      (args.size()<2)
+        THROW("Missing argument to command 'switch'");
+    else if (args[1]=="on")
         setChecked(true);
-    else if (val=="n")
+    else if (args[1]=="off")
         setChecked(false);
     else
-        qWarning() << "Invalid toggle setter argument '"+val+"'";
+        THROW("Invalid argument to command 'switch'");
 }
 
 // ************************************************************************** //
@@ -129,11 +136,15 @@ CSpinBox::CSpinBox(const QString& _name, int ndigits, bool withDot, int min, int
     if (tooltip!="")
         setToolTip(tooltip);
     connect(this, _SLOT_(QSpinBox, valueChanged, int), [this](int val)->void {
-            gConsole->log2(hasFocus(), name()+"="+QString::number(val)); });
+            gConsole->log2(hasFocus(), name()+" set "+QString::number(val)); });
 }
 
-void CSpinBox::cmd(const QString& val) {
-    setValue(val.toInt());
+void CSpinBox::onCommand(const QStringList& args) {
+    if (args[0]!="set")
+        THROW("Unexpected command");
+    if      (args.size()<2)
+        THROW("Missing argument to command 'set'");
+    setValue(TO_INT(args[1]));
 }
 
 CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, qreal min, qreal max)
@@ -144,11 +155,15 @@ CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, qreal min, qre
     setMinimum(min);
     setMaximum(max);
     connect(this, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val)->void {
-            gConsole->log2(hasFocus(), name()+"="+QString::number(val)); });
+            gConsole->log2(hasFocus(), name()+" set "+QString::number(val)); });
 }
 
-void CDoubleSpinBox::cmd(const QString& val) {
-    setValue(val.toDouble());
+void CDoubleSpinBox::onCommand(const QStringList& args) {
+    if (args[0]!="set")
+        THROW("Unexpected command");
+    if      (args.size()<2)
+        THROW("Missing argument to command 'set'");
+    setValue(TO_DOUBLE(args[1]));
 }
 
 CCheckBox::CCheckBox(const QString& _name, QAction* action)
@@ -162,7 +177,7 @@ CCheckBox::CCheckBox(const QString& _name, QAction* action)
     setToolTip(action->toolTip());
     setChecked(action->isChecked());
     connect(this, _SLOT_(QCheckBox, stateChanged, int), [this](int val)->void {
-            gConsole->log2(hasFocus(), name()+"="+QString::number(val)); });
+            gConsole->log2(hasFocus(), name()+" set "+QString::number(val)); });
 }
 
 CCheckBox::CCheckBox(const QString& name, const QString& text)
@@ -171,8 +186,12 @@ CCheckBox::CCheckBox(const QString& name, const QString& text)
     setText(text);
 }
 
-void CCheckBox::cmd(const QString& val) {
-    setChecked(val.toInt());
+void CCheckBox::onCommand(const QStringList& args) {
+    if (args[0]!="set")
+        THROW("Unexpected command");
+    if      (args.size()<2)
+        THROW("Missing argument to command 'set'");
+    setChecked(TO_INT(args[1]));
 }
 
 CRadioButton::CRadioButton(const QString& _name, const QString& text)
@@ -180,11 +199,20 @@ CRadioButton::CRadioButton(const QString& _name, const QString& text)
     , CSettable(_name)
 {
     connect(this, _SLOT_(QRadioButton, toggled, bool), [this](bool val)->void {
-            gConsole->log2(hasFocus(), name()+"="+(val?"y":"n")); });
+            gConsole->log2(hasFocus(), name()+" switch "+(val?"on":"off")); });
 }
 
-void CRadioButton::cmd(const QString& val) {
-    setChecked(val.toInt());
+void CRadioButton::onCommand(const QStringList& args) {
+    if (args[0]!="switch")
+        THROW("Unexpected command");
+    if      (args.size()<2)
+        THROW("Missing argument to command 'switch'");
+    else if (args[1]=="on")
+        setChecked(true);
+    else if (args[1]=="off")
+        setChecked(false);
+    else
+        THROW("Invalid argument to command 'switch'");
 }
 
 CComboBox::CComboBox(const QString& _name, const QStringList& items)
@@ -192,11 +220,15 @@ CComboBox::CComboBox(const QString& _name, const QStringList& items)
 {
     addItems(items);
     connect(this, _SLOT_(QComboBox, currentIndexChanged, int), [this](int val)->void {
-            gConsole->log2(hasFocus(), name()+"="+QString::number(val)); });
+            gConsole->log2(hasFocus(), name()+" choose "+QString::number(val)); });
 }
 
-void CComboBox::cmd(const QString& val) {
-    setCurrentIndex(val.toInt());
+void CComboBox::onCommand(const QStringList& args) {
+    if (args[0]!=" choose ")
+        THROW("Unexpected command");
+    if      (args.size()<2)
+        THROW("Missing argument to command 'choose'");
+    setCurrentIndex(TO_INT(args[1]));
 }
 
 // ************************************************************************** //
@@ -211,7 +243,7 @@ CFileDialog::CFileDialog(QWidget *parent, const QString &caption,
 }
 
 CFileDialog::~CFileDialog() {
-    gConsole->log("files="+selectedFiles().join(';'));
+    gConsole->log(" select "+selectedFiles().join(';'));
 }
 
 int CFileDialog::exec() {
@@ -224,12 +256,13 @@ int CFileDialog::exec() {
         return QFileDialog::exec();
 }
 
-void CFileDialog::cmd(const QString& val) {
-    if (val=="close") {
+void CFileDialog::onCommand(const QStringList& args) {
+    if        (args[0]=="close") {
         accept();
-    } else {
-        QStringList list = val.split(';');
+    } else if (args[1]=="select") {
+        QStringList list = args[2].split(';');
         QString tmp = '"' + list.join("\" \"") + '"';
         selectFile(tmp);
-    }
+    } else
+        THROW("Unexpected command");
 }

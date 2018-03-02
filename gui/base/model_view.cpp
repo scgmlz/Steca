@@ -14,6 +14,7 @@
 
 #include "model_view.h"
 #include "core/def/idiomatic_for.h"
+#include "core/typ/types.h"
 #include "gui/capture_and_replay/console.h"
 
 // ************************************************************************** //
@@ -25,8 +26,12 @@ TableModel::TableModel(const QString& name)
 {
 }
 
-void TableModel::cmd(const QString& val) {
-    setHighlight(val.toInt());
+void TableModel::onCommand(const QStringList& args) {
+    if (args[0]!="highlight")
+        THROW("Unexpected command");
+    if      (args.size()<2)
+        THROW("Missing argument to command 'highlight'");
+    setHighlight(TO_INT(args[1]));
 }
 
 void TableModel::refreshModel() {
@@ -48,7 +53,7 @@ void TableModel::onClicked(const QModelIndex& cell) {
     if (row < 0 || row >= rowCount())
         return;
     setHighlight(row);
-    gConsole->log(name() + "=" + QString::number(row)); // TODO specialize to highlight...
+    gConsole->log(name() + " highlight " + QString::number(row));
 }
 
 // ************************************************************************** //
@@ -58,13 +63,17 @@ void TableModel::onClicked(const QModelIndex& cell) {
 CheckTableModel::CheckTableModel(const QString& _name) : TableModel(_name) {
 }
 
-void CheckTableModel::cmd(const QString& val) {
-    /* TODO implement split ...
-    gConsole->learn(name()+".activate", [this](const QString& val)->void {
-            activateAndLog(false, val.toInt(), true); });
-    gConsole->learn(name()+".deactivate", [this](const QString& val)->void {
-            activateAndLog(false, val.toInt(), false); });
-    */
+void CheckTableModel::onCommand(const QStringList& args) {
+    if        (args[0]=="activate") {
+        if (args.size()<2)
+            THROW("Missing argument to command 'activate'");
+        activateAndLog(false, TO_INT(args[1]), true);
+    } else if (args[0]=="deactivate") {
+        if (args.size()<2)
+            THROW("Missing argument to command 'deactivate'");
+        activateAndLog(false, TO_INT(args[1]), false);
+    } else
+        THROW("Unexpected command");
 }
 
 //! Refreshes the check box column.
@@ -83,7 +92,7 @@ void CheckTableModel::onClicked(const QModelIndex& cell) {
 void CheckTableModel::activateAndLog(bool primaryCall, int row, bool on) {
     setActivated(row, on);
     gConsole->log2(primaryCall,
-                   name() + ( on ? ".activate=" : ".deactivate=") + QString::number(row));
+                   name() + ( on ? " activate " : " deactivate ") + QString::number(row));
 }
 
 

@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/typ/types.h
-//! @brief     Defines types inten_t, fwhm_t, inten_vec, eNorm, TO_(INT|DOUBLE)
+//! @brief     Implements types TO_(INT|DOUBLE)
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,26 +12,22 @@
 //
 // ************************************************************************** //
 
-#ifndef TYPES_H
-#define TYPES_H
+#include "types.h"
 
-#include "core/typ/vec.h"
-#include "core/typ/exception.h"
+int TO_INT(const QString& s) {
+    int ret;
+    bool ok;
+    ret = s.toInt(&ok);
+    if (!ok)
+        THROW("Expected an integer number, found string '" + s + "'");
+    return ret;
+}
 
-typedef float inten_t;
-typedef float fwhm_t;
-
-typedef vec<inten_t> inten_vec;
-
-enum class eNorm {
-    NONE,
-    MONITOR,
-    DELTA_MONITOR,
-    DELTA_TIME,
-    BACKGROUND,
-};
-
-int TO_INT(const QString&) THROWS;
-double TO_DOUBLE(const QString&) THROWS;
-
-#endif // TYPES_H
+double TO_DOUBLE(const QString& s) {
+    double ret;
+    bool ok;
+    ret = s.toDouble(&ok);
+    if (!ok)
+        THROW("Expected a floating-point number, found string '" + s + "'");
+    return ret;
+}

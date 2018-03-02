@@ -24,7 +24,7 @@ class DiffractogramsFrame : public QDialog, private CModal {
 public:
     DiffractogramsFrame();
     ~DiffractogramsFrame();
-    void cmd(const QString&);
+    void onCommand(const QStringList&);
 
 private:
     QAction *actClose_;

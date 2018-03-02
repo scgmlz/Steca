@@ -34,7 +34,7 @@ class CSettable : public INamed {
 public:
     CSettable(const QString& name);
     ~CSettable();
-    virtual void cmd(const QString&) = 0;
+    virtual void onCommand(const QStringList&) = 0;
 };
 
 //! Mix-in for modal dialogs.

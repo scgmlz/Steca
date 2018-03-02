@@ -25,7 +25,7 @@ class TableModel : public QAbstractTableModel, public CSettable {
 public:
     TableModel() = delete;
     TableModel(const QString& name);
-    void cmd(const QString&);
+    void onCommand(const QStringList&);
     void refreshModel(); // within rectangle plus one row
     void resetModel(); // complete reset, including cursor position
     virtual void onClicked(const QModelIndex& cell);
@@ -45,7 +45,7 @@ public:
 class CheckTableModel : public TableModel {
 public:
     CheckTableModel(const QString& name);
-    void cmd(const QString&);
+    void onCommand(const QStringList&);
     void onActivated();
     void onClicked(const QModelIndex& cell) final;
     virtual bool activated(int row) const = 0;

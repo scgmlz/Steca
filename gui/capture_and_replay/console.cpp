@@ -14,6 +14,7 @@
 
 #include "console.h"
 #include "core/def/debug.h"
+#include "core/typ/exception.h"
 #include <QDateTime>
 #include <QFile>
 #include <QSocketNotifier>
@@ -183,21 +184,19 @@ Console::Result Console::exec(QString line) {
         }
         return Result::ok;
     }
-    if (line.endsWith('!'))
-        line = line.left(line.count()-1) + "=void";
-    if (line.contains('=')) {
-        QStringList list = line.split('=');
-        QString cmd = list[0];
-        QString val = list[1];
-        CSettable* f = registry().find(cmd);
-        if (!f) {
-            qterr << "command '" << cmd << "' not found\n";
-            return Result::err;
-        }
-        f->cmd(val); // execute command
-        return Result::ok;
+    QStringList args = line.split(' ');
+    QString cmd = args.takeFirst();
+    CSettable* f = registry().find(cmd);
+    if (!f) {
+        qterr << "command '" << cmd << "' not found\n";
+        return Result::err;
     }
-    qterr << "invalid command '" << line << "'\n";
+    try {
+        f->onCommand(args); // execute command
+        return Result::ok;
+    } catch (Exception &ex) {
+        qterr << "Command '" << line << "' failed:\n" << ex.msg() << "\n";
+    }
     return Result::err;
 }
 
