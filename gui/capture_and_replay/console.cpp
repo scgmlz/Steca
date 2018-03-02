@@ -186,9 +186,13 @@ Console::Result Console::exec(QString line) {
     }
     QStringList args = line.split(' ');
     QString cmd = args.takeFirst();
+    if (args.size()<1) {
+        qterr << "Missing argument to command '" << cmd << "'\n";
+        return Result::err;
+    }
     CSettable* f = registry().find(cmd);
     if (!f) {
-        qterr << "command '" << cmd << "' not found\n";
+        qterr << "Command '" << cmd << "' not found\n";
         return Result::err;
     }
     try {
