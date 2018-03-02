@@ -260,8 +260,10 @@ int CFileDialog::exec() {
 void CFileDialog::onCommand(const QStringList& args) {
     if        (args[0]=="close") {
         accept();
-    } else if (args[1]=="select") {
-        QStringList list = args[2].split(';');
+    } else if (args[0]=="select") {
+        if (args.size()<2)
+            THROW("Missing argument to command 'select'");
+        QStringList list = args[1].split(';');
         QString tmp = '"' + list.join("\" \"") + '"';
         selectFile(tmp);
     } else
