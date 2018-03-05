@@ -151,14 +151,18 @@ private:
 };
 
 ImageTab::ImageTab() {
-    box_ = newQ::VBoxLayout();
+    box_ = newQ::HBoxLayout();
     setLayout(box_);
 
-    controls_ = newQ::HBoxLayout();
+    controls_ = newQ::VBoxLayout();
     box_->addLayout(controls_);
-    controls_->addWidget(new XIconButton(&gGui->toggles->fixedIntenImage));
-    controls_->addWidget(new XIconButton(&gGui->toggles->stepScale));
-    controls_->addWidget(new XIconButton(&gGui->toggles->showOverlay));
+
+    auto* row1 = newQ::HBoxLayout();
+    controls_->addLayout(row1);
+    row1->addWidget(new XIconButton(&gGui->toggles->fixedIntenImage));
+    row1->addWidget(new XIconButton(&gGui->toggles->stepScale));
+    row1->addWidget(new XIconButton(&gGui->toggles->showOverlay));
+    row1->addStretch(1);
 
     imageView_ = new ImageWidget();
     box_->addWidget(imageView_);
@@ -253,8 +257,17 @@ private:
 };
 
 DataImageTab::DataImageTab() {
-    controls_->addWidget(new XIconButton(&gGui->toggles->showBins));
-    controls_->addWidget(&spinN_);
+    auto* row2 = newQ::HBoxLayout();
+    controls_->addLayout(row2);
+    row2->addWidget(new XIconButton(&gGui->toggles->showBins));
+    row2->addWidget(new QLabel("bin#"));
+    row2->addWidget(&numBin_);
+    row2->addStretch(1);
+    connect(&numBin_, _SLOT_(QSpinBox, valueChanged, int), [this](int) { render(); });
+
+    auto* row3 = newQ::HBoxLayout();
+    controls_->addLayout(row3);
+    row3->addWidget(&spinN_);
     connect(&spinN_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
             gSession->dataset().highlight().setMeasurement(val-1); });
     connect(gSession, &Session::sigDataHighlight, [this]() {
@@ -273,27 +286,24 @@ DataImageTab::DataImageTab() {
     spinN_.setEnabled(false);
     spinN_.setValue(1);
 
-    controls_->addStretch(1);
-
-    controls_->addWidget(new QLabel("γ count"));
-    controls_->addWidget(&numSlices_);
+    row3->addWidget(new QLabel("γ count"));
+    row3->addWidget(&numSlices_);
     connect(&numSlices_, _SLOT_(QSpinBox, valueChanged, int), [this](int) { render(); });
 
-    controls_->addWidget(new QLabel("#"));
-    controls_->addWidget(&idxSlice_);
+    row3->addWidget(new QLabel("#"));
+    row3->addWidget(&idxSlice_);
     connect(&idxSlice_, _SLOT_(QSpinBox, valueChanged, int), [this](int) { render(); });
 
-    controls_->addWidget(new QLabel("min"));
-    controls_->addWidget(&minGamma_);
-    controls_->addWidget(new QLabel("max"));
-    controls_->addWidget(&maxGamma_);
+    row3->addWidget(new QLabel("min"));
+    row3->addWidget(&minGamma_);
+    row3->addWidget(new QLabel("max"));
+    row3->addWidget(&maxGamma_);
+
+    controls_->addStretch(1);
 
     minGamma_.setReadOnly(true);
     maxGamma_.setReadOnly(true);
 
-    controls_->addWidget(new QLabel("bin#"));
-    controls_->addWidget(&numBin_);
-    connect(&numBin_, _SLOT_(QSpinBox, valueChanged, int), [this](int) { render(); });
 
     connect(gSession, &Session::sigDataHighlight, this, &ImageTab::render);
 }

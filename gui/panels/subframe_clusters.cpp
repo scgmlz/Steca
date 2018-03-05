@@ -182,52 +182,9 @@ int ExperimentView::sizeHintForColumn(int col) const {
 
 
 // ************************************************************************** //
-//  class ExperimentControls
-// ************************************************************************** //
-
-//! Row of controls to combine Measurement|s into Cluster|s.
-
-class ExperimentControls : public QWidget {
-public:
-    ExperimentControls();
-private:
-    CSpinBox combineMeasurements_ {"combineMeasurements", 4, false, 1, INT_MAX,
-            "Combine this number of measurements into one group"};
-    CToggle dropIncompleteAction_ {"dropIncomplete",
-            "Drop measurement groups that do not have the full number of members",
-            false, ":/icon/dropIncomplete" };
-    XIconButton dropIncompleteButton_ { &dropIncompleteAction_ };
-};
-
-ExperimentControls::ExperimentControls() {
-
-    auto layout = newQ::HBoxLayout();
-    setLayout(layout);
-
-    // 'combine' control
-    layout->addWidget(new QLabel("combine:"));
-    layout->addWidget(&combineMeasurements_);
-    connect(&combineMeasurements_, _SLOT_(QSpinBox, valueChanged, int),
-            [this](int num) { gSession->dataset().setBinning(num); });
-
-    // 'if incomplete' control
-    layout->addWidget(&dropIncompleteButton_);
-    connect(&dropIncompleteAction_, &QAction::toggled,
-            [this](bool on) { gSession->dataset().setDropIncomplete(on); });
-    layout->addStretch(1);
-
-    // back connection, to change controls from saved session
-    connect(gSession, &Session::sigClusters, [=]() {
-            combineMeasurements_.setValue(gSession->dataset().binning());
-            dropIncompleteAction_.setEnabled(gSession->dataset().hasIncomplete()); });
-    dropIncompleteAction_.setEnabled(false);
-}
-
-// ************************************************************************** //
 //  class SubframeClusters
 // ************************************************************************** //
 
 SubframeClusters::SubframeClusters() : DockWidget("Measurements", "dock-cluster") {
     box_->addWidget(new ExperimentView()); // list of Cluster|s
-    box_->addWidget(new ExperimentControls()); // controls row
 }

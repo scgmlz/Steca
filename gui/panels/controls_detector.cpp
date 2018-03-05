@@ -17,8 +17,41 @@
 #include "gui/base/displays.h"
 #include "gui/base/layout.h"
 #include "gui/mainwin.h"
-#include "gui/actions/toggles.h"
 #include "gui/actions/triggers.h"
+
+
+// ************************************************************************** //
+//  class ExperimentControls
+// ************************************************************************** //
+
+ExperimentControls::ExperimentControls() {
+
+    auto layout = newQ::HBoxLayout();
+    setLayout(layout);
+
+    // 'combine' control
+    layout->addWidget(new QLabel("combine:"));
+    layout->addWidget(&combineMeasurements_);
+    connect(&combineMeasurements_, _SLOT_(QSpinBox, valueChanged, int),
+            [this](int num) { gSession->dataset().setBinning(num); });
+
+    // 'if incomplete' control
+    layout->addWidget(&dropIncompleteButton_);
+    connect(&dropIncompleteAction_, &QAction::toggled,
+            [this](bool on) { gSession->dataset().setDropIncomplete(on); });
+    layout->addStretch(1);
+
+    // back connection, to change controls from saved session
+    connect(gSession, &Session::sigClusters, [=]() {
+            combineMeasurements_.setValue(gSession->dataset().binning());
+            dropIncompleteAction_.setEnabled(gSession->dataset().hasIncomplete()); });
+    dropIncompleteAction_.setEnabled(false);
+}
+
+
+// ************************************************************************** //
+//  class ControlsDetector
+// ************************************************************************** //
 
 ControlsDetector::ControlsDetector()
     : detDistance_("detDistance", 6, Geometry::MIN_DETECTOR_DISTANCE)
@@ -109,6 +142,7 @@ ControlsDetector::ControlsDetector()
     grid->setColumnStretch(grid->columnCount(), 1);
 
     box->addLayout(grid);
+    box->addWidget(&experimentControls); // controls row
     box->addStretch();
 }
 
