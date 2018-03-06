@@ -66,7 +66,6 @@ void CutControls::fromCore()
     cutBottom_.setValue(cut.bottom());
 }
 
-
 // ************************************************************************** //
 //  class ExperimentControls
 // ************************************************************************** //
@@ -160,7 +159,6 @@ void GeometryControls::fromCore() {
     beamOffsetI_.setValue(g.midPixOffset().i);
     beamOffsetJ_.setValue(g.midPixOffset().j);
 }
-
 
 // ************************************************************************** //
 //  class ControlsDetector
