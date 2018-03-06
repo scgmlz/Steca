@@ -112,10 +112,10 @@ DiffractogramsFrame::DiffractogramsFrame()
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowTitle("Diffractograms");
 
-    QVBoxLayout* vbox = newQ::VBoxLayout();
+    QVBoxLayout* vbox = new QVBoxLayout();
     setLayout(vbox);
 
-    auto hb_gamma = newQ::HBoxLayout();
+    auto hb_gamma = new QHBoxLayout();
     vbox->addLayout(hb_gamma);
 
     tabSave_ = new TabDiffractogramsSave();
@@ -123,7 +123,7 @@ DiffractogramsFrame::DiffractogramsFrame()
 
     vbox->setStretch(vbox->count() - 1, 1);
 
-    auto hb_bottom = newQ::HBoxLayout();
+    auto hb_bottom = new QHBoxLayout();
     vbox->addLayout(hb_bottom);
 
     actClose_ = new CTrigger("actClose", "Close");

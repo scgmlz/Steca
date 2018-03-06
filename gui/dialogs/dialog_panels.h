@@ -17,7 +17,6 @@
 
 #include "core/typ/range.h"
 #include "gui/cfg/settings.h"
-#include "gui/base/layout.h"
 #include "gui/base/controls.h"
 #include <QGroupBox>
 

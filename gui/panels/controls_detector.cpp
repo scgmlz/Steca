@@ -15,7 +15,6 @@
 #include "controls_detector.h"
 #include "core/session.h"
 #include "gui/base/displays.h"
-#include "gui/base/layout.h"
 #include "gui/mainwin.h"
 #include "gui/actions/triggers.h"
 #include <QSpacerItem>
@@ -78,7 +77,7 @@ void CutControls::fromSession()
 
 ExperimentControls::ExperimentControls() {
 
-    auto layout = newQ::HBoxLayout();
+    auto layout = new QHBoxLayout();
     setLayout(layout);
 
     layout->addWidget(new QLabel("combine"));

@@ -15,7 +15,6 @@
 #include "gui/dialogs/about.h"
 #include "manifest.h"
 #include "gui/cfg/settings.h"
-#include "gui/base/layout.h"
 #include "gui/mainwin.h"
 #include <QApplication>
 #include <QDate>
@@ -29,14 +28,14 @@ AboutBox::AboutBox() : QDialog(gGui, Qt::Dialog) {
     setWindowTitle(QString("About %1").arg(qApp->applicationName()));
 
     // layout
-    auto vb = newQ::VBoxLayout();
+    auto vb = new QVBoxLayout();
     setLayout(vb);
 
     vb->setSpacing(PAD);
     vb->setSizeConstraint(QLayout::SetFixedSize);
 
     // logo and info
-    auto hb = newQ::HBoxLayout();
+    auto hb = new QHBoxLayout();
     vb->addLayout(hb);
 
     hb->setSpacing(PAD);

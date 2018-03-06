@@ -107,5 +107,5 @@ int MetadataView::sizeHintForColumn(int col) const {
 // ************************************************************************** //
 
 SubframeMetadata::SubframeMetadata() : DockWidget("Metadata", "dock-metadata") {
-    box_->addWidget((metadataView_ = new MetadataView()));
+    box_.addWidget((metadataView_ = new MetadataView()));
 }

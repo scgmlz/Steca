@@ -56,7 +56,7 @@ ShowColsWidget::ShowColsWidget(const QString& name, DataView& table, showcol_vec
 {
     using eReflAttr = PeakInfo::eReflAttr;
 
-    setLayout((box_ = newQ::VBoxLayout()));
+    setLayout((box_ = new QVBoxLayout()));
 
     box_->addWidget(&rbHidden_);
     rbHidden_.hide();
@@ -178,7 +178,7 @@ private:
 TabTable::TabTable(const QString& name, const QStringList& headers,
                    const QStringList& outHeaders, const cmp_vec& cmps)
 {
-    QGridLayout* grid_ = newQ::GridLayout();
+    QGridLayout* grid_ = new QGridLayout();
     setLayout(grid_);
     ASSERT(headers.count() == cmps.count());
     int numCols = headers.count();
@@ -219,7 +219,7 @@ Params::Params(ePanels panels)
     , panelInterpolation(nullptr)
     , panelDiagram(nullptr) {
 
-    setLayout((box_ = newQ::HBoxLayout()));
+    setLayout((box_ = new QHBoxLayout()));
 
     if (REFLECTION & panels)
         box_->addWidget((panelPeak = new PanelPeak()));
@@ -263,7 +263,7 @@ Frame::Frame(const QString& name, const QString& title, Params* params)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowTitle(title);
 
-    setLayout((box_ = newQ::VBoxLayout()));
+    setLayout((box_ = new QVBoxLayout()));
 
     ASSERT(params);
     box_->addWidget((params_ = params));
@@ -273,7 +273,7 @@ Frame::Frame(const QString& name, const QString& title, Params* params)
     box_->addWidget(tabs_);
     box_->setStretch(box_->count() - 1, 1);
 
-    auto hb = newQ::HBoxLayout();
+    auto hb = new QHBoxLayout();
     box_->addLayout(hb);
 
     actClose_ = new CTrigger("actClose", "Close");
@@ -308,7 +308,7 @@ Frame::Frame(const QString& name, const QString& title, Params* params)
 
     auto* tabPoints = new QWidget();
     tabs_->addTab(tabPoints, "Points");
-    tabPoints->setLayout(newQ::VBoxLayout());
+    tabPoints->setLayout(new QVBoxLayout());
 
     tabTable_ = new TabTable(
         name, PeakInfo::dataTags(false), PeakInfo::dataTags(true), PeakInfo::dataCmps());

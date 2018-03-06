@@ -186,5 +186,5 @@ int ExperimentView::sizeHintForColumn(int col) const {
 // ************************************************************************** //
 
 SubframeClusters::SubframeClusters() : DockWidget("Measurements", "dock-cluster") {
-    box_->addWidget(new ExperimentView()); // list of Cluster|s
+    box_.addWidget(new ExperimentView()); // list of Cluster|s
 }

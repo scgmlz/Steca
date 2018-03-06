@@ -161,7 +161,7 @@ DiagramsFrame::DiagramsFrame()
     {
         auto* tab = new QWidget();
         tabs_->addTab(tab, "Diagram");
-        tab->setLayout(newQ::VBoxLayout());
+        tab->setLayout(new QVBoxLayout());
         tabPlot_ = new TabPlot();
         tab->layout()->addWidget(tabPlot_);
     }
@@ -175,7 +175,7 @@ DiagramsFrame::DiagramsFrame()
     {
         auto* tab = new QWidget();
         tabs_->addTab(tab, "Save");
-        tab->setLayout(newQ::VBoxLayout());
+        tab->setLayout(new QVBoxLayout());
         tabSave_ = new TabDiagramsSave();
         tab->layout()->addWidget(tabSave_);
         connect(tabSave_->actSave, &QAction::triggered, [this]() { saveDiagramOutput(); });

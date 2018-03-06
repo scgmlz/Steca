@@ -14,7 +14,6 @@
 
 #include "controls_baseline.h"
 #include "core/session.h"
-#include "gui/base/layout.h"
 #include "gui/base/model_view.h"
 #include "gui/mainwin.h"
 #include "gui/actions/toggles.h"
@@ -95,10 +94,10 @@ BaseRangesView::BaseRangesView()
 // ************************************************************************** //
 
 ControlsBaseline::ControlsBaseline() {
-    auto* box = newQ::VBoxLayout();
+    auto* box = new QVBoxLayout();
     setLayout(box);
 
-    QBoxLayout* hb = newQ::HBoxLayout();
+    QBoxLayout* hb = new QHBoxLayout();
     box->addLayout(hb);
     hb->addWidget(new QLabel("Pol. degree:"));
     hb->addWidget(&spinDegree_);

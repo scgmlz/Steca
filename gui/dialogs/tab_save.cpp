@@ -25,7 +25,7 @@ TabSave::TabSave(bool withTypes)
     , rbCsv_("rbCsv", CSV_SFX)
 {
 
-    setLayout((grid_ = newQ::GridLayout()));
+    setLayout((grid_ = new QGridLayout()));
     actBrowse = new CTrigger("actBrowse", "Browse...");
     actSave = new CTrigger("actSave", "Save");
 

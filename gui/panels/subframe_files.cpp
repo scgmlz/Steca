@@ -110,22 +110,22 @@ int FilesView::sizeHintForColumn(int col) const {
 
 SubframeFiles::SubframeFiles() : DockWidget("Files", "dock-files") {
 
-    auto h = newQ::HBoxLayout();
-    box_->addLayout(h);
+    auto h = new QHBoxLayout();
+    box_.addLayout(h);
 
     h->addStretch();
     h->addWidget(new XIconButton(&gGui->triggers->addFiles));
     h->addWidget(new XIconButton(&gGui->triggers->removeFile));
 
-    box_->addWidget(new FilesView());
+    box_.addWidget(new FilesView());
 
-    h = newQ::HBoxLayout();
-    box_->addLayout(h);
+    h = new QHBoxLayout();
+    box_.addLayout(h);
 
     h->addWidget(new QLabel("Correction file"));
 
-    h = newQ::HBoxLayout();
-    box_->addLayout(h);
+    h = new QHBoxLayout();
+    box_.addLayout(h);
 
     auto* corrFile_ = new QLineEdit();
     corrFile_->setReadOnly(true);

@@ -68,7 +68,7 @@ TabGraph::TabGraph(Params& params)
     , avgAlphaMax_(0)
     , cbFlat_("cbFlat", "no intensity")
 {
-    setLayout((grid_ = newQ::GridLayout()));
+    setLayout((grid_ = new QGridLayout()));
     ASSERT(params_.panelInterpolation);
 
     grid_->addWidget(&cbFlat_, 0, 0);
@@ -214,7 +214,7 @@ private:
 TabPoleFiguresSave::TabPoleFiguresSave()
     : TabSave(false)
 {
-    auto hb = newQ::HBoxLayout();
+    auto hb = new QHBoxLayout();
     grid_->addLayout(hb, grid_->rowCount(), 0);
     grid_->setRowStretch(grid_->rowCount(), 1);
 
@@ -280,14 +280,14 @@ PoleFiguresFrame::PoleFiguresFrame()
     {
         auto* tab = new QWidget();
         tabs_->addTab(tab, "Graph");
-        tab->setLayout(newQ::VBoxLayout());
+        tab->setLayout(new QVBoxLayout());
         tabGraph_ = new TabGraph(*params_);
         tab->layout()->addWidget(tabGraph_);
     }
     {
         auto* tab = new QWidget();
         tabs_->addTab(tab, "Save");
-        tab->setLayout(newQ::VBoxLayout());
+        tab->setLayout(new QVBoxLayout());
         tabSave_ = new TabPoleFiguresSave();
         tab->layout()->addWidget(tabSave_);
         connect( tabSave_->actSave, &QAction::triggered, [this]() { savePoleFigureOutput(); });

@@ -40,7 +40,7 @@ void GridPanel::setStretch(int horizontal, int vertical) {
 }
 
 GridPanel::GridPanel(const QString& title) : QGroupBox(title) {
-    setLayout((grid_ = newQ::GridLayout()));
+    setLayout((grid_ = new QGridLayout()));
 }
 
 // ************************************************************************** //

@@ -15,7 +15,6 @@
 #include "subframe_diffractogram.h"
 #include "core/session.h"
 #include "gui/panels/panel_diffractogram.h"
-#include "gui/base/layout.h"
 #include "gui/base/controls.h"
 #include "gui/actions/toggles.h"
 #include "gui/actions/triggers.h"
@@ -54,9 +53,9 @@ private:
 
 Diffractogram::Diffractogram() {
 
-    setLayout((box_ = newQ::VBoxLayout()));
+    setLayout((box_ = new QVBoxLayout()));
     box_->addWidget((plot_ = new DiffractogramPlot(*this)));
-    auto hb = newQ::HBoxLayout();
+    auto hb = new QHBoxLayout();
     box_->addLayout(hb);
 
     hb->addWidget(new QLabel("normalize to:"));
@@ -128,6 +127,6 @@ SubframeDiffractogram::SubframeDiffractogram() {
     setTabPosition(QTabWidget::North);
     auto* tab = new QWidget();
     addTab(tab, "Diffractogram");
-    tab->setLayout(newQ::VBoxLayout());
+    tab->setLayout(new QVBoxLayout());
     tab->layout()->addWidget(new Diffractogram());
 }

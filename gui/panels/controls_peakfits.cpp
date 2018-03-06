@@ -15,7 +15,6 @@
 #include "controls_peakfits.h"
 #include "core/session.h"
 #include "gui/base/displays.h"
-#include "gui/base/layout.h"
 #include "gui/base/model_view.h"
 #include "gui/mainwin.h"
 #include "gui/actions/toggles.h"
@@ -122,7 +121,7 @@ private:
 };
 
 RangeControl::RangeControl() {
-    auto hb = newQ::HBoxLayout();
+    auto hb = new QHBoxLayout();
     setLayout(hb);
 
     hb->addWidget(new QLabel("range"));
@@ -190,7 +189,7 @@ public:
 };
 
 RawPeakdataView::RawPeakdataView() {
-    QGridLayout* lay = newQ::GridLayout();
+    QGridLayout* lay = new QGridLayout();
     lay->addWidget(new QLabel(""), 1, 1);
 
     lay->addWidget(new QLabel("centre"), 2, 0);
@@ -221,7 +220,7 @@ private:
 };
 
 FitPeakdataView::FitPeakdataView() {
-    QGridLayout* lay = newQ::GridLayout();
+    QGridLayout* lay = new QGridLayout();
     lay->addWidget(new QLabel("guess"), 1, 1);
     lay->addWidget(new QLabel("fitted"), 1, 2);
 
@@ -294,10 +293,10 @@ void PeakdataView::updatePeakFun(const PeakFunction& peakFun) {
 ControlsPeakfits::ControlsPeakfits()
     : comboReflType_("reflTyp", FunctionRegistry::instance()->keys()) {
 
-    auto* box = newQ::VBoxLayout();
+    auto* box = new QVBoxLayout();
     setLayout(box);
 
-    QBoxLayout* hb = newQ::HBoxLayout();
+    QBoxLayout* hb = new QHBoxLayout();
     box->addLayout(hb);
     hb->addStretch();
 
@@ -311,7 +310,7 @@ ControlsPeakfits::ControlsPeakfits()
 
     box->addWidget(new PeaksView());
 
-    hb = newQ::HBoxLayout();
+    hb = new QHBoxLayout();
     box->addLayout(hb);
 
     hb->addWidget(&comboReflType_);
@@ -324,7 +323,7 @@ ControlsPeakfits::ControlsPeakfits()
 
     hb->addStretch();
 
-    QBoxLayout* vb = newQ::VBoxLayout();
+    QBoxLayout* vb = new QVBoxLayout();
     box->addLayout(vb);
 
     vb->addWidget(rangeControl_ = new RangeControl);

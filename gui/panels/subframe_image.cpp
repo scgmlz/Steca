@@ -15,7 +15,6 @@
 #include "subframe_image.h"
 #include "core/session.h"
 #include "gui/cfg/colors.h"
-#include "gui/base/layout.h"
 #include "gui/mainwin.h"
 #include "gui/actions/toggles.h"
 #include "gui/actions/triggers.h"
@@ -152,13 +151,13 @@ private:
 };
 
 ImageTab::ImageTab() {
-    box_ = newQ::VBoxLayout();
+    box_ = new QVBoxLayout();
     setLayout(box_);
 
-    controls_ = newQ::HBoxLayout();
+    controls_ = new QHBoxLayout();
     box_->addLayout(controls_);
 
-    auto* box1 = newQ::HBoxLayout();
+    auto* box1 = new QHBoxLayout();
     controls_->addLayout(box1);
     box1->addWidget(new XIconButton(&gGui->toggles->fixedIntenImage));
     box1->addWidget(new XIconButton(&gGui->toggles->stepScale));
@@ -262,7 +261,7 @@ private:
 };
 
 DataImageTab::DataImageTab() {
-    auto* boxImg = newQ::HBoxLayout();
+    auto* boxImg = new QHBoxLayout();
     controls_->addLayout(boxImg);
     boxImg->addWidget(new QLabel("m#"));
     boxImg->addWidget(&idxMeas_);
@@ -285,7 +284,7 @@ DataImageTab::DataImageTab() {
     idxMeas_.setEnabled(false);
     idxMeas_.setValue(1);
 
-    auto* boxGreen = newQ::HBoxLayout();
+    auto* boxGreen = new QHBoxLayout();
     controls_->addLayout(boxGreen);
     boxGreen->addWidget(new XIconButton(&gGui->toggles->showBins));
     boxGreen->addWidget(new QLabel("ϑ#"));
@@ -293,7 +292,7 @@ DataImageTab::DataImageTab() {
     boxGreen->addStretch(1);
     connect(&idxTheta_, _SLOT_(QSpinBox, valueChanged, int), [this](int) { render(); });
 
-    auto* boxGamma = newQ::HBoxLayout();
+    auto* boxGamma = new QHBoxLayout();
     controls_->addLayout(boxGamma);
 
     boxGamma->addWidget(new QLabel("γ count"));
