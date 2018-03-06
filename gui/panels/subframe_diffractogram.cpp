@@ -39,15 +39,16 @@ private:
 
     class DiffractogramPlot* plot_;
     QBoxLayout* box_;
-    CComboBox comboNormType_{"normTyp", {"none", "monitor", "Δ monitor", "Δ time", "background"}};
-    CRadioButton intenSum_{"intenSum", "sum"};
-    CRadioButton intenAvg_{"intenAvg", "avg ×"};
-    CDoubleSpinBox intenScale_{"intenScale", 6, 0.001};
+    CComboBox comboNormType_ {"normTyp", {"none", "monitor", "Δ monitor", "Δ time", "background"}};
+    CRadioButton intenSum_ {"intenSum", "sum"};
+    CRadioButton intenAvg_ {"intenAvg", "avg ×"};
+    CDoubleSpinBox intenScale_ {"intenScale", 6, 0.001};
     CToggle actZoom_ {"actZoom", "zoom", false, ":/icon/zoom"};
-    XIconButton enableZoom_{&actZoom_};
-    XIconButton combine_{&gGui->toggles->combinedDgram};
-    XIconButton fixInten_{&gGui->toggles->fixedIntenDgram};
-    XIconButton export_{&gGui->triggers->outputDiffractograms};
+    XIconButton enableZoom_ {&actZoom_};
+    XIconButton combine_ {&gGui->toggles->combinedDgram};
+    XIconButton fixInten_ {&gGui->toggles->fixedIntenDgram};
+    XIconButton showBg_ {&gGui->toggles->showBackground};
+    XIconButton export_ {&gGui->triggers->outputDiffractograms};
 };
 
 
@@ -87,7 +88,7 @@ Diffractogram::Diffractogram() {
 
     hb->addWidget(&combine_);
     hb->addWidget(&fixInten_);
-    hb->addWidget(new XIconButton(&gGui->toggles->showBackground));
+    hb->addWidget(&showBg_);
     hb->addStretch();
 
     hb->addWidget(&export_);

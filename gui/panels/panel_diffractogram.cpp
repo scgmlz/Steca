@@ -221,10 +221,11 @@ void DiffractogramPlot::calcDgram() {
     dgram_.clear();
     if (!gSession->hasData())
         return;
-    if (gGui->isCombinedDgram())
+    if (gGui->isCombinedDgram()) {
         dgram_ = gSession->experiment().avgCurve();
-    else
+    } else {
         dgram_ = gSession->dataset().highlight().cluster()->toCurve(gSession->gammaRange());
+    }
 }
 
 void DiffractogramPlot::calcBackground() {

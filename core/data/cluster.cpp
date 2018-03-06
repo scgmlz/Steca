@@ -116,7 +116,7 @@ Curve Sequence::toCurve() const {
 
 Curve Sequence::toCurve(const Range& _rgeGma) const {
     double _normFactor = normFactor();
-    return toCurve(_normFactor, rgeGma());
+    return toCurve(_normFactor, _rgeGma);
 };
 
 Curve Sequence::toCurve(qreal _normFactor) const {
