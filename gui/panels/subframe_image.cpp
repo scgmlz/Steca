@@ -138,8 +138,9 @@ void ImageWidget::paintEvent(QPaintEvent*) {
 class ImageTab : public QWidget {
 public:
     ImageTab();
-    virtual void render() = 0;
+    void render();
 protected:
+    virtual QPixmap pixmap() = 0;
     QBoxLayout* controls_;
     QPixmap makePixmap(shp_Image);
     QPixmap makePixmap(const class Measurement&, const Range&, const Range&);
@@ -173,6 +174,10 @@ ImageTab::ImageTab() {
     connect(gSession, &Session::sigDetector, this, &ImageTab::render);
     connect(gSession, &Session::sigNorm, this, &ImageTab::render);
     connect(gSession, &Session::sigImage, this, &ImageTab::render);
+}
+
+void ImageTab::render() {
+    imageView_->setPixmap(pixmap());
 }
 
 QPixmap ImageTab::makePixmap(shp_Image image) {
@@ -242,15 +247,15 @@ QImage ImageTab::makeImage(shp_Image image, bool curvedScale) {
 class DataImageTab : public ImageTab {
 public:
     DataImageTab();
-    void render() final;
 private:
-    CSpinBox spinN_{"spinN", 4, false, 1, INT_MAX,
+    QPixmap pixmap() final;
+    CSpinBox idxMeas_{"idxMeasurement", 4, false, 1, INT_MAX,
             "Number of measurement within the current group of measurements"};
     CSpinBox numSlices_{"numSlices", 4, false, 0, INT_MAX,
             "Number of γ slices (0: no slicing, take entire image)" };
     CSpinBox idxSlice_{"numSlice", 4, false, 1, INT_MAX,
             "Number of γ slice to be shown" };
-    CSpinBox numBin_{"numBin", 4, false, 1, INT_MAX,
+    CSpinBox idxTheta_{"idxTheta", 4, false, 1, INT_MAX,
             "Number of 2θ bin to be shown" };
     CDoubleSpinBox minGamma_{"minGamma", 6};
     CDoubleSpinBox maxGamma_{"maxGamma", 6};
@@ -260,35 +265,33 @@ DataImageTab::DataImageTab() {
     auto* boxImg = newQ::HBoxLayout();
     controls_->addLayout(boxImg);
     boxImg->addWidget(new QLabel("m#"));
-    boxImg->addWidget(&spinN_);
+    boxImg->addWidget(&idxMeas_);
     boxImg->addStretch(1);
-    connect(&spinN_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
+    connect(&idxMeas_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
             gSession->dataset().highlight().setMeasurement(val-1); });
     connect(gSession, &Session::sigDataHighlight, [this]() {
             auto& hl = gSession->dataset().highlight();
             if (!hl.cluster()) {
-                spinN_.setEnabled(false);
-                spinN_.setValue(1);
+                idxMeas_.setEnabled(false);
+                idxMeas_.setValue(1);
                 return;
             }
-            spinN_.setEnabled( gSession->dataset().binning() > 1);
+            idxMeas_.setEnabled( gSession->dataset().binning() > 1);
             int max = hl.cluster()->count();
-            spinN_.setMaximum(max);
+            idxMeas_.setMaximum(max);
             if ( hl.measurementIndex()+1>max )
                 hl.setMeasurement(max-1);
-            spinN_.setValue(hl.measurementIndex()+1); });
-    spinN_.setEnabled(false);
-    spinN_.setValue(1);
+            idxMeas_.setValue(hl.measurementIndex()+1); });
+    idxMeas_.setEnabled(false);
+    idxMeas_.setValue(1);
 
     auto* boxGreen = newQ::HBoxLayout();
     controls_->addLayout(boxGreen);
-    boxGreen->addWidget(&spinN_);
-
     boxGreen->addWidget(new XIconButton(&gGui->toggles->showBins));
     boxGreen->addWidget(new QLabel("ϑ#"));
-    boxGreen->addWidget(&numBin_);
+    boxGreen->addWidget(&idxTheta_);
     boxGreen->addStretch(1);
-    connect(&numBin_, _SLOT_(QSpinBox, valueChanged, int), [this](int) { render(); });
+    connect(&idxTheta_, _SLOT_(QSpinBox, valueChanged, int), [this](int) { render(); });
 
     auto* boxGamma = newQ::HBoxLayout();
     controls_->addLayout(boxGamma);
@@ -306,62 +309,53 @@ DataImageTab::DataImageTab() {
     boxGamma->addWidget(new QLabel("max"));
     boxGamma->addWidget(&maxGamma_);
 
-    controls_->addStretch(1);
-
     minGamma_.setReadOnly(true);
     maxGamma_.setReadOnly(true);
-
 
     connect(gSession, &Session::sigDataHighlight, this, &ImageTab::render);
 }
 
-void DataImageTab::render() {
-    QPixmap pixMap;
-
+QPixmap DataImageTab::pixmap() {
     const int nSlices = numSlices_.value();
     idxSlice_.setMaximum(qMax(1, nSlices));
     idxSlice_.setEnabled(nSlices > 0);
 
     const Cluster* cluster = gSession->dataset().highlight().cluster();
     if (!cluster) {
-        numBin_.setMaximum(0);
-        numBin_.setEnabled(false);
-        pixMap = makeBlankPixmap();
-    } else {
-        Range rge;
-        if (nSlices > 0) {
-            int iSlice = qMax(1, idxSlice_.value()) - 1;
-            const Range rgeGma = cluster->rgeGma();
-            const qreal min = rgeGma.min;
-            const qreal wn = rgeGma.width() / nSlices;
-            rge = Range(min + iSlice * wn, min + (iSlice + 1) * wn);
-            minGamma_.setValue(rge.min);
-            maxGamma_.setValue(rge.max);
-        } else {
-            rge = Range::infinite();
-            minGamma_.clear();
-            maxGamma_.clear();
-        }
-        gSession->setGammaRange(rge);
-
-        const Measurement* measurement = gSession->dataset().highlight().measurement();
-        numBin_.setEnabled(true);
-        if (gGui->toggles->showBins.isChecked()) {
-            Range rgeTth = cluster->rgeTth();
-            int count =  cluster->toCurve().count();
-            numBin_.setMaximum(count - 1);
-            qreal min = rgeTth.min;
-            qreal wdt = rgeTth.width();
-            qreal num = qreal(numBin_.value());
-            pixMap = makePixmap(
-                *measurement, rge,
-                Range(min + wdt * (num / count), min + wdt * ((num + 1) / count)));
-        } else {
-            pixMap = makePixmap(measurement->image());
-        }
+        idxTheta_.setMaximum(0);
+        idxTheta_.setEnabled(false);
+        return makeBlankPixmap();
     }
 
-    imageView_->setPixmap(pixMap);
+    Range rge;
+    if (nSlices > 0) {
+        int iSlice = qMax(1, idxSlice_.value()) - 1;
+        const Range rgeGma = cluster->rgeGma();
+        const qreal min = rgeGma.min;
+        const qreal wn = rgeGma.width() / nSlices;
+        rge = Range(min + iSlice * wn, min + (iSlice + 1) * wn);
+        minGamma_.setValue(rge.min);
+        maxGamma_.setValue(rge.max);
+    } else {
+        rge = Range::infinite();
+        minGamma_.clear();
+        maxGamma_.clear();
+    }
+    gSession->setGammaRange(rge);
+
+    const Measurement* measurement = gSession->dataset().highlight().measurement();
+    idxTheta_.setEnabled(true);
+    if (gGui->toggles->showBins.isChecked()) {
+        Range rgeTth = cluster->rgeTth();
+        int count =  cluster->toCurve().count();
+        idxTheta_.setMaximum(count - 1);
+        qreal min = rgeTth.min;
+        qreal wdt = rgeTth.width();
+        qreal num = qreal(idxTheta_.value());
+        return makePixmap(*measurement, rge,
+                          Range(min + wdt * (num / count), min + wdt * ((num + 1) / count)));
+    }
+    return makePixmap(measurement->image());
 }
 
 // ************************************************************************** //
@@ -376,16 +370,16 @@ void DataImageTab::render() {
 class CorrImageTab : public ImageTab {
 public:
     CorrImageTab();
-    void render() final;
+private:
+    QPixmap pixmap() final;
 };
 
 CorrImageTab::CorrImageTab() {
     controls_->addStretch(1);
 }
 
-void CorrImageTab::render() {
-    QPixmap pixMap = makePixmap(gSession->corrset().image());
-    imageView_->setPixmap(pixMap);
+QPixmap CorrImageTab::pixmap() {
+    return makePixmap(gSession->corrset().image());
 }
 
 // ************************************************************************** //
