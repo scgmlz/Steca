@@ -18,40 +18,30 @@
 #include "gui/mainwin.h"
 #include <QApplication>
 #include <QDate>
-#include <QDialogButtonBox>
 
 AboutBox::AboutBox() : QDialog(gGui, Qt::Dialog) {
     Settings s("config");
 
-    int PAD = 12;
-
     setWindowTitle(QString("About %1").arg(qApp->applicationName()));
 
-    // layout
-    auto vb = new QVBoxLayout();
-    setLayout(vb);
-
-    vb->setSpacing(PAD);
-    vb->setSizeConstraint(QLayout::SetFixedSize);
+    // vertical layout
+    setLayout(&vb_);
+    vb_.setSpacing(12);
+    vb_.setSizeConstraint(QLayout::SetFixedSize);
 
     // logo and info
-    auto hb = new QHBoxLayout();
-    vb->addLayout(hb);
-
-    hb->setSpacing(PAD);
-
-    auto logo = new QLabel("");
-    logo->setPixmap(QPixmap(":/icon/retroStier")
-                        .scaled(128, 128, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    hb->addWidget(logo);
+    vb_.addLayout(&hb_);
+    hb_.setSpacing(12);
+    logo_.setPixmap(QPixmap(":/icon/retroStier")
+                    .scaled(128, 128, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    hb_.addWidget(&logo_);
 
 #ifdef __x86_64__
     QString arch = "(64b)";
 #else
     QString arch = "";
 #endif
-
-    auto info = new QLabel(QString(
+    info_.setText(QString(
 "<h4>%1 version %2 %3</h4>"
 "<p>%4</p>"
 "<p>Copyright: Forschungszentrum Jülich GmbH %5</p>"
@@ -71,18 +61,15 @@ AboutBox::AboutBox() : QDialog(gGui, Qt::Dialog) {
                       .arg(QDate::currentDate().toString("yyyy"))
                       .arg(STECA2_PAGES_URL)
         );
-
-    info->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-    info->setOpenExternalLinks(true);
+    info_.setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    info_.setOpenExternalLinks(true);
 #ifdef Q_OS_MAC
     // a smaller font (a hint found in Qt source code)
-    info->setFont(QToolTip::font());
+    info_.setFont(QToolTip::font());
 #endif
+    hb_.addWidget(&info_);
 
-    hb->addWidget(info);
+    vb_.addWidget(&dbbox_);
 
-    auto bb = new QDialogButtonBox(QDialogButtonBox::Ok);
-    vb->addWidget(bb);
-
-    connect(bb, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(&dbbox_, &QDialogButtonBox::accepted, this, &QDialog::accept);
 }

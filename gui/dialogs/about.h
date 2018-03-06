@@ -16,11 +16,18 @@
 #define ABOUT_H
 
 #include "gui/base/controls.h"
+#include <QDialogButtonBox>
 
 //! Modal dialog that informs about the software
 class AboutBox : public QDialog {
 public:
     AboutBox();
+private:
+    QVBoxLayout vb_;
+    QHBoxLayout hb_;
+    QLabel logo_;
+    QLabel info_;
+    QDialogButtonBox dbbox_ {QDialogButtonBox::Ok };
 };
 
 #endif // ABOUT_H
