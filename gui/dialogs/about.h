@@ -21,9 +21,6 @@
 class AboutBox : public QDialog {
 public:
     AboutBox();
-protected:
-    QCheckBox *cbShowAtStartup_, *cbCheckUpdatesAtStartup_;
-    QDoubleSpinBox *detDistance_, *detPixelSize_;
 };
 
 #endif // ABOUT_H
