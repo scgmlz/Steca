@@ -28,15 +28,15 @@ CutControls::CutControls()
     connect(gSession, &Session::sigDetector, this, &CutControls::fromCore);
 
     // outbound connections
-    connect(&cutLeft_,   _SLOT_(QSpinBox, valueChanged, int), [this](int value) {
+    connect(&cutLeft_, _SLOT_(QSpinBox, valueChanged, int), [](int value) {
             gSession->imageCut().setLeft(value); });
-    connect(&cutRight_,  _SLOT_(QSpinBox, valueChanged, int), [this](int value) {
+    connect(&cutRight_,  _SLOT_(QSpinBox, valueChanged, int), [](int value) {
             gSession->imageCut().setRight(value); });
-    connect(&cutTop_,    _SLOT_(QSpinBox, valueChanged, int), [this](int value) {
+    connect(&cutTop_,    _SLOT_(QSpinBox, valueChanged, int), [](int value) {
             gSession->imageCut().setTop(value); });
-    connect(&cutBottom_, _SLOT_(QSpinBox, valueChanged, int), [this](int value) {
+    connect(&cutBottom_, _SLOT_(QSpinBox, valueChanged, int), [](int value) {
             gSession->imageCut().setBottom(value); });
-    connect(&gGui->toggles->linkCuts, &QAction::toggled, [this](bool value) {
+    connect(&gGui->toggles->linkCuts, &QAction::toggled, [](bool value) {
             gSession->imageCut().setLinked(value); });
 
     // layout
@@ -77,9 +77,9 @@ ExperimentControls::ExperimentControls()
 
     // outbound connections
     connect(&combineMeasurements_, _SLOT_(QSpinBox, valueChanged, int),
-            [this](int num) { gSession->dataset().setBinning(num); });
+            [](int num) { gSession->dataset().setBinning(num); });
     connect(&dropIncompleteAction_, &QAction::toggled,
-            [this](bool on) { gSession->dataset().setDropIncomplete(on); });
+            [](bool on) { gSession->dataset().setDropIncomplete(on); });
 
     //initialization
     dropIncompleteAction_.setEnabled(false);
@@ -104,16 +104,16 @@ GeometryControls::GeometryControls()
     connect(gSession, &Session::sigDetector, this, &GeometryControls::fromCore);
 
     // outbound connections and control widget setup
-    connect(&detDistance_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val) {
+    connect(&detDistance_, _SLOT_(QDoubleSpinBox, valueChanged, double), [](double val) {
             gSession->geometry().setDetectorDistance(val); });
 
     detPixelSize_.setDecimals(3);
-    connect(&detPixelSize_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val) {
+    connect(&detPixelSize_, _SLOT_(QDoubleSpinBox, valueChanged, double), [](double val) {
             gSession->geometry().setPixSize(val); });
 
-    connect(&beamOffsetI_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
+    connect(&beamOffsetI_, _SLOT_(QSpinBox, valueChanged, int), [](int val) {
             gSession->geometry().midPixOffset().i = val; emit gSession->sigDetector(); });
-    connect(&beamOffsetJ_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
+    connect(&beamOffsetJ_, _SLOT_(QSpinBox, valueChanged, int), [](int val) {
             gSession->geometry().midPixOffset().j = val; emit gSession->sigDetector(); });
 
     // layout
