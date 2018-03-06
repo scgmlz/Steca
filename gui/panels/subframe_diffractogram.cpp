@@ -125,8 +125,6 @@ void Diffractogram::onHighlight() {
 
 SubframeDiffractogram::SubframeDiffractogram() {
     setTabPosition(QTabWidget::North);
-    auto* tab = new QWidget();
+    auto* tab = new Diffractogram();
     addTab(tab, "Diffractogram");
-    tab->setLayout(new QVBoxLayout());
-    tab->layout()->addWidget(new Diffractogram());
 }
