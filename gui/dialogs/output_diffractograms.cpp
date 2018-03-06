@@ -82,20 +82,21 @@ private:
     CRadioButton rbCurrent_ {"rbCurrent", "Current diffractogram"};
     CRadioButton rbAllSequential_ {"rbAllSequential", "All diffractograms to numbered files"};
     CRadioButton rbAll_ {"rbAll", "All diffractograms to one file"};
+    GridPanel gp_ {"To save"};
+    XTextButton tb_ {actSave};
 };
 
 TabDiffractogramsSave::TabDiffractogramsSave()
     : TabSave(true)
 {
-    auto gp = new GridPanel("To save");
-    grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
+    grid_->addWidget(&gp_, grid_->rowCount(), 0, 1, 2);
     grid_->setRowStretch(grid_->rowCount(), 1);
 
-    QGridLayout* g = gp->grid();
+    QGridLayout* g = gp_.grid();
     g->addWidget(&rbCurrent_);
     g->addWidget(&rbAllSequential_);
     g->addWidget(&rbAll_);
-    g->addWidget(new XTextButton(actSave), 2, 1);
+    g->addWidget(&tb_, 2, 1);
 
     rbAll_.setChecked(true);
 }

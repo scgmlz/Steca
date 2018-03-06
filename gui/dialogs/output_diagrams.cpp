@@ -129,6 +129,8 @@ public:
     bool currDiagram() const { return currentDiagram_.isChecked(); }
 private:
     CRadioButton currentDiagram_, allData_;
+    GridPanel gp_ {"To save"};
+    XTextButton tb_ {actSave};
 };
 
 TabDiagramsSave::TabDiagramsSave()
@@ -136,14 +138,13 @@ TabDiagramsSave::TabDiagramsSave()
     , currentDiagram_("currentDiagram", "Current diagram")
     , allData_("allData", "All data")
 {
-    auto gp = new GridPanel("To save");
-    grid_->addWidget(gp, grid_->rowCount(), 0, 1, 2);
+    grid_->addWidget(&gp_, grid_->rowCount(), 0, 1, 2);
     grid_->setRowStretch(grid_->rowCount(), 1);
 
-    QGridLayout* g = gp->grid();
+    QGridLayout* g = gp_.grid();
     g->addWidget(&currentDiagram_);
     g->addWidget(&allData_);
-    g->addWidget(new XTextButton(actSave), 1, 1);
+    g->addWidget(&tb_, 1, 1);
     g->setColumnStretch(0, 1);
 
     currentDiagram_.setChecked(true);
