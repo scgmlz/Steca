@@ -68,7 +68,7 @@ void HighlightedData::unset() {
 }
 
 void HighlightedData::setMeasurement(int val) {
-    measurement_ = qMin( val, cluster()->count()-1 );
+    measurement_ = current_ ? qMin( val, current_->count()-1 ) : 0;
     emit gSession->sigDataHighlight();
 }
 
@@ -95,7 +95,7 @@ int HighlightedData::measurementIndex() const {
 }
 
 const Measurement* HighlightedData::measurement() const {
-    return cluster()->at(measurement_);
+    return current_->at(measurement_);
 }
 
 

@@ -249,7 +249,7 @@ public:
     DataImageTab();
 private:
     QPixmap pixmap() final;
-    CSpinBox idxMeas_{"idxMeasurement", 4, false, 1, INT_MAX,
+    CSpinBox idxMeas_{"idxMeas", 4, false, 1, INT_MAX,
             "Number of measurement within the current group of measurements"};
     CSpinBox numSlices_{"numSlices", 4, false, 0, INT_MAX,
             "Number of γ slices (0: no slicing, take entire image)" };
