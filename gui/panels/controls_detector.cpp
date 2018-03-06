@@ -97,21 +97,17 @@ ExperimentControls::ExperimentControls() {
 
 ControlsDetector::ControlsDetector()
 {
-    connect(gSession, &Session::sigDetector, this, &ControlsDetector::fromSession);
+    connect(gSession, &Session::sigDetector, this, &ControlsDetector::fromCore);
 
     setLayout(&vbox_);
 
     detDistance_.setValue(Geometry::DEF_DETECTOR_DISTANCE);
-    connect(&detDistance_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this]() {
-            toSession(); });
+    connect(&detDistance_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this]() { toCore(); });
 
     detPixelSize_.setDecimals(3);
     detPixelSize_.setValue(Geometry::DEF_DETECTOR_PIXEL_SIZE);
-    connect(&detPixelSize_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this]() {
-            toSession(); });
+    connect(&detPixelSize_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this]() { toCore(); });
 
-//    mmGrid_.setSpacing(2);
-//    mmGrid_.setContentsMargins(3,3,3,3);
     mmGrid_.addWidget(new QLabel("det. distance"), 0, 0);
     mmGrid_.addWidget(&detDistance_, 0, 1);
     mmGrid_.addWidget(new QLabel("mm"), 0, 2);
@@ -131,8 +127,8 @@ ControlsDetector::ControlsDetector()
     offsetLayout_.addWidget(&beamOffsetJ_);
     offsetLayout_.addWidget(new QLabel("pix"));
     offsetLayout_.addStretch(1);
-    connect(&beamOffsetI_, _SLOT_(QSpinBox, valueChanged, int), [this]() { toSession(); });
-    connect(&beamOffsetJ_, _SLOT_(QSpinBox, valueChanged, int), [this]() { toSession(); });
+    connect(&beamOffsetI_, _SLOT_(QSpinBox, valueChanged, int), [this]() { toCore(); });
+    connect(&beamOffsetJ_, _SLOT_(QSpinBox, valueChanged, int), [this]() { toCore(); });
 
     vbox_.addLayout(&mmGrid_);
     vbox_.addLayout(&trafoLayout_);
@@ -142,14 +138,14 @@ ControlsDetector::ControlsDetector()
     vbox_.addStretch();
 }
 
-void ControlsDetector::toSession() {
+void ControlsDetector::toCore() {
     gSession->setGeometry(
         qMax(qreal(Geometry::MIN_DETECTOR_DISTANCE), detDistance_.value()),
         qMax(qreal(Geometry::MIN_DETECTOR_PIXEL_SIZE), detPixelSize_.value()),
         IJ(beamOffsetI_.value(), beamOffsetJ_.value()));
 }
 
-void ControlsDetector::fromSession() {
+void ControlsDetector::fromCore() {
     const Geometry& g = gSession->geometry();
 
     detDistance_.setValue(g.detectorDistance);

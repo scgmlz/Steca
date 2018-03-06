@@ -56,8 +56,8 @@ class ControlsDetector : public QWidget {
 public:
     ControlsDetector();
 private:
-    void toSession();
-    void fromSession();
+    void toCore();
+    void fromCore();
 
     QVBoxLayout vbox_;
     QGridLayout mmGrid_;
