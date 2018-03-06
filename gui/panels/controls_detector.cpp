@@ -21,35 +21,6 @@
 #include <QSpacerItem>
 
 // ************************************************************************** //
-//  class ExperimentControls
-// ************************************************************************** //
-
-ExperimentControls::ExperimentControls() {
-
-    auto layout = newQ::HBoxLayout();
-    setLayout(layout);
-
-    // 'combine' control
-    layout->addWidget(new QLabel("combine:"));
-    layout->addWidget(&combineMeasurements_);
-    connect(&combineMeasurements_, _SLOT_(QSpinBox, valueChanged, int),
-            [this](int num) { gSession->dataset().setBinning(num); });
-
-    // 'if incomplete' control
-    layout->addWidget(&dropIncompleteButton_);
-    connect(&dropIncompleteAction_, &QAction::toggled,
-            [this](bool on) { gSession->dataset().setDropIncomplete(on); });
-    layout->addStretch(1);
-
-    // back connection, to change controls from saved session
-    connect(gSession, &Session::sigClusters, [=]() {
-            combineMeasurements_.setValue(gSession->dataset().binning());
-            dropIncompleteAction_.setEnabled(gSession->dataset().hasIncomplete()); });
-    dropIncompleteAction_.setEnabled(false);
-}
-
-
-// ************************************************************************** //
 //  class CutControls
 // ************************************************************************** //
 
@@ -57,19 +28,18 @@ CutControls::CutControls()
 {
     connect(gSession, &Session::sigDetector, this, &CutControls::fromSession);
 
-    setFrameShape(QFrame::Box);
-    QGridLayout* layout = newQ::GridLayout();
-    setLayout(layout);
+    setLayout(&layout_);
+    layout_.setSpacing(2);
+    layout_.setContentsMargins(1,3,3,3);
 
-    layout->addWidget(new QLabel("cut"), 1, 0);
-    layout->setColumnStretch(1, 1);
-    layout->addWidget(&cutLeft_, 1, 2);
-    layout->addWidget(new XIconButton(&gGui->toggles->linkCuts), 1, 3, Qt::AlignHCenter);
-    layout->addWidget(&cutTop_, 0, 3);
-    layout->addWidget(&cutBottom_, 2, 3);
-    layout->addWidget(&cutRight_, 1, 4);
-    layout->setColumnStretch(5, 1);
-//    layout->addItem(new QSpacerItem(1,1,QSizePolicy::Ignored), 1, 4);
+    layout_.addWidget(new QLabel("cut"), 1, 0);
+    layout_.setColumnStretch(1, 1);
+    layout_.addWidget(&cutLeft_, 1, 2);
+    layout_.addWidget(new XIconButton(&gGui->toggles->linkCuts), 1, 3, Qt::AlignHCenter);
+    layout_.addWidget(&cutTop_, 0, 3);
+    layout_.addWidget(&cutBottom_, 2, 3);
+    layout_.addWidget(&cutRight_, 1, 4);
+    layout_.setColumnStretch(5, 1);
 
     connect(&cutLeft_,   _SLOT_(QSpinBox, valueChanged, int), [this](int value) {
             onChangedValue(true, value); });
@@ -103,6 +73,35 @@ void CutControls::fromSession()
 
 
 // ************************************************************************** //
+//  class ExperimentControls
+// ************************************************************************** //
+
+ExperimentControls::ExperimentControls() {
+
+    auto layout = newQ::HBoxLayout();
+    setLayout(layout);
+
+    layout->addWidget(new QLabel("combine"));
+    layout->addWidget(&combineMeasurements_);
+    layout->addWidget(new QLabel("measurements"));
+    layout->addWidget(&dropIncompleteButton_);
+    layout->addStretch(1);
+
+    // back connection, to change controls from saved session
+    connect(gSession, &Session::sigClusters, [=]() {
+            combineMeasurements_.setValue(gSession->dataset().binning());
+            dropIncompleteAction_.setEnabled(gSession->dataset().hasIncomplete()); });
+    dropIncompleteAction_.setEnabled(false);
+
+    // forward connections
+    connect(&combineMeasurements_, _SLOT_(QSpinBox, valueChanged, int),
+            [this](int num) { gSession->dataset().setBinning(num); });
+    connect(&dropIncompleteAction_, &QAction::toggled,
+            [this](bool on) { gSession->dataset().setDropIncomplete(on); });
+}
+
+
+// ************************************************************************** //
 //  class ControlsDetector
 // ************************************************************************** //
 
@@ -110,54 +109,45 @@ ControlsDetector::ControlsDetector()
 {
     connect(gSession, &Session::sigDetector, this, &ControlsDetector::fromSession);
 
-    QVBoxLayout* vbox = newQ::VBoxLayout();
-    setLayout(vbox);
-
-    // widgets
+    setLayout(&vbox_);
 
     detDistance_.setValue(Geometry::DEF_DETECTOR_DISTANCE);
-    connect(&detDistance_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this]() { toSession(); });
+    connect(&detDistance_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this]() {
+            toSession(); });
 
     detPixelSize_.setDecimals(3);
     detPixelSize_.setValue(Geometry::DEF_DETECTOR_PIXEL_SIZE);
     connect(&detPixelSize_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this]() {
             toSession(); });
 
-    // layout
+//    mmGrid_.setSpacing(2);
+//    mmGrid_.setContentsMargins(3,3,3,3);
+    mmGrid_.addWidget(new QLabel("det. distance"), 0, 0);
+    mmGrid_.addWidget(&detDistance_, 0, 1);
+    mmGrid_.addWidget(new QLabel("mm"), 0, 2);
+    mmGrid_.addWidget(new QLabel("pixel size"), 1, 0);
+    mmGrid_.addWidget(&detPixelSize_, 1, 1);
+    mmGrid_.addWidget(new QLabel("mm"), 1, 2);
 
-    QGridLayout* grid = newQ::GridLayout();
-    int row = 0;
+    trafoLayout_.addWidget(new QLabel("image rotate"));
+    trafoLayout_.addWidget(new XIconButton(&gGui->triggers->rotateImage));
+    trafoLayout_.addWidget(new QLabel("mirror"));
+    trafoLayout_.addWidget(new XIconButton(&gGui->toggles->mirrorImage));
+    trafoLayout_.addStretch(1);
 
-    auto _add = [&grid, &row](const QVector<QWidget*>& ws, int left = 1) {
-        int i = 0, cnt = ws.count();
-        QBoxLayout* hbox = newQ::HBoxLayout();
-        hbox->addStretch(1);
-        while (i < left)
-            hbox->addWidget(ws.at(i++));
-        grid->addLayout(hbox, row, 0);
-        hbox = newQ::HBoxLayout();
-        while (i < cnt)
-            hbox->addWidget(ws.at(i++));
-        grid->addLayout(hbox, row, 1);
-        hbox->addStretch(1);
-        row++;
-    };
+    offsetLayout_.addWidget(new QLabel("offset X"));
+    offsetLayout_.addWidget(&beamOffsetI_);
+    offsetLayout_.addWidget(new QLabel(" Y"));
+    offsetLayout_.addWidget(&beamOffsetJ_);
+    offsetLayout_.addWidget(new QLabel("pix"));
+    offsetLayout_.addStretch(1);
 
-    _add({ new QLabel("det. distance"), &detDistance_, new QLabel("mm") });
-    _add({ new QLabel("pixel size"), &detPixelSize_, new QLabel("mm") });
-    _add({ new QLabel("beam offset X"), &beamOffsetI_, new QLabel("pix") });
-    _add({ new QLabel("Y"), &beamOffsetJ_, new QLabel("pix") });
-    _add({ new QLabel("image rotate"),
-                new XIconButton(&gGui->triggers->rotateImage),
-                new QLabel("mirror"),
-                new XIconButton(&gGui->toggles->mirrorImage) });
-
-    grid->setColumnStretch(grid->columnCount(), 1);
-
-    vbox->addLayout(grid);
-    vbox->addWidget(&cutControls);
-    vbox->addWidget(&experimentControls);
-    vbox->addStretch();
+    vbox_.addLayout(&mmGrid_);
+    vbox_.addLayout(&trafoLayout_);
+    vbox_.addLayout(&offsetLayout_);
+    vbox_.addWidget(&cutControls);
+    vbox_.addWidget(&experimentControls);
+    vbox_.addStretch();
 }
 
 void ControlsDetector::toSession() {

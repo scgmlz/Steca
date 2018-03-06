@@ -19,6 +19,22 @@
 #include "gui/base/controls.h"
 #include "gui/actions/toggles.h"
 
+//! A widget with controls to set the detector cuts.
+
+class CutControls : public QFrame {
+public:
+    CutControls();
+private:
+    void fromSession();
+    void onChangedValue(bool isTopOrLeft, int value);
+
+    QGridLayout layout_;
+    CSpinBox cutLeft_ {"cutLeft", 4, false, 0};
+    CSpinBox cutTop_ {"cutTop", 4, false, 0};
+    CSpinBox cutRight_ {"cutRight", 4, false, 0};
+    CSpinBox cutBottom_ {"cutBottom", 4, false, 0};
+};
+
 //! Row of controls to combine Measurement|s into Cluster|s.
 
 class ExperimentControls : public QWidget {
@@ -33,21 +49,6 @@ private:
     XIconButton dropIncompleteButton_ { &dropIncompleteAction_ };
 };
 
-//! A widget with controls to set the detector cuts.
-
-class CutControls : public QFrame {
-public:
-    CutControls();
-private:
-    void fromSession();
-    void onChangedValue(bool isTopOrLeft, int value);
-
-    CSpinBox cutLeft_ {"cutLeft", 4, false, 0};
-    CSpinBox cutTop_ {"cutTop", 4, false, 0};
-    CSpinBox cutRight_ {"cutRight", 4, false, 0};
-    CSpinBox cutBottom_ {"cutBottom", 4, false, 0};
-};
-
 //! A widget with controls to view and change the detector geometry.
 
 class ControlsDetector : public QWidget {
@@ -56,6 +57,11 @@ public:
 private:
     void toSession();
     void fromSession();
+
+    QVBoxLayout vbox_;
+    QGridLayout mmGrid_;
+    QHBoxLayout trafoLayout_;
+    QHBoxLayout offsetLayout_;
 
     CDoubleSpinBox detDistance_ {"detDistance", 6, Geometry::MIN_DETECTOR_DISTANCE};
     CDoubleSpinBox detPixelSize_ {"detPixelSize", 6, Geometry::MIN_DETECTOR_PIXEL_SIZE};
