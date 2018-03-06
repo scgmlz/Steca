@@ -236,6 +236,45 @@ QImage ImageTab::makeImage(shp_Image image, bool curvedScale) {
 }
 
 // ************************************************************************** //
+//  local class IdxMeas
+// ************************************************************************** //
+
+//! A spin box that governs which measurement out of the highlighted group shall be shown.
+
+class IdxMeas : public CSpinBox {
+public:
+    IdxMeas();
+private:
+    void fromCore();
+};
+
+IdxMeas::IdxMeas()
+    : CSpinBox {"idxMeas", 2, false, 1, INT_MAX,
+        "Number of measurement within the current group of measurements"}
+{
+    connect(gSession, &Session::sigDataHighlight, this, &IdxMeas::fromCore);
+    connect(this, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
+            gSession->dataset().highlight().setMeasurement(val-1); });
+    fromCore();
+}
+
+void IdxMeas::fromCore()
+{
+    auto& hl = gSession->dataset().highlight();
+    if (!hl.cluster()) {
+        setEnabled(false);
+        setValue(1);
+        return;
+    }
+    setEnabled( gSession->dataset().binning() > 1);
+    int max = hl.cluster()->count();
+    setMaximum(max);
+    if ( hl.measurementIndex()+1>max )
+        hl.setMeasurement(max-1);
+    setValue(hl.measurementIndex()+1);
+}
+
+// ************************************************************************** //
 //  local class DataImageTab
 // ************************************************************************** //
 
@@ -249,8 +288,7 @@ public:
     DataImageTab();
 private:
     QPixmap pixmap() final;
-    CSpinBox idxMeas_{"idxMeas", 2, false, 1, INT_MAX,
-            "Number of measurement within the current group of measurements"};
+    IdxMeas idxMeas_;
     CSpinBox numSlices_{"numSlices", 2, false, 0, INT_MAX,
             "Number of γ slices (0: no slicing, take entire image)" };
     CSpinBox idxSlice_{"numSlice", 2, false, 1, INT_MAX,
@@ -267,23 +305,6 @@ DataImageTab::DataImageTab() {
     boxImg->addWidget(new QLabel("m#"));
     boxImg->addWidget(&idxMeas_);
     boxImg->addStretch(1);
-    connect(&idxMeas_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
-            gSession->dataset().highlight().setMeasurement(val-1); });
-    connect(gSession, &Session::sigDataHighlight, [this]() {
-            auto& hl = gSession->dataset().highlight();
-            if (!hl.cluster()) {
-                idxMeas_.setEnabled(false);
-                idxMeas_.setValue(1);
-                return;
-            }
-            idxMeas_.setEnabled( gSession->dataset().binning() > 1);
-            int max = hl.cluster()->count();
-            idxMeas_.setMaximum(max);
-            if ( hl.measurementIndex()+1>max )
-                hl.setMeasurement(max-1);
-            idxMeas_.setValue(hl.measurementIndex()+1); });
-    idxMeas_.setEnabled(false);
-    idxMeas_.setValue(1);
 
     auto* boxGreen = new QHBoxLayout();
     controls_->addLayout(boxGreen);
