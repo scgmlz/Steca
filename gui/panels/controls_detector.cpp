@@ -24,7 +24,7 @@
 
 CutControls::CutControls()
 {
-    connect(gSession, &Session::sigDetector, this, &CutControls::fromSession);
+    connect(gSession, &Session::sigDetector, this, &CutControls::fromCore);
 
     setLayout(&layout_);
     layout_.setSpacing(2);
@@ -51,7 +51,7 @@ CutControls::CutControls()
             gSession->imageCut().setLinked(value); });
 }
 
-void CutControls::fromSession()
+void CutControls::fromCore()
 {
     const ImageCut& cut = gSession->imageCut();
     gGui->toggles->linkCuts.setChecked(cut.linked());

@@ -26,7 +26,7 @@ class CutControls : public QFrame {
 public:
     CutControls();
 private:
-    void fromSession();
+    void fromCore();
 
     QGridLayout layout_;
     XIconButton link_ {&gGui->toggles->linkCuts};

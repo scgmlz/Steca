@@ -24,7 +24,6 @@
 
 class Corrset final {
 public:
-
     // Modifying methods:
     void clear();
     void removeFile();
