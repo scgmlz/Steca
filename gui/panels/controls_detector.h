@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/controls_detector.h
-//! @brief     Defines class ControlsDetector
+//! @brief     Defines classes (Cut|Experiment|Geometry)Controls, ControlsDetector
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -20,7 +20,7 @@
 #include "gui/base/controls.h"
 #include "gui/actions/toggles.h"
 
-//! A widget with controls to set the detector cuts.
+//! Control widgets that govern the detector cuts.
 
 class CutControls : public QFrame {
 public:
@@ -36,7 +36,7 @@ private:
     CSpinBox cutBottom_ {"cutBottom", 4, false, 0};
 };
 
-//! Row of controls to combine Measurement|s into Cluster|s.
+//! Control widgets that govern the combination of Measurement|s into Cluster|s.
 
 class ExperimentControls : public QWidget {
 public:
@@ -51,11 +51,11 @@ private:
     XIconButton dropIncompleteButton_ { &dropIncompleteAction_ };
 };
 
-//! A widget with controls to view and change the detector geometry.
+//! Control widgets that govern the detector geometry.
 
-class ControlsDetector : public QWidget {
+class GeometryControls : public QWidget {
 public:
-    ControlsDetector();
+    GeometryControls();
 private:
     void fromCore();
 
@@ -68,8 +68,18 @@ private:
     CDoubleSpinBox detPixelSize_ {"detPixelSize", 6};
     CSpinBox beamOffsetI_ {"beamOffsetI", 6, true};
     CSpinBox beamOffsetJ_ {"beamOffsetJ", 6, true};
-    CutControls cutControls;
-    ExperimentControls experimentControls;
+};
+
+//! Aggregated control widgets that govern the detector setup.
+
+class ControlsDetector : public QWidget {
+public:
+    ControlsDetector();
+private:
+    QVBoxLayout vbox_;
+    CutControls cutControls_;
+    ExperimentControls experimentControls_;
+    GeometryControls geometryControls_;
 };
 
 #endif // CONTROLS_DETECTOR_H

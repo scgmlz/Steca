@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/controls_detector.cpp
-//! @brief     Implements class SubframeSetup, and local classes
+//! @brief     Implements classes (Cut|Experiment|Geometry)Controls, ControlsDetector
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -95,13 +95,13 @@ ExperimentControls::ExperimentControls()
 
 
 // ************************************************************************** //
-//  class ControlsDetector
+//  class GeometryControls
 // ************************************************************************** //
 
-ControlsDetector::ControlsDetector()
+GeometryControls::GeometryControls()
 {
     // inbound connection
-    connect(gSession, &Session::sigDetector, this, &ControlsDetector::fromCore);
+    connect(gSession, &Session::sigDetector, this, &GeometryControls::fromCore);
 
     // outbound connections and control widget setup
     connect(&detDistance_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val) {
@@ -140,19 +140,30 @@ ControlsDetector::ControlsDetector()
     vbox_.addLayout(&mmGrid_);
     vbox_.addLayout(&trafoLayout_);
     vbox_.addLayout(&offsetLayout_);
-    vbox_.addWidget(&cutControls);
-    vbox_.addWidget(&experimentControls);
-    vbox_.addStretch();
     setLayout(&vbox_);
 
     // initialization
     fromCore();
 }
 
-void ControlsDetector::fromCore() {
+void GeometryControls::fromCore() {
     const Geometry& g = gSession->geometry();
     detDistance_.setValue(g.detectorDistance());
     detPixelSize_.setValue(g.pixSize());
     beamOffsetI_.setValue(g.midPixOffset().i);
     beamOffsetJ_.setValue(g.midPixOffset().j);
+}
+
+
+// ************************************************************************** //
+//  class ControlsDetector
+// ************************************************************************** //
+
+ControlsDetector::ControlsDetector()
+{
+    vbox_.addWidget(&geometryControls_);
+    vbox_.addWidget(&cutControls_);
+    vbox_.addWidget(&experimentControls_);
+    vbox_.addStretch();
+    setLayout(&vbox_);
 }
