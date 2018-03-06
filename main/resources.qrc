@@ -6,10 +6,6 @@
         <file alias="bottom">icons/bottom.svg</file>
         <file alias="clear">icons/clear.svg</file>
         <file alias="crop">icons/crop.svg</file>
-        <file alias="cutBottom">icons/cut_bottom.svg</file>
-        <file alias="cutLeft">icons/cut_left.svg</file>
-        <file alias="cutRight">icons/cut_right.svg</file>
-        <file alias="cutTop">icons/cut_top.svg</file>
         <file alias="dropIncomplete">icons/dropIncomplete.svg</file>
         <file alias="filesave">icons/filesave.svg</file>
         <file alias="left">icons/left.svg</file>

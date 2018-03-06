@@ -33,6 +33,21 @@ private:
     XIconButton dropIncompleteButton_ { &dropIncompleteAction_ };
 };
 
+//! A widget with controls to set the detector cuts.
+
+class CutControls : public QFrame {
+public:
+    CutControls();
+private:
+    void fromSession();
+    void onChangedValue(bool isTopOrLeft, int value);
+
+    CSpinBox cutLeft_ {"cutLeft", 4, false, 0};
+    CSpinBox cutTop_ {"cutTop", 4, false, 0};
+    CSpinBox cutRight_ {"cutRight", 4, false, 0};
+    CSpinBox cutBottom_ {"cutBottom", 4, false, 0};
+};
+
 //! A widget with controls to view and change the detector geometry.
 
 class ControlsDetector : public QWidget {
@@ -46,11 +61,7 @@ private:
     CDoubleSpinBox detPixelSize_ {"detPixelSize", 6, Geometry::MIN_DETECTOR_PIXEL_SIZE};
     CSpinBox beamOffsetI_ {"beamOffsetI", 6, true};
     CSpinBox beamOffsetJ_ {"beamOffsetJ", 6, true};
-    CSpinBox cutLeft_ {"cutLeft", 4, false, 0};
-    CSpinBox cutTop_ {"cutTop", 4, false, 0};
-    CSpinBox cutRight_ {"cutRight", 4, false, 0};
-    CSpinBox cutBottom_ {"cutBottom", 4, false, 0};
-
+    CutControls cutControls;
     ExperimentControls experimentControls;
 };
 

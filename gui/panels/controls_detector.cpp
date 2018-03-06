@@ -18,7 +18,7 @@
 #include "gui/base/layout.h"
 #include "gui/mainwin.h"
 #include "gui/actions/triggers.h"
-
+#include <QSpacerItem>
 
 // ************************************************************************** //
 //  class ExperimentControls
@@ -50,15 +50,68 @@ ExperimentControls::ExperimentControls() {
 
 
 // ************************************************************************** //
+//  class CutControls
+// ************************************************************************** //
+
+CutControls::CutControls()
+{
+    connect(gSession, &Session::sigDetector, this, &CutControls::fromSession);
+
+    setFrameShape(QFrame::Box);
+    QGridLayout* layout = newQ::GridLayout();
+    setLayout(layout);
+
+    layout->addWidget(new QLabel("cut"), 1, 0);
+    layout->setColumnStretch(1, 1);
+    layout->addWidget(&cutLeft_, 1, 2);
+    layout->addWidget(new XIconButton(&gGui->toggles->linkCuts), 1, 3, Qt::AlignHCenter);
+    layout->addWidget(&cutTop_, 0, 3);
+    layout->addWidget(&cutBottom_, 2, 3);
+    layout->addWidget(&cutRight_, 1, 4);
+    layout->setColumnStretch(5, 1);
+//    layout->addItem(new QSpacerItem(1,1,QSizePolicy::Ignored), 1, 4);
+
+    connect(&cutLeft_,   _SLOT_(QSpinBox, valueChanged, int), [this](int value) {
+            onChangedValue(true, value); });
+    connect(&cutTop_,    _SLOT_(QSpinBox, valueChanged, int), [this](int value) {
+            onChangedValue(true, value); });
+    connect(&cutRight_,  _SLOT_(QSpinBox, valueChanged, int), [this](int value) {
+            onChangedValue(false, value); });
+    connect(&cutBottom_, _SLOT_(QSpinBox, valueChanged, int), [this](int value) {
+            onChangedValue(false, value); });
+}
+
+void CutControls::onChangedValue(bool isTopOrLeft, int value) {
+    ASSERT(value >= 0);
+    if (gGui->toggles->linkCuts.isChecked())
+        gSession->setImageCut(isTopOrLeft, true, ImageCut(value, value, value, value));
+    else
+        gSession->setImageCut(isTopOrLeft, false,
+                              ImageCut(cutLeft_.value(), cutTop_.value(),
+                                       cutRight_.value(), cutBottom_.value()));
+};
+
+void CutControls::fromSession()
+{
+    const ImageCut& cut = gSession->imageCut();
+
+    cutLeft_.setValue(cut.left);
+    cutTop_.setValue(cut.top);
+    cutRight_.setValue(cut.right);
+    cutBottom_.setValue(cut.bottom);
+}
+
+
+// ************************************************************************** //
 //  class ControlsDetector
 // ************************************************************************** //
 
 ControlsDetector::ControlsDetector()
 {
-    auto* box = newQ::VBoxLayout();
-    setLayout(box);
-
     connect(gSession, &Session::sigDetector, this, &ControlsDetector::fromSession);
+
+    QVBoxLayout* vbox = newQ::VBoxLayout();
+    setLayout(vbox);
 
     // widgets
 
@@ -70,28 +123,6 @@ ControlsDetector::ControlsDetector()
     connect(&detPixelSize_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this]() {
             toSession(); });
 
-    auto _setImageCut = [this](bool isTopOrLeft, int value) {
-        ASSERT(value >= 0);
-        if (gGui->toggles->linkCuts.isChecked())
-            gSession->setImageCut(isTopOrLeft, true, ImageCut(value, value, value, value));
-        else
-            gSession->setImageCut(isTopOrLeft, false,
-                                  ImageCut(cutLeft_.value(), cutTop_.value(),
-                                           cutRight_.value(), cutBottom_.value()));
-    };
-
-    connect(&cutLeft_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
-            _setImageCut(true, value); });
-
-    connect(&cutTop_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
-            _setImageCut(true, value); });
-
-    connect(&cutRight_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
-            _setImageCut(false, value); });
-
-    connect(&cutBottom_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
-            _setImageCut(false, value); });
-
     // layout
 
     QGridLayout* grid = newQ::GridLayout();
@@ -99,16 +130,16 @@ ControlsDetector::ControlsDetector()
 
     auto _add = [&grid, &row](const QVector<QWidget*>& ws, int left = 1) {
         int i = 0, cnt = ws.count();
-        QBoxLayout* box = newQ::HBoxLayout();
-        box->addStretch(1);
+        QBoxLayout* hbox = newQ::HBoxLayout();
+        hbox->addStretch(1);
         while (i < left)
-            box->addWidget(ws.at(i++));
-        grid->addLayout(box, row, 0);
-        box = newQ::HBoxLayout();
+            hbox->addWidget(ws.at(i++));
+        grid->addLayout(hbox, row, 0);
+        hbox = newQ::HBoxLayout();
         while (i < cnt)
-            box->addWidget(ws.at(i++));
-        grid->addLayout(box, row, 1);
-        box->addStretch(1);
+            hbox->addWidget(ws.at(i++));
+        grid->addLayout(hbox, row, 1);
+        hbox->addStretch(1);
         row++;
     };
 
@@ -120,22 +151,13 @@ ControlsDetector::ControlsDetector()
                 new XIconButton(&gGui->triggers->rotateImage),
                 new QLabel("mirror"),
                 new XIconButton(&gGui->toggles->mirrorImage) });
-    _add({ new XIconButton(&gGui->toggles->linkCuts),
-                new QLabel("cut"),
-                new XIcon(":/icon/cutLeft"),
-                &cutLeft_,
-                new XIcon(":/icon/cutRight"),
-                &cutRight_ }, 3);
-    _add({ new XIcon(":/icon/cutTop"),
-                &cutTop_,
-                new XIcon(":/icon/cutBottom"),
-                &cutBottom_ });
 
     grid->setColumnStretch(grid->columnCount(), 1);
 
-    box->addLayout(grid);
-    box->addWidget(&experimentControls); // controls row
-    box->addStretch();
+    vbox->addLayout(grid);
+    vbox->addWidget(&cutControls);
+    vbox->addWidget(&experimentControls);
+    vbox->addStretch();
 }
 
 void ControlsDetector::toSession() {
@@ -153,11 +175,4 @@ void ControlsDetector::fromSession() {
 
     beamOffsetI_.setValue(g.midPixOffset.i);
     beamOffsetJ_.setValue(g.midPixOffset.j);
-
-    const ImageCut& cut = gSession->imageCut();
-
-    cutLeft_.setValue(cut.left);
-    cutTop_.setValue(cut.top);
-    cutRight_.setValue(cut.right);
-    cutBottom_.setValue(cut.bottom);
 }
