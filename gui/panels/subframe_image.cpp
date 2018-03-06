@@ -140,7 +140,7 @@ public:
     void render();
 protected:
     virtual QPixmap pixmap() = 0;
-    QBoxLayout* controls_;
+    QHBoxLayout controls_;
     QPixmap makePixmap(shp_Image);
     QPixmap makePixmap(const class Measurement&, const Range&, const Range&);
     QPixmap makeBlankPixmap();
@@ -154,11 +154,10 @@ ImageTab::ImageTab() {
     box_ = new QVBoxLayout();
     setLayout(box_);
 
-    controls_ = new QHBoxLayout();
-    box_->addLayout(controls_);
+    box_->addLayout(&controls_);
 
     auto* box1 = new QHBoxLayout();
-    controls_->addLayout(box1);
+    controls_.addLayout(box1);
     box1->addWidget(new XIconButton(&gGui->toggles->fixedIntenImage));
     box1->addWidget(new XIconButton(&gGui->toggles->stepScale));
     box1->addWidget(new XIconButton(&gGui->toggles->showOverlay));
@@ -287,6 +286,7 @@ class DataImageTab : public ImageTab {
 public:
     DataImageTab();
 private:
+    QHBoxLayout boxImg_, boxGreen_, boxGamma_;
     QPixmap pixmap() final;
     IdxMeas idxMeas_;
     CSpinBox numSlices_{"numSlices", 2, false, 0, INT_MAX,
@@ -300,40 +300,37 @@ private:
 };
 
 DataImageTab::DataImageTab() {
-    auto* boxImg = new QHBoxLayout();
-    controls_->addLayout(boxImg);
-    boxImg->addWidget(new QLabel("m#"));
-    boxImg->addWidget(&idxMeas_);
-    boxImg->addStretch(1);
+    // inbound connection
+    connect(gSession, &Session::sigDataHighlight, this, &ImageTab::render);
 
-    auto* boxGreen = new QHBoxLayout();
-    controls_->addLayout(boxGreen);
-    boxGreen->addWidget(new XIconButton(&gGui->toggles->showBins));
-    boxGreen->addWidget(new QLabel("ϑ#"));
-    boxGreen->addWidget(&idxTheta_);
-    boxGreen->addStretch(1);
+    // outbound connections and control widget setup
     connect(&idxTheta_, _SLOT_(QSpinBox, valueChanged, int), [this](int) { render(); });
-
-    auto* boxGamma = new QHBoxLayout();
-    controls_->addLayout(boxGamma);
-
-    boxGamma->addWidget(new QLabel("γ count"));
-    boxGamma->addWidget(&numSlices_);
     connect(&numSlices_, _SLOT_(QSpinBox, valueChanged, int), [this](int) { render(); });
-
-    boxGamma->addWidget(new QLabel("γ#"));
-    boxGamma->addWidget(&idxSlice_);
     connect(&idxSlice_, _SLOT_(QSpinBox, valueChanged, int), [this](int) { render(); });
-
-    boxGamma->addWidget(new QLabel("min"));
-    boxGamma->addWidget(&minGamma_);
-    boxGamma->addWidget(new QLabel("max"));
-    boxGamma->addWidget(&maxGamma_);
-
     minGamma_.setReadOnly(true);
     maxGamma_.setReadOnly(true);
 
-    connect(gSession, &Session::sigDataHighlight, this, &ImageTab::render);
+    // layout
+    boxImg_.addWidget(new QLabel("m#"));
+    boxImg_.addWidget(&idxMeas_);
+    boxImg_.addStretch(1);
+    controls_.addLayout(&boxImg_);
+
+    boxGreen_.addWidget(new XIconButton(&gGui->toggles->showBins));
+    boxGreen_.addWidget(new QLabel("ϑ#"));
+    boxGreen_.addWidget(&idxTheta_);
+    boxGreen_.addStretch(1);
+    controls_.addLayout(&boxGreen_);
+
+    boxGamma_.addWidget(new QLabel("γ count"));
+    boxGamma_.addWidget(&numSlices_);
+    boxGamma_.addWidget(new QLabel("γ#"));
+    boxGamma_.addWidget(&idxSlice_);
+    boxGamma_.addWidget(new QLabel("min"));
+    boxGamma_.addWidget(&minGamma_);
+    boxGamma_.addWidget(new QLabel("max"));
+    boxGamma_.addWidget(&maxGamma_);
+    controls_.addLayout(&boxGamma_);
 }
 
 QPixmap DataImageTab::pixmap() {
@@ -396,7 +393,7 @@ private:
 };
 
 CorrImageTab::CorrImageTab() {
-    controls_->addStretch(1);
+    controls_.addStretch(1);
 }
 
 QPixmap CorrImageTab::pixmap() {
