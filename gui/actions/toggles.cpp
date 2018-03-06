@@ -23,22 +23,22 @@ Toggles::Toggles() {
 
 #define AT &QAction::toggled
 
-    QObject::connect(&enableCorr, AT, [this](bool on) {
+    QObject::connect(&enableCorr, AT, [](bool on) {
             gSession->corrset().tryEnable(on); });
-    QObject::connect(&mirrorImage, AT, [this](bool on) { gGui->setImageMirror(on); });
+    QObject::connect(&mirrorImage, AT, [](bool on) { gGui->setImageMirror(on); });
 
     // TODO rm state variables
-    QObject::connect(&fixedIntenImage, AT, [this](bool on) {
+    QObject::connect(&fixedIntenImage, AT, [](bool on) {
         gGui->isFixedIntenImageScale_ = on;
         emit gSession->sigImage();
         emit gSession->sigDiffractogram();
         });
-    QObject::connect(&fixedIntenDgram, AT, [this](bool on) {
+    QObject::connect(&fixedIntenDgram, AT, [](bool on) {
         gGui->isFixedIntenDgramScale_ = on;
         emit gSession->sigImage();
         emit gSession->sigDiffractogram();
         });
-    QObject::connect(&combinedDgram, AT, [this](bool on) {
+    QObject::connect(&combinedDgram, AT, [](bool on) {
         gGui->isCombinedDgram_ = on;
         emit gSession->sigImage();
         emit gSession->sigDiffractogram();
