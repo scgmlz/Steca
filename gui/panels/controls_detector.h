@@ -16,6 +16,7 @@
 #define CONTROLS_DETECTOR_H
 
 #include "core/data/geometry.h"
+#include "gui/mainwin.h"
 #include "gui/base/controls.h"
 #include "gui/actions/toggles.h"
 
@@ -29,6 +30,7 @@ private:
     void onChangedValue(bool isTopOrLeft, int value);
 
     QGridLayout layout_;
+    XIconButton link_ {&gGui->toggles->linkCuts};
     CSpinBox cutLeft_ {"cutLeft", 4, false, 0};
     CSpinBox cutTop_ {"cutTop", 4, false, 0};
     CSpinBox cutRight_ {"cutRight", 4, false, 0};

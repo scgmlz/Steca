@@ -15,7 +15,6 @@
 #include "controls_detector.h"
 #include "core/session.h"
 #include "gui/base/displays.h"
-#include "gui/mainwin.h"
 #include "gui/actions/triggers.h"
 #include <QSpacerItem>
 
@@ -34,7 +33,7 @@ CutControls::CutControls()
     layout_.addWidget(new QLabel("cut"), 1, 0);
     layout_.setColumnStretch(1, 1);
     layout_.addWidget(&cutLeft_, 1, 2);
-    layout_.addWidget(new XIconButton(&gGui->toggles->linkCuts), 1, 3, Qt::AlignHCenter);
+    layout_.addWidget(&link_, 1, 3, Qt::AlignHCenter);
     layout_.addWidget(&cutTop_, 0, 3);
     layout_.addWidget(&cutBottom_, 2, 3);
     layout_.addWidget(&cutRight_, 1, 4);
