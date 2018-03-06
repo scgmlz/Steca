@@ -51,6 +51,9 @@ CutControls::CutControls()
     layout_.addWidget(&cutRight_, 1, 4);
     layout_.setColumnStretch(5, 1);
     setLayout(&layout_);
+
+    // initialization
+    fromCore();
 }
 
 void CutControls::fromCore()
@@ -71,18 +74,13 @@ void CutControls::fromCore()
 ExperimentControls::ExperimentControls()
 {
     // inbound connection
-    connect(gSession, &Session::sigClusters, [=]() {
-            combineMeasurements_.setValue(gSession->dataset().binning());
-            dropIncompleteAction_.setEnabled(gSession->dataset().hasIncomplete()); });
+    connect(gSession, &Session::sigClusters, this, &ExperimentControls::fromCore);
 
     // outbound connections
     connect(&combineMeasurements_, _SLOT_(QSpinBox, valueChanged, int),
             [](int num) { gSession->dataset().setBinning(num); });
     connect(&dropIncompleteAction_, &QAction::toggled,
             [](bool on) { gSession->dataset().setDropIncomplete(on); });
-
-    //initialization
-    dropIncompleteAction_.setEnabled(false);
 
     // layout
     layout_.addWidget(new QLabel("combine"));
@@ -91,8 +89,17 @@ ExperimentControls::ExperimentControls()
     layout_.addWidget(&dropIncompleteButton_);
     layout_.addStretch(1);
     setLayout(&layout_);
+
+    //initialization
+    dropIncompleteAction_.setEnabled(false);
+    fromCore();
 }
 
+void ExperimentControls::fromCore()
+{
+    combineMeasurements_.setValue(gSession->dataset().binning());
+    dropIncompleteAction_.setEnabled(gSession->dataset().hasIncomplete());
+}
 
 // ************************************************************************** //
 //  class GeometryControls

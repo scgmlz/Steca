@@ -42,6 +42,8 @@ class ExperimentControls : public QWidget {
 public:
     ExperimentControls();
 private:
+    void fromCore();
+
     QHBoxLayout layout_;
     CSpinBox combineMeasurements_ {"combineMeasurements", 4, false, 1, INT_MAX,
             "Combine this number of measurements into one group"};
