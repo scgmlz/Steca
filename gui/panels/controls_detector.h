@@ -30,10 +30,10 @@ private:
 
     QGridLayout layout_;
     XIconButton link_ {&gGui->toggles->linkCuts};
-    CSpinBox cutLeft_ {"cutLeft", 4, false, 0};
-    CSpinBox cutTop_ {"cutTop", 4, false, 0};
-    CSpinBox cutRight_ {"cutRight", 4, false, 0};
-    CSpinBox cutBottom_ {"cutBottom", 4, false, 0};
+    CSpinBox cutLeft_ {"cutLeft", 3, false, 0};
+    CSpinBox cutTop_ {"cutTop", 3, false, 0};
+    CSpinBox cutRight_ {"cutRight", 3, false, 0};
+    CSpinBox cutBottom_ {"cutBottom", 3, false, 0};
 };
 
 //! Control widgets that govern the combination of Measurement|s into Cluster|s.
@@ -45,7 +45,7 @@ private:
     void fromCore();
 
     QHBoxLayout layout_;
-    CSpinBox combineMeasurements_ {"combineMeasurements", 4, false, 1, INT_MAX,
+    CSpinBox combineMeasurements_ {"combineMeasurements", 3, false, 1, 999,
             "Combine this number of measurements into one group"};
     CToggle dropIncompleteAction_ {"dropIncomplete",
             "Drop measurement groups that do not have the full number of members",
@@ -68,8 +68,8 @@ private:
 
     CDoubleSpinBox detDistance_ {"detDistance", 6};
     CDoubleSpinBox detPixelSize_ {"detPixelSize", 6};
-    CSpinBox beamOffsetI_ {"beamOffsetI", 6, true};
-    CSpinBox beamOffsetJ_ {"beamOffsetJ", 6, true};
+    CSpinBox beamOffsetI_ {"beamOffsetI", 3, true};
+    CSpinBox beamOffsetJ_ {"beamOffsetJ", 3, true};
 };
 
 //! Aggregated control widgets that govern the detector setup.

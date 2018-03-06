@@ -108,7 +108,6 @@ void CToggle::onCommand(const QStringList& args)
 //  classes with no console connection
 // ************************************************************************** //
 
-
 XTextButton::XTextButton(QAction* action) {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonTextOnly);
@@ -130,7 +129,7 @@ CSpinBox::CSpinBox(const QString& _name, int ndigits, bool withDot, int min, int
                    const QString& tooltip)
     : CSettable(_name)
 {
-    widgetUtils::setWidth(this, ndigits, withDot);
+    widgetUtils::setWidth(this, 2+ndigits, withDot);
     setMinimum(min);
     setMaximum(max > min ? max : min);
     if (tooltip!="")
@@ -150,7 +149,7 @@ void CSpinBox::onCommand(const QStringList& args) {
 CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, qreal min, qreal max)
     : CSettable(_name)
 {
-    widgetUtils::setWidth(this, ndigits, true);
+    widgetUtils::setWidth(this, 2+ndigits, true);
     ASSERT(min<=max);
     setMinimum(min);
     setMaximum(max);

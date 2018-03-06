@@ -20,7 +20,7 @@ void widgetUtils::setWidth(QWidget* w, int ndigits, bool withDot) {
 #ifdef Q_OS_WIN
     width += 1 + (withDot?1:0);
 #endif
-    w->setMaximumWidth(width * w->fontMetrics().width('m'));
+    w->setFixedWidth(width * w->fontMetrics().width('m'));
 }
 
 XIcon::XIcon(const QString& fileName) {
