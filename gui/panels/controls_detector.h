@@ -15,6 +15,7 @@
 #ifndef CONTROLS_DETECTOR_H
 #define CONTROLS_DETECTOR_H
 
+#include "core/data/geometry.h"
 #include "gui/base/controls.h"
 #include "gui/actions/toggles.h"
 
@@ -41,9 +42,15 @@ private:
     void toSession();
     void fromSession();
 
-    CDoubleSpinBox detDistance_, detPixelSize_;
-    CSpinBox beamOffsetI_, beamOffsetJ_;
-    CSpinBox cutLeft_, cutTop_, cutRight_, cutBottom_;
+    CDoubleSpinBox detDistance_ {"detDistance", 6, Geometry::MIN_DETECTOR_DISTANCE};
+    CDoubleSpinBox detPixelSize_ {"detPixelSize", 6, Geometry::MIN_DETECTOR_PIXEL_SIZE};
+    CSpinBox beamOffsetI_ {"beamOffsetI", 6, true};
+    CSpinBox beamOffsetJ_ {"beamOffsetJ", 6, true};
+    CSpinBox cutLeft_ {"cutLeft", 4, false, 0};
+    CSpinBox cutTop_ {"cutTop", 4, false, 0};
+    CSpinBox cutRight_ {"cutRight", 4, false, 0};
+    CSpinBox cutBottom_ {"cutBottom", 4, false, 0};
+
     ExperimentControls experimentControls;
 };
 

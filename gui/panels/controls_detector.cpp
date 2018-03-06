@@ -54,14 +54,6 @@ ExperimentControls::ExperimentControls() {
 // ************************************************************************** //
 
 ControlsDetector::ControlsDetector()
-    : detDistance_("detDistance", 6, Geometry::MIN_DETECTOR_DISTANCE)
-    , detPixelSize_("detPixelSize", 6, Geometry::MIN_DETECTOR_PIXEL_SIZE)
-    , beamOffsetI_("beamOffsetI", 6, true)
-    , beamOffsetJ_("beamOffsetJ", 6, true)
-    , cutLeft_("cutLeft", 4, false, 0)
-    , cutTop_("cutTop", 4, false, 0)
-    , cutRight_("cutRight", 4, false, 0)
-    , cutBottom_("cutBottom", 4, false, 0)
 {
     auto* box = newQ::VBoxLayout();
     setLayout(box);
