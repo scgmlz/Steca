@@ -176,6 +176,7 @@ ImageTab::ImageTab() {
 }
 
 void ImageTab::render() {
+    gSession->corrset().clearIntens(); // TODO move this to more appriate place
     imageView_->setPixmap(pixmap());
 }
 
