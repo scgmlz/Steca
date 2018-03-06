@@ -42,6 +42,7 @@ class ExperimentControls : public QWidget {
 public:
     ExperimentControls();
 private:
+    QHBoxLayout layout_;
     CSpinBox combineMeasurements_ {"combineMeasurements", 4, false, 1, INT_MAX,
             "Combine this number of measurements into one group"};
     CToggle dropIncompleteAction_ {"dropIncomplete",
