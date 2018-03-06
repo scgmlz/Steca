@@ -57,7 +57,6 @@ class ControlsDetector : public QWidget {
 public:
     ControlsDetector();
 private:
-    void toCore();
     void fromCore();
 
     QVBoxLayout vbox_;

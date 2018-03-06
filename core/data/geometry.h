@@ -35,6 +35,7 @@ public:
 
     qreal detectorDistance() const { return detectorDistance_; }
     qreal pixSize() const { return pixSize_; }
+    IJ& midPixOffset() { return midPixOffset_; }
     const IJ& midPixOffset() const { return midPixOffset_; }
 
 private:

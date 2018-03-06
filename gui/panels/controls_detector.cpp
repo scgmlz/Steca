@@ -111,8 +111,10 @@ ControlsDetector::ControlsDetector()
     connect(&detPixelSize_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val) {
             gSession->geometry().setPixSize(val); });
 
-    connect(&beamOffsetI_, _SLOT_(QSpinBox, valueChanged, int), [this]() { toCore(); });
-    connect(&beamOffsetJ_, _SLOT_(QSpinBox, valueChanged, int), [this]() { toCore(); });
+    connect(&beamOffsetI_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
+            gSession->geometry().midPixOffset().i = val; emit gSession->sigDetector(); });
+    connect(&beamOffsetJ_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
+            gSession->geometry().midPixOffset().j = val; emit gSession->sigDetector(); });
 
     // layout
     mmGrid_.addWidget(new QLabel("det. distance"), 0, 0);
@@ -145,10 +147,6 @@ ControlsDetector::ControlsDetector()
 
     // initialization
     fromCore();
-}
-
-void ControlsDetector::toCore() {
-    gSession->geometry().setOffset(IJ(beamOffsetI_.value(), beamOffsetJ_.value()));
 }
 
 void ControlsDetector::fromCore() {
