@@ -23,19 +23,24 @@
 //! Detector geometry.
 class Geometry {
 public:
-    static qreal const MIN_DETECTOR_DISTANCE;
-    static qreal const MIN_DETECTOR_PIXEL_SIZE;
-
     static qreal const DEF_DETECTOR_DISTANCE;
     static qreal const DEF_DETECTOR_PIXEL_SIZE;
 
     Geometry();
-
     COMPARABLE(const Geometry&);
 
-    qreal detectorDistance; // the distance from the sample to the detector
-    qreal pixSize; // size of the detector pixel
-    IJ midPixOffset;
+    void setDetectorDistance(qreal);
+    void setPixSize(qreal);
+    void setOffset(const IJ& midPixOffset);
+
+    qreal detectorDistance() const { return detectorDistance_; }
+    qreal pixSize() const { return pixSize_; }
+    const IJ& midPixOffset() const { return midPixOffset_; }
+
+private:
+    qreal detectorDistance_; // the distance from the sample to the detector
+    qreal pixSize_; // size of the detector pixel
+    IJ midPixOffset_;
 };
 
 
@@ -53,19 +58,19 @@ public:
     void setBottom(int);
     void setLinked(bool);
 
-    int left() const { return _left; }
-    int right() const { return _right; }
-    int top() const { return _top; }
-    int bottom() const { return _bottom; }
-    int linked() const { return _linked; }
+    int left() const { return left_; }
+    int right() const { return right_; }
+    int top() const { return top_; }
+    int bottom() const { return bottom_; }
+    int linked() const { return linked_; }
 
     size2d marginSize() const;
 private:
     void confine(int& m1, int& m2, int maxTogether);
     void setAll(int);
 
-    int _left {0}, _top {0}, _right {0}, _bottom {0};
-    bool _linked { false };
+    int left_ {0}, top_ {0}, right_ {0}, bottom_ {0};
+    bool linked_ { false };
 };
 
 

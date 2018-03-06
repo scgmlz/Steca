@@ -110,7 +110,7 @@ void ImageWidget::paintEvent(QPaintEvent*) {
         const int rw = rr - rl;
 
         // cross
-        const IJ& off = gSession->geometry().midPixOffset;
+        const IJ& off = gSession->geometry().midPixOffset();
         const int x = qRound(rcx + scale_ * off.i);
         const int y = qRound(rcy + scale_ * off.j);
         p.drawLine(x, rt, x, rb);

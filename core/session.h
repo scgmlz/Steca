@@ -51,6 +51,9 @@ public:
     ImageCut& imageCut() { return imageCut_; }
     const ImageCut& imageCut() const { return imageCut_; }
 
+    Geometry& geometry() { return geometry_; }
+    const Geometry& geometry() const { return geometry_; }
+
     eNorm norm() const { return norm_; }
 
     // Modifying methods:
@@ -60,7 +63,6 @@ public:
 
     void setImageTransformMirror(bool);
     void setImageTransformRotate(const ImageTransform&);
-    void setGeometry(qreal detectorDistance, qreal pixSize, const IJ& midPixOffset);
     void setGammaRange(const Range&);
     void setIntenScaleAvg(bool, qreal);
     void setNorm(eNorm);
@@ -75,7 +77,6 @@ public:
     size2d imageSize() const;
     const ImageTransform& imageTransform() const { return imageTransform_; }
 
-    const Geometry& geometry() const { return geometry_; }
     IJ midPix() const;
 
     const Range& gammaRange() const { return gammaRange_; }

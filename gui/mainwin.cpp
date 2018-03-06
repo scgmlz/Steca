@@ -236,9 +236,9 @@ QByteArray MainWin::serializeSession() const {
 
     const Geometry& geo = gSession->geometry();
     QJsonObject sub {
-        { "distance", QJsonValue(geo.detectorDistance) },
-        { "pixel size", QJsonValue(geo.pixSize) },
-        { "beam offset", geo.midPixOffset.to_json() }
+        { "distance", QJsonValue(geo.detectorDistance()) },
+        { "pixel size", QJsonValue(geo.pixSize()) },
+        { "beam offset", geo.midPixOffset().to_json() }
     };
     top.insert("detector", sub);
 
@@ -331,8 +331,9 @@ void MainWin::sessionFromJson(const QByteArray& json) THROWS {
 
     TR("sessionFromJson: going to load detector geometry");
     const JsonObj& det = top.loadObj("detector");
-    gSession->setGeometry(
-        det.loadPreal("distance"), det.loadPreal("pixel size"), det.loadIJ("beam offset"));
+    gSession->geometry().setDetectorDistance(det.loadPreal("distance"));
+    gSession->geometry().setPixSize(det.loadPreal("pixel size"));
+    gSession->geometry().setOffset(det.loadIJ("beam offset"));
 
     TR("sessionFromJson: going to load image cut");
     const JsonObj& cut = top.loadObj("cut");

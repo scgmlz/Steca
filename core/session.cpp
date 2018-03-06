@@ -75,13 +75,6 @@ void Session::setImageTransformRotate(const ImageTransform& rot) {
     imageTransform_ = imageTransform_.rotateTo(rot);
 }
 
-void Session::setGeometry(qreal detectorDistance, qreal pixSize, const IJ& midPixOffset) {
-    geometry_.detectorDistance = detectorDistance;
-    geometry_.pixSize = pixSize;
-    geometry_.midPixOffset = midPixOffset;
-    emit sigDetector();
-}
-
 void Session::setGammaRange(const Range& r) {
     gammaRange_ = r;
     emit sigDiffractogram();
@@ -91,7 +84,7 @@ IJ Session::midPix() const {
     size2d sz = imageSize();
     IJ mid(sz.w / 2, sz.h / 2);
 
-    const IJ& off = geometry_.midPixOffset;
+    const IJ& off = geometry_.midPixOffset();
     mid.i += off.i;
     mid.j += off.j;
 

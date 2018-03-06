@@ -64,8 +64,8 @@ private:
     QHBoxLayout trafoLayout_;
     QHBoxLayout offsetLayout_;
 
-    CDoubleSpinBox detDistance_ {"detDistance", 6, Geometry::MIN_DETECTOR_DISTANCE};
-    CDoubleSpinBox detPixelSize_ {"detPixelSize", 6, Geometry::MIN_DETECTOR_PIXEL_SIZE};
+    CDoubleSpinBox detDistance_ {"detDistance", 6};
+    CDoubleSpinBox detPixelSize_ {"detPixelSize", 6};
     CSpinBox beamOffsetI_ {"beamOffsetI", 6, true};
     CSpinBox beamOffsetJ_ {"beamOffsetJ", 6, true};
     CutControls cutControls;

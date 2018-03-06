@@ -102,11 +102,13 @@ ControlsDetector::ControlsDetector()
     setLayout(&vbox_);
 
     detDistance_.setValue(Geometry::DEF_DETECTOR_DISTANCE);
-    connect(&detDistance_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this]() { toCore(); });
+    connect(&detDistance_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val) {
+            gSession->geometry().setDetectorDistance(val); });
 
     detPixelSize_.setDecimals(3);
     detPixelSize_.setValue(Geometry::DEF_DETECTOR_PIXEL_SIZE);
-    connect(&detPixelSize_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this]() { toCore(); });
+    connect(&detPixelSize_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val) {
+            gSession->geometry().setPixSize(val); });
 
     mmGrid_.addWidget(new QLabel("det. distance"), 0, 0);
     mmGrid_.addWidget(&detDistance_, 0, 1);
@@ -139,18 +141,13 @@ ControlsDetector::ControlsDetector()
 }
 
 void ControlsDetector::toCore() {
-    gSession->setGeometry(
-        qMax(qreal(Geometry::MIN_DETECTOR_DISTANCE), detDistance_.value()),
-        qMax(qreal(Geometry::MIN_DETECTOR_PIXEL_SIZE), detPixelSize_.value()),
-        IJ(beamOffsetI_.value(), beamOffsetJ_.value()));
+    gSession->geometry().setOffset(IJ(beamOffsetI_.value(), beamOffsetJ_.value()));
 }
 
 void ControlsDetector::fromCore() {
     const Geometry& g = gSession->geometry();
-
-    detDistance_.setValue(g.detectorDistance);
-    detPixelSize_.setValue(g.pixSize);
-
-    beamOffsetI_.setValue(g.midPixOffset.i);
-    beamOffsetJ_.setValue(g.midPixOffset.j);
+    detDistance_.setValue(g.detectorDistance());
+    detPixelSize_.setValue(g.pixSize());
+    beamOffsetI_.setValue(g.midPixOffset().i);
+    beamOffsetJ_.setValue(g.midPixOffset().j);
 }

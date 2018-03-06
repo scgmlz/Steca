@@ -28,19 +28,31 @@
 //  class Geometry
 // ************************************************************************** //
 
-qreal const Geometry::MIN_DETECTOR_DISTANCE = 10;
-qreal const Geometry::MIN_DETECTOR_PIXEL_SIZE = .1;
-
 qreal const Geometry::DEF_DETECTOR_DISTANCE = 1035;
 qreal const Geometry::DEF_DETECTOR_PIXEL_SIZE = 1;
 
 Geometry::Geometry()
-    : detectorDistance(DEF_DETECTOR_DISTANCE), pixSize(DEF_DETECTOR_PIXEL_SIZE), midPixOffset() {}
+    : detectorDistance_(DEF_DETECTOR_DISTANCE), pixSize_(DEF_DETECTOR_PIXEL_SIZE), midPixOffset_() {}
+
+void Geometry::setDetectorDistance(qreal detectorDistance) {
+    detectorDistance_ = qMin(qMax(detectorDistance, 10.), 9999.);
+    emit gSession->sigDetector();
+}
+
+void Geometry::setPixSize(qreal pixSize) {
+    pixSize_ = qMin(qMax(pixSize, .1), 9.9);
+    emit gSession->sigDetector();
+}
+
+void Geometry::setOffset(const IJ& midPixOffset) {
+    midPixOffset_ = midPixOffset;
+    emit gSession->sigDetector();
+}
 
 int Geometry::compare(const Geometry& that) const {
-    RET_COMPARE_VALUE(detectorDistance)
-    RET_COMPARE_VALUE(pixSize)
-    RET_COMPARE_COMPARABLE(midPixOffset)
+    RET_COMPARE_VALUE(detectorDistance_)
+    RET_COMPARE_VALUE(pixSize_)
+    RET_COMPARE_COMPARABLE(midPixOffset_)
     return 0;
 }
 
@@ -51,7 +63,7 @@ EQ_NE_OPERATOR(Geometry)
 // ************************************************************************** //
 
 ImageCut::ImageCut(int left, int top, int right, int bottom)
-    : _left(left), _top(top), _right(right), _bottom(bottom) {}
+    : left_(left), top_(top), right_(right), bottom_(bottom) {}
 
 void ImageCut::clear() {
     *this = ImageCut();
@@ -63,50 +75,50 @@ void ImageCut::confine(int& m1, int& m2, int maxTogether) {
 }
 
 void ImageCut::setLeft(int val) {
-    if (_linked) {
+    if (linked_) {
         setAll(val);
     } else {
-        confine(_left=val, _right, gSession->imageSize().w);
+        confine(left_=val, right_, gSession->imageSize().w);
         emit gSession->sigDetector();
         // TODO check consequence of rotation implied by imageSize()
     }
 }
 
 void ImageCut::setRight(int val) {
-    if (_linked) {
+    if (linked_) {
         setAll(val);
     } else {
-        confine(_right=val, _left, gSession->imageSize().w);
+        confine(right_=val, left_, gSession->imageSize().w);
         emit gSession->sigDetector();
     }
 }
 
 void ImageCut::setTop(int val) {
-    if (_linked) {
+    if (linked_) {
         setAll(val);
     } else {
-        confine(_top=val, _bottom, gSession->imageSize().h);
+        confine(top_=val, bottom_, gSession->imageSize().h);
         emit gSession->sigDetector();
     }
 }
 
 void ImageCut::setBottom(int val) {
-    if (_linked) {
+    if (linked_) {
         setAll(val);
     } else {
-        confine(_bottom=val, _top, gSession->imageSize().h);
+        confine(bottom_=val, top_, gSession->imageSize().h);
         emit gSession->sigDetector();
     }
 }
 
 void ImageCut::setLinked(bool val) {
-    _linked = val;
+    linked_ = val;
     emit gSession->sigDetector();
 }
 
 void ImageCut::setAll(int val) {
-    _left = _right = qMax(qMin(val, (gSession->imageSize().w-1)/2), 0);
-    _top = _bottom = qMax(qMin(val, (gSession->imageSize().h-1)/2), 0);
+    left_ = right_ = qMax(qMin(val, (gSession->imageSize().w-1)/2), 0);
+    top_ = bottom_ = qMax(qMin(val, (gSession->imageSize().h-1)/2), 0);
     emit gSession->sigDetector();
 }
 
@@ -161,16 +173,16 @@ void ImageKey::computeAngles(Array2D<ScatterDirection>& ret) const {
     const qreal t = midTth.toRad();
     const qreal c = cos(t);
     const qreal s = sin(t);
-    const qreal d_z = geometry.detectorDistance;
+    const qreal d_z = geometry.detectorDistance();
     const qreal b_x1 = d_z * s;
     const qreal b_z1 = d_z * c;
     for_int (i, size.w) {
-        const qreal d_x = (i - midPix.i) * geometry.pixSize;
+        const qreal d_x = (i - midPix.i) * geometry.pixSize();
         const qreal b_x = b_x1 + d_x * c;
         const qreal b_z = b_z1 - d_x * s;
         const qreal b_x2 = b_x * b_x;
         for_int (j, size.h) {
-            const qreal b_y = (midPix.j - j) * geometry.pixSize; // == d_y
+            const qreal b_y = (midPix.j - j) * geometry.pixSize(); // == d_y
             const qreal b_r = sqrt(b_x2 + b_y * b_y);
             const rad gma = atan2(b_y, b_x);
             const rad tth = atan2(b_r, b_z);
