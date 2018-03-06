@@ -140,6 +140,8 @@ ControlsDetector::ControlsDetector()
     offsetLayout_.addWidget(&beamOffsetJ_);
     offsetLayout_.addWidget(new QLabel("pix"));
     offsetLayout_.addStretch(1);
+    connect(&beamOffsetI_, _SLOT_(QSpinBox, valueChanged, int), [this]() { toSession(); });
+    connect(&beamOffsetJ_, _SLOT_(QSpinBox, valueChanged, int), [this]() { toSession(); });
 
     vbox_.addLayout(&mmGrid_);
     vbox_.addLayout(&trafoLayout_);

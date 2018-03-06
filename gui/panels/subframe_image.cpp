@@ -248,11 +248,11 @@ public:
     DataImageTab();
 private:
     QPixmap pixmap() final;
-    CSpinBox idxMeas_{"idxMeas", 4, false, 1, INT_MAX,
+    CSpinBox idxMeas_{"idxMeas", 2, false, 1, INT_MAX,
             "Number of measurement within the current group of measurements"};
-    CSpinBox numSlices_{"numSlices", 4, false, 0, INT_MAX,
+    CSpinBox numSlices_{"numSlices", 2, false, 0, INT_MAX,
             "Number of γ slices (0: no slicing, take entire image)" };
-    CSpinBox idxSlice_{"numSlice", 4, false, 1, INT_MAX,
+    CSpinBox idxSlice_{"numSlice", 2, false, 1, INT_MAX,
             "Number of γ slice to be shown" };
     CSpinBox idxTheta_{"idxTheta", 4, false, 1, INT_MAX,
             "Number of 2θ bin to be shown" };
