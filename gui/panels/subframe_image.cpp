@@ -162,7 +162,6 @@ ImageTab::ImageTab() {
     row1->addWidget(new XIconButton(&gGui->toggles->fixedIntenImage));
     row1->addWidget(new XIconButton(&gGui->toggles->stepScale));
     row1->addWidget(new XIconButton(&gGui->toggles->showOverlay));
-    row1->addStretch(1);
 
     imageView_ = new ImageWidget();
     box_->addWidget(imageView_);
@@ -262,7 +261,6 @@ DataImageTab::DataImageTab() {
     row2->addWidget(new XIconButton(&gGui->toggles->showBins));
     row2->addWidget(new QLabel("bin#"));
     row2->addWidget(&numBin_);
-    row2->addStretch(1);
     connect(&numBin_, _SLOT_(QSpinBox, valueChanged, int), [this](int) { render(); });
 
     auto* row3 = newQ::HBoxLayout();
