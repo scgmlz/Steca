@@ -75,12 +75,6 @@ void Session::setImageTransformRotate(const ImageTransform& rot) {
     imageTransform_ = imageTransform_.rotateTo(rot);
 }
 
-void Session::setImageCut(bool isTopOrLeft, bool linked, const ImageCut& cut) {
-    imageCut_.update(isTopOrLeft, linked, cut, imageSize_);
-    corrset().clearIntens(); // lazy
-    emit sigDetector();
-}
-
 void Session::setGeometry(qreal detectorDistance, qreal pixSize, const IJ& midPixOffset) {
     geometry_.detectorDistance = detectorDistance;
     geometry_.pixSize = pixSize;

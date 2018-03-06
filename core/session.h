@@ -48,6 +48,9 @@ public:
     Baseline& baseline() { return baseline_; }
     const Baseline& baseline() const { return baseline_; }
 
+    ImageCut& imageCut() { return imageCut_; }
+    const ImageCut& imageCut() const { return imageCut_; }
+
     eNorm norm() const { return norm_; }
 
     // Modifying methods:
@@ -57,7 +60,6 @@ public:
 
     void setImageTransformMirror(bool);
     void setImageTransformRotate(const ImageTransform&);
-    void setImageCut(bool isTopOrLeft, bool linked, const ImageCut&);
     void setGeometry(qreal detectorDistance, qreal pixSize, const IJ& midPixOffset);
     void setGammaRange(const Range&);
     void setIntenScaleAvg(bool, qreal);
@@ -72,7 +74,6 @@ public:
 
     size2d imageSize() const;
     const ImageTransform& imageTransform() const { return imageTransform_; }
-    const ImageCut& imageCut() const { return imageCut_; }
 
     const Geometry& geometry() const { return geometry_; }
     IJ midPix() const;

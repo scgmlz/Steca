@@ -40,33 +40,25 @@ CutControls::CutControls()
     layout_.setColumnStretch(5, 1);
 
     connect(&cutLeft_,   _SLOT_(QSpinBox, valueChanged, int), [this](int value) {
-            onChangedValue(true, value); });
-    connect(&cutTop_,    _SLOT_(QSpinBox, valueChanged, int), [this](int value) {
-            onChangedValue(true, value); });
+            gSession->imageCut().setLeft(value); });
     connect(&cutRight_,  _SLOT_(QSpinBox, valueChanged, int), [this](int value) {
-            onChangedValue(false, value); });
+            gSession->imageCut().setRight(value); });
+    connect(&cutTop_,    _SLOT_(QSpinBox, valueChanged, int), [this](int value) {
+            gSession->imageCut().setTop(value); });
     connect(&cutBottom_, _SLOT_(QSpinBox, valueChanged, int), [this](int value) {
-            onChangedValue(false, value); });
+            gSession->imageCut().setBottom(value); });
+    connect(&gGui->toggles->linkCuts, &QAction::toggled, [this](bool value) {
+            gSession->imageCut().setLinked(value); });
 }
-
-void CutControls::onChangedValue(bool isTopOrLeft, int value) {
-    ASSERT(value >= 0);
-    if (gGui->toggles->linkCuts.isChecked())
-        gSession->setImageCut(isTopOrLeft, true, ImageCut(value, value, value, value));
-    else
-        gSession->setImageCut(isTopOrLeft, false,
-                              ImageCut(cutLeft_.value(), cutTop_.value(),
-                                       cutRight_.value(), cutBottom_.value()));
-};
 
 void CutControls::fromSession()
 {
     const ImageCut& cut = gSession->imageCut();
-
-    cutLeft_.setValue(cut.left);
-    cutTop_.setValue(cut.top);
-    cutRight_.setValue(cut.right);
-    cutBottom_.setValue(cut.bottom);
+    gGui->toggles->linkCuts.setChecked(cut.linked());
+    cutLeft_.setValue(cut.left());
+    cutTop_.setValue(cut.top());
+    cutRight_.setValue(cut.right());
+    cutBottom_.setValue(cut.bottom());
 }
 
 

@@ -27,7 +27,6 @@ public:
     CutControls();
 private:
     void fromSession();
-    void onChangedValue(bool isTopOrLeft, int value);
 
     QGridLayout layout_;
     XIconButton link_ {&gGui->toggles->linkCuts};

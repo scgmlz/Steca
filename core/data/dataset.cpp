@@ -107,7 +107,7 @@ void Dataset::clear() {
     files_.clear();
     onFileChanged();
     gSession->updateImageSize();
-    gSession->setImageCut(true, false, ImageCut());
+    gSession->imageCut().clear();
 }
 
 void Dataset::removeFile() {
@@ -117,7 +117,7 @@ void Dataset::removeFile() {
     onFileChanged();
     gSession->updateImageSize();
     if (files_.empty())
-        gSession->setImageCut(true, false, ImageCut());
+        gSession->imageCut().clear();
     if (countFiles()) {
         // reset highlight, which was temporarily unset at the beginning of this function
         if (i<countFiles())

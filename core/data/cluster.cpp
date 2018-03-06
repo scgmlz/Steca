@@ -177,7 +177,7 @@ inten_vec Sequence::collectIntens(const Range& rgeGma) const {
     const deg tthWdt = tthRge.width();
 
     const ImageCut& cut = gSession->imageCut();
-    const int pixWidth = gSession->imageSize().w - cut.left - cut.right;
+    const int pixWidth = gSession->imageSize().w - cut.left() - cut.right();
 
     int numBins;
     if (1 < count()) { // combined cluster

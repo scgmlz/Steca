@@ -50,9 +50,10 @@ AngleMap::AngleMap(const ImageKey& key)
 
     const size2d& size = key_.size;
     const ImageCut& cut = key_.cut;
-    ASSERT(size.w > cut.left + cut.right);
-    ASSERT(size.h > cut.top + cut.bottom);
-    const int countWithoutCut = (size.w - cut.left - cut.right) * (size.h - cut.top - cut.bottom);
+    ASSERT(size.w > cut.left() + cut.right());
+    ASSERT(size.h > cut.top() + cut.bottom());
+    const int countWithoutCut =
+        (size.w - cut.left() - cut.right()) * (size.h - cut.top() - cut.bottom());
     ASSERT(countWithoutCut > 0);
 
     // compute ranges rgeTth_, rgeGma_, rgeGmaFull_, and arrays gmas_, gmaIndexes_:
@@ -62,8 +63,8 @@ AngleMap::AngleMap(const ImageKey& key)
     gmas_.resize(countWithoutCut);
     gmaIndexes_.resize(countWithoutCut);
     int gi = 0;
-    for (int i = cut.left, iEnd = size.w - cut.right; i < iEnd; ++i) {
-        for (int j = cut.top, jEnd = size.h - cut.bottom; j < jEnd; ++j) {
+    for (int i = cut.left(), iEnd = size.w - cut.right(); i < iEnd; ++i) {
+        for (int j = cut.top(), jEnd = size.h - cut.bottom(); j < jEnd; ++j) {
             const ScatterDirection& dir = arrAngles_.at(i, j);
             gmas_[gi] = dir.gma;
             gmaIndexes_[gi] = i + j * size.w;

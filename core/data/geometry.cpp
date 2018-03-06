@@ -12,6 +12,7 @@
 //
 // ************************************************************************** //
 
+#include "core/session.h"
 #include "core/data/geometry.h"
 #include "core/def/comparators.h"
 #include "core/def/idiomatic_for.h"
@@ -49,51 +50,78 @@ EQ_NE_OPERATOR(Geometry)
 //  class ImageCut
 // ************************************************************************** //
 
-ImageCut::ImageCut() : ImageCut(0, 0, 0, 0) {}
+ImageCut::ImageCut(int left, int top, int right, int bottom)
+    : _left(left), _top(top), _right(right), _bottom(bottom) {}
 
-ImageCut::ImageCut(int left_, int top_, int right_, int bottom_)
-    : left(left_), top(top_), right(right_), bottom(bottom_) {}
+void ImageCut::clear() {
+    *this = ImageCut();
+}
 
-void ImageCut::update(bool topLeftFirst, bool linked, const ImageCut& cut, size2d size) {
-    if (size.isEmpty()) {
-        *this = ImageCut();
-        return;
-    }
-    auto limit = [linked](int& m1, int& m2, int maxTogether)->void {
-        if (linked && m1 + m2 >= maxTogether) {
-            m1 = m2 = qMax((maxTogether - 1) / 2, 0);
-        } else {
-            m1 = qMax(qMin(m1, maxTogether - m2 - 1), 0);
-            m2 = qMax(qMin(m2, maxTogether - m1 - 1), 0);
-        }
-    };
+void ImageCut::confine(int& m1, int& m2, int maxTogether) {
+    m1 = qMax(qMin(m1, maxTogether - m2 - 1), 0);
+    m2 = qMax(qMin(m2, maxTogether - m1 - 1), 0);
+}
 
-    // make sure that cut values are valid; in the right order
-    int _left = cut.left, _top = cut.top, _right = cut.right, _bottom = cut.bottom;
-
-    if (topLeftFirst) {
-        limit(_top, _bottom, size.h);
-        limit(_left, _right, size.w);
+void ImageCut::setLeft(int val) {
+    if (_linked) {
+        setAll(val);
     } else {
-        limit(_bottom, _top, size.h);
-        limit(_right, _left, size.w);
+        confine(_left=val, _right, gSession->imageSize().w);
+        emit gSession->sigDetector();
+        // TODO check consequence of rotation implied by imageSize()
     }
+}
 
-    *this = ImageCut(_left, _top, _right, _bottom);
+void ImageCut::setRight(int val) {
+    if (_linked) {
+        setAll(val);
+    } else {
+        confine(_right=val, _left, gSession->imageSize().w);
+        emit gSession->sigDetector();
+    }
+}
+
+void ImageCut::setTop(int val) {
+    if (_linked) {
+        setAll(val);
+    } else {
+        confine(_top=val, _bottom, gSession->imageSize().h);
+        emit gSession->sigDetector();
+    }
+}
+
+void ImageCut::setBottom(int val) {
+    if (_linked) {
+        setAll(val);
+    } else {
+        confine(_bottom=val, _top, gSession->imageSize().h);
+        emit gSession->sigDetector();
+    }
+}
+
+void ImageCut::setLinked(bool val) {
+    _linked = val;
+    emit gSession->sigDetector();
+}
+
+void ImageCut::setAll(int val) {
+    _left = _right = qMax(qMin(val, (gSession->imageSize().w-1)/2), 0);
+    _top = _bottom = qMax(qMin(val, (gSession->imageSize().h-1)/2), 0);
+    emit gSession->sigDetector();
 }
 
 int ImageCut::compare(const ImageCut& that) const {
-    RET_COMPARE_VALUE(left)
-    RET_COMPARE_VALUE(top)
-    RET_COMPARE_VALUE(right)
-    RET_COMPARE_VALUE(bottom)
+    RET_COMPARE_VALUE(left())
+        RET_COMPARE_VALUE(top())
+        RET_COMPARE_VALUE(right())
+        RET_COMPARE_VALUE(bottom())
     return 0;
 }
 
 EQ_NE_OPERATOR(ImageCut)
 
 size2d ImageCut::marginSize() const {
-    return size2d(left + right, top + bottom);
+    return size2d(left() + right(), top() + bottom());
 }
 
 

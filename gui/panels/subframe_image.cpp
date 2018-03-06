@@ -98,8 +98,8 @@ void ImageWidget::paintEvent(QPaintEvent*) {
         const ImageCut& cut = gSession->imageCut();
         const QRect r = rect.adjusted(-1, -1, 0, 0)
                       .adjusted(
-                          qRound(scale_ * cut.left), qRound(scale_ * cut.top),
-                          -qRound(scale_ * cut.right), -qRound(scale_ * cut.bottom));
+                          qRound(scale_ * cut.left()), qRound(scale_ * cut.top()),
+                          -qRound(scale_ * cut.right()), -qRound(scale_ * cut.bottom()));
         p.drawRect(r);
 
         const QPoint rc = r.center();

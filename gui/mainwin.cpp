@@ -244,10 +244,10 @@ QByteArray MainWin::serializeSession() const {
 
     const ImageCut& cut = gSession->imageCut();
     sub = {
-        { "left", cut.left },
-        { "top", cut.top },
-        { "right", cut.right },
-        { "bottom", cut.bottom } };
+        { "left", cut.left() },
+        { "top", cut.top() },
+        { "right", cut.right() },
+        { "bottom", cut.bottom() } };
     top.insert("cut", sub);
 
     const ImageTransform& trn = gSession->imageTransform();
@@ -338,7 +338,11 @@ void MainWin::sessionFromJson(const QByteArray& json) THROWS {
     const JsonObj& cut = top.loadObj("cut");
     int x1 = cut.loadUint("left"), y1 = cut.loadUint("top"),
          x2 = cut.loadUint("right"), y2 = cut.loadUint("bottom");
-    gSession->setImageCut(true, false, ImageCut(x1, y1, x2, y2));
+    gSession->imageCut().setLinked(false);
+    gSession->imageCut().setLeft(x1);
+    gSession->imageCut().setRight(x2);
+    gSession->imageCut().setTop(y1);
+    gSession->imageCut().setBottom(y2);
     setImageRotate(ImageTransform(top.loadUint("image transform")));
 
     TR("sessionFromJson: going to load fit setup");
@@ -396,7 +400,7 @@ void MainWin::setImageRotate(ImageTransform rot) {
     triggers->rotateImage.setIcon(QIcon(rotateIconFile));
     toggles->mirrorImage.setIcon(QIcon(mirrorIconFile));
     gSession->setImageTransformRotate(rot);
-    gSession->setImageCut(true, false, gSession->imageCut());
+    // TODO gSession->imageCut().prevent_invalid_cuts()
 }
 
 void MainWin::setImageMirror(bool on) {

@@ -42,14 +42,30 @@ public:
 //! Image cut (margins)
 class ImageCut {
 public:
-    int left, top, right, bottom;
-
-    ImageCut();
+    ImageCut() = default;
     ImageCut(int left, int top, int right, int bottom);
     COMPARABLE(const ImageCut&);
-    void update(bool topLeftFirst, bool linked, const ImageCut& cut, size2d size);
+
+    void clear();
+    void setLeft(int);
+    void setRight(int);
+    void setTop(int);
+    void setBottom(int);
+    void setLinked(bool);
+
+    int left() const { return _left; }
+    int right() const { return _right; }
+    int top() const { return _top; }
+    int bottom() const { return _bottom; }
+    int linked() const { return _linked; }
 
     size2d marginSize() const;
+private:
+    void confine(int& m1, int& m2, int maxTogether);
+    void setAll(int);
+
+    int _left {0}, _top {0}, _right {0}, _bottom {0};
+    bool _linked { false };
 };
 
 
