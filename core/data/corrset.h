@@ -36,6 +36,7 @@ public:
     const Rawfile& raw() const { return *raw_; }
     bool hasFile() const { return !raw_.isNull(); }
     bool isEnabled() const { return enabled_; }
+    bool isActive() const { return hasFile() && enabled_; }
     bool hasNANs() const { return hasNANs_; }
     shp_Image image() const { return corrImage_; }
     const Image* intensCorr() const;

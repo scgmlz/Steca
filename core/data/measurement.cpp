@@ -74,7 +74,7 @@ void Measurement::collectIntens(
         if (qIsNaN(inten))
             continue;
 
-        inten_t corr = gSession->hasCorrFile() ? gSession->intensCorr()->inten(ind) : 1;
+        inten_t corr = gSession->corrset().isActive() ? gSession->intensCorr()->inten(ind) : 1;
         if (qIsNaN(corr))
             continue;
 
