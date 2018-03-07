@@ -64,6 +64,13 @@ qreal Range::center() const {
     return isValid() ? (min + max) / 2 : NAN;
 }
 
+Range Range::slice(int i, int n) const {
+    ASSERT(isValid());
+    ASSERT(n>=1);
+    ASSERT(i>=0 && i<n);
+    return Range(min+i*width(), min+(i+1)*width());
+}
+
 void Range::set(qreal min_, qreal max_) {
     min = min_;
     max = max_;

@@ -38,6 +38,7 @@ public:
 
     qreal width() const;
     qreal center() const;
+    Range slice(int i, int n) const;
 
     qreal min, max; // this is the range
 

@@ -21,7 +21,9 @@
 
 class GammaSelection {
 public:
-    GammaSelection(const Range& _fullRange);
+    GammaSelection();
+
+    void update();
 
     void setModeTakeAll();
     void setModeSlicing();
@@ -31,19 +33,19 @@ public:
     void selectSlice(int);
     void setRange(const Range&);
 
-    Range range() const;
-    Range fullRange() const;
-    qreal min() const;
-    qreal max() const;
-    int numSlices() const;
-    bool isModeMinMax() const();
+    Range range() const { return range_; }
+    qreal min() const { return range_.min; }
+    qreal max() const { return range_.max; }
+    int numSlices() const { return numSlices_; }
+    int iSlice() const { return iSlice_; }
+    bool isModeMinMax() const { return mode_==Mode::minmax; }
 
 private:
-    enum class Mode { all, slicing, minmax } mode;
+    enum class Mode { all, slicing, minmax } mode_ {Mode::all};
     Range fullRange_;
     Range range_;
-    int numSlices_;
-    int iSlice;
+    int numSlices_ {1};
+    int iSlice_;
 };
 
 #endif // GAMMA_SELECTION_H
