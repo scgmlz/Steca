@@ -17,9 +17,6 @@
 
 GammaSelection::GammaSelection()
 {
-    onData();
-
-    connect(gSession, &Session::sigFiles, this, &GammaSelection::onData);
 }
 
 //! Resets fullRange_ according to loaded data.

@@ -40,13 +40,12 @@ void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString
         if (msg.left(4)=="QXcb") {
             std::cerr << "QBUG " << msg.toStdString() << "\n" << std::flush;
         } else {
-            gConsole->log("#WARNING: " + msg);
             std::cerr << "WARN " << msg.toStdString() << "\n" << std::flush;
             QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
+            gConsole->log("#WARNING: " + msg);
         }
         break;
     case QtFatalMsg:
-        gConsole->log("#FATAL: " + msg);
         std::cerr << "BUG! " << msg.toStdString() << context(ctx) << "\n" << std::flush;
         QMessageBox::critical(QApplication::activeWindow(), qAppName(),
                               "Sorry, you encountered a fatal bug.\n"
@@ -57,6 +56,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString
                               "Context:\n" + ctx.function + "\n"
 #endif
             );
+        gConsole->log("#FATAL: " + msg);
         qApp->quit();
         break;
     }

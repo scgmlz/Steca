@@ -24,7 +24,6 @@ public:
     GammaSelection();
 
     void onData();
-    void recomputeCache();
 
     void setModeTakeAll();
     void setModeSlicing();
@@ -42,6 +41,7 @@ public:
     bool isModeMinMax() const { return mode_==Mode::minmax; }
 
 private:
+    void recomputeCache();
     enum class Mode { all, slicing, minmax } mode_ {Mode::slicing};
     Range fullRange_;
     Range range_;

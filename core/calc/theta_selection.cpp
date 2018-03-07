@@ -17,9 +17,6 @@
 
 ThetaSelection::ThetaSelection()
 {
-    onData();
-
-    connect(gSession, &Session::sigFiles, this, &ThetaSelection::onData);
 }
 
 //! Resets fullRange_ and numSlices_ according to loaded data.
