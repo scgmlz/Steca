@@ -17,34 +17,53 @@
 
 GammaSelection::GammaSelection()
 {
-    update();
-    setModeTakeAll();
+    onData();
+
+    connect(gSession, &Session::sigFiles, this, &GammaSelection::onData);
 }
 
-void GammaSelection::update()
+//! Resets fullRange_ according to loaded data.
+void GammaSelection::onData()
 {
+    const Cluster* cluster = gSession->dataset().highlight().cluster();
+    if (!cluster)
+        return; // leave things as they are
+    fullRange_ = cluster->rgeGma();
+    recomputeCache();
+}
+
+//! Recomputes range_ and iSlice_.
+void GammaSelection::recomputeCache()
+{
+    if        (mode_ == Mode::all) {
+        range_ = fullRange_;
+    } else if (mode_ == Mode::slicing) {
+        iSlice_ = qMin(qMax(iSlice_, 0), numSlices_-1);
+        range_ = fullRange_.slice(iSlice_, numSlices_);
+    } else if (mode_ == Mode::minmax) {
+        range_ = range_.intersect(fullRange_);
+    }
+    emit gSession->sigGamma();
 }
 
 void GammaSelection::setModeTakeAll()
 {
     mode_ = Mode::all;
-    range_ = fullRange_;
     iSlice_ = 0;
-    emit gSession->sigGamma();
+    recomputeCache();
 }
 
 void GammaSelection::setModeSlicing()
 {
     mode_ = Mode::slicing;
-    selectSlice(1);
+    recomputeCache();
 }
 
 void GammaSelection::setModeMinMax()
 {
     mode_ = Mode::all;
-    range_ = fullRange_;
     iSlice_ = 0;
-    emit gSession->sigGamma();
+    recomputeCache();
 }
 
 void GammaSelection::setNumSlices(int n)
@@ -62,12 +81,12 @@ void GammaSelection::selectSlice(int i)
 {
     setModeSlicing();
     iSlice_ = i;
-    range_ = fullRange_.slice(iSlice_, numSlices_);
-    emit gSession->sigGamma();
+    recomputeCache();
 }
 
 void GammaSelection::setRange(const Range& r)
 {
     setModeMinMax();
     range_ = r;
+    recomputeCache();
 }

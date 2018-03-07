@@ -19,11 +19,12 @@
 
 //! Supports different ways of setting a gamma range.
 
-class GammaSelection {
+class GammaSelection : public QObject {
 public:
     GammaSelection();
 
-    void update();
+    void onData();
+    void recomputeCache();
 
     void setModeTakeAll();
     void setModeSlicing();
@@ -33,7 +34,7 @@ public:
     void selectSlice(int);
     void setRange(const Range&);
 
-    Range range() const { return range_; }
+    const Range& range() const { return range_; }
     qreal min() const { return range_.min; }
     qreal max() const { return range_.max; }
     int numSlices() const { return numSlices_; }
@@ -41,11 +42,11 @@ public:
     bool isModeMinMax() const { return mode_==Mode::minmax; }
 
 private:
-    enum class Mode { all, slicing, minmax } mode_ {Mode::all};
+    enum class Mode { all, slicing, minmax } mode_ {Mode::slicing};
     Range fullRange_;
     Range range_;
     int numSlices_ {1};
-    int iSlice_;
+    int iSlice_ {0};
 };
 
 #endif // GAMMA_SELECTION_H

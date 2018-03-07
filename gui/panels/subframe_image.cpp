@@ -145,38 +145,37 @@ protected:
     QPixmap makePixmap(const class Measurement&, const Range&, const Range&);
     QPixmap makeBlankPixmap();
     QImage makeImage(shp_Image, bool curvedScale);
-    ImageWidget* imageView_;
+    ImageWidget imageView_;
 private:
-    QBoxLayout* box_;
+    QVBoxLayout box_;
+    QHBoxLayout box1_;
 };
 
 ImageTab::ImageTab() {
-    box_ = new QVBoxLayout();
-    setLayout(box_);
-
-    box_->addLayout(&controls_);
-
-    auto* box1 = new QHBoxLayout();
-    controls_.addLayout(box1);
-    box1->addWidget(new XIconButton(&gGui->toggles->fixedIntenImage));
-    box1->addWidget(new XIconButton(&gGui->toggles->stepScale));
-    box1->addWidget(new XIconButton(&gGui->toggles->showOverlay));
-    box1->addStretch(1);
-
-    imageView_ = new ImageWidget();
-    box_->addWidget(imageView_);
-
-    connect(&gGui->toggles->enableCorr, &QAction::toggled, [this](bool /*unused*/) { render(); });
-    connect(&gGui->toggles->showBins, &QAction::toggled, [this](bool /*unused*/) { render(); });
-
+    // inbound connections
     connect(gSession, &Session::sigDetector, this, &ImageTab::render);
     connect(gSession, &Session::sigNorm, this, &ImageTab::render);
     connect(gSession, &Session::sigImage, this, &ImageTab::render);
+
+    // outbound connections
+    connect(&gGui->toggles->enableCorr, &QAction::toggled, [this](bool /*unused*/) { render(); });
+    connect(&gGui->toggles->showBins, &QAction::toggled, [this](bool /*unused*/) { render(); });
+
+    // layout
+    box1_.addWidget(new XIconButton(&gGui->toggles->fixedIntenImage));
+    box1_.addWidget(new XIconButton(&gGui->toggles->stepScale));
+    box1_.addWidget(new XIconButton(&gGui->toggles->showOverlay));
+    box1_.addStretch(1);
+    controls_.addLayout(&box1_);
+
+    box_.addLayout(&controls_);
+    box_.addWidget(&imageView_);
+    setLayout(&box_);
 }
 
 void ImageTab::render() {
     gSession->corrset().clearIntens(); // TODO move this to more appriate place
-    imageView_->setPixmap(pixmap());
+    imageView_.setPixmap(pixmap());
 }
 
 QPixmap ImageTab::makePixmap(shp_Image image) {
@@ -302,6 +301,7 @@ private:
 DataImageTab::DataImageTab() {
     // inbound connection
     connect(gSession, &Session::sigDataHighlight, this, &ImageTab::render);
+    connect(gSession, &Session::sigGamma, this, &ImageTab::render);
 
     // outbound connections and control widget setup
     connect(&idxTheta_, _SLOT_(QSpinBox, valueChanged, int), [this](int) { render(); });

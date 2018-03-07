@@ -16,6 +16,7 @@
 #define SESSION_H
 
 #include "core/calc/baseline.h"
+#include "core/calc/gamma_selection.h"
 #include "core/calc/lens.h"
 #include "core/calc/peak.h"
 #include "core/calc/peak_info.h"
@@ -54,6 +55,9 @@ public:
     Geometry& geometry() { return geometry_; }
     const Geometry& geometry() const { return geometry_; }
 
+    GammaSelection& gammaSelection() { return gammaSelection_; }
+    const GammaSelection& gammaSelection() const { return gammaSelection_; }
+
     eNorm norm() const { return norm_; }
 
     // Modifying methods:
@@ -63,7 +67,6 @@ public:
 
     void setImageTransformMirror(bool);
     void setImageTransformRotate(const ImageTransform&);
-    void setGammaRange(const Range&);
     void setIntenScaleAvg(bool, qreal);
     void setNorm(eNorm);
 
@@ -79,7 +82,7 @@ public:
 
     IJ midPix() const;
 
-    const Range& gammaRange() const { return gammaRange_; }
+    const Range& gammaRange() const { return gammaSelection().range(); }
 
     shp_AngleMap angleMap(const Measurement&) const;
     static shp_AngleMap angleMap(const Session& session, const Measurement& ds) {
@@ -126,7 +129,7 @@ private:
     ImageTransform imageTransform_;
     ImageCut imageCut_;
     Geometry geometry_;
-    Range gammaRange_;
+    GammaSelection gammaSelection_;
     eNorm norm_ {eNorm::NONE};
 
     mutable cache_lazy<ImageKey, AngleMap> angleMapCache_ {360};

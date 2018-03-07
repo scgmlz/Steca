@@ -75,11 +75,6 @@ void Session::setImageTransformRotate(const ImageTransform& rot) {
     imageTransform_ = imageTransform_.rotateTo(rot);
 }
 
-void Session::setGammaRange(const Range& r) {
-    gammaRange_ = r;
-    emit sigDiffractogram();
-}
-
 IJ Session::midPix() const {
     size2d sz = imageSize();
     IJ mid(sz.w / 2, sz.h / 2);
