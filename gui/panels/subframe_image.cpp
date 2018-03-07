@@ -301,7 +301,7 @@ DataImageTab::DataImageTab() {
     connect(gSession, &Session::sigDataHighlight, this, &ImageTab::render);
     connect(gSession, &Session::sigGamma, [this]() {
             numSlices_.setValue(gSession->gammaSelection().numSlices());
-            idxSlice_.setValue(gSession->gammaSelection().idxSlice());
+            idxSlice_.setValue(gSession->gammaSelection().idxSlice()+1);
             minGamma_.setValue(gSession->gammaSelection().range().min);
             maxGamma_.setValue(gSession->gammaSelection().range().max);
             render(); });
@@ -315,7 +315,7 @@ DataImageTab::DataImageTab() {
     connect(&numSlices_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
             gSession->gammaSelection().setNumSlices(val); });
     connect(&idxSlice_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
-            gSession->gammaSelection().selectSlice(val); });
+            gSession->gammaSelection().selectSlice(val-1); });
     minGamma_.setReadOnly(true);
     maxGamma_.setReadOnly(true);
 

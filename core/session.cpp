@@ -29,8 +29,8 @@ Session::Session()
 
     // Some signals imply other signals:
     connect(this, &Session::sigGamma, this, &Session::sigDiffractogram);
-    connect(this, &Session::sigFiles, &gammaSelection_, &GammaSelection::onData);
-    connect(this, &Session::sigFiles, &thetaSelection_, &ThetaSelection::onData);
+    connect(this, &Session::sigDataHighlight, &gammaSelection_, &GammaSelection::onData);
+    connect(this, &Session::sigDataHighlight, &thetaSelection_, &ThetaSelection::onData);
 }
 
 void Session::clear() {

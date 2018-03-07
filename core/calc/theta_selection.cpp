@@ -24,8 +24,8 @@ void ThetaSelection::onData()
 {
     const Cluster* cluster = gSession->dataset().highlight().cluster();
     if (!cluster) {
+        fullRange_.invalidate();
         numSlices_ = 0;
-        emit gSession->sigTheta();
         return;
     }
     fullRange_ = cluster->rgeTth();

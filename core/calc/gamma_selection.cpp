@@ -23,17 +23,22 @@ GammaSelection::GammaSelection()
 void GammaSelection::onData()
 {
     const Cluster* cluster = gSession->dataset().highlight().cluster();
-    if (!cluster)
-        return; // leave things as they are
+    if (!cluster) {
+        fullRange_.invalidate();
+        return;
+    }
     fullRange_ = cluster->rgeGma();
-    qDebug() << "GammaSelection has now full range " << fullRange_.to_s();
-    recomputeCache();
+     recomputeCache();
 }
 
 //! Recomputes range_ and iSlice_.
 void GammaSelection::recomputeCache()
 {
-    ASSERT(fullRange_.isValid());
+    if (!fullRange_.isValid()) {
+        range_.invalidate();
+        numSlices_ = 0;
+        return;
+    }
     if        (mode_ == Mode::all) {
         range_ = fullRange_;
     } else if (mode_ == Mode::slicing) {

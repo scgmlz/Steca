@@ -68,7 +68,8 @@ Range Range::slice(int i, int n) const {
     ASSERT(isValid());
     ASSERT(n>=1);
     ASSERT(i>=0 && i<n);
-    return Range(min+i*width(), min+(i+1)*width());
+    double delta = width()/n;
+    return Range(min+i*delta, min+(i+1)*delta);
 }
 
 void Range::set(qreal min_, qreal max_) {
