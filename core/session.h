@@ -17,6 +17,7 @@
 
 #include "core/calc/baseline.h"
 #include "core/calc/gamma_selection.h"
+#include "core/calc/theta_selection.h"
 #include "core/calc/lens.h"
 #include "core/calc/peak.h"
 #include "core/calc/peak_info.h"
@@ -57,6 +58,9 @@ public:
 
     GammaSelection& gammaSelection() { return gammaSelection_; }
     const GammaSelection& gammaSelection() const { return gammaSelection_; }
+
+    ThetaSelection& thetaSelection() { return thetaSelection_; }
+    const ThetaSelection& thetaSelection() const { return thetaSelection_; }
 
     eNorm norm() const { return norm_; }
 
@@ -107,6 +111,7 @@ signals:
     void sigActivated();     //!< selection of active clusters has changed
     void sigDetector();      //!< detector geometry has changed
     void sigGamma();         //!< gamma selection has changed
+    void sigTheta();         //!< theta selection has changed
     void sigDiffractogram(); //!< diffractogram must be repainted
     void sigImage();         //!< image must be repainted
     void sigBaseline();      //!< baseline settings have changed
@@ -130,6 +135,7 @@ private:
     ImageCut imageCut_;
     Geometry geometry_;
     GammaSelection gammaSelection_;
+    ThetaSelection thetaSelection_;
     eNorm norm_ {eNorm::NONE};
 
     mutable cache_lazy<ImageKey, AngleMap> angleMapCache_ {360};

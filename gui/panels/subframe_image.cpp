@@ -290,10 +290,8 @@ private:
     IdxMeas idxMeas_;
     CSpinBox numSlices_{"numSlices", 2, false, 0, INT_MAX,
             "Number of γ slices (0: no slicing, take entire image)" };
-    CSpinBox idxSlice_{"numSlice", 2, false, 1, INT_MAX,
-            "Number of γ slice to be shown" };
-    CSpinBox idxTheta_{"idxTheta", 4, false, 1, INT_MAX,
-            "Number of 2θ bin to be shown" };
+    CSpinBox idxSlice_{"numSlice", 2, false, 1, INT_MAX, "Number of γ slice to be shown" };
+    CSpinBox idxTheta_ {"idxTheta", 4, false, 1, INT_MAX, "Number of 2θ bin to be shown" };
     CDoubleSpinBox minGamma_{"minGamma", 6};
     CDoubleSpinBox maxGamma_{"maxGamma", 6};
 };
@@ -301,12 +299,23 @@ private:
 DataImageTab::DataImageTab() {
     // inbound connection
     connect(gSession, &Session::sigDataHighlight, this, &ImageTab::render);
-    connect(gSession, &Session::sigGamma, this, &ImageTab::render);
+    connect(gSession, &Session::sigGamma, [this]() {
+            numSlices_.setValue(gSession->gammaSelection().numSlices());
+            idxSlice_.setValue(gSession->gammaSelection().idxSlice());
+            minGamma_.setValue(gSession->gammaSelection().range().min);
+            maxGamma_.setValue(gSession->gammaSelection().range().max);
+            render(); });
+    connect(gSession, &Session::sigTheta, [this]() {
+            idxTheta_.setValue(gSession->thetaSelection().iSlice()+1);
+            render(); });
 
     // outbound connections and control widget setup
-    connect(&idxTheta_, _SLOT_(QSpinBox, valueChanged, int), [this](int) { render(); });
-    connect(&numSlices_, _SLOT_(QSpinBox, valueChanged, int), [this](int) { render(); });
-    connect(&idxSlice_, _SLOT_(QSpinBox, valueChanged, int), [this](int) { render(); });
+    connect(&idxTheta_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
+            gSession->thetaSelection().selectSlice(val-1); });
+    connect(&numSlices_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
+            gSession->gammaSelection().setNumSlices(val); });
+    connect(&idxSlice_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
+            gSession->gammaSelection().selectSlice(val); });
     minGamma_.setReadOnly(true);
     maxGamma_.setReadOnly(true);
 
@@ -334,44 +343,13 @@ DataImageTab::DataImageTab() {
 }
 
 QPixmap DataImageTab::pixmap() {
-    const int nSlices = numSlices_.value();
-    idxSlice_.setMaximum(qMax(1, nSlices));
-    idxSlice_.setEnabled(nSlices > 0);
-
-    const Cluster* cluster = gSession->dataset().highlight().cluster();
-    if (!cluster) {
-        idxTheta_.setMaximum(0);
-        idxTheta_.setEnabled(false);
-        return makeBlankPixmap();
-    }
-
-    Range rge;
-    if (nSlices > 0) {
-        int iSlice = qMax(1, idxSlice_.value()) - 1;
-        const Range rgeGma = cluster->rgeGma();
-        const qreal min = rgeGma.min;
-        const qreal wn = rgeGma.width() / nSlices;
-        rge = Range(min + iSlice * wn, min + (iSlice + 1) * wn);
-        minGamma_.setValue(rge.min);
-        maxGamma_.setValue(rge.max);
-    } else {
-        rge = Range::infinite();
-        minGamma_.clear();
-        maxGamma_.clear();
-    }
-    gSession->setGammaRange(rge);
-
     const Measurement* measurement = gSession->dataset().highlight().measurement();
-    idxTheta_.setEnabled(true);
-    if (gGui->toggles->showBins.isChecked()) {
-        Range rgeTth = cluster->rgeTth();
-        int count =  cluster->toCurve().count();
-        idxTheta_.setMaximum(count - 1);
-        qreal min = rgeTth.min;
-        qreal wdt = rgeTth.width();
-        qreal num = qreal(idxTheta_.value());
-        return makePixmap(*measurement, rge,
-                          Range(min + wdt * (num / count), min + wdt * ((num + 1) / count)));
+    if (!measurement) {
+        return makeBlankPixmap();
+    } else if (gGui->toggles->showBins.isChecked()) {
+        return makePixmap(*measurement,
+                          gSession->gammaSelection().range(),
+                          gSession->thetaSelection().range());
     }
     return makePixmap(measurement->image());
 }

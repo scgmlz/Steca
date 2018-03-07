@@ -38,7 +38,7 @@ public:
     qreal min() const { return range_.min; }
     qreal max() const { return range_.max; }
     int numSlices() const { return numSlices_; }
-    int iSlice() const { return iSlice_; }
+    int idxSlice() const { return iSlice_; }
     bool isModeMinMax() const { return mode_==Mode::minmax; }
 
 private:
