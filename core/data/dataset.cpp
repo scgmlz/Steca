@@ -95,7 +95,7 @@ int HighlightedData::measurementIndex() const {
 }
 
 const Measurement* HighlightedData::measurement() const {
-    return current_->at(measurement_);
+    return current_ ? current_->at(measurement_) : nullptr;
 }
 
 

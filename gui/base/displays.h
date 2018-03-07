@@ -19,7 +19,7 @@
 #include <QLineEdit>
 
 namespace widgetUtils {
-void setWidth(QWidget* w, int ndigits, bool withDot);
+    void setWidth(QWidget* w, int ndigits, bool withDot);
 }
 
 //! QLabel displaying an icon, with no associated action.

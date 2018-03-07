@@ -26,17 +26,20 @@ void GammaSelection::onData()
     if (!cluster)
         return; // leave things as they are
     fullRange_ = cluster->rgeGma();
+    qDebug() << "GammaSelection has now full range " << fullRange_.to_s();
     recomputeCache();
 }
 
 //! Recomputes range_ and iSlice_.
 void GammaSelection::recomputeCache()
 {
+    ASSERT(fullRange_.isValid());
     if        (mode_ == Mode::all) {
         range_ = fullRange_;
     } else if (mode_ == Mode::slicing) {
         iSlice_ = qMin(qMax(iSlice_, 0), numSlices_-1);
-        range_ = fullRange_.slice(iSlice_, numSlices_);
+        if (numSlices_)
+            range_ = fullRange_.slice(iSlice_, numSlices_);
     } else if (mode_ == Mode::minmax) {
         range_ = range_.intersect(fullRange_);
     }

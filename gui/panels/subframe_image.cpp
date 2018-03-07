@@ -140,15 +140,15 @@ public:
     void render();
 protected:
     virtual QPixmap pixmap() = 0;
-    QHBoxLayout controls_;
+    QVBoxLayout controls_;
     QPixmap makePixmap(shp_Image);
     QPixmap makePixmap(const class Measurement&, const Range&, const Range&);
     QPixmap makeBlankPixmap();
     QImage makeImage(shp_Image, bool curvedScale);
     ImageWidget imageView_;
 private:
-    QVBoxLayout box_;
-    QHBoxLayout box1_;
+    QHBoxLayout box_;
+    QVBoxLayout box1_;
 };
 
 ImageTab::ImageTab() {
@@ -285,15 +285,15 @@ class DataImageTab : public ImageTab {
 public:
     DataImageTab();
 private:
-    QHBoxLayout boxImg_, boxGreen_, boxGamma_;
+    QVBoxLayout boxImg_, boxGreen_, boxGamma_;
     QPixmap pixmap() final;
     IdxMeas idxMeas_;
     CSpinBox numSlices_{"numSlices", 2, false, 0, INT_MAX,
             "Number of γ slices (0: no slicing, take entire image)" };
     CSpinBox idxSlice_{"numSlice", 2, false, 1, INT_MAX, "Number of γ slice to be shown" };
     CSpinBox idxTheta_ {"idxTheta", 4, false, 1, INT_MAX, "Number of 2θ bin to be shown" };
-    CDoubleSpinBox minGamma_{"minGamma", 6};
-    CDoubleSpinBox maxGamma_{"maxGamma", 6};
+    CDoubleSpinBox minGamma_{"minGamma", 5};
+    CDoubleSpinBox maxGamma_{"maxGamma", 5};
 };
 
 DataImageTab::DataImageTab() {
