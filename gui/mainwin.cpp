@@ -402,6 +402,7 @@ void MainWin::setImageRotate(ImageTransform rot) {
     toggles->mirrorImage.setIcon(QIcon(mirrorIconFile));
     gSession->setImageTransformRotate(rot);
     // TODO gSession->imageCut().prevent_invalid_cuts()
+    emit gSession->sigDetector();
 }
 
 void MainWin::setImageMirror(bool on) {
