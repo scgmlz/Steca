@@ -43,19 +43,23 @@ private:
 };
 
 
-ImageWidget::ImageWidget() : scale_(0) {
+ImageWidget::ImageWidget()
+    : scale_(0)
+{
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     connect(&gGui->toggles->showOverlay, &QAction::toggled, [this](bool /*unused*/) { update(); });
     connect(&gGui->toggles->stepScale, &QAction::toggled, [this](bool /*unused*/) { setScale(); });
 }
 
-void ImageWidget::setPixmap(const QPixmap& pixmap) {
+void ImageWidget::setPixmap(const QPixmap& pixmap)
+{
     original_ = pixmap;
     setScale();
 }
 
-void ImageWidget::setScale() {
+void ImageWidget::setScale()
+{
     if (original_.isNull()) {
         scale_ = 0;
     } else {
@@ -75,12 +79,14 @@ void ImageWidget::setScale() {
     update();
 }
 
-void ImageWidget::resizeEvent(QResizeEvent* e) {
+void ImageWidget::resizeEvent(QResizeEvent* e)
+{
     QWidget::resizeEvent(e);
     setScale();
 }
 
-void ImageWidget::paintEvent(QPaintEvent*) {
+void ImageWidget::paintEvent(QPaintEvent*)
+{
     // paint centered
     const QSize margin = (size() - scaled_.size()) / 2;
     const QRect rect(QPoint(margin.width(), margin.height()), scaled_.size());
@@ -144,14 +150,15 @@ protected:
     QPixmap makePixmap(shp_Image);
     QPixmap makePixmap(const class Measurement&, const Range&, const Range&);
     QPixmap makeBlankPixmap();
-    QImage makeImage(shp_Image, bool curvedScale);
+    QImage makeImage(shp_Image);
     ImageWidget imageView_;
 private:
     QHBoxLayout box_;
     QVBoxLayout box1_;
 };
 
-ImageTab::ImageTab() {
+ImageTab::ImageTab()
+{
     // outbound connections
     connect(&gGui->toggles->enableCorr, &QAction::toggled, [this](bool /*unused*/) { render(); });
     connect(&gGui->toggles->showBins, &QAction::toggled, [this](bool /*unused*/) { render(); });
@@ -168,18 +175,20 @@ ImageTab::ImageTab() {
     setLayout(&box_);
 }
 
-void ImageTab::render() {
+void ImageTab::render()
+{
     gSession->corrset().clearIntens(); // TODO move this to more appriate place
     imageView_.setPixmap(pixmap());
 }
 
-QPixmap ImageTab::makePixmap(shp_Image image) {
-    return QPixmap::fromImage(makeImage(image, !gGui->isFixedIntenImageScale()));
+QPixmap ImageTab::makePixmap(shp_Image image)
+{
+    return QPixmap::fromImage(makeImage(image));
 }
 
-QPixmap ImageTab::makePixmap(
-    const Measurement& cluster, const Range& rgeGma, const Range& rgeTth) {
-    QImage im = makeImage(cluster.image(), !gGui->isFixedIntenImageScale());
+QPixmap ImageTab::makePixmap(const Measurement& cluster, const Range& rgeGma, const Range& rgeTth)
+{
+    QImage im = makeImage(cluster.image());
     shp_AngleMap angleMap = gSession->angleMap(cluster);
 
     const QSize& size = im.size();
@@ -187,11 +196,10 @@ QPixmap ImageTab::makePixmap(
         const ScatterDirection& a = angleMap->at(i, j);
         QColor color = im.pixel(i, j);
         if (rgeGma.contains(a.gma)) {
-            if (rgeTth.contains(a.tth)) {
+            if (rgeTth.contains(a.tth))
                 color = Qt::yellow;
-            } else {
+            else
                 color.setGreen(qFloor(color.green() * .3 + 255 * .7));
-            }
         } else if (rgeTth.contains(a.tth)) {
             color.setGreen(qFloor(color.green() * .3 + 255 * .7));
         }
@@ -201,14 +209,16 @@ QPixmap ImageTab::makePixmap(
     return QPixmap::fromImage(im);
 }
 
-QPixmap ImageTab::makeBlankPixmap() {
+QPixmap ImageTab::makeBlankPixmap()
+{
     const size2d size = gSession->imageSize();
     QPixmap pixmap(size.w, size.h);
     pixmap.fill(QColor(0, 0, 0, 0));
     return pixmap;
 }
 
-QImage ImageTab::makeImage(shp_Image image, bool curvedScale) {
+QImage ImageTab::makeImage(shp_Image image)
+{
     if (!image)
         return {};
 
@@ -222,6 +232,7 @@ QImage ImageTab::makeImage(shp_Image image, bool curvedScale) {
     const Range rgeInten = imageLens.rgeInten(gGui->isFixedIntenImageScale());
     inten_t maxInten = inten_t(rgeInten.max);
 
+    bool curvedScale = !gGui->isFixedIntenImageScale();
     for_ij (size.w, size.h)
         ret.setPixel(i, j,
                      colormap::intenImage(imageLens.imageInten(i, j), maxInten, curvedScale));
@@ -291,7 +302,8 @@ private:
     CDoubleSpinBox maxGamma_{"maxGamma", 5};
 };
 
-DataImageTab::DataImageTab() {
+DataImageTab::DataImageTab()
+{
     // inbound connection
     connect(gSession, &Session::sigGamma, [this]() {
             numSlices_.setValue(gSession->gammaSelection().numSlices());
@@ -336,7 +348,8 @@ DataImageTab::DataImageTab() {
     controls_.addLayout(&boxGamma_);
 }
 
-QPixmap DataImageTab::pixmap() {
+QPixmap DataImageTab::pixmap()
+{
     const Measurement* measurement = gSession->dataset().highlight().measurement();
     if (!measurement) {
         return makeBlankPixmap();
@@ -364,11 +377,13 @@ private:
     QPixmap pixmap() final;
 };
 
-CorrImageTab::CorrImageTab() {
+CorrImageTab::CorrImageTab()
+{
     controls_.addStretch(1);
 }
 
-QPixmap CorrImageTab::pixmap() {
+QPixmap CorrImageTab::pixmap()
+{
     return makePixmap(gSession->corrset().image());
 }
 
@@ -376,7 +391,8 @@ QPixmap CorrImageTab::pixmap() {
 //  class SubframeImage
 // ************************************************************************** //
 
-SubframeImage::SubframeImage() {
+SubframeImage::SubframeImage()
+{
     setTabPosition(QTabWidget::North);
     addTab(new DataImageTab, "Data image");
     addTab(new CorrImageTab, "Corr image");
@@ -390,6 +406,7 @@ SubframeImage::SubframeImage() {
     connect(gSession, &Session::sigImage, [this]() { render(); });
 }
 
-void SubframeImage::render() {
+void SubframeImage::render()
+{
     dynamic_cast<ImageTab*>(currentWidget())->render();
 }
