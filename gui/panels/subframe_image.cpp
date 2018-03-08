@@ -67,7 +67,7 @@ void ImageWidget::setScale()
         scale_ = qMin(qreal(sz.width() - 2) / os.width(), qreal(sz.height() - 2) / os.height());
     }
 
-    if (original_.isNull() || !(scale_ > 0))
+    if (scale_ <= 0)
         scaled_ = QPixmap();
     else
         scaled_ = original_.scaled(original_.size() * scale_);
