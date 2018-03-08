@@ -152,11 +152,6 @@ private:
 };
 
 ImageTab::ImageTab() {
-    // inbound connections
-    connect(gSession, &Session::sigDetector, this, &ImageTab::render);
-    connect(gSession, &Session::sigNorm, this, &ImageTab::render);
-    connect(gSession, &Session::sigImage, this, &ImageTab::render);
-
     // outbound connections
     connect(&gGui->toggles->enableCorr, &QAction::toggled, [this](bool /*unused*/) { render(); });
     connect(&gGui->toggles->showBins, &QAction::toggled, [this](bool /*unused*/) { render(); });
@@ -298,16 +293,15 @@ private:
 
 DataImageTab::DataImageTab() {
     // inbound connection
-    connect(gSession, &Session::sigDataHighlight, this, &ImageTab::render);
     connect(gSession, &Session::sigGamma, [this]() {
             numSlices_.setValue(gSession->gammaSelection().numSlices());
             idxSlice_.setValue(gSession->gammaSelection().idxSlice()+1);
             minGamma_.setValue(gSession->gammaSelection().range().min);
             maxGamma_.setValue(gSession->gammaSelection().range().max);
-            render(); });
+            emit gSession->sigImage(); });
     connect(gSession, &Session::sigTheta, [this]() {
             idxTheta_.setValue(gSession->thetaSelection().iSlice()+1);
-            render(); });
+            emit gSession->sigImage(); });
 
     // outbound connections and control widget setup
     connect(&idxTheta_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
@@ -331,13 +325,13 @@ DataImageTab::DataImageTab() {
     boxGreen_.addStretch(1);
     controls_.addLayout(&boxGreen_);
 
-    boxGamma_.addWidget(new QLabel("γ count"));
+    boxGamma_.addWidget(new QLabel("num γ slices"));
     boxGamma_.addWidget(&numSlices_);
     boxGamma_.addWidget(new QLabel("γ#"));
     boxGamma_.addWidget(&idxSlice_);
-    boxGamma_.addWidget(new QLabel("min"));
+    boxGamma_.addWidget(new QLabel("γ min"));
     boxGamma_.addWidget(&minGamma_);
-    boxGamma_.addWidget(new QLabel("max"));
+    boxGamma_.addWidget(new QLabel("γ max"));
     boxGamma_.addWidget(&maxGamma_);
     controls_.addLayout(&boxGamma_);
 }
@@ -389,4 +383,13 @@ SubframeImage::SubframeImage() {
     connect(gSession, &Session::sigCorr, [this]() {
             setTabEnabled(1, gSession->corrset().hasFile()); });
     setTabEnabled(1, false);
+
+    // local connection
+    connect(this, &SubframeImage::currentChanged, [this](int) { render(); });
+    // inbound connection
+    connect(gSession, &Session::sigImage, [this]() { render(); });
+}
+
+void SubframeImage::render() {
+    dynamic_cast<ImageTab*>(currentWidget())->render();
 }

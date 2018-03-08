@@ -31,6 +31,9 @@ Session::Session()
     connect(this, &Session::sigGamma, this, &Session::sigDiffractogram);
     connect(this, &Session::sigDataHighlight, &gammaSelection_, &GammaSelection::onData);
     connect(this, &Session::sigDataHighlight, &thetaSelection_, &ThetaSelection::onData);
+    connect(this, &Session::sigDataHighlight, this, &Session::sigImage);
+    connect(this, &Session::sigDetector, this, &Session::sigImage);
+    connect(this, &Session::sigNorm, this, &Session::sigImage);
 }
 
 void Session::clear() {
