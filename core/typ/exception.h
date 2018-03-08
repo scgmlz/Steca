@@ -16,6 +16,7 @@
 #define EXCEPTION_H
 
 #include <QException>
+#include <QString> // no auto rm
 
 //! The sole exception type used in this software.
 class Exception : public QException {
