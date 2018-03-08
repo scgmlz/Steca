@@ -49,7 +49,6 @@ ImageWidget::ImageWidget()
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     connect(&gGui->toggles->showOverlay, &QAction::toggled, [this](bool /*unused*/) { update(); });
-    connect(&gGui->toggles->stepScale, &QAction::toggled, [this](bool /*unused*/) { setScale(); });
 }
 
 void ImageWidget::setPixmap(const QPixmap& pixmap)
@@ -67,9 +66,6 @@ void ImageWidget::setScale()
         const QSize& os = original_.size();
         scale_ = qMin(qreal(sz.width() - 2) / os.width(), qreal(sz.height() - 2) / os.height());
     }
-
-    if (gGui->toggles->stepScale.isChecked() && scale_ > 0)
-        scale_ = (scale_ >= 1) ? qFloor(scale_) : 1.0 / qCeil(1.0 / scale_);
 
     if (original_.isNull() || !(scale_ > 0))
         scaled_ = QPixmap();
@@ -165,7 +161,6 @@ ImageTab::ImageTab()
 
     // layout
     box1_.addWidget(new XIconButton(&gGui->toggles->fixedIntenImage));
-    box1_.addWidget(new XIconButton(&gGui->toggles->stepScale));
     box1_.addWidget(new XIconButton(&gGui->toggles->showOverlay));
     box1_.addStretch(1);
     controls_.addLayout(&box1_);
