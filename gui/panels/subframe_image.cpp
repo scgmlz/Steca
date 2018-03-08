@@ -148,7 +148,7 @@ protected:
     virtual QPixmap pixmap() = 0;
     QVBoxLayout controls_;
     QPixmap makePixmap(shp_Image);
-    QPixmap makePixmap(const class Measurement&, const Range&, const Range&);
+    QPixmap makeOverlayPixmap(const class Measurement&);
     QPixmap makeBlankPixmap();
     QImage makeImage(shp_Image);
     ImageWidget imageView_;
@@ -183,14 +183,16 @@ void ImageTab::render()
 
 QPixmap ImageTab::makePixmap(shp_Image image)
 {
-    return QPixmap::fromImage(makeImage(image));
+    QImage im = makeImage(image);
+    return QPixmap::fromImage(im);
 }
 
-QPixmap ImageTab::makePixmap(const Measurement& cluster, const Range& rgeGma, const Range& rgeTth)
+QPixmap ImageTab::makeOverlayPixmap(const Measurement& cluster)
 {
     QImage im = makeImage(cluster.image());
     shp_AngleMap angleMap = gSession->angleMap(cluster);
-
+    const Range& rgeGma = gSession->gammaSelection().range();
+    const Range& rgeTth = gSession->thetaSelection().range();
     const QSize& size = im.size();
     for_ij (size.width(), size.height()) {
         const ScatterDirection& a = angleMap->at(i, j);
@@ -205,7 +207,6 @@ QPixmap ImageTab::makePixmap(const Measurement& cluster, const Range& rgeGma, co
         }
         im.setPixel(i, j, color.rgb());
     }
-
     return QPixmap::fromImage(im);
 }
 
@@ -229,13 +230,12 @@ QImage ImageTab::makeImage(shp_Image image)
 
     QImage ret(QSize(size.w, size.h), QImage::Format_RGB32);
 
-    const Range rgeInten = imageLens.rgeInten(gGui->isFixedIntenImageScale());
+    bool fixedScale = gGui->isFixedIntenImageScale();
+    const Range rgeInten = imageLens.rgeInten(fixedScale);
     inten_t maxInten = inten_t(rgeInten.max);
 
-    bool curvedScale = !gGui->isFixedIntenImageScale();
     for_ij (size.w, size.h)
-        ret.setPixel(i, j,
-                     colormap::intenImage(imageLens.imageInten(i, j), maxInten, curvedScale));
+        ret.setPixel(i, j, colormap::intenImage(imageLens.imageInten(i, j), maxInten, !fixedScale));
     return ret;
 }
 
@@ -351,13 +351,10 @@ DataImageTab::DataImageTab()
 QPixmap DataImageTab::pixmap()
 {
     const Measurement* measurement = gSession->dataset().highlight().measurement();
-    if (!measurement) {
+    if (!measurement)
         return makeBlankPixmap();
-    } else if (gGui->toggles->showBins.isChecked()) {
-        return makePixmap(*measurement,
-                          gSession->gammaSelection().range(),
-                          gSession->thetaSelection().range());
-    }
+    if (gGui->toggles->showBins.isChecked())
+        return makeOverlayPixmap(*measurement);
     return makePixmap(measurement->image());
 }
 
