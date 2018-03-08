@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/controls_detector.cpp
-//! @brief     Implements classes (Cut|Experiment|Geometry)Controls, ControlsDetector
+//! @brief     Implements class ControlsDetector, and local classes
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -13,96 +13,37 @@
 // ************************************************************************** //
 
 #include "controls_detector.h"
+#include "core/data/geometry.h"
 #include "core/session.h"
-#include "gui/base/displays.h"
+#include "gui/actions/toggles.h"
 #include "gui/actions/triggers.h"
+#include "gui/base/controls.h"
+#include "gui/base/displays.h"
+#include "gui/mainwin.h"
 #include <QSpacerItem>
 
 // ************************************************************************** //
-//  class CutControls
+//  local class GeometryControls
 // ************************************************************************** //
 
-CutControls::CutControls()
-{
-    // inbound connection
-    connect(gSession, &Session::sigDetector, this, &CutControls::fromCore);
+//! Control widgets that govern the detector geometry.
 
-    // outbound connections
-    connect(&cutLeft_, _SLOT_(QSpinBox, valueChanged, int), [](int value) {
-            gSession->imageCut().setLeft(value); });
-    connect(&cutRight_,  _SLOT_(QSpinBox, valueChanged, int), [](int value) {
-            gSession->imageCut().setRight(value); });
-    connect(&cutTop_,    _SLOT_(QSpinBox, valueChanged, int), [](int value) {
-            gSession->imageCut().setTop(value); });
-    connect(&cutBottom_, _SLOT_(QSpinBox, valueChanged, int), [](int value) {
-            gSession->imageCut().setBottom(value); });
-    connect(&gGui->toggles->linkCuts, &QAction::toggled, [](bool value) {
-            gSession->imageCut().setLinked(value); });
+class GeometryControls : public QWidget {
+public:
+    GeometryControls();
+private:
+    void fromCore();
 
-    // layout
-    layout_.setSpacing(2);
-    layout_.setContentsMargins(1,3,3,3);
-    layout_.addWidget(new QLabel("cut"), 1, 0);
-    layout_.setColumnStretch(1, 1);
-    layout_.addWidget(&cutLeft_, 1, 2);
-    layout_.addWidget(&link_, 1, 3, Qt::AlignHCenter);
-    layout_.addWidget(&cutTop_, 0, 3);
-    layout_.addWidget(&cutBottom_, 2, 3);
-    layout_.addWidget(&cutRight_, 1, 4);
-    layout_.setColumnStretch(5, 1);
-    setLayout(&layout_);
+    QVBoxLayout vbox_;
+    QGridLayout mmGrid_;
+    QHBoxLayout trafoLayout_;
+    QHBoxLayout offsetLayout_;
 
-    // initialization
-    fromCore();
-}
-
-void CutControls::fromCore()
-{
-    const ImageCut& cut = gSession->imageCut();
-    gGui->toggles->linkCuts.setChecked(cut.linked());
-    cutLeft_.setValue(cut.left());
-    cutTop_.setValue(cut.top());
-    cutRight_.setValue(cut.right());
-    cutBottom_.setValue(cut.bottom());
-}
-
-// ************************************************************************** //
-//  class ExperimentControls
-// ************************************************************************** //
-
-ExperimentControls::ExperimentControls()
-{
-    // inbound connection
-    connect(gSession, &Session::sigClusters, this, &ExperimentControls::fromCore);
-
-    // outbound connections
-    connect(&combineMeasurements_, _SLOT_(QSpinBox, valueChanged, int),
-            [](int num) { gSession->dataset().setBinning(num); });
-    connect(&dropIncompleteAction_, &QAction::toggled,
-            [](bool on) { gSession->dataset().setDropIncomplete(on); });
-
-    // layout
-    layout_.addWidget(new QLabel("combine"));
-    layout_.addWidget(&combineMeasurements_);
-    layout_.addWidget(new QLabel("measurements"));
-    layout_.addWidget(&dropIncompleteButton_);
-    layout_.addStretch(1);
-    setLayout(&layout_);
-
-    //initialization
-    dropIncompleteAction_.setEnabled(false);
-    fromCore();
-}
-
-void ExperimentControls::fromCore()
-{
-    combineMeasurements_.setValue(gSession->dataset().binning());
-    dropIncompleteAction_.setEnabled(gSession->dataset().hasIncomplete());
-}
-
-// ************************************************************************** //
-//  class GeometryControls
-// ************************************************************************** //
+    CDoubleSpinBox detDistance_ {"detDistance", 6};
+    CDoubleSpinBox detPixelSize_ {"detPixelSize", 6};
+    CSpinBox beamOffsetI_ {"beamOffsetI", 3, true};
+    CSpinBox beamOffsetJ_ {"beamOffsetJ", 3, true};
+};
 
 GeometryControls::GeometryControls()
 {
@@ -161,14 +102,129 @@ void GeometryControls::fromCore() {
 }
 
 // ************************************************************************** //
+//  local class CutControls
+// ************************************************************************** //
+
+//! Control widgets that govern the detector cuts.
+
+class CutControls : public QFrame {
+public:
+    CutControls();
+private:
+    void fromCore();
+
+    QGridLayout layout_;
+    XIconButton link_ {&gGui->toggles->linkCuts};
+    CSpinBox cutLeft_ {"cutLeft", 3, false, 0};
+    CSpinBox cutTop_ {"cutTop", 3, false, 0};
+    CSpinBox cutRight_ {"cutRight", 3, false, 0};
+    CSpinBox cutBottom_ {"cutBottom", 3, false, 0};
+};
+
+CutControls::CutControls()
+{
+    // inbound connection
+    connect(gSession, &Session::sigDetector, this, &CutControls::fromCore);
+
+    // outbound connections
+    connect(&cutLeft_, _SLOT_(QSpinBox, valueChanged, int), [](int value) {
+            gSession->imageCut().setLeft(value); });
+    connect(&cutRight_,  _SLOT_(QSpinBox, valueChanged, int), [](int value) {
+            gSession->imageCut().setRight(value); });
+    connect(&cutTop_,    _SLOT_(QSpinBox, valueChanged, int), [](int value) {
+            gSession->imageCut().setTop(value); });
+    connect(&cutBottom_, _SLOT_(QSpinBox, valueChanged, int), [](int value) {
+            gSession->imageCut().setBottom(value); });
+    connect(&gGui->toggles->linkCuts, &QAction::toggled, [](bool value) {
+            gSession->imageCut().setLinked(value); });
+
+    // layout
+    layout_.setSpacing(2);
+    layout_.setContentsMargins(1,3,3,3);
+    layout_.addWidget(new QLabel("cut"), 1, 0);
+    layout_.setColumnStretch(1, 1);
+    layout_.addWidget(&cutLeft_, 1, 2);
+    layout_.addWidget(&link_, 1, 3, Qt::AlignHCenter);
+    layout_.addWidget(&cutTop_, 0, 3);
+    layout_.addWidget(&cutBottom_, 2, 3);
+    layout_.addWidget(&cutRight_, 1, 4);
+    layout_.setColumnStretch(5, 1);
+    setLayout(&layout_);
+
+    // initialization
+    fromCore();
+}
+
+void CutControls::fromCore()
+{
+    const ImageCut& cut = gSession->imageCut();
+    gGui->toggles->linkCuts.setChecked(cut.linked());
+    cutLeft_.setValue(cut.left());
+    cutTop_.setValue(cut.top());
+    cutRight_.setValue(cut.right());
+    cutBottom_.setValue(cut.bottom());
+}
+
+// ************************************************************************** //
+//  local class ExperimentControls
+// ************************************************************************** //
+
+//! Control widgets that govern the combination of Measurement|s into Cluster|s.
+
+class ExperimentControls : public QWidget {
+public:
+    ExperimentControls();
+private:
+    void fromCore();
+
+    QHBoxLayout layout_;
+    CSpinBox combineMeasurements_ {"combineMeasurements", 3, false, 1, 999,
+            "Combine this number of measurements into one group"};
+    CToggle dropIncompleteAction_ {"dropIncomplete",
+            "Drop measurement groups that do not have the full number of members",
+            false, ":/icon/dropIncomplete" };
+    XIconButton dropIncompleteButton_ { &dropIncompleteAction_ };
+};
+
+ExperimentControls::ExperimentControls()
+{
+    // inbound connection
+    connect(gSession, &Session::sigClusters, this, &ExperimentControls::fromCore);
+
+    // outbound connections
+    connect(&combineMeasurements_, _SLOT_(QSpinBox, valueChanged, int),
+            [](int num) { gSession->dataset().setBinning(num); });
+    connect(&dropIncompleteAction_, &QAction::toggled,
+            [](bool on) { gSession->dataset().setDropIncomplete(on); });
+
+    // layout
+    layout_.addWidget(new QLabel("combine"));
+    layout_.addWidget(&combineMeasurements_);
+    layout_.addWidget(new QLabel("measurements"));
+    layout_.addWidget(&dropIncompleteButton_);
+    layout_.addStretch(1);
+    setLayout(&layout_);
+
+    //initialization
+    dropIncompleteAction_.setEnabled(false);
+    fromCore();
+}
+
+void ExperimentControls::fromCore()
+{
+    combineMeasurements_.setValue(gSession->dataset().binning());
+    dropIncompleteAction_.setEnabled(gSession->dataset().hasIncomplete());
+}
+
+// ************************************************************************** //
 //  class ControlsDetector
 // ************************************************************************** //
 
 ControlsDetector::ControlsDetector()
 {
-    vbox_.addWidget(&geometryControls_);
-    vbox_.addWidget(&cutControls_);
-    vbox_.addWidget(&experimentControls_);
+    vbox_.addWidget(new GeometryControls);
+    vbox_.addWidget(new CutControls);
+    vbox_.addWidget(new ExperimentControls);
     vbox_.addStretch();
     setLayout(&vbox_);
 }
