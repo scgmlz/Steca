@@ -140,8 +140,10 @@ void Range::from_json(const JsonObj& obj) THROWS {
     max = obj.loadQreal("max");
 }
 
-QString Range::to_s() const {
-    return QString("%1 .. %2").arg(min, 5, 'f', 2).arg(max, 5, 'f', 2);
+QString Range::to_s(int precision, int digitsAfter) const {
+    return QString("%1 .. %2")
+        .arg(min, precision, 'f', digitsAfter)
+        .arg(max, precision, 'f', digitsAfter);
 }
 
 // ************************************************************************** //

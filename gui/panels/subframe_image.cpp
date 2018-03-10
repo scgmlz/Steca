@@ -293,8 +293,7 @@ private:
             "Number of γ slices (0: no slicing, take entire image)" };
     CSpinBox idxSlice_{"numSlice", 2, false, 1, INT_MAX, "Number of γ slice to be shown" };
     CSpinBox idxTheta_ {"idxTheta", 4, false, 1, INT_MAX, "Number of 2θ bin to be shown" };
-    CDoubleSpinBox minGamma_{"minGamma", 5};
-    CDoubleSpinBox maxGamma_{"maxGamma", 5};
+    QLabel showGammaRange_;
 };
 
 DataImageTab::DataImageTab()
@@ -303,8 +302,7 @@ DataImageTab::DataImageTab()
     connect(gSession, &Session::sigGamma, [this]() {
             numSlices_.setValue(gSession->gammaSelection().numSlices());
             idxSlice_.setValue(gSession->gammaSelection().idxSlice()+1);
-            minGamma_.setValue(gSession->gammaSelection().range().min);
-            maxGamma_.setValue(gSession->gammaSelection().range().max);
+            showGammaRange_.setText("γ: "+ gSession->gammaSelection().range().to_s()+" deg");
             emit gSession->sigImage(); });
     connect(gSession, &Session::sigTheta, [this]() {
             idxTheta_.setValue(gSession->thetaSelection().iSlice()+1);
@@ -317,8 +315,6 @@ DataImageTab::DataImageTab()
             gSession->gammaSelection().setNumSlices(val); });
     connect(&idxSlice_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
             gSession->gammaSelection().selectSlice(val-1); });
-    minGamma_.setReadOnly(true);
-    maxGamma_.setReadOnly(true);
 
     // layout
     boxImg_.addWidget(new QLabel("m#"));
@@ -336,10 +332,7 @@ DataImageTab::DataImageTab()
     boxGamma_.addWidget(&numSlices_);
     boxGamma_.addWidget(new QLabel("γ#"));
     boxGamma_.addWidget(&idxSlice_);
-    boxGamma_.addWidget(new QLabel("γ min"));
-    boxGamma_.addWidget(&minGamma_);
-    boxGamma_.addWidget(new QLabel("γ max"));
-    boxGamma_.addWidget(&maxGamma_);
+    boxGamma_.addWidget(&showGammaRange_);
     controls_.addLayout(&boxGamma_);
 }
 

@@ -60,7 +60,7 @@ public:
     QJsonObject to_json() const;
     void from_json(const JsonObj&) THROWS;
 
-    QString to_s() const;
+    QString to_s(int precision=5, int digitsAfter=2) const;
 };
 
 //! A set of *sorted* *non-overlapping* ranges
