@@ -20,27 +20,31 @@
 //  class GridPanel
 // ************************************************************************** //
 
-void GridPanel::setHorizontalStretch(int stretch) {
+GridPanel::GridPanel(const QString& title) : QGroupBox(title)
+{
+    setLayout((grid_ = new QGridLayout()));
+}
+
+void GridPanel::setHorizontalStretch(int stretch)
+{
     QSizePolicy sp = sizePolicy();
     sp.setHorizontalStretch(stretch);
     setSizePolicy(sp);
 }
 
-void GridPanel::setVerticalStretch(int stretch) {
+void GridPanel::setVerticalStretch(int stretch)
+{
     QSizePolicy sp = sizePolicy();
     sp.setVerticalStretch(stretch);
     setSizePolicy(sp);
 }
 
-void GridPanel::setStretch(int horizontal, int vertical) {
+void GridPanel::setStretch(int horizontal, int vertical)
+{
     QSizePolicy sp = sizePolicy();
     sp.setHorizontalStretch(horizontal);
     sp.setVerticalStretch(vertical);
     setSizePolicy(sp);
-}
-
-GridPanel::GridPanel(const QString& title) : QGroupBox(title) {
-    setLayout((grid_ = new QGridLayout()));
 }
 
 // ************************************************************************** //
@@ -49,7 +53,8 @@ GridPanel::GridPanel(const QString& title) : QGroupBox(title) {
 
 PanelPeak::PanelPeak()
     : GridPanel("Peak")
-    , cbRefl("outRefl", gSession->peaks().names()) {
+    , cbRefl("outRefl", gSession->peaks().names())
+{
     QGridLayout* g = grid();
     g->addWidget(&cbRefl);
     g->setRowStretch(g->rowCount(), 1);
@@ -60,7 +65,8 @@ PanelGammaSlices::PanelGammaSlices()
     : GridPanel("Gamma slices")
     , numSlices("numSlices", 4, false, 0)
     , stepGamma("stepGamma", 6, 0.0)
-    , settings_("gamma_slices") {
+    , settings_("gamma_slices")
+{
     QGridLayout* g = grid();
 
     g->addWidget(new QLabel("count"), 0, 0);
@@ -78,11 +84,13 @@ PanelGammaSlices::PanelGammaSlices()
     connect(&numSlices, _SLOT_(QSpinBox, valueChanged, int), [this]() { updateValues(); });
 }
 
-PanelGammaSlices::~PanelGammaSlices() {
+PanelGammaSlices::~PanelGammaSlices()
+{
     settings_.saveInt("num_slices", numSlices.value());
 }
 
-void PanelGammaSlices::updateValues() {
+void PanelGammaSlices::updateValues()
+{
     int nSlices = numSlices.value();
     if (nSlices > 0)
         stepGamma.setValue(rgeGma_.width() / nSlices);
@@ -115,13 +123,15 @@ PanelGammaRange::PanelGammaRange()
     connect(&cbLimitGamma, &QCheckBox::toggled, [this]() { updateValues(); });
 }
 
-PanelGammaRange::~PanelGammaRange() {
+PanelGammaRange::~PanelGammaRange()
+{
     settings_.saveBool("limit", cbLimitGamma.isChecked());
 }
 
 // TODO when min/maxGamma updated -> reflect that in PanelGammaSlices
 
-void PanelGammaRange::updateValues() {
+void PanelGammaRange::updateValues()
+{
     bool on = cbLimitGamma.isChecked();
     minGamma.setEnabled(on);
     maxGamma.setEnabled(on);
@@ -142,7 +152,8 @@ PanelPoints::PanelPoints()
     g->setRowStretch(g->rowCount(), 1);
 }
 
-PanelPoints::~PanelPoints() {
+PanelPoints::~PanelPoints()
+{
     settings_.saveBool("interpolated", rbInterp.isChecked());
 }
 
@@ -182,7 +193,8 @@ PanelInterpolation::PanelInterpolation()
     avgThreshold.setValue(settings_.readInt("avg threshold", 100));
 }
 
-PanelInterpolation::~PanelInterpolation() {
+PanelInterpolation::~PanelInterpolation()
+{
     settings_.saveReal("step alpha", stepAlpha.value());
     settings_.saveReal("step beta", stepBeta.value());
     settings_.saveReal("idw radius", idwRadius.value());

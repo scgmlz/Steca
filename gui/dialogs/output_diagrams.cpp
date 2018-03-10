@@ -128,15 +128,14 @@ public:
     TabDiagramsSave();
     bool currDiagram() const { return currentDiagram_.isChecked(); }
 private:
-    CRadioButton currentDiagram_, allData_;
+    CRadioButton currentDiagram_ {"currentDiagram", "Current diagram"};
+    CRadioButton allData_ {"allData", "All data"};
     GridPanel gp_ {"To save"};
     XTextButton tb_ {actSave};
 };
 
 TabDiagramsSave::TabDiagramsSave()
     : TabSave(true)
-    , currentDiagram_("currentDiagram", "Current diagram")
-    , allData_("allData", "All data")
 {
     grid_->addWidget(&gp_, grid_->rowCount(), 0, 1, 2);
     grid_->setRowStretch(grid_->rowCount(), 1);
@@ -187,6 +186,7 @@ DiagramsFrame::DiagramsFrame()
 }
 
 DiagramsFrame::~DiagramsFrame() {
+    // TODO delete ALL members!
     delete tabSave_;
     delete tabPlot_;
 }
