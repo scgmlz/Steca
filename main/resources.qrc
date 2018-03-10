@@ -23,7 +23,6 @@
         <file alias="scale">icons/scale.svg</file>
         <file alias="selRegion">icons/sel_region.svg</file>
         <file alias="showBackground">icons/show_background.svg</file>
-        <file alias="steps">icons/steps.svg</file>
         <file alias="top">icons/top.svg</file>
         <file alias="useCorrection">icons/use_correction.svg</file>
         <file alias="zoom">icons/zoom.svg</file>

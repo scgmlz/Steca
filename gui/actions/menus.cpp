@@ -54,7 +54,6 @@ Menus::Menus(QMenuBar* mbar)
                 &toggles->fixedIntenImage,
                 &toggles->linkCuts,
                 &toggles->showOverlay,
-                &toggles->stepScale,
                 &toggles->showBins,
         });
 

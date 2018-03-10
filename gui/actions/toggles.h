@@ -33,7 +33,6 @@ public:
             ":/icon/showBackground"};
     CToggle showBins {"showBins", "Show bins", false, ":/icon/angle"};
     CToggle showOverlay {"showOverlay", "Show overlay", false, ":/icon/crop"};
-    CToggle stepScale {"stepScale", "Scale in steps", false, ":/icon/steps"};
     CToggle viewClusters {"viewMeasurements", "Measurements", true, "", Qt::Key_F9};
     CToggle viewFiles {"viewFiles", "Files", true, "", Qt::Key_F8};
     CToggle viewMetadata {"viewMetadata", "Metadata", true, "", Qt::Key_F10};
