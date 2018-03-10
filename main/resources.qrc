@@ -20,6 +20,7 @@
         <file alias="rotate1">icons/rotate1.svg</file>
         <file alias="rotate2">icons/rotate2.svg</file>
         <file alias="rotate3">icons/rotate3.svg</file>
+        <file alias="scale">icons/scale.svg</file>
         <file alias="selRegion">icons/sel_region.svg</file>
         <file alias="showBackground">icons/show_background.svg</file>
         <file alias="steps">icons/steps.svg</file>
