@@ -286,7 +286,6 @@ public:
     DataImageTab();
 private:
     QGridLayout boxIdx_;
-//    QHBoxLayout boxGammaRange_;
     QPixmap pixmap() final;
     IdxMeas idxMeas_;
     CSpinBox idxSlice_{"idxSlice", 4, false, 1, INT_MAX, "Number of γ slice to be shown" };
@@ -324,8 +323,6 @@ DataImageTab::DataImageTab()
     controls_.addLayout(&boxIdx_);
 
     controls_.addStretch(1000);
-//    boxGammaRange_.addWidget(&showGammaRange_, Qt::AlignLeft);
-//    controls_.addLayout(&boxGammaRange_);
     controls_.addWidget(&showGammaRange_, Qt::AlignLeft);
 }
 
