@@ -214,6 +214,48 @@ void ExperimentControls::fromCore()
 }
 
 // ************************************************************************** //
+//  local class GammaControls
+// ************************************************************************** //
+
+//! Control widgets that govern the gamma slicing.
+
+class GammaControls : public QWidget {
+public:
+    GammaControls();
+private:
+    void fromCore();
+
+    QHBoxLayout layout_;
+    CSpinBox numSlices_{"numSlices", 2, false, 0, INT_MAX,
+            "Number of γ slices (0: no slicing, take entire image)" };
+};
+
+GammaControls::GammaControls()
+{
+    // inbound connection
+    connect(gSession, &Session::sigClusters, this, &GammaControls::fromCore);
+
+    // outbound connections
+    connect(&numSlices_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
+            gSession->gammaSelection().setNumSlices(val); });
+
+    // layout
+    layout_.addWidget(new QLabel("number of γ slices"));
+    layout_.addWidget(&numSlices_);
+    layout_.addStretch(1);
+    setLayout(&layout_);
+
+    //initialization
+    fromCore();
+}
+
+void GammaControls::fromCore()
+{
+    numSlices_.setValue(gSession->gammaSelection().numSlices());
+    emit gSession->sigImage(); // TODO redundant with emission from idxSlice
+}
+
+// ************************************************************************** //
 //  class ControlsDetector
 // ************************************************************************** //
 
@@ -222,6 +264,7 @@ ControlsDetector::ControlsDetector()
     vbox_.addWidget(new GeometryControls);
     vbox_.addWidget(new CutControls);
     vbox_.addWidget(new ExperimentControls);
+    vbox_.addWidget(new GammaControls);
     vbox_.addStretch();
     setLayout(&vbox_);
 }

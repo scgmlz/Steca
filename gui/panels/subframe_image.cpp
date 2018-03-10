@@ -143,6 +143,7 @@ public:
 protected:
     virtual QPixmap pixmap() = 0;
     QVBoxLayout controls_;
+    QHBoxLayout box1_;
     QPixmap makePixmap(shp_Image);
     QPixmap makeOverlayPixmap(const class Measurement&);
     QPixmap makeBlankPixmap();
@@ -150,7 +151,6 @@ protected:
     ImageWidget imageView_;
 private:
     QHBoxLayout box_;
-    QVBoxLayout box1_;
 };
 
 ImageTab::ImageTab()
@@ -160,9 +160,8 @@ ImageTab::ImageTab()
     connect(&gGui->toggles->showBins, &QAction::toggled, [this](bool /*unused*/) { render(); });
 
     // layout
-    box1_.addWidget(new XIconButton(&gGui->toggles->fixedIntenImage));
-    box1_.addWidget(new XIconButton(&gGui->toggles->showOverlay));
-    box1_.addStretch(1);
+    box1_.addWidget(new XIconButton(&gGui->toggles->fixedIntenImage), Qt::AlignLeft);
+    box1_.addWidget(new XIconButton(&gGui->toggles->showOverlay), Qt::AlignLeft);
     controls_.addLayout(&box1_);
 
     box_.addLayout(&controls_);
@@ -248,7 +247,7 @@ private:
 };
 
 IdxMeas::IdxMeas()
-    : CSpinBox {"idxMeas", 2, false, 1, INT_MAX,
+    : CSpinBox {"idxMeas", 4, false, 1, INT_MAX,
         "Number of measurement within the current group of measurements"}
 {
     connect(gSession, &Session::sigDataHighlight, this, &IdxMeas::fromCore);
@@ -286,12 +285,11 @@ class DataImageTab : public ImageTab {
 public:
     DataImageTab();
 private:
-    QVBoxLayout boxImg_, boxGreen_, boxGamma_;
+    QGridLayout boxIdx_;
+//    QHBoxLayout boxGammaRange_;
     QPixmap pixmap() final;
     IdxMeas idxMeas_;
-    CSpinBox numSlices_{"numSlices", 2, false, 0, INT_MAX,
-            "Number of γ slices (0: no slicing, take entire image)" };
-    CSpinBox idxSlice_{"numSlice", 2, false, 1, INT_MAX, "Number of γ slice to be shown" };
+    CSpinBox idxSlice_{"idxSlice", 4, false, 1, INT_MAX, "Number of γ slice to be shown" };
     CSpinBox idxTheta_ {"idxTheta", 4, false, 1, INT_MAX, "Number of 2θ bin to be shown" };
     QLabel showGammaRange_;
 };
@@ -300,7 +298,6 @@ DataImageTab::DataImageTab()
 {
     // inbound connection
     connect(gSession, &Session::sigGamma, [this]() {
-            numSlices_.setValue(gSession->gammaSelection().numSlices());
             idxSlice_.setValue(gSession->gammaSelection().idxSlice()+1);
             showGammaRange_.setText("γ: "+ gSession->gammaSelection().range().to_s()+" deg");
             emit gSession->sigImage(); });
@@ -311,29 +308,25 @@ DataImageTab::DataImageTab()
     // outbound connections and control widget setup
     connect(&idxTheta_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
             gSession->thetaSelection().selectSlice(val-1); });
-    connect(&numSlices_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
-            gSession->gammaSelection().setNumSlices(val); });
     connect(&idxSlice_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
             gSession->gammaSelection().selectSlice(val-1); });
 
     // layout
-    boxImg_.addWidget(new QLabel("m#"));
-    boxImg_.addWidget(&idxMeas_);
-    boxImg_.addStretch(1);
-    controls_.addLayout(&boxImg_);
+    box1_.addWidget(new XIconButton(&gGui->toggles->showBins), Qt::AlignLeft);
 
-    boxGreen_.addWidget(new XIconButton(&gGui->toggles->showBins));
-    boxGreen_.addWidget(new QLabel("ϑ#"));
-    boxGreen_.addWidget(&idxTheta_);
-    boxGreen_.addStretch(1);
-    controls_.addLayout(&boxGreen_);
+    boxIdx_.addWidget(new QLabel("image #"), 0, 0, Qt::AlignLeft);
+    boxIdx_.addWidget(&idxMeas_, 0, 1, Qt::AlignLeft);
+    boxIdx_.addWidget(new QLabel("ϑ bin #"), 1, 0, Qt::AlignLeft);
+    boxIdx_.addWidget(&idxTheta_, 1, 1, Qt::AlignLeft);
+    boxIdx_.addWidget(new QLabel("γ slice #"), 2, 0, Qt::AlignLeft);
+    boxIdx_.addWidget(&idxSlice_, 2, 1, Qt::AlignLeft);
+    controls_.addStretch(100);
+    controls_.addLayout(&boxIdx_);
 
-    boxGamma_.addWidget(new QLabel("num γ slices"));
-    boxGamma_.addWidget(&numSlices_);
-    boxGamma_.addWidget(new QLabel("γ#"));
-    boxGamma_.addWidget(&idxSlice_);
-    boxGamma_.addWidget(&showGammaRange_);
-    controls_.addLayout(&boxGamma_);
+    controls_.addStretch(1000);
+//    boxGammaRange_.addWidget(&showGammaRange_, Qt::AlignLeft);
+//    controls_.addLayout(&boxGammaRange_);
+    controls_.addWidget(&showGammaRange_, Qt::AlignLeft);
 }
 
 QPixmap DataImageTab::pixmap()
