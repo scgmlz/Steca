@@ -302,7 +302,10 @@ DataImageTab::DataImageTab()
     // inbound connection
     connect(gSession, &Session::sigGamma, [this]() {
             idxSlice_.setValue(gSession->gammaSelection().idxSlice()+1);
+            const Measurement* measurement = gSession->dataset().highlight().measurement();
+            gammaRangeTotal_.setText(measurement->rgeGmaFull().to_s()+" deg");
             gammaRangeSlice_.setText(gSession->gammaSelection().range().to_s()+" deg");
+            thetaRangeTotal_.setText(measurement->rgeTth().to_s()+" deg");
             emit gSession->sigImage(); });
     connect(gSession, &Session::sigTheta, [this]() {
             idxTheta_.setValue(gSession->thetaSelection().iSlice()+1);
