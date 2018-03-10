@@ -128,9 +128,9 @@ public:
     TabDiagramsSave();
     bool currDiagram() const { return currentDiagram_.isChecked(); }
 private:
+    GridPanel gp_ {"To save"};
     CRadioButton currentDiagram_ {"currentDiagram", "Current diagram"};
     CRadioButton allData_ {"allData", "All data"};
-    GridPanel gp_ {"To save"};
     XTextButton tb_ {actSave};
 };
 
