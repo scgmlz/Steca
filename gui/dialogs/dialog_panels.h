@@ -30,10 +30,7 @@ public:
     void setVerticalStretch(int);
     void setStretch(int horizontal, int vertical);
 
-    QGridLayout* grid() const { return grid_; }
-
-protected:
-    QGridLayout* grid_;
+    QGridLayout grid_; // needed by TabSave, TabDiagramsSave, TabD'gramSave, and others; therefore public
 };
 
 

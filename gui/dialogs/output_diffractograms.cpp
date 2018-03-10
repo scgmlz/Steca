@@ -92,7 +92,7 @@ TabDiffractogramsSave::TabDiffractogramsSave()
     grid_->addWidget(&gp_, grid_->rowCount(), 0, 1, 2);
     grid_->setRowStretch(grid_->rowCount(), 1);
 
-    QGridLayout* g = gp_.grid();
+    QGridLayout* g = &gp_.grid_;
     g->addWidget(&rbCurrent_);
     g->addWidget(&rbAllSequential_);
     g->addWidget(&rbAll_);

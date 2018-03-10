@@ -22,7 +22,7 @@
 
 GridPanel::GridPanel(const QString& title) : QGroupBox(title)
 {
-    setLayout((grid_ = new QGridLayout()));
+    setLayout(&grid_);
 }
 
 void GridPanel::setHorizontalStretch(int stretch)
@@ -55,9 +55,8 @@ PanelPeak::PanelPeak()
     : GridPanel("Peak")
     , cbRefl("outRefl", gSession->peaks().names())
 {
-    QGridLayout* g = grid();
-    g->addWidget(&cbRefl);
-    g->setRowStretch(g->rowCount(), 1);
+    grid_.addWidget(&cbRefl);
+    grid_.setRowStretch(grid_.rowCount(), 1);
 }
 
 
@@ -67,17 +66,15 @@ PanelGammaSlices::PanelGammaSlices()
     , stepGamma("stepGamma", 6, 0.0)
     , settings_("gamma_slices")
 {
-    QGridLayout* g = grid();
-
-    g->addWidget(new QLabel("count"), 0, 0);
+    grid_.addWidget(new QLabel("count"), 0, 0);
     numSlices.setValue(settings_.readInt("num_slices", 0));
-    g->addWidget(&numSlices, 0, 1);
+    grid_.addWidget(&numSlices, 0, 1);
 
-    g->addWidget(new QLabel("degrees"), 1, 0);
-    g->addWidget(&stepGamma, 1, 1);
+    grid_.addWidget(new QLabel("degrees"), 1, 0);
+    grid_.addWidget(&stepGamma, 1, 1);
     stepGamma.setReadOnly(true);
 
-    g->setRowStretch(g->rowCount(), 1);
+    grid_.setRowStretch(grid_.rowCount(), 1);
 
     rgeGma_ = gSession->experiment().rgeGma();
 
@@ -106,14 +103,12 @@ PanelGammaRange::PanelGammaRange()
     , maxGamma("maxGamma", 6, -180., 180.)
     , settings_("gamma_range")
 {
-    QGridLayout* g = grid();
-
-    g->addWidget(&cbLimitGamma, 0, 0, 1, 2);
+    grid_.addWidget(&cbLimitGamma, 0, 0, 1, 2);
     cbLimitGamma.setChecked(settings_.readBool("limit", false));
 
-    g->addWidget(new QLabel("min"), 1, 0); g->addWidget(&minGamma, 1, 1);
-    g->addWidget(new QLabel("max"), 2, 0); g->addWidget(&maxGamma, 2, 1);
-    g->setRowStretch(g->rowCount(), 1);
+    grid_.addWidget(new QLabel("min"), 1, 0); grid_.addWidget(&minGamma, 1, 1);
+    grid_.addWidget(new QLabel("max"), 2, 0); grid_.addWidget(&maxGamma, 2, 1);
+    grid_.setRowStretch(grid_.rowCount(), 1);
 
     rgeGma_ = gSession->experiment().rgeGma();
 
@@ -144,12 +139,11 @@ PanelPoints::PanelPoints()
     , rbInterp("rbInterp", "interpolated")
     , settings_("polediagram_points")
 {
-    QGridLayout* g = grid();
-    g->addWidget(&rbCalc, 0, 0);
-    g->addWidget(&rbInterp, 1, 0);
+    grid_.addWidget(&rbCalc, 0, 0);
+    grid_.addWidget(&rbInterp, 1, 0);
     (settings_.readBool("interpolated", false) ? rbInterp : rbCalc).setChecked(true);
 
-    g->setRowStretch(g->rowCount(), 1);
+    grid_.setRowStretch(grid_.rowCount(), 1);
 }
 
 PanelPoints::~PanelPoints()
@@ -167,22 +161,20 @@ PanelInterpolation::PanelInterpolation()
     , avgRadius("avgRadius", 6, 0., 90.)
     , avgThreshold("avgThreshold", 6, 0, 100)
 {
-    QGridLayout* g = grid();
+    grid_.addWidget(new QLabel("step α"), 0, 0, Qt::AlignRight);
+    grid_.addWidget(&stepAlpha, 0, 1);
+    grid_.addWidget(new QLabel("β"), 1, 0, Qt::AlignRight);
+    grid_.addWidget(&stepBeta, 1, 1);
+    grid_.addWidget(new QLabel("idw radius"), 2, 0, Qt::AlignRight);
+    grid_.addWidget(&idwRadius, 2, 1);
+    grid_.addWidget(new QLabel("avg. α max"), 0, 2, Qt::AlignRight);
+    grid_.addWidget(&avgAlphaMax, 0, 3);
+    grid_.addWidget(new QLabel("radius"), 1, 2, Qt::AlignRight);
+    grid_.addWidget(&avgRadius, 1, 3);
+    grid_.addWidget(new QLabel("inclusion %"), 2, 2, Qt::AlignRight);
+    grid_.addWidget(&avgThreshold, 2, 3);
 
-    g->addWidget(new QLabel("step α"), 0, 0, Qt::AlignRight);
-    g->addWidget(&stepAlpha, 0, 1);
-    g->addWidget(new QLabel("β"), 1, 0, Qt::AlignRight);
-    g->addWidget(&stepBeta, 1, 1);
-    g->addWidget(new QLabel("idw radius"), 2, 0, Qt::AlignRight);
-    g->addWidget(&idwRadius, 2, 1);
-    g->addWidget(new QLabel("avg. α max"), 0, 2, Qt::AlignRight);
-    g->addWidget(&avgAlphaMax, 0, 3);
-    g->addWidget(new QLabel("radius"), 1, 2, Qt::AlignRight);
-    g->addWidget(&avgRadius, 1, 3);
-    g->addWidget(new QLabel("inclusion %"), 2, 2, Qt::AlignRight);
-    g->addWidget(&avgThreshold, 2, 3);
-
-    g->setRowStretch(g->rowCount(), 1);
+    grid_.setRowStretch(grid_.rowCount(), 1);
 
     stepAlpha.setValue(settings_.readReal("step alpha", 5));
     stepBeta.setValue(settings_.readReal("step beta", 5));
@@ -215,11 +207,10 @@ PanelDiagram::PanelDiagram()
     xAxis.addItems(tags);
     yAxis.addItems(tags);
 
-    QGridLayout* g = grid();
-    g->addWidget(new QLabel("x"), 1, 0);
-    g->addWidget(&xAxis, 1, 1);
-    g->addWidget(new QLabel("y"), 0, 0);
-    g->addWidget(&yAxis, 0, 1);
+    grid_.addWidget(new QLabel("x"), 1, 0);
+    grid_.addWidget(&xAxis, 1, 1);
+    grid_.addWidget(new QLabel("y"), 0, 0);
+    grid_.addWidget(&yAxis, 0, 1);
 
-    g->setRowStretch(g->rowCount(), 1);
+    grid_.setRowStretch(grid_.rowCount(), 1);
 }

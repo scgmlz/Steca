@@ -35,7 +35,7 @@ TabSave::TabSave(bool withTypes)
 
     auto* gp = new GridPanel("Destination");
     grid_->addWidget(gp, 0, 0);
-    QGridLayout* g = gp->grid();
+    QGridLayout* g = &gp->grid_;
 
     dir_ = new QLineEdit(dir);
     dir_->setReadOnly(true);
@@ -57,7 +57,7 @@ TabSave::TabSave(bool withTypes)
 
     gp = new GridPanel("File type");
     grid_->addWidget(gp, 0, 1);
-    g = gp->grid();
+    g = &gp->grid_;
 
     g->addWidget(&rbDat_, 0, 0);
     g->addWidget(&rbCsv_, 1, 0);

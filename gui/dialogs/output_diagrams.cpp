@@ -140,7 +140,7 @@ TabDiagramsSave::TabDiagramsSave()
     grid_->addWidget(&gp_, grid_->rowCount(), 0, 1, 2);
     grid_->setRowStretch(grid_->rowCount(), 1);
 
-    QGridLayout* g = gp_.grid();
+    QGridLayout* g = &gp_.grid_;
     g->addWidget(&currentDiagram_);
     g->addWidget(&allData_);
     g->addWidget(&tb_, 1, 1);

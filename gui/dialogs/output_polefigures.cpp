@@ -226,7 +226,7 @@ TabPoleFiguresSave::TabPoleFiguresSave()
     hb->addStretch();
 
     {
-        QGridLayout* g = p1->grid();
+        QGridLayout* g = &p1->grid_;
         g->addWidget(&outputInten_);
         g->addWidget(&outputTth_);
         g->addWidget(&outputFWHM_);
@@ -234,7 +234,7 @@ TabPoleFiguresSave::TabPoleFiguresSave()
     }
 
     {
-        QGridLayout* g = p2->grid();
+        QGridLayout* g = &p2->grid_;
         g->addWidget(&rbSelectedRefl_);
         g->addWidget(&rbAllRefls_);
         g->addWidget(new XTextButton(actSave), 2, 1);
