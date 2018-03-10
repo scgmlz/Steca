@@ -286,11 +286,15 @@ public:
     DataImageTab();
 private:
     QGridLayout boxIdx_;
+    QGridLayout boxRanges_;
     QPixmap pixmap() final;
     IdxMeas idxMeas_;
     CSpinBox idxSlice_{"idxSlice", 4, false, 1, INT_MAX, "Number of γ slice to be shown" };
     CSpinBox idxTheta_ {"idxTheta", 4, false, 1, INT_MAX, "Number of 2θ bin to be shown" };
-    QLabel showGammaRange_;
+    QLabel gammaRangeTotal_;
+    QLabel gammaRangeSlice_;
+    QLabel thetaRangeTotal_;
+    QLabel thetaRangeBin_;
 };
 
 DataImageTab::DataImageTab()
@@ -298,7 +302,7 @@ DataImageTab::DataImageTab()
     // inbound connection
     connect(gSession, &Session::sigGamma, [this]() {
             idxSlice_.setValue(gSession->gammaSelection().idxSlice()+1);
-            showGammaRange_.setText("γ: "+ gSession->gammaSelection().range().to_s()+" deg");
+            gammaRangeSlice_.setText(gSession->gammaSelection().range().to_s()+" deg");
             emit gSession->sigImage(); });
     connect(gSession, &Session::sigTheta, [this]() {
             idxTheta_.setValue(gSession->thetaSelection().iSlice()+1);
@@ -323,7 +327,15 @@ DataImageTab::DataImageTab()
     controls_.addLayout(&boxIdx_);
 
     controls_.addStretch(1000);
-    controls_.addWidget(&showGammaRange_, Qt::AlignLeft);
+    boxRanges_.addWidget(new QLabel("γ total:"), 0, 0, Qt::AlignLeft);
+    boxRanges_.addWidget(new QLabel("γ slice:"), 1, 0, Qt::AlignLeft);
+    boxRanges_.addWidget(new QLabel("ϑ total:" ), 2, 0, Qt::AlignLeft);
+    boxRanges_.addWidget(new QLabel("ϑ bin:"   ), 3, 0, Qt::AlignLeft);
+    boxRanges_.addWidget(&gammaRangeTotal_, 0, 1, Qt::AlignLeft);
+    boxRanges_.addWidget(&gammaRangeSlice_, 1, 1, Qt::AlignLeft);
+    boxRanges_.addWidget(&thetaRangeTotal_, 2, 1, Qt::AlignLeft);
+    boxRanges_.addWidget(&thetaRangeBin_,   3, 1, Qt::AlignLeft);
+    controls_.addLayout(&boxRanges_, Qt::AlignLeft|Qt::AlignBottom);
 }
 
 QPixmap DataImageTab::pixmap()
