@@ -51,7 +51,7 @@ void CommandRegistry::learn(QString name, CSettable* widget) {
             idxEntry = ++(numberedEntry->second);
         name.replace("#", QString::number(idxEntry));
     }
-    qDebug() << "registry " << name_ << " learns " << name;
+    // qDebug() << "registry " << name_ << " learns " << name;
     if (widgets_.find(name)!=widgets_.end())
         qFatal(("Duplicate command '"+name+"'").toLatin1()); // TODO RESTORE qFatal
     widgets_[name] = widget;
