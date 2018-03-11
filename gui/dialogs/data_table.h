@@ -44,7 +44,7 @@ public:
 
 private:
     int numCols_;
-    int sortColumn_;
+    int sortColumn_ {-1};
 
     QStringList headers_;
     vec<int> colIndexMap_;

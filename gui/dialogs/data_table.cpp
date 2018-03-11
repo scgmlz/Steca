@@ -24,7 +24,8 @@
 // ************************************************************************** //
 
 DataModel::DataModel(int numColumns_)
-    : TableModel("data"), numCols_(numColumns_), sortColumn_(-1)
+    : TableModel("data#")
+    , numCols_(numColumns_)
 {
     colIndexMap_.resize(numCols_);
     for_i (numCols_)
@@ -32,7 +33,7 @@ DataModel::DataModel(int numColumns_)
 }
 
 
-// The first column contains row numbers. The rest numCols columns contain data.
+//! The first column contains row numbers. The remaining numCols columns contain data.
 
 QVariant DataModel::data(const QModelIndex& index, int role) const {
     int indexRow = index.row(), indexCol = index.column();
