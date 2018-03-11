@@ -44,3 +44,18 @@ CModal::~CModal()
     gConsole->log("@close");
     gConsole->call("@pop");
 }
+
+// ************************************************************************** //
+//  class CModelessDialog
+// ************************************************************************** //
+
+CModelessDialog::CModelessDialog(QWidget* parent, const QString& name)
+    : QDialog(parent)
+    , CSettable(name)
+{
+    setModal(false);
+}
+
+void CModelessDialog::onCommand(const QStringList&)
+{
+}

@@ -254,12 +254,8 @@ Params::Params(ePanels panels)
 // ************************************************************************** //
 
 Frame::Frame(const QString& name, const QString& title, Params* params)
-    : QDialog(gGui)
-    , CModal(name)
-    , CSettable(name)
+    : CModelessDialog(gGui, name)
 {
-
-    setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowTitle(title);
 
@@ -322,9 +318,6 @@ Frame::Frame(const QString& name, const QString& title, Params* params)
 
 Frame::~Frame() {
     delete tabTable_;
-}
-
-void Frame::onCommand(const QStringList&) { // TODO get rid of this
 }
 
 void Frame::calculate() {

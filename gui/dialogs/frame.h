@@ -49,11 +49,10 @@ private:
 
 //! A rich modal dialog, for the polefig and diagram outputs.
 
-class Frame : public QDialog, private CModal, private CSettable {
+class Frame : public CModelessDialog {
 public:
     Frame(const QString& name, const QString& title, Params*);
     ~Frame();
-    void onCommand(const QStringList&) final;
 protected:
     QAction *actClose_, *actCalculate_, *actInterpolate_;
     QToolButton *btnClose_, *btnCalculate_, *btnInterpolate_;
