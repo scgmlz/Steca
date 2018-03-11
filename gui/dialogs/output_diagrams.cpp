@@ -129,8 +129,8 @@ public:
     bool currDiagram() const { return currentDiagram_.isChecked(); }
 private:
     GridPanel gp_ {"To save"};
-    CRadioButton currentDiagram_ {"currentDiagram", "Current diagram"};
-    CRadioButton allData_ {"allData", "All data"};
+    CRadioButton currentDiagram_ {"currentDiagram#", "Current diagram"};
+    CRadioButton allData_ {"allData#", "All data"};
     XTextButton tb_ {actSave};
 };
 
@@ -154,7 +154,7 @@ TabDiagramsSave::TabDiagramsSave()
 // ************************************************************************** //
 
 DiagramsFrame::DiagramsFrame()
-    : Frame("diagrams", "Diagrams", new Params(PANELS))
+    : Frame("diagrams#", "Diagrams", new Params(PANELS))
 {
     btnInterpolate_->hide();
 

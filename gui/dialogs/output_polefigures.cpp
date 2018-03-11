@@ -66,7 +66,7 @@ TabGraph::TabGraph(Params& params)
     , flat_(false)
     , alphaMax_(90)
     , avgAlphaMax_(0)
-    , cbFlat_("cbFlat", "no intensity")
+    , cbFlat_("cbFlat#", "no intensity")
 {
     setLayout((grid_ = new QGridLayout()));
     ASSERT(params_.panelInterpolation);
@@ -204,11 +204,11 @@ public:
     void rawReflSettings(bool on);
 
 private:
-    CCheckBox outputInten_ {"outputInten", "Intensity pole figure"};
-    CCheckBox outputTth_ {"outputTth", "Peak position pole figure"};
-    CCheckBox outputFWHM_ {"outputFWHM", "TWHM pole figure"};
-    CRadioButton rbSelectedRefl_ {"rbSelectedRefl", "Selected peak"};
-    CRadioButton rbAllRefls_ {"rbAllRefls", "All peaks"};
+    CCheckBox outputInten_ {"outputInten#", "Intensity pole figure"};
+    CCheckBox outputTth_ {"outputTth#", "Peak position pole figure"};
+    CCheckBox outputFWHM_ {"outputFWHM#", "TWHM pole figure"};
+    CRadioButton rbSelectedRefl_ {"rbSelectedRefl#", "Selected peak"};
+    CRadioButton rbAllRefls_ {"rbAllRefls#", "All peaks"};
 };
 
 TabPoleFiguresSave::TabPoleFiguresSave()
@@ -275,7 +275,7 @@ static const Params::ePanels PANELS =
     Params::ePanels(Params::REFLECTION | Params::GAMMA | Params::POINTS | Params::INTERPOLATION);
 
 PoleFiguresFrame::PoleFiguresFrame()
-    : Frame("polfig", "Pole figure", new Params(PANELS))
+    : Frame("polfig#", "Pole figure", new Params(PANELS))
 {
     {
         auto* tab = new QWidget();

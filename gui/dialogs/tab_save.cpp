@@ -21,13 +21,13 @@ static QString const DAT_SFX(".dat"), DAT_SEP(" "), // suffix, separator
     CSV_SFX(".csv"), CSV_SEP(", ");
 
 TabSave::TabSave(bool withTypes)
-    : rbDat_("rbDat", DAT_SFX)
-    , rbCsv_("rbCsv", CSV_SFX)
+    : rbDat_("rbDat#", DAT_SFX)
+    , rbCsv_("rbCsv#", CSV_SFX)
 {
 
     setLayout((grid_ = new QGridLayout()));
-    actBrowse = new CTrigger("actBrowse", "Browse...");
-    actSave = new CTrigger("actSave", "Save");
+    actBrowse = new CTrigger("actBrowse#", "Browse...");
+    actSave = new CTrigger("actSave#", "Save");
 
     QString dir = gGui->saveDir;
     if (!QDir(dir).exists())

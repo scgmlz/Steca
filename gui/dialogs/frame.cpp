@@ -272,9 +272,9 @@ Frame::Frame(const QString& name, const QString& title, Params* params)
     auto hb = new QHBoxLayout();
     box_->addLayout(hb);
 
-    actClose_ = new CTrigger("actClose", "Close");
-    actCalculate_ = new CTrigger("actCalculate", "Calculate");
-    actInterpolate_ = new CTrigger("actInterpolate", "Interpolate");
+    actClose_ = new CTrigger("actClose#", "Close");
+    actCalculate_ = new CTrigger("actCalculate#", "Calculate");
+    actInterpolate_ = new CTrigger("actInterpolate#", "Interpolate");
 
     hb->addWidget((btnClose_ = new XTextButton(actClose_)));
     hb->addStretch(1);

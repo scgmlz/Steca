@@ -52,8 +52,8 @@ void GridPanel::setStretch(int horizontal, int vertical)
 // ************************************************************************** //
 
 PanelPeak::PanelPeak()
-    : GridPanel("Peak")
-    , cbRefl("outRefl", gSession->peaks().names())
+    : GridPanel("Peak#")
+    , cbRefl("outRefl#", gSession->peaks().names())
 {
     grid_.addWidget(&cbRefl);
     grid_.setRowStretch(grid_.rowCount(), 1);
@@ -62,8 +62,6 @@ PanelPeak::PanelPeak()
 
 PanelGammaSlices::PanelGammaSlices()
     : GridPanel("Gamma slices")
-    , numSlices("numSlices", 4, false, 0)
-    , stepGamma("stepGamma", 6, 0.0)
     , settings_("gamma_slices")
 {
     grid_.addWidget(new QLabel("count"), 0, 0);
@@ -98,9 +96,6 @@ void PanelGammaSlices::updateValues()
 
 PanelGammaRange::PanelGammaRange()
     : GridPanel("Gamma range")
-    , cbLimitGamma("cbLimitGamma", "limit")
-    , minGamma("minGamma", 6, -180., 180.)
-    , maxGamma("maxGamma", 6, -180., 180.)
     , settings_("gamma_range")
 {
     grid_.addWidget(&cbLimitGamma, 0, 0, 1, 2);
@@ -134,9 +129,7 @@ void PanelGammaRange::updateValues()
 
 
 PanelPoints::PanelPoints()
-    : GridPanel("Points")
-    , rbCalc("rbCalc", "calculated")
-    , rbInterp("rbInterp", "interpolated")
+    : GridPanel("Points#")
     , settings_("polediagram_points")
 {
     grid_.addWidget(&rbCalc, 0, 0);
@@ -153,13 +146,7 @@ PanelPoints::~PanelPoints()
 
 
 PanelInterpolation::PanelInterpolation()
-    : GridPanel("Interpolation")
-    , stepAlpha("stepAlpha", 6, 1., 30.)
-    , stepBeta("stepBeta", 6, 1., 30.)
-    , idwRadius("idwRadius", 6, 0., 90.)
-    , avgAlphaMax("avgAlphaMax", 6, 0., 90.)
-    , avgRadius("avgRadius", 6, 0., 90.)
-    , avgThreshold("avgThreshold", 6, 0, 100)
+    : GridPanel("Interpolation#")
 {
     grid_.addWidget(new QLabel("step α"), 0, 0, Qt::AlignRight);
     grid_.addWidget(&stepAlpha, 0, 1);
@@ -197,9 +184,7 @@ PanelInterpolation::~PanelInterpolation()
 
 
 PanelDiagram::PanelDiagram()
-    : GridPanel("Diagram")
-    , xAxis("xAxis")
-    , yAxis("yAxis")
+    : GridPanel("Diagram#")
 {
     QStringList tags = PeakInfo::dataTags(false);
     for_i (Metadata::numAttributes(false) - Metadata::numAttributes(true))

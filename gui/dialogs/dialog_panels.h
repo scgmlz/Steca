@@ -50,8 +50,8 @@ class PanelGammaSlices : public GridPanel {
 public:
     PanelGammaSlices();
     ~PanelGammaSlices();
-    CSpinBox numSlices;
-    CDoubleSpinBox stepGamma;
+    CSpinBox numSlices {"numSlices#", 4, false, 0};
+    CDoubleSpinBox stepGamma {"stepGamma#", 6, 0.0};
     void updateValues();
 private:
     Range rgeGma_;
@@ -64,8 +64,9 @@ class PanelGammaRange : public GridPanel {
 public:
     PanelGammaRange();
     ~PanelGammaRange();
-    CCheckBox cbLimitGamma;
-    CDoubleSpinBox minGamma, maxGamma;
+    CCheckBox cbLimitGamma {"cbLimitGamma#", "limit"};
+    CDoubleSpinBox minGamma {"minGamma#", 6, -180., 180.};
+    CDoubleSpinBox maxGamma {"maxGamma#", 6, -180., 180.};
     void updateValues();
 private:
     Range rgeGma_;
@@ -78,7 +79,8 @@ class PanelPoints : public GridPanel {
 public:
     PanelPoints();
     ~PanelPoints();
-    CRadioButton rbCalc, rbInterp;
+    CRadioButton rbCalc {"rbCalc#", "calculated"};
+    CRadioButton rbInterp {"rbInterp#", "interpolated"};
 private:
     Settings settings_;
 };
@@ -89,9 +91,12 @@ class PanelInterpolation : public GridPanel {
 public:
     PanelInterpolation();
     ~PanelInterpolation();
-    CDoubleSpinBox stepAlpha, stepBeta, idwRadius;
-    CDoubleSpinBox avgAlphaMax, avgRadius;
-    CSpinBox avgThreshold;
+    CDoubleSpinBox stepAlpha {"stepAlpha#", 6, 1., 30.};
+    CDoubleSpinBox stepBeta {"stepBeta#", 6, 1., 30.};
+    CDoubleSpinBox idwRadius {"idwRadius#", 6, 0., 90.};
+    CDoubleSpinBox avgAlphaMax {"avgAlphaMax#", 6, 0., 90.};
+    CDoubleSpinBox avgRadius {"avgRadius#", 6, 0., 90.};
+    CSpinBox avgThreshold {"avgThreshold#", 6, 0, 100};
 private:
     Settings settings_;
 };
@@ -101,7 +106,8 @@ private:
 class PanelDiagram : public GridPanel {
 public:
     PanelDiagram();
-    CComboBox xAxis, yAxis;
+    CComboBox xAxis {"xAxis#"};
+    CComboBox yAxis {"yAxis#"};
 };
 
 #endif // DIALOG_PANELS_H

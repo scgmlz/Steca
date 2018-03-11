@@ -30,7 +30,8 @@ protected:
 private:
     QLineEdit* dir_;
     QLineEdit* file_;
-    CRadioButton rbDat_, rbCsv_;
+    CRadioButton rbDat_;
+    CRadioButton rbCsv_;
 };
 
 #endif // TAB_SAVE_H
