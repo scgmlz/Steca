@@ -30,7 +30,6 @@ CTrigger::CTrigger(const QString& name, const QString& text, const QString& icon
 {
     if (iconFile!="")
         setIcon(QIcon(iconFile));
-    gConsole->learn(name, this);
     QObject::connect(this, &QAction::triggered, [name]()->void {
             gConsole->log(name+" trigger"); });
     QObject::connect(this, &QAction::changed, [this, name]()->void {
@@ -68,7 +67,6 @@ CToggle::CToggle(const QString& name, const QString& text, bool on, const QStrin
         setIcon(QIcon(iconFile));
     setCheckable(true);
     setChecked(on);
-    gConsole->learn(name, this);
     QObject::connect(this, &QAction::toggled, [name](bool val)->void {
             gConsole->log(name+" switch "+(val ? "on" : "off")); });
     QObject::connect(this, &QAction::changed, [this, name]()->void {

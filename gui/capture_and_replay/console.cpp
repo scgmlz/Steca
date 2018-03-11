@@ -30,7 +30,7 @@ class CommandRegistry {
 public:
     CommandRegistry() = delete;
     CommandRegistry(const QString& _name) : name_(_name) {}
-    void learn(const QString&, CSettable*);
+    void learn(QString, CSettable*);
     void forget(const QString&);
     CSettable* find(const QString& name);
     void dump(QTextStream&);
@@ -38,12 +38,22 @@ public:
 private:
     const QString name_;
     std::map<const QString, CSettable*> widgets_;
+    std::map<const QString, int> numberedEntries_;
 };
 
-void CommandRegistry::learn(const QString& name, CSettable* widget) {
+void CommandRegistry::learn(QString name, CSettable* widget) {
+    if (name.contains("#")) {
+        auto numberedEntry = numberedEntries_.find(name);
+        int idxEntry = 1;
+        if (numberedEntry==numberedEntries_.end())
+            numberedEntries_[name] = idxEntry;
+        else
+            idxEntry = ++(numberedEntry->second);
+        name.replace("#", QString::number(idxEntry));
+    }
     qDebug() << "registry " << name_ << " learns " << name;
     if (widgets_.find(name)!=widgets_.end())
-        qDebug(("Duplicate command '"+name+"'").toLatin1()); // TODO RESTORE qFatal
+        qFatal(("Duplicate command '"+name+"'").toLatin1()); // TODO RESTORE qFatal
     widgets_[name] = widget;
 }
 
