@@ -15,7 +15,9 @@
 #include "console.h"
 #include "core/def/debug.h"
 #include "core/typ/exception.h"
+#include <QApplication> // tmp
 #include <QDateTime>
+#include <QDir> // tmp
 #include <QFile>
 #include <QSocketNotifier>
 
@@ -110,6 +112,7 @@ void Console::readLine() {
 }
 
 void Console::readFile(const QString& fName) {
+    QDir::setCurrent(qApp->applicationDirPath());
     QFile file(fName);
     log("@file " + fName);
     if (!file.open(QIODevice::ReadOnly)) {

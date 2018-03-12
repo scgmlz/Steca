@@ -30,6 +30,7 @@
 
 #include <iostream>
 #include <QApplication>
+#include <QDir>
 #include <QLoggingCategory>
 #include <QStyleFactory>
 
