@@ -43,7 +43,8 @@ private:
     std::map<const QString, int> numberedEntries_;
 };
 
-void CommandRegistry::learn(QString name, CSettable* widget) {
+void CommandRegistry::learn(QString name, CSettable* widget)
+{
     if (name.contains("#")) {
         auto numberedEntry = numberedEntries_.find(name);
         int idxEntry = 1;
@@ -59,21 +60,24 @@ void CommandRegistry::learn(QString name, CSettable* widget) {
     widgets_[name] = widget;
 }
 
-void CommandRegistry::forget(const QString& name) {
+void CommandRegistry::forget(const QString& name)
+{
     auto it = widgets_.find(name);
     if (it==widgets_.end())
         qFatal(("Cannot deregister command '"+name+"'").toLatin1());
     widgets_.erase(it);
 }
 
-CSettable* CommandRegistry::find(const QString& name) {
+CSettable* CommandRegistry::find(const QString& name)
+{
     auto entry = widgets_.find(name);
     if (entry==widgets_.end())
         return {};
     return entry->second;
 }
 
-void CommandRegistry::dump(QTextStream& stream) {
+void CommandRegistry::dump(QTextStream& stream)
+{
     stream << "commands:\n";
     for (auto it: widgets_)
         stream << " " << it.first << "\n";
@@ -99,11 +103,13 @@ Console::Console()
     log("# Steca session started");
 }
 
-Console::~Console() {
+Console::~Console()
+{
     log("# Steca session ended");
 }
 
-void Console::readLine() {
+void Console::readLine()
+{
     QTextStream qtin(stdin);
     QString line = qtin.readLine();
     caller_ = Caller::cli;
@@ -111,7 +117,8 @@ void Console::readLine() {
     caller_ = Caller::gui;
 }
 
-void Console::readFile(const QString& fName) {
+void Console::readFile(const QString& fName)
+{
     QDir::setCurrent(qApp->applicationDirPath());
     QFile file(fName);
     log("@file " + fName);
@@ -136,7 +143,8 @@ void Console::readFile(const QString& fName) {
     commandsFromStack();
 }
 
-void Console::commandsFromStack() {
+void Console::commandsFromStack()
+{
     while (!commandLifo_.empty()) {
         const QString line = commandLifo_.front();
         commandLifo_.pop_front();
@@ -155,13 +163,15 @@ void Console::commandsFromStack() {
 }
 
 //! Commands issued by the system (and not by the user nor a command file) should pass here
-void Console::call(const QString& line) {
+void Console::call(const QString& line)
+{
     caller_ = Caller::sys;
     exec(line);
     caller_ = Caller::gui;
 }
 
-Console::Result Console::exec(QString line) {
+Console::Result Console::exec(QString line)
+{
     QTextStream qterr(stderr);
     if (line[0]=='#')
         return Result::ok; // comment => nothing to do
@@ -217,22 +227,26 @@ Console::Result Console::exec(QString line) {
     return Result::err;
 }
 
-void Console::learn(const QString& name, CSettable* widget) {
+void Console::learn(const QString& name, CSettable* widget)
+{
     registry().learn(name, widget);
 }
 
-void Console::forget(const QString& name) {
+void Console::forget(const QString& name)
+{
     registry().forget(name);
 }
 
-void Console::log2(bool hadFocus, const QString& line) {
+void Console::log2(bool hadFocus, const QString& line)
+{
     if (caller_==Caller::gui && !hadFocus)
         log("#: " + line);
     else
         log(line);
 }
 
-void Console::log(const QString& line) {
+void Console::log(const QString& line)
+{
     log_ << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm::ss.zzz")
          << " " << registry().name() << "]";
     if (caller_==Caller::gui)
