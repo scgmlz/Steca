@@ -98,6 +98,7 @@ QStringList openFileNames(QWidget* parent, const QString& caption, const QString
                           const QString& filter, bool plural)
 {
     CFileDialog dlg(parent, caption, dir, filter);
+    dlg.setDirectory(QDir::homePath());
     dlg.setOption(QFileDialog::DontUseNativeDialog);
     dlg.setViewMode(QFileDialog::Detail);
     dlg.setAcceptMode(QFileDialog::AcceptOpen);
@@ -122,7 +123,7 @@ QString saveFileName(
     QWidget* parent, const QString& caption, const QString& dir, const QString& filter)
 {
     CFileDialog dlg(parent, caption, dir, filter);
-
+    dlg.setDirectory(QDir::homePath());
     dlg.setOption(QFileDialog::DontUseNativeDialog);
     dlg.setViewMode(QFileDialog::Detail);
     dlg.setFileMode(QFileDialog::AnyFile);

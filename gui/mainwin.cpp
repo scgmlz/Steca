@@ -58,7 +58,6 @@ MainWin::MainWin()
     menus = new Menus(menuBar());
 
     setWindowIcon(QIcon(":/icon/retroStier"));
-    QDir::setCurrent(QDir::homePath());
     setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
 
     // connect signals

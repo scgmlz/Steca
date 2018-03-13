@@ -119,7 +119,6 @@ void Console::readLine()
 
 void Console::readFile(const QString& fName)
 {
-    QDir::setCurrent(qApp->applicationDirPath());
     QFile file(fName);
     log("@file " + fName);
     if (!file.open(QIODevice::ReadOnly)) {
