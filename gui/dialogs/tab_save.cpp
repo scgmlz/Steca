@@ -30,7 +30,7 @@ TabSave::TabSave(bool withTypes)
     actSave = new CTrigger("actSave#", "Save");
 
     QString dir = gGui->saveDir;
-    if (!QDir(dir).exists())
+    if (!QDir(dir).exists()) // TODO DIRS simplify
         dir = QDir::current().absolutePath();
 
     auto* gp = new GridPanel("Destination");
