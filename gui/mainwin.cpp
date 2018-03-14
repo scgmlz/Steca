@@ -92,13 +92,15 @@ MainWin::MainWin()
     saveFmt = settings_.readStr("export_format");
 }
 
-MainWin::~MainWin() {
+MainWin::~MainWin()
+{
     settings_.saveStr("export_directory", saveDir);
     settings_.saveStr("export_format", saveFmt);
 }
 
 
-void MainWin::initLayout() {
+void MainWin::initLayout()
+{
     addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_ = new SubframeFiles()));
     addDockWidget(Qt::LeftDockWidgetArea, (dockClusters_ = new SubframeClusters()));
     addDockWidget(Qt::LeftDockWidgetArea, (dockMetadata_ = new SubframeMetadata()));
@@ -122,10 +124,9 @@ void MainWin::initLayout() {
     statusBar();
 }
 
-void MainWin::checkUpdate() {
-
+void MainWin::checkUpdate()
+{
     QNetworkRequest req;
-
     QString ver = qApp->applicationVersion();
     QString qry = ver % "\t| " % QSysInfo::prettyProductName();
     req.setUrl(QUrl(QString(STECA2_VERSION_URL) % "?" % qry));
@@ -153,7 +154,8 @@ void MainWin::checkUpdate() {
         });
 }
 
-void MainWin::addFiles() {
+void MainWin::addFiles()
+{
     QStringList fileNames = file_dialog::openFileNames(this, "Add files", dataDir_, dataFormats_);
     repaint();
     if (fileNames.isEmpty())
@@ -162,7 +164,8 @@ void MainWin::addFiles() {
     gSession->dataset().addGivenFiles(fileNames);
 }
 
-void MainWin::loadSession() {
+void MainWin::loadSession()
+{
     QString fileName = file_dialog::openFileName(
         this, "Load session", sessionDir_, "Session files (*.ste)");
     if (fileName.isEmpty())
@@ -179,7 +182,8 @@ void MainWin::loadSession() {
     }
 }
 
-void MainWin::saveSession() {
+void MainWin::saveSession()
+{
     QString fileName = file_dialog::saveFileName(
         this, "Save session", sessionDir_, "Session files (*.ste)");
     if (!fileName.endsWith(".ste"))
@@ -187,12 +191,14 @@ void MainWin::saveSession() {
     saveSessionTo(QFileInfo(fileName));
 }
 
-void MainWin::closeEvent(QCloseEvent* event) {
+void MainWin::closeEvent(QCloseEvent* event)
+{
     saveSettings();
     event->accept();
 }
 
-void MainWin::readSettings() {
+void MainWin::readSettings()
+{
     if (initialState_.isEmpty())
         initialState_ = saveState();
     Settings s("MainWin");
@@ -200,13 +206,15 @@ void MainWin::readSettings() {
     restoreState(s.value("state").toByteArray());
 }
 
-void MainWin::saveSettings() {
+void MainWin::saveSettings()
+{
     Settings s("MainWin");
     s.setValue("geometry", saveGeometry());
     s.setValue("state", saveState());
 }
 
-void MainWin::viewReset() {
+void MainWin::viewReset()
+{
     restoreState(initialState_);
 #ifndef Q_OS_OSX
     toggles->fullScreen.setChecked(false);
@@ -217,17 +225,17 @@ void MainWin::viewReset() {
     toggles->viewMetadata.setChecked(true);
 }
 
-void MainWin::saveSessionTo(const QFileInfo& fileInfo) {
+void MainWin::saveSessionTo(const QFileInfo& fileInfo)
+{
     QFile* file = file_dialog::OutputFile("file", this, fileInfo.filePath());
     if (!file)
         return;
-    QDir::setCurrent(fileInfo.absolutePath());
     const int result = file->write(serializeSession());
     if (!(result >= 0)) THROW("Could not write session");
 }
 
-QByteArray MainWin::serializeSession() const {
-
+QByteArray MainWin::serializeSession() const
+{
     QJsonObject top;
 
     const Geometry& geo = gSession->geometry();
@@ -277,7 +285,8 @@ void MainWin::sessionFromFile(const QString& filePath) THROWS {
     sessionFromJson(file.readAll());
 }
 
-void MainWin::sessionFromJson(const QByteArray& json) THROWS {
+void MainWin::sessionFromJson(const QByteArray& json) THROWS
+{
     QJsonParseError parseError;
     QJsonDocument doc(QJsonDocument::fromJson(json, &parseError));
     if (!(QJsonParseError::NoError == parseError.error))
@@ -357,7 +366,8 @@ void MainWin::sessionFromJson(const QByteArray& json) THROWS {
     TR("installed session from file");
 }
 
-void MainWin::loadCorrFile() {
+void MainWin::loadCorrFile()
+{
     if (gSession->corrset().hasFile()) {
         gSession->corrset().removeFile();
     } else {
@@ -365,12 +375,12 @@ void MainWin::loadCorrFile() {
             this, "Set correction file", dataDir_, dataFormats_);
         if (fileName.isEmpty())
             return;
-        QDir::setCurrent(QFileInfo(fileName).absolutePath());
         gSession->corrset().loadFile(fileName);
     }
 }
 
-void MainWin::setImageRotate(ImageTransform rot) {
+void MainWin::setImageRotate(ImageTransform rot)
+{
     const char* rotateIconFile;
     const char* mirrorIconFile;
 
@@ -400,13 +410,15 @@ void MainWin::setImageRotate(ImageTransform rot) {
     emit gSession->sigDetector();
 }
 
-void MainWin::setImageMirror(bool on) {
+void MainWin::setImageMirror(bool on)
+{
     toggles->mirrorImage.setChecked(on);
     gSession->setImageTransformMirror(on);
     emit gSession->sigDetector();
 }
 
-void MainWin::updateActionEnabling() {
+void MainWin::updateActionEnabling()
+{
     bool hasFile = gSession->dataset().countFiles();
     bool hasCorr = gSession->hasCorrFile();
     bool hasPeak = gSession->peaks().count();
