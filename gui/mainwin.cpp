@@ -154,13 +154,13 @@ void MainWin::checkUpdate() {
 }
 
 void MainWin::addFiles() {
+    static QDir dir = QDir::homePath();
     QStringList fileNames = file_dialog::openFileNames(
-        this, "Add files", QDir::current().absolutePath(),
-        "Data files (*.dat *.mar*);;All files (*.*)");
+        this, "Add files", dir.absolutePath(), "Data files (*.dat *.mar*);;All files (*.*)");
     repaint();
     if (fileNames.isEmpty())
         return;
-    QDir::setCurrent(QFileInfo(fileNames.at(0)).absolutePath());
+    dir = QFileInfo(fileNames.at(0)).absolutePath();
     TakesLongTime __;
     gSession->dataset().addGivenFiles(fileNames);
 }
