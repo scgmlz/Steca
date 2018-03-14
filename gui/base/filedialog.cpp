@@ -77,7 +77,7 @@ QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
 
 namespace file_dialog {
 
-//! Base class for all Steca file dialogs. Enhances CFileDialog by a few settings.
+//! Base class for all Steca file dialogs. Manages default directory.
 class FileDialog : public CFileDialog {
 public:
     FileDialog(QWidget*, const QString&, QDir&, const QString& filter = QString());
