@@ -91,7 +91,6 @@ FileDialog::FileDialog(QWidget* parent, const QString& caption, QDir& dir, const
     : CFileDialog(parent, caption, dir.absolutePath(), filter)
     , dir_(dir)
 {
-    // setDirectory(QDir::homePath());
     setOption(QFileDialog::DontUseNativeDialog);
     setViewMode(QFileDialog::Detail);
     setConfirmOverwrite(false);
@@ -113,6 +112,7 @@ QString FileDialog::getFile()
     return files.first();
 }
 
+//! Opens file for writing; runs dialog before overwriting.
 QFile* OutputFile(const QString& name, QWidget* parent, const QString& path, bool check_overwrite)
 {
     QFile* ret = new QFile(path);
@@ -136,6 +136,7 @@ QStringList openFileNames(QWidget* parent, const QString& caption, QDir& dir,
     dlg.setReadOnly(true);
     dlg.setProxyModel(new OpenFileProxyModel);
     dlg.setFileMode(plural ? QFileDialog::ExistingFiles : QFileDialog::ExistingFile);
+
     if (!dlg.exec())
         return {};
     return dlg.getFiles();
