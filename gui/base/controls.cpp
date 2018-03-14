@@ -241,7 +241,7 @@ CFileDialog::CFileDialog(QWidget *parent, const QString &caption,
 }
 
 CFileDialog::~CFileDialog() {
-    gConsole->log(" select "+selectedFiles().join(';'));
+    gConsole->log("select "+selectedFiles().join(';'));
 }
 
 int CFileDialog::exec() {
