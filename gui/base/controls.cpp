@@ -106,12 +106,14 @@ void CToggle::onCommand(const QStringList& args)
 //  classes with no console connection
 // ************************************************************************** //
 
-XTextButton::XTextButton(QAction* action) {
+XTextButton::XTextButton(QAction* action)
+{
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonTextOnly);
 }
 
-XIconButton::XIconButton(QAction* action) {
+XIconButton::XIconButton(QAction* action)
+{
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonIconOnly);
 }
@@ -136,7 +138,8 @@ CSpinBox::CSpinBox(const QString& _name, int ndigits, bool withDot, int min, int
             gConsole->log2(hasFocus(), name()+" set "+QString::number(val)); });
 }
 
-void CSpinBox::onCommand(const QStringList& args) {
+void CSpinBox::onCommand(const QStringList& args)
+{
     if (args[0]!="set")
         THROW("Unexpected command");
     if      (args.size()<2)
@@ -155,7 +158,8 @@ CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, qreal min, qre
             gConsole->log2(hasFocus(), name()+" set "+QString::number(val)); });
 }
 
-void CDoubleSpinBox::onCommand(const QStringList& args) {
+void CDoubleSpinBox::onCommand(const QStringList& args)
+{
     if (args[0]!="set")
         THROW("Unexpected command");
     if      (args.size()<2)
@@ -183,7 +187,8 @@ CCheckBox::CCheckBox(const QString& name, const QString& text)
     setText(text);
 }
 
-void CCheckBox::onCommand(const QStringList& args) {
+void CCheckBox::onCommand(const QStringList& args)
+{
     if (args[0]!="set")
         THROW("Unexpected command");
     if      (args.size()<2)
@@ -199,7 +204,8 @@ CRadioButton::CRadioButton(const QString& _name, const QString& text)
             gConsole->log2(hasFocus(), name()+" switch "+(val?"on":"off")); });
 }
 
-void CRadioButton::onCommand(const QStringList& args) {
+void CRadioButton::onCommand(const QStringList& args)
+{
     if (args[0]!="switch")
         THROW("Unexpected command");
     if      (args.size()<2)
@@ -220,7 +226,8 @@ CComboBox::CComboBox(const QString& _name, const QStringList& items)
             gConsole->log2(hasFocus(), name()+" choose "+QString::number(val)); });
 }
 
-void CComboBox::onCommand(const QStringList& args) {
+void CComboBox::onCommand(const QStringList& args)
+{
     if (args[0]!="choose")
         THROW("Unexpected command");
     if      (args.size()<2)
@@ -240,11 +247,13 @@ CFileDialog::CFileDialog(QWidget *parent, const QString &caption,
 {
 }
 
-CFileDialog::~CFileDialog() {
+CFileDialog::~CFileDialog()
+{
     gConsole->log("fdia select "+selectedFiles().join(';'));
 }
 
-int CFileDialog::exec() {
+int CFileDialog::exec()
+{
     if (gConsole->hasCommandsOnStack()) {
         open();
         gConsole->commandsFromStack();
@@ -254,7 +263,8 @@ int CFileDialog::exec() {
         return QFileDialog::exec();
 }
 
-void CFileDialog::onCommand(const QStringList& args) {
+void CFileDialog::onCommand(const QStringList& args)
+{
     if        (args[0]=="close") {
         accept();
     } else if (args[0]=="select") {
