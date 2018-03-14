@@ -27,10 +27,10 @@ public:
     IJ(); // (0,0)
     IJ(int, int);
 
-    COMPARABLE(IJ const&)
+    COMPARABLE(const IJ&)
 
     QJsonObject to_json() const;
-    void from_json(class JsonObj const&) THROWS;
+    void from_json(const class JsonObj&) THROWS;
 };
 
 #endif // IJ_H

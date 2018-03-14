@@ -53,7 +53,7 @@ void HighlightedData::setCluster(int i) {
         return unset();
     ASSERT(i<gSession->dataset().countClusters());
     current_ = &gSession->dataset().clusterAt(i);
-    emit gSession->sigHighlight();
+    emit gSession->sigDataHighlight();
 }
 
 void HighlightedData::reset() {
@@ -64,12 +64,12 @@ void HighlightedData::reset() {
 
 void HighlightedData::unset() {
     current_ = nullptr;
-    emit gSession->sigHighlight();
+    emit gSession->sigDataHighlight();
 }
 
 void HighlightedData::setMeasurement(int val) {
-    measurement_ = qMin( val, cluster()->count()-1 );
-    emit gSession->sigHighlight();
+    measurement_ = current_ ? qMin( val, current_->count()-1 ) : 0;
+    emit gSession->sigDataHighlight();
 }
 
 const Cluster* HighlightedData::cluster() const {
@@ -95,7 +95,7 @@ int HighlightedData::measurementIndex() const {
 }
 
 const Measurement* HighlightedData::measurement() const {
-    return cluster()->at(measurement_);
+    return current_ ? current_->at(measurement_) : nullptr;
 }
 
 
@@ -107,7 +107,7 @@ void Dataset::clear() {
     files_.clear();
     onFileChanged();
     gSession->updateImageSize();
-    gSession->setImageCut(true, false, ImageCut());
+    gSession->imageCut().clear();
 }
 
 void Dataset::removeFile() {
@@ -117,7 +117,7 @@ void Dataset::removeFile() {
     onFileChanged();
     gSession->updateImageSize();
     if (files_.empty())
-        gSession->setImageCut(true, false, ImageCut());
+        gSession->imageCut().clear();
     if (countFiles()) {
         // reset highlight, which was temporarily unset at the beginning of this function
         if (i<countFiles())
@@ -164,15 +164,8 @@ void Dataset::activateCluster(int index, bool on) {
     emit gSession->sigActivated();
 }
 
-void Dataset::flipClusterActivation(int index) {
-    allClusters_.at(index)->setActivated(!allClusters_.at(index)->isActivated());
-    updateExperiment();
-    emit gSession->sigActivated();
-}
-
-void Dataset::cycleFileActivation(int index) {
+void Dataset::setFileActivation(int index, bool on) {
     const Datafile& fil = fileAt(index);
-    bool on = fil.activated()!=Qt::Checked;
     for (Cluster* cluster : fil.clusters_)
         cluster->setActivated(on);
     updateExperiment();
@@ -198,7 +191,7 @@ void Dataset::onClusteringChanged() {
     highlight().reset();
     emit gSession->sigClusters();
     emit gSession->sigActivated();
-    emit gSession->sigHighlight();
+    emit gSession->sigDataHighlight();
 }
 
 void Dataset::updateClusters() {
@@ -254,13 +247,14 @@ const Cluster& Dataset::clusterAt(int i) const {
 QJsonArray Dataset::to_json() const {
     QJsonArray ret;
     for (const Datafile& file : files_) {
-        str relPath = QDir::current().relativeFilePath(file.raw_->fileInfo().absoluteFilePath());
+        QString relPath =
+            QDir::current().relativeFilePath(file.raw_->fileInfo().absoluteFilePath());
         ret.append(relPath);
     }
     return ret;
 }
 
-bool Dataset::hasFile(rcstr fileName) const {
+bool Dataset::hasFile(const QString& fileName) const {
     QFileInfo fileInfo(fileName);
     for (const Datafile& file : files_)
         if (fileInfo == file.raw_->fileInfo())

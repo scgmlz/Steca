@@ -24,11 +24,10 @@
 
 class Corrset final {
 public:
-
     // Modifying methods:
     void clear();
     void removeFile();
-    void loadFile(rcstr filePath) THROWS;
+    void loadFile(const QString& filePath) THROWS;
     void tryEnable(bool on);
     void clearIntens() { intensCorr_.clear(); } // lazy
 
@@ -36,6 +35,7 @@ public:
     const Rawfile& raw() const { return *raw_; }
     bool hasFile() const { return !raw_.isNull(); }
     bool isEnabled() const { return enabled_; }
+    bool isActive() const { return hasFile() && enabled_; }
     bool hasNANs() const { return hasNANs_; }
     shp_Image image() const { return corrImage_; }
     const Image* intensCorr() const;

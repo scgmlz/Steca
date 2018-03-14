@@ -15,7 +15,6 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include "core/typ/str.h"
 #include <QAction>
 #include <QSettings>
 #include <QSpinBox>
@@ -26,32 +25,33 @@
 //! left to the .ste configuration files.
 class Settings : public QSettings {
 public:
-    Settings(rcstr group = "");
+    Settings(const QString& group = "");
     ~Settings();
 
-    QVariant readVariant(rcstr key, QVariant const& def);
-    void saveVariant(rcstr key, QVariant const& val) { setValue(key, val); }
+    QVariant readVariant(const QString& key, const QVariant& def);
+    void saveVariant(const QString& key, const QVariant& val) { setValue(key, val); }
 
-    void read(rcstr key, QAction*, bool def = false);
-    void save(rcstr key, QAction*);
+    void read(const QString& key, QAction*, bool def = false);
+    void save(const QString& key, QAction*);
 
-    void read(rcstr key, QSpinBox*, int def = 0);
-    void save(rcstr key, QSpinBox*);
+    void read(const QString& key, QSpinBox*, int def = 0);
+    void save(const QString& key, QSpinBox*);
 
-    void read(rcstr key, QDoubleSpinBox*, qreal def = 0);
-    void save(rcstr key, QDoubleSpinBox*);
+    void read(const QString& key, QDoubleSpinBox*, qreal def = 0);
+    void save(const QString& key, QDoubleSpinBox*);
 
-    bool readBool(rcstr key, bool def = false) { return readVariant(key, def).toBool(); }
-    void saveBool(rcstr key, bool val) { saveVariant(key, val); }
+    bool readBool(const QString& key, bool def = false) { return readVariant(key, def).toBool(); }
+    void saveBool(const QString& key, bool val) { saveVariant(key, val); }
 
-    int readInt(rcstr key, int def = 0);
-    void saveInt(rcstr key, int val) { saveVariant(key, val); }
+    int readInt(const QString& key, int def = 0);
+    void saveInt(const QString& key, int val) { saveVariant(key, val); }
 
-    qreal readReal(rcstr key, qreal def = 0);
-    void saveReal(rcstr key, qreal val) { saveVariant(key, val); }
+    qreal readReal(const QString& key, qreal def = 0);
+    void saveReal(const QString& key, qreal val) { saveVariant(key, val); }
 
-    str readStr(rcstr key, rcstr def = "") { return readVariant(key, def).toString(); }
-    void saveStr(rcstr key, rcstr val) { saveVariant(key, val); }
+    QString readStr(const QString& key, const QString& def = "") {
+        return readVariant(key, def).toString(); }
+    void saveStr(const QString& key, const QString& val) { saveVariant(key, val); }
 };
 
 #endif // SETTINGS_H

@@ -14,8 +14,6 @@
 
 #include "core/def/idiomatic_for.h"
 #include "core/data/rawfile.h"
-#include "core/data/metadata.h"
-#include "core/typ/exception.h"
 #include <qmath.h>
 #include <sstream>
 
@@ -24,7 +22,7 @@
 
 namespace load {
 
-Rawfile loadCaress(rcstr filePath) THROWS {
+Rawfile loadCaress(const QString& filePath) THROWS {
     Rawfile ret(filePath);
 
     if(open_data_file(filePath.toLocal8Bit().data(), nullptr))
@@ -177,8 +175,8 @@ Rawfile loadCaress(rcstr filePath) THROWS {
                 // Objekt inizialisieren
                 Metadata md;
 
-                md.date = str::fromStdString(s_date);
-                md.comment = str::fromStdString(s_comment);
+                md.date = QString::fromStdString(s_date);
+                md.comment = QString::fromStdString(s_comment);
 
                 md.motorXT = xAxis;
                 md.motorYT = yAxis;
@@ -553,8 +551,8 @@ Rawfile loadCaress(rcstr filePath) THROWS {
     return ret;
 }
 
-str loadCaressComment(rcstr filePath) {
-    str s_comment;
+QString loadCaressComment(const QString& filePath) {
+    QString s_comment;
 
     try {
         if(open_data_file(filePath.toLocal8Bit().data(), nullptr))
@@ -594,7 +592,7 @@ str loadCaressComment(rcstr filePath) {
                 delete[] c_comment;
             }
         }
-    } catch (Exception const&) {}
+    } catch (const Exception&) {}
 
     return s_comment;
 }

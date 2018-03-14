@@ -16,7 +16,6 @@
 #define DATASET_H
 
 #include "core/data/angle_map.h"
-#include "core/data/rawfile.h"
 #include "core/data/experiment.h"
 #include "core/typ/async.h"
 #include "core/typ/cache.h"
@@ -81,8 +80,7 @@ public:
     void setBinning(int by);
     void setDropIncomplete(bool on);
     void activateCluster(int index, bool on);
-    void flipClusterActivation(int index);
-    void cycleFileActivation(int index);
+    void setFileActivation(int index, bool on);
 
     // Const methods:
     int countFiles() const;
@@ -115,7 +113,7 @@ private:
     void updateClusters();
     void updateExperiment();
 
-    bool hasFile(rcstr fileName) const;
+    bool hasFile(const QString& fileName) const;
 };
 
 #endif // DATASET_H

@@ -16,10 +16,8 @@
 #define PEAK_INFO_H
 
 #include "core/data/metadata.h"
-#include "core/typ/angles.h"
 #include "core/typ/range.h"
 #include "core/typ/types.h"
-#include "core/typ/variant.h"
 
 //! Metadata, peak fit results, and pole figure angles.
 
@@ -72,7 +70,7 @@ private:
     deg tth_, tthError_;
     fwhm_t fwhm_, fwhmError_;
 
-    static str const reflStringTag(int attr, bool out);
+    static QString const reflStringTag(int attr, bool out);
 };
 
 
@@ -82,7 +80,7 @@ class PeakInfos : public vec<PeakInfo> {
 public:
     PeakInfos() { invalidate(); }
 
-    void append(PeakInfo const&);
+    void append(const PeakInfo&);
 
     inten_t averageInten() const;
     const Range& rgeInten() const;

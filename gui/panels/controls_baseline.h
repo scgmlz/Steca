@@ -15,7 +15,7 @@
 #ifndef CONTROLS_BASELINE_H
 #define CONTROLS_BASELINE_H
 
-#include "gui/base/new_q.h"
+#include "gui/base/controls.h"
 
 //! A widget with controls to change the baseline fitting.
 
@@ -23,7 +23,8 @@ class ControlsBaseline : public QWidget {
 public:
     ControlsBaseline();
 private:
-    QSpinBox* spinDegree_;
+    CSpinBox spinDegree_ {"degree", 4, false, 0, 4,
+            "Degree of the polynomial used to fit the baseline"};
 };
 
 #endif // CONTROLS_BASELINE_H

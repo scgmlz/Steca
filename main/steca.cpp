@@ -20,15 +20,17 @@
 //!           https://github.com/scgmlz/Steca
 
 #include "../manifest.h"
-#include "gui/console.h"
-#include "gui/mainwin.h"
 #include "gui/cfg/msg_handler.h"
-#include "core/session.h"
-#include <iostream>
+#include "gui/capture_and_replay/console.h"
+#include "gui/mainwin.h"
+
 #define OPTPARSE_IMPLEMENTATION
 #define OPTPARSE_API static
 #include "optparse.h"
+
+#include <iostream>
 #include <QApplication>
+#include <QDir>
 #include <QLoggingCategory>
 #include <QStyleFactory>
 
@@ -56,8 +58,13 @@ int main(int argc, char* argv[]) {
             exit(0);
         }
     }
-    if (optparse_arg(&options)) {
-        std::cerr << "Unexpected command-line argument(s) given\n";
+
+    QStringList nonoptArgs;
+    const char* tmp;
+    while ((tmp = optparse_arg(&options)))
+        nonoptArgs.append(tmp);
+    if (nonoptArgs.size()>1) {
+        std::cerr << "More than one command-line argument given\n";
         exit(-1);
     }
 
@@ -79,14 +86,9 @@ int main(int argc, char* argv[]) {
     QLoggingCategory::setFilterRules("*.debug=true\nqt.*.debug=false");
     qInstallMessageHandler(messageHandler);
 
-    gSession = Session::instance();
-
-    gMainWin = MainWin::instance();
-    gMainWin->show();
-    gMainWin->addFiles();
-
-    Console console;
-    QObject::connect(&console, &Console::transmitLine, gMainWin, &MainWin::execCommand);
+    MainWin::instance()->show();
+    if (nonoptArgs.size())
+        gConsole->call("@file " + nonoptArgs[0]);
 
     return app.exec();
 }

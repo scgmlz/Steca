@@ -14,7 +14,6 @@
 
 #include "metadata.h"
 #include "core/def/idiomatic_for.h"
-#include "core/typ/exception.h"
 
 // metadata attributes
 
@@ -79,7 +78,7 @@ int Metadata::numAttributes(bool onlyNum) {
     return int(onlyNum ? eAttr::NUM_NUMERICAL_ATTRIBUTES : eAttr::NUM_ALL_ATTRIBUTES);
 }
 
-rcstr Metadata::attributeTag(int i, bool out) {
+const QString& Metadata::attributeTag(int i, bool out) {
     return attributeTags(out).at(i);
 }
 
@@ -108,7 +107,7 @@ cmp_vec Metadata::attributeCmps() {
     return cmps;
 }
 
-str Metadata::attributeStrValue(int i) const {
+QString Metadata::attributeStrValue(int i) const {
     qreal value = 0;
 
     switch (eAttr(i)) {
@@ -143,7 +142,7 @@ str Metadata::attributeStrValue(int i) const {
     default: qFatal("impossible case");
     }
 
-    return str::number(value);
+    return QString::number(value);
 }
 
 QVariant Metadata::attributeValue(int i) const {

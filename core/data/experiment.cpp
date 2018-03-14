@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "measurement.h"
 #include "core/session.h"
 
 Experiment::Experiment() {
@@ -66,8 +65,7 @@ const Range& Experiment::rgeFixedInten(bool trans, bool cut) const {
             for (const Measurement* one : cluster->members()) {
                 if (one->image()) {
                     const shp_Image& image = one->image();
-                    shp_ImageLens imageLens = gSession->imageLens(*image, trans, cut);
-                    rgeFixedInten_.extendBy(imageLens->rgeInten(false));
+                    rgeFixedInten_.extendBy(ImageLens(*image, trans, cut).rgeInten(false));
                 }
             }
     }
@@ -96,8 +94,7 @@ void Experiment::computeAvgeCurve() const {
     for (Cluster const* cluster : clusters_)
         for (const Measurement* one: cluster->members())
             group.append(one);
-    Sequence allData(group);
-    avgCurve_ = gSession->defaultClusterLens(allData)->makeCurve();
+    avgCurve_ = Sequence(group).toCurve();
 }
 
 qreal Experiment::calcAvgMutable(qreal (Cluster::*avgFct)() const) const {

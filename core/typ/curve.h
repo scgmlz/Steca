@@ -31,8 +31,8 @@ public:
     void append(qreal x, qreal y);
 
     // access to underlying data vectors
-    vec<qreal> const& xs() const { return xs_; }
-    vec<qreal> const& ys() const { return ys_; }
+    const vec<qreal>& xs() const { return xs_; }
+    const vec<qreal>& ys() const { return ys_; }
 
     qreal x(int i) const { return xs_.at(i); }
     qreal y(int i) const { return ys_.at(i); }
@@ -43,7 +43,7 @@ public:
     Curve intersect(const Range&) const;
     Curve intersect(const Ranges&) const;
 
-    void subtract(std::function<qreal(qreal)> const& func);
+    void subtract(const std::function<qreal(qreal)>& func);
 
     int maqpairindex() const; // the index of the maximum y value
 

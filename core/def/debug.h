@@ -16,7 +16,6 @@
 #define DEBUG_H
 
 #include <QtGlobal> // protect
-#include <QDebug>
 #include <QtDebug>
 
 // TRace:

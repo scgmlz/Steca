@@ -15,9 +15,10 @@
 #include "gui/panels/subframe_files.h"
 #include "core/session.h"
 #include "gui/base/model_view.h"
-#include "gui/thehub.h"
-#include "gui/base/new_q.h"
-#include <QHeaderView>
+#include "gui/base/controls.h"
+#include "gui/mainwin.h"
+#include "gui/actions/toggles.h"
+#include "gui/actions/triggers.h"
 
 
 // ************************************************************************** //
@@ -26,44 +27,20 @@
 
 //! The model for FilesView
 
-class FilesModel : public TableModel { // < QAbstractTableModel < QAbstractItemModel
+class FilesModel : public CheckTableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
-    void onClicked(const QModelIndex &);
-    void onFilesChanged();
-    void onHighlight();
-    void onActivated();
+    FilesModel() : CheckTableModel("file") {}
+    int highlighted() const final { return gSession->dataset().highlight().fileIndex(); }
+    void setHighlight(int i) final { gSession->dataset().highlight().setFile(i); }
+    bool activated(int i) const { return
+            gSession->dataset().fileAt(i).activated() == Qt::Checked; }
+    void setActivated(int i, bool on) { gSession->dataset().setFileActivation(i, on); }
 
 private:
     int columnCount() const final { return 3; }
     int rowCount() const final { return gSession->dataset().countFiles(); }
     QVariant data(const QModelIndex&, int) const final;
 };
-
-//! Selects or unselects all measurements in a file.
-void FilesModel::onClicked(const QModelIndex& cell) {
-    int row = cell.row();
-    int col = cell.column();
-    if (row < 0 || row >= rowCount())
-        return;
-    if (col==1)
-        gSession->dataset().cycleFileActivation(row);
-    else if (col==2)
-        gSession->dataset().highlight().setFile(row);
-}
-
-void FilesModel::onFilesChanged() {
-    resetModel(); // repaint everything, and reset currentIndex to origin
-}
-
-//! Update highlight display upon sigHighlight.
-void FilesModel::onHighlight() {
-    emit dataChanged(createIndex(0,0),createIndex(rowCount()-1,columnCount()-1));
-}
-
-//! Update activation check display upon sigActivated.
-void FilesModel::onActivated() {
-    emit dataChanged(createIndex(0,1),createIndex(rowCount()-1,1));
-}
 
 //! Returns role-specific information about one table cell.
 QVariant FilesModel::data(const QModelIndex& index, int role) const {
@@ -72,34 +49,22 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
         return {};
     const Datafile& file = gSession->dataset().fileAt(row);
     int col = index.column();
-    switch (role) {
-    case Qt::EditRole:
-        return {};
-    case Qt::DisplayRole:
-        if (col==2)
-            return file.name();
-        return {};
-    case Qt::ToolTipRole:
-        if (col>=2)
-            return QString("File %1\ncontains %2 measurements\nhere numbered %3 to %4")
-                .arg(file.name())
-                .arg(file.count())
-                .arg(gSession->dataset().offset(file)+1)
-                .arg(gSession->dataset().offset(file)+file.count());
-        return {};
-    case Qt::CheckStateRole: {
-        if (col==1)
-            return file.activated();
-        return {};
-    }
-    case Qt::BackgroundRole: {
-        if (row==gSession->dataset().highlight().fileIndex())
+    if (role==Qt::DisplayRole && col==2)
+        return file.name();
+    else if (role==Qt::ToolTipRole && col>=2)
+        return QString("File %1\ncontains %2 measurements.here numbered %3 to %4")
+            .arg(file.name())
+            .arg(file.count())
+            .arg(gSession->dataset().offset(file)+1)
+            .arg(gSession->dataset().offset(file)+file.count());
+    else if (role==Qt::CheckStateRole && col==1)
+        return file.activated();
+    else if (role==Qt::BackgroundRole) {
+        if (row==highlighted())
             return QColor(Qt::cyan);
         return QColor(Qt::white);
     }
-    default:
-        return {};
-    }
+    return {};
 }
 
 
@@ -109,35 +74,24 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
 
 //! Main item in SubframeFiles: View and control the list of DataFile's
 
-class FilesView : public ListView { // < QTreeView < QAbstractItemView
+class FilesView : public CheckTableView {
 public:
     FilesView();
 
 private:
-    void currentChanged(QModelIndex const&, QModelIndex const&) override final;
-
+    void currentChanged(const QModelIndex& current, const QModelIndex&) override final {
+        gotoCurrent(current); }
     int sizeHintForColumn(int) const final;
-    FilesModel* model_;
+    FilesModel* model() { return static_cast<FilesModel*>(model_); }
 };
 
-FilesView::FilesView() : ListView() {
-    setHeaderHidden(true);
-    setSelectionMode(QAbstractItemView::NoSelection);
-    model_ = new FilesModel();
-    setModel(model_);
-
-    connect(gSession, &Session::sigFiles, model_, &FilesModel::onFilesChanged);
-    connect(gSession, &Session::sigHighlight, model_, &FilesModel::onHighlight);
-    connect(gSession, &Session::sigActivated, model_, &FilesModel::onActivated);
-    connect(this, &FilesView::clicked, model_, &FilesModel::onClicked);
-}
-
-//! Overrides QAbstractItemView. This slot is called when a new item becomes the current item.
-void FilesView::currentChanged(QModelIndex const& current, QModelIndex const& previous) {
-    if (current.row()==gSession->dataset().highlight().fileIndex())
-        return; // the following would prevent execution of "onClicked"
-    scrollTo(current);
-    gSession->dataset().highlight().setFile(current.row());
+FilesView::FilesView()
+    : CheckTableView(new FilesModel())
+{
+    connect(gSession, &Session::sigFiles, this, &TableView::onData);
+    connect(gSession, &Session::sigDataHighlight, this, &TableView::onHighlight);
+    connect(gSession, &Session::sigActivated, this, &CheckTableView::onActivated);
+    connect(this, &FilesView::clicked, model(), &FilesModel::onClicked);
 }
 
 int FilesView::sizeHintForColumn(int col) const {
@@ -156,28 +110,28 @@ int FilesView::sizeHintForColumn(int col) const {
 
 SubframeFiles::SubframeFiles() : DockWidget("Files", "dock-files") {
 
-    auto h = newQ::HBoxLayout();
-    box_->addLayout(h);
+    auto h = new QHBoxLayout();
+    box_.addLayout(h);
 
     h->addStretch();
-    h->addWidget(newQ::IconButton(gHub->trigger_addFiles));
-    h->addWidget(newQ::IconButton(gHub->trigger_removeFile));
+    h->addWidget(new XIconButton(&gGui->triggers->addFiles));
+    h->addWidget(new XIconButton(&gGui->triggers->removeFile));
 
-    box_->addWidget(new FilesView());
+    box_.addWidget(new FilesView());
 
-    h = newQ::HBoxLayout();
-    box_->addLayout(h);
+    h = new QHBoxLayout();
+    box_.addLayout(h);
 
-    h->addWidget(newQ::Label("Correction file"));
+    h->addWidget(new QLabel("Correction file"));
 
-    h = newQ::HBoxLayout();
-    box_->addLayout(h);
+    h = new QHBoxLayout();
+    box_.addLayout(h);
 
     auto* corrFile_ = new QLineEdit();
     corrFile_->setReadOnly(true);
     h->addWidget(corrFile_);
-    h->addWidget(newQ::IconButton(gHub->trigger_corrFile));
-    h->addWidget(newQ::IconButton(gHub->toggle_enableCorr));
+    h->addWidget(new XIconButton(&gGui->triggers->corrFile));
+    h->addWidget(new XIconButton(&gGui->toggles->enableCorr));
 
     connect(gSession, &Session::sigCorr, [corrFile_]() {
             corrFile_->setText( gSession->corrset().hasFile() ?

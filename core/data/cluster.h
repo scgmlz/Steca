@@ -15,8 +15,6 @@
 #ifndef CLUSTER_H
 #define CLUSTER_H
 
-#include "core/typ/angles.h"
-#include "core/data/image.h"
 #include "core/data/measurement.h"
 #include <QSharedPointer> // no auto rm
 
@@ -52,13 +50,20 @@ public:
     qreal avgDeltaTime() const;
 
     size2d imageSize() const;
-    inten_vec collectIntens(const Image* intensCorr, const Range&) const;
     void calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const;
+
+    Curve toCurve() const;
+    Curve toCurve(const Range&) const;
+    Curve toCurve(qreal) const;
+    Curve toCurve(qreal, const Range&) const;
+    qreal normFactor() const;
+    qreal normFactor(eNorm norm) const;
 
 private:
     QVector<const Measurement*> members_;
     shp_Metadata md_; //!< averaged Metadata, cached, computed only once
 
+    inten_vec collectIntens(const Range&) const;
     void compute_metadata() const;
 };
 

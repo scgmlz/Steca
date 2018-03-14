@@ -14,7 +14,7 @@ CONFIG  += c++11 silent
 
 win32 {
   CONFIG += static
-  RC_ICONS = \$\$PWD/gui/icons/retro_stier.ico
+  RC_ICONS = \$\$PWD/main/icons/retro_stier.ico
 }
 
 INCLUDEPATH += \$\$PWD/3rdparty/googletest \$\$PWD/3rdparty/LevMar \$\$PWD/3rdparty/Mar \$\$PWD/3rdparty/Caress \$\$PWD/3rdparty/QCustomPlot \$\$PWD/3rdparty \$\$PWD
@@ -26,7 +26,7 @@ function files {
   find $where -type f -name \*.$ext -exec echo ' ' {} \\ \;
 }
 
-MODULES='3rdparty lib io core gui'
+MODULES='3rdparty lib io core gui main'
 echo -e '\nHEADERS += \\' >> $PRO
 for m in $MODULES ; do files $m h >> $PRO ; done
 

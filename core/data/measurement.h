@@ -15,7 +15,6 @@
 #ifndef MEASUREMENT_H
 #define MEASUREMENT_H
 
-#include "core/typ/angles.h"
 #include "core/data/image.h"
 #include "core/data/metadata.h"
 #include <QSharedPointer> // no auto rm
@@ -30,7 +29,6 @@ public:
     Measurement(const int position, const Metadata&, const size2d&, const inten_vec&);
 
     int position() const { return position_; }
-// TODO REPLACE    int totalPosition() const; //!< position in full list of currently loaded measurements
     shp_Metadata metadata() const { return md_; }
 
     deg midTth() const;
@@ -52,14 +50,12 @@ public:
     shp_Image image() const { return image_; }
     size2d imageSize() const;
 
-    void collectIntens(
-        const Image* intensCorr, /*non-const*/ inten_vec&, /*non-const*/ vec<int>&, const Range&,
-        deg minTth, deg deltaTth) const;
+    void collectIntens(inten_vec&, vec<int>&, const Range&, deg minTth, deg deltaTth) const;
 
 private:
     const int position_; //! position in file_
-    shp_Metadata md_;
-    shp_Image image_;
+    shp_Metadata md_; // TODO -> unique
+    shp_Image image_; // TODO -> unique
 };
 
 typedef QSharedPointer<const Measurement> shp_Measurement;

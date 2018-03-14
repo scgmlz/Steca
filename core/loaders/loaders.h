@@ -16,20 +16,16 @@
 #define LOADERS_H
 
 #include "core/data/rawfile.h"
-#include "core/def/macros.h"
-#include "core/typ/str.h"
 
-class Rawfile;
-class QFileInfo;
 
 //! Functions loadRawfile and loadComment, and their dependences.
 
 namespace load {
 
 //! load a file; file type will be sensed
-QSharedPointer<Rawfile> loadRawfile(rcstr filePath) THROWS;
+QSharedPointer<Rawfile> loadRawfile(const QString& filePath) THROWS;
 
-str loadComment(QFileInfo const& info);
+QString loadComment(const QFileInfo& info);
 
 } // namespace io
 

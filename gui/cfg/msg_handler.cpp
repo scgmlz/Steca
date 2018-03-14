@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "gui/cfg/msg_handler.h"
+#include "gui/capture_and_replay/console.h"
 #include <iostream>
 #include <QMessageBox>
 #include <QApplication>
@@ -24,17 +24,16 @@
 #define context(ctx) ""
 #endif
 
-//extern MainWin* gMainWin;
-
-void messageHandler(QtMsgType type, QMessageLogContext const& ctx, const QString& msg) {
+void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString& msg) {
     switch (type) {
     case QtDebugMsg:
         std::cerr << ".... " << msg.toStdString() << "\n" << std::flush;
+        gConsole->log("#DEBUG: " + msg);
         break;
 // unavailable before Qt5.5 (ISSUE #36)
 //    case QtInfoMsg:
 //        std::cerr << "INFO " << msg.toStdString() << context(ctx) << "\n" << std::flush;
-//        gMainWin->statusBar()->showMessage(msg, 5000);
+//        gGui->statusBar()->showMessage(msg, 5000);
 //        break;
     case QtWarningMsg:
     default:
@@ -43,6 +42,7 @@ void messageHandler(QtMsgType type, QMessageLogContext const& ctx, const QString
         } else {
             std::cerr << "WARN " << msg.toStdString() << "\n" << std::flush;
             QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
+            gConsole->log("#WARNING: " + msg);
         }
         break;
     case QtFatalMsg:
@@ -56,6 +56,7 @@ void messageHandler(QtMsgType type, QMessageLogContext const& ctx, const QString
                               "Context:\n" + ctx.function + "\n"
 #endif
             );
+        gConsole->log("#FATAL: " + msg);
         qApp->quit();
         break;
     }

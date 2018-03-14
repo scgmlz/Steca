@@ -15,7 +15,7 @@
 #ifndef SUBFRAME_FILES_H
 #define SUBFRAME_FILES_H
 
-#include "gui/base/various_widgets.h"
+#include "gui/base/layout.h"
 
 //! Part of the main window that controls the data and correction files.
 class SubframeFiles : public DockWidget {

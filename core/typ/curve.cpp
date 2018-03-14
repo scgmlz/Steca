@@ -79,7 +79,7 @@ Curve Curve::intersect(const Ranges& ranges) const {
 }
 
 //! Subtracts a background that is given as a funtion y(x).
-void Curve::subtract(std::function<qreal(qreal)> const& func)
+void Curve::subtract(const std::function<qreal(qreal)>& func)
 {
     for_i (count())
         ys_[i] -= func(xs_.at(i));

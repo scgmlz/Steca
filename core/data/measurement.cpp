@@ -12,12 +12,11 @@
 //
 // ************************************************************************** //
 
-#include "measurement.h"
 #include "core/session.h"
 #include <qmath.h>
 
 Measurement::Measurement(
-    const int position, const Metadata& md, size2d const& size, inten_vec const& intens)
+    const int position, const Metadata& md, const size2d& size, const inten_vec& intens)
     : position_(position)
     , md_(new Metadata(md))
     , image_(new Image(size))
@@ -26,12 +25,6 @@ Measurement::Measurement(
     for_i (intens.count())
         image_->setInten(i, intens.at(i));
 }
-
-/* TODO replace in Cluster
-int Measurement::totalPosition() const {
-    return file_.offset_ + position_;
-}
-*/
 
 Range Measurement::rgeGma() const {
     return gSession->angleMap(*this)->rgeGma();
@@ -53,13 +46,14 @@ size2d Measurement::imageSize() const {
     return image_->size();
 }
 
+//! Computes intens and counts.
+//! Called only by Sequence::collectIntens.
 void Measurement::collectIntens(
-    const Image* intensCorr, inten_vec& intens, vec<int>& counts,
-    const Range& rgeGma, deg minTth, deg deltaTth) const {
-
+    inten_vec& intens, vec<int>& counts, const Range& rgeGma, deg minTth, deg deltaTth) const
+{
     const shp_AngleMap& angleMap = gSession->angleMap(*this);
     ASSERT(!angleMap.isNull());
-    AngleMap const& map = *angleMap;
+    const AngleMap& map = *angleMap;
 
     vec<int> const* gmaIndexes = nullptr;
     int gmaIndexMin = 0, gmaIndexMax = 0;
@@ -80,7 +74,7 @@ void Measurement::collectIntens(
         if (qIsNaN(inten))
             continue;
 
-        inten_t corr = intensCorr ? intensCorr->inten(ind) : 1;
+        inten_t corr = gSession->corrset().isActive() ? gSession->intensCorr()->inten(ind) : 1;
         if (qIsNaN(corr))
             continue;
 

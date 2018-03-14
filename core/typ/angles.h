@@ -28,7 +28,7 @@ public:
     explicit deg(rad);
     rad toRad() const;
 
-    deg& operator+=(deg const&);
+    deg& operator+=(const deg&);
     deg& operator*=(qreal);
 
     deg normalized();
@@ -46,7 +46,7 @@ public:
     explicit rad(deg);
     deg toDeg() const;
 
-    rad& operator+=(rad const&);
+    rad& operator+=(const rad&);
     rad& operator*=(qreal);
 
 private:

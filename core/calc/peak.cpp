@@ -12,16 +12,13 @@
 //
 // ************************************************************************** //
 
-#include "core/calc/peak.h"
-#include "core/fit/fit_fun.h"
-#include "core/def/idiomatic_for.h"
 #include "core/session.h"
 
 Peak::Peak(const QString& functionName) : peakFunction_(nullptr) {
     setPeakFunction(functionName);
 }
 
-PeakFunction const& Peak::peakFunction() const {
+const PeakFunction& Peak::peakFunction() const {
     ASSERT(peakFunction_);
     return *peakFunction_;
 }
@@ -37,7 +34,7 @@ void Peak::invalidateGuesses() {
     emit gSession->sigPeaks();
 }
 
-void Peak::setGuessPeak(qpair const& peak) {
+void Peak::setGuessPeak(const qpair& peak) {
     peakFunction_->setGuessedPeak(peak);
 }
 
@@ -45,12 +42,12 @@ void Peak::setGuessFWHM(fwhm_t fwhm) {
     peakFunction_->setGuessedFWHM(fwhm);
 }
 
-void Peak::fit(Curve const& curve) {
+void Peak::fit(const Curve& curve) {
     peakFunction_->fit(curve);
 }
 
 void Peak::setPeakFunction(const QString& peakFunctionName) {
-    bool haveRange = !peakFunction_.isNull();
+    bool haveRange = (bool)peakFunction_;
     Range oldRange;
     if (haveRange)
         oldRange = peakFunction_->range();
@@ -63,10 +60,9 @@ JsonObj Peak::to_json() const {
     return peakFunction_->to_json();
 }
 
-Peak* Peak::from_json(JsonObj const& obj) THROWS {
-    str functionName = obj.loadString("type");
-    Peak* ret = new Peak();
-    ret->setPeakFunction(functionName);
+Peak* Peak::from_json(const JsonObj& obj) THROWS {
+    QString functionName = obj.loadString("type");
+    Peak* ret = new Peak(functionName);
     ret->peakFunction_->from_json(obj); // may throw
     return ret;
 }
@@ -95,7 +91,6 @@ void Peaks::add(Peak* peak) {
     peaks_.push_back(peak);
     selected_ = count()-1;
     emit gSession->sigPeaks();
-    emit gSession->sigPeaks();
 }
 
 void Peaks::remove() {
@@ -110,7 +105,7 @@ void Peaks::remove() {
 void Peaks::select(int i) {
     ASSERT(i<count());
     selected_ = i;
-    emit gSession->sigPeaks();
+    emit gSession->sigPeakHighlight();
 }
 
 QStringList Peaks::names() const {
