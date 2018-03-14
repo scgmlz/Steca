@@ -80,13 +80,16 @@ namespace file_dialog {
 //! Base class for all Steca file dialogs. Enhances CFileDialog by a few settings.
 class FileDialog : public CFileDialog {
 public:
-    FileDialog(QWidget *parent, const QString &caption, const QString &directory,
-               const QString &filter = QString());
+    FileDialog(QWidget*, const QString&, QDir&, const QString& filter = QString());
+    QStringList getFiles();
+    QString getFile();
+private:
+    QDir& dir_;
 };
 
-FileDialog::FileDialog(QWidget *parent, const QString &caption, const QString &directory,
-                       const QString &filter)
-    : CFileDialog(parent, caption, directory, filter)
+FileDialog::FileDialog(QWidget* parent, const QString& caption, QDir& dir, const QString &filter)
+    : CFileDialog(parent, caption, dir.absolutePath(), filter)
+    , dir_(dir)
 {
     // setDirectory(QDir::homePath());
     setOption(QFileDialog::DontUseNativeDialog);
@@ -94,12 +97,27 @@ FileDialog::FileDialog(QWidget *parent, const QString &caption, const QString &d
     setConfirmOverwrite(false);
 }
 
+QStringList FileDialog::getFiles()
+{
+    QStringList ret = selectedFiles();
+    if (!ret.isEmpty())
+        dir_ = QFileInfo(ret.at(0)).absolutePath();
+    return ret;
+}
+
+QString FileDialog::getFile()
+{
+    QStringList files = getFiles();
+    if (files.isEmpty())
+        return "";
+    return files.first();
+}
+
 QFile* OutputFile(const QString& name, QWidget* parent, const QString& path, bool check_overwrite)
 {
     QFile* ret = new QFile(path);
     if (check_overwrite && ret->exists() &&
-        QMessageBox::question(parent, "File exists", "Overwrite " + path + " ?") !=
-        QMessageBox::Yes) {
+        QMessageBox::question(parent, "File exists", "Overwrite "+path+" ?") != QMessageBox::Yes) {
         delete ret;
         return nullptr;
     }
@@ -110,7 +128,7 @@ QFile* OutputFile(const QString& name, QWidget* parent, const QString& path, boo
     return ret;
 }
 
-QStringList openFileNames(QWidget* parent, const QString& caption, const QString& dir,
+QStringList openFileNames(QWidget* parent, const QString& caption, QDir& dir,
                           const QString& filter, bool plural)
 {
     FileDialog dlg(parent, caption, dir, filter);
@@ -118,12 +136,12 @@ QStringList openFileNames(QWidget* parent, const QString& caption, const QString
     dlg.setReadOnly(true);
     dlg.setProxyModel(new OpenFileProxyModel);
     dlg.setFileMode(plural ? QFileDialog::ExistingFiles : QFileDialog::ExistingFile);
-    if (dlg.exec())
-        return dlg.selectedFiles();
-    return {};
+    if (!dlg.exec())
+        return {};
+    return dlg.getFiles();
 }
 
-QString openFileName(QWidget* parent, const QString& caption, const QString& dir, const QString& filter)
+QString openFileName(QWidget* parent, const QString& caption, QDir& dir, const QString& filter)
 {
     QStringList fileNames = openFileNames(parent, caption, dir, filter, false);
     if (fileNames.isEmpty())
@@ -131,29 +149,25 @@ QString openFileName(QWidget* parent, const QString& caption, const QString& dir
     return fileNames.first();
 }
 
-QString saveFileName(QWidget* parent, const QString& caption, const QString& dir, const QString& filter)
+QString saveFileName(QWidget* parent, const QString& caption, QDir& dir, const QString& filter)
 {
     FileDialog dlg(parent, caption, dir, filter);
     dlg.setFileMode(QFileDialog::AnyFile);
     dlg.setAcceptMode(QFileDialog::AcceptSave);
 
-    QString fileName;
-    if (dlg.exec() && !dlg.selectedFiles().isEmpty())
-        fileName = dlg.selectedFiles().first();
-
-    return fileName;
+    if (!dlg.exec())
+        return "";
+    return dlg.getFile();
 }
 
-QString saveDirName(QWidget* parent, const QString& caption, const QString& dir) {
+QString saveDirName(QWidget* parent, const QString& caption, QDir& dir) {
     FileDialog dlg(parent, caption, dir);
     dlg.setFileMode(QFileDialog::Directory);
     dlg.setAcceptMode(QFileDialog::AcceptSave);
 
-    QString dirName;
-    if (dlg.exec() && !dlg.selectedFiles().isEmpty())
-        dirName = dlg.selectedFiles().first();
-
-    return dirName;
+    if (!dlg.exec())
+        return "";
+    return dlg.getFile();
 }
 
 } // namespace file_dialog

@@ -15,21 +15,17 @@
 #ifndef FILEDIALOG_H
 #define FILEDIALOG_H
 
-//! Functions for opening files. TODO: clarify relation to newQ::OutputFile
+//! Functions for opening files.
 
 namespace file_dialog {
 
-QFile* OutputFile(
-    const QString& name, QWidget* parent, const QString& path, bool check_overwrite=true);
+QFile* OutputFile(const QString&, QWidget*, const QString&, bool check_overwrite=true);
 
-QStringList openFileNames(QWidget*, const QString& caption, const QString& dir,
-                          const QString& filter, bool plural=true);
-QString openFileName(QWidget*, const QString& caption, const QString& dir, const QString& filter);
-
-QString saveFileName(QWidget*, const QString& caption, const QString& dir, const QString& filter);
-QString saveDirName(QWidget*, const QString& caption, const QString& dir);
+QStringList openFileNames(QWidget*, const QString&, QDir&, const QString&, bool plural=true);
+QString openFileName(QWidget*, const QString&, QDir&, const QString&);
+QString saveFileName(QWidget*, const QString&, QDir&, const QString&);
+QString saveDirName(QWidget*, const QString&, QDir&);
 
 } // namespace file_dialog
-
 
 #endif // FILEDIALOG_H

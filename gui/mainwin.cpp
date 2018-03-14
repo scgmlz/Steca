@@ -154,20 +154,17 @@ void MainWin::checkUpdate() {
 }
 
 void MainWin::addFiles() {
-    static QDir dir = QDir::homePath();
-    QStringList fileNames = file_dialog::openFileNames(
-        this, "Add files", dir.absolutePath(), "Data files (*.dat *.mar*);;All files (*.*)");
+    QStringList fileNames = file_dialog::openFileNames(this, "Add files", dataDir_, dataFormats_);
     repaint();
     if (fileNames.isEmpty())
         return;
-    dir = QFileInfo(fileNames.at(0)).absolutePath();
     TakesLongTime __;
     gSession->dataset().addGivenFiles(fileNames);
 }
 
 void MainWin::loadSession() {
     QString fileName = file_dialog::openFileName(
-        this, "Load session", QDir::current().absolutePath(), "Session files (*.ste)");
+        this, "Load session", sessionDir_, "Session files (*.ste)");
     if (fileName.isEmpty())
         return;
     try {
@@ -184,7 +181,7 @@ void MainWin::loadSession() {
 
 void MainWin::saveSession() {
     QString fileName = file_dialog::saveFileName(
-        this, "Save session", QDir::current().absolutePath(), "Session files (*.ste)");
+        this, "Save session", sessionDir_, "Session files (*.ste)");
     if (!fileName.endsWith(".ste"))
         fileName += ".ste";
     saveSessionTo(QFileInfo(fileName));
@@ -365,8 +362,7 @@ void MainWin::loadCorrFile() {
         gSession->corrset().removeFile();
     } else {
         QString fileName = file_dialog::openFileName(
-            this, "Set correction file", QDir::current().absolutePath(),
-            "Data files (*.dat *.mar*);;All files (*.*)");
+            this, "Set correction file", dataDir_, dataFormats_);
         if (fileName.isEmpty())
             return;
         QDir::setCurrent(QFileInfo(fileName).absolutePath());

@@ -20,6 +20,7 @@
 #include "core/data/image_transform.h"
 #include "core/typ/singleton.h"
 #include "gui/cfg/settings.h"
+#include <QDir>
 #include <QMainWindow>
 
 extern class MainWin* gGui; //!< global pointer to _the_ main window
@@ -72,6 +73,9 @@ public:
 private:
     QDockWidget *dockFiles_, *dockClusters_, *dockMetadata_;
     QByteArray initialState_;
+    QDir sessionDir_ {QDir::homePath()};
+    QDir dataDir_ {QDir::homePath()};
+    const QString dataFormats_ {"Data files (*.dat *.mar*);;All files (*.*)"};
 
     void initMenu();
     void initLayout();

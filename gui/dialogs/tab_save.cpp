@@ -29,15 +29,15 @@ TabSave::TabSave(bool withTypes)
     actBrowse = new CTrigger("actBrowse#", "Browse...");
     actSave = new CTrigger("actSave#", "Save");
 
-    QString dir = gGui->saveDir;
-    if (!QDir(dir).exists()) // TODO DIRS simplify
-        dir = QDir::current().absolutePath();
-
     auto* gp = new GridPanel("Destination");
     grid_->addWidget(gp, 0, 0);
     QGridLayout* g = &gp->grid_;
 
-    dir_ = new QLineEdit(dir);
+    static QDir defaultDir = QDir::homePath();
+    dir_ = new QLineEdit(defaultDir.absolutePath());
+    connect(actBrowse, &QAction::triggered, [this]() {
+        file_dialog::saveDirName(this, "Select folder", defaultDir);
+        dir_->setText(defaultDir.absolutePath()); });
     dir_->setReadOnly(true);
 
     file_ = new QLineEdit();
@@ -49,11 +49,6 @@ TabSave::TabSave(bool withTypes)
     g->addWidget(new QLabel("File name:"), 1, 0, Qt::AlignRight);
     g->addWidget(file_, 1, 1);
 
-    connect(actBrowse, &QAction::triggered, [this]() {
-        QString dir = file_dialog::saveDirName(this, "Select folder", dir_->text());
-        if (!dir.isEmpty())
-            dir_->setText((gGui->saveDir = dir));
-    });
 
     gp = new GridPanel("File type");
     grid_->addWidget(gp, 0, 1);
