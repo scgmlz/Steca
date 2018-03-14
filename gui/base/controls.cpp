@@ -221,7 +221,7 @@ CComboBox::CComboBox(const QString& _name, const QStringList& items)
 }
 
 void CComboBox::onCommand(const QStringList& args) {
-    if (args[0]!=" choose ")
+    if (args[0]!="choose")
         THROW("Unexpected command");
     if      (args.size()<2)
         THROW("Missing argument to command 'choose'");
