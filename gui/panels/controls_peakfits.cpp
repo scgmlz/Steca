@@ -46,7 +46,8 @@ public:
     enum { COL_ID = 1, COL_TYPE, COL_RANGE, NUM_COLUMNS };
 };
 
-QVariant PeaksModel::data(const QModelIndex& index, int role) const {
+QVariant PeaksModel::data(const QModelIndex& index, int role) const
+{
     int row = index.row();
     if (row < 0 || rowCount() <= row)
         return {};
@@ -120,7 +121,8 @@ private:
     CDoubleSpinBox spinRangeMax_{"peakRangeMax", 6, 0., 90.};
 };
 
-RangeControl::RangeControl() {
+RangeControl::RangeControl()
+{
     auto hb = new QHBoxLayout();
     setLayout(hb);
 
@@ -144,7 +146,8 @@ RangeControl::RangeControl() {
     connect(gSession, &Session::sigPeakHighlight, this, &RangeControl::onData);
 }
 
-void RangeControl::onData() {
+void RangeControl::onData()
+{
     Peak* peak = gSession->peaks().selectedPeak();
     setEnabled(peak);
     if (!peak)
@@ -163,7 +166,7 @@ void RangeControl::onData() {
 
 class AnyPeakdataView : public QWidget {
 public:
-    AnyPeakdataView();
+    AnyPeakdataView() {}
     virtual void updatePeakFun(const PeakFunction&);
 protected:
     XLineDisplay readFitPeakX_ {6, true};
@@ -171,10 +174,8 @@ protected:
     XLineDisplay readFitFWHM_ {6, true};
 };
 
-AnyPeakdataView::AnyPeakdataView() {
-}
-
-void AnyPeakdataView::updatePeakFun(const PeakFunction& peakFun) {
+void AnyPeakdataView::updatePeakFun(const PeakFunction& peakFun)
+{
     const qpair& fittedPeak = peakFun.fittedPeak();
     readFitPeakX_.setText(safeRealText(fittedPeak.x));
     readFitPeakY_.setText(safeRealText(fittedPeak.y));
@@ -188,7 +189,8 @@ public:
     RawPeakdataView();
 };
 
-RawPeakdataView::RawPeakdataView() {
+RawPeakdataView::RawPeakdataView()
+{
     QGridLayout* lay = new QGridLayout();
     lay->addWidget(new QLabel(""), 1, 1);
 
@@ -219,7 +221,8 @@ private:
     XLineDisplay spinGuessFWHM_ {6, true};
 };
 
-FitPeakdataView::FitPeakdataView() {
+FitPeakdataView::FitPeakdataView()
+{
     QGridLayout* lay = new QGridLayout();
     lay->addWidget(new QLabel("guess"), 1, 1);
     lay->addWidget(new QLabel("fitted"), 1, 2);
@@ -242,7 +245,8 @@ FitPeakdataView::FitPeakdataView() {
     setLayout(lay);
 }
 
-void FitPeakdataView::updatePeakFun(const PeakFunction& peakFun) {
+void FitPeakdataView::updatePeakFun(const PeakFunction& peakFun)
+{
     AnyPeakdataView::updatePeakFun(peakFun);
 
     const qpair& guessedPeak = peakFun.guessedPeak();
@@ -263,7 +267,8 @@ private:
     AnyPeakdataView* widgets_[2];
 };
 
-PeakdataView::PeakdataView() {
+PeakdataView::PeakdataView()
+{
     addWidget(widgets_[0] = new RawPeakdataView());
     addWidget(widgets_[1] = new FitPeakdataView());
     widgets_[0]->show(); // setCurrentIndex(0);
@@ -271,7 +276,8 @@ PeakdataView::PeakdataView() {
     connect(gSession, &Session::sigPeakHighlight, this, &PeakdataView::onData);
 }
 
-void PeakdataView::onData() {
+void PeakdataView::onData()
+{
     Peak* peak = gSession->peaks().selectedPeak();
     setEnabled(peak);
     if (!peak)
@@ -279,7 +285,8 @@ void PeakdataView::onData() {
     updatePeakFun(peak->peakFunction());
 }
 
-void PeakdataView::updatePeakFun(const PeakFunction& peakFun) {
+void PeakdataView::updatePeakFun(const PeakFunction& peakFun)
+{
     int i = peakFun.isRaw() ? 0 : 1;
     widgets_[i]->updatePeakFun(peakFun);
     setCurrentIndex(i);
@@ -291,8 +298,8 @@ void PeakdataView::updatePeakFun(const PeakFunction& peakFun) {
 // ************************************************************************** //
 
 ControlsPeakfits::ControlsPeakfits()
-    : comboReflType_("reflTyp", FunctionRegistry::instance()->keys()) {
-
+    : comboReflType_ {"reflTyp", FunctionRegistry::instance()->keys()}
+{
     auto* box = new QVBoxLayout();
     setLayout(box);
 
@@ -334,7 +341,8 @@ ControlsPeakfits::ControlsPeakfits()
     connect(gSession, &Session::sigPeaks, this, &ControlsPeakfits::onPeaks);
 }
 
-void ControlsPeakfits::onPeaks() {
+void ControlsPeakfits::onPeaks()
+{
     Peak* peak = gSession->peaks().selectedPeak();
     if (peak)
         comboReflType_.setCurrentText(peak->functionName());
