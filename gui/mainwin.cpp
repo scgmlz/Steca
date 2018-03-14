@@ -188,7 +188,12 @@ void MainWin::saveSession()
         this, "Save session", sessionDir_, "Session files (*.ste)");
     if (!fileName.endsWith(".ste"))
         fileName += ".ste";
-    saveSessionTo(QFileInfo(fileName));
+    QFileInfo fileInfo(fileName);
+    QFile* file = file_dialog::OutputFile("file", this, fileInfo.filePath());
+    if (!file)
+        return;
+    const int result = file->write(serializeSession());
+    if (!(result >= 0)) THROW("Could not write session");
 }
 
 void MainWin::closeEvent(QCloseEvent* event)
@@ -223,15 +228,6 @@ void MainWin::viewReset()
     toggles->viewClusters.setChecked(true);
     toggles->viewFiles.setChecked(true);
     toggles->viewMetadata.setChecked(true);
-}
-
-void MainWin::saveSessionTo(const QFileInfo& fileInfo)
-{
-    QFile* file = file_dialog::OutputFile("file", this, fileInfo.filePath());
-    if (!file)
-        return;
-    const int result = file->write(serializeSession());
-    if (!(result >= 0)) THROW("Could not write session");
 }
 
 QByteArray MainWin::serializeSession() const

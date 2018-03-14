@@ -85,7 +85,6 @@ private:
     void readSettings();
     void saveSettings();
 
-    void saveSessionTo(const QFileInfo&);
     QByteArray serializeSession() const;
 
     void collectDatasetsFromSelectionBy(const vec<int>, const int);
