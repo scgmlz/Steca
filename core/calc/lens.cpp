@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/calc/lens.cpp
-//! @brief     Implements LensBase, ImageLens, SequenceLens
+//! @brief     Implements ImageLens
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,31 +15,30 @@
 #include "core/session.h"
 
 // ************************************************************************** //
-//   class LensBase
+//   class ImageLens
 // ************************************************************************** //
 
-LensBase::LensBase(bool trans, bool cut,
-    ImageTransform const& imageTransform, ImageCut const& imageCut)
+ImageLens::ImageLens(const Image& image, bool trans, bool cut)
     : trans_(trans)
     , cut_(cut)
-    , imageTransform_(imageTransform)
-    , imageCut_(imageCut)
-    , intensCorr_(gSession->intensCorr()) {}
+    , image_(image)
+{}
 
-size2d LensBase::transCutSize(size2d size) const {
-    if (trans_ && imageTransform_.isTransposed())
-        size = size.transposed();
+size2d ImageLens::imgSize() const {
+    size2d ret = image_.size();
+    if (trans_ && gSession->imageTransform().isTransposed())
+        ret = ret.transposed();
     if (cut_)
-        size = size - imageCut_.marginSize();
-    return size;
+        ret = ret - gSession->imageCut().marginSize();
+    return ret;
 }
 
-void LensBase::doTrans(int& x, int& y) const {
-    size2d s = size();
+void ImageLens::doTrans(int& x, int& y) const {
+    size2d s = imgSize();
     int w = s.w;
     int h = s.h;
 
-    switch (imageTransform_.val) {
+    switch (gSession->imageTransform().val) {
     case ImageTransform::ROTATE_0: break;
     case ImageTransform::ROTATE_1:
         qSwap(x, y);
@@ -64,23 +63,11 @@ void LensBase::doTrans(int& x, int& y) const {
     }
 }
 
-void LensBase::doCut(int& i, int& j) const {
-    i += imageCut_.left;
-    j += imageCut_.top;
+void ImageLens::doCut(int& i, int& j) const {
+    i += gSession->imageCut().left();
+    j += gSession->imageCut().top();
 }
 
-
-// ************************************************************************** //
-//   class ImageLens
-// ************************************************************************** //
-
-ImageLens::ImageLens(const Image& image, bool trans, bool cut)
-    : LensBase(trans, cut, gSession->imageTransform(), gSession->imageCut())
-    , image_(image) {}
-
-size2d ImageLens::size() const {
-    return LensBase::transCutSize(image_.size());
-}
 
 inten_t ImageLens::imageInten(int i, int j) const {
     if (trans_)
@@ -88,8 +75,8 @@ inten_t ImageLens::imageInten(int i, int j) const {
     if (cut_)
         doCut(i, j);
     inten_t inten = image_.inten(i, j);
-    if (intensCorr_)
-        inten *= intensCorr_->inten(i, j);
+    if (gSession->intensCorr())
+        inten *= gSession->intensCorr()->inten(i, j);
     return inten;
 }
 
@@ -97,91 +84,9 @@ const Range& ImageLens::rgeInten(bool fixed) const {
     if (fixed)
         return gSession->experiment().rgeFixedInten(trans_, cut_);
     if (!rgeInten_.isValid()) {
-        size2d sz = size();
+        size2d sz = imgSize();
         for_ij (sz.w, sz.h)
             rgeInten_.extendBy(qreal(imageInten(i, j)));
     }
     return rgeInten_;
-}
-
-
-// ************************************************************************** //
-//   class SequenceLens
-// ************************************************************************** //
-
-SequenceLens::SequenceLens(
-    Sequence const& seq, eNorm norm, bool trans, bool cut,
-    ImageTransform const& imageTransform, ImageCut const& imageCut)
-    : LensBase(trans, cut, imageTransform, imageCut)
-    , normFactor_(1)
-    , seq_(seq) {
-    setNorm(norm);
-}
-
-size2d SequenceLens::size() const {
-    return LensBase::transCutSize(gSession->experiment().imageSize());
-}
-
-Range SequenceLens::rgeGma() const {
-    return seq_.rgeGma();
-}
-
-Range SequenceLens::rgeGmaFull() const {
-    return seq_.rgeGmaFull();
-}
-
-Range SequenceLens::rgeTth() const {
-    return seq_.rgeTth();
-}
-
-Range SequenceLens::rgeInten() const {
-    // fixes the scale
-    // TODO consider return gSession->experiment().rgeInten();
-    return seq_.rgeInten();
-}
-
-Curve SequenceLens::makeCurve() const {
-    return makeCurve(rgeGma());
-}
-
-Curve SequenceLens::makeCurve(const Range& rgeGma) const {
-    inten_vec intens = seq_.collectIntens(intensCorr_, rgeGma);
-    Curve res;
-    int count = intens.count();
-    if (count) {
-        Range rgeTth = seq_.rgeTth();
-        deg minTth = rgeTth.min, deltaTth = rgeTth.width() / count;
-        for_i (count)
-            res.append(minTth + deltaTth * i, qreal(intens.at(i) * normFactor_));
-    }
-    return res;
-}
-
-void SequenceLens::setNorm(eNorm norm) {
-    qreal num = 1, den = 1;
-
-    switch (norm) {
-    case eNorm::MONITOR:
-        num = gSession->experiment().avgMonitorCount();
-        den = seq_.avgMonitorCount();
-        break;
-    case eNorm::DELTA_MONITOR:
-        num = gSession->experiment().avgDeltaMonitorCount();
-        den = seq_.avgDeltaMonitorCount();
-        break;
-    case eNorm::DELTA_TIME:
-        num = gSession->experiment().avgDeltaTime();
-        den = seq_.avgDeltaTime();
-        break;
-    case eNorm::BACKGROUND:
-        num = gSession->calcAvgBackground();
-        den = gSession->calcAvgBackground(seq_);
-        break;
-    case eNorm::NONE:
-        break;
-    }
-
-    normFactor_ = inten_t((num > 0 && den > 0) ? num / den : NAN);
-    if (qIsNaN(normFactor_))
-        qWarning() << "Bad normalisation value";
 }

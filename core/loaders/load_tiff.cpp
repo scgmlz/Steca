@@ -14,15 +14,13 @@
 
 #include "core/def/idiomatic_for.h"
 #include "core/data/rawfile.h"
-#include "core/data/metadata.h"
-#include "core/typ/exception.h"
 #include <QDataStream>
 #include <QDir>
 
 namespace load {
 
 // implemented below
-static void loadTiff(Rawfile*, rcstr, deg, qreal, qreal) THROWS;
+static void loadTiff(Rawfile*, const QString&, deg, qreal, qreal) THROWS;
 
 // The dat file looks like so:
 /*
@@ -41,7 +39,7 @@ Aus-Weimin-00008.tif -55
 Aus-Weimin-00009.tif -50
 */
 
-Rawfile loadTiffDat(rcstr filePath) THROWS {
+Rawfile loadTiffDat(const QString& filePath) THROWS {
     Rawfile ret(filePath);
 
     QFile f(filePath);
@@ -52,7 +50,7 @@ Rawfile loadTiffDat(rcstr filePath) THROWS {
 
     QByteArray line;
     while (!(line = f.readLine()).isEmpty()) {
-        str s = line;
+        QString s = line;
 
         // cut off comment
         int commentPos = s.indexOf(';');
@@ -69,7 +67,7 @@ Rawfile loadTiffDat(rcstr filePath) THROWS {
 
         // file, phi, monitor, expTime
         bool ok;
-        str tiffFileName = lst.at(0);
+        QString tiffFileName = lst.at(0);
         deg phi = lst.at(1).toDouble(&ok);
         if (!(ok)) THROW("bad phi value");
 
@@ -96,8 +94,9 @@ Rawfile loadTiffDat(rcstr filePath) THROWS {
     return ret;
 }
 
-static void loadTiff(Rawfile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) THROWS {
-
+static void loadTiff(
+    Rawfile* file, const QString& filePath, deg phi, qreal monitor, qreal expTime) THROWS
+{
     Metadata md;
     md.motorPhi = phi;
     md.monitorCount = monitor;
@@ -150,7 +149,7 @@ static void loadTiff(Rawfile* file, rcstr filePath, deg phi, qreal monitor, qrea
         THROW("not a simple number");
     };
 
-    auto asStr = [&]() {
+    auto asStr = [&]()->QString {
         if (!(2 == dataType)) THROW("bad data type");
         auto lastPos = f.pos();
 
@@ -158,7 +157,7 @@ static void loadTiff(Rawfile* file, rcstr filePath, deg phi, qreal monitor, qrea
         QByteArray data = f.readLine(dataCount);
         seek(lastPos);
 
-        return str(data);
+        return QString(data);
     };
 
     qint32 dirOffset;

@@ -28,7 +28,7 @@ void Corrset::removeFile() {
     emit gSession->sigCorr();
 }
 
-void Corrset::loadFile(rcstr filePath) THROWS {
+void Corrset::loadFile(const QString& filePath) THROWS {
     if (filePath.isEmpty())
         THROW("invalid call of Corrset::loadFile with empty filePath argument");
     QSharedPointer<Rawfile> rawfile = load::loadRawfile(filePath);
@@ -65,7 +65,7 @@ void Corrset::calcIntensCorr() const {
     size2d size = corrImage_->size() - gSession->imageCut_.marginSize();
     ASSERT(!size.isEmpty());
 
-    int w = size.w, h = size.h, di = gSession->imageCut_.left, dj = gSession->imageCut_.top;
+    int w = size.w, h = size.h, di = gSession->imageCut_.left(), dj = gSession->imageCut_.top();
 
     qreal sum = 0;
     for_ij (w, h)

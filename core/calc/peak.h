@@ -15,38 +15,35 @@
 #ifndef PEAK_H
 #define PEAK_H
 
-#include "core/def/special_pointers.h"
+#include <memory>
 #include "core/fit/fit_fun.h"
-#include "core/typ/curve.h"
-#include "core/typ/range.h"
-#include "core/typ/realpair.h"
 #include "core/typ/types.h" // for fwhm_t
 #include <QSharedPointer> // no auto rm
-#include <QStringList>
 
 //! Wraps a PeakFunction (pimpl idiom)
 
 class Peak {
 public:
+    Peak() = delete;
     Peak(const QString& functionName = "Raw");
 
-    static Peak* from_json(JsonObj const&) THROWS;
+    static Peak* from_json(const JsonObj&) THROWS;
 
     void setPeakFunction(const QString&);
     void setRange(const Range&);
     void invalidateGuesses();
-    void setGuessPeak(qpair const& peak);
+    void setGuessPeak(const qpair& peak);
     void setGuessFWHM(fwhm_t fwhm);
-    void fit(Curve const&);
+    void fit(const Curve&);
 
-    PeakFunction const& peakFunction() const;
+    const PeakFunction& peakFunction() const;
     QString functionName() const { return peakFunction_->name(); }
     bool isRaw() const { return peakFunction_->isRaw(); }
     const Range& range() const { return peakFunction_->range(); }
     JsonObj to_json() const;
 
 private:
-    scoped<PeakFunction*> peakFunction_; //!< pimpl (pointer to implementation)
+    std::unique_ptr<PeakFunction> peakFunction_; //!< pimpl (pointer to implementation)
 };
 
 

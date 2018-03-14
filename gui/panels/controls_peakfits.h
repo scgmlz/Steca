@@ -15,7 +15,7 @@
 #ifndef CONTROLS_PEAKFITS_H
 #define CONTROLS_PEAKFITS_H
 
-#include "gui/base/new_q.h"
+#include "gui/base/controls.h"
 
 //! A widget with controls to view and change the detector geometry.
 
@@ -28,9 +28,7 @@ private:
     class PeaksView* peaksView_;
     class RangeControl* rangeControl_;
     class PeakdataView* peakdataView_;
-    QComboBox* comboReflType_;
-
-    bool silentSpin_ = false;
+    CComboBox comboReflType_;
 };
 
 #endif // CONTROLS_PEAKFITS_H

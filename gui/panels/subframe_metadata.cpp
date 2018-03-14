@@ -15,8 +15,6 @@
 #include "core/session.h"
 #include "gui/panels/subframe_metadata.h"
 #include "gui/base/model_view.h"
-#include "gui/thehub.h"
-#include <QHeaderView>
 
 
 // ************************************************************************** //
@@ -25,43 +23,24 @@
 
 //! The model for MetadatView.
 
-class MetadataModel : public TableModel {
+class MetadataModel : public CheckTableModel {
 public:
-    MetadataModel();
+    MetadataModel() : CheckTableModel("meta") {}
 
     void reset();
-    void onClicked(const QModelIndex &);
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return Metadata::numAttributes(false); }
+    int highlighted() const final { return 0; }// gSession->dataset().highlight().clusterIndex(); }
+    void setHighlight(int i) final { ; } //gSession->dataset().highlight().setCluster(i); }
+    bool activated(int row) const { return gSession->metaSelected(row); }
+    void setActivated(int row, bool on) { gSession->setMetaSelected(row, on); }
+
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const { return {}; }
-    vec<bool> const& rowsChecked() const { return rowsChecked_; }
 
     enum { COL_CHECK = 1, COL_TAG, COL_VALUE, NUM_COLUMNS };
-
-private:
-    shp_Metadata metadata_;
-    vec<bool> rowsChecked_;
 };
-
-
-MetadataModel::MetadataModel() {
-    rowsChecked_.fill(false, Metadata::numAttributes(false));
-}
-
-void MetadataModel::reset() {
-    const Cluster* cluster = gSession->dataset().highlight().cluster();
-    metadata_ = cluster ? cluster->avgeMetadata() : shp_Metadata();
-    resetModel();
-}
-
-void MetadataModel::onClicked(const QModelIndex &cell) {
-    int row = cell.row();
-    rowsChecked_[row] = !rowsChecked_[row];
-    resetModel();
-    emit gSession->setMetaSelection(rowsChecked_);
-}
 
 QVariant MetadataModel::data(const QModelIndex& index, int role) const {
     int row = index.row();
@@ -70,17 +49,18 @@ QVariant MetadataModel::data(const QModelIndex& index, int role) const {
     int col = index.column();
     switch (role) {
     case Qt::CheckStateRole:
-        switch (col) {
-        case COL_CHECK:
-            return rowsChecked_.at(row) ? Qt::Checked : Qt::Unchecked;
-        }
+        if (col==COL_CHECK)
+            return activated(row) ? Qt::Checked : Qt::Unchecked;
         break;
     case Qt::DisplayRole:
         switch (col) {
         case COL_TAG:
             return Metadata::attributeTag(row, false);
         case COL_VALUE:
-            return metadata_ ? metadata_->attributeStrValue(row) : "-";
+            const Cluster* highlight = gSession->dataset().highlight().cluster();
+            if (!highlight)
+                return "-";
+            return highlight->avgeMetadata()->attributeStrValue(row);
         }
         break;
     }
@@ -94,21 +74,23 @@ QVariant MetadataModel::data(const QModelIndex& index, int role) const {
 
 //! Main item in SubframeMetadata: View and control the list of Metadata.
 
-class MetadataView : public ListView {
+class MetadataView : public CheckTableView {
 public:
     MetadataView();
 
 private:
+    void currentChanged(const QModelIndex& current, const QModelIndex&) override final {
+        gotoCurrent(current); }
     int sizeHintForColumn(int) const final;
-    MetadataModel* model() const final { return static_cast<MetadataModel*>(ListView::model()); }
+    MetadataModel* model() { return static_cast<MetadataModel*>(model_); }
 };
 
-MetadataView::MetadataView() : ListView() {
-    setHeaderHidden(true);
-    auto metadataModel = new MetadataModel();
-    setModel(metadataModel);
-    connect(gSession, &Session::sigHighlight, model(), &MetadataModel::reset);
-    connect(this, &MetadataView::clicked, model(), &MetadataModel::onClicked);
+MetadataView::MetadataView()
+    : CheckTableView(new MetadataModel())
+{
+    connect(gSession, &Session::sigClusters, this, &TableView::onData);
+    connect(gSession, &Session::sigMetaSelection, this, &TableView::onHighlight);
+    connect(this, &MetadataView::clicked, model(), &CheckTableModel::onClicked);
 }
 
 int MetadataView::sizeHintForColumn(int col) const {
@@ -125,5 +107,5 @@ int MetadataView::sizeHintForColumn(int col) const {
 // ************************************************************************** //
 
 SubframeMetadata::SubframeMetadata() : DockWidget("Metadata", "dock-metadata") {
-    box_->addWidget((metadataView_ = new MetadataView()));
+    box_.addWidget((metadataView_ = new MetadataView()));
 }

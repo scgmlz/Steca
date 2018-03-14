@@ -16,7 +16,6 @@
 #define METADATA_H
 
 #include "core/typ/angles.h"
-#include "core/typ/str.h"
 #include "core/typ/variant.h"
 #include <QSharedPointer> // no auto rm
 
@@ -29,17 +28,18 @@ public:
     // attribute list - will be dynamic
     static int numAttributes(bool onlyNum);
 
-    static rcstr attributeTag(int, bool out);
+    static const QString& attributeTag(int, bool out);
     static QStringList attributeTags(bool out);
     static cmp_vec attributeCmps();
 
-    str attributeStrValue(int) const;
+    QString attributeStrValue(int) const;
     QVariant attributeValue(int) const;
     row_t attributeValues() const;
 
     static row_t attributeNaNs();
+    static int size() { return attributeNaNs().count(); }
 
-    str date, comment;
+    QString date, comment;
 
     deg motorXT, motorYT, motorZT, motorOmg, motorTth, motorPhi, motorChi, motorPST, motorSST,
         motorOMGM;

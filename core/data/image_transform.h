@@ -40,14 +40,14 @@ public:
     ImageTransform mirror(bool on) const;
 
     // rotates only; keeps the mirror flag
-    ImageTransform rotateTo(ImageTransform const&) const;
+    ImageTransform rotateTo(const ImageTransform&) const;
 
     // rotates by one quarter-turn
     ImageTransform nextRotate() const;
 
     bool isTransposed() const { return 0 != (val & 1); }
 
-    bool operator==(ImageTransform const& that) const { return val == that.val; }
+    bool operator==(const ImageTransform& that) const { return val == that.val; }
 };
 
 #endif // IMAGE_TRANSFORM_H

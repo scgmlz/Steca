@@ -15,31 +15,31 @@
 #ifndef MAINWIN_H
 #define MAINWIN_H
 
+#include "core/calc/lens.h"
+#include "core/data/rawfile.h"
+#include "core/data/image_transform.h"
 #include "core/typ/singleton.h"
-#include "core/typ/str.h"
+#include "gui/cfg/settings.h"
+#include <QDir>
 #include <QMainWindow>
-#include <QNetworkAccessManager>
 
-extern class MainWin* gMainWin; //!< global pointer to _the_ main window
+extern class MainWin* gGui; //!< global pointer to _the_ main window
+
+// make connects shorter
+#define _SLOT_(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
 
 //! The main window.
 
 //! This is a singleton class that specializes QMainWindow.
-//! The one instance of this class is accessible from everywhere through
-//! the global pointer gMainWin.
-
-//! The main window coexists with an instance of TheHub, which is responsible
-//! for most of the dynamic functionality. The division of tasks between MainWin
-//! and TheHub is somewhat arbitrary, and we should consider merging both classes.
+//! Its one instance is accessible from everywhere through the global pointer gGui.
 
 class MainWin : public QMainWindow, public ISingleton<MainWin> {
+    Q_OBJECT
 public:
     MainWin();
+    ~MainWin();
 
-    void online();
     void checkUpdate();
-
-    void close();
 
     void addFiles();
 
@@ -47,28 +47,60 @@ public:
     void saveSession();
     void clearSession();
 
-    void execCommand(str);
+    // modifying methods:
+    void sessionFromFile(const QString&) THROWS;
+    void loadCorrFile() THROWS;
+
+    void setImageRotate(ImageTransform);
+    void viewReset();
+
+    // const methods:
+    bool isFixedIntenImageScale() const { return isFixedIntenImageScale_; }
+    bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
+    bool isCombinedDgram() const { return isCombinedDgram_; }
+
+    bool baselineEditable { false };
+    bool peaksEditable { false };
+
+    class Triggers* triggers;
+    class Toggles* toggles;
+    class Menus* menus;
+
+    // TODO relegate this to TabSave or similar
+    QString saveDir; //!< setting: default directory for data export
+    QString saveFmt; //!< setting: default format for data export
 
 private:
-    QDockWidget *dockFiles_, *dockMeasurements_, *dockDatasetInfo_;
+    QDockWidget *dockFiles_, *dockClusters_, *dockMetadata_;
     QByteArray initialState_;
-    QNetworkAccessManager netMan_;
+    QDir sessionDir_ {QDir::homePath()};
+    QDir dataDir_ {QDir::homePath()};
+    const QString dataFormats_ {"Data files (*.dat *.mar*);;All files (*.*)"};
 
+    void initMenu();
     void initLayout();
-    void connectActions();
 
-    void messageDialog(rcstr title, rcstr text);
     void closeEvent(QCloseEvent*);
 
     void readSettings();
     void saveSettings();
 
-    void viewStatusbar(bool);
-    void viewFullScreen(bool);
-    void viewFiles(bool);
-    void viewDatasets(bool);
-    void viewMetadata(bool);
-    void viewReset();
+    QByteArray serializeSession() const;
+
+    void collectDatasetsFromSelectionBy(const vec<int>, const int);
+    void setImageMirror(bool);
+    void configActions();
+    void sessionFromJson(const QByteArray&) THROWS;
+    void updateActionEnabling();
+
+    bool isFixedIntenImageScale_;
+    bool isFixedIntenDgramScale_;
+    bool isCombinedDgram_;
+    Settings settings_;
+
+    friend Triggers;
+    friend Toggles;
+    friend Menus;
 };
 
 #endif // MAINWIN_H

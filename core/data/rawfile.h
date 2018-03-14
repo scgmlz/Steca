@@ -15,14 +15,9 @@
 #ifndef RAWFILE_H
 #define RAWFILE_H
 
-#include "core/data/image.h"
 #include "core/data/measurement.h"
-#include "core/typ/array2d.h"
-#include "core/typ/str.h"
-#include "core/typ/types.h"
 #include <QFileInfo>
 
-class Metadata;
 
 //! A file (loaded from a disk file) that contains a data sequence.
 class Rawfile final {
@@ -31,21 +26,21 @@ public:
     Rawfile(const Rawfile&) = delete;
     // allow move so that the low-level loaders must not bother about shared pointers:
     Rawfile(Rawfile&&) = default;
-    Rawfile(rcstr fileName);
+    Rawfile(const QString& fileName);
 
-    void addDataset(const Metadata&, size2d const&, inten_vec const&);
+    void addDataset(const Metadata&, const size2d&, const inten_vec&);
 
     QVector<const Measurement*> const measurements() const;
     int count() const { return measurements_.count(); }
     size2d imageSize() const { return imageSize_; }
 
-    QFileInfo const& fileInfo() const;
-    str fileName() const;
+    const QFileInfo& fileInfo() const;
+    QString fileName() const;
     shp_Image foldedImage() const;
 
 private:
     QFileInfo fileInfo_;
-    vec<shp_Measurement> measurements_;
+    vec<shp_Measurement> measurements_; // TODO EASY -> unique_ptr
     size2d imageSize_;
 };
 

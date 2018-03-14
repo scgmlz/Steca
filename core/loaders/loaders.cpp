@@ -13,21 +13,19 @@
 // ************************************************************************** //
 
 #include "core/data/rawfile.h"
-#include "core/typ/exception.h"
 #include <QStringBuilder> // for ".." % ..
-#include <QFileInfo>
 
 namespace load {
-Rawfile loadCaress(rcstr filePath) THROWS;
-Rawfile loadMar(rcstr filePath) THROWS;
-Rawfile loadTiffDat(rcstr filePath) THROWS;
-str loadCaressComment(rcstr filePath);
+Rawfile loadCaress(const QString& filePath) THROWS;
+Rawfile loadMar(const QString& filePath) THROWS;
+Rawfile loadTiffDat(const QString& filePath) THROWS;
+QString loadCaressComment(const QString& filePath);
 }
 
 namespace {
 
 // peek at up to maxLen bytes (to establish the file type)
-static QByteArray peek(int pos, int maxLen, QFileInfo const& info) {
+static QByteArray peek(int pos, int maxLen, const QFileInfo& info) {
     QFile file(info.filePath());
     if (file.open(QFile::ReadOnly) && file.seek(pos))
         return file.read(maxLen);
@@ -35,26 +33,26 @@ static QByteArray peek(int pos, int maxLen, QFileInfo const& info) {
 }
 
 // Caress file format
-bool couldBeCaress(QFileInfo const& info) {
+bool couldBeCaress(const QFileInfo& info) {
     static QByteArray const header("\020\012DEFCMD DAT");
     return header == peek(0, header.size(), info);
 }
 
 // Mar file format
-bool couldBeMar(QFileInfo const& info) {
+bool couldBeMar(const QFileInfo& info) {
     static QByteArray const header("mar research");
     return header == peek(0x80, header.size(), info);
 }
 
 // Text .dat file with metadata for tiff files
-bool couldBeTiffDat(QFileInfo const& info) {
+bool couldBeTiffDat(const QFileInfo& info) {
     QFile file(info.filePath());
     if (!file.open(QFile::ReadOnly))
         return false;
     bool ret = false;
     QByteArray line;
     while (!(line = file.readLine()).isEmpty()) {
-        str s = line;
+        QString s = line;
         const int commentPos = s.indexOf(';');
         if (commentPos >= 0)
             s = s.left(commentPos);
@@ -68,7 +66,7 @@ bool couldBeTiffDat(QFileInfo const& info) {
     return ret;
 }
 
-Rawfile load_low_level(rcstr filePath) THROWS {
+Rawfile load_low_level(const QString& filePath) THROWS {
     const QFileInfo info(filePath);
     if (!(info.exists()))
         THROW("File " % filePath % " does not exist");
@@ -87,13 +85,13 @@ Rawfile load_low_level(rcstr filePath) THROWS {
 
 namespace load {
 
-QSharedPointer<Rawfile> loadRawfile(rcstr filePath) THROWS {
+QSharedPointer<Rawfile> loadRawfile(const QString& filePath) THROWS {
     const QSharedPointer<Rawfile> ret(new Rawfile(load_low_level(filePath)));
     if (!(ret->count() > 0)) THROW("File " % filePath % " contains no cluster");
     return ret;
 }
 
-str loadComment(QFileInfo const& info) {
+QString loadComment(const QFileInfo& info) {
     const QString& path = info.absoluteFilePath();
     if (couldBeCaress(info))
         return "[car] " + loadCaressComment(path);

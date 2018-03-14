@@ -15,20 +15,16 @@
 #ifndef CONTROLS_DETECTOR_H
 #define CONTROLS_DETECTOR_H
 
-#include "gui/base/new_q.h"
+#include <QVBoxLayout>
+#include <QWidget>
 
-//! A widget with controls to view and change the detector geometry.
+//! Aggregated control widgets that govern the detector setup.
 
 class ControlsDetector : public QWidget {
 public:
     ControlsDetector();
 private:
-    void toSession();
-    void fromSession();
-
-    QDoubleSpinBox *detDistance_, *detPixelSize_;
-    QSpinBox *beamOffsetI_, *beamOffsetJ_;
-    QSpinBox *cutLeft_, *cutTop_, *cutRight_, *cutBottom_;
+    QVBoxLayout vbox_;
 };
 
 #endif // CONTROLS_DETECTOR_H

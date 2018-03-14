@@ -22,7 +22,7 @@ IJ::IJ() : IJ(0, 0) {}
 
 IJ::IJ(int i_, int j_) : i(i_), j(j_) {}
 
-int IJ::compare(IJ const& that) const {
+int IJ::compare(const IJ& that) const {
     RET_COMPARE_VALUE(i)
     RET_COMPARE_VALUE(j)
     return 0;
@@ -34,7 +34,7 @@ QJsonObject IJ::to_json() const {
     return { { "i", i }, { "j", j } };
 }
 
-void IJ::from_json(JsonObj const& obj) THROWS {
+void IJ::from_json(const JsonObj& obj) THROWS {
     i = obj.loadInt("i");
     j = obj.loadInt("j");
 }

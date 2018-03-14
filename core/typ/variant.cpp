@@ -16,7 +16,7 @@
 #include "core/typ/variant.h"
 #include <QDate>
 
-bool isNumeric(QVariant const& v) {
+bool isNumeric(const QVariant& v) {
     QMetaType::Type type = QMetaType::Type(v.type());
 
     switch (type) {
@@ -35,7 +35,7 @@ bool isNumeric(QVariant const& v) {
 }
 
 #define IMPL_CMP(name, toType)                                                                     \
-    int name(QVariant const& v1, QVariant const& v2) {                                             \
+    int name(const QVariant& v1, const QVariant& v2) {                                             \
         auto val1 = v1.toType(), val2 = v2.toType();                                               \
         RET_COMPARE_VALUE2(val1, val2)                                                             \
         return 0;                                                                                  \
@@ -45,7 +45,7 @@ IMPL_CMP(cmp_int, toInt)
 IMPL_CMP(cmp_str, toString)
 IMPL_CMP(cmp_date, toDate)
 
-int cmp_real(QVariant const& v1, QVariant const& v2) {
+int cmp_real(const QVariant& v1, const QVariant& v2) {
     double val1 = v1.toDouble(), val2 = v2.toDouble();
     if (qIsNaN(val1)) {
         return qIsNaN(val2) ? 0 : +1;

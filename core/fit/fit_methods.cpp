@@ -14,11 +14,10 @@
 
 #include "core/fit/fit_methods.h"
 #include "core/def/idiomatic_for.h"
-#include "core/typ/curve.h"
 #include "LM/levmar.h"
 #include <qmath.h>
 
-void FitWrapper::fit(Function& function, Curve const& curve) {
+void FitWrapper::fit(Function& function, const Curve& curve) {
     if (curve.isEmpty())
         return;
 

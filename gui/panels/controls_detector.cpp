@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/controls_detector.cpp
-//! @brief     Implements class SubframeSetup, and local classes
+//! @brief     Implements class ControlsDetector, and local classes
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -13,136 +13,258 @@
 // ************************************************************************** //
 
 #include "controls_detector.h"
+#include "core/data/geometry.h"
 #include "core/session.h"
-#include "gui/thehub.h"
+#include "gui/actions/toggles.h"
+#include "gui/actions/triggers.h"
+#include "gui/base/controls.h"
+#include "gui/base/displays.h"
+#include "gui/mainwin.h"
+#include <QSpacerItem>
 
-ControlsDetector::ControlsDetector() {
+// ************************************************************************** //
+//  local class GeometryControls
+// ************************************************************************** //
 
-    auto* box = newQ::VBoxLayout();
-    setLayout(box);
+//! Control widgets that govern the detector geometry.
 
-    connect(gSession, &Session::sigDetector, this, &ControlsDetector::fromSession);
+class GeometryControls : public QWidget {
+public:
+    GeometryControls();
+private:
+    void fromCore();
 
-    // widgets
+    QVBoxLayout vbox_;
+    QGridLayout mmGrid_;
+    QHBoxLayout trafoLayout_;
+    QHBoxLayout offsetLayout_;
 
-    detDistance_ = newQ::DoubleSpinBox(6, Geometry::MIN_DETECTOR_DISTANCE);
-    detPixelSize_ = newQ::DoubleSpinBox(6, Geometry::MIN_DETECTOR_PIXEL_SIZE);
-    detPixelSize_->setDecimals(3);
+    CDoubleSpinBox detDistance_ {"detDistance", 6};
+    CDoubleSpinBox detPixelSize_ {"detPixelSize", 6};
+    CSpinBox beamOffsetI_ {"beamOffsetI", 3, true};
+    CSpinBox beamOffsetJ_ {"beamOffsetJ", 3, true};
+};
 
-    detDistance_->setValue(Geometry::DEF_DETECTOR_DISTANCE);
-    detPixelSize_->setValue(Geometry::DEF_DETECTOR_PIXEL_SIZE);
+GeometryControls::GeometryControls()
+{
+    // inbound connection
+    connect(gSession, &Session::sigDetector, this, &GeometryControls::fromCore);
 
-    connect(detDistance_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this]() { toSession(); });
-    connect(detPixelSize_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this]() { toSession(); });
+    // outbound connections and control widget setup
+    connect(&detDistance_, _SLOT_(QDoubleSpinBox, valueChanged, double), [](double val) {
+            gSession->geometry().setDetectorDistance(val); });
 
-    beamOffsetI_ = newQ::SpinBox(6, true);
-    beamOffsetJ_ = newQ::SpinBox(6, true);
+    detPixelSize_.setDecimals(3);
+    connect(&detPixelSize_, _SLOT_(QDoubleSpinBox, valueChanged, double), [](double val) {
+            gSession->geometry().setPixSize(val); });
 
-//    connect(beamOffsetI_, _SLOT_(QSpinBox, valueChanged, int), [this]() { setToHub(); });
-
-//    connect(beamOffsetJ_, _SLOT_(QSpinBox, valueChanged, int), [this]() { setToHub(); });
-
-    cutLeft_ = newQ::SpinBox(4, false, 0);
-    cutTop_ = newQ::SpinBox(4, false, 0);
-    cutRight_ = newQ::SpinBox(4, false, 0);
-    cutBottom_ = newQ::SpinBox(4, false, 0);
-
-    auto _setImageCut = [this](bool isTopOrLeft, int value) {
-        ASSERT(value >= 0);
-        if (gHub->toggle_linkCuts->isChecked())
-            gSession->setImageCut(isTopOrLeft, true,
-                                  ImageCut(value, value, value, value));
-        else
-            gSession->setImageCut(isTopOrLeft, false,
-                                  ImageCut(cutLeft_->value(), cutTop_->value(),
-                                           cutRight_->value(), cutBottom_->value()));
-    };
-
-    connect(cutLeft_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
-            _setImageCut(true, value); });
-
-    connect(cutTop_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
-            _setImageCut(true, value); });
-
-    connect(cutRight_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
-            _setImageCut(false, value); });
-
-    connect(cutBottom_, _SLOT_(QSpinBox, valueChanged, int), [_setImageCut](int value) {
-            _setImageCut(false, value); });
+    connect(&beamOffsetI_, _SLOT_(QSpinBox, valueChanged, int), [](int val) {
+            gSession->geometry().midPixOffset().i = val; emit gSession->sigDetector(); });
+    connect(&beamOffsetJ_, _SLOT_(QSpinBox, valueChanged, int), [](int val) {
+            gSession->geometry().midPixOffset().j = val; emit gSession->sigDetector(); });
 
     // layout
+    mmGrid_.addWidget(new QLabel("det. distance"), 0, 0);
+    mmGrid_.addWidget(&detDistance_, 0, 1);
+    mmGrid_.addWidget(new QLabel("mm"), 0, 2);
+    mmGrid_.addWidget(new QLabel("pixel size"), 1, 0);
+    mmGrid_.addWidget(&detPixelSize_, 1, 1);
+    mmGrid_.addWidget(new QLabel("mm"), 1, 2);
 
-    QGridLayout* grid = newQ::GridLayout();
-    int row = 0;
+    trafoLayout_.addWidget(new QLabel("image rotate"));
+    trafoLayout_.addWidget(new XIconButton(&gGui->triggers->rotateImage));
+    trafoLayout_.addWidget(new QLabel("mirror"));
+    trafoLayout_.addWidget(new XIconButton(&gGui->toggles->mirrorImage));
+    trafoLayout_.addStretch(1);
 
-    auto _add = [&grid, &row](const QVector<QWidget*>& ws, int left = 1) {
-        int i = 0, cnt = ws.count();
-        QBoxLayout* box = newQ::HBoxLayout();
-        box->addStretch(1);
-        while (i < left)
-            box->addWidget(ws.at(i++));
-        grid->addLayout(box, row, 0);
-        box = newQ::HBoxLayout();
-        while (i < cnt)
-            box->addWidget(ws.at(i++));
-        grid->addLayout(box, row, 1);
-        box->addStretch(1);
-        row++;
-    };
+    offsetLayout_.addWidget(new QLabel("offset X"));
+    offsetLayout_.addWidget(&beamOffsetI_);
+    offsetLayout_.addWidget(new QLabel(" Y"));
+    offsetLayout_.addWidget(&beamOffsetJ_);
+    offsetLayout_.addWidget(new QLabel("pix"));
+    offsetLayout_.addStretch(1);
 
-    _add({ newQ::Label("det. distance"),
-                detDistance_,
-                newQ::Label("mm") });
-    _add({ newQ::Label("pixel size"),
-                detPixelSize_,
-                newQ::Label("mm") });
-    _add({ newQ::Label("beam offset X"),
-                beamOffsetI_,
-                newQ::Label("pix") });
-    _add({ newQ::Label("Y"),
-                beamOffsetJ_,
-                newQ::Label("pix") });
-    _add({ newQ::Label("image rotate"),
-                newQ::IconButton(gHub->trigger_rotateImage),
-                newQ::Label("mirror"),
-                newQ::IconButton(gHub->toggle_mirrorImage) });
-    _add({ newQ::IconButton(gHub->toggle_linkCuts),
-                newQ::Label("cut"),
-                newQ::Icon(":/icon/cutLeft"),
-                cutLeft_,
-                newQ::Icon(":/icon/cutRight"),
-                cutRight_ }, 3);
-    _add({ newQ::Icon(":/icon/cutTop"),
-                cutTop_,
-                newQ::Icon(":/icon/cutBottom"),
-                cutBottom_ });
+    vbox_.addLayout(&mmGrid_);
+    vbox_.addLayout(&trafoLayout_);
+    vbox_.addLayout(&offsetLayout_);
+    setLayout(&vbox_);
 
-    grid->setColumnStretch(grid->columnCount(), 1);
-
-    box->addLayout(grid);
-    box->addStretch();
+    // initialization
+    fromCore();
 }
 
-void ControlsDetector::toSession() {
-    gSession->setGeometry(
-        qMax(qreal(Geometry::MIN_DETECTOR_DISTANCE), detDistance_->value()),
-        qMax(qreal(Geometry::MIN_DETECTOR_PIXEL_SIZE), detPixelSize_->value()),
-        IJ(beamOffsetI_->value(), beamOffsetJ_->value()));
-}
-
-void ControlsDetector::fromSession() {
+void GeometryControls::fromCore() {
     const Geometry& g = gSession->geometry();
+    detDistance_.setValue(g.detectorDistance());
+    detPixelSize_.setValue(g.pixSize());
+    beamOffsetI_.setValue(g.midPixOffset().i);
+    beamOffsetJ_.setValue(g.midPixOffset().j);
+}
 
-    detDistance_->setValue(g.detectorDistance);
-    detPixelSize_->setValue(g.pixSize);
+// ************************************************************************** //
+//  local class CutControls
+// ************************************************************************** //
 
-    beamOffsetI_->setValue(g.midPixOffset.i);
-    beamOffsetJ_->setValue(g.midPixOffset.j);
+//! Control widgets that govern the detector cuts.
 
+class CutControls : public QFrame {
+public:
+    CutControls();
+private:
+    void fromCore();
+
+    QGridLayout layout_;
+    XIconButton link_ {&gGui->toggles->linkCuts};
+    CSpinBox cutLeft_ {"cutLeft", 3, false, 0};
+    CSpinBox cutTop_ {"cutTop", 3, false, 0};
+    CSpinBox cutRight_ {"cutRight", 3, false, 0};
+    CSpinBox cutBottom_ {"cutBottom", 3, false, 0};
+};
+
+CutControls::CutControls()
+{
+    // inbound connection
+    connect(gSession, &Session::sigDetector, this, &CutControls::fromCore);
+
+    // outbound connections
+    connect(&cutLeft_, _SLOT_(QSpinBox, valueChanged, int), [](int value) {
+            gSession->imageCut().setLeft(value); });
+    connect(&cutRight_,  _SLOT_(QSpinBox, valueChanged, int), [](int value) {
+            gSession->imageCut().setRight(value); });
+    connect(&cutTop_,    _SLOT_(QSpinBox, valueChanged, int), [](int value) {
+            gSession->imageCut().setTop(value); });
+    connect(&cutBottom_, _SLOT_(QSpinBox, valueChanged, int), [](int value) {
+            gSession->imageCut().setBottom(value); });
+    connect(&gGui->toggles->linkCuts, &QAction::toggled, [](bool value) {
+            gSession->imageCut().setLinked(value); });
+
+    // layout
+    layout_.addWidget(new QLabel("cut"), 1, 0);
+    layout_.addWidget(&cutLeft_, 1, 2);
+    layout_.addWidget(&link_, 1, 3, Qt::AlignHCenter);
+    layout_.addWidget(&cutTop_, 0, 3);
+    layout_.addWidget(&cutBottom_, 2, 3);
+    layout_.addWidget(&cutRight_, 1, 4);
+    layout_.setColumnStretch(5, 1);
+    setLayout(&layout_);
+
+    // initialization
+    fromCore();
+}
+
+void CutControls::fromCore()
+{
     const ImageCut& cut = gSession->imageCut();
+    gGui->toggles->linkCuts.setChecked(cut.linked());
+    cutLeft_.setValue(cut.left());
+    cutTop_.setValue(cut.top());
+    cutRight_.setValue(cut.right());
+    cutBottom_.setValue(cut.bottom());
+}
 
-    cutLeft_->setValue(cut.left);
-    cutTop_->setValue(cut.top);
-    cutRight_->setValue(cut.right);
-    cutBottom_->setValue(cut.bottom);
+// ************************************************************************** //
+//  local class ExperimentControls
+// ************************************************************************** //
+
+//! Control widgets that govern the combination of Measurement|s into Cluster|s.
+
+class ExperimentControls : public QWidget {
+public:
+    ExperimentControls();
+private:
+    void fromCore();
+
+    QHBoxLayout layout_;
+    CSpinBox combineMeasurements_ {"combineMeasurements", 3, false, 1, 999,
+            "Combine this number of measurements into one group"};
+    CToggle dropIncompleteAction_ {"dropIncomplete",
+            "Drop measurement groups that do not have the full number of members",
+            false, ":/icon/dropIncomplete" };
+    XIconButton dropIncompleteButton_ { &dropIncompleteAction_ };
+};
+
+ExperimentControls::ExperimentControls()
+{
+    // inbound connection
+    connect(gSession, &Session::sigClusters, this, &ExperimentControls::fromCore);
+
+    // outbound connections
+    connect(&combineMeasurements_, _SLOT_(QSpinBox, valueChanged, int),
+            [](int num) { gSession->dataset().setBinning(num); });
+    connect(&dropIncompleteAction_, &QAction::toggled,
+            [](bool on) { gSession->dataset().setDropIncomplete(on); });
+
+    // layout
+    layout_.addWidget(new QLabel("combine"));
+    layout_.addWidget(&combineMeasurements_);
+    layout_.addWidget(new QLabel("measurements"));
+    layout_.addWidget(&dropIncompleteButton_);
+    layout_.addStretch(1);
+    setLayout(&layout_);
+
+    //initialization
+    dropIncompleteAction_.setEnabled(false);
+    fromCore();
+}
+
+void ExperimentControls::fromCore()
+{
+    combineMeasurements_.setValue(gSession->dataset().binning());
+    dropIncompleteAction_.setEnabled(gSession->dataset().hasIncomplete());
+}
+
+// ************************************************************************** //
+//  local class GammaControls
+// ************************************************************************** //
+
+//! Control widgets that govern the gamma slicing.
+
+class GammaControls : public QWidget {
+public:
+    GammaControls();
+private:
+    void fromCore();
+
+    QHBoxLayout layout_;
+    CSpinBox numSlices_{"numSlices", 2, false, 0, INT_MAX,
+            "Number of γ slices (0: no slicing, take entire image)" };
+};
+
+GammaControls::GammaControls()
+{
+    // inbound connection
+    connect(gSession, &Session::sigClusters, this, &GammaControls::fromCore);
+
+    // outbound connections
+    connect(&numSlices_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
+            gSession->gammaSelection().setNumSlices(val); });
+
+    // layout
+    layout_.addWidget(new QLabel("number of γ slices"));
+    layout_.addWidget(&numSlices_);
+    layout_.addStretch(1);
+    setLayout(&layout_);
+
+    //initialization
+    fromCore();
+}
+
+void GammaControls::fromCore()
+{
+    numSlices_.setValue(gSession->gammaSelection().numSlices());
+    emit gSession->sigImage(); // TODO redundant with emission from idxSlice
+}
+
+// ************************************************************************** //
+//  class ControlsDetector
+// ************************************************************************** //
+
+ControlsDetector::ControlsDetector()
+{
+    vbox_.addWidget(new GeometryControls);
+    vbox_.addWidget(new CutControls);
+    vbox_.addWidget(new ExperimentControls);
+    vbox_.addWidget(new GammaControls);
+    vbox_.addStretch();
+    setLayout(&vbox_);
 }

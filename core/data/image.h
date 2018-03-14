@@ -24,16 +24,16 @@ typedef Array2D<inten_t> inten_arr;
 //! Holds a detector image, and provides read and write access
 class Image final {
     public:
-    Image(size2d const& = size2d(0, 0));
-    Image(inten_arr const&);
+    Image(const size2d& = size2d(0, 0));
+    Image(const inten_arr&);
 
-    size2d const& size() const { return intens_.size(); }
+    const size2d& size() const { return intens_.size(); }
 
     void clear() { intens_.clear(); }
 
     bool isEmpty() const { return intens_.isEmpty(); }
 
-    void fill(inten_t val, size2d const& size) { intens_.fill(val, size); }
+    void fill(inten_t val, const size2d& size) { intens_.fill(val, size); }
 
     inten_t inten(int i) const { return intens_.at(i); }
 

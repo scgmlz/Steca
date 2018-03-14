@@ -17,6 +17,6 @@
 
 #include <QString>
 
-void messageHandler(QtMsgType type, QMessageLogContext const& ctx, const QString& msg);
+void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString& msg);
 
 #endif // MSG_HANDLER_H

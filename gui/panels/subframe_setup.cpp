@@ -17,7 +17,7 @@
 #include "gui/panels/controls_baseline.h"
 #include "gui/panels/controls_detector.h"
 #include "gui/panels/controls_peakfits.h"
-#include "gui/thehub.h"
+#include "gui/mainwin.h"
 
 SubframeSetup::SubframeSetup() {
     setTabPosition(QTabWidget::North);
@@ -27,19 +27,13 @@ SubframeSetup::SubframeSetup() {
     addTab(new ControlsPeakfits(), "Peakfits");
 
     connect(this, &SubframeSetup::currentChanged, [this](int index) {
-        eFittingTab tab;
-        if (index==1)
-            tab = eFittingTab::BACKGROUND;
-        else if (index==2)
-            tab = eFittingTab::REFLECTIONS;
-        else
-            tab = eFittingTab::NONE;
-        gHub->setFittingTab(tab);
-    });
+            gGui->baselineEditable = (index==1);
+            gGui->peaksEditable    = (index==2);
+            emit gSession->sigDiffractogram();
+        });
 
     connect(gSession, &Session::sigFiles, this, &SubframeSetup::updateTabsAvailability);
 
-    gHub->setFittingTab(eFittingTab::NONE);
     updateTabsAvailability();
 }
 
@@ -50,6 +44,6 @@ void SubframeSetup::updateTabsAvailability() {
     } else {
         setTabEnabled(1, false);
         setTabEnabled(2, false);
-        gHub->setFittingTab(eFittingTab::NONE);
+        setCurrentIndex(0);
     }
 }

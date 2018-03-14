@@ -14,8 +14,8 @@
 
 template <class T> class ISingleton {
 private:
-    ISingleton(ISingleton const&) = delete;
-    void operator=(ISingleton const&) = delete;
+    ISingleton(const ISingleton&) = delete;
+    void operator=(const ISingleton&) = delete;
 protected:
     ISingleton() {}
     ~ISingleton() {}

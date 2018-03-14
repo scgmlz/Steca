@@ -24,7 +24,7 @@
 
 class FitWrapper {
 public:
-    void fit(Function&, Curve const&);
+    void fit(Function&, const Curve&);
 
 private:
     // these pointers are valid during fit() call

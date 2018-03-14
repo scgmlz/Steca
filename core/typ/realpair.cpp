@@ -18,7 +18,7 @@
 #include "core/typ/json.h"
 #include "core/typ/realpair.h"
 
-int qpair::compare(qpair const& that) const {
+int qpair::compare(const qpair& that) const {
     ASSERT(isValid() && that.isValid());
     RET_COMPARE_VALUE(x)
     RET_COMPARE_VALUE(y)
@@ -35,7 +35,7 @@ QJsonObject qpair::to_json() const {
     return { { "x", qreal_to_json(x) }, { "y", qreal_to_json(y) } };
 }
 
-void qpair::from_json(JsonObj const& obj) THROWS {
+void qpair::from_json(const JsonObj& obj) THROWS {
     x = obj.loadQreal("x");
     y = obj.loadQreal("y");
 }

@@ -25,7 +25,7 @@ rad deg::toRad() const {
     return val_ * (M_PI / 180);
 }
 
-deg& deg::operator+=(deg const& that) {
+deg& deg::operator+=(const deg& that) {
     val_ += that.val_;
     return *this;
 }
@@ -51,7 +51,7 @@ deg rad::toDeg() const {
     return val_ * (180 / M_PI);
 }
 
-rad& rad::operator+=(rad const& that) {
+rad& rad::operator+=(const rad& that) {
     val_ += that.val_;
     return *this;
 }
