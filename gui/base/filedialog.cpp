@@ -77,6 +77,7 @@ QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
 
 namespace file_dialog {
 
+//! Base class for all Steca file dialogs. Enhances CFileDialog by a few settings.
 class FileDialog : public CFileDialog {
 public:
     FileDialog(QWidget *parent, const QString &caption, const QString &directory,
@@ -93,8 +94,7 @@ FileDialog::FileDialog(QWidget *parent, const QString &caption, const QString &d
     setConfirmOverwrite(false);
 }
 
-QFile* OutputFile(
-    const QString& name, QWidget* parent, const QString& path, bool check_overwrite)
+QFile* OutputFile(const QString& name, QWidget* parent, const QString& path, bool check_overwrite)
 {
     QFile* ret = new QFile(path);
     if (check_overwrite && ret->exists() &&
@@ -123,8 +123,7 @@ QStringList openFileNames(QWidget* parent, const QString& caption, const QString
     return {};
 }
 
-QString openFileName(
-    QWidget* parent, const QString& caption, const QString& dir, const QString& filter)
+QString openFileName(QWidget* parent, const QString& caption, const QString& dir, const QString& filter)
 {
     QStringList fileNames = openFileNames(parent, caption, dir, filter, false);
     if (fileNames.isEmpty())
@@ -132,8 +131,7 @@ QString openFileName(
     return fileNames.first();
 }
 
-QString saveFileName(
-    QWidget* parent, const QString& caption, const QString& dir, const QString& filter)
+QString saveFileName(QWidget* parent, const QString& caption, const QString& dir, const QString& filter)
 {
     FileDialog dlg(parent, caption, dir, filter);
     dlg.setFileMode(QFileDialog::AnyFile);
