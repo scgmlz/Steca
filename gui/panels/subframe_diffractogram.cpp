@@ -29,13 +29,13 @@
 class Diffractogram final : public QWidget {
 public:
     Diffractogram();
-    QBoxLayout* box() const { return box_; }
 private:
     void onNormChanged();
     void onHighlight();
 
     class DiffractogramPlot* plot_;
-    QBoxLayout* box_;
+    QVBoxLayout box_;
+    QHBoxLayout hb_;
     CComboBox comboNormType_ {"normTyp", {"none", "monitor", "Δ monitor", "Δ time", "background"}};
     CRadioButton intenSum_ {"intenSum", "sum"};
     CRadioButton intenAvg_ {"intenAvg", "avg ×"};
@@ -51,23 +51,22 @@ private:
 
 Diffractogram::Diffractogram()
 {
-    setLayout((box_ = new QVBoxLayout()));
-    box_->addWidget((plot_ = new DiffractogramPlot(*this)));
-    auto hb = new QHBoxLayout();
-    box_->addLayout(hb);
+    setLayout(&box_);
+    box_.addWidget((plot_ = new DiffractogramPlot(*this)));
+    box_.addLayout(&hb_);
 
-    hb->addWidget(new QLabel("normalize to:"));
-    hb->addWidget(&comboNormType_);
+    hb_.addWidget(new QLabel("normalize to:"));
+    hb_.addWidget(&comboNormType_);
 
     connect(&comboNormType_, _SLOT_(QComboBox, currentIndexChanged, int), [this](int index) {
             gSession->setNorm(eNorm(index)); });
 
-    hb->addWidget(new QLabel(" intensity from:"));
-    hb->addWidget(&intenSum_);
-    hb->addWidget(&intenAvg_);
-    hb->addWidget(&intenScale_);
+    hb_.addWidget(new QLabel(" intensity from:"));
+    hb_.addWidget(&intenSum_);
+    hb_.addWidget(&intenAvg_);
+    hb_.addWidget(&intenScale_);
     intenScale_.setDecimals(3);
-    hb->addStretch();
+    hb_.addStretch();
 
     connect(&intenAvg_, &QRadioButton::toggled, [this](bool on) {
         intenScale_.setEnabled(on);
@@ -80,15 +79,15 @@ Diffractogram::Diffractogram()
             gSession->setIntenScaleAvg(gSession->intenScaledAvg(), val);
     });
 
-    hb->addWidget(&enableZoom_);
-    hb->addStretch();
+    hb_.addWidget(&enableZoom_);
+    hb_.addStretch();
 
-    hb->addWidget(&combine_);
-    hb->addWidget(&fixInten_);
-    hb->addWidget(&showBg_);
-    hb->addStretch();
+    hb_.addWidget(&combine_);
+    hb_.addWidget(&fixInten_);
+    hb_.addWidget(&showBg_);
+    hb_.addStretch();
 
-    hb->addWidget(&export_);
+    hb_.addWidget(&export_);
 
     connect(&actZoom_, &QAction::toggled, this, [this](bool on) {
         plot_->setInteraction(QCP::iRangeDrag, on);

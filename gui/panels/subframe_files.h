@@ -16,11 +16,16 @@
 #define SUBFRAME_FILES_H
 
 #include "gui/base/layout.h"
+#include "gui/base/displays.h"
 
 //! Part of the main window that controls the data and correction files.
 class SubframeFiles : public DockWidget {
 public:
     SubframeFiles();
+private:
+    QHBoxLayout dataControls_;
+    QHBoxLayout corrControls_;
+    XLineDisplay corrFileView_;
 };
 
 #endif // SUBFRAME_FILES_H

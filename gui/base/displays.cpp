@@ -30,8 +30,13 @@ XIcon::XIcon(const QString& fileName)
     setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
 }
 
+XLineDisplay::XLineDisplay()
+{
+    setReadOnly(true);
+}
+
 XLineDisplay::XLineDisplay(int ndigits, bool withDot)
+    : XLineDisplay()
 {
     widgetUtils::setWidth(this, ndigits, withDot);
-    setReadOnly(true);
 }

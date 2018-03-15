@@ -31,6 +31,7 @@ public:
 //! Read-only QLineEdit for number display.
 class XLineDisplay : public QLineEdit {
 public:
+    XLineDisplay();
     XLineDisplay(int ndigits, bool withDot);
 };
 

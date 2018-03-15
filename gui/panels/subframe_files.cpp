@@ -32,8 +32,7 @@ public:
     FilesModel() : CheckTableModel("file") {}
     int highlighted() const final { return gSession->dataset().highlight().fileIndex(); }
     void setHighlight(int i) final { gSession->dataset().highlight().setFile(i); }
-    bool activated(int i) const { return
-            gSession->dataset().fileAt(i).activated() == Qt::Checked; }
+    bool activated(int i) const { return gSession->dataset().fileAt(i).activated() == Qt::Checked; }
     void setActivated(int i, bool on) { gSession->dataset().setFileActivation(i, on); }
 private:
     int columnCount() const final { return 3; }
@@ -110,30 +109,20 @@ int FilesView::sizeHintForColumn(int col) const
 
 SubframeFiles::SubframeFiles() : DockWidget("Files", "dock-files")
 {
-    auto h = new QHBoxLayout();
-    box_.addLayout(h);
-
-    h->addStretch();
-    h->addWidget(new XIconButton(&gGui->triggers->addFiles));
-    h->addWidget(new XIconButton(&gGui->triggers->removeFile));
+    dataControls_.addStretch();
+    dataControls_.addWidget(new XIconButton(&gGui->triggers->addFiles));
+    dataControls_.addWidget(new XIconButton(&gGui->triggers->removeFile));
+    box_.addLayout(&dataControls_);
 
     box_.addWidget(new FilesView());
+    box_.addWidget(new QLabel("Correction file"));
 
-    h = new QHBoxLayout();
-    box_.addLayout(h);
+    corrControls_.addWidget(&corrFileView_);
+    corrControls_.addWidget(new XIconButton(&gGui->triggers->corrFile));
+    corrControls_.addWidget(new XIconButton(&gGui->toggles->enableCorr));
+    box_.addLayout(&corrControls_);
 
-    h->addWidget(new QLabel("Correction file"));
-
-    h = new QHBoxLayout();
-    box_.addLayout(h);
-
-    auto* corrFile_ = new QLineEdit();
-    corrFile_->setReadOnly(true);
-    h->addWidget(corrFile_);
-    h->addWidget(new XIconButton(&gGui->triggers->corrFile));
-    h->addWidget(new XIconButton(&gGui->toggles->enableCorr));
-
-    connect(gSession, &Session::sigCorr, [corrFile_]() {
-            corrFile_->setText( gSession->corrset().hasFile() ?
-                                gSession->corrset().raw().fileName() : ""); });
+    connect(gSession, &Session::sigCorr, [this]() {
+            corrFileView_.setText( gSession->corrset().hasFile() ?
+                                   gSession->corrset().raw().fileName() : ""); });
 }
