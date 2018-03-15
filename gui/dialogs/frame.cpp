@@ -39,7 +39,7 @@ public:
 private:
     DataView& table_;
     showcol_vec& showCols_;
-    QBoxLayout* box_;
+    QVBoxLayout box_;
     CRadioButton rbHidden_, rbAll_, rbNone_, rbInten_, rbTth_, rbFWHM_;
 };
 
@@ -55,21 +55,21 @@ ShowColsWidget::ShowColsWidget(const QString& name, DataView& table, showcol_vec
 {
     using eReflAttr = PeakInfo::eReflAttr;
 
-    setLayout((box_ = new QVBoxLayout()));
+    setLayout(&box_);
 
-    box_->addWidget(&rbHidden_);
+    box_.addWidget(&rbHidden_);
     rbHidden_.hide();
 
-    box_->addWidget(&rbAll_);
-    box_->addWidget(&rbNone_);
-    box_->addWidget(&rbInten_);
-    box_->addWidget(&rbTth_);
-    box_->addWidget(&rbFWHM_);
-    box_->addSpacing(8);
+    box_.addWidget(&rbAll_);
+    box_.addWidget(&rbNone_);
+    box_.addWidget(&rbInten_);
+    box_.addWidget(&rbTth_);
+    box_.addWidget(&rbFWHM_);
+    box_.addSpacing(8);
 
     for_i (showCols.count()) {
         showcol_t& item = showCols[i];
-        box_->addWidget((item.cb = new CCheckBox(name+".cb"+QString::number(i), item.name)));
+        box_.addWidget((item.cb = new CCheckBox(name+".cb"+QString::number(i), item.name)));
     }
 
     auto _all = [this]() {
@@ -165,8 +165,7 @@ ShowColsWidget::ShowColsWidget(const QString& name, DataView& table, showcol_vec
 
 class TabTable : public QWidget {
 public:
-    TabTable(const QString& name, const QStringList& headers,
-             const QStringList& outHeaders, const cmp_vec&);
+    TabTable(const QString&, const QStringList&, const QStringList&, const cmp_vec&);
     ~TabTable();
     DataView dataView_;
 private:
