@@ -30,29 +30,34 @@ PlotOverlay::PlotOverlay(QCustomPlot& plot_)
     setMargins(0, 0);
 }
 
-void PlotOverlay::setMargins(int left, int right) {
+void PlotOverlay::setMargins(int left, int right)
+{
     marginLeft_ = left;
     marginRight_ = right;
 }
 
-void PlotOverlay::enterEvent(QEvent*) {
+void PlotOverlay::enterEvent(QEvent*)
+{
     hasCursor_ = true;
     updateCursorRegion();
 }
 
-void PlotOverlay::leaveEvent(QEvent*) {
+void PlotOverlay::leaveEvent(QEvent*)
+{
     hasCursor_ = false;
     updateCursorRegion();
 }
 
-void PlotOverlay::mousePressEvent(QMouseEvent* e) {
+void PlotOverlay::mousePressEvent(QMouseEvent* e)
+{
     mouseDownPos_ = cursorPos_;
     mouseDown_ = true;
     mouseButton_ = e->button();
     update();
 }
 
-void PlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
+void PlotOverlay::mouseReleaseEvent(QMouseEvent* e)
+{
     mouseDown_ = false;
     update();
     double xmin = plot_.xAxis->pixelToCoord(mouseDownPos_);
@@ -64,7 +69,8 @@ void PlotOverlay::mouseReleaseEvent(QMouseEvent* e) {
         subtractRange(range);
 }
 
-void PlotOverlay::mouseMoveEvent(QMouseEvent* e) {
+void PlotOverlay::mouseMoveEvent(QMouseEvent* e)
+{
     updateCursorRegion();
     cursorPos_ = qBound(marginLeft_, e->x(), width() - marginRight_);
     updateCursorRegion();
@@ -72,14 +78,16 @@ void PlotOverlay::mouseMoveEvent(QMouseEvent* e) {
         update();
 }
 
-void PlotOverlay::paintEvent(QPaintEvent*) {
+void PlotOverlay::paintEvent(QPaintEvent*)
+{
     if (mouseDown_)
         paintMousedZone();
     if (hasCursor_)
         paintCursor();
 }
 
-void PlotOverlay::paintMousedZone() {
+void PlotOverlay::paintMousedZone()
+{
     QRect g = geometry();
     g.setLeft(qMin(mouseDownPos_, cursorPos_));
     g.setRight(qMax(mouseDownPos_, cursorPos_));
@@ -94,7 +102,8 @@ void PlotOverlay::paintMousedZone() {
     QPainter(this).fillRect(g, color);
 }
 
-void PlotOverlay::paintCursor() {
+void PlotOverlay::paintCursor()
+{
     QRect g = geometry();
     QLineF cursor(cursorPos_, g.top(), cursorPos_, g.bottom());
     QPainter painter(this);
@@ -102,7 +111,8 @@ void PlotOverlay::paintCursor() {
     painter.drawLine(cursor);
 }
 
-void PlotOverlay::updateCursorRegion() {
+void PlotOverlay::updateCursorRegion()
+{
     const QRect& g = geometry();
     // updating 2 pixels seems to work both on Linux & Mac
     update(cursorPos_ - 1, g.top(), 2, g.height());

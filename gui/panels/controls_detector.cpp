@@ -93,7 +93,8 @@ GeometryControls::GeometryControls()
     fromCore();
 }
 
-void GeometryControls::fromCore() {
+void GeometryControls::fromCore()
+{
     const Geometry& g = gSession->geometry();
     detDistance_.setValue(g.detectorDistance());
     detPixelSize_.setValue(g.pixSize());

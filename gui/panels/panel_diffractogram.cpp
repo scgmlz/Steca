@@ -27,7 +27,8 @@ DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& parent)
 {
 }
 
-void DiffractogramPlotOverlay::addRange(const Range& range) {
+void DiffractogramPlotOverlay::addRange(const Range& range)
+{
     if        (gGui->baselineEditable) {
         gSession->baseline().addRange(range);
     } else if (gGui->peaksEditable) {
@@ -38,7 +39,9 @@ void DiffractogramPlotOverlay::addRange(const Range& range) {
         }
     }
 }
-void DiffractogramPlotOverlay::subtractRange(const Range& range) {
+
+void DiffractogramPlotOverlay::subtractRange(const Range& range)
+{
     if        (gGui->baselineEditable) {
         gSession->baseline().removeRange(range);
     } else if (gGui->peaksEditable) {
@@ -46,7 +49,8 @@ void DiffractogramPlotOverlay::subtractRange(const Range& range) {
     }
 }
 
-bool DiffractogramPlotOverlay::addModeColor(QColor& color) const {
+bool DiffractogramPlotOverlay::addModeColor(QColor& color) const
+{
     if        (gGui->baselineEditable) {
         color = {0x98, 0xfb, 0x98, 0x70}; // medium green
         return true;
@@ -57,7 +61,8 @@ bool DiffractogramPlotOverlay::addModeColor(QColor& color) const {
     return false;
 }
 
-bool DiffractogramPlotOverlay::subtractModeColor(QColor& color) const {
+bool DiffractogramPlotOverlay::subtractModeColor(QColor& color) const
+{
     if        (gGui->baselineEditable) {
         color = {0xf8, 0xf8, 0xff, 0x90}; // almost white
         return true;
@@ -135,19 +140,22 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
     connect(gSession, &Session::sigDiffractogram, this, &DiffractogramPlot::renderAll);
 }
 
-void DiffractogramPlot::clearReflLayer() {
+void DiffractogramPlot::clearReflLayer()
+{
     for (QCPGraph* g : reflGraph_)
         removeGraph(g);
     reflGraph_.clear();
 }
 
-void DiffractogramPlot::enterZoom(bool on) {
+void DiffractogramPlot::enterZoom(bool on)
+{
     overlay_->setHidden(on);
     dgramBgFittedGraph2_->setVisible(on);
 }
 
 //! Paints a colored rectangle in the background layer, to indicate area of baseline or peak fit
-void DiffractogramPlot::addBgItem(const Range& range, const QColor& color) {
+void DiffractogramPlot::addBgItem(const Range& range, const QColor& color)
+{
     setCurrentLayer("bg");
     QCPItemRect* ir = new QCPItemRect(this);
     ir->setPen(QPen(color));
@@ -161,13 +169,15 @@ void DiffractogramPlot::addBgItem(const Range& range, const QColor& color) {
     addItem(ir);
 }
 
-void DiffractogramPlot::resizeEvent(QResizeEvent* e) {
+void DiffractogramPlot::resizeEvent(QResizeEvent* e)
+{
     QCustomPlot::resizeEvent(e);
     const QSize size = e->size();
     overlay_->setGeometry(0, 0, size.width(), size.height());
 }
 
-void DiffractogramPlot::onPeakData() {
+void DiffractogramPlot::onPeakData()
+{
     Peak* peak = gSession->peaks().selectedPeak();
     guesses_->clearData();
     fits_->clearData();
@@ -195,7 +205,8 @@ void DiffractogramPlot::onPeakData() {
 }
 
 //! Repaints everything, including the colored background areas.
-void DiffractogramPlot::renderAll() {
+void DiffractogramPlot::renderAll()
+{
     clearItems();
 
     const Ranges& rs = gSession->baseline().ranges();
@@ -217,7 +228,8 @@ void DiffractogramPlot::renderAll() {
     plot(dgram_, dgramBgFitted_, bg_, refls_, currReflIndex_);
 }
 
-void DiffractogramPlot::calcDgram() {
+void DiffractogramPlot::calcDgram()
+{
     dgram_.clear();
     if (!gSession->hasData())
         return;
@@ -228,7 +240,8 @@ void DiffractogramPlot::calcDgram() {
     }
 }
 
-void DiffractogramPlot::calcBackground() {
+void DiffractogramPlot::calcBackground()
+{
     bg_.clear();
     dgramBgFitted_.clear();
 
@@ -243,7 +256,8 @@ void DiffractogramPlot::calcBackground() {
     }
 }
 
-void DiffractogramPlot::calcPeaks() {
+void DiffractogramPlot::calcPeaks()
+{
     refls_.clear();
     currReflIndex_ = 0;
 
@@ -269,7 +283,8 @@ void DiffractogramPlot::calcPeaks() {
 
 void DiffractogramPlot::plot(
     const Curve& dgram, const Curve& dgramBgFitted, const Curve& bg, const curve_vec& refls,
-    int currReflIndex) {
+    int currReflIndex)
+{
     if (dgram.isEmpty()) {
         plotEmpty();
         return;
@@ -314,7 +329,8 @@ void DiffractogramPlot::plot(
     replot();
 }
 
-void DiffractogramPlot::plotEmpty() {
+void DiffractogramPlot::plotEmpty()
+{
     xAxis->setVisible(false);
     yAxis->setVisible(false);
 

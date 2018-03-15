@@ -16,7 +16,6 @@
 #include "gui/panels/subframe_metadata.h"
 #include "gui/base/model_view.h"
 
-
 // ************************************************************************** //
 //  local class MetadataModel
 // ************************************************************************** //
@@ -42,7 +41,8 @@ public:
     enum { COL_CHECK = 1, COL_TAG, COL_VALUE, NUM_COLUMNS };
 };
 
-QVariant MetadataModel::data(const QModelIndex& index, int role) const {
+QVariant MetadataModel::data(const QModelIndex& index, int role) const
+{
     int row = index.row();
     if (row < 0 || rowCount() <= row)
         return {};
@@ -77,7 +77,6 @@ QVariant MetadataModel::data(const QModelIndex& index, int role) const {
 class MetadataView : public CheckTableView {
 public:
     MetadataView();
-
 private:
     void currentChanged(const QModelIndex& current, const QModelIndex&) override final {
         gotoCurrent(current); }
@@ -93,7 +92,8 @@ MetadataView::MetadataView()
     connect(this, &MetadataView::clicked, model(), &CheckTableModel::onClicked);
 }
 
-int MetadataView::sizeHintForColumn(int col) const {
+int MetadataView::sizeHintForColumn(int col) const
+{
     switch (col) {
     case MetadataModel::COL_CHECK:
         return 2*mWidth();
@@ -106,6 +106,7 @@ int MetadataView::sizeHintForColumn(int col) const {
 //  class SubframeMetadata
 // ************************************************************************** //
 
-SubframeMetadata::SubframeMetadata() : DockWidget("Metadata", "dock-metadata") {
+SubframeMetadata::SubframeMetadata() : DockWidget("Metadata", "dock-metadata")
+{
     box_.addWidget((metadataView_ = new MetadataView()));
 }

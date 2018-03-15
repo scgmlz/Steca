@@ -65,7 +65,8 @@ TabSave::TabSave(bool withTypes)
     gp->setVisible(withTypes);
 }
 
-QString TabSave::filePath(bool withSuffix, bool withNumber) {
+QString TabSave::filePath(bool withSuffix, bool withNumber)
+{
     QString dir = dir_->text().trimmed();
     QString fileName = file_->text().trimmed();
     if (dir.isEmpty() || fileName.isEmpty())
@@ -82,6 +83,7 @@ QString TabSave::filePath(bool withSuffix, bool withNumber) {
     return QFileInfo(dir + '/' + fileName).absoluteFilePath();
 }
 
-QString TabSave::separator() const {
+QString TabSave::separator() const
+{
     return rbDat_.isChecked() ? DAT_SEP : CSV_SEP;
 }

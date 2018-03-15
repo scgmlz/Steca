@@ -25,7 +25,8 @@
 namespace {
 
 void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
-                const Range& rgeGma, const QString& separator) {
+                const Range& rgeGma, const QString& separator)
+{
 
     ASSERT(rgeGma.isValid());
     const Metadata* md = cluster->avgeMetadata().data();
@@ -61,7 +62,7 @@ QString numberedName(const QString& templatedName, int num, int maxNum) {
     return ret;
 }
 
-} // local method
+} // namespace
 
 
 // ************************************************************************** //
@@ -150,17 +151,21 @@ DiffractogramsFrame::DiffractogramsFrame()
     show();
 }
 
-DiffractogramsFrame::~DiffractogramsFrame() {
+DiffractogramsFrame::~DiffractogramsFrame()
+{
     qDebug() << "~DiffractogramsFrame";
     delete tabSave_;
     delete panelGammaSlices;
     delete panelGammaRange;
 }
 
-void DiffractogramsFrame::onCommand(const QStringList&) { // TODO get rid of this
+void DiffractogramsFrame::onCommand(const QStringList&)
+{
+// TODO get rid of this
 }
 
-void DiffractogramsFrame::save() {
+void DiffractogramsFrame::save()
+{
     if (tabSave_->currentChecked())
         saveCurrent();
     else if (tabSave_->allSequentialChecked())
@@ -171,7 +176,8 @@ void DiffractogramsFrame::save() {
         qFatal("Invalid call of DiffractogramsFrame::saveDiffractogramOutput");
 }
 
-void DiffractogramsFrame::saveCurrent() {
+void DiffractogramsFrame::saveCurrent()
+{
     QString path = tabSave_->filePath(true);
     if (path.isEmpty())
         return;
@@ -187,8 +193,8 @@ void DiffractogramsFrame::saveCurrent() {
     writeCurve(stream, curve, cluster, cluster->rgeGma(), tabSave_->separator());
 }
 
-void DiffractogramsFrame::saveAll(bool oneFile) {
-
+void DiffractogramsFrame::saveAll(bool oneFile)
+{
     const Experiment& expt = gSession->experiment();
 
     // In one-file mode, start output stream; in multi-file mode, only do prepations.

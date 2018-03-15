@@ -30,14 +30,11 @@
 class ImageWidget final : public QWidget {
 public:
     ImageWidget();
-
     void setPixmap(const QPixmap&);
     void setScale();
-
 private:
     void resizeEvent(QResizeEvent*);
     void paintEvent(QPaintEvent*);
-
     qreal scale_;
     QPixmap original_, scaled_;
 };

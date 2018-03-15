@@ -22,8 +22,8 @@
 #include "gui/dialogs/about.h"
 #include <QDesktopServices>
 
-Triggers::Triggers() {
-
+Triggers::Triggers()
+{
 #define AT &QAction::triggered
     QObject::connect(&about, AT, [](){ AboutBox().exec(); });
     QObject::connect(&addFiles, AT, []() { gGui->addFiles(); });

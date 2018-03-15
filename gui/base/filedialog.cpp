@@ -28,25 +28,22 @@ typedef const QModelIndex& rcidx;
 
 class OpenFileProxyModel : public QSortFilterProxyModel {
 public:
-    int columnCount(rcidx) const;
+    int columnCount(rcidx) const { return 2; }
     QVariant headerData(int, Qt::Orientation, int = Qt::DisplayRole) const;
     QVariant data(rcidx, int = Qt::DisplayRole) const;
-
 private:
     mutable QHash<QString, QString> memInfo;
 };
 
-int OpenFileProxyModel::columnCount(rcidx) const {
-    return 2;
-}
-
-QVariant OpenFileProxyModel::headerData(int section, Qt::Orientation ori, int role) const {
+QVariant OpenFileProxyModel::headerData(int section, Qt::Orientation ori, int role) const
+{
     if (1 == section && Qt::Horizontal == ori && role == Qt::DisplayRole)
         return "Comment";
     return QSortFilterProxyModel::headerData(section, ori, role);
 }
 
-QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
+QVariant OpenFileProxyModel::data(rcidx idx, int role) const
+{
     if (idx.isValid() && 1 == idx.column()) {
         if (Qt::DisplayRole == role) {
             QFileSystemModel* fileModel = qobject_cast<QFileSystemModel*>(sourceModel());
@@ -68,7 +65,7 @@ QVariant OpenFileProxyModel::data(rcidx idx, int role) const {
     return QSortFilterProxyModel::data(idx, role);
 }
 
-} // local methods
+} // namespace
 
 
 // ************************************************************************** //
@@ -161,7 +158,8 @@ QString saveFileName(QWidget* parent, const QString& caption, QDir& dir, const Q
     return dlg.getFile();
 }
 
-QString saveDirName(QWidget* parent, const QString& caption, QDir& dir) {
+QString saveDirName(QWidget* parent, const QString& caption, QDir& dir)
+{
     FileDialog dlg(parent, caption, dir);
     dlg.setFileMode(QFileDialog::Directory);
     dlg.setAcceptMode(QFileDialog::AcceptSave);

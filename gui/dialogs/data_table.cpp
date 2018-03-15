@@ -35,7 +35,8 @@ DataModel::DataModel(int numColumns_)
 
 //! The first column contains row numbers. The remaining numCols columns contain data.
 
-QVariant DataModel::data(const QModelIndex& index, int role) const {
+QVariant DataModel::data(const QModelIndex& index, int role) const
+{
     int indexRow = index.row(), indexCol = index.column();
     int numRows = rowCount(), numCols = columnCount();
 
@@ -74,7 +75,8 @@ QVariant DataModel::data(const QModelIndex& index, int role) const {
     return QVariant();
 }
 
-QVariant DataModel::headerData(int section, Qt::Orientation, int role) const {
+QVariant DataModel::headerData(int section, Qt::Orientation, int role) const
+{
     if (section < 0 || headers_.count() < section)
         return QVariant();
 
@@ -84,38 +86,45 @@ QVariant DataModel::headerData(int section, Qt::Orientation, int role) const {
     return QVariant();
 }
 
-void DataModel::moveColumn(int from, int to) {
+void DataModel::moveColumn(int from, int to)
+{
     ASSERT(from < colIndexMap_.count() && to < colIndexMap_.count());
     qSwap(colIndexMap_[from], colIndexMap_[to]);
 }
 
-void DataModel::setColumns(const QStringList& headers, const cmp_vec& cmps) {
+void DataModel::setColumns(const QStringList& headers, const cmp_vec& cmps)
+{
     ASSERT(headers.count() == numCols_ && cmps.count() == numCols_);
     headers_ = headers;
     cmpFunctions_ = cmps;
 }
 
-void DataModel::setSortColumn(int col) {
+void DataModel::setSortColumn(int col)
+{
     sortColumn_ = col < 0 ? col : colIndexMap_.at(col);
 }
 
-void DataModel::clear() {
+void DataModel::clear()
+{
     beginResetModel();
     rows_.clear();
     endResetModel();
 }
 
-void DataModel::addRow(const row_t& row, bool sort) {
+void DataModel::addRow(const row_t& row, bool sort)
+{
     rows_.append(numRow(rows_.count() + 1, row));
     if (sort)
         sortData();
 }
 
-const row_t& DataModel::row(int index) {
+const row_t& DataModel::row(int index)
+{
     return rows_.at(index).row;
 }
 
-void DataModel::sortData() {
+void DataModel::sortData()
+{
     auto _cmpRows = [this](int col, const row_t& r1, const row_t& r2) {
         col = colIndexMap_.at(col);
         return cmpFunctions_.at(col)(r1.at(col), r2.at(col));
@@ -159,7 +168,8 @@ void DataModel::sortData() {
 // ************************************************************************** //
 
 DataView::DataView(int numDataColumns)
-    : model_(new DataModel(numDataColumns)) {
+    : model_(new DataModel(numDataColumns))
+{
     setModel(model_.get());
     setHeader(new QHeaderView(Qt::Horizontal));
     setAlternatingRowColors(true);
@@ -176,8 +186,8 @@ DataView::DataView(int numDataColumns)
     setColumnWidth(0, w);
 }
 
-void DataView::setColumns(
-    const QStringList& headers, const QStringList& outHeaders, const cmp_vec& cmps) {
+void DataView::setColumns(const QStringList& headers, const QStringList& outHeaders, const cmp_vec& cmps)
+{
     model_->setColumns(headers, cmps);
     ASSERT(headers.count() == outHeaders.count());
     outHeaders_ = outHeaders;
@@ -200,28 +210,34 @@ void DataView::setColumns(
     });
 }
 
-void DataView::clear() {
+void DataView::clear()
+{
     model_->clear();
 }
 
-void DataView::addRow(const row_t& row, bool sort) {
+void DataView::addRow(const row_t& row, bool sort)
+{
     model_->addRow(row, sort);
 }
 
-void DataView::sortData() {
+void DataView::sortData()
+{
     model_->sortData();
 }
 
-int DataView::rowCount() const {
+int DataView::rowCount() const
+{
     return model_->rowCount();
 }
 
-const row_t& DataView::row(int i) const {
+const row_t& DataView::row(int i) const
+{
     return model_->row(i);
 }
 
 //! To enable copying to external applications
-void DataView::keyPressEvent(QKeyEvent *event) {
+void DataView::keyPressEvent(QKeyEvent *event)
+{
     if (event->key() == Qt::Key_C && event->modifiers() & Qt::ControlModifier) {
         QApplication::clipboard()->setText(exportSelection());
     } else {
@@ -230,7 +246,8 @@ void DataView::keyPressEvent(QKeyEvent *event) {
 }
 
 //! Encodes selected items as a string with separators '\t' and '\n', for use in keyPressEvent.
-QString DataView::exportSelection() {
+QString DataView::exportSelection()
+{
     // TODO: improve https://stackoverflow.com/questions/1230222
     QString ret;
     QModelIndexList indexes = selectionModel()->selectedIndexes();

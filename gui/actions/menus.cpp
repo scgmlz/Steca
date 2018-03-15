@@ -99,13 +99,15 @@ Menus::Menus(QMenuBar* mbar)
         });
 }
 
-QAction* Menus::separator() const {
+QAction* Menus::separator() const
+{
     QAction* ret = new QAction(mbar_);
     ret->setSeparator(true);
     return ret;
 };
 
-QMenu* Menus::actionsToMenu(const char* menuName, QList<QAction*> actions) {
+QMenu* Menus::actionsToMenu(const char* menuName, QList<QAction*> actions)
+{
     QMenu* menu = mbar_->addMenu(menuName);
     menu->addActions(actions);
     QString prefix = QString("%1: ").arg(menu->title().remove('&'));

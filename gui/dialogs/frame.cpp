@@ -216,8 +216,8 @@ Params::Params(ePanels panels)
     , panelGammaRange(nullptr)
     , panelPoints(nullptr)
     , panelInterpolation(nullptr)
-    , panelDiagram(nullptr) {
-
+    , panelDiagram(nullptr)
+{
     setLayout(&panelBox_);
 
     if (REFLECTION & panels)
@@ -310,12 +310,14 @@ Frame::Frame(const QString& name, const QString& title, Params* params)
     interpPoints_.resize(reflCount);
 }
 
-Frame::~Frame() {
+Frame::~Frame()
+{
     delete params_;
     delete tabTable_;
 }
 
-void Frame::calculate() {
+void Frame::calculate()
+{
     TakesLongTime __;
 
     calcPoints_.clear();
@@ -343,7 +345,8 @@ void Frame::calculate() {
     interpolate();
 }
 
-void Frame::interpolate() {
+void Frame::interpolate()
+{
     TakesLongTime __;
 
     interpPoints_.clear();
@@ -372,12 +375,14 @@ void Frame::interpolate() {
     updatePeak();
 }
 
-void Frame::updatePeak() {
+void Frame::updatePeak()
+{
     displayPeak(getReflIndex(), getInterpolated());
 }
 
 // virtual, overwritten by some output frames, and called back by the overwriting function
-void Frame::displayPeak(int reflIndex, bool interpolated) {
+void Frame::displayPeak(int reflIndex, bool interpolated)
+{
     dataView_->clear();
 
     ASSERT(calcPoints_.count() == interpPoints_.count());
@@ -390,14 +395,16 @@ void Frame::displayPeak(int reflIndex, bool interpolated) {
     dataView_->sortData();
 }
 
-int Frame::getReflIndex() const {
+int Frame::getReflIndex() const
+{
     ASSERT(params_->panelPeak);
     int reflIndex = params_->panelPeak->cbRefl.currentIndex();
     if (!(reflIndex >= 0)) qFatal("invalid peak index");
     return reflIndex;
 }
 
-bool Frame::getInterpolated() const {
+bool Frame::getInterpolated() const
+{
     const PanelPoints* pi = params_->panelPoints;
     return pi ? pi->rbInterp.isChecked() : false;
 }

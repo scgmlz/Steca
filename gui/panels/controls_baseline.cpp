@@ -39,7 +39,8 @@ public:
     enum { COL_RANGE = 1, NUM_COLUMNS };
 };
 
-QVariant BaseRangesModel::data(const QModelIndex& index, int role) const {
+QVariant BaseRangesModel::data(const QModelIndex& index, int role) const
+{
     int row = index.row();
     if (row < 0 || rowCount() <= row)
         return {};
@@ -93,19 +94,17 @@ BaseRangesView::BaseRangesView()
 //  class ControlsBaseline
 // ************************************************************************** //
 
-ControlsBaseline::ControlsBaseline() {
-    auto* box = new QVBoxLayout();
-    setLayout(box);
+ControlsBaseline::ControlsBaseline()
+{
+    hb_.addWidget(new QLabel("Pol. degree:"));
+    hb_.addWidget(&spinDegree_);
+    hb_.addStretch(1);
+    hb_.addWidget(new XIconButton(&gGui->triggers->clearBackground));
+    box_.addLayout(&hb_);
 
-    QBoxLayout* hb = new QHBoxLayout();
-    box->addLayout(hb);
-    hb->addWidget(new QLabel("Pol. degree:"));
-    hb->addWidget(&spinDegree_);
-    hb->addStretch(1);
-    hb->addWidget(new XIconButton(&gGui->triggers->clearBackground));
-
-    box->addWidget(new BaseRangesView());
-    box->addStretch(1);
+    box_.addWidget(new BaseRangesView());
+    box_.addStretch(1);
+    setLayout(&box_);
 
     connect(&spinDegree_, _SLOT_(QSpinBox, valueChanged, int), [](int degree_) {
             gSession->baseline().setPolynomDegree(degree_); });

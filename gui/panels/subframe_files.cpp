@@ -35,7 +35,6 @@ public:
     bool activated(int i) const { return
             gSession->dataset().fileAt(i).activated() == Qt::Checked; }
     void setActivated(int i, bool on) { gSession->dataset().setFileActivation(i, on); }
-
 private:
     int columnCount() const final { return 3; }
     int rowCount() const final { return gSession->dataset().countFiles(); }
@@ -43,7 +42,8 @@ private:
 };
 
 //! Returns role-specific information about one table cell.
-QVariant FilesModel::data(const QModelIndex& index, int role) const {
+QVariant FilesModel::data(const QModelIndex& index, int role) const
+{
     const int row = index.row();
     if (row < 0 || row >= rowCount())
         return {};
@@ -77,7 +77,6 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const {
 class FilesView : public CheckTableView {
 public:
     FilesView();
-
 private:
     void currentChanged(const QModelIndex& current, const QModelIndex&) override final {
         gotoCurrent(current); }
@@ -94,7 +93,8 @@ FilesView::FilesView()
     connect(this, &FilesView::clicked, model(), &FilesModel::onClicked);
 }
 
-int FilesView::sizeHintForColumn(int col) const {
+int FilesView::sizeHintForColumn(int col) const
+{
     switch (col) {
     case 1: {
         return 2*mWidth();
@@ -108,8 +108,8 @@ int FilesView::sizeHintForColumn(int col) const {
 //  class SubframeFiles
 // ************************************************************************** //
 
-SubframeFiles::SubframeFiles() : DockWidget("Files", "dock-files") {
-
+SubframeFiles::SubframeFiles() : DockWidget("Files", "dock-files")
+{
     auto h = new QHBoxLayout();
     box_.addLayout(h);
 

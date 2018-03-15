@@ -170,7 +170,7 @@ DiagramsFrame::DiagramsFrame()
     }
 
     ASSERT(params_->panelDiagram);
-    PanelDiagram const* pd = params_->panelDiagram;
+    const PanelDiagram*const pd = params_->panelDiagram;
 
     connect(&pd->xAxis, _SLOT_(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
     connect(&pd->yAxis, _SLOT_(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });

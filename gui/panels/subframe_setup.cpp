@@ -19,7 +19,8 @@
 #include "gui/panels/controls_peakfits.h"
 #include "gui/mainwin.h"
 
-SubframeSetup::SubframeSetup() {
+SubframeSetup::SubframeSetup()
+{
     setTabPosition(QTabWidget::North);
 
     addTab(new ControlsDetector(), "Detector");
@@ -37,7 +38,8 @@ SubframeSetup::SubframeSetup() {
     updateTabsAvailability();
 }
 
-void SubframeSetup::updateTabsAvailability() {
+void SubframeSetup::updateTabsAvailability()
+{
     if (gSession->dataset().countFiles()) {
         setTabEnabled(1, true);
         setTabEnabled(2, true);

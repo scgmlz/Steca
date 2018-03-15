@@ -19,7 +19,9 @@
 #include <QApplication>
 #include <QDate>
 
-AboutBox::AboutBox() : QDialog(gGui, Qt::Dialog) {
+AboutBox::AboutBox()
+    : QDialog(gGui, Qt::Dialog)
+{
     Settings s("config");
 
     setWindowTitle(QString("About %1").arg(qApp->applicationName()));

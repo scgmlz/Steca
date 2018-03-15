@@ -15,7 +15,8 @@
 #include "gui/base/displays.h"
 #include <QIcon>
 
-void widgetUtils::setWidth(QWidget* w, int ndigits, bool withDot) {
+void widgetUtils::setWidth(QWidget* w, int ndigits, bool withDot)
+{
     int width = ndigits;
 #ifdef Q_OS_WIN
     width += 1 + (withDot?1:0);
@@ -23,12 +24,14 @@ void widgetUtils::setWidth(QWidget* w, int ndigits, bool withDot) {
     w->setFixedWidth(width * w->fontMetrics().width('m'));
 }
 
-XIcon::XIcon(const QString& fileName) {
+XIcon::XIcon(const QString& fileName)
+{
     int h = sizeHint().height();
     setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
 }
 
-XLineDisplay::XLineDisplay(int ndigits, bool withDot) {
+XLineDisplay::XLineDisplay(int ndigits, bool withDot)
+{
     widgetUtils::setWidth(this, ndigits, withDot);
     setReadOnly(true);
 }

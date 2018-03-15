@@ -26,7 +26,8 @@ TableModel::TableModel(const QString& name)
 {
 }
 
-void TableModel::onCommand(const QStringList& args) {
+void TableModel::onCommand(const QStringList& args)
+{
     if (args[0]!="highlight")
         THROW("Unexpected command");
     if      (args.size()<2)
@@ -34,7 +35,8 @@ void TableModel::onCommand(const QStringList& args) {
     setHighlight(TO_INT(args[1]));
 }
 
-void TableModel::refreshModel() {
+void TableModel::refreshModel()
+{
     emit dataChanged(createIndex(0,0),createIndex(rowCount(),columnCount()-1));
 }
 
@@ -43,12 +45,14 @@ void TableModel::refreshModel() {
 //! Prefer this over dataChanged if and only rowCount may have shrinked,
 //! and be aware that it resets the currentIndex so that arrow keys will start from row 0.
 
-void TableModel::resetModel() {
+void TableModel::resetModel()
+{
     beginResetModel();
     endResetModel();
 }
 
-void TableModel::onClicked(const QModelIndex& cell) {
+void TableModel::onClicked(const QModelIndex& cell)
+{
     int row = cell.row();
     if (row < 0 || row >= rowCount())
         return;
@@ -60,10 +64,12 @@ void TableModel::onClicked(const QModelIndex& cell) {
 //  class CheckTableModel
 // ************************************************************************** //
 
-CheckTableModel::CheckTableModel(const QString& _name) : TableModel(_name) {
+CheckTableModel::CheckTableModel(const QString& _name) : TableModel(_name)
+{
 }
 
-void CheckTableModel::onCommand(const QStringList& args) {
+void CheckTableModel::onCommand(const QStringList& args)
+{
     if        (args[0]=="activate") {
         if (args.size()<2)
             THROW("Missing argument to command 'activate'");
@@ -77,11 +83,13 @@ void CheckTableModel::onCommand(const QStringList& args) {
 }
 
 //! Refreshes the check box column.
-void CheckTableModel::onActivated() {
+void CheckTableModel::onActivated()
+{
     emit dataChanged(createIndex(0,1),createIndex(rowCount()-1,1));
 }
 
-void CheckTableModel::onClicked(const QModelIndex& cell) {
+void CheckTableModel::onClicked(const QModelIndex& cell)
+{
     TableModel::onClicked(cell);
     int row = cell.row();
     int col = cell.column();
@@ -89,10 +97,10 @@ void CheckTableModel::onClicked(const QModelIndex& cell) {
         activateAndLog(true, row, !activated(row));
 }
 
-void CheckTableModel::activateAndLog(bool primaryCall, int row, bool on) {
+void CheckTableModel::activateAndLog(bool primaryCall, int row, bool on)
+{
     setActivated(row, on);
-    gConsole->log2(primaryCall,
-                   name() + ( on ? " activate " : " deactivate ") + QString::number(row));
+    gConsole->log2(primaryCall, name() + ( on ? " activate " : " deactivate ") + QString::number(row));
 }
 
 
@@ -123,7 +131,8 @@ TableView::TableView(TableModel* model)
 
 #pragma GCC diagnostic pop
 
-int TableView::mWidth() const {
+int TableView::mWidth() const
+{
     QFont f = font();
     f.setBold(false);
     return QFontMetrics(f).width('m');
@@ -135,7 +144,8 @@ int TableView::mWidth() const {
 //! We cannot place currentChanged in this pure virtual class, because then it would be
 //! called by the constructor, which would result in undefined behavior.
 
-void TableView::gotoCurrent(const QModelIndex& current) {
+void TableView::gotoCurrent(const QModelIndex& current)
+{
     if (current.row()==model_->highlighted())
         return; // the following would prevent execution of "onClicked"
     model_->setHighlight(current.row());
@@ -143,7 +153,8 @@ void TableView::gotoCurrent(const QModelIndex& current) {
 }
 
 //! Highlights one cluster. Called either from GUI > currentChanged, or through Console command.
-void TableView::highlight(bool primaryCall, int row) {
+void TableView::highlight(bool primaryCall, int row)
+{
     if (row==model_->highlighted())
         return; // the following would prevent execution of "onClicked"
     gConsole->log2(primaryCall, name_+".highlight="+QString::number(row));
@@ -151,18 +162,21 @@ void TableView::highlight(bool primaryCall, int row) {
     updateScroll();
 }
 
-void TableView::updateScroll() {
+void TableView::updateScroll()
+{
     int row = model_->highlighted();
     if (row>=0)
         scrollTo(model_->index(row,0));
 }
 
-void TableView::onHighlight() {
+void TableView::onHighlight()
+{
     model_->refreshModel();
     updateScroll();
 }
 
-void TableView::onData() {
+void TableView::onData()
+{
     model_->resetModel();
     updateScroll();
 }
@@ -171,7 +185,8 @@ void TableView::onData() {
 //  class CheckTableView
 // ************************************************************************** //
 
-void CheckTableView::onActivated() {
+void CheckTableView::onActivated()
+{
     model()->onActivated();
     updateScroll();
 }

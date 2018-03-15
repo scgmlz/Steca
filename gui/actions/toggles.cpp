@@ -19,8 +19,8 @@
 #include <QDockWidget>
 #include <QStatusBar>
 
-Toggles::Toggles() {
-
+Toggles::Toggles()
+{
 #define AT &QAction::toggled
 
     QObject::connect(&enableCorr, AT, [](bool on) {

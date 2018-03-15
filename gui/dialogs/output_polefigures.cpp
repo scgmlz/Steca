@@ -85,18 +85,21 @@ TabGraph::TabGraph(Params& params)
     update();
 }
 
-void TabGraph::set(PeakInfos rs) {
+void TabGraph::set(PeakInfos rs)
+{
     rs_ = rs;
     update();
 }
 
-void TabGraph::update() {
+void TabGraph::update()
+{
     avgAlphaMax_ = params_.panelInterpolation->avgAlphaMax.value();
     flat_ = cbFlat_.isChecked();
     QWidget::update();
 }
 
-void TabGraph::paintEvent(QPaintEvent*) {
+void TabGraph::paintEvent(QPaintEvent*)
+{
     int w = size().width(), h = size().height();
 
     QPainter painter(this);
@@ -112,26 +115,31 @@ void TabGraph::paintEvent(QPaintEvent*) {
 }
 
 //! Point in floating-point precision
-QPointF TabGraph::p(deg alpha, deg beta) const {
+QPointF TabGraph::p(deg alpha, deg beta) const
+{
     qreal r = r_ * alpha / alphaMax_;
     rad betaRad = beta.toRad();
     return QPointF(r * cos(betaRad), -r * sin(betaRad));
 }
 
-deg TabGraph::alpha(const QPointF& p) const {
+deg TabGraph::alpha(const QPointF& p) const
+{
     return sqrt(p.x() * p.x() + p.y() * p.y()) / r_ * alphaMax_;
 }
 
-deg TabGraph::beta(const QPointF& p) const {
+deg TabGraph::beta(const QPointF& p) const
+{
     deg b = rad(atan2(p.y(), p.x())).toDeg();
     return b <= 0 ? -b : 360 - b;
 }
 
-void TabGraph::circle(QPointF c, qreal r) {
+void TabGraph::circle(QPointF c, qreal r)
+{
     p_->drawEllipse(c, r, r);
 }
 
-void TabGraph::paintGrid() {
+void TabGraph::paintGrid()
+{
     QPen penMajor(Qt::gray), penMinor(Qt::lightGray);
 
     for (int alpha = 10; alpha <= 90; alpha += 10) {
@@ -150,7 +158,8 @@ void TabGraph::paintGrid() {
     circle(c_, r_ * avgAlphaMax_ / alphaMax_);
 }
 
-void TabGraph::paintPoints() {
+void TabGraph::paintPoints()
+{
     qreal rgeMax = rs_.rgeInten().max;
 
     /*
@@ -245,23 +254,28 @@ TabPoleFiguresSave::TabPoleFiguresSave()
     outputInten_.setChecked(true);
 }
 
-bool TabPoleFiguresSave::onlySelectedRefl() const {
+bool TabPoleFiguresSave::onlySelectedRefl() const
+{
     return rbSelectedRefl_.isChecked();
 }
 
-bool TabPoleFiguresSave::outputInten() const {
+bool TabPoleFiguresSave::outputInten() const
+{
     return outputInten_.isChecked();
 }
 
-bool TabPoleFiguresSave::outputTth() const {
+bool TabPoleFiguresSave::outputTth() const
+{
     return outputTth_.isChecked();
 }
 
-bool TabPoleFiguresSave::outputFWHM() const {
+bool TabPoleFiguresSave::outputFWHM() const
+{
     return outputFWHM_.isChecked();
 }
 
-void TabPoleFiguresSave::rawReflSettings(bool on) {
+void TabPoleFiguresSave::rawReflSettings(bool on)
+{
     outputTth_.setEnabled(on);
     outputFWHM_.setEnabled(on);
 }
@@ -295,19 +309,22 @@ PoleFiguresFrame::PoleFiguresFrame()
     show();
 }
 
-PoleFiguresFrame::~PoleFiguresFrame() {
+PoleFiguresFrame::~PoleFiguresFrame()
+{
     delete tabSave_;
     delete tabGraph_;
 }
 
-void PoleFiguresFrame::displayPeak(int reflIndex, bool interpolated) {
+void PoleFiguresFrame::displayPeak(int reflIndex, bool interpolated)
+{
     Frame::displayPeak(reflIndex, interpolated);
     if (!interpPoints_.isEmpty() && !calcPoints_.isEmpty())
         tabGraph_->set((interpolated ? interpPoints_ : calcPoints_).at(reflIndex));
     tabSave_->rawReflSettings(!gSession->peaks().at(reflIndex).isRaw());
 }
 
-void PoleFiguresFrame::savePoleFigureOutput() {
+void PoleFiguresFrame::savePoleFigureOutput()
+{
     int reflCount = gSession->peaks().count();
     ASSERT(reflCount); // user should not get here if no peak is defined
     QString path = tabSave_->filePath(false);
@@ -327,7 +344,8 @@ void PoleFiguresFrame::savePoleFigureOutput() {
 static QString const OUT_FILE_TAG(".refl%1");
 static int const MAX_LINE_LENGTH_POL(9);
 
-void PoleFiguresFrame::writePoleFigureOutputFiles(const QString& filePath, int index) {
+void PoleFiguresFrame::writePoleFigureOutputFiles(const QString& filePath, int index)
+{
     PeakInfos reflInfo;
     if (getInterpolated())
         reflInfo = interpPoints_.at(index);
@@ -382,7 +400,8 @@ void PoleFiguresFrame::writePoleFigureOutputFiles(const QString& filePath, int i
 }
 
 void PoleFiguresFrame::writeErrorMask(
-    const QString& filePath, PeakInfos reflInfo, const vec<qreal>& output) {
+    const QString& filePath, PeakInfos reflInfo, const vec<qreal>& output)
+{
     QFile* file = file_dialog::OutputFile("file", this, filePath);
     if (!file)
         return;

@@ -51,7 +51,8 @@ private:
     vec<int> metaInfoNums_; //!< indices of metadata items selected for display
 };
 
-void ExperimentModel::onMetaSelection() {
+void ExperimentModel::onMetaSelection()
+{
     beginResetModel(); // needed because columnCount may have shrinked
     metaInfoNums_.clear();
     for_i (Metadata::size())
@@ -62,7 +63,8 @@ void ExperimentModel::onMetaSelection() {
     endResetModel();
 }
 
-QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
+QVariant ExperimentModel::data(const QModelIndex& index, int role) const
+{
     int row = index.row();
     if (row < 0 || row >= rowCount())
         return {};
@@ -123,7 +125,8 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     }
 }
 
-QVariant ExperimentModel::headerData(int col, Qt::Orientation ori, int role) const {
+QVariant ExperimentModel::headerData(int col, Qt::Orientation ori, int role) const
+{
     if (ori!=Qt::Horizontal)
         return {};
     if (role != Qt::DisplayRole)
@@ -145,7 +148,6 @@ QVariant ExperimentModel::headerData(int col, Qt::Orientation ori, int role) con
 class ExperimentView : public CheckTableView { // < QTreeView < QAbstractItemView
 public:
     ExperimentView();
-
 private:
     void currentChanged(const QModelIndex& current, const QModelIndex&) override final {
         gotoCurrent(current); }
@@ -166,12 +168,14 @@ ExperimentView::ExperimentView()
     connect(this, &ExperimentView::clicked, model(), &CheckTableModel::onClicked);
 }
 
-void ExperimentView::onMetaSelection() {
+void ExperimentView::onMetaSelection()
+{
     model()->onMetaSelection();
     setHeaderHidden(model()->metaCount()==0);
 }
 
-int ExperimentView::sizeHintForColumn(int col) const {
+int ExperimentView::sizeHintForColumn(int col) const
+{
     switch (col) {
     case ExperimentModel::COL_CHECK: {
         return 2*mWidth();
@@ -185,6 +189,7 @@ int ExperimentView::sizeHintForColumn(int col) const {
 //  class SubframeClusters
 // ************************************************************************** //
 
-SubframeClusters::SubframeClusters() : DockWidget("Measurements", "dock-cluster") {
+SubframeClusters::SubframeClusters() : DockWidget("Measurements", "dock-cluster")
+{
     box_.addWidget(new ExperimentView()); // list of Cluster|s
 }

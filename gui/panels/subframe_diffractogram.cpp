@@ -29,9 +29,7 @@
 class Diffractogram final : public QWidget {
 public:
     Diffractogram();
-
     QBoxLayout* box() const { return box_; }
-
 private:
     void onNormChanged();
     void onHighlight();
@@ -51,8 +49,8 @@ private:
 };
 
 
-Diffractogram::Diffractogram() {
-
+Diffractogram::Diffractogram()
+{
     setLayout((box_ = new QVBoxLayout()));
     box_->addWidget((plot_ = new DiffractogramPlot(*this)));
     auto hb = new QHBoxLayout();
@@ -105,7 +103,8 @@ Diffractogram::Diffractogram() {
     intenAvg_.setChecked(true);
 }
 
-void Diffractogram::onNormChanged() {
+void Diffractogram::onNormChanged()
+{
     intenScale_.setValue(gSession->intenScale()); // TODO own signal
     if (gSession->intenScaledAvg())
         intenAvg_.setChecked(true);
@@ -114,7 +113,8 @@ void Diffractogram::onNormChanged() {
     plot_->renderAll();
 }
 
-void Diffractogram::onHighlight() {
+void Diffractogram::onHighlight()
+{
     actZoom_.setChecked(false);
     plot_->renderAll();
 }
@@ -123,7 +123,8 @@ void Diffractogram::onHighlight() {
 //  class SubframeDiffractogram
 // ************************************************************************** //
 
-SubframeDiffractogram::SubframeDiffractogram() {
+SubframeDiffractogram::SubframeDiffractogram()
+{
     setTabPosition(QTabWidget::North);
     auto* tab = new Diffractogram();
     addTab(tab, "Diffractogram");
