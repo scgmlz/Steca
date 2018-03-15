@@ -272,23 +272,19 @@ Frame::Frame(const QString& name, const QString& title, Params* params)
     auto hb = new QHBoxLayout();
     box_->addLayout(hb);
 
-    actClose_ = new CTrigger("actClose#", "Close");
-    actCalculate_ = new CTrigger("actCalculate#", "Calculate");
-    actInterpolate_ = new CTrigger("actInterpolate#", "Interpolate");
-
-    hb->addWidget((btnClose_ = new XTextButton(actClose_)));
+    hb->addWidget((btnClose_ = new XTextButton(&actClose_)));
     hb->addStretch(1);
     hb->addWidget((progressBar_ = new QProgressBar));
     hb->setStretchFactor(progressBar_, 333);
     hb->addStretch(1);
-    hb->addWidget((btnCalculate_ = new XTextButton(actCalculate_)));
-    hb->addWidget((btnInterpolate_ = new XTextButton(actInterpolate_)));
+    hb->addWidget((btnCalculate_ = new XTextButton(&actCalculate_)));
+    hb->addWidget((btnInterpolate_ = new XTextButton(&actInterpolate_)));
 
     progressBar_->hide();
 
-    connect(actClose_, &QAction::triggered, [this]() { close(); });
-    connect(actCalculate_, &QAction::triggered, [this]() { calculate(); });
-    connect(actInterpolate_, &QAction::triggered, [this]() { interpolate(); });
+    connect(&actClose_, &QAction::triggered, [this]() { close(); });
+    connect(&actCalculate_, &QAction::triggered, [this]() { calculate(); });
+    connect(&actInterpolate_, &QAction::triggered, [this]() { interpolate(); });
 
     if (params_->panelPeak) {
         connect(&params_->panelPeak->cbRefl, _SLOT_(QComboBox, currentIndexChanged, int),

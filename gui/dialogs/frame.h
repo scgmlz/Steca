@@ -16,7 +16,7 @@
 #define FRAME_H
 
 #include "core/calc/peak_info.h"
-#include "gui/capture_and_replay/enhance_widgets.h"
+#include "gui/base/controls.h"
 #include <QDialog>
 
 class QBoxLayout;
@@ -54,7 +54,9 @@ public:
     Frame(const QString& name, const QString& title, Params*);
     ~Frame();
 protected:
-    QAction *actClose_, *actCalculate_, *actInterpolate_;
+    CTrigger actClose_ {"actClose#", "Close"};
+    CTrigger actCalculate_ {"actCalculate#", "Calculate"};
+    CTrigger actInterpolate_ {"actInterpolate#", "Interpolate"};
     QToolButton *btnClose_, *btnCalculate_, *btnInterpolate_;
     QProgressBar* progressBar_;
     QBoxLayout* box_;
