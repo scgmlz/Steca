@@ -190,7 +190,6 @@ DiagramsFrame::DiagramsFrame()
 
 DiagramsFrame::~DiagramsFrame()
 {
-    // TODO delete ALL members!
     delete tabSave_;
     delete tabPlot_;
 }
