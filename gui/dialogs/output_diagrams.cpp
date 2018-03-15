@@ -22,7 +22,8 @@
 #include "QCustomPlot/qcustomplot.h"
 
 // sorts xs and ys the same way, by (x,y)
-static void sortColumns(vec<qreal>& xs, vec<qreal>& ys, vec<int>& is) {
+static void sortColumns(vec<qreal>& xs, vec<qreal>& ys, vec<int>& is)
+{
     ASSERT(xs.count() == ys.count());
 
     int count = xs.count();
@@ -70,14 +71,16 @@ private:
     QCPGraph *graph_, *graphLo_, *graphUp_;
 };
 
-TabPlot::TabPlot() {
+TabPlot::TabPlot()
+{
     graph_ = addGraph();
     graphLo_ = addGraph();
     graphUp_ = addGraph();
 }
 
 void TabPlot::plot(
-    const vec<qreal>& xs, const vec<qreal>& ys, const vec<qreal>& ysLo, const vec<qreal>& ysUp) {
+    const vec<qreal>& xs, const vec<qreal>& ys, const vec<qreal>& ysLo, const vec<qreal>& ysUp)
+{
     ASSERT(xs.count() == ys.count());
 
     int count = xs.count();
@@ -185,30 +188,34 @@ DiagramsFrame::DiagramsFrame()
     show();
 }
 
-DiagramsFrame::~DiagramsFrame() {
+DiagramsFrame::~DiagramsFrame()
+{
     // TODO delete ALL members!
     delete tabSave_;
     delete tabPlot_;
 }
 
-DiagramsFrame::eReflAttr DiagramsFrame::xAttr() const {
+DiagramsFrame::eReflAttr DiagramsFrame::xAttr() const
+{
     ASSERT(params_->panelDiagram);
     return eReflAttr(params_->panelDiagram->xAxis.currentIndex());
 }
 
-DiagramsFrame::eReflAttr DiagramsFrame::yAttr() const {
+DiagramsFrame::eReflAttr DiagramsFrame::yAttr() const
+{
     ASSERT(params_->panelDiagram);
     return eReflAttr(params_->panelDiagram->yAxis.currentIndex());
 }
 
-void DiagramsFrame::displayPeak(int reflIndex, bool interpolated) {
+void DiagramsFrame::displayPeak(int reflIndex, bool interpolated)
+{
     Frame::displayPeak(reflIndex, interpolated);
     rs_ = calcPoints_.at(reflIndex);
     recalculate();
 }
 
-void DiagramsFrame::recalculate() {
-
+void DiagramsFrame::recalculate()
+{
     int count = rs_.count();
 
     xs_.resize(count);
@@ -262,7 +269,8 @@ void DiagramsFrame::recalculate() {
     tabPlot_->plot(xs_, ys_, ysErrorLo_, ysErrorUp_);
 }
 
-void DiagramsFrame::saveDiagramOutput() {
+void DiagramsFrame::saveDiagramOutput()
+{
     QString path = tabSave_->filePath(true);
     if (path.isEmpty()) {
         qWarning() << "cannot save diagram: path is empty";
@@ -276,8 +284,7 @@ void DiagramsFrame::saveDiagramOutput() {
     qDebug() /* qInfo() TODO restore */ << "diagram saved to " << path;
 }
 
-void DiagramsFrame::writeCurrentDiagramOutputFile(
-    const QString& filePath, const QString& separator)
+void DiagramsFrame::writeCurrentDiagramOutputFile(const QString& filePath, const QString& separator)
 {
     QFile* file = file_dialog::OutputFile("file", this, filePath);
     if (!file)
@@ -298,7 +305,8 @@ void DiagramsFrame::writeCurrentDiagramOutputFile(
     }
 }
 
-void DiagramsFrame::writeAllDataOutputFile(const QString& filePath, const QString& separator) {
+void DiagramsFrame::writeAllDataOutputFile(const QString& filePath, const QString& separator)
+{
     QFile* file = file_dialog::OutputFile("file", this, filePath);
     if (!file)
         return;
