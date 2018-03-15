@@ -18,6 +18,7 @@
 #include "core/calc/peak_info.h"
 #include "gui/base/controls.h"
 #include <QDialog>
+#include <QProgressBar>
 
 class QBoxLayout;
 class QProgressBar;
@@ -57,8 +58,10 @@ protected:
     CTrigger actClose_ {"actClose#", "Close"};
     CTrigger actCalculate_ {"actCalculate#", "Calculate"};
     CTrigger actInterpolate_ {"actInterpolate#", "Interpolate"};
-    QToolButton *btnClose_, *btnCalculate_, *btnInterpolate_;
-    QProgressBar* progressBar_;
+    XTextButton btnClose_ {&actClose_};
+    XTextButton btnCalculate_ {&actCalculate_};
+    XTextButton btnInterpolate_ {&actInterpolate_};
+    QProgressBar progressBar_;
     QBoxLayout* box_;
     Params* params_;
     QTabWidget* tabs_;

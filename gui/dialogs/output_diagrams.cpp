@@ -156,7 +156,7 @@ TabDiagramsSave::TabDiagramsSave()
 DiagramsFrame::DiagramsFrame()
     : Frame("diagrams#", "Diagrams", new Params(PANELS))
 {
-    btnInterpolate_->hide();
+    btnInterpolate_.hide();
 
     {
         auto* tab = new QWidget();

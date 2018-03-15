@@ -18,7 +18,6 @@
 #include "gui/dialogs/data_table.h"
 #include "gui/dialogs/dialog_panels.h"
 #include "gui/mainwin.h" // defines _SLOT_
-#include <QProgressBar>
 #include <QScrollArea>
 
 struct showcol_t {
@@ -272,15 +271,15 @@ Frame::Frame(const QString& name, const QString& title, Params* params)
     auto hb = new QHBoxLayout();
     box_->addLayout(hb);
 
-    hb->addWidget((btnClose_ = new XTextButton(&actClose_)));
+    hb->addWidget(&btnClose_);
     hb->addStretch(1);
-    hb->addWidget((progressBar_ = new QProgressBar));
-    hb->setStretchFactor(progressBar_, 333);
+    hb->addWidget(&progressBar_);
+    hb->setStretchFactor(&progressBar_, 333);
     hb->addStretch(1);
-    hb->addWidget((btnCalculate_ = new XTextButton(&actCalculate_)));
-    hb->addWidget((btnInterpolate_ = new XTextButton(&actInterpolate_)));
+    hb->addWidget(&btnCalculate_);
+    hb->addWidget(&btnInterpolate_);
 
-    progressBar_->hide();
+    progressBar_.hide();
 
     connect(&actClose_, &QAction::triggered, [this]() { close(); });
     connect(&actCalculate_, &QAction::triggered, [this]() { calculate(); });
@@ -334,7 +333,7 @@ void Frame::calculate() {
     if (pr->cbLimitGamma.isChecked())
         rgeGamma.safeSet(pr->minGamma.value(), pr->maxGamma.value());
 
-    Progress progress(reflCount, progressBar_);
+    Progress progress(reflCount, &progressBar_);
 
     for_i (reflCount)
         calcPoints_.append(
@@ -359,7 +358,7 @@ void Frame::interpolate() {
         qreal avgAlphaMax = pi->avgAlphaMax.value();
         qreal avgTreshold = pi->avgThreshold.value() / 100.0;
 
-        Progress progress(calcPoints_.count(), progressBar_);
+        Progress progress(calcPoints_.count(), &progressBar_);
 
         for_i (calcPoints_.count())
             interpPoints_.append(interpolateInfos(
