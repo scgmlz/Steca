@@ -258,18 +258,18 @@ Frame::Frame(const QString& name, const QString& title, Params* params)
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowTitle(title);
 
-    setLayout((box_ = new QVBoxLayout()));
+    setLayout(&box_);
 
     ASSERT(params);
-    box_->addWidget((params_ = params));
+    box_.addWidget((params_ = params));
 
     tabs_ = new QTabWidget();
     tabs_->setTabPosition(QTabWidget::North);
-    box_->addWidget(tabs_);
-    box_->setStretch(box_->count() - 1, 1);
+    box_.addWidget(tabs_);
+    box_.setStretch(box_.count() - 1, 1);
 
     auto hb = new QHBoxLayout();
-    box_->addLayout(hb);
+    box_.addLayout(hb);
 
     hb->addWidget(&btnClose_);
     hb->addStretch(1);

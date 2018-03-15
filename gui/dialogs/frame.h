@@ -62,7 +62,6 @@ protected:
     XTextButton btnCalculate_ {&actCalculate_};
     XTextButton btnInterpolate_ {&actInterpolate_};
     QProgressBar progressBar_;
-    QBoxLayout* box_;
     Params* params_;
     QTabWidget* tabs_;
     vec<PeakInfos> calcPoints_, interpPoints_;
@@ -75,6 +74,7 @@ protected:
 private:
     void updatePeak();
     class TabTable* tabTable_;
+    QVBoxLayout box_;
 };
 
 #endif // FRAME_H
