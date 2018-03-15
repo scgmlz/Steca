@@ -45,7 +45,7 @@ public:
     class PanelDiagram* panelDiagram;
 
 private:
-    QBoxLayout* box_;
+    QHBoxLayout panelBox_;
 };
 
 //! A rich modal dialog, for the polefig and diagram outputs.
@@ -65,16 +65,16 @@ protected:
     Params* params_;
     QTabWidget tabs_;
     vec<PeakInfos> calcPoints_, interpPoints_;
-    class DataView* table_;
+    class DataView* dataView_;
     void calculate();
     void interpolate();
     virtual void displayPeak(int reflIndex, bool interpolated);
     int getReflIndex() const;
     bool getInterpolated() const;
 private:
-    void updatePeak();
-    class TabTable* tabTable_;
     QVBoxLayout box_;
+    class TabTable* tabTable_;
+    void updatePeak();
 };
 
 #endif // FRAME_H

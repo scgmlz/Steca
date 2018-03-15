@@ -304,13 +304,13 @@ void DiagramsFrame::writeAllDataOutputFile(const QString& filePath, const QStrin
         return;
     QTextStream stream(file);
 
-    const QStringList& headers = table_->outHeaders();
+    const QStringList& headers = dataView_->outHeaders();
     for_i (headers.count())
         stream << headers.at(i) << separator;
     stream << '\n';
 
     for_i (calcPoints_.at(getReflIndex()).count()) {
-        const row_t& row = table_->row(i);
+        const row_t& row = dataView_->row(i);
         for_i (row.count()) {
             const QVariant& var = row.at(i);
             if (isNumeric(var))

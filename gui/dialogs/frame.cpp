@@ -168,7 +168,7 @@ public:
     TabTable(const QString& name, const QStringList& headers,
              const QStringList& outHeaders, const cmp_vec&);
     ~TabTable();
-    DataView* table;
+    DataView dataView_;
 private:
     ShowColsWidget* showColumnsWidget_;
     showcol_vec showCols_;
@@ -176,16 +176,17 @@ private:
 
 TabTable::TabTable(const QString& name, const QStringList& headers,
                    const QStringList& outHeaders, const cmp_vec& cmps)
+    : dataView_ {headers.count()}
 {
     QGridLayout* grid_ = new QGridLayout();
     setLayout(grid_);
     ASSERT(headers.count() == cmps.count());
     int numCols = headers.count();
 
-    grid_->addWidget((table = new DataView(numCols)), 0, 0);
+    grid_->addWidget(&dataView_, 0, 0);
     grid_->setColumnStretch(0, 1);
 
-    table->setColumns(headers, outHeaders, cmps);
+    dataView_.setColumns(headers, outHeaders, cmps);
 
     for_i (numCols) {
         showcol_t item;
@@ -195,14 +196,13 @@ TabTable::TabTable(const QString& name, const QStringList& headers,
 
     auto scrollArea = new QScrollArea;
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    scrollArea->setWidget((showColumnsWidget_ = new ShowColsWidget(name, *table, showCols_)));
+    scrollArea->setWidget((showColumnsWidget_ = new ShowColsWidget(name, dataView_, showCols_)));
 
     grid_->addWidget(scrollArea, 0, 1);
 }
 
 TabTable::~TabTable() {
     delete showColumnsWidget_;
-    delete table;
 }
 
 
@@ -218,27 +218,27 @@ Params::Params(ePanels panels)
     , panelInterpolation(nullptr)
     , panelDiagram(nullptr) {
 
-    setLayout((box_ = new QHBoxLayout()));
+    setLayout(&panelBox_);
 
     if (REFLECTION & panels)
-        box_->addWidget((panelPeak = new PanelPeak()));
+        panelBox_.addWidget((panelPeak = new PanelPeak()));
 
     ASSERT(panels & GAMMA);
     if (GAMMA & panels) {
-        box_->addWidget((panelGammaSlices = new PanelGammaSlices()));
-        box_->addWidget((panelGammaRange = new PanelGammaRange()));
+        panelBox_.addWidget((panelGammaSlices = new PanelGammaSlices()));
+        panelBox_.addWidget((panelGammaRange = new PanelGammaRange()));
     }
 
     if (POINTS & panels)
-        box_->addWidget((panelPoints = new PanelPoints()));
+        panelBox_.addWidget((panelPoints = new PanelPoints()));
 
     if (INTERPOLATION & panels)
-        box_->addWidget((panelInterpolation = new PanelInterpolation()));
+        panelBox_.addWidget((panelInterpolation = new PanelInterpolation()));
 
     if (DIAGRAM & panels)
-        box_->addWidget((panelDiagram = new PanelDiagram()));
+        panelBox_.addWidget((panelDiagram = new PanelDiagram()));
 
-    box_->addStretch();
+    panelBox_.addStretch();
 
     if (panelGammaSlices)
         panelGammaSlices->updateValues();
@@ -303,7 +303,7 @@ Frame::Frame(const QString& name, const QString& title, Params* params)
     tabTable_ = new TabTable(
         name, PeakInfo::dataTags(false), PeakInfo::dataTags(true), PeakInfo::dataCmps());
     tabPoints->layout()->addWidget(tabTable_);
-    table_ = tabTable_->table;
+    dataView_ = &tabTable_->dataView_;
 
     int reflCount = gSession->peaks().count();
     calcPoints_.resize(reflCount);
@@ -311,6 +311,7 @@ Frame::Frame(const QString& name, const QString& title, Params* params)
 }
 
 Frame::~Frame() {
+    delete params_;
     delete tabTable_;
 }
 
@@ -377,16 +378,16 @@ void Frame::updatePeak() {
 
 // virtual, overwritten by some output frames, and called back by the overwriting function
 void Frame::displayPeak(int reflIndex, bool interpolated) {
-    table_->clear();
+    dataView_->clear();
 
     ASSERT(calcPoints_.count() == interpPoints_.count());
     if (calcPoints_.count() <= reflIndex)
         return;
 
     for (const PeakInfo& r : (interpolated ? interpPoints_ : calcPoints_).at(reflIndex))
-        table_->addRow(r.data(), false);
+        dataView_->addRow(r.data(), false);
 
-    table_->sortData();
+    dataView_->sortData();
 }
 
 int Frame::getReflIndex() const {
