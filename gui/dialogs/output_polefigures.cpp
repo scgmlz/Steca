@@ -279,14 +279,14 @@ PoleFiguresFrame::PoleFiguresFrame()
 {
     {
         auto* tab = new QWidget();
-        tabs_->addTab(tab, "Graph");
+        tabs_.addTab(tab, "Graph");
         tab->setLayout(new QVBoxLayout());
         tabGraph_ = new TabGraph(*params_);
         tab->layout()->addWidget(tabGraph_);
     }
     {
         auto* tab = new QWidget();
-        tabs_->addTab(tab, "Save");
+        tabs_.addTab(tab, "Save");
         tab->setLayout(new QVBoxLayout());
         tabSave_ = new TabPoleFiguresSave();
         tab->layout()->addWidget(tabSave_);

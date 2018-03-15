@@ -263,9 +263,8 @@ Frame::Frame(const QString& name, const QString& title, Params* params)
     ASSERT(params);
     box_.addWidget((params_ = params));
 
-    tabs_ = new QTabWidget();
-    tabs_->setTabPosition(QTabWidget::North);
-    box_.addWidget(tabs_);
+    tabs_.setTabPosition(QTabWidget::North);
+    box_.addWidget(&tabs_);
     box_.setStretch(box_.count() - 1, 1);
 
     auto hb = new QHBoxLayout();
@@ -298,7 +297,7 @@ Frame::Frame(const QString& name, const QString& title, Params* params)
     // tabs
 
     auto* tabPoints = new QWidget();
-    tabs_->addTab(tabPoints, "Points");
+    tabs_.addTab(tabPoints, "Points");
     tabPoints->setLayout(new QVBoxLayout());
 
     tabTable_ = new TabTable(

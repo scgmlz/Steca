@@ -160,7 +160,7 @@ DiagramsFrame::DiagramsFrame()
 
     {
         auto* tab = new QWidget();
-        tabs_->addTab(tab, "Diagram");
+        tabs_.addTab(tab, "Diagram");
         tab->setLayout(new QVBoxLayout());
         tabPlot_ = new TabPlot();
         tab->layout()->addWidget(tabPlot_);
@@ -174,7 +174,7 @@ DiagramsFrame::DiagramsFrame()
 
     {
         auto* tab = new QWidget();
-        tabs_->addTab(tab, "Save");
+        tabs_.addTab(tab, "Save");
         tab->setLayout(new QVBoxLayout());
         tabSave_ = new TabDiagramsSave();
         tab->layout()->addWidget(tabSave_);

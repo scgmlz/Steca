@@ -63,7 +63,7 @@ protected:
     XTextButton btnInterpolate_ {&actInterpolate_};
     QProgressBar progressBar_;
     Params* params_;
-    QTabWidget* tabs_;
+    QTabWidget tabs_;
     vec<PeakInfos> calcPoints_, interpPoints_;
     class DataView* table_;
     void calculate();
