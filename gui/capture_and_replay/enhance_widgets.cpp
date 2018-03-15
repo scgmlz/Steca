@@ -20,14 +20,14 @@
 // ************************************************************************** //
 
 CSettable::CSettable(const QString& name)
-    : INamed(name)
+    : name_ {name}
 {
-    gConsole->learn(name, this);
+    gConsole->learn(name_, this);
 }
 
 CSettable::~CSettable()
 {
-    gConsole->forget(name());
+    gConsole->forget(name_);
 }
 
 // ************************************************************************** //
