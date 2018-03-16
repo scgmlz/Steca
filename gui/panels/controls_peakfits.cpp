@@ -166,9 +166,10 @@ void RangeControl::onData()
 
 class AnyPeakdataView : public QWidget {
 public:
-    AnyPeakdataView() {}
+    AnyPeakdataView() { setLayout(&grid_); }
     virtual void updatePeakFun(const PeakFunction&);
 protected:
+    QGridLayout grid_;
     XLineDisplay readFitPeakX_ {6, true};
     XLineDisplay readFitPeakY_ {6, true};
     XLineDisplay readFitFWHM_ {6, true};
@@ -191,22 +192,20 @@ public:
 
 RawPeakdataView::RawPeakdataView()
 {
-    QGridLayout* lay = new QGridLayout();
-    lay->addWidget(new QLabel(""), 1, 1);
+    grid_.addWidget(new QLabel(""), 1, 1);
 
-    lay->addWidget(new QLabel("centre"), 2, 0);
-    lay->addWidget(&readFitPeakX_, 2, 2);
-    lay->addWidget(new QLabel("deg"), 2, 3);
+    grid_.addWidget(new QLabel("centre"), 2, 0);
+    grid_.addWidget(&readFitPeakX_, 2, 2);
+    grid_.addWidget(new QLabel("deg"), 2, 3);
 
-    lay->addWidget(new QLabel("fwhm"), 3, 0);
-    lay->addWidget(&readFitFWHM_, 3, 2);
-    lay->addWidget(new QLabel("deg"), 3, 3);
+    grid_.addWidget(new QLabel("fwhm"), 3, 0);
+    grid_.addWidget(&readFitFWHM_, 3, 2);
+    grid_.addWidget(new QLabel("deg"), 3, 3);
 
-    lay->addWidget(new QLabel("intens"), 4, 0);
-    lay->addWidget(&readFitPeakY_, 4, 2);
+    grid_.addWidget(new QLabel("intens"), 4, 0);
+    grid_.addWidget(&readFitPeakY_, 4, 2);
 
-    lay->setColumnStretch(4, 1);
-    setLayout(lay);
+    grid_.setColumnStretch(4, 1);
 }
 
 //! Displays outcome of peak fit.
@@ -223,26 +222,24 @@ private:
 
 FitPeakdataView::FitPeakdataView()
 {
-    QGridLayout* lay = new QGridLayout();
-    lay->addWidget(new QLabel("guess"), 1, 1);
-    lay->addWidget(new QLabel("fitted"), 1, 2);
+    grid_.addWidget(new QLabel("guess"), 0, 1);
+    grid_.addWidget(new QLabel("fitted"), 0, 2);
 
-    lay->addWidget(new QLabel("centre"), 2, 0);
-    lay->addWidget(&spinGuessPeakX_, 2, 1);
-    lay->addWidget(&readFitPeakX_, 2, 2);
-    lay->addWidget(new QLabel("deg"), 2, 3);
+    grid_.addWidget(new QLabel("centre"), 1, 0);
+    grid_.addWidget(&spinGuessPeakX_, 1, 1);
+    grid_.addWidget(&readFitPeakX_, 1, 2);
+    grid_.addWidget(new QLabel("deg"), 1, 3);
 
-    lay->addWidget(new QLabel("fwhm"), 3, 0);
-    lay->addWidget(&spinGuessFWHM_, 3, 1);
-    lay->addWidget(&readFitFWHM_, 3, 2);
-    lay->addWidget(new QLabel("deg"), 3, 3);
+    grid_.addWidget(new QLabel("fwhm"), 2, 0);
+    grid_.addWidget(&spinGuessFWHM_, 2, 1);
+    grid_.addWidget(&readFitFWHM_, 2, 2);
+    grid_.addWidget(new QLabel("deg"), 2, 3);
 
-    lay->addWidget(new QLabel("intens"), 4, 0);
-    lay->addWidget(&spinGuessPeakY_, 4, 1);
-    lay->addWidget(&readFitPeakY_, 4, 2);
+    grid_.addWidget(new QLabel("intens"), 4, 0);
+    grid_.addWidget(&spinGuessPeakY_, 4, 1);
+    grid_.addWidget(&readFitPeakY_, 4, 2);
 
-    lay->setColumnStretch(4, 1);
-    setLayout(lay);
+    grid_.setColumnStretch(4, 1);
 }
 
 void FitPeakdataView::updatePeakFun(const PeakFunction& peakFun)
@@ -316,28 +313,19 @@ ControlsPeakfits::ControlsPeakfits()
                 } });
 
     // layout
-    auto* box = new QVBoxLayout();
+    topControls_.addStretch();
+    topControls_.addWidget(new XIconButton(&gGui->triggers->addPeak));
+    topControls_.addWidget(new XIconButton(&gGui->triggers->removePeak));
+    box_.addLayout(&topControls_);
 
-    QBoxLayout* hb = new QHBoxLayout();
-    hb->addStretch();
-    hb->addWidget(new XIconButton(&gGui->triggers->addPeak));
-    hb->addWidget(new XIconButton(&gGui->triggers->removePeak));
-    box->addLayout(hb);
+    box_.addWidget(new PeaksView());
 
-    box->addWidget(new PeaksView());
+    box_.addWidget(&comboReflType_);
 
-    hb = new QHBoxLayout();
-    hb->addWidget(&comboReflType_);
-    hb->addStretch();
-    box->addLayout(hb);
+    box_.addWidget(rangeControl_ = new RangeControl);
+    box_.addWidget(peakdataView_ = new PeakdataView);
 
-    QBoxLayout* vb = new QVBoxLayout();
-    vb->addWidget(rangeControl_ = new RangeControl);
-    vb->addWidget(peakdataView_ = new PeakdataView);
-    box->addLayout(vb);
-
-    setLayout(box);
-
+    setLayout(&box_);
     update();
 }
 

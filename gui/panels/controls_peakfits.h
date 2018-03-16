@@ -24,11 +24,12 @@ public:
     ControlsPeakfits();
 private:
     void onPeaks();
-
+    QVBoxLayout box_;
+    QHBoxLayout topControls_;
+    CComboBox comboReflType_;
     class PeaksView* peaksView_;
     class RangeControl* rangeControl_;
     class PeakdataView* peakdataView_;
-    CComboBox comboReflType_;
 };
 
 #endif // CONTROLS_PEAKFITS_H
