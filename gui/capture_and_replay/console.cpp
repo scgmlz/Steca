@@ -32,7 +32,7 @@ class CommandRegistry {
 public:
     CommandRegistry() = delete;
     CommandRegistry(const QString& _name) : name_(_name) {}
-    void learn(QString&, CSettable*);
+    QString learn(const QString&, CSettable*);
     void forget(const QString&);
     CSettable* find(const QString& name);
     void dump(QTextStream&);
@@ -43,21 +43,23 @@ private:
     std::map<const QString, int> numberedEntries_;
 };
 
-void CommandRegistry::learn(QString& name, CSettable* widget)
+QString CommandRegistry::learn(const QString& name, CSettable* widget)
 {
-    if (name.contains("#")) {
+    QString ret = name;
+    if (ret.contains("#")) {
         auto numberedEntry = numberedEntries_.find(name);
         int idxEntry = 1;
         if (numberedEntry==numberedEntries_.end())
             numberedEntries_[name] = idxEntry;
         else
             idxEntry = ++(numberedEntry->second);
-        name.replace("#", QString::number(idxEntry));
+        ret.replace("#", QString::number(idxEntry));
     }
     // qDebug() << "registry " << name_ << " learns " << name;
-    if (widgets_.find(name)!=widgets_.end())
-        qFatal(("Duplicate widget registry entry '"+name+"'").toLatin1()); // TODO RESTORE qFatal
-    widgets_[name] = widget;
+    if (widgets_.find(ret)!=widgets_.end())
+        qFatal(("Duplicate widget registry entry '"+ret+"'").toLatin1());
+    widgets_[ret] = widget;
+    return ret;
 }
 
 void CommandRegistry::forget(const QString& name)
@@ -227,9 +229,9 @@ Console::Result Console::exec(QString line)
     return Result::err;
 }
 
-void Console::learn(QString& name, CSettable* widget)
+QString Console::learn(const QString& name, CSettable* widget)
 {
-    registry().learn(name, widget);
+    return registry().learn(name, widget);
 }
 
 void Console::forget(const QString& name)

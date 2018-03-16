@@ -18,6 +18,7 @@
 #include "gui/mainwin.h" // for _SLOT_
 #include <QApplication> // for qApp for new Action
 #include <QtGlobal> // to define Q_OS_WIN
+#include <iostream> // debug
 
 // ************************************************************************** //
 //  class Trigger
@@ -28,6 +29,7 @@ CTrigger::CTrigger(const QString& name, const QString& text, const QString& icon
     , CSettable(name)
     , tooltip_(text.toLower())
 {
+    QAction::setObjectName(CSettable::name());
     if (iconFile!="")
         setIcon(QIcon(iconFile));
     QObject::connect(this, &QAction::triggered, [name]()->void {
@@ -54,6 +56,11 @@ void CTrigger::onCommand(const QStringList& args)
     trigger();
 }
 
+CTrigger::~CTrigger()
+{
+    std::cerr << "DEBUG: ~CTrigger " << name().toLatin1().data() << "\n";
+}
+
 // ************************************************************************** //
 //  class Toggle
 // ************************************************************************** //
@@ -63,6 +70,7 @@ CToggle::CToggle(const QString& name, const QString& text, bool on, const QStrin
     , CSettable(name)
     , tooltip_(text.toLower())
 {
+    QAction::setObjectName(CSettable::name());
     if (iconFile!="")
         setIcon(QIcon(iconFile));
     setCheckable(true);

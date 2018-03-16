@@ -36,6 +36,7 @@ public:
     CTrigger(const QString& name, const QString& text, const QString& iconFile="");
     CTrigger(const QString& name, const QString& text, const QString& iconFile,
              const QKeySequence& shortcut);
+    ~CTrigger();
     void onCommand(const QStringList&) THROWS;
 private:
     QString tooltip_;

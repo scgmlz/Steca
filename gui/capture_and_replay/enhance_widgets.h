@@ -25,9 +25,9 @@ public:
     CSettable(const QString& name);
     ~CSettable();
     virtual void onCommand(const QStringList&) = 0;
-    QString name() const { return name_; }
+    const QString& name() const { return name_; }
 private:
-    QString name_;
+    const QString name_;
 };
 
 //! Mix-in for modal dialogs.

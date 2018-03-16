@@ -29,7 +29,7 @@ class Console : public QObject, public ISingleton<Console>
 public:
     Console();
     ~Console();
-    void learn(QString& name, CSettable*);
+    QString learn(const QString& name, CSettable*);
     void forget(const QString& name);
     void readFile(const QString& fName);
     void call(const QString&);

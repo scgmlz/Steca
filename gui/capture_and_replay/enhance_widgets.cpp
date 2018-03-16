@@ -20,9 +20,8 @@
 // ************************************************************************** //
 
 CSettable::CSettable(const QString& name)
-    : name_ {name}
+    : name_ {gConsole->learn(name, this)}
 {
-    gConsole->learn(name_, this);
 }
 
 CSettable::~CSettable()
