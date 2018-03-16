@@ -300,27 +300,14 @@ void PeakdataView::updatePeakFun(const PeakFunction& peakFun)
 ControlsPeakfits::ControlsPeakfits()
     : comboReflType_ {"reflTyp", FunctionRegistry::instance()->keys()}
 {
-    auto* box = new QVBoxLayout();
-    setLayout(box);
+    // inbound connection
+    connect(gSession, &Session::sigPeaks, this, &ControlsPeakfits::onPeaks);
 
-    QBoxLayout* hb = new QHBoxLayout();
-    box->addLayout(hb);
-    hb->addStretch();
-
-    hb->addWidget(new XIconButton(&gGui->triggers->addPeak));
+    // outbound connections
     connect(&gGui->triggers->addPeak, &QAction::triggered, [this]() {
             gSession->peaks().add(comboReflType_.currentText()); });
-
-    hb->addWidget(new XIconButton(&gGui->triggers->removePeak));
     connect(&gGui->triggers->removePeak, &QAction::triggered, [this]() {
             gSession->peaks().remove(); });
-
-    box->addWidget(new PeaksView());
-
-    hb = new QHBoxLayout();
-    box->addLayout(hb);
-
-    hb->addWidget(&comboReflType_);
     connect(&comboReflType_, _SLOT_(QComboBox, currentIndexChanged, const QString&),
             [this](const QString& peakFunctionName) {
                 if (gSession->peaks().selectedPeak()) { // TODO rm this if
@@ -328,17 +315,30 @@ ControlsPeakfits::ControlsPeakfits()
                     emit gSession->sigPeaks();
                 } });
 
+    // layout
+    auto* box = new QVBoxLayout();
+
+    QBoxLayout* hb = new QHBoxLayout();
     hb->addStretch();
+    hb->addWidget(new XIconButton(&gGui->triggers->addPeak));
+    hb->addWidget(new XIconButton(&gGui->triggers->removePeak));
+    box->addLayout(hb);
+
+    box->addWidget(new PeaksView());
+
+    hb = new QHBoxLayout();
+    hb->addWidget(&comboReflType_);
+    hb->addStretch();
+    box->addLayout(hb);
 
     QBoxLayout* vb = new QVBoxLayout();
-    box->addLayout(vb);
-
     vb->addWidget(rangeControl_ = new RangeControl);
     vb->addWidget(peakdataView_ = new PeakdataView);
+    box->addLayout(vb);
+
+    setLayout(box);
 
     update();
-
-    connect(gSession, &Session::sigPeaks, this, &ControlsPeakfits::onPeaks);
 }
 
 void ControlsPeakfits::onPeaks()
