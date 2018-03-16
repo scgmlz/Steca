@@ -166,7 +166,7 @@ void RangeControl::onData()
 
 class AnyPeakdataView : public QWidget {
 public:
-    AnyPeakdataView() { setLayout(&grid_); }
+    AnyPeakdataView();
     virtual void updatePeakFun(const PeakFunction&);
 protected:
     QGridLayout grid_;
@@ -174,6 +174,11 @@ protected:
     XLineDisplay readFitPeakY_ {6, true};
     XLineDisplay readFitFWHM_ {6, true};
 };
+
+AnyPeakdataView::AnyPeakdataView()
+{
+    setLayout(&grid_);
+}
 
 void AnyPeakdataView::updatePeakFun(const PeakFunction& peakFun)
 {
@@ -192,18 +197,18 @@ public:
 
 RawPeakdataView::RawPeakdataView()
 {
-    grid_.addWidget(new QLabel(""), 1, 1);
+    grid_.addWidget(new QLabel(""), 0, 0);
 
-    grid_.addWidget(new QLabel("centre"), 2, 0);
-    grid_.addWidget(&readFitPeakX_, 2, 2);
+    grid_.addWidget(new QLabel("centre"), 1, 0);
+    grid_.addWidget(&readFitPeakX_, 1, 2);
+    grid_.addWidget(new QLabel("deg"), 1, 3);
+
+    grid_.addWidget(new QLabel("fwhm"), 2, 0);
+    grid_.addWidget(&readFitFWHM_, 2, 2);
     grid_.addWidget(new QLabel("deg"), 2, 3);
 
-    grid_.addWidget(new QLabel("fwhm"), 3, 0);
-    grid_.addWidget(&readFitFWHM_, 3, 2);
-    grid_.addWidget(new QLabel("deg"), 3, 3);
-
-    grid_.addWidget(new QLabel("intens"), 4, 0);
-    grid_.addWidget(&readFitPeakY_, 4, 2);
+    grid_.addWidget(new QLabel("intens"), 3, 0);
+    grid_.addWidget(&readFitPeakY_, 3, 2);
 
     grid_.setColumnStretch(4, 1);
 }
@@ -235,9 +240,9 @@ FitPeakdataView::FitPeakdataView()
     grid_.addWidget(&readFitFWHM_, 2, 2);
     grid_.addWidget(new QLabel("deg"), 2, 3);
 
-    grid_.addWidget(new QLabel("intens"), 4, 0);
-    grid_.addWidget(&spinGuessPeakY_, 4, 1);
-    grid_.addWidget(&readFitPeakY_, 4, 2);
+    grid_.addWidget(new QLabel("intens"), 3, 0);
+    grid_.addWidget(&spinGuessPeakY_, 3, 1);
+    grid_.addWidget(&readFitPeakY_, 3, 2);
 
     grid_.setColumnStretch(4, 1);
 }
@@ -319,11 +324,10 @@ ControlsPeakfits::ControlsPeakfits()
     box_.addLayout(&topControls_);
 
     box_.addWidget(new PeaksView());
-
     box_.addWidget(&comboReflType_);
-
     box_.addWidget(rangeControl_ = new RangeControl);
     box_.addWidget(peakdataView_ = new PeakdataView);
+    box_.addStretch(1000);
 
     setLayout(&box_);
     update();
