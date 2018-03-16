@@ -27,7 +27,7 @@ class QToolButton;
 
 //! Horizontal box with variable selection of control panels. Appears in each output dialog (Frame).
 
-class Params : public QWidget {
+class Params : public QHBoxLayout {
 public:
     enum ePanels {
         REFLECTION = 0x01,
@@ -43,9 +43,6 @@ public:
     class PanelPoints* panelPoints;
     class PanelInterpolation* panelInterpolation;
     class PanelDiagram* panelDiagram;
-
-private:
-    QHBoxLayout panelBox_;
 };
 
 //! A rich modal dialog, for the polefig and diagram outputs.

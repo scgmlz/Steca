@@ -217,27 +217,25 @@ Params::Params(ePanels panels)
     , panelInterpolation(nullptr)
     , panelDiagram(nullptr)
 {
-    setLayout(&panelBox_);
-
     if (REFLECTION & panels)
-        panelBox_.addWidget((panelPeak = new PanelPeak()));
+        addWidget((panelPeak = new PanelPeak()));
 
     ASSERT(panels & GAMMA);
     if (GAMMA & panels) {
-        panelBox_.addWidget((panelGammaSlices = new PanelGammaSlices()));
-        panelBox_.addWidget((panelGammaRange = new PanelGammaRange()));
+        addWidget((panelGammaSlices = new PanelGammaSlices()));
+        addWidget((panelGammaRange = new PanelGammaRange()));
     }
 
     if (POINTS & panels)
-        panelBox_.addWidget((panelPoints = new PanelPoints()));
+        addWidget((panelPoints = new PanelPoints()));
 
     if (INTERPOLATION & panels)
-        panelBox_.addWidget((panelInterpolation = new PanelInterpolation()));
+        addWidget((panelInterpolation = new PanelInterpolation()));
 
     if (DIAGRAM & panels)
-        panelBox_.addWidget((panelDiagram = new PanelDiagram()));
+        addWidget((panelDiagram = new PanelDiagram()));
 
-    panelBox_.addStretch();
+    addStretch();
 
     if (panelGammaSlices)
         panelGammaSlices->updateValues();
@@ -260,7 +258,7 @@ Frame::Frame(const QString& name, const QString& title, Params* params)
     setLayout(&box_);
 
     ASSERT(params);
-    box_.addWidget((params_ = params));
+    box_.addLayout((params_ = params));
 
     tabs_.setTabPosition(QTabWidget::North);
     box_.addWidget(&tabs_);
