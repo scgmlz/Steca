@@ -18,7 +18,7 @@ endif()
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR OFF)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DQT_LOGGING_RULES=\"*.debug=true\"")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__STRICT_ANSI__ -O0 -g -fsanitize=address -fno-omit-frame-pointer -DQT_LOGGING_RULES=\"*.debug=true\"")
 
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
   add_compile_options("-Wall")
