@@ -20,6 +20,7 @@
 #include "gui/actions/triggers.h"
 #include <qmath.h>
 #include <QPainter>
+#include <iostream>
 
 // ************************************************************************** //
 //  local class ImageWidget
@@ -139,22 +140,22 @@ public:
     void render();
 protected:
     virtual QPixmap pixmap() = 0;
-    QVBoxLayout controls_;
-    QHBoxLayout box1_;
     QPixmap makePixmap(shp_Image);
     QPixmap makeOverlayPixmap(const class Measurement&);
     QPixmap makeBlankPixmap();
     QImage makeImage(shp_Image);
     ImageWidget imageView_;
-private:
     QHBoxLayout box_;
+    QVBoxLayout controls_;
+    QHBoxLayout box1_;
+private:
     XIconButton btnScale_ {&gGui->toggles->fixedIntenImage};
     XIconButton btnOverlay_ {&gGui->toggles->showOverlay};
 };
 
 ImageTab::ImageTab()
 {
-    // outbound connections
+    // internal connections
     connect(&gGui->toggles->enableCorr, &QAction::toggled, [this](bool /*unused*/) { render(); });
     connect(&gGui->toggles->showBins, &QAction::toggled, [this](bool /*unused*/) { render(); });
 
@@ -283,6 +284,7 @@ void IdxMeas::fromCore()
 class DataImageTab : public ImageTab {
 public:
     DataImageTab();
+    ~DataImageTab();
 private:
     QGridLayout boxIdx_;
     QGridLayout boxRanges_;
@@ -294,6 +296,7 @@ private:
     QLabel gammaRangeSlice_;
     QLabel thetaRangeTotal_;
     QLabel thetaRangeBin_;
+    XIconButton btnShowBins_ {&gGui->toggles->showBins};
 };
 
 DataImageTab::DataImageTab()
@@ -317,7 +320,7 @@ DataImageTab::DataImageTab()
             gSession->gammaSelection().selectSlice(val-1); });
 
     // layout
-    box1_.addWidget(new XIconButton(&gGui->toggles->showBins), Qt::AlignLeft);
+    box1_.addWidget(&btnShowBins_, Qt::AlignLeft);
 
     boxIdx_.addWidget(new QLabel("image #"), 0, 0, Qt::AlignLeft);
     boxIdx_.addWidget(&idxMeas_, 0, 1, Qt::AlignLeft);
@@ -338,6 +341,13 @@ DataImageTab::DataImageTab()
     boxRanges_.addWidget(&thetaRangeTotal_, 2, 1, Qt::AlignLeft);
     boxRanges_.addWidget(&thetaRangeBin_,   3, 1, Qt::AlignLeft);
     controls_.addLayout(&boxRanges_, Qt::AlignLeft|Qt::AlignBottom);
+}
+
+DataImageTab::~DataImageTab()
+{
+    box1_.removeWidget(&btnShowBins_);
+    controls_.removeItem(&boxIdx_);
+    controls_.removeItem(&boxRanges_);
 }
 
 QPixmap DataImageTab::pixmap()
@@ -397,7 +407,10 @@ SubframeImage::SubframeImage()
 
 void SubframeImage::render()
 {
-    dynamic_cast<ImageTab*>(currentWidget())->render();
+    auto currentTab = dynamic_cast<ImageTab*>(currentWidget());
+    if (!currentTab)
+        return;
+    currentTab->render();
 }
 
 SubframeImage::~SubframeImage()
