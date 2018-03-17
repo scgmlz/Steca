@@ -24,17 +24,17 @@
 //  class Trigger
 // ************************************************************************** //
 
-CTrigger::CTrigger(const QString& name, const QString& text, const QString& iconFile)
+CTrigger::CTrigger(const QString& rawname, const QString& text, const QString& iconFile)
     : QAction(text, qApp)
-    , CSettable(name)
+    , CSettable(rawname)
     , tooltip_(text.toLower())
 {
-    QAction::setObjectName(CSettable::name());
+    //QAction::setObjectName(name());
     if (iconFile!="")
         setIcon(QIcon(iconFile));
-    QObject::connect(this, &QAction::triggered, [name]()->void {
-            gConsole->log(name+" trigger"); });
-    QObject::connect(this, &QAction::changed, [this, name]()->void {
+    connect(this, &QAction::triggered, [this]()->void {
+            gConsole->log(name()+" trigger"); });
+    connect(this, &QAction::changed, [this]()->void {
             QString txt = tooltip_;
             if (!isEnabled())
                 txt += "\nThis trigger is currently inoperative.";
@@ -65,19 +65,19 @@ CTrigger::~CTrigger()
 //  class Toggle
 // ************************************************************************** //
 
-CToggle::CToggle(const QString& name, const QString& text, bool on, const QString& iconFile)
+CToggle::CToggle(const QString& rawname, const QString& text, bool on, const QString& iconFile)
     : QAction(text, qApp)
-    , CSettable(name)
+    , CSettable(rawname)
     , tooltip_(text.toLower())
 {
-    QAction::setObjectName(CSettable::name());
+    //QAction::setObjectName(CSettable::name());
     if (iconFile!="")
         setIcon(QIcon(iconFile));
     setCheckable(true);
     setChecked(on);
-    QObject::connect(this, &QAction::toggled, [name](bool val)->void {
-            gConsole->log(name+" switch "+(val ? "on" : "off")); });
-    QObject::connect(this, &QAction::changed, [this, name]()->void {
+    connect(this, &QAction::toggled, [this](bool val)->void {
+            gConsole->log(name()+" switch "+(val ? "on" : "off")); });
+    connect(this, &QAction::changed, [this]()->void {
             QString txt = tooltip_;
             if (!isEnabled())
                 txt += "\nThis toggle is currently inoperative.";

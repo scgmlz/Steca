@@ -36,6 +36,7 @@
 #include <QSplitter>
 #include <QStatusBar>
 #include <QStringBuilder> // for ".." % ..
+#include <iostream> // debug
 
 MainWin* gGui; //!< global pointer to _the_ main window
 
@@ -94,8 +95,12 @@ MainWin::MainWin()
 
 MainWin::~MainWin()
 {
+    std::cerr << "DEBUG: ~MainWin\n";
     settings_.saveStr("export_directory", saveDir);
     settings_.saveStr("export_format", saveFmt);
+    delete triggers;
+    delete toggles;
+    delete menus;
 }
 
 

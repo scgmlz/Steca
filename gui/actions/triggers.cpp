@@ -25,21 +25,21 @@
 Triggers::Triggers()
 {
 #define AT &QAction::triggered
-    QObject::connect(&about, AT, [](){ AboutBox().exec(); });
-    QObject::connect(&addFiles, AT, []() { gGui->addFiles(); });
-    QObject::connect(&checkUpdate, AT, []() { gGui->checkUpdate(); });
-    QObject::connect(&clearBackground, AT, []() { gSession->baseline().setRanges({}); });
-    QObject::connect(&clearSession, AT, []() { gSession->clear(); });
-    QObject::connect(&corrFile, AT, []() { gGui->loadCorrFile(); });
-    QObject::connect(&loadSession, AT, []() { gGui->loadSession(); });
-    QObject::connect(&online, AT, []() { QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
-    QObject::connect(&outputDiagrams, AT, [](){ DiagramsFrame().exec(); });
-    QObject::connect(&outputDiffractograms, AT, [](){ DiffractogramsFrame().exec(); });
-    QObject::connect(&outputPolefigures, AT, []() { PoleFiguresFrame().exec(); });
-    QObject::connect(&quit, AT, []() { gGui->close(); });
-    QObject::connect(&removeFile, AT, []() { gSession->dataset().removeFile(); });
-    QObject::connect(&rotateImage, AT, []() { gGui->setImageRotate(
-                gSession->imageTransform().nextRotate()); });
-    QObject::connect(&saveSession, AT, []() { gGui->saveSession(); });
-    QObject::connect(&viewReset, AT, []() { gGui->viewReset(); });
+    connect(&about, AT, [](){ AboutBox().exec(); });
+    connect(&addFiles, AT, []() { gGui->addFiles(); });
+    connect(&checkUpdate, AT, []() { gGui->checkUpdate(); });
+    connect(&clearBackground, AT, []() { gSession->baseline().setRanges({}); });
+    connect(&clearSession, AT, []() { gSession->clear(); });
+    connect(&corrFile, AT, []() { gGui->loadCorrFile(); });
+    connect(&loadSession, AT, []() { gGui->loadSession(); });
+    connect(&online, AT, []() { QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
+    connect(&outputDiagrams, AT, [](){ DiagramsFrame().exec(); });
+    connect(&outputDiffractograms, AT, [](){ DiffractogramsFrame().exec(); });
+    connect(&outputPolefigures, AT, []() { PoleFiguresFrame().exec(); });
+    connect(&quit, AT, []() { gGui->close(); });
+    connect(&removeFile, AT, []() { gSession->dataset().removeFile(); });
+    connect(&rotateImage, AT, []() { gGui->setImageRotate(
+       gSession->imageTransform().nextRotate()); });
+    connect(&saveSession, AT, []() { gGui->saveSession(); });
+    connect(&viewReset, AT, []() { gGui->viewReset(); });
 }

@@ -16,11 +16,10 @@
 #define TOGGLES_H
 
 #include "gui/base/controls.h"
-#include <QApplication>
 
 //! Collection of toggle actions, for use as member of MainWin.
 
-class Toggles {
+class Toggles : private QObject {
 public:
     Toggles();
     CToggle combinedDgram {"dfg.all", "All measurements", false, ":/icon/all"};

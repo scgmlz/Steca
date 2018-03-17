@@ -86,7 +86,8 @@ int main(int argc, char* argv[]) {
     QLoggingCategory::setFilterRules("*.debug=true\nqt.*.debug=false");
     qInstallMessageHandler(messageHandler);
 
-    MainWin::instance()->show();
+    MainWin mainwin;
+    mainwin.show();
     if (nonoptArgs.size())
         gConsole->call("@file " + nonoptArgs[0]);
     app.dumpObjectTree();

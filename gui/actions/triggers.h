@@ -16,14 +16,13 @@
 #define TRIGGERS_H
 
 #include "gui/base/controls.h"
-#include <QApplication>
 
 //! Collection of trigger actions, for use as member of MainWin.
 
-class Triggers {
+class Triggers : private QObject {
 public:
     Triggers();
-    CTrigger about {"about", "About " + qApp->applicationName()};
+    CTrigger about {"about", "About Steca"};
     CTrigger addFiles {"addFiles", "Add files...", ":/icon/add", Qt::CTRL | Qt::Key_O};
     CTrigger addPeak {"addPeak", "Add peak", ":/icon/add"};
     CTrigger checkUpdate {"checkUpdate", "Check for update"};

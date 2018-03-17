@@ -23,36 +23,35 @@ Toggles::Toggles()
 {
 #define AT &QAction::toggled
 
-    QObject::connect(&enableCorr, AT, [](bool on) {
-            gSession->corrset().tryEnable(on); });
-    QObject::connect(&mirrorImage, AT, [](bool on) { gGui->setImageMirror(on); });
+    connect(&enableCorr, AT, [](bool on) { gSession->corrset().tryEnable(on); });
+    connect(&mirrorImage, AT, [](bool on) { gGui->setImageMirror(on); });
 
-    // TODO rm state variables
-    QObject::connect(&fixedIntenImage, AT, [](bool on) {
+    // TODO rm state variables (...Scale)
+    connect(&fixedIntenImage, AT, [](bool on) {
         gGui->isFixedIntenImageScale_ = on;
         emit gSession->sigImage();
         emit gSession->sigDiffractogram();
         });
-    QObject::connect(&fixedIntenDgram, AT, [](bool on) {
+    connect(&fixedIntenDgram, AT, [](bool on) {
         gGui->isFixedIntenDgramScale_ = on;
         emit gSession->sigImage();
         emit gSession->sigDiffractogram();
         });
-    QObject::connect(&combinedDgram, AT, [](bool on) {
+    connect(&combinedDgram, AT, [](bool on) {
         gGui->isCombinedDgram_ = on;
         emit gSession->sigImage();
         emit gSession->sigDiffractogram();
         });
 
-    QObject::connect(&viewStatusbar, AT, [](bool on) { gGui->statusBar()->setVisible(on); });
+    connect(&viewStatusbar, AT, [](bool on) { gGui->statusBar()->setVisible(on); });
 #ifndef Q_OS_OSX
-    QObject::connect(&fullScreen, AT, [](bool on) {
+    connect(&fullScreen, AT, [](bool on) {
             if (on)
                 gGui->showFullScreen();
             else
                 gGui->showNormal(); });
 #endif
-    QObject::connect(&viewFiles, AT, [](bool on) { gGui->dockFiles_->setVisible(on); });
-    QObject::connect(&viewClusters, AT, [](bool on) { gGui->dockClusters_->setVisible(on); });
-    QObject::connect(&viewMetadata, AT, [](bool on) { gGui->dockMetadata_->setVisible(on); });
+    connect(&viewFiles, AT, [](bool on) { gGui->dockFiles_->setVisible(on); });
+    connect(&viewClusters, AT, [](bool on) { gGui->dockClusters_->setVisible(on); });
+    connect(&viewMetadata, AT, [](bool on) { gGui->dockMetadata_->setVisible(on); });
 }

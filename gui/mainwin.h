@@ -33,7 +33,7 @@ extern class MainWin* gGui; //!< global pointer to _the_ main window
 //! This is a singleton class that specializes QMainWindow.
 //! Its one instance is accessible from everywhere through the global pointer gGui.
 
-class MainWin : public QMainWindow, public ISingleton<MainWin> {
+class MainWin : public QMainWindow {
     Q_OBJECT
 public:
     MainWin();
