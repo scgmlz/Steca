@@ -101,6 +101,7 @@ MainWin::~MainWin()
     delete triggers;
     delete toggles;
     delete menus;
+    gGui = nullptr;
 }
 
 

@@ -148,6 +148,8 @@ protected:
     ImageWidget imageView_;
 private:
     QHBoxLayout box_;
+    XIconButton btnScale_ {&gGui->toggles->fixedIntenImage};
+    XIconButton btnOverlay_ {&gGui->toggles->showOverlay};
 };
 
 ImageTab::ImageTab()
@@ -157,8 +159,8 @@ ImageTab::ImageTab()
     connect(&gGui->toggles->showBins, &QAction::toggled, [this](bool /*unused*/) { render(); });
 
     // layout
-    box1_.addWidget(new XIconButton(&gGui->toggles->fixedIntenImage), Qt::AlignLeft);
-    box1_.addWidget(new XIconButton(&gGui->toggles->showOverlay), Qt::AlignLeft);
+    box1_.addWidget(&btnScale_, Qt::AlignLeft);
+    box1_.addWidget(&btnOverlay_, Qt::AlignLeft);
     controls_.addLayout(&box1_);
 
     box_.addLayout(&controls_);
