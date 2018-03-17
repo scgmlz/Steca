@@ -24,8 +24,11 @@
 class SubframeImage final : public QTabWidget {
 public:
     SubframeImage();
+    ~SubframeImage();
 private:
     void render();
+    class DataImageTab* dataImageTab_;
+    class CorrImageTab* corrImageTab_;
 };
 
 #endif // SUBFRAME_IMAGE_H

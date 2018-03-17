@@ -95,7 +95,6 @@ MainWin::MainWin()
 
 MainWin::~MainWin()
 {
-    std::cerr << "DEBUG: ~MainWin\n";
     settings_.saveStr("export_directory", saveDir);
     settings_.saveStr("export_format", saveFmt);
     delete triggers;

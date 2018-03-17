@@ -383,8 +383,8 @@ QPixmap CorrImageTab::pixmap()
 SubframeImage::SubframeImage()
 {
     setTabPosition(QTabWidget::North);
-    addTab(new DataImageTab, "Data image");
-    addTab(new CorrImageTab, "Corr image");
+    addTab((dataImageTab_ = new DataImageTab), "Data image");
+    addTab((corrImageTab_ = new CorrImageTab), "Corr image");
     connect(gSession, &Session::sigCorr, [this]() {
             setTabEnabled(1, gSession->corrset().hasFile()); });
     setTabEnabled(1, false);
@@ -398,4 +398,11 @@ SubframeImage::SubframeImage()
 void SubframeImage::render()
 {
     dynamic_cast<ImageTab*>(currentWidget())->render();
+}
+
+SubframeImage::~SubframeImage()
+{
+    clear();
+    delete dataImageTab_;
+    delete corrImageTab_;
 }

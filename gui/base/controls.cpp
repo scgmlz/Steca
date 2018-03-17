@@ -56,11 +56,6 @@ void CTrigger::onCommand(const QStringList& args)
     trigger();
 }
 
-CTrigger::~CTrigger()
-{
-    std::cerr << "DEBUG: ~CTrigger " << name().toLatin1().data() << "\n";
-}
-
 // ************************************************************************** //
 //  class Toggle
 // ************************************************************************** //
