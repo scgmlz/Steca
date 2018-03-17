@@ -22,6 +22,7 @@
 #include "gui/cfg/settings.h"
 #include <QDir>
 #include <QMainWindow>
+#include <QSplitter>
 
 extern class MainWin* gGui; //!< global pointer to _the_ main window
 
@@ -72,6 +73,12 @@ public:
 
 private:
     QDockWidget *dockFiles_, *dockClusters_, *dockMetadata_;
+    QSplitter splMain_ {Qt::Vertical};
+    QSplitter splTop_ {Qt::Horizontal};
+    class SubframeDiffractogram* frameDiffractogram_;
+    class SubframeSetup* frameSetup_;
+    class SubframeImage* frameImage_;
+
     QByteArray initialState_;
     QDir sessionDir_ {QDir::homePath()};
     QDir dataDir_ {QDir::homePath()};

@@ -33,7 +33,6 @@
 #include <QMessageBox>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
-#include <QSplitter>
 #include <QStatusBar>
 #include <QStringBuilder> // for ".." % ..
 #include <iostream> // debug
@@ -100,6 +99,12 @@ MainWin::~MainWin()
     delete triggers;
     delete toggles;
     delete menus;
+    delete frameImage_;
+    delete frameDiffractogram_;
+    delete frameSetup_;
+    delete dockMetadata_;
+    delete dockClusters_;
+    delete dockFiles_;
     gGui = nullptr;
 }
 
@@ -110,21 +115,16 @@ void MainWin::initLayout()
     addDockWidget(Qt::LeftDockWidgetArea, (dockClusters_ = new SubframeClusters()));
     addDockWidget(Qt::LeftDockWidgetArea, (dockMetadata_ = new SubframeMetadata()));
 
-    auto splMain = new QSplitter(Qt::Vertical);
-    splMain->setChildrenCollapsible(false);
+    splTop_.setChildrenCollapsible(false);
+    splTop_.addWidget(frameSetup_ = new SubframeSetup());
+    splTop_.addWidget(frameImage_ = new SubframeImage());
+    splTop_.setStretchFactor(1, 1);
 
-    auto splTop = new QSplitter(Qt::Horizontal);
-    splTop->setChildrenCollapsible(false);
-
-    setCentralWidget(splMain);
-
-    splMain->addWidget(splTop);
-    splMain->addWidget(new SubframeDiffractogram());
-    splMain->setStretchFactor(1, 1);
-
-    splTop->addWidget(new SubframeSetup());
-    splTop->addWidget(new SubframeImage());
-    splTop->setStretchFactor(1, 1);
+    splMain_.setChildrenCollapsible(false);
+    splMain_.addWidget(&splTop_);
+    splMain_.addWidget(frameDiffractogram_ = new SubframeDiffractogram());
+    splMain_.setStretchFactor(1, 1);
+    setCentralWidget(&splMain_);
 
     statusBar();
 }
