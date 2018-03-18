@@ -14,7 +14,6 @@
 
 #include "core/session.h"
 #include "core/loaders/loaders.h"
-#include <QDir>
 
 // ************************************************************************** //
 //  class Datafile
@@ -246,11 +245,8 @@ const Cluster& Dataset::clusterAt(int i) const {
 
 QJsonArray Dataset::to_json() const {
     QJsonArray ret;
-    for (const Datafile& file : files_) {
-        QString relPath =
-            QDir::current().relativeFilePath(file.raw_->fileInfo().absoluteFilePath());
-        ret.append(relPath);
-    }
+    for (const Datafile& file : files_)
+        ret.append(file.raw_->fileInfo().absoluteFilePath());
     return ret;
 }
 
