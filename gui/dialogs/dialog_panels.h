@@ -55,7 +55,7 @@ public:
     void updateValues();
 private:
     Range rgeGma_;
-    Settings settings_;
+    XSettings settings_;
 };
 
 //! Displays the current gamma range.
@@ -70,7 +70,7 @@ public:
     void updateValues();
 private:
     Range rgeGma_;
-    Settings settings_;
+    XSettings settings_;
 };
 
 //! Control to choose calculation vs interpolation, in PoleFiguresFrame.
@@ -82,7 +82,7 @@ public:
     CRadioButton rbCalc {"rbCalc#", "calculated"};
     CRadioButton rbInterp {"rbInterp#", "interpolated"};
 private:
-    Settings settings_;
+    XSettings settings_;
 };
 
 //! Controls to choose tune the interpolation, in PoleFiguresFrame.
@@ -98,7 +98,7 @@ public:
     CDoubleSpinBox avgRadius {"avgRadius#", 6, 0., 90.};
     CSpinBox avgThreshold {"avgThreshold#", 6, 0, 100};
 private:
-    Settings settings_;
+    XSettings settings_;
 };
 
 //! Controls to choose metadata?

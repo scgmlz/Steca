@@ -87,8 +87,6 @@ private:
     void initMenu();
     void initLayout();
 
-    void closeEvent(QCloseEvent*);
-
     void readSettings();
     void saveSettings();
 
@@ -103,7 +101,7 @@ private:
     bool isFixedIntenImageScale_;
     bool isFixedIntenDgramScale_;
     bool isCombinedDgram_;
-    Settings settings_;
+    XSettings settings_;
 
     friend Triggers;
     friend Toggles;

@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/cfg/settings.cpp
-//! @brief     Implements classes Settings, MainWin
+//! @brief     Implements class XSettings
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,22 +15,22 @@
 #include "gui/cfg/settings.h"
 #include "core/def/debug.h"
 
-Settings::Settings(const QString& group) {
+XSettings::XSettings(const QString& group) {
     beginGroup(group);
 }
 
-Settings::~Settings() {
+XSettings::~XSettings() {
     endGroup();
 }
 
-qreal Settings::readReal(const QString& key, qreal def) {
+qreal XSettings::readReal(const QString& key, qreal def) {
     auto var = value(key, QVariant());
     bool ok;
     qreal val = var.toDouble(&ok);
     return ok ? val : def;
 }
 
-int Settings::readInt(const QString& key, int def) {
+int XSettings::readInt(const QString& key, int def) {
     auto var = value(key, QVariant());
     bool ok;
     int val = var.toInt(&ok);

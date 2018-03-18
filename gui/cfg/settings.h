@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/cfg/settings.h
-//! @brief     Defines class Settings
+//! @brief     Defines class XSettings
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,18 +15,14 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include <QAction>
 #include <QSettings>
-#include <QSpinBox>
 
 //! Used to save and retrieve the main window geometry, and certain parameter settings.
 
-//! TODO: make a clear decision, what is saved through this mechanism, and what is
-//! left to the .ste configuration files.
-class Settings : public QSettings {
+class XSettings : public QSettings {
 public:
-    Settings(const QString& group = "");
-    ~Settings();
+    XSettings(const QString& group = "");
+    ~XSettings();
 
     bool readBool(const QString& key, bool def = false) { return value(key, def).toBool(); }
     void saveBool(const QString& key, bool val) { setValue(key, val); }

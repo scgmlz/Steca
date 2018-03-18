@@ -96,6 +96,7 @@ MainWin::~MainWin()
 {
     settings_.saveStr("export_directory", saveDir);
     settings_.saveStr("export_format", saveFmt);
+    saveSettings();
     delete triggers;
     delete toggles;
     delete menus;
@@ -201,26 +202,21 @@ void MainWin::saveSession()
     if (!(result >= 0)) THROW("Could not write session");
 }
 
-void MainWin::closeEvent(QCloseEvent* event)
-{
-    saveSettings();
-    event->accept();
-}
-
+//! Stores native defaults as initialState_, then reads from config file.
 void MainWin::readSettings()
 {
     if (initialState_.isEmpty())
         initialState_ = saveState();
-    Settings s("MainWin");
+    XSettings s("MainWin");
     restoreGeometry(s.value("geometry").toByteArray());
     restoreState(s.value("state").toByteArray());
 }
 
 void MainWin::saveSettings()
 {
-    Settings s("MainWin");
+    XSettings s("MainWin");
     s.setValue("geometry", saveGeometry());
-    s.setValue("state", saveState());
+    s.setValue("state", saveState()); // state of this mainwindow's toolbars and dockwidgets
 }
 
 void MainWin::viewReset()
