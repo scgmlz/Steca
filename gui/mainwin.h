@@ -65,13 +65,13 @@ public:
 
     class Triggers* triggers;
     class Toggles* toggles;
-    class Menus* menus;
 
     // TODO relegate this to TabSave or similar
     QString saveDir; //!< setting: default directory for data export
     QString saveFmt; //!< setting: default format for data export
 
 private:
+    class Menus* menus;
     QDockWidget *dockFiles_, *dockClusters_, *dockMetadata_;
     QSplitter splMain_ {Qt::Vertical};
     QSplitter splTop_ {Qt::Horizontal};
@@ -105,7 +105,6 @@ private:
 
     friend Triggers;
     friend Toggles;
-    friend Menus;
 };
 
 #endif // MAINWIN_H
