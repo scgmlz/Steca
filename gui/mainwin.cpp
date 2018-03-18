@@ -25,7 +25,6 @@
 #include "gui/panels/subframe_metadata.h"
 #include "gui/panels/subframe_setup.h"
 #include "gui/base/filedialog.h"
-#include <QCloseEvent>
 #include <QJsonDocument>
 #include <QMenuBar>
 #include <QStatusBar>
@@ -34,12 +33,21 @@
 
 MainWin* gGui; //!< global pointer to _the_ main window
 
+namespace {
+const QString dataFormats {"Data files (*.dat *.mar*);;All files (*.*)"};
+class Menus* menus;
+QSplitter splMain_ {Qt::Vertical};
+QSplitter splTop_ {Qt::Horizontal};
+QByteArray initialState_;
+QDir sessionDir_ {QDir::homePath()};
+QDir dataDir_ {QDir::homePath()};
+}
+
 // ************************************************************************** //
 //  class MainWin
 // ************************************************************************** //
 
 MainWin::MainWin()
-    : settings_("main_settings")
 {
     gSession = Session::instance();
     gConsole = Console::instance();
@@ -80,14 +88,12 @@ MainWin::MainWin()
     readSettings();
     updateActionEnabling();
 
-    saveDir = settings_.readStr("export_directory");
-    saveFmt = settings_.readStr("export_format");
+//    saveFmt = settings_.readStr("export_format");
 }
 
 MainWin::~MainWin()
 {
-    settings_.saveStr("export_directory", saveDir);
-    settings_.saveStr("export_format", saveFmt);
+//    settings_.saveStr("export_format", saveFmt);
     saveSettings();
     delete triggers;
     delete toggles;
@@ -331,7 +337,7 @@ void MainWin::sessionFromJson(const QByteArray& json) THROWS
 
 void MainWin::addFiles()
 {
-    QStringList fileNames = file_dialog::openFileNames(this, "Add files", dataDir_, dataFormats_);
+    QStringList fileNames = file_dialog::openFileNames(this, "Add files", dataDir_, dataFormats);
     repaint();
     if (fileNames.isEmpty())
         return;
@@ -345,7 +351,7 @@ void MainWin::loadCorrFile()
         gSession->corrset().removeFile();
     } else {
         QString fileName = file_dialog::openFileName(
-            this, "Set correction file", dataDir_, dataFormats_);
+            this, "Set correction file", dataDir_, dataFormats);
         if (fileName.isEmpty())
             return;
         gSession->corrset().loadFile(fileName);

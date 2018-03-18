@@ -43,7 +43,6 @@ public:
     class Toggles* toggles;
 
     // TODO relegate this to TabSave or similar
-    QString saveDir; //!< setting: default directory for data export
     QString saveFmt; //!< setting: default format for data export
 
 private:
@@ -66,19 +65,12 @@ private:
     void setImageRotate(ImageTransform);
     void setImageMirror(bool);
 
-    class Menus* menus;
-    QDockWidget *dockFiles_, *dockClusters_, *dockMetadata_;
-    QSplitter splMain_ {Qt::Vertical};
-    QSplitter splTop_ {Qt::Horizontal};
+    QDockWidget* dockFiles_;
+    QDockWidget* dockClusters_;
+    QDockWidget* dockMetadata_;
     class SubframeDiffractogram* frameDiffractogram_;
     class SubframeImage* frameImage_;
     class SubframeSetup* frameSetup_;
-
-    QByteArray initialState_;
-    QDir sessionDir_ {QDir::homePath()};
-    QDir dataDir_ {QDir::homePath()};
-    const QString dataFormats_ {"Data files (*.dat *.mar*);;All files (*.*)"};
-    XSettings settings_;
 
     friend Triggers;
     friend Toggles;
