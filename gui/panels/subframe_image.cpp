@@ -224,7 +224,7 @@ QImage ImageTab::makeImage(shp_Image image)
 
     QImage ret(QSize(size.w, size.h), QImage::Format_RGB32);
 
-    bool fixedScale = gGui->isFixedIntenImageScale();
+    bool fixedScale = gGui->toggles->fixedIntenImage.isChecked();
     const Range rgeInten = imageLens.rgeInten(fixedScale);
     inten_t maxInten = inten_t(rgeInten.max);
 

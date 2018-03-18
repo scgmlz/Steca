@@ -26,14 +26,11 @@ Toggles::Toggles()
     connect(&enableCorr, AT, [](bool on) { gSession->corrset().tryEnable(on); });
     connect(&mirrorImage, AT, [](bool on) { gGui->setImageMirror(on); });
 
-    // TODO rm state variables (...Scale)
     connect(&fixedIntenImage, AT, [](bool on) {
-        gGui->isFixedIntenImageScale_ = on;
         emit gSession->sigImage();
         emit gSession->sigDiffractogram();
         });
     connect(&fixedIntenDgram, AT, [](bool on) {
-        gGui->isFixedIntenDgramScale_ = on;
         emit gSession->sigImage();
         emit gSession->sigDiffractogram();
         });

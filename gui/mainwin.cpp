@@ -39,9 +39,7 @@ MainWin* gGui; //!< global pointer to _the_ main window
 // ************************************************************************** //
 
 MainWin::MainWin()
-    : isFixedIntenImageScale_(false)
-    , isFixedIntenDgramScale_(false)
-    , isCombinedDgram_(false)
+    : isCombinedDgram_(false)
     , settings_("main_settings")
 {
     gSession = Session::instance();

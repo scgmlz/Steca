@@ -293,7 +293,7 @@ void DiffractogramPlot::plot(
     const Range& tthRange = dgram.rgeX();
 
     Range intenRange;
-    if (gGui->isFixedIntenDgramScale()) {
+    if (gGui->toggles->fixedIntenDgram.isChecked()) {
         intenRange = gSession->dataset().highlight().cluster()->rgeInten();
     } else {
         intenRange = dgramBgFitted.rgeY();

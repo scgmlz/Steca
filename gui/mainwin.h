@@ -37,8 +37,6 @@ public:
     MainWin();
     ~MainWin();
 
-    bool isFixedIntenImageScale() const { return isFixedIntenImageScale_; }
-    bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
     bool isCombinedDgram() const { return isCombinedDgram_; }
     class SubframeSetup* setup() const { return frameSetup_; }
 
@@ -81,8 +79,6 @@ private:
     QDir sessionDir_ {QDir::homePath()};
     QDir dataDir_ {QDir::homePath()};
     const QString dataFormats_ {"Data files (*.dat *.mar*);;All files (*.*)"};
-    bool isFixedIntenImageScale_;
-    bool isFixedIntenDgramScale_;
     bool isCombinedDgram_;
     XSettings settings_;
 
