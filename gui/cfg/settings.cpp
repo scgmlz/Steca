@@ -16,7 +16,6 @@
 #include "core/def/debug.h"
 
 Settings::Settings(const QString& group) {
-    setFallbacksEnabled(false);
     beginGroup(group);
 }
 
