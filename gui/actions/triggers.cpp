@@ -16,10 +16,11 @@
 #include "../manifest.h"
 #include "core/session.h"
 #include "gui/mainwin.h"
+#include "gui/dialogs/about.h"
+#include "gui/dialogs/check_update.h"
 #include "gui/dialogs/output_diagrams.h"
 #include "gui/dialogs/output_diffractograms.h"
 #include "gui/dialogs/output_polefigures.h"
-#include "gui/dialogs/about.h"
 #include <QDesktopServices>
 
 Triggers::Triggers()
@@ -27,7 +28,7 @@ Triggers::Triggers()
 #define AT &QAction::triggered
     connect(&about, AT, [](){ AboutBox().exec(); });
     connect(&addFiles, AT, []() { gGui->addFiles(); });
-    connect(&checkUpdate, AT, []() { gGui->checkUpdate(); });
+    connect(&checkUpdate, AT, []() { CheckUpdate _(gGui); });
     connect(&clearBackground, AT, []() { gSession->baseline().setRanges({}); });
     connect(&clearSession, AT, []() { gSession->clear(); });
     connect(&corrFile, AT, []() { gGui->loadCorrFile(); });

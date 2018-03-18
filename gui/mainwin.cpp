@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "mainwin.h"
-#include "../manifest.h"
 #include "core/session.h"
 #include "gui/actions/menus.h"
 #include "gui/actions/toggles.h"
@@ -26,13 +25,9 @@
 #include "gui/panels/subframe_metadata.h"
 #include "gui/panels/subframe_setup.h"
 #include "gui/base/filedialog.h"
-#include <QApplication>
 #include <QCloseEvent>
 #include <QJsonDocument>
 #include <QMenuBar>
-#include <QMessageBox>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
 #include <QStatusBar>
 #include <QStringBuilder> // for ".." % ..
 #include <iostream> // debug
@@ -130,36 +125,6 @@ void MainWin::initLayout()
     statusBar();
 }
 
-void MainWin::checkUpdate()
-{
-    QNetworkRequest req;
-    QString ver = qApp->applicationVersion();
-    QString qry = ver % "\t| " % QSysInfo::prettyProductName();
-    req.setUrl(QUrl(QString(STECA2_VERSION_URL) % "?" % qry));
-    QNetworkReply* reply = QNetworkAccessManager().get(req);
-
-    connect(reply, &QNetworkReply::finished, [this, reply]() {
-        if (QNetworkReply::NoError != reply->error()) {
-            qWarning() << "Network Error: " << reply->errorString();
-            return;
-        }
-        QString ver = qApp->applicationVersion();
-        QString lastVer = reply->readAll().trimmed();
-        QString name = qApp->applicationName();
-        QString result;
-        if (ver != lastVer)
-            result = QString(
-                "<p>The latest released %1 version is %2. You have "
-                "version %3.</p>"
-                "<p><a href='%4'>Open download location in external browser</a></p>")
-                .arg(name, lastVer, ver, STECA2_DOWNLOAD_URL);
-        else
-            result = QString(
-                "<p>You have the latest released %1 version (%2).</p>").arg(name).arg(ver);
-        QMessageBox::information(this, QString("%1 update").arg(name), result);
-        });
-}
-
 void MainWin::addFiles()
 {
     QStringList fileNames = file_dialog::openFileNames(this, "Add files", dataDir_, dataFormats_);
@@ -212,7 +177,7 @@ void MainWin::readSettings()
     restoreState(s.value("state").toByteArray());
 }
 
-void MainWin::saveSettings()
+void MainWin::saveSettings() const
 {
     XSettings s("MainWin");
     s.setValue("geometry", saveGeometry());

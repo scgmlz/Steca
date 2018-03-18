@@ -40,7 +40,6 @@ public:
     MainWin();
     ~MainWin();
 
-    // const methods:
     bool isFixedIntenImageScale() const { return isFixedIntenImageScale_; }
     bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
     bool isCombinedDgram() const { return isCombinedDgram_; }
@@ -49,30 +48,16 @@ public:
     class Triggers* triggers;
     class Toggles* toggles;
 
-
     // TODO relegate this to TabSave or similar
     QString saveDir; //!< setting: default directory for data export
     QString saveFmt; //!< setting: default format for data export
 
 private:
-    class Menus* menus;
-    QDockWidget *dockFiles_, *dockClusters_, *dockMetadata_;
-    QSplitter splMain_ {Qt::Vertical};
-    QSplitter splTop_ {Qt::Horizontal};
-    class SubframeDiffractogram* frameDiffractogram_;
-    class SubframeImage* frameImage_;
-    class SubframeSetup* frameSetup_;
-
-    QByteArray initialState_;
-    QDir sessionDir_ {QDir::homePath()};
-    QDir dataDir_ {QDir::homePath()};
-    const QString dataFormats_ {"Data files (*.dat *.mar*);;All files (*.*)"};
-
     void initMenu();
     void initLayout();
 
     void readSettings();
-    void saveSettings();
+    void saveSettings() const;
 
     void loadSession();
     void saveSession();
@@ -96,6 +81,18 @@ private:
     void sessionFromJson(const QByteArray&) THROWS;
     void updateActionEnabling();
 
+    class Menus* menus;
+    QDockWidget *dockFiles_, *dockClusters_, *dockMetadata_;
+    QSplitter splMain_ {Qt::Vertical};
+    QSplitter splTop_ {Qt::Horizontal};
+    class SubframeDiffractogram* frameDiffractogram_;
+    class SubframeImage* frameImage_;
+    class SubframeSetup* frameSetup_;
+
+    QByteArray initialState_;
+    QDir sessionDir_ {QDir::homePath()};
+    QDir dataDir_ {QDir::homePath()};
+    const QString dataFormats_ {"Data files (*.dat *.mar*);;All files (*.*)"};
     bool isFixedIntenImageScale_;
     bool isFixedIntenDgramScale_;
     bool isCombinedDgram_;
