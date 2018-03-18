@@ -28,7 +28,6 @@ public:
     Settings(const QString& group = "");
     ~Settings();
 
-    QVariant readVariant(const QString& key, const QVariant& def);
     void saveVariant(const QString& key, const QVariant& val) { setValue(key, val); }
 
     void read(const QString& key, QAction*, bool def = false);
@@ -40,7 +39,7 @@ public:
     void read(const QString& key, QDoubleSpinBox*, qreal def = 0);
     void save(const QString& key, QDoubleSpinBox*);
 
-    bool readBool(const QString& key, bool def = false) { return readVariant(key, def).toBool(); }
+    bool readBool(const QString& key, bool def = false) { return value(key, def).toBool(); }
     void saveBool(const QString& key, bool val) { saveVariant(key, val); }
 
     int readInt(const QString& key, int def = 0);
@@ -50,7 +49,7 @@ public:
     void saveReal(const QString& key, qreal val) { saveVariant(key, val); }
 
     QString readStr(const QString& key, const QString& def = "") {
-        return readVariant(key, def).toString(); }
+        return value(key, def).toString(); }
     void saveStr(const QString& key, const QString& val) { saveVariant(key, val); }
 };
 
