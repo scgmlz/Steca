@@ -13,12 +13,9 @@
 #include <QMap>        // no auto rm
 #include <QStringList> // no auto rm
 
-//! Mixin interface for registries holding objects of type T
+//! Mixin interface for registries owning objects of type T
 
 template <typename T> class IRegistry {
-protected:
-    QMap<QString, T> m_map; //!< unsorted hash, for quick lookup
-    QStringList m_keys; //!< sorted array, for listing all registered objects
 public:
     void register_item(const QString& key, T val) {
         if (m_map.find(key) != m_map.end())
@@ -47,6 +44,9 @@ public:
     }
     unsigned int size() const { return m_keys.size(); }
     QStringList keys() const { return m_keys; }
+protected:
+    QMap<QString, T> m_map; //!< unsorted hash, for quick lookup
+    QStringList m_keys; //!< sorted array, for listing all registered objects
 };
 
 #endif // REGISTRY_H

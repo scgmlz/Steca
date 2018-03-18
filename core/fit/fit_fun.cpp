@@ -164,8 +164,9 @@ void PeakFunction::from_json(const JsonObj& obj) THROWS {
 // ************************************************************************** //
 
 void FunctionRegistry::register_fct(const initializer_type f) {
-    PeakFunction* tmp = f();
+    PeakFunction* tmp = f(); // implicit 'new'
     register_item(tmp->name(), f);
+    delete tmp;
 };
 
 PeakFunction* FunctionRegistry::name2new(const QString& peakFunctionName) {
