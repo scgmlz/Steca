@@ -104,7 +104,6 @@ MainWin::~MainWin()
     gGui = nullptr;
 }
 
-
 void MainWin::initLayout()
 {
     addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_ = new SubframeFiles()));
@@ -125,47 +124,24 @@ void MainWin::initLayout()
     statusBar();
 }
 
-void MainWin::addFiles()
+void MainWin::updateActionEnabling()
 {
-    QStringList fileNames = file_dialog::openFileNames(this, "Add files", dataDir_, dataFormats_);
-    repaint();
-    if (fileNames.isEmpty())
-        return;
-    TakesLongTime __;
-    gSession->dataset().addGivenFiles(fileNames);
+    bool hasFile = gSession->dataset().countFiles();
+    bool hasCorr = gSession->hasCorrFile();
+    bool hasPeak = gSession->peaks().count();
+    bool hasBase = gSession->baseline().ranges().count();
+    toggles->enableCorr.setEnabled(hasCorr);
+    triggers->removeFile.setEnabled(hasFile);
+    triggers->removePeak.setEnabled(hasPeak);
+    triggers->clearBackground.setEnabled(hasBase);
+    triggers->outputDiagrams.setEnabled(hasFile && hasPeak);
+    triggers->outputDiffractograms.setEnabled(hasFile);
+    triggers->outputPolefigures.setEnabled(hasFile && hasPeak);
+    menus->dgram_->setEnabled(hasFile);
+    menus->image_->setEnabled(hasFile);
+    menus->output_->setEnabled(hasFile);
 }
 
-void MainWin::loadSession()
-{
-    QString fileName = file_dialog::openFileName(
-        this, "Load session", sessionDir_, "Session files (*.ste)");
-    if (fileName.isEmpty())
-        return;
-    try {
-        TR("going to load session from file '"+fileName+"'");
-        sessionFromFile(fileName);
-    } catch(Exception& ex) {
-        qWarning() << "Could not load session from file " << fileName << ":\n"
-                   << ex.msg() << "\n"
-                   << "The application may now be in an inconsistent state.\n"
-                   << "Please consider to quit the application, and start afresh.\n";
-        gSession->clear();
-    }
-}
-
-void MainWin::saveSession()
-{
-    QString fileName = file_dialog::saveFileName(
-        this, "Save session", sessionDir_, "Session files (*.ste)");
-    if (!fileName.endsWith(".ste"))
-        fileName += ".ste";
-    QFileInfo fileInfo(fileName);
-    QFile* file = file_dialog::OutputFile("file", this, fileInfo.filePath());
-    if (!file)
-        return;
-    const int result = file->write(serializeSession());
-    if (!(result >= 0)) THROW("Could not write session");
-}
 
 //! Stores native defaults as initialState_, then reads from config file.
 void MainWin::readSettings()
@@ -194,6 +170,42 @@ void MainWin::viewReset()
     toggles->viewClusters.setChecked(true);
     toggles->viewFiles.setChecked(true);
     toggles->viewMetadata.setChecked(true);
+}
+
+void MainWin::loadSession()
+{
+    QString fileName = file_dialog::openFileName(
+        this, "Load session", sessionDir_, "Session files (*.ste)");
+    if (fileName.isEmpty())
+        return;
+    try {
+        TR("going to load session from file '"+fileName+"'");
+        QFile file(fileName);
+        if (!(file.open(QIODevice::ReadOnly | QIODevice::Text)))
+            THROW("Cannot open file for reading: " % fileName);
+        QDir::setCurrent(QFileInfo(fileName).absolutePath());
+        sessionFromJson(file.readAll());
+    } catch(Exception& ex) {
+        qWarning() << "Could not load session from file " << fileName << ":\n"
+                   << ex.msg() << "\n"
+                   << "The application may now be in an inconsistent state.\n"
+                   << "Please consider to quit the application, and start afresh.\n";
+        gSession->clear();
+    }
+}
+
+void MainWin::saveSession()
+{
+    QString fileName = file_dialog::saveFileName(
+        this, "Save session", sessionDir_, "Session files (*.ste)");
+    if (!fileName.endsWith(".ste"))
+        fileName += ".ste";
+    QFileInfo fileInfo(fileName);
+    QFile* file = file_dialog::OutputFile("file", this, fileInfo.filePath());
+    if (!file)
+        return;
+    const int result = file->write(serializeSession());
+    if (!(result >= 0)) THROW("Could not write session");
 }
 
 QByteArray MainWin::serializeSession() const
@@ -237,14 +249,6 @@ QByteArray MainWin::serializeSession() const
     top.insert("intensity scale", qreal_to_json((qreal)gSession->intenScale()));
 
     return QJsonDocument(top).toJson();
-}
-
-void MainWin::sessionFromFile(const QString& filePath) THROWS {
-    QFile file(filePath);
-    if (!(file.open(QIODevice::ReadOnly | QIODevice::Text)))
-        THROW("Cannot open file for reading: " % filePath);
-    QDir::setCurrent(QFileInfo(filePath).absolutePath());
-    sessionFromJson(file.readAll());
 }
 
 void MainWin::sessionFromJson(const QByteArray& json) THROWS
@@ -328,6 +332,16 @@ void MainWin::sessionFromJson(const QByteArray& json) THROWS
     TR("installed session from file");
 }
 
+void MainWin::addFiles()
+{
+    QStringList fileNames = file_dialog::openFileNames(this, "Add files", dataDir_, dataFormats_);
+    repaint();
+    if (fileNames.isEmpty())
+        return;
+    TakesLongTime __;
+    gSession->dataset().addGivenFiles(fileNames);
+}
+
 void MainWin::loadCorrFile()
 {
     if (gSession->corrset().hasFile()) {
@@ -377,22 +391,4 @@ void MainWin::setImageMirror(bool on)
     toggles->mirrorImage.setChecked(on);
     gSession->setImageTransformMirror(on);
     emit gSession->sigDetector();
-}
-
-void MainWin::updateActionEnabling()
-{
-    bool hasFile = gSession->dataset().countFiles();
-    bool hasCorr = gSession->hasCorrFile();
-    bool hasPeak = gSession->peaks().count();
-    bool hasBase = gSession->baseline().ranges().count();
-    toggles->enableCorr.setEnabled(hasCorr);
-    triggers->removeFile.setEnabled(hasFile);
-    triggers->removePeak.setEnabled(hasPeak);
-    triggers->clearBackground.setEnabled(hasBase);
-    triggers->outputDiagrams.setEnabled(hasFile && hasPeak);
-    triggers->outputDiffractograms.setEnabled(hasFile);
-    triggers->outputPolefigures.setEnabled(hasFile && hasPeak);
-    menus->dgram_->setEnabled(hasFile);
-    menus->image_->setEnabled(hasFile);
-    menus->output_->setEnabled(hasFile);
 }

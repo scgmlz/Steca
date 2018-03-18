@@ -29,10 +29,7 @@ extern class MainWin* gGui; //!< global pointer to _the_ main window
 // make connects shorter
 #define _SLOT_(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
 
-//! The main window.
-
-//! This is a singleton class that specializes QMainWindow.
-//! Its one instance is accessible from everywhere through the global pointer gGui.
+//! The main window. Its single instance is accessible through the global pointer gGui.
 
 class MainWin : public QMainWindow {
     Q_OBJECT
@@ -53,31 +50,24 @@ public:
     QString saveFmt; //!< setting: default format for data export
 
 private:
-    void initMenu();
     void initLayout();
+    void updateActionEnabling();
 
     void readSettings();
     void saveSettings() const;
+    void viewReset();
 
     void loadSession();
     void saveSession();
     void clearSession();
-
     QByteArray serializeSession() const;
+    void sessionFromJson(const QByteArray&) THROWS;
 
     void addFiles();
-
-    void sessionFromFile(const QString&) THROWS;
     void loadCorrFile() THROWS;
 
     void setImageRotate(ImageTransform);
-    void viewReset();
-
-    void collectDatasetsFromSelectionBy(const vec<int>, const int);
     void setImageMirror(bool);
-    void configActions();
-    void sessionFromJson(const QByteArray&) THROWS;
-    void updateActionEnabling();
 
     class Menus* menus;
     QDockWidget *dockFiles_, *dockClusters_, *dockMetadata_;
