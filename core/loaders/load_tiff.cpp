@@ -43,10 +43,10 @@ Rawfile loadTiffDat(const QString& filePath) THROWS {
     Rawfile ret(filePath);
 
     QFile f(filePath);
-    if (!(f.open(QFile::ReadOnly))) THROW("cannot open file");
+    if (!(f.open(QFile::ReadOnly)))
+        THROW("cannot open file");
 
-    QFileInfo info(filePath);
-    QDir dir = info.dir();
+    QDir dir = QFileInfo(filePath).dir();
 
     QByteArray line;
     while (!(line = f.readLine()).isEmpty()) {
