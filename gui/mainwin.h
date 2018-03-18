@@ -65,8 +65,6 @@ private:
 
     QByteArray serializeSession() const;
 
-    void checkUpdate();
-
     void addFiles();
 
     void sessionFromFile(const QString&) THROWS;
