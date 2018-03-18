@@ -29,8 +29,6 @@ SubframeSetup::SubframeSetup()
     addTab(new ControlsPeakfits(), "Peakfits");
 
     connect(this, &SubframeSetup::currentChanged, [this](int index) {
-            gGui->baselineEditable = (index==1);
-            gGui->peaksEditable    = (index==2);
             emit gSession->sigDiffractogram();
         });
 
@@ -49,4 +47,14 @@ void SubframeSetup::updateTabsAvailability()
         setTabEnabled(2, false);
         setCurrentIndex(0);
     }
+}
+
+bool SubframeSetup::editingBaseline() const
+{
+    return currentIndex()==1;
+}
+
+bool SubframeSetup::editingPeaks() const
+{
+    return currentIndex()==2;
 }

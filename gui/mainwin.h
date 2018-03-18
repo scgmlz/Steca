@@ -44,12 +44,11 @@ public:
     bool isFixedIntenImageScale() const { return isFixedIntenImageScale_; }
     bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
     bool isCombinedDgram() const { return isCombinedDgram_; }
-
-    bool baselineEditable { false };
-    bool peaksEditable { false };
+    class SubframeSetup* setup() const { return frameSetup_; }
 
     class Triggers* triggers;
     class Toggles* toggles;
+
 
     // TODO relegate this to TabSave or similar
     QString saveDir; //!< setting: default directory for data export
@@ -61,8 +60,8 @@ private:
     QSplitter splMain_ {Qt::Vertical};
     QSplitter splTop_ {Qt::Horizontal};
     class SubframeDiffractogram* frameDiffractogram_;
-    class SubframeSetup* frameSetup_;
     class SubframeImage* frameImage_;
+    class SubframeSetup* frameSetup_;
 
     QByteArray initialState_;
     QDir sessionDir_ {QDir::homePath()};
