@@ -22,8 +22,6 @@
 AboutBox::AboutBox()
     : QDialog(gGui, Qt::Dialog)
 {
-    Settings s("config");
-
     setWindowTitle(QString("About %1").arg(qApp->applicationName()));
 
     // vertical layout
