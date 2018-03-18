@@ -39,8 +39,7 @@ MainWin* gGui; //!< global pointer to _the_ main window
 // ************************************************************************** //
 
 MainWin::MainWin()
-    : isCombinedDgram_(false)
-    , settings_("main_settings")
+    : settings_("main_settings")
 {
     gSession = Session::instance();
     gConsole = Console::instance();

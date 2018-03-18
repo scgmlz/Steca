@@ -37,7 +37,6 @@ public:
     MainWin();
     ~MainWin();
 
-    bool isCombinedDgram() const { return isCombinedDgram_; }
     class SubframeSetup* setup() const { return frameSetup_; }
 
     class Triggers* triggers;
@@ -79,7 +78,6 @@ private:
     QDir sessionDir_ {QDir::homePath()};
     QDir dataDir_ {QDir::homePath()};
     const QString dataFormats_ {"Data files (*.dat *.mar*);;All files (*.*)"};
-    bool isCombinedDgram_;
     XSettings settings_;
 
     friend Triggers;

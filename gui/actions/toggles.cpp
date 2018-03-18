@@ -35,7 +35,6 @@ Toggles::Toggles()
         emit gSession->sigDiffractogram();
         });
     connect(&combinedDgram, AT, [](bool on) {
-        gGui->isCombinedDgram_ = on;
         emit gSession->sigImage();
         emit gSession->sigDiffractogram();
         });
