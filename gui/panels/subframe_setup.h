@@ -19,7 +19,7 @@
 
 //! Part of the main window that contains geometry, background, and image controls.
 
-class SubframeSetup : public QTabWidget {
+class SubframeSetup : public CTabWidget {
 public:
     SubframeSetup();
 private:

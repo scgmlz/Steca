@@ -22,7 +22,6 @@
 
 class QBoxLayout;
 class QProgressBar;
-class QTabWidget;
 class QToolButton;
 
 //! Horizontal box with variable selection of control panels. Appears in each output dialog (Frame).
@@ -60,7 +59,7 @@ protected:
     XTextButton btnInterpolate_ {&actInterpolate_};
     QProgressBar progressBar_;
     Params* params_;
-    QTabWidget tabs_;
+    CTabWidget tabs_ {"outputs"};
     vec<PeakInfos> calcPoints_, interpPoints_;
     class DataView* dataView_;
     void calculate();

@@ -391,6 +391,7 @@ QPixmap CorrImageTab::pixmap()
 // ************************************************************************** //
 
 SubframeImage::SubframeImage()
+    : CTabWidget {"images"}
 {
     setTabPosition(QTabWidget::North);
     addTab((dataImageTab_ = new DataImageTab), "Data image");

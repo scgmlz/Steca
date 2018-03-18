@@ -21,7 +21,7 @@
 
 //! There are two tabs: data image and correction data image.
 
-class SubframeImage final : public QTabWidget {
+class SubframeImage final : public CTabWidget {
 public:
     SubframeImage();
     ~SubframeImage();

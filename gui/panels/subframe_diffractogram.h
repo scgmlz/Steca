@@ -15,7 +15,7 @@
 #ifndef SUBFRAME_DIFFRACTOGRAM_H
 #define SUBFRAME_DIFFRACTOGRAM_H
 
-#include <QTabWidget>
+#include <QTabWidget> // no need for CTabWidget, since there is only one tab
 
 //! Part of the main window that contains a diffractogram, with associated controls.
 

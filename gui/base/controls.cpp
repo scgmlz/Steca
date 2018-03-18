@@ -233,9 +233,30 @@ void CComboBox::onCommand(const QStringList& args)
 {
     if (args[0]!="choose")
         THROW("Unexpected command");
-    if      (args.size()<2)
+    if (args.size()<2)
         THROW("Missing argument to command 'choose'");
     setCurrentIndex(TO_INT(args[1]));
+}
+
+CTabWidget::CTabWidget(const QString& _name)
+    : CSettable(_name)
+{
+    connect(this->tabBar(), &QTabBar::tabBarClicked, [this](int val) {
+            gConsole->log2(true, name()+" choose "+QString::number(val)); });
+    connect(this, &QTabWidget::currentChanged, [this](int val) {
+            gConsole->log2(false, name()+" choose "+QString::number(val)); });
+}
+
+void CTabWidget::onCommand(const QStringList& args)
+{
+    if (args[0]!="choose")
+        THROW("Unexpected command");
+    if (args.size()<2)
+        THROW("Missing argument to command 'choose'");
+    int val = TO_INT(args[1]);
+    if (!isTabEnabled(val))
+        THROW("CHosen tab is not enabled");
+    setCurrentIndex(val);
 }
 
 // ************************************************************************** //

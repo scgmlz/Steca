@@ -40,21 +40,6 @@ public:
     MainWin();
     ~MainWin();
 
-    void checkUpdate();
-
-    void addFiles();
-
-    void loadSession();
-    void saveSession();
-    void clearSession();
-
-    // modifying methods:
-    void sessionFromFile(const QString&) THROWS;
-    void loadCorrFile() THROWS;
-
-    void setImageRotate(ImageTransform);
-    void viewReset();
-
     // const methods:
     bool isFixedIntenImageScale() const { return isFixedIntenImageScale_; }
     bool isFixedIntenDgramScale() const { return isFixedIntenDgramScale_; }
@@ -90,7 +75,21 @@ private:
     void readSettings();
     void saveSettings();
 
+    void loadSession();
+    void saveSession();
+    void clearSession();
+
     QByteArray serializeSession() const;
+
+    void checkUpdate();
+
+    void addFiles();
+
+    void sessionFromFile(const QString&) THROWS;
+    void loadCorrFile() THROWS;
+
+    void setImageRotate(ImageTransform);
+    void viewReset();
 
     void collectDatasetsFromSelectionBy(const vec<int>, const int);
     void setImageMirror(bool);

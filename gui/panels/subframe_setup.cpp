@@ -20,6 +20,7 @@
 #include "gui/mainwin.h"
 
 SubframeSetup::SubframeSetup()
+    : CTabWidget {"setup"}
 {
     setTabPosition(QTabWidget::North);
 

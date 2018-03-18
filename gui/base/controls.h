@@ -101,6 +101,13 @@ public:
     void onCommand(const QStringList&) THROWS override;
 };
 
+//! Named QTabWidget that can be set by console command.
+class CTabWidget : public QTabWidget, private CSettable {
+public:
+    CTabWidget(const QString& name);
+    void onCommand(const QStringList&) THROWS override;
+};
+
 //! QFileDialog, for modal use, with console commands to select files and to close the dialog.
 class CFileDialog : public QFileDialog, private CModal, CSettable {
 public:
