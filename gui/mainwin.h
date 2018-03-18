@@ -42,9 +42,6 @@ public:
     class Triggers* triggers;
     class Toggles* toggles;
 
-    // TODO relegate this to TabSave or similar
-    QString saveFmt; //!< setting: default format for data export
-
 private:
     void initLayout();
     void updateActionEnabling();

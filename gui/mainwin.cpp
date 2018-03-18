@@ -87,13 +87,10 @@ MainWin::MainWin()
     initLayout();
     readSettings();
     updateActionEnabling();
-
-//    saveFmt = settings_.readStr("export_format");
 }
 
 MainWin::~MainWin()
 {
-//    settings_.saveStr("export_format", saveFmt);
     saveSettings();
     delete triggers;
     delete toggles;

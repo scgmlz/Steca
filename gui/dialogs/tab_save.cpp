@@ -17,14 +17,16 @@
 #include "gui/base/filedialog.h"
 #include "gui/mainwin.h"
 
+namespace {
 static QString const DAT_SFX(".dat"), DAT_SEP(" "), // suffix, separator
     CSV_SFX(".csv"), CSV_SEP(", ");
+static QString saveFmt; //!< setting: default format for data export
+}
 
 TabSave::TabSave(bool withTypes)
     : rbDat_("rbDat#", DAT_SFX)
     , rbCsv_("rbCsv#", CSV_SFX)
 {
-
     setLayout((grid_ = new QGridLayout()));
     actBrowse = new CTrigger("actBrowse#", "Browse...");
     actSave = new CTrigger("actSave#", "Save");
@@ -45,10 +47,8 @@ TabSave::TabSave(bool withTypes)
     g->addWidget(new QLabel("Save to folder:"), 0, 0, Qt::AlignRight);
     g->addWidget(dir_, 0, 1);
     g->addWidget(new XTextButton(actBrowse), 0, 2);
-
     g->addWidget(new QLabel("File name:"), 1, 0, Qt::AlignRight);
     g->addWidget(file_, 1, 1);
-
 
     gp = new GridPanel("File type");
     grid_->addWidget(gp, 0, 1);
@@ -57,10 +57,10 @@ TabSave::TabSave(bool withTypes)
     g->addWidget(&rbDat_, 0, 0);
     g->addWidget(&rbCsv_, 1, 0);
 
-    connect(&rbDat_, &QRadioButton::clicked, [this]() { gGui->saveFmt = DAT_SFX; });
-    connect(&rbCsv_, &QRadioButton::clicked, [this]() { gGui->saveFmt = CSV_SFX; });
+    connect(&rbDat_, &QRadioButton::clicked, [this]() { saveFmt = DAT_SFX; });
+    connect(&rbCsv_, &QRadioButton::clicked, [this]() { saveFmt = CSV_SFX; });
 
-    (CSV_SFX == gGui->saveFmt ? &rbCsv_ : &rbDat_)->setChecked(true);
+    (saveFmt == CSV_SFX ? &rbCsv_ : &rbDat_)->setChecked(true);
 
     gp->setVisible(withTypes);
 }
