@@ -68,8 +68,15 @@ private:
     class SubframeDiffractogram* frameDiffractogram_;
     class SubframeImage* frameImage_;
     class SubframeSetup* frameSetup_;
+    class Menus* menus_;
 
-    friend Triggers;
+    QSplitter splMain_ {Qt::Vertical};
+    QSplitter splTop_ {Qt::Horizontal};
+    QByteArray initialState_;
+    QDir sessionDir_ {QDir::homePath()};
+    QDir dataDir_ {QDir::homePath()};
+
+friend Triggers;
     friend Toggles;
 };
 

@@ -35,12 +35,6 @@ MainWin* gGui; //!< global pointer to _the_ main window
 
 namespace {
 const QString dataFormats {"Data files (*.dat *.mar*);;All files (*.*)"};
-class Menus* menus;
-QSplitter splMain_ {Qt::Vertical};
-QSplitter splTop_ {Qt::Horizontal};
-QByteArray initialState_;
-QDir sessionDir_ {QDir::homePath()};
-QDir dataDir_ {QDir::homePath()};
 }
 
 // ************************************************************************** //
@@ -55,7 +49,7 @@ MainWin::MainWin()
 
     triggers = new Triggers();
     toggles = new Toggles();
-    menus = new Menus(menuBar());
+    menus_ = new Menus(menuBar());
 
     setWindowIcon(QIcon(":/icon/retroStier"));
     setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
@@ -94,7 +88,7 @@ MainWin::~MainWin()
     saveSettings();
     delete triggers;
     delete toggles;
-    delete menus;
+    delete menus_;
     delete frameImage_;
     delete frameDiffractogram_;
     delete frameSetup_;
@@ -137,9 +131,9 @@ void MainWin::updateActionEnabling()
     triggers->outputDiagrams.setEnabled(hasFile && hasPeak);
     triggers->outputDiffractograms.setEnabled(hasFile);
     triggers->outputPolefigures.setEnabled(hasFile && hasPeak);
-    menus->dgram_->setEnabled(hasFile);
-    menus->image_->setEnabled(hasFile);
-    menus->output_->setEnabled(hasFile);
+    menus_->dgram_->setEnabled(hasFile);
+    menus_->image_->setEnabled(hasFile);
+    menus_->output_->setEnabled(hasFile);
 }
 
 
