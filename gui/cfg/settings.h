@@ -28,15 +28,6 @@ public:
     Settings(const QString& group = "");
     ~Settings();
 
-    void read(const QString& key, QAction*, bool def = false);
-    void save(const QString& key, QAction*);
-
-    void read(const QString& key, QSpinBox*, int def = 0);
-    void save(const QString& key, QSpinBox*);
-
-    void read(const QString& key, QDoubleSpinBox*, qreal def = 0);
-    void save(const QString& key, QDoubleSpinBox*);
-
     bool readBool(const QString& key, bool def = false) { return value(key, def).toBool(); }
     void saveBool(const QString& key, bool val) { setValue(key, val); }
 
