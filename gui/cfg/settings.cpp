@@ -33,7 +33,7 @@ void Settings::read(const QString& key, QAction* act, bool def) {
 void Settings::save(const QString& key, QAction* act) {
     ASSERT(act->isCheckable());
     if (act)
-        saveVariant(key, act->isChecked());
+        setValue(key, act->isChecked());
 }
 
 void Settings::read(const QString& key, QSpinBox* box, int def) {
@@ -43,7 +43,7 @@ void Settings::read(const QString& key, QSpinBox* box, int def) {
 
 void Settings::save(const QString& key, QSpinBox* box) {
     if (box)
-        saveVariant(key, box->value());
+        setValue(key, box->value());
 }
 
 void Settings::read(const QString& key, QDoubleSpinBox* box, qreal def) {
@@ -53,7 +53,7 @@ void Settings::read(const QString& key, QDoubleSpinBox* box, qreal def) {
 
 void Settings::save(const QString& key, QDoubleSpinBox* box) {
     if (box)
-        saveVariant(key, box->value());
+        setValue(key, box->value());
 }
 
 qreal Settings::readReal(const QString& key, qreal def) {
