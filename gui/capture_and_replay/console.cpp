@@ -109,11 +109,11 @@ Console::Console()
 
 Console::~Console()
 {
+    log("# Steca session ended");
     while (!registryStack_.empty()) {
         delete registryStack_.top();
         registryStack_.pop();
     }
-    log("# Steca session ended");
 }
 
 void Console::readLine()
