@@ -99,7 +99,6 @@ void Session::sessionFromJson(const QByteArray& json) THROWS
     if (!(QJsonParseError::NoError == parseError.error))
         THROW("Error parsing session file");
 
-
     clear();
     TR("sessionFromJson: cleared old session");
 
@@ -113,7 +112,6 @@ void Session::sessionFromJson(const QByteArray& json) THROWS
     geometry().setPixSize(det.loadPreal("pixel size"));
     geometry().setOffset(det.loadIJ("beam offset"));
 
-    TR("sessionFromJson: going to load image cut");
     const JsonObj& cut = top.loadObj("cut");
     int x1 = cut.loadUint("left"), y1 = cut.loadUint("top"),
          x2 = cut.loadUint("right"), y2 = cut.loadUint("bottom");
@@ -123,14 +121,12 @@ void Session::sessionFromJson(const QByteArray& json) THROWS
     imageCut().setTop(y1);
     imageCut().setBottom(y2);
 
-    TR("sessionFromJson: going to load fit setup");
     baseline().fromJson(top.loadObj("baseline"));
 
     bool arg1 = top.loadBool("averaged intensity ", true);
     qreal arg2 = top.loadPreal("intensity scale", 1);
     setIntenScaleAvg(arg1, arg2);
 
-    TR("sessionFromJson: going to load peaks info");
     const QJsonArray& peaksInfo = top.loadArr("peaks");
     for_i (peaksInfo.count())
         peaks().add(peaksInfo.at(i).toObject());

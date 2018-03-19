@@ -130,6 +130,8 @@ void Dataset::removeFile() {
 }
 
 void Dataset::addGivenFiles(const QStringList& filePaths) {
+    int i = highlight().fileIndex();
+    highlight().unset(); // to avoid conflicts; will be reset below
     for (const QString& path: filePaths) {
         if (path.isEmpty() || hasFile(path))
             continue;
@@ -140,8 +142,8 @@ void Dataset::addGivenFiles(const QStringList& filePaths) {
         files_.push_back(Datafile(rawfile));
         onFileChanged();
     }
-    if (highlight().fileIndex()<0 && countFiles())
-        highlight().setFile(0);
+    if (countFiles())
+        highlight().setFile( i<0 ? 0 : i );
 }
 
 void Dataset::setBinning(int by) {
