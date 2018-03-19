@@ -32,24 +32,30 @@ qreal const Geometry::DEF_DETECTOR_DISTANCE = 1035;
 qreal const Geometry::DEF_DETECTOR_PIXEL_SIZE = 1;
 
 Geometry::Geometry()
-    : detectorDistance_(DEF_DETECTOR_DISTANCE), pixSize_(DEF_DETECTOR_PIXEL_SIZE), midPixOffset_() {}
+    : detectorDistance_(DEF_DETECTOR_DISTANCE), pixSize_(DEF_DETECTOR_PIXEL_SIZE), midPixOffset_()
+{
+}
 
-void Geometry::setDetectorDistance(qreal detectorDistance) {
+void Geometry::setDetectorDistance(qreal detectorDistance)
+{
     detectorDistance_ = qMin(qMax(detectorDistance, 10.), 9999.);
     emit gSession->sigDetector();
 }
 
-void Geometry::setPixSize(qreal pixSize) {
+void Geometry::setPixSize(qreal pixSize)
+{
     pixSize_ = qMin(qMax(pixSize, .1), 9.9);
     emit gSession->sigDetector();
 }
 
-void Geometry::setOffset(const IJ& midPixOffset) {
+void Geometry::setOffset(const IJ& midPixOffset)
+{
     midPixOffset_ = midPixOffset;
     emit gSession->sigDetector();
 }
 
-int Geometry::compare(const Geometry& that) const {
+int Geometry::compare(const Geometry& that) const
+{
     RET_COMPARE_VALUE(detectorDistance_)
     RET_COMPARE_VALUE(pixSize_)
     RET_COMPARE_COMPARABLE(midPixOffset_)
@@ -63,18 +69,23 @@ EQ_NE_OPERATOR(Geometry)
 // ************************************************************************** //
 
 ImageCut::ImageCut(int left, int top, int right, int bottom)
-    : left_(left), top_(top), right_(right), bottom_(bottom) {}
+    : left_(left), top_(top), right_(right), bottom_(bottom)
+{
+}
 
-void ImageCut::clear() {
+void ImageCut::clear()
+{
     *this = ImageCut();
 }
 
-void ImageCut::confine(int& m1, int& m2, int maxTogether) {
+void ImageCut::confine(int& m1, int& m2, int maxTogether)
+{
     m1 = qMax(qMin(m1, maxTogether - m2 - 1), 0);
     m2 = qMax(qMin(m2, maxTogether - m1 - 1), 0);
 }
 
-void ImageCut::setLeft(int val) {
+void ImageCut::setLeft(int val)
+{
     if (linked_) {
         setAll(val);
     } else {
@@ -84,7 +95,8 @@ void ImageCut::setLeft(int val) {
     }
 }
 
-void ImageCut::setRight(int val) {
+void ImageCut::setRight(int val)
+{
     if (linked_) {
         setAll(val);
     } else {
@@ -93,7 +105,8 @@ void ImageCut::setRight(int val) {
     }
 }
 
-void ImageCut::setTop(int val) {
+void ImageCut::setTop(int val)
+{
     if (linked_) {
         setAll(val);
     } else {
@@ -102,7 +115,8 @@ void ImageCut::setTop(int val) {
     }
 }
 
-void ImageCut::setBottom(int val) {
+void ImageCut::setBottom(int val)
+{
     if (linked_) {
         setAll(val);
     } else {
@@ -111,18 +125,21 @@ void ImageCut::setBottom(int val) {
     }
 }
 
-void ImageCut::setLinked(bool val) {
+void ImageCut::setLinked(bool val)
+{
     linked_ = val;
     emit gSession->sigDetector();
 }
 
-void ImageCut::setAll(int val) {
+void ImageCut::setAll(int val)
+{
     left_ = right_ = qMax(qMin(val, (gSession->imageSize().w-1)/2), 0);
     top_ = bottom_ = qMax(qMin(val, (gSession->imageSize().h-1)/2), 0);
     emit gSession->sigDetector();
 }
 
-int ImageCut::compare(const ImageCut& that) const {
+int ImageCut::compare(const ImageCut& that) const
+{
     RET_COMPARE_VALUE(left())
         RET_COMPARE_VALUE(top())
         RET_COMPARE_VALUE(right())
@@ -132,7 +149,8 @@ int ImageCut::compare(const ImageCut& that) const {
 
 EQ_NE_OPERATOR(ImageCut)
 
-size2d ImageCut::marginSize() const {
+size2d ImageCut::marginSize() const
+{
     return size2d(left() + right(), top() + bottom());
 }
 
@@ -150,12 +168,14 @@ ScatterDirection::ScatterDirection(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
 //  class ImageKey
 // ************************************************************************** //
 
-ImageKey::ImageKey(
-    const Geometry& geometry_, const size2d& size_, const ImageCut& cut_,
-    const IJ& midPix_, deg midTth_)
-    : geometry(geometry_), size(size_), cut(cut_), midPix(midPix_), midTth(midTth_) {}
+ImageKey::ImageKey(const Geometry& geometry_, const size2d& size_, const ImageCut& cut_,
+                   const IJ& midPix_, deg midTth_)
+    : geometry(geometry_), size(size_), cut(cut_), midPix(midPix_), midTth(midTth_)
+{
+}
 
-int ImageKey::compare(const ImageKey& that) const {
+int ImageKey::compare(const ImageKey& that) const
+{
     RET_COMPARE_COMPARABLE(geometry)
     RET_COMPARE_COMPARABLE(size)
     RET_COMPARE_COMPARABLE(cut)
@@ -166,7 +186,8 @@ int ImageKey::compare(const ImageKey& that) const {
 
 EQ_NE_OPERATOR(ImageKey)
 
-void ImageKey::computeAngles(Array2D<ScatterDirection>& ret) const {
+void ImageKey::computeAngles(Array2D<ScatterDirection>& ret) const
+{
     // detector coordinates: d_x, ... (d_z = const)
     // beam coordinates: b_x, ..; b_y = d_y
     ret.resize(size);
