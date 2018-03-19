@@ -92,6 +92,7 @@ void CommandRegistry::dump(QTextStream& stream)
 
 Console::Console()
 {
+    gConsole = this;
     notifier_ = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read, this);
     connect(notifier_, SIGNAL(activated(int)), this, SLOT(readLine()));
 
@@ -108,6 +109,10 @@ Console::Console()
 
 Console::~Console()
 {
+    while (!registryStack_.empty()) {
+        delete registryStack_.top();
+        registryStack_.pop();
+    }
     log("# Steca session ended");
 }
 
@@ -194,6 +199,7 @@ Console::Result Console::exec(QString line)
                 qterr << "cannot pop: registry stack is empty\n";
                 return Result::err;
             }
+            delete registryStack_.top();
             registryStack_.pop();
         } else if (cmd=="file") {
             if (list.size()<2) {

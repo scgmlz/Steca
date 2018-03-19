@@ -44,7 +44,6 @@ const QString dataFormats {"Data files (*.dat *.mar*);;All files (*.*)"};
 
 MainWin::MainWin()
 {
-    gConsole = Console::instance();
     gGui = this;
 
     triggers = new Triggers;

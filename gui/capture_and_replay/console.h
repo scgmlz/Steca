@@ -23,7 +23,7 @@
 extern class Console* gConsole; //!< global
 
 //! Reads commands from stdin, and emits signal transmitLine
-class Console : public QObject, public ISingleton<Console>
+class Console : public QObject
 {
     Q_OBJECT
 public:

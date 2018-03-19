@@ -20,6 +20,7 @@
 #include "core/data/image_transform.h"
 #include "core/typ/singleton.h"
 #include "core/def/settings.h"
+#include "gui/capture_and_replay/console.h"
 #include <QDir>
 #include <QMainWindow>
 #include <QSplitter>
@@ -44,6 +45,8 @@ public:
     class ImageTrafoActions* imageTrafoActions;
 
 private:
+    Console console_;
+
     void initLayout();
     void updateActionEnabling();
 
