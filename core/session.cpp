@@ -25,6 +25,8 @@ Session* gSession; //!< global, for data handling
 Session::Session()
     : metaSelection_( std::vector<bool>(Metadata::size(), false) )
 {
+    gSession = this;
+
     register_peak_functions();
 
     // Some signals imply other signals:

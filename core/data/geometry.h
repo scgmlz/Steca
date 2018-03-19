@@ -27,6 +27,7 @@ public:
     static qreal const DEF_DETECTOR_PIXEL_SIZE;
 
     Geometry();
+    ~Geometry();
     COMPARABLE(const Geometry&);
 
     void setDetectorDistance(qreal);

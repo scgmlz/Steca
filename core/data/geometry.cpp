@@ -15,12 +15,13 @@
 #include "core/session.h"
 #include "core/data/geometry.h"
 #include "core/def/comparators.h"
+#include "core/def/settings.h"
 #include "core/def/idiomatic_for.h"
 #include <qmath.h>
 #include <iostream> // for debugging
 
-#define RET_COMPARE_COMPARABLE(o)                                                 \
-    for (int cmp = o.compare(that.o); cmp;)                                       \
+#define RET_COMPARE_COMPARABLE(o)            \
+    for (int cmp = o.compare(that.o); cmp;)  \
         return cmp;
 
 
@@ -28,12 +29,26 @@
 //  class Geometry
 // ************************************************************************** //
 
+// StressSpec standard geometry:
 qreal const Geometry::DEF_DETECTOR_DISTANCE = 1035;
 qreal const Geometry::DEF_DETECTOR_PIXEL_SIZE = 1;
 
 Geometry::Geometry()
-    : detectorDistance_(DEF_DETECTOR_DISTANCE), pixSize_(DEF_DETECTOR_PIXEL_SIZE), midPixOffset_()
 {
+    XSettings s("DetectorGeometry");
+    detectorDistance_ = s.readReal("detectorDistance", DEF_DETECTOR_DISTANCE);
+    pixSize_ = s.readReal("pixelSize", DEF_DETECTOR_PIXEL_SIZE);
+    midPixOffset_.i = s.readInt("offsetX", 0);
+    midPixOffset_.j = s.readInt("offsetY", 0);
+}
+
+Geometry::~Geometry()
+{
+    XSettings s("DetectorGeometry");
+    s.setValue("detectorDistance", detectorDistance_);
+    s.setValue("pixelSize", pixSize_);
+    s.setValue("offsetX", midPixOffset_.i);
+    s.setValue("offsetY", midPixOffset_.j);
 }
 
 void Geometry::setDetectorDistance(qreal detectorDistance)

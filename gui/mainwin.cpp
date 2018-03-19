@@ -44,7 +44,6 @@ const QString dataFormats {"Data files (*.dat *.mar*);;All files (*.*)"};
 
 MainWin::MainWin()
 {
-    gSession = Session::instance();
     gConsole = Console::instance();
     gGui = this;
 
@@ -155,7 +154,7 @@ void MainWin::readSettings()
 void MainWin::saveSettings() const
 {
     XSettings s("MainWin");
-    s.setValue("geometry", saveGeometry());
+    s.setValue("geometry", saveGeometry()); // this mainwindow's widget geometry
     s.setValue("state", saveState()); // state of this mainwindow's toolbars and dockwidgets
 }
 

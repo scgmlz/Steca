@@ -20,6 +20,7 @@
 //!           https://github.com/scgmlz/Steca
 
 #include "../manifest.h"
+#include "core/session.h"
 #include "gui/cfg/msg_handler.h"
 #include "gui/capture_and_replay/console.h"
 #include "gui/mainwin.h"
@@ -86,6 +87,7 @@ int main(int argc, char* argv[]) {
     QLoggingCategory::setFilterRules("*.debug=true\nqt.*.debug=false");
     qInstallMessageHandler(messageHandler);
 
+    Session session;
     MainWin mainwin;
     mainwin.show();
     if (nonoptArgs.size())

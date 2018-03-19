@@ -32,7 +32,7 @@ extern class Session* gSession;
 //! One instance of this class coexists with the main window. It is accessible from everywhere
 //! through the global pointer gSession.
 
-class Session final : public QObject, public ISingleton<Session> {
+class Session final : public QObject {
     Q_OBJECT
 public:
     Session();
