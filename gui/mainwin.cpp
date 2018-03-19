@@ -88,6 +88,7 @@ MainWin::MainWin()
 MainWin::~MainWin()
 {
     saveSettings();
+    delete imageTrafoActions;
     delete triggers;
     delete toggles;
     delete menus_;
