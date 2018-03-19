@@ -100,5 +100,5 @@ void Corrset::fromJson(const JsonObj& obj)
 {
     if (obj.find("file") != obj.end())
         loadFile(obj.loadString("file"));
-    enabled_ = obj.loadBool("enabled", true);
+    tryEnable(obj.loadBool("enabled", true));
 }
