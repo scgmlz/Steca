@@ -62,10 +62,10 @@ void Corrset::calcIntensCorr() const {
     hasNANs_ = false;
 
     ASSERT(corrImage_);
-    size2d size = corrImage_->size() - gSession->imageCut_.marginSize();
+    size2d size = corrImage_->size() - gSession->imageCut().marginSize();
     ASSERT(!size.isEmpty());
 
-    int w = size.w, h = size.h, di = gSession->imageCut_.left(), dj = gSession->imageCut_.top();
+    int w = size.w, h = size.h, di = gSession->imageCut().left(), dj = gSession->imageCut().top();
 
     qreal sum = 0;
     for_ij (w, h)

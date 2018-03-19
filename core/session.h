@@ -74,6 +74,8 @@ public:
     void setImageTransformRotate(const ImageTransform&);
     void setIntenScaleAvg(bool, qreal);
     void setNorm(eNorm);
+    void updateImageSize(); //!< Clears image size if session has no files
+    void setImageSize(const size2d&) THROWS; //!< Ensures same size for all images
 
     // Const methods: // TODO expand corrset() calls in calling code
     QByteArray serializeSession() const;
@@ -123,9 +125,7 @@ signals:
     void sigPeakHighlight(); //!< highlighted Peak has changed
 
 private:
-    friend Dataset; // TODO try to get rid of this
     Dataset dataset_;
-    friend Corrset; // TODO try to get rid of this
     Corrset corrset_;
     Peaks peaks_;
     Baseline baseline_;
@@ -142,9 +142,6 @@ private:
     eNorm norm_ {eNorm::NONE};
 
     mutable cache_lazy<ImageKey, AngleMap> angleMapCache_ {360};
-
-    void updateImageSize(); //!< Clears image size if session has no files
-    void setImageSize(const size2d&) THROWS; //!< Ensures same size for all images
 
     PeakInfo makePeakInfo(const Cluster*, const qreal, const Peak&, const Range&) const;
 };
