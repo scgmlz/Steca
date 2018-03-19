@@ -42,7 +42,7 @@ void GammaSelection::onData()
         return;
     }
     fullRange_ = cluster->rgeGma();
-     recomputeCache();
+    recomputeCache();
 }
 
 //! Recomputes range_ and iSlice_.

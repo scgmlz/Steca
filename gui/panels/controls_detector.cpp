@@ -238,7 +238,7 @@ GammaControls::GammaControls()
     connect(gSession, &Session::sigClusters, this, &GammaControls::fromCore);
 
     // outbound connections
-    connect(&numSlices_, _SLOT_(QSpinBox, valueChanged, int), [this](int val) {
+    connect(&numSlices_, _SLOT_(QSpinBox, valueChanged, int), [](int val) {
             gSession->gammaSelection().setNumSlices(val); });
 
     // layout

@@ -308,10 +308,10 @@ ControlsPeakfits::ControlsPeakfits()
     // outbound connections
     connect(&gGui->triggers->addPeak, &QAction::triggered, [this]() {
             gSession->peaks().add(comboReflType_.currentText()); });
-    connect(&gGui->triggers->removePeak, &QAction::triggered, [this]() {
+    connect(&gGui->triggers->removePeak, &QAction::triggered, []() {
             gSession->peaks().remove(); });
     connect(&comboReflType_, _SLOT_(QComboBox, currentIndexChanged, const QString&),
-            [this](const QString& peakFunctionName) {
+            [](const QString& peakFunctionName) {
                 if (gSession->peaks().selectedPeak()) { // TODO rm this if
                     gSession->peaks().selectedPeak()->setPeakFunction(peakFunctionName);
                     emit gSession->sigPeaks();
@@ -323,10 +323,10 @@ ControlsPeakfits::ControlsPeakfits()
     topControls_.addWidget(new XIconButton(&gGui->triggers->removePeak));
     box_.addLayout(&topControls_);
 
-    box_.addWidget(new PeaksView());
+    box_.addWidget(new PeaksView);
     box_.addWidget(&comboReflType_);
-    box_.addWidget(rangeControl_ = new RangeControl);
-    box_.addWidget(peakdataView_ = new PeakdataView);
+    box_.addWidget(new RangeControl);
+    box_.addWidget(new PeakdataView);
     box_.addStretch(1000);
 
     setLayout(&box_);

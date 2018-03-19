@@ -28,9 +28,8 @@ SubframeSetup::SubframeSetup()
     addTab(new ControlsBaseline(), "Baseline");
     addTab(new ControlsPeakfits(), "Peakfits");
 
-    connect(this, &SubframeSetup::currentChanged, [this](int index) {
-            emit gSession->sigDiffractogram();
-        });
+    connect(this, &SubframeSetup::currentChanged, [](int index) {
+            emit gSession->sigDiffractogram(); });
 
     connect(gSession, &Session::sigFiles, this, &SubframeSetup::updateTabsAvailability);
 

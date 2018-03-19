@@ -58,7 +58,7 @@ Diffractogram::Diffractogram()
     hb_.addWidget(new QLabel("normalize to:"));
     hb_.addWidget(&comboNormType_);
 
-    connect(&comboNormType_, _SLOT_(QComboBox, currentIndexChanged, int), [this](int index) {
+    connect(&comboNormType_, _SLOT_(QComboBox, currentIndexChanged, int), [](int index) {
             gSession->setNorm(eNorm(index)); });
 
     hb_.addWidget(new QLabel(" intensity from:"));
@@ -74,7 +74,7 @@ Diffractogram::Diffractogram()
         gSession->setIntenScaleAvg(on, intenScale_.value());
     });
 
-    connect(&intenScale_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val) {
+    connect(&intenScale_, _SLOT_(QDoubleSpinBox, valueChanged, double), [](double val) {
         if (val > 0)
             gSession->setIntenScaleAvg(gSession->intenScaledAvg(), val);
     });

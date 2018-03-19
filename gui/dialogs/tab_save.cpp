@@ -57,8 +57,8 @@ TabSave::TabSave(bool withTypes)
     g->addWidget(&rbDat_, 0, 0);
     g->addWidget(&rbCsv_, 1, 0);
 
-    connect(&rbDat_, &QRadioButton::clicked, [this]() { saveFmt = DAT_SFX; });
-    connect(&rbCsv_, &QRadioButton::clicked, [this]() { saveFmt = CSV_SFX; });
+    connect(&rbDat_, &QRadioButton::clicked, []() { saveFmt = DAT_SFX; });
+    connect(&rbCsv_, &QRadioButton::clicked, []() { saveFmt = CSV_SFX; });
 
     (saveFmt == CSV_SFX ? &rbCsv_ : &rbDat_)->setChecked(true);
 
