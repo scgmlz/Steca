@@ -19,6 +19,20 @@ GammaSelection::GammaSelection()
 {
 }
 
+QJsonObject GammaSelection::toJson() const
+{
+    return {
+        { "number of slices", QJsonValue(numSlices_) },
+        { "current slice index", QJsonValue(iSlice_) },
+    };
+}
+
+void GammaSelection::fromJson(const JsonObj& obj)
+{
+    setNumSlices(obj.loadInt("number of slices"));
+    selectSlice(obj.loadInt("current slice index"));
+}
+
 //! Resets fullRange_ according to loaded data.
 void GammaSelection::onData()
 {

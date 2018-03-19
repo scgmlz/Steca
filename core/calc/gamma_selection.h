@@ -23,6 +23,7 @@ class GammaSelection : public QObject {
 public:
     GammaSelection();
 
+    void fromJson(const JsonObj& obj);
     void onData();
 
     void setModeTakeAll();
@@ -39,6 +40,7 @@ public:
     int numSlices() const { return numSlices_; }
     int idxSlice() const { return iSlice_; }
     bool isModeMinMax() const { return mode_==Mode::minmax; }
+    QJsonObject toJson() const;
 
 private:
     void recomputeCache();

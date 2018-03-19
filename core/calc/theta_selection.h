@@ -23,6 +23,7 @@ class ThetaSelection : public QObject {
 public:
     ThetaSelection();
 
+    void fromJson(const JsonObj& obj);
     void onData();
     void recomputeCache();
 
@@ -31,6 +32,7 @@ public:
     const Range& range() const { return range_; }
     int iSlice() const { return iSlice_; }
     bool isActive() const { return numSlices_; }
+    QJsonObject toJson() const;
 
 private:
     Range fullRange_;

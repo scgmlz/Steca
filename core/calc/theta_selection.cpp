@@ -19,6 +19,20 @@ ThetaSelection::ThetaSelection()
 {
 }
 
+QJsonObject ThetaSelection::toJson() const
+{
+    return {
+        { "number of slices", QJsonValue(numSlices_) },
+        { "current slice index", QJsonValue(iSlice_) },
+    };
+}
+
+void ThetaSelection::fromJson(const JsonObj& obj)
+{
+    numSlices_ = obj.loadInt("number of slices");
+    selectSlice(obj.loadInt("current slice index"));
+}
+
 //! Resets fullRange_ and numSlices_ according to loaded data.
 void ThetaSelection::onData()
 {

@@ -64,11 +64,14 @@ QByteArray Session::serializeSession() const
     top.insert("baseline", baseline().toJson());
 
     // TODO serialize metaSelection_
+
     top.insert("average intensity?", intenScaledAvg());
     top.insert("intensity scale", qreal_to_json((qreal)intenScale()));
     // TODO serialize image rotation and mirror
     top.insert("detector", geometry().toJson());
     top.insert("cut", imageCut().toJson());
+    top.insert("gamma selection", gammaSelection().toJson());
+    top.insert("theta selection", thetaSelection().toJson());
 
     return QJsonDocument(top).toJson();
 }
@@ -96,6 +99,8 @@ void Session::sessionFromJson(const QByteArray& json) THROWS
 
     geometry().fromJson(top.loadObj("detector"));
     imageCut().fromJson(top.loadObj("cut"));
+    gammaSelection().fromJson(top.loadObj("gamma selection"));
+    thetaSelection().fromJson(top.loadObj("theta selection"));
 
     TR("installed session from file");
 }
