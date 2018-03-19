@@ -24,7 +24,6 @@ Toggles::Toggles()
 #define AT &QAction::toggled
 
     connect(&enableCorr, AT, [](bool on) { gSession->corrset().tryEnable(on); });
-    connect(&mirrorImage, AT, [](bool on) { gGui->setImageMirror(on); });
 
     connect(&fixedIntenImage, AT, [](bool on) {
         emit gSession->sigImage();

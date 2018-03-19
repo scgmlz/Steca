@@ -90,7 +90,6 @@ int main(int argc, char* argv[]) {
     mainwin.show();
     if (nonoptArgs.size())
         gConsole->call("@file " + nonoptArgs[0]);
-    // app.dumpObjectTree();
 
     return app.exec();
 }

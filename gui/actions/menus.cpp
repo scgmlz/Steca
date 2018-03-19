@@ -14,6 +14,7 @@
 
 #include "menus.h"
 #include "gui/mainwin.h"
+#include "gui/actions/image_trafo_actions.h"
 #include "gui/actions/triggers.h"
 #include "gui/actions/toggles.h"
 
@@ -49,8 +50,8 @@ Menus::Menus(QMenuBar* mbar)
 
     image_ = actionsToMenu(
         "&Image",
-        {   &triggers->rotateImage,
-                &toggles->mirrorImage,
+        {   &gGui->imageTrafoActions->rotateImage,
+                &gGui->imageTrafoActions->mirrorImage,
                 &toggles->fixedIntenImage,
                 &toggles->linkCuts,
                 &toggles->showOverlay,

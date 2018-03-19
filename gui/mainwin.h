@@ -41,6 +41,10 @@ public:
 
     class Triggers* triggers;
     class Toggles* toggles;
+    class ImageTrafoActions* imageTrafoActions;
+
+    void setImageRotate(ImageTransform);
+    void setImageMirror(bool);
 
 private:
     void initLayout();
@@ -58,9 +62,6 @@ private:
 
     void addFiles();
     void loadCorrFile() THROWS;
-
-    void setImageRotate(ImageTransform);
-    void setImageMirror(bool);
 
     QDockWidget* dockFiles_;
     QDockWidget* dockClusters_;

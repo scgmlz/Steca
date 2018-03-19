@@ -27,7 +27,6 @@ public:
     CToggle fixedIntenDgram {"dfg.fixInt", "Fixed intensity scale", false, ":/icon/scale"};
     CToggle fixedIntenImage {"img.fixInt", "Global intensity scale", false, ":/icon/scale"};
     CToggle linkCuts {"linkCuts", "Link cuts", false, ":/icon/link"};
-    CToggle mirrorImage {"mirrorImage", "Mirror", false, ":/icon/mirrorHorz"};
     CToggle showBackground {"showBackground", "Show fitted background", false,
             ":/icon/showBackground"};
     CToggle showBins {"showBins", "Show bins", false, ":/icon/angle"};

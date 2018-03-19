@@ -15,6 +15,7 @@
 #include "mainwin.h"
 #include "core/session.h"
 #include "gui/actions/menus.h"
+#include "gui/actions/image_trafo_actions.h"
 #include "gui/actions/toggles.h"
 #include "gui/actions/triggers.h"
 #include "gui/capture_and_replay/console.h"
@@ -47,8 +48,9 @@ MainWin::MainWin()
     gConsole = Console::instance();
     gGui = this;
 
-    triggers = new Triggers();
-    toggles = new Toggles();
+    triggers = new Triggers;
+    toggles = new Toggles;
+    imageTrafoActions = new ImageTrafoActions;
     menus_ = new Menus(menuBar());
 
     setWindowIcon(QIcon(":/icon/retroStier"));
@@ -355,7 +357,7 @@ void MainWin::setImageRotate(ImageTransform rot)
     const char* mirrorIconFile;
 
     switch (rot.val & 3) {
-    default /* case */:
+    case 0:
         rotateIconFile = ":/icon/rotate0";
         mirrorIconFile = ":/icon/mirrorHorz";
         break;
@@ -371,10 +373,12 @@ void MainWin::setImageRotate(ImageTransform rot)
         rotateIconFile = ":/icon/rotate3";
         mirrorIconFile = ":/icon/mirrorVert";
         break;
+    default:
+        throw "bug: impossible rotation";
     }
 
-    triggers->rotateImage.setIcon(QIcon(rotateIconFile));
-    toggles->mirrorImage.setIcon(QIcon(mirrorIconFile));
+    imageTrafoActions->rotateImage.setIcon(QIcon(rotateIconFile));
+    imageTrafoActions->mirrorImage.setIcon(QIcon(mirrorIconFile));
     gSession->setImageTransformRotate(rot);
     // TODO gSession->imageCut().prevent_invalid_cuts()
     emit gSession->sigDetector();
@@ -382,7 +386,7 @@ void MainWin::setImageRotate(ImageTransform rot)
 
 void MainWin::setImageMirror(bool on)
 {
-    toggles->mirrorImage.setChecked(on);
+    imageTrafoActions->mirrorImage.setChecked(on);
     gSession->setImageTransformMirror(on);
     emit gSession->sigDetector();
 }

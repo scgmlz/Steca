@@ -15,6 +15,7 @@
 #include "controls_detector.h"
 #include "core/data/geometry.h"
 #include "core/session.h"
+#include "gui/actions/image_trafo_actions.h"
 #include "gui/actions/toggles.h"
 #include "gui/actions/triggers.h"
 #include "gui/base/controls.h"
@@ -72,9 +73,9 @@ GeometryControls::GeometryControls()
     mmGrid_.addWidget(new QLabel("mm"), 1, 2);
 
     trafoLayout_.addWidget(new QLabel("image rotate"));
-    trafoLayout_.addWidget(new XIconButton(&gGui->triggers->rotateImage));
+    trafoLayout_.addWidget(new XIconButton(&gGui->imageTrafoActions->rotateImage));
     trafoLayout_.addWidget(new QLabel("mirror"));
-    trafoLayout_.addWidget(new XIconButton(&gGui->toggles->mirrorImage));
+    trafoLayout_.addWidget(new XIconButton(&gGui->imageTrafoActions->mirrorImage));
     trafoLayout_.addStretch(1);
 
     offsetLayout_.addWidget(new QLabel("offset X"));

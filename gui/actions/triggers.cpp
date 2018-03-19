@@ -39,8 +39,6 @@ Triggers::Triggers()
     connect(&outputPolefigures, AT, []() { PoleFiguresFrame().exec(); });
     connect(&quit, AT, []() { gGui->close(); });
     connect(&removeFile, AT, []() { gSession->dataset().removeFile(); });
-    connect(&rotateImage, AT, []() { gGui->setImageRotate(
-       gSession->imageTransform().nextRotate()); });
     connect(&saveSession, AT, []() { gGui->saveSession(); });
     connect(&viewReset, AT, []() { gGui->viewReset(); });
 }

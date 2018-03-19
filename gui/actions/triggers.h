@@ -41,7 +41,6 @@ public:
     CTrigger removeFile {"removeFile", "Remove highlighted file", ":/icon/rem",
             QKeySequence::Delete};
     CTrigger removePeak {"removePeak", "Remove peak", ":/icon/rem"};
-    CTrigger rotateImage {"rotateImage", "Rotate", ":/icon/rotate0", Qt::CTRL | Qt::Key_R};
     CTrigger saveSession {"saveSession", "Save session..."};
     CTrigger viewReset {"viewReset", "Reset"};
 };
