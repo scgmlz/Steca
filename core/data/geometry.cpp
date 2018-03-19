@@ -52,6 +52,22 @@ Geometry::~Geometry()
     s.setValue("offsetY", midPixOffset_.j);
 }
 
+QJsonObject Geometry::toJson() const
+{
+    return {
+        { "distance", QJsonValue(detectorDistance()) },
+        { "pixel size", QJsonValue(pixSize()) },
+        { "beam offset", midPixOffset().toJson() }
+    };
+}
+
+void Geometry::fromJson(const JsonObj& obj)
+{
+    setDetectorDistance(obj.loadPreal("distance"));
+    setPixSize(obj.loadPreal("pixel size"));
+    setOffset(obj.loadIJ("beam offset"));
+}
+
 void Geometry::setDetectorDistance(qreal detectorDistance)
 {
     detectorDistance_ = qMin(qMax(detectorDistance, 10.), 9999.);

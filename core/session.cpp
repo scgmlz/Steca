@@ -67,16 +67,8 @@ QByteArray Session::serializeSession() const
     top.insert("average intensity?", intenScaledAvg());
     top.insert("intensity scale", qreal_to_json((qreal)intenScale()));
     // TODO serialize image rotation and mirror
+    top.insert("detector", geometry().toJson());
     top.insert("cut", imageCut().toJson());
-
-    const Geometry& geo = geometry();
-    QJsonObject sub {
-        { "distance", QJsonValue(geo.detectorDistance()) },
-        { "pixel size", QJsonValue(geo.pixSize()) },
-        { "beam offset", geo.midPixOffset().toJson() }
-    };
-    top.insert("detector", sub);
-
 
     return QJsonDocument(top).toJson();
 }
@@ -102,12 +94,7 @@ void Session::sessionFromJson(const QByteArray& json) THROWS
     qreal arg2 = top.loadPreal("intensity scale", 1);
     setIntenScaleAvg(arg1, arg2);
 
-
-    const JsonObj& det = top.loadObj("detector");
-    geometry().setDetectorDistance(det.loadPreal("distance"));
-    geometry().setPixSize(det.loadPreal("pixel size"));
-    geometry().setOffset(det.loadIJ("beam offset"));
-
+    geometry().fromJson(top.loadObj("detector"));
     imageCut().fromJson(top.loadObj("cut"));
 
     TR("installed session from file");

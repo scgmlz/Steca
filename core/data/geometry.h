@@ -30,6 +30,8 @@ public:
     ~Geometry();
     COMPARABLE(const Geometry&);
 
+    void fromJson(const JsonObj& obj);
+
     void setDetectorDistance(qreal);
     void setPixSize(qreal);
     void setOffset(const IJ& midPixOffset);
@@ -38,6 +40,7 @@ public:
     qreal pixSize() const { return pixSize_; }
     IJ& midPixOffset() { return midPixOffset_; }
     const IJ& midPixOffset() const { return midPixOffset_; }
+    QJsonObject toJson() const;
 
 private:
     qreal detectorDistance_; // the distance from the sample to the detector
