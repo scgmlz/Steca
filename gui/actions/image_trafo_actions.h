@@ -15,6 +15,7 @@
 #ifndef IMAGETRAFOACTIONS_H
 #define IMAGETRAFOACTIONS_H
 
+#include "core/data/image_transform.h"
 #include "gui/base/controls.h"
 
 //! Trigger and toggle to control image rotation and mirror.
@@ -24,6 +25,9 @@ public:
     ImageTrafoActions();
     CTrigger rotateImage {"rotateImage", "Rotate", ":/icon/rotate0", Qt::CTRL | Qt::Key_R};
     CToggle mirrorImage {"mirrorImage", "Mirror", false, ":/icon/mirrorHorz"};
+    void setImageRotate(const ImageTransform&);
+private:
+    void setImageMirror(bool on);
 };
 
 #endif // IMAGETRAFOACTIONS_H

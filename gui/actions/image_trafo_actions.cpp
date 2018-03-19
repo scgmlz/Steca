@@ -18,7 +18,47 @@
 
 ImageTrafoActions::ImageTrafoActions()
 {
-    connect(&mirrorImage, &QAction::toggled, [](bool on) { gGui->setImageMirror(on); });
-    connect(&rotateImage, &QAction::triggered, []() { gGui->setImageRotate(
-       gSession->imageTransform().nextRotate()); });
+    connect(&mirrorImage, &QAction::toggled, [this](bool on) { setImageMirror(on); });
+    connect(&rotateImage, &QAction::triggered, [this]() { setImageRotate(
+                gSession->imageTransform().nextRotate()); });
+}
+
+void ImageTrafoActions::setImageRotate(const ImageTransform& rot)
+{
+    const char* rotateIconFile;
+    const char* mirrorIconFile;
+
+    switch (rot.val & 3) {
+    case 0:
+        rotateIconFile = ":/icon/rotate0";
+        mirrorIconFile = ":/icon/mirrorHorz";
+        break;
+    case 1:
+        rotateIconFile = ":/icon/rotate1";
+        mirrorIconFile = ":/icon/mirrorVert";
+        break;
+    case 2:
+        rotateIconFile = ":/icon/rotate2";
+        mirrorIconFile = ":/icon/mirrorHorz";
+        break;
+    case 3:
+        rotateIconFile = ":/icon/rotate3";
+        mirrorIconFile = ":/icon/mirrorVert";
+        break;
+    default:
+        throw "bug: impossible rotation";
+    }
+
+    rotateImage.setIcon(QIcon(rotateIconFile));
+    mirrorImage.setIcon(QIcon(mirrorIconFile));
+    gSession->setImageTransformRotate(rot);
+    // TODO gSession->imageCut().prevent_invalid_cuts()
+    emit gSession->sigDetector();
+}
+
+void ImageTrafoActions::setImageMirror(bool on)
+{
+    mirrorImage.setChecked(on);
+    gSession->setImageTransformMirror(on);
+    emit gSession->sigDetector();
 }

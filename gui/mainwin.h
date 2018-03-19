@@ -43,9 +43,6 @@ public:
     class Toggles* toggles;
     class ImageTrafoActions* imageTrafoActions;
 
-    void setImageRotate(ImageTransform);
-    void setImageMirror(bool);
-
 private:
     void initLayout();
     void updateActionEnabling();

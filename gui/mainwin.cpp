@@ -311,7 +311,7 @@ void MainWin::sessionFromJson(const QByteArray& json) THROWS
     gSession->imageCut().setRight(x2);
     gSession->imageCut().setTop(y1);
     gSession->imageCut().setBottom(y2);
-    setImageRotate(ImageTransform(top.loadUint("image transform")));
+    imageTrafoActions->setImageRotate(ImageTransform(top.loadUint("image transform")));
 
     TR("sessionFromJson: going to load fit setup");
     gSession->baseline().fromJson(top.loadObj("baseline"));
@@ -349,44 +349,4 @@ void MainWin::loadCorrFile()
             return;
         gSession->corrset().loadFile(fileName);
     }
-}
-
-void MainWin::setImageRotate(ImageTransform rot)
-{
-    const char* rotateIconFile;
-    const char* mirrorIconFile;
-
-    switch (rot.val & 3) {
-    case 0:
-        rotateIconFile = ":/icon/rotate0";
-        mirrorIconFile = ":/icon/mirrorHorz";
-        break;
-    case 1:
-        rotateIconFile = ":/icon/rotate1";
-        mirrorIconFile = ":/icon/mirrorVert";
-        break;
-    case 2:
-        rotateIconFile = ":/icon/rotate2";
-        mirrorIconFile = ":/icon/mirrorHorz";
-        break;
-    case 3:
-        rotateIconFile = ":/icon/rotate3";
-        mirrorIconFile = ":/icon/mirrorVert";
-        break;
-    default:
-        throw "bug: impossible rotation";
-    }
-
-    imageTrafoActions->rotateImage.setIcon(QIcon(rotateIconFile));
-    imageTrafoActions->mirrorImage.setIcon(QIcon(mirrorIconFile));
-    gSession->setImageTransformRotate(rot);
-    // TODO gSession->imageCut().prevent_invalid_cuts()
-    emit gSession->sigDetector();
-}
-
-void MainWin::setImageMirror(bool on)
-{
-    imageTrafoActions->mirrorImage.setChecked(on);
-    gSession->setImageTransformMirror(on);
-    emit gSession->sigDetector();
 }
