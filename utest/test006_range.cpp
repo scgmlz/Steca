@@ -187,7 +187,7 @@ TEST(Range, Bound) {
 
 TEST(Range, Json) {
     Range r(-1, 2), r1;
-    r1.from_json(r.to_json());
+    r1.fromJson(r.toJson());
     EXPECT_EQ(r, r1);
 }
 
@@ -256,6 +256,6 @@ TEST(Ranges, Json) {
     rs.add(Range(-3, -2));
     rs.add(Range::infinite());
 
-    rs1.from_json(rs.to_json());
+    rs1.fromJson(rs.toJson());
     EXPECT_TRUE(RANGES_EQ(rs, rs1));
 }

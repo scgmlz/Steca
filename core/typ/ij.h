@@ -29,8 +29,8 @@ public:
 
     COMPARABLE(const IJ&)
 
-    QJsonObject to_json() const;
-    void from_json(const class JsonObj&) THROWS;
+    QJsonObject toJson() const;
+    void fromJson(const class JsonObj&) THROWS;
 };
 
 #endif // IJ_H

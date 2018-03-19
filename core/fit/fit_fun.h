@@ -39,8 +39,8 @@ public:
     void fit(const Curve&, const Ranges&);
     static Polynom fromFit(int degree, const Curve&, const Ranges&);
 
-    JsonObj to_json() const final;
-    void from_json(const JsonObj&) THROWS final;
+    JsonObj toJson() const final;
+    void fromJson(const JsonObj&) THROWS final;
 
     QString name() const final { return "polynom"; }
 };
@@ -55,7 +55,7 @@ public:
     void reset();
     void fit(const Curve& curve) { return fit(curve, range_); }
     virtual void fit(const Curve&, const Range&);
-    void from_json(const JsonObj&) THROWS;
+    void fromJson(const JsonObj&) THROWS;
     virtual void setRange(const Range& range) { range_ = range; }
     virtual void setGuessedPeak(const qpair& peak) { guessedPeak_ = peak; }
     virtual void setGuessedFWHM(const fwhm_t fwhm) { guessedFWHM_ = fwhm; }
@@ -68,7 +68,7 @@ public:
     virtual fwhm_t fittedFWHM() const = 0;
     virtual qpair peakError() const = 0;
     virtual fwhm_t fwhmError() const = 0;
-    JsonObj to_json() const final;
+    JsonObj toJson() const final;
     virtual bool isRaw() const { return false; } //!< overwritten in class Raw, obviously
 
 protected:

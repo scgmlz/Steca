@@ -15,7 +15,7 @@
 #include "core/session.h"
 
 void Baseline::fromJson(const JsonObj obj) {
-    ranges_.from_json(obj.loadArr("ranges"));
+    ranges_.fromJson(obj.loadArr("ranges"));
     polynomDegree_ = obj.loadUint("polynom degree");
 }
 
@@ -47,6 +47,6 @@ void Baseline::setPolynomDegree(int degree) {
 QJsonObject Baseline::toJson() const {
     QJsonObject ret;
     ret.insert("polynom degree", polynomDegree());
-    ret.insert("ranges", ranges().to_json());
+    ret.insert("ranges", ranges().toJson());
     return ret;
 }

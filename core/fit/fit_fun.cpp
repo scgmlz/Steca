@@ -83,14 +83,14 @@ Polynom Polynom::fromFit(int degree, const Curve& curve, const Ranges& ranges) {
     return poly;
 }
 
-JsonObj Polynom::to_json() const {
-    JsonObj ret = Function::to_json();
+JsonObj Polynom::toJson() const {
+    JsonObj ret = Function::toJson();
     ret.insert("type", name());
     return ret;
 }
 
-void Polynom::from_json(const JsonObj& obj) THROWS {
-    Function::from_json(obj);
+void Polynom::fromJson(const JsonObj& obj) THROWS {
+    Function::fromJson(obj);
 }
 
 // ************************************************************************** //
@@ -142,19 +142,19 @@ Curve PeakFunction::prepareFit(const Curve& curve, const Range& range) {
     return curve.intersect(range);
 }
 
-JsonObj PeakFunction::to_json() const {
-    JsonObj ret = Function::to_json();
-    ret.insert("range", range_.to_json());
-    ret.insert("guessed peak", guessedPeak_.to_json());
+JsonObj PeakFunction::toJson() const {
+    JsonObj ret = Function::toJson();
+    ret.insert("range", range_.toJson());
+    ret.insert("guessed peak", guessedPeak_.toJson());
     ret.insert("guessed fwhm", qreal_to_json(guessedFWHM_));
     ret.insert("type", name());
     return ret;
 }
 
-void PeakFunction::from_json(const JsonObj& obj) THROWS {
-    Function::from_json(obj);
+void PeakFunction::fromJson(const JsonObj& obj) THROWS {
+    Function::fromJson(obj);
     range_ = obj.loadRange("range");
-    guessedPeak_.from_json(obj.loadObj("guessed peak"));
+    guessedPeak_.fromJson(obj.loadObj("guessed peak"));
     guessedFWHM_ = obj.loadQreal("guessed fwhm");
 }
 

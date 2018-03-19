@@ -60,12 +60,14 @@ QByteArray Session::serializeSession() const
 
     top.insert("dataset", dataset().toJson());
     top.insert("corrset", corrset().toJson());
+    top.insert("peaks", peaks().toJson());
+    top.insert("baseline", baseline().toJson());
 
     const Geometry& geo = geometry();
     QJsonObject sub {
         { "distance", QJsonValue(geo.detectorDistance()) },
         { "pixel size", QJsonValue(geo.pixSize()) },
-        { "beam offset", geo.midPixOffset().to_json() }
+        { "beam offset", geo.midPixOffset().toJson() }
     };
     top.insert("detector", sub);
 
@@ -78,13 +80,6 @@ QByteArray Session::serializeSession() const
     top.insert("cut", sub);
 
     // TODO serialize image rotation and mirror
-
-
-
-    // TODO save cluster selection
-
-    top.insert("baseline", baseline().toJson());
-    top.insert("peaks", peaks().toJson());
 
     top.insert("averaged intensity ", intenScaledAvg());
     top.insert("intensity scale", qreal_to_json((qreal)intenScale()));
@@ -106,6 +101,7 @@ void Session::sessionFromJson(const QByteArray& json) THROWS
 
     dataset().fromJson(top.loadObj("dataset"));
     corrset().fromJson(top.loadObj("corrset"));
+    peaks().fromJson(top.loadArr("peaks"));
 
     const JsonObj& det = top.loadObj("detector");
     geometry().setDetectorDistance(det.loadPreal("distance"));
@@ -127,9 +123,6 @@ void Session::sessionFromJson(const QByteArray& json) THROWS
     qreal arg2 = top.loadPreal("intensity scale", 1);
     setIntenScaleAvg(arg1, arg2);
 
-    const QJsonArray& peaksInfo = top.loadArr("peaks");
-    for_i (peaksInfo.count())
-        peaks().add(peaksInfo.at(i).toObject());
 
     TR("installed session from file");
 }

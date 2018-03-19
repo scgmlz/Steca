@@ -31,11 +31,11 @@ void qpair::invalidate() {
     x = y = NAN;
 }
 
-QJsonObject qpair::to_json() const {
+QJsonObject qpair::toJson() const {
     return { { "x", qreal_to_json(x) }, { "y", qreal_to_json(y) } };
 }
 
-void qpair::from_json(const JsonObj& obj) THROWS {
+void qpair::fromJson(const JsonObj& obj) THROWS {
     x = obj.loadQreal("x");
     y = obj.loadQreal("y");
 }

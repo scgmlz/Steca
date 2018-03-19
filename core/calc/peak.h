@@ -27,7 +27,7 @@ public:
     Peak() = delete;
     Peak(const QString& functionName = "Raw");
 
-    static Peak* from_json(const JsonObj&) THROWS;
+    static Peak* fromJson(const JsonObj&) THROWS;
 
     void setPeakFunction(const QString&);
     void setRange(const Range&);
@@ -40,7 +40,7 @@ public:
     QString functionName() const { return peakFunction_->name(); }
     bool isRaw() const { return peakFunction_->isRaw(); }
     const Range& range() const { return peakFunction_->range(); }
-    JsonObj to_json() const;
+    JsonObj toJson() const;
 
 private:
     std::unique_ptr<PeakFunction> peakFunction_; //!< pimpl (pointer to implementation)
@@ -52,8 +52,8 @@ private:
 class Peaks {
 public:
     void clear();
+    void fromJson(const QJsonArray& arr);
     void add(const QString&);
-    void add(const QJsonObject& obj);
     void remove();
     void select(int i);
 

@@ -57,8 +57,8 @@ public:
 
     qreal bound(qreal) const; //!< limit the number to the interval, as qBound would
 
-    QJsonObject to_json() const;
-    void from_json(const JsonObj&) THROWS;
+    QJsonObject toJson() const;
+    void fromJson(const JsonObj&) THROWS;
 
     QString to_s(int precision=5, int digitsAfter=2) const;
 };
@@ -77,8 +77,8 @@ public:
     bool add(const Range&); //!< collapses overlapping ranges; returns true if *this changed
     bool remove(const Range&); //!< removes (cuts out) a range; returns whether there was a change
 
-    QJsonArray to_json() const;
-    void from_json(const QJsonArray&) THROWS;
+    QJsonArray toJson() const;
+    void fromJson(const QJsonArray&) THROWS;
 
 private:
     void sort();

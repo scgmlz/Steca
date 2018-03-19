@@ -56,14 +56,14 @@ void Peak::setPeakFunction(const QString& peakFunctionName) {
         peakFunction_->setRange(oldRange);
 }
 
-JsonObj Peak::to_json() const {
-    return peakFunction_->to_json();
+JsonObj Peak::toJson() const {
+    return peakFunction_->toJson();
 }
 
-Peak* Peak::from_json(const JsonObj& obj) THROWS {
+Peak* Peak::fromJson(const JsonObj& obj) THROWS {
     QString functionName = obj.loadString("type");
     Peak* ret = new Peak(functionName);
-    ret->peakFunction_->from_json(obj); // may throw
+    ret->peakFunction_->fromJson(obj); // may throw
     return ret;
 }
 
@@ -81,10 +81,6 @@ void Peaks::add(const QString& functionName) {
     Peak* peak(new Peak(functionName));
     ASSERT(peak);
     add(peak);
-}
-
-void Peaks::add(const QJsonObject& obj) {
-    add(Peak::from_json(obj));
 }
 
 void Peaks::add(Peak* peak) {
@@ -120,6 +116,12 @@ QStringList Peaks::names() const {
 QJsonArray Peaks::toJson() const {
     QJsonArray ret;
     for (auto& peak : peaks_)
-        ret.append(peak->to_json());
+        ret.append(peak->toJson());
     return ret;
+}
+
+void Peaks::fromJson(const QJsonArray& arr)
+{
+    for_i (arr.count())
+        add(Peak::fromJson(arr.at(i).toObject()));
 }

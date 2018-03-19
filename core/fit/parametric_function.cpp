@@ -34,14 +34,14 @@ void Function::Parameter::setValue(qreal value, qreal error) {
     error_ = error;
 }
 
-JsonObj Function::Parameter::to_json() const {
+JsonObj Function::Parameter::toJson() const {
     JsonObj ret;
     ret.insert("value", qreal_to_json(value_));
-    ret.insert("range", range_.to_json());
+    ret.insert("range", range_.toJson());
     return ret;
 }
 
-void Function::Parameter::from_json(const JsonObj& obj) THROWS {
+void Function::Parameter::fromJson(const JsonObj& obj) THROWS {
     value_ = obj.loadQreal("value");
     range_ = obj.loadRange("range");
 }
@@ -65,21 +65,21 @@ void Function::reset() {
     }
 }
 
-JsonObj Function::to_json() const {
+JsonObj Function::toJson() const {
     QJsonArray params;
     for (const Parameter& param : parameters_)
-        params.append(param.to_json().sup());
+        params.append(param.toJson().sup());
     JsonObj ret;
     ret.insert("parameters", params);
     return ret;
 }
 
-void Function::from_json(const JsonObj& obj) THROWS {
+void Function::fromJson(const JsonObj& obj) THROWS {
     QJsonArray params = obj.loadArr("parameters");
     int parCount = params.count();
     setParameterCount(parCount);
     for_i (parCount)
-        parameters_[i].from_json(params.at(i).toObject());
+        parameters_[i].fromJson(params.at(i).toObject());
 }
 
 qreal Function::parValue(int i, qreal const* parValues) const {

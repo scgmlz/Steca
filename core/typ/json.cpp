@@ -158,12 +158,12 @@ QString JsonObj::loadString(const QString& key, const QString& def) const THROWS
 
 Range JsonObj::loadRange(const QString& key) const THROWS {
     Range range;
-    range.from_json(loadObj(key));
+    range.fromJson(loadObj(key));
     return range;
 }
 
 IJ JsonObj::loadIJ(const QString& key) const THROWS {
     IJ ij;
-    ij.from_json(loadObj(key));
+    ij.fromJson(loadObj(key));
     return ij;
 }
