@@ -103,6 +103,7 @@ const Measurement* HighlightedData::measurement() const {
 // ************************************************************************** //
 
 void Dataset::clear() {
+    highlight().unset();
     files_.clear();
     onFileChanged();
     gSession->updateImageSize();
@@ -111,7 +112,7 @@ void Dataset::clear() {
 
 void Dataset::removeFile() {
     int i = highlight().fileIndex();
-    highlight().unset(); // temporarily, to avoid conflicts
+    highlight().unset(); // to avoid conflicts; will be reset below
     files_.erase(files_.begin()+i);
     onFileChanged();
     gSession->updateImageSize();
@@ -124,7 +125,7 @@ void Dataset::removeFile() {
         else if (i>0)
             highlight().setFile(i-1);
         else
-            qFatal("impossible case");
+            qFatal("bug: impossible case in Dataset::removeFile");
     }
 }
 
