@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef CHECKUPDATE_H
-#define CHECKUPDATE_H
+#ifndef CHECK_UPDATE_H
+#define CHECK_UPDATE_H
 
 class CheckUpdate {
 public:
@@ -21,4 +21,4 @@ public:
     CheckUpdate(class QWidget* parent);
 };
 
-#endif // CHECKUPDATE_H
+#endif // CHECK_UPDATE_H

@@ -14,7 +14,7 @@
 
 #include "gui/dialogs/about.h"
 #include "manifest.h"
-#include "gui/cfg/settings.h"
+#include "core/def/settings.h"
 #include "gui/mainwin.h"
 #include <QApplication>
 #include <QDate>

@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/cfg/settings.h
+//! @file      core/def/settings.h
 //! @brief     Defines class XSettings
 //!
 //! @homepage  https://github.com/scgmlz/Steca

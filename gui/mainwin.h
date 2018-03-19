@@ -19,7 +19,7 @@
 #include "core/data/rawfile.h"
 #include "core/data/image_transform.h"
 #include "core/typ/singleton.h"
-#include "gui/cfg/settings.h"
+#include "core/def/settings.h"
 #include <QDir>
 #include <QMainWindow>
 #include <QSplitter>

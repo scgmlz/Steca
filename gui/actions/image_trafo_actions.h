@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef IMAGETRAFOACTIONS_H
-#define IMAGETRAFOACTIONS_H
+#ifndef IMAGE_TRAFO_ACTIONS_H
+#define IMAGE_TRAFO_ACTIONS_H
 
 #include "core/data/image_transform.h"
 #include "gui/base/controls.h"
@@ -30,4 +30,4 @@ private:
     void setImageMirror(bool on);
 };
 
-#endif // IMAGETRAFOACTIONS_H
+#endif // IMAGE_TRAFO_ACTIONS_H

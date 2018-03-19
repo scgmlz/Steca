@@ -16,7 +16,7 @@
 #define DIALOG_PANELS_H
 
 #include "core/typ/range.h"
-#include "gui/cfg/settings.h"
+#include "core/def/settings.h"
 #include "gui/base/controls.h"
 #include <QGroupBox>
 

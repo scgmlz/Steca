@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/typ/types.h
+//! @file      core/typ/types.cpp
 //! @brief     Implements types TO_(INT|DOUBLE)
 //!
 //! @homepage  https://github.com/scgmlz/Steca

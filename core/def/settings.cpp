@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/cfg/settings.cpp
+//! @file      core/def/settings.cpp
 //! @brief     Implements class XSettings
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "gui/cfg/settings.h"
+#include "core/def/settings.h"
 #include "core/def/debug.h"
 
 XSettings::XSettings(const QString& group) {
