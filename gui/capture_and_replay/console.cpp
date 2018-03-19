@@ -110,6 +110,7 @@ Console::Console()
 Console::~Console()
 {
     log("# Steca session ended");
+    delete log_.device();
     while (!registryStack_.empty()) {
         delete registryStack_.top();
         registryStack_.pop();
