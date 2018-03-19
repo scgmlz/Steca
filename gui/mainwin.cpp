@@ -179,6 +179,7 @@ void MainWin::loadSession()
         QFile file(fileName);
         if (!(file.open(QIODevice::ReadOnly | QIODevice::Text)))
             THROW("Cannot open file for reading: " % fileName);
+        TakesLongTime __;
         gSession->sessionFromJson(file.readAll());
     } catch(Exception& ex) {
         qWarning() << "Could not load session from file " << fileName << ":\n"

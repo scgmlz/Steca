@@ -16,6 +16,7 @@
 #include "core/loaders/loaders.h"
 
 void Corrset::clear() {
+    removeFile();
     enabled_ = true;
     hasNANs_ = false;
 }
@@ -85,4 +86,19 @@ void Corrset::calcIntensCorr() const {
         }
         intensCorr_.setInten(i + di, j + dj, inten_t(fact));
     }
+}
+
+QJsonObject Corrset::toJson() const {
+    QJsonObject ret;
+    if (hasFile())
+        ret.insert("file", raw_->fileInfo().absoluteFilePath());
+    ret.insert("enabled", enabled_);
+    return ret;
+}
+
+void Corrset::fromJson(const JsonObj& obj)
+{
+    if (obj.find("file") != obj.end())
+        loadFile(obj.loadString("file"));
+    enabled_ = obj.loadBool("enabled", true);
 }

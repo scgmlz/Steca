@@ -58,6 +58,9 @@ QByteArray Session::serializeSession() const
 {
     QJsonObject top;
 
+    top.insert("dataset", dataset().toJson());
+    top.insert("corrset", corrset().toJson());
+
     const Geometry& geo = geometry();
     QJsonObject sub {
         { "distance", QJsonValue(geo.detectorDistance()) },
@@ -76,11 +79,7 @@ QByteArray Session::serializeSession() const
 
     // TODO serialize image rotation and mirror
 
-    top.insert("files", dataset().to_json());
-    top.insert("combine", dataset().binning());
 
-    if (hasCorrFile())
-        top.insert("correction file", corrset().raw().fileInfo().absoluteFilePath());
 
     // TODO save cluster selection
 
@@ -100,49 +99,15 @@ void Session::sessionFromJson(const QByteArray& json) THROWS
     if (!(QJsonParseError::NoError == parseError.error))
         THROW("Error parsing session file");
 
-    TakesLongTime __;
 
     clear();
     TR("sessionFromJson: cleared old session");
 
     JsonObj top(doc.object());
 
-    const QJsonArray& files = top.loadArr("files");
-    QStringList paths;
-    for (const QJsonValue& file : files) {
-        QString filePath = file.toString();
-        QDir dir(filePath);
-        if(!dir.makeAbsolute())
-            THROW("Invalid file path: " + filePath);
-        paths.append(dir.absolutePath());
-    }
-    dataset().addGivenFiles(paths);
+    dataset().fromJson(top.loadObj("dataset"));
+    corrset().fromJson(top.loadObj("corrset"));
 
-    const QJsonArray& sels = top.loadArr("selected files", true);
-    vec<int> selIndexes;
-    for (const QJsonValue& sel : sels) {
-        int i = sel.toInt();
-        int index = qBound(0, i, files.count());
-        if(i != index)
-            THROW(QString("Invalid selection index: %1").arg(i));
-        selIndexes.append(index);
-    }
-
-    std::sort(selIndexes.begin(), selIndexes.end());
-    int lastIndex = -1;
-    for (int index : selIndexes) {
-        if (index >= lastIndex)
-            THROW("Duplicate selection index");
-        lastIndex = index;
-    }
-
-    TR("sessionFromJson: going to collect cluster");
-    dataset().setBinning(top.loadPint("combine", 1));
-
-    TR("sessionFromJson: going to set correction file");
-    corrset().loadFile(top.loadString("correction file", ""));
-
-    TR("sessionFromJson: going to load detector geometry");
     const JsonObj& det = top.loadObj("detector");
     geometry().setDetectorDistance(det.loadPreal("distance"));
     geometry().setPixSize(det.loadPreal("pixel size"));

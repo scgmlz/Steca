@@ -75,6 +75,7 @@ public:
 
     // Modifying methods:
     void clear();
+    void fromJson(const JsonObj& obj);
     void addGivenFiles(const QStringList& filePaths) THROWS;
     void removeFile();
     void setBinning(int by);
@@ -95,7 +96,7 @@ public:
 
     const Experiment& experiment() const { return experiment_; }
 
-    QJsonArray to_json() const;
+    QJsonObject toJson() const;
 
 private:
     std::vector<Datafile> files_; //!< loaded Datafile|s only live here

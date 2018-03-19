@@ -26,6 +26,7 @@ class Corrset final {
 public:
     // Modifying methods:
     void clear();
+    void fromJson(const JsonObj& obj);
     void removeFile();
     void loadFile(const QString& filePath) THROWS;
     void tryEnable(bool on);
@@ -39,6 +40,7 @@ public:
     bool hasNANs() const { return hasNANs_; }
     shp_Image image() const { return corrImage_; }
     const Image* intensCorr() const;
+    QJsonObject toJson() const;
 
 private:
     void onCorr();

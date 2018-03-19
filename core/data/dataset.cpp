@@ -244,11 +244,24 @@ const Cluster& Dataset::clusterAt(int i) const {
     return *allClusters_[i];
 }
 
-QJsonArray Dataset::to_json() const {
-    QJsonArray ret;
+QJsonObject Dataset::toJson() const {
+    QJsonObject ret;
+    QJsonArray arr;
     for (const Datafile& file : files_)
-        ret.append(file.raw_->fileInfo().absoluteFilePath());
+        arr.append(file.raw_->fileInfo().absoluteFilePath());
+    ret.insert("files", arr);
+    ret.insert("binning", binning_);
     return ret;
+}
+
+void Dataset::fromJson(const JsonObj& obj)
+{
+    const QJsonArray& files = obj.loadArr("files");
+    QStringList paths;
+    for (const QJsonValue& file : files)
+        paths.append(file.toString());
+    addGivenFiles(paths);
+    setBinning(obj.loadPint("binning", 1));
 }
 
 bool Dataset::hasFile(const QString& fileName) const {
