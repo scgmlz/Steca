@@ -19,6 +19,8 @@
 
 #include "core/session.h"
 #include "core/fit/peak_functions.h"
+#include <QDir>
+#include <QJsonDocument>
 
 Session* gSession; //!< global, for data handling
 
@@ -50,6 +52,125 @@ void Session::clear() {
 
     intenScaledAvg_ = true;
     intenScale_ = 1;
+}
+
+QByteArray Session::serializeSession() const
+{
+    QJsonObject top;
+
+    const Geometry& geo = geometry();
+    QJsonObject sub {
+        { "distance", QJsonValue(geo.detectorDistance()) },
+        { "pixel size", QJsonValue(geo.pixSize()) },
+        { "beam offset", geo.midPixOffset().to_json() }
+    };
+    top.insert("detector", sub);
+
+    const ImageCut& cut = imageCut();
+    sub = {
+        { "left", cut.left() },
+        { "top", cut.top() },
+        { "right", cut.right() },
+        { "bottom", cut.bottom() } };
+    top.insert("cut", sub);
+
+    // TODO serialize image rotation and mirror
+
+    top.insert("files", dataset().to_json());
+    top.insert("combine", dataset().binning());
+
+    if (hasCorrFile())
+        top.insert("correction file", corrset().raw().fileInfo().absoluteFilePath());
+
+    // TODO save cluster selection
+
+    top.insert("baseline", baseline().toJson());
+    top.insert("peaks", peaks().toJson());
+
+    top.insert("averaged intensity ", intenScaledAvg());
+    top.insert("intensity scale", qreal_to_json((qreal)intenScale()));
+
+    return QJsonDocument(top).toJson();
+}
+
+void Session::sessionFromJson(const QByteArray& json) THROWS
+{
+    QJsonParseError parseError;
+    QJsonDocument doc(QJsonDocument::fromJson(json, &parseError));
+    if (!(QJsonParseError::NoError == parseError.error))
+        THROW("Error parsing session file");
+
+    TakesLongTime __;
+
+    clear();
+    TR("sessionFromJson: cleared old session");
+
+    JsonObj top(doc.object());
+
+    const QJsonArray& files = top.loadArr("files");
+    QStringList paths;
+    for (const QJsonValue& file : files) {
+        QString filePath = file.toString();
+        QDir dir(filePath);
+        if(!dir.makeAbsolute())
+            THROW("Invalid file path: " + filePath);
+        paths.append(dir.absolutePath());
+    }
+    dataset().addGivenFiles(paths);
+
+    const QJsonArray& sels = top.loadArr("selected files", true);
+    vec<int> selIndexes;
+    for (const QJsonValue& sel : sels) {
+        int i = sel.toInt();
+        int index = qBound(0, i, files.count());
+        if(i != index)
+            THROW(QString("Invalid selection index: %1").arg(i));
+        selIndexes.append(index);
+    }
+
+    std::sort(selIndexes.begin(), selIndexes.end());
+    int lastIndex = -1;
+    for (int index : selIndexes) {
+        if (index >= lastIndex)
+            THROW("Duplicate selection index");
+        lastIndex = index;
+    }
+
+    TR("sessionFromJson: going to collect cluster");
+    dataset().setBinning(top.loadPint("combine", 1));
+
+    TR("sessionFromJson: going to set correction file");
+    corrset().loadFile(top.loadString("correction file", ""));
+
+    TR("sessionFromJson: going to load detector geometry");
+    const JsonObj& det = top.loadObj("detector");
+    geometry().setDetectorDistance(det.loadPreal("distance"));
+    geometry().setPixSize(det.loadPreal("pixel size"));
+    geometry().setOffset(det.loadIJ("beam offset"));
+
+    TR("sessionFromJson: going to load image cut");
+    const JsonObj& cut = top.loadObj("cut");
+    int x1 = cut.loadUint("left"), y1 = cut.loadUint("top"),
+         x2 = cut.loadUint("right"), y2 = cut.loadUint("bottom");
+    imageCut().setLinked(false);
+    imageCut().setLeft(x1);
+    imageCut().setRight(x2);
+    imageCut().setTop(y1);
+    imageCut().setBottom(y2);
+
+    TR("sessionFromJson: going to load fit setup");
+    baseline().fromJson(top.loadObj("baseline"));
+
+    bool arg1 = top.loadBool("averaged intensity ", true);
+    qreal arg2 = top.loadPreal("intensity scale", 1);
+    setIntenScaleAvg(arg1, arg2);
+
+    TR("sessionFromJson: going to load peaks info");
+    const QJsonArray& peaksInfo = top.loadArr("peaks");
+    for_i (peaksInfo.count())
+        peaks().add(peaksInfo.at(i).toObject());
+
+    TR("installed session from file");
 }
 
 void Session::setMetaSelected(int i, bool on) {

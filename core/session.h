@@ -66,6 +66,7 @@ public:
 
     // Modifying methods:
     void clear();
+    void sessionFromJson(const QByteArray&) THROWS;
 
     void setMetaSelected(int, bool);
 
@@ -75,6 +76,8 @@ public:
     void setNorm(eNorm);
 
     // Const methods: // TODO expand corrset() calls in calling code
+    QByteArray serializeSession() const;
+
     bool hasData() const { return dataset().countFiles(); }
     bool hasCorrFile() const { return corrset().hasFile(); }
     const Image* intensCorr() const { return corrset().intensCorr(); }

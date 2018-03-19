@@ -26,7 +26,6 @@
 #include "gui/panels/subframe_metadata.h"
 #include "gui/panels/subframe_setup.h"
 #include "gui/base/filedialog.h"
-#include <QJsonDocument>
 #include <QMenuBar>
 #include <QStatusBar>
 #include <QStringBuilder> // for ".." % ..
@@ -181,7 +180,7 @@ void MainWin::loadSession()
         if (!(file.open(QIODevice::ReadOnly | QIODevice::Text)))
             THROW("Cannot open file for reading: " % fileName);
         QDir::setCurrent(QFileInfo(fileName).absolutePath());
-        sessionFromJson(file.readAll());
+        gSession->sessionFromJson(file.readAll());
     } catch(Exception& ex) {
         qWarning() << "Could not load session from file " << fileName << ":\n"
                    << ex.msg() << "\n"
@@ -201,132 +200,8 @@ void MainWin::saveSession()
     QFile* file = file_dialog::OutputFile("file", this, fileInfo.filePath());
     if (!file)
         return;
-    const int result = file->write(serializeSession());
+    const int result = file->write(gSession->serializeSession());
     if (!(result >= 0)) THROW("Could not write session");
-}
-
-QByteArray MainWin::serializeSession() const
-{
-    QJsonObject top;
-
-    const Geometry& geo = gSession->geometry();
-    QJsonObject sub {
-        { "distance", QJsonValue(geo.detectorDistance()) },
-        { "pixel size", QJsonValue(geo.pixSize()) },
-        { "beam offset", geo.midPixOffset().to_json() }
-    };
-    top.insert("detector", sub);
-
-    const ImageCut& cut = gSession->imageCut();
-    sub = {
-        { "left", cut.left() },
-        { "top", cut.top() },
-        { "right", cut.right() },
-        { "bottom", cut.bottom() } };
-    top.insert("cut", sub);
-
-    const ImageTransform& trn = gSession->imageTransform();
-    top.insert("image transform", trn.val);
-
-    top.insert("files", gSession->dataset().to_json());
-    top.insert("combine", gSession->dataset().binning());
-
-    if (gSession->hasCorrFile()) {
-        QString absPath = gSession->corrset().raw().fileInfo().absoluteFilePath();
-        QString relPath = QDir::current().relativeFilePath(absPath);
-        top.insert("correction file", relPath);
-    }
-
-    // TODO save cluster selection
-
-    top.insert("baseline", gSession->baseline().toJson());
-    top.insert("peaks", gSession->peaks().toJson());
-
-    top.insert("averaged intensity ", gSession->intenScaledAvg());
-    top.insert("intensity scale", qreal_to_json((qreal)gSession->intenScale()));
-
-    return QJsonDocument(top).toJson();
-}
-
-void MainWin::sessionFromJson(const QByteArray& json) THROWS
-{
-    QJsonParseError parseError;
-    QJsonDocument doc(QJsonDocument::fromJson(json, &parseError));
-    if (!(QJsonParseError::NoError == parseError.error))
-        THROW("Error parsing session file");
-
-    TakesLongTime __;
-
-    gSession->clear();
-    TR("sessionFromJson: cleared old session");
-
-    JsonObj top(doc.object());
-
-    const QJsonArray& files = top.loadArr("files");
-    QStringList paths;
-    for (const QJsonValue& file : files) {
-        QString filePath = file.toString();
-        QDir dir(filePath);
-        if(!dir.makeAbsolute())
-            THROW("Invalid file path: " + filePath);
-        paths.append(dir.absolutePath());
-    }
-    gSession->dataset().addGivenFiles(paths);
-
-    const QJsonArray& sels = top.loadArr("selected files", true);
-    vec<int> selIndexes;
-    for (const QJsonValue& sel : sels) {
-        int i = sel.toInt();
-        int index = qBound(0, i, files.count());
-        if(i != index)
-            THROW(QString("Invalid selection index: %1").arg(i));
-        selIndexes.append(index);
-    }
-
-    std::sort(selIndexes.begin(), selIndexes.end());
-    int lastIndex = -1;
-    for (int index : selIndexes) {
-        if (index >= lastIndex)
-            THROW("Duplicate selection index");
-        lastIndex = index;
-    }
-
-    TR("sessionFromJson: going to collect cluster");
-    gSession->dataset().setBinning(top.loadPint("combine", 1));
-
-    TR("sessionFromJson: going to set correction file");
-    gSession->corrset().loadFile(top.loadString("correction file", ""));
-
-    TR("sessionFromJson: going to load detector geometry");
-    const JsonObj& det = top.loadObj("detector");
-    gSession->geometry().setDetectorDistance(det.loadPreal("distance"));
-    gSession->geometry().setPixSize(det.loadPreal("pixel size"));
-    gSession->geometry().setOffset(det.loadIJ("beam offset"));
-
-    TR("sessionFromJson: going to load image cut");
-    const JsonObj& cut = top.loadObj("cut");
-    int x1 = cut.loadUint("left"), y1 = cut.loadUint("top"),
-         x2 = cut.loadUint("right"), y2 = cut.loadUint("bottom");
-    gSession->imageCut().setLinked(false);
-    gSession->imageCut().setLeft(x1);
-    gSession->imageCut().setRight(x2);
-    gSession->imageCut().setTop(y1);
-    gSession->imageCut().setBottom(y2);
-    imageTrafoActions->setImageRotate(ImageTransform(top.loadUint("image transform")));
-
-    TR("sessionFromJson: going to load fit setup");
-    gSession->baseline().fromJson(top.loadObj("baseline"));
-
-    bool arg1 = top.loadBool("averaged intensity ", true);
-    qreal arg2 = top.loadPreal("intensity scale", 1);
-    gSession->setIntenScaleAvg(arg1, arg2);
-
-    TR("sessionFromJson: going to load peaks info");
-    const QJsonArray& peaksInfo = top.loadArr("peaks");
-    for_i (peaksInfo.count())
-        gSession->peaks().add(peaksInfo.at(i).toObject());
-
-    TR("installed session from file");
 }
 
 void MainWin::addFiles()

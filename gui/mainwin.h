@@ -57,8 +57,6 @@ private:
     void loadSession();
     void saveSession();
     void clearSession();
-    QByteArray serializeSession() const;
-    void sessionFromJson(const QByteArray&) THROWS;
 
     void addFiles();
     void loadCorrFile() THROWS;
