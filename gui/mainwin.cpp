@@ -201,7 +201,9 @@ void MainWin::saveSession()
     if (!file)
         return;
     const int result = file->write(gSession->serializeSession());
-    if (!(result >= 0)) THROW("Could not write session");
+    delete file;
+    if (!(result >= 0))
+        THROW("Could not write session");
 }
 
 void MainWin::addFiles()
