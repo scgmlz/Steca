@@ -135,8 +135,8 @@ private:
     qreal intenScale_ {1};
     size2d imageSize_; //!< All images must have this same size
     ImageTransform imageTransform_;
-    ImageCut imageCut_;
     Geometry geometry_;
+    ImageCut imageCut_;
     GammaSelection gammaSelection_;
     ThetaSelection thetaSelection_;
     eNorm norm_ {eNorm::NONE};

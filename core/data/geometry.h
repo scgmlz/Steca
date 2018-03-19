@@ -54,6 +54,7 @@ public:
     COMPARABLE(const ImageCut&);
 
     void clear();
+    void fromJson(const JsonObj& obj);
     void setLeft(int);
     void setRight(int);
     void setTop(int);
@@ -67,6 +68,8 @@ public:
     int linked() const { return linked_; }
 
     size2d marginSize() const;
+    QJsonObject toJson() const;
+
 private:
     void confine(int& m1, int& m2, int maxTogether);
     void setAll(int);

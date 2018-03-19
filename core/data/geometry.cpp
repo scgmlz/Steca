@@ -17,6 +17,7 @@
 #include "core/def/comparators.h"
 #include "core/def/settings.h"
 #include "core/def/idiomatic_for.h"
+//#include "core/typ/json.h"
 #include <qmath.h>
 #include <iostream> // for debugging
 
@@ -91,6 +92,26 @@ ImageCut::ImageCut(int left, int top, int right, int bottom)
 void ImageCut::clear()
 {
     *this = ImageCut();
+}
+
+QJsonObject ImageCut::toJson() const
+{
+    return {
+        { "left", left_ },
+        { "top", top_ },
+        { "right", right_ },
+        { "bottom", bottom_ },
+        { "linked", linked_ }
+    };
+}
+
+void ImageCut::fromJson(const JsonObj& obj)
+{
+    setLeft(obj.loadUint("left"));
+    setRight(obj.loadUint("right"));
+    setTop(obj.loadUint("top"));
+    setBottom(obj.loadUint("bottom"));
+    setLinked(obj.loadBool("linked"));
 }
 
 void ImageCut::confine(int& m1, int& m2, int maxTogether)

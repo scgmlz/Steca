@@ -63,6 +63,12 @@ QByteArray Session::serializeSession() const
     top.insert("peaks", peaks().toJson());
     top.insert("baseline", baseline().toJson());
 
+    // TODO serialize metaSelection_
+    top.insert("average intensity?", intenScaledAvg());
+    top.insert("intensity scale", qreal_to_json((qreal)intenScale()));
+    // TODO serialize image rotation and mirror
+    top.insert("cut", imageCut().toJson());
+
     const Geometry& geo = geometry();
     QJsonObject sub {
         { "distance", QJsonValue(geo.detectorDistance()) },
@@ -71,18 +77,6 @@ QByteArray Session::serializeSession() const
     };
     top.insert("detector", sub);
 
-    const ImageCut& cut = imageCut();
-    sub = {
-        { "left", cut.left() },
-        { "top", cut.top() },
-        { "right", cut.right() },
-        { "bottom", cut.bottom() } };
-    top.insert("cut", sub);
-
-    // TODO serialize image rotation and mirror
-
-    top.insert("averaged intensity ", intenScaledAvg());
-    top.insert("intensity scale", qreal_to_json((qreal)intenScale()));
 
     return QJsonDocument(top).toJson();
 }
@@ -102,27 +96,19 @@ void Session::sessionFromJson(const QByteArray& json) THROWS
     dataset().fromJson(top.loadObj("dataset"));
     corrset().fromJson(top.loadObj("corrset"));
     peaks().fromJson(top.loadArr("peaks"));
+    baseline().fromJson(top.loadObj("baseline"));
+
+    bool arg1 = top.loadBool("average intensity?", true);
+    qreal arg2 = top.loadPreal("intensity scale", 1);
+    setIntenScaleAvg(arg1, arg2);
+
 
     const JsonObj& det = top.loadObj("detector");
     geometry().setDetectorDistance(det.loadPreal("distance"));
     geometry().setPixSize(det.loadPreal("pixel size"));
     geometry().setOffset(det.loadIJ("beam offset"));
 
-    const JsonObj& cut = top.loadObj("cut");
-    int x1 = cut.loadUint("left"), y1 = cut.loadUint("top"),
-         x2 = cut.loadUint("right"), y2 = cut.loadUint("bottom");
-    imageCut().setLinked(false);
-    imageCut().setLeft(x1);
-    imageCut().setRight(x2);
-    imageCut().setTop(y1);
-    imageCut().setBottom(y2);
-
-    baseline().fromJson(top.loadObj("baseline"));
-
-    bool arg1 = top.loadBool("averaged intensity ", true);
-    qreal arg2 = top.loadPreal("intensity scale", 1);
-    setIntenScaleAvg(arg1, arg2);
-
+    imageCut().fromJson(top.loadObj("cut"));
 
     TR("installed session from file");
 }
