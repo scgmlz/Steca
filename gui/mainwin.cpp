@@ -88,9 +88,11 @@ MainWin::MainWin()
 MainWin::~MainWin()
 {
     saveSettings();
+    // the following deletions are obligatory to prevent a crash upon closing this MainWin:
     delete imageTrafoActions;
     delete triggers;
     delete toggles;
+    // whereas all the following only reduces the number of perfectly inconsequential leaks:
     delete menus_;
     delete frameImage_;
     delete frameDiffractogram_;
