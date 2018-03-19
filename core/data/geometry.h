@@ -28,6 +28,7 @@ public:
 
     Geometry();
     ~Geometry();
+    // TODO restore deletion when no longer prevented by AngleMap Geometry(const Geometry&) = delete;
     COMPARABLE(const Geometry&);
 
     void fromJson(const JsonObj& obj);
@@ -105,11 +106,11 @@ public:
 
     void computeAngles(Array2D<ScatterDirection>&) const;
 
-    Geometry geometry;
-    size2d size;
-    ImageCut cut;
-    IJ midPix;
-    deg midTth;
+    const Geometry geometry;
+    const size2d size;
+    const ImageCut cut;
+    const IJ midPix;
+    const deg midTth;
 };
 
 #endif // GEOMETRY_H

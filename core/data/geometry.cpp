@@ -36,20 +36,30 @@ qreal const Geometry::DEF_DETECTOR_PIXEL_SIZE = 1;
 
 Geometry::Geometry()
 {
+    /* TODO restore when there are no more spurious calls from AngleMap
+    std::cerr << "Geometry+\n";
     XSettings s("DetectorGeometry");
     detectorDistance_ = s.readReal("detectorDistance", DEF_DETECTOR_DISTANCE);
     pixSize_ = s.readReal("pixelSize", DEF_DETECTOR_PIXEL_SIZE);
     midPixOffset_.i = s.readInt("offsetX", 0);
     midPixOffset_.j = s.readInt("offsetY", 0);
+    */
+    // temporary replacement:
+    detectorDistance_ = (DEF_DETECTOR_DISTANCE);
+    pixSize_ = (DEF_DETECTOR_PIXEL_SIZE);
+    midPixOffset_.i = (0);
+    midPixOffset_.j = (0);
 }
 
 Geometry::~Geometry()
 {
+    /* TODO restore when there are no more spurious calls from AngleMap
     XSettings s("DetectorGeometry");
     s.setValue("detectorDistance", detectorDistance_);
     s.setValue("pixelSize", pixSize_);
     s.setValue("offsetX", midPixOffset_.i);
     s.setValue("offsetY", midPixOffset_.j);
+    */
 }
 
 QJsonObject Geometry::toJson() const

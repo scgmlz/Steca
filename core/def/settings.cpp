@@ -14,15 +14,12 @@
 
 #include "core/def/settings.h"
 #include "core/def/debug.h"
-#include <iostream>
 
 XSettings::XSettings(const QString& group) {
     beginGroup(group);
-    std::cerr << "XSettings+ " << group.toLatin1().constData() << "\n";
 }
 
 XSettings::~XSettings() {
-    std::cerr << "XSettings-\n";
     endGroup();
 }
 
