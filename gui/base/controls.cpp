@@ -12,10 +12,11 @@
 //
 // ************************************************************************** //
 
+#include "core/typ/exception.h"
+#include "core/typ/types.h"
 #include "gui/base/controls.h"
 #include "gui/base/displays.h"
 #include "gui/capture_and_replay/console.h"
-#include "gui/mainwin.h" // for _SLOT_
 #include <QApplication> // for qApp for new Action
 #include <QtGlobal> // to define Q_OS_WIN
 #include <iostream> // debug
@@ -230,7 +231,7 @@ CCheckBox::CCheckBox(const QString& _name, QAction* action)
     connect(action, &QAction::toggled, [this](bool on) { setChecked(on); });
     setToolTip(action->toolTip());
     setChecked(action->isChecked());
-    connect(this, _SLOT_(QCheckBox, stateChanged, int), [this](int val)->void {
+    connect(this, qOverload<int>(&QCheckBox::stateChanged), [this](int val)->void {
             gConsole->log2(hasFocus(), name()+" set "+QString::number(val)); });
 }
 
@@ -279,7 +280,7 @@ CComboBox::CComboBox(const QString& _name, const QStringList& items)
     : CSettable(_name)
 {
     addItems(items);
-    connect(this, _SLOT_(QComboBox, currentIndexChanged, int), [this](int val)->void {
+    connect(this, qOverload<int>(&QComboBox::currentIndexChanged), [this](int val)->void {
             gConsole->log2(hasFocus(), name()+" choose "+QString::number(val)); });
 }
 

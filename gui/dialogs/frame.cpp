@@ -17,7 +17,7 @@
 #include "core/session.h"
 #include "gui/dialogs/data_table.h"
 #include "gui/dialogs/dialog_panels.h"
-#include "gui/mainwin.h" // defines _SLOT_
+#include "gui/mainwin.h"
 #include <QScrollArea>
 
 struct showcol_t {
@@ -282,7 +282,7 @@ Frame::Frame(const QString& name, const QString& title, Params* params)
     connect(&actInterpolate_, &QAction::triggered, [this]() { interpolate(); });
 
     if (params_->panelPeak) {
-        connect(&params_->panelPeak->cbRefl, _SLOT_(QComboBox, currentIndexChanged, int),
+        connect(&params_->panelPeak->cbRefl, qOverload<int>(&QComboBox::currentIndexChanged),
                 [this](){ updatePeak(); });
     }
 
