@@ -271,8 +271,8 @@ ControlsDetector::ControlsDetector()
 
     //DEBUG
     auto* test = new CSpinBox {"test", 5, false};
-    connect(test, &CSpinBox::editingFinished, test, [test]() {
-            qDebug() << "TEST CHANGED " << test->value();
+    connect(test, &CSpinBox::valueReleased, test, [test](int val) {
+            qDebug() << "TEST CHANGED " << test->value() << " = " << val;
             QThread::msleep(600);
             qDebug() << "WOKE UP "; },
         Qt::QueuedConnection);

@@ -128,6 +128,12 @@ XIconButton::XIconButton(QAction* action)
 // A QSpinBox controls an integer value. Therefore normally we need no extra width for a dot.
 // However, sometimes we want to make a QSpinBox exactly as wide as a given QDoubleSpinBox,
 // for nice vertical alignement. Then we use withDot=true.
+
+// The signal QSpinBox::valueChanged cannot be used to trigger lengthy computations
+// because it will cause duplicate incrementation. A workaround is described at
+// https://forum.qt.io/topic/89011. Here, we explicitly deal with editingFinished and
+// mouse release events.
+
 CSpinBox::CSpinBox(const QString& _name, int ndigits, bool withDot, int min, int max,
                    const QString& tooltip)
     : CSettable(_name)
@@ -137,8 +143,27 @@ CSpinBox::CSpinBox(const QString& _name, int ndigits, bool withDot, int min, int
     setMaximum(max > min ? max : min);
     if (tooltip!="")
         setToolTip(tooltip);
-    connect(this, _SLOT_(QSpinBox, valueChanged, int), [this](int val)->void {
-            gConsole->log2(hasFocus(), name()+" set "+QString::number(val)); });
+    reportedValue_ = value();
+    connect(this, &QSpinBox::editingFinished, this, &CSpinBox::reportChange);
+    connect(this, qOverload<int>(&QSpinBox::valueChanged), [this](int val)->void {
+            if(!hasFocus())
+                gConsole->log2(false, name()+" set "+QString::number(val)); });
+}
+
+void CSpinBox::mouseReleaseEvent(QMouseEvent *event)
+{
+    QSpinBox::mouseReleaseEvent(event);
+    reportChange();
+}
+
+void CSpinBox::reportChange()
+{
+    int val = value();
+    if (val == reportedValue_)
+        return;
+    reportedValue_ = val;
+    gConsole->log2(true, name()+" set "+QString::number(val));
+    emit valueReleased(val);
 }
 
 void CSpinBox::onCommand(const QStringList& args)
