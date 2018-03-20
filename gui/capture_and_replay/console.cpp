@@ -94,7 +94,7 @@ Console::Console()
 {
     gConsole = this;
     notifier_ = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read, this);
-    connect(notifier_, SIGNAL(activated(int)), this, SLOT(readLine()));
+    connect(notifier_, &QSocketNotifier::activated, [this](int) { readLine(); });
 
     // start registry
     registryStack_.push(new CommandRegistry("main"));
