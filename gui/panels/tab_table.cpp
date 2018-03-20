@@ -18,6 +18,7 @@
 #include "gui/actions/triggers.h"
 #include "gui/dialogs/data_table.h"
 #include <QScrollArea>
+#include <QThread> // for sleep for debugging
 #include <iostream>
 
 struct showcol_t {
@@ -163,7 +164,9 @@ ColumnSelector::ColumnSelector(DataView& table, showcol_vec& showCols)
 TableWidget::TableWidget()
 {
     // inbound connection
-    connect(gSession, &Session::sigPeaks, [this]() { calculate(); });
+    connect(gSession, &Session::sigPeaks, [this]() {
+            QThread::msleep(3000); });
+            // calculate(); });
 
     // business logic // TODO: move elsewhere
     const QStringList& headers = PeakInfo::dataTags(false);

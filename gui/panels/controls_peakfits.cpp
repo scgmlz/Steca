@@ -20,6 +20,7 @@
 #include "gui/actions/toggles.h"
 #include "gui/actions/triggers.h"
 #include <QStackedWidget>
+#include <QThread> // for sleep for debugging
 
 namespace {
 qreal safeReal(qreal val) { return qIsFinite(val) ? val : 0.0; }
@@ -131,11 +132,11 @@ RangeControl::RangeControl()
     connect(gSession, &Session::sigPeakHighlight, this, &RangeControl::onData);
 
     // outbound connections
-    connect(&spinRangeMin_, _SLOT_(QDoubleSpinBox, valueChanged, double),  [this](double val) {
+    connect(&spinRangeMin_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val) {
             qDebug() << "MIN CHANGED " << val;
             qreal antival = qMax(spinRangeMax_.value(), val);
             gSession->peaks().selectedPeak()->setRange(Range(val, antival)); });
-    connect(&spinRangeMax_, _SLOT_(QDoubleSpinBox, valueChanged, double),  [this](double val) {
+    connect(&spinRangeMax_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val) {
             qDebug() << "MAX CHANGED " << val;
             qreal antival = qMin(spinRangeMin_.value(), val);
             gSession->peaks().selectedPeak()->setRange(Range(antival, val)); });
@@ -329,6 +330,15 @@ ControlsPeakfits::ControlsPeakfits()
     box_.addLayout(&topControls_);
 
     box_.addWidget(new PeaksView);
+    //DEBUG
+    auto* test = new QSpinBox;
+    connect(test, qOverload<int>(&QSpinBox::valueChanged), test, [this](int val) {
+            qDebug() << "TEST CHANGED " << val;
+            QThread::msleep(600);
+            qDebug() << "WOKE UP " << val; },
+        Qt::QueuedConnection);
+    box_.addWidget(test);
+
     box_.addWidget(&comboReflType_);
     box_.addWidget(new RangeControl);
     box_.addWidget(new PeakdataView);
