@@ -31,6 +31,8 @@ Session::Session()
 
     register_peak_functions();
 
+    geometry().fromSettings();
+
     // Some signals imply other signals:
     connect(this, &Session::sigGamma, this, &Session::sigDiffractogram);
     connect(this, &Session::sigDataHighlight, &gammaSelection_, &GammaSelection::onData);
@@ -38,6 +40,11 @@ Session::Session()
     connect(this, &Session::sigDataHighlight, this, &Session::sigImage);
     connect(this, &Session::sigDetector, this, &Session::sigImage);
     connect(this, &Session::sigNorm, this, &Session::sigImage);
+}
+
+Session::~Session()
+{
+    geometry().toSettings();
 }
 
 void Session::clear() {
@@ -52,28 +59,6 @@ void Session::clear() {
 
     intenScaledAvg_ = true;
     intenScale_ = 1;
-}
-
-QByteArray Session::serializeSession() const
-{
-    QJsonObject top;
-
-    top.insert("dataset", dataset().toJson());
-    top.insert("corrset", corrset().toJson());
-    top.insert("peaks", peaks().toJson());
-    top.insert("baseline", baseline().toJson());
-
-    // TODO serialize metaSelection_
-
-    top.insert("average intensity?", intenScaledAvg());
-    top.insert("intensity scale", qreal_to_json((qreal)intenScale()));
-    // TODO serialize image rotation and mirror
-    top.insert("detector", geometry().toJson());
-    top.insert("cut", imageCut().toJson());
-    top.insert("gamma selection", gammaSelection().toJson());
-    top.insert("theta selection", thetaSelection().toJson());
-
-    return QJsonDocument(top).toJson();
 }
 
 void Session::sessionFromJson(const QByteArray& json) THROWS
@@ -103,6 +88,28 @@ void Session::sessionFromJson(const QByteArray& json) THROWS
     thetaSelection().fromJson(top.loadObj("theta selection"));
 
     TR("installed session from file");
+}
+
+QByteArray Session::serializeSession() const
+{
+    QJsonObject top;
+
+    top.insert("dataset", dataset().toJson());
+    top.insert("corrset", corrset().toJson());
+    top.insert("peaks", peaks().toJson());
+    top.insert("baseline", baseline().toJson());
+
+    // TODO serialize metaSelection_
+
+    top.insert("average intensity?", intenScaledAvg());
+    top.insert("intensity scale", qreal_to_json((qreal)intenScale()));
+    // TODO serialize image rotation and mirror
+    top.insert("detector", geometry().toJson());
+    top.insert("cut", imageCut().toJson());
+    top.insert("gamma selection", gammaSelection().toJson());
+    top.insert("theta selection", thetaSelection().toJson());
+
+    return QJsonDocument(top).toJson();
 }
 
 void Session::setMetaSelected(int i, bool on) {

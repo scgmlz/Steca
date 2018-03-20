@@ -36,6 +36,7 @@ class Session : public QObject {
     Q_OBJECT
 public:
     Session();
+    ~Session();
 
     // Accessor methods:
     Dataset& dataset() { return dataset_; }

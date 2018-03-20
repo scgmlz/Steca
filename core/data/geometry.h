@@ -27,10 +27,9 @@ public:
     static qreal const DEF_DETECTOR_PIXEL_SIZE;
 
     Geometry();
-    ~Geometry();
-    // TODO restore deletion when no longer prevented by AngleMap Geometry(const Geometry&) = delete;
     COMPARABLE(const Geometry&);
 
+    void fromSettings();
     void fromJson(const JsonObj& obj);
 
     void setDetectorDistance(qreal);
@@ -41,6 +40,7 @@ public:
     qreal pixSize() const { return pixSize_; }
     IJ& midPixOffset() { return midPixOffset_; }
     const IJ& midPixOffset() const { return midPixOffset_; }
+    void toSettings() const;
     QJsonObject toJson() const;
 
 private:

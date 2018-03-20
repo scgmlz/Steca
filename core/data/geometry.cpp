@@ -35,31 +35,34 @@ qreal const Geometry::DEF_DETECTOR_DISTANCE = 1035;
 qreal const Geometry::DEF_DETECTOR_PIXEL_SIZE = 1;
 
 Geometry::Geometry()
+    : detectorDistance_ {DEF_DETECTOR_DISTANCE}
+    , pixSize_ {DEF_DETECTOR_PIXEL_SIZE}
 {
-    /* TODO restore when there are no more spurious calls from AngleMap
-    std::cerr << "Geometry+\n";
+}
+
+void Geometry::fromSettings()
+{
     XSettings s("DetectorGeometry");
     detectorDistance_ = s.readReal("detectorDistance", DEF_DETECTOR_DISTANCE);
     pixSize_ = s.readReal("pixelSize", DEF_DETECTOR_PIXEL_SIZE);
     midPixOffset_.i = s.readInt("offsetX", 0);
     midPixOffset_.j = s.readInt("offsetY", 0);
-    */
-    // temporary replacement:
-    detectorDistance_ = (DEF_DETECTOR_DISTANCE);
-    pixSize_ = (DEF_DETECTOR_PIXEL_SIZE);
-    midPixOffset_.i = (0);
-    midPixOffset_.j = (0);
 }
 
-Geometry::~Geometry()
+void Geometry::toSettings() const
 {
-    /* TODO restore when there are no more spurious calls from AngleMap
     XSettings s("DetectorGeometry");
     s.setValue("detectorDistance", detectorDistance_);
     s.setValue("pixelSize", pixSize_);
     s.setValue("offsetX", midPixOffset_.i);
     s.setValue("offsetY", midPixOffset_.j);
-    */
+}
+
+void Geometry::fromJson(const JsonObj& obj)
+{
+    setDetectorDistance(obj.loadPreal("distance"));
+    setPixSize(obj.loadPreal("pixel size"));
+    setOffset(obj.loadIJ("beam offset"));
 }
 
 QJsonObject Geometry::toJson() const
@@ -69,13 +72,6 @@ QJsonObject Geometry::toJson() const
         { "pixel size", QJsonValue(pixSize()) },
         { "beam offset", midPixOffset().toJson() }
     };
-}
-
-void Geometry::fromJson(const JsonObj& obj)
-{
-    setDetectorDistance(obj.loadPreal("distance"));
-    setPixSize(obj.loadPreal("pixel size"));
-    setOffset(obj.loadIJ("beam offset"));
 }
 
 void Geometry::setDetectorDistance(qreal detectorDistance)
@@ -120,6 +116,15 @@ void ImageCut::clear()
     *this = ImageCut();
 }
 
+void ImageCut::fromJson(const JsonObj& obj)
+{
+    setLeft(obj.loadUint("left"));
+    setRight(obj.loadUint("right"));
+    setTop(obj.loadUint("top"));
+    setBottom(obj.loadUint("bottom"));
+    setLinked(obj.loadBool("linked"));
+}
+
 QJsonObject ImageCut::toJson() const
 {
     return {
@@ -129,15 +134,6 @@ QJsonObject ImageCut::toJson() const
         { "bottom", bottom_ },
         { "linked", linked_ }
     };
-}
-
-void ImageCut::fromJson(const JsonObj& obj)
-{
-    setLeft(obj.loadUint("left"));
-    setRight(obj.loadUint("right"));
-    setTop(obj.loadUint("top"));
-    setBottom(obj.loadUint("bottom"));
-    setLinked(obj.loadBool("linked"));
 }
 
 void ImageCut::confine(int& m1, int& m2, int maxTogether)
