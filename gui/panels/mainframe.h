@@ -24,11 +24,13 @@
 class Mainframe : public CTabWidget {
 public:
     Mainframe();
-    ~Mainframe();
 private:
     void render();
-    class DataImageTab* dataImageTab_;
-    class CorrImageTab* corrImageTab_;
+    class DataImageTab*  dataImageTab_;
+    class CorrImageTab*  corrImageTab_;
+    class TableWidget*   tableWidget_;
+    class DiagramWidget* diagramWidget_;
+    class PolefigWidget* polefigWidget_;
 };
 
 #endif // MAINFRAME_H

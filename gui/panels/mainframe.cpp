@@ -15,6 +15,9 @@
 #include "mainframe.h"
 #include "core/session.h"
 #include "gui/panels/tab_image.h"
+#include "gui/panels/tab_table.h"
+#include "gui/panels/tab_diagram.h"
+#include "gui/panels/tab_polefig.h"
 
 // ************************************************************************** //
 //  class Mainframe
@@ -26,6 +29,9 @@ Mainframe::Mainframe()
     setTabPosition(QTabWidget::North);
     addTab((dataImageTab_ = new DataImageTab), "Data image");
     addTab((corrImageTab_ = new CorrImageTab), "Corr image");
+    addTab((tableWidget_ = new TableWidget), "Table");
+    addTab((diagramWidget_ = new DiagramWidget), "Diagram");
+    addTab((polefigWidget_ = new PolefigWidget), "Polefig");
     connect(gSession, &Session::sigCorr, [this]() {
             setTabEnabled(1, gSession->corrset().hasFile()); });
     setTabEnabled(1, false);
@@ -42,11 +48,4 @@ void Mainframe::render()
     if (!currentTab)
         return;
     currentTab->render();
-}
-
-Mainframe::~Mainframe()
-{
-    clear();
-    delete dataImageTab_;
-    delete corrImageTab_;
 }
