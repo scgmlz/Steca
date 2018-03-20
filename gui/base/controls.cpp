@@ -21,8 +21,10 @@
 #include <iostream> // debug
 
 // ************************************************************************** //
-//  class Trigger
+//  QAction overloads CTrigger and CToggle
 // ************************************************************************** //
+
+//! @class CTrigger
 
 CTrigger::CTrigger(const QString& rawname, const QString& text, const QString& iconFile)
     : QAction(text, qApp)
@@ -56,9 +58,7 @@ void CTrigger::onCommand(const QStringList& args)
     trigger();
 }
 
-// ************************************************************************** //
-//  class Toggle
-// ************************************************************************** //
+//! @class CToggle
 
 CToggle::CToggle(const QString& rawname, const QString& text, bool on, const QString& iconFile)
     : QAction(text, qApp)
@@ -122,13 +122,15 @@ XIconButton::XIconButton(QAction* action)
 }
 
 // ************************************************************************** //
-//! @class CSpinBox
+//  control widget classes with console connection
 // ************************************************************************** //
 
+//! @class CSpinBox
+//!
 //! A QSpinBox controls an integer value. Therefore normally we need no extra width for a dot.
 //! However, sometimes we want to make a QSpinBox exactly as wide as a given QDoubleSpinBox,
 //! for nice vertical alignement. Then we use withDot=true.
-
+//!
 //! The signal QSpinBox::valueChanged cannot be used to trigger lengthy computations
 //! because it will cause duplicate incrementation. A workaround is described at
 //! https://forum.qt.io/topic/89011. Here, we explicitly deal with editingFinished and
@@ -175,9 +177,7 @@ void CSpinBox::onCommand(const QStringList& args)
     setValue(TO_INT(args[1]));
 }
 
-// ************************************************************************** //
 //! @class CDoubleSpinBox
-// ************************************************************************** //
 
 CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, qreal min, qreal max)
     : CSettable(_name)
@@ -218,9 +218,7 @@ void CDoubleSpinBox::onCommand(const QStringList& args)
     setValue(TO_DOUBLE(args[1]));
 }
 
-// ************************************************************************** //
-//  other control widget classes with console connection
-// ************************************************************************** //
+//! @class CCheckBox
 
 CCheckBox::CCheckBox(const QString& _name, QAction* action)
     : QCheckBox(action ? action->text().toLower() : "")
@@ -251,6 +249,8 @@ void CCheckBox::onCommand(const QStringList& args)
     setChecked(TO_INT(args[1]));
 }
 
+//! @class CRadioButton
+
 CRadioButton::CRadioButton(const QString& _name, const QString& text)
     : QRadioButton(text)
     , CSettable(_name)
@@ -273,6 +273,8 @@ void CRadioButton::onCommand(const QStringList& args)
         THROW("Invalid argument to command 'switch'");
 }
 
+//! @class CComboBox
+
 CComboBox::CComboBox(const QString& _name, const QStringList& items)
     : CSettable(_name)
 {
@@ -289,6 +291,8 @@ void CComboBox::onCommand(const QStringList& args)
         THROW("Missing argument to command 'choose'");
     setCurrentIndex(TO_INT(args[1]));
 }
+
+//! @class CTabWidget
 
 CTabWidget::CTabWidget(const QString& _name)
     : CSettable(_name)
@@ -311,9 +315,7 @@ void CTabWidget::onCommand(const QStringList& args)
     setCurrentIndex(val);
 }
 
-// ************************************************************************** //
-//  class CFileDialog
-// ************************************************************************** //
+//! @class CFileDialog
 
 CFileDialog::CFileDialog(QWidget *parent, const QString &caption,
                          const QString &directory, const QString &filter)
