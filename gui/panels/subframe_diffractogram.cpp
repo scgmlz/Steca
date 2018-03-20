@@ -58,7 +58,7 @@ Diffractogram::Diffractogram()
     hb_.addWidget(new QLabel("normalize to:"));
     hb_.addWidget(&comboNormType_);
 
-    connect(&comboNormType_, _SLOT_(QComboBox, currentIndexChanged, int), [](int index) {
+    connect(&comboNormType_, qOverload<int>(&QComboBox::currentIndexChanged), [](int index) {
             gSession->setNorm(eNorm(index)); });
 
     hb_.addWidget(new QLabel(" intensity from:"));

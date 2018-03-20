@@ -255,7 +255,7 @@ CRadioButton::CRadioButton(const QString& _name, const QString& text)
     : QRadioButton(text)
     , CSettable(_name)
 {
-    connect(this, _SLOT_(QRadioButton, toggled, bool), [this](bool val)->void {
+    connect(this, &QRadioButton::toggled, [this](bool val)->void {
             gConsole->log2(hasFocus(), name()+" switch "+(val?"on":"off")); });
 }
 

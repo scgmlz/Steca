@@ -315,7 +315,7 @@ ControlsPeakfits::ControlsPeakfits()
             gSession->peaks().add(comboReflType_.currentText()); });
     connect(&gGui->triggers->removePeak, &QAction::triggered, []() {
             gSession->peaks().remove(); });
-    connect(&comboReflType_, _SLOT_(QComboBox, currentIndexChanged, const QString&),
+    connect(&comboReflType_, qOverload<const QString&>(&QComboBox::currentIndexChanged),
             [](const QString& peakFunctionName) {
                 if (gSession->peaks().selectedPeak()) { // TODO rm this if
                     gSession->peaks().selectedPeak()->setPeakFunction(peakFunctionName);
