@@ -77,7 +77,7 @@ TabGraph::TabGraph(Params& params)
     grid_->setColumnStretch(grid_->columnCount(), 1);
 
     connect(
-        &params_.panelInterpolation->avgAlphaMax, _SLOT_(CDoubleSpinBox, valueReleased, double),
+        &params_.panelInterpolation->avgAlphaMax, &CDoubleSpinBox::valueReleased,
         [this]() { update(); });
 
     connect(&cbFlat_, &QCheckBox::toggled, [this]() { update(); });

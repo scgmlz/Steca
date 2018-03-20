@@ -119,7 +119,7 @@ IdxMeas::IdxMeas()
         "Number of measurement within the current group of measurements"}
 {
     connect(gSession, &Session::sigDataHighlight, this, &IdxMeas::fromCore);
-    connect(this, _SLOT_(CSpinBox, valueReleased, int), [](int val) {
+    connect(this, &CSpinBox::valueReleased, [](int val) {
             gSession->dataset().highlight().setMeasurement(val-1); });
     fromCore();
 }
@@ -246,9 +246,9 @@ DataImageTab::DataImageTab()
             emit gSession->sigImage(); });
 
     // outbound connections and control widget setup
-    connect(&idxTheta_, _SLOT_(CSpinBox, valueReleased, int), [](int val) {
+    connect(&idxTheta_, &CSpinBox::valueReleased, [](int val) {
             gSession->thetaSelection().selectSlice(val-1); });
-    connect(&idxSlice_, _SLOT_(CSpinBox, valueReleased, int), [](int val) {
+    connect(&idxSlice_, &CSpinBox::valueReleased, [](int val) {
             gSession->gammaSelection().selectSlice(val-1); });
 
     // layout
