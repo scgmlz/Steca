@@ -21,7 +21,7 @@
 #include "gui/base/controls.h"
 #include "gui/base/displays.h"
 #include "gui/mainwin.h"
-#include <QSpacerItem>
+#include <QThread> // for sleep for debugging
 
 // ************************************************************************** //
 //  local class GeometryControls
@@ -268,6 +268,16 @@ ControlsDetector::ControlsDetector()
     vbox->addWidget(new CutControls);
     vbox->addWidget(new ExperimentControls);
     vbox->addWidget(new GammaControls);
+
+    //DEBUG
+    auto* test = new CSpinBox {"test", 5, false};
+    connect(test, &CSpinBox::editingFinished, test, [test]() {
+            qDebug() << "TEST CHANGED " << test->value();
+            QThread::msleep(600);
+            qDebug() << "WOKE UP "; },
+        Qt::QueuedConnection);
+    vbox->addWidget(test);
+
     vbox->addStretch();
     setLayout(vbox);
 }

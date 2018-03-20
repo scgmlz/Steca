@@ -20,7 +20,6 @@
 #include "gui/actions/toggles.h"
 #include "gui/actions/triggers.h"
 #include <QStackedWidget>
-#include <QThread> // for sleep for debugging
 
 namespace {
 qreal safeReal(qreal val) { return qIsFinite(val) ? val : 0.0; }
@@ -327,18 +326,9 @@ ControlsPeakfits::ControlsPeakfits()
     topControls_.addStretch();
     topControls_.addWidget(new XIconButton(&gGui->triggers->addPeak));
     topControls_.addWidget(new XIconButton(&gGui->triggers->removePeak));
+
     box_.addLayout(&topControls_);
-
     box_.addWidget(new PeaksView);
-    //DEBUG
-    auto* test = new QSpinBox;
-    connect(test, qOverload<int>(&QSpinBox::valueChanged), test, [this](int val) {
-            qDebug() << "TEST CHANGED " << val;
-            QThread::msleep(600);
-            qDebug() << "WOKE UP " << val; },
-        Qt::QueuedConnection);
-    box_.addWidget(test);
-
     box_.addWidget(&comboReflType_);
     box_.addWidget(new RangeControl);
     box_.addWidget(new PeakdataView);
