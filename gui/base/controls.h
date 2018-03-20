@@ -72,7 +72,7 @@ public:
              const QString& tooltip="");
     void onCommand(const QStringList&) THROWS override;
 signals:
-    void valueReleased(int);
+    void valueReleased(int); //! Improving over valueChanged, do not signal intermediate states
 private:
     void mouseReleaseEvent(QMouseEvent *event) override;
     void reportChange();
@@ -81,9 +81,16 @@ private:
 
 //! Named QDoubleSpinBox that can be set by console command.
 class CDoubleSpinBox : public QDoubleSpinBox, private CSettable {
+    Q_OBJECT
 public:
     CDoubleSpinBox(const QString& name, int ndigits, qreal min = LLONG_MIN, qreal max = LLONG_MAX);
     void onCommand(const QStringList&) THROWS override;
+signals:
+    void valueReleased(double); //! Improving over valueChanged, do not signal intermediate states
+private:
+    void mouseReleaseEvent(QMouseEvent *event) override;
+    void reportChange();
+    double reportedValue_;
 };
 
 //! Named QCheckBox that can be set by console command.

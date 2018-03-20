@@ -122,17 +122,17 @@ XIconButton::XIconButton(QAction* action)
 }
 
 // ************************************************************************** //
-//  control widget classes with console connection
+//! @class CSpinBox
 // ************************************************************************** //
 
-// A QSpinBox controls an integer value. Therefore normally we need no extra width for a dot.
-// However, sometimes we want to make a QSpinBox exactly as wide as a given QDoubleSpinBox,
-// for nice vertical alignement. Then we use withDot=true.
+//! A QSpinBox controls an integer value. Therefore normally we need no extra width for a dot.
+//! However, sometimes we want to make a QSpinBox exactly as wide as a given QDoubleSpinBox,
+//! for nice vertical alignement. Then we use withDot=true.
 
-// The signal QSpinBox::valueChanged cannot be used to trigger lengthy computations
-// because it will cause duplicate incrementation. A workaround is described at
-// https://forum.qt.io/topic/89011. Here, we explicitly deal with editingFinished and
-// mouse release events.
+//! The signal QSpinBox::valueChanged cannot be used to trigger lengthy computations
+//! because it will cause duplicate incrementation. A workaround is described at
+//! https://forum.qt.io/topic/89011. Here, we explicitly deal with editingFinished and
+//! mouse release events.
 
 CSpinBox::CSpinBox(const QString& _name, int ndigits, bool withDot, int min, int max,
                    const QString& tooltip)
@@ -175,6 +175,10 @@ void CSpinBox::onCommand(const QStringList& args)
     setValue(TO_INT(args[1]));
 }
 
+// ************************************************************************** //
+//! @class CDoubleSpinBox
+// ************************************************************************** //
+
 CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, qreal min, qreal max)
     : CSettable(_name)
 {
@@ -182,8 +186,27 @@ CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, qreal min, qre
     ASSERT(min<=max);
     setMinimum(min);
     setMaximum(max);
-    connect(this, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val)->void {
-            gConsole->log2(hasFocus(), name()+" set "+QString::number(val)); });
+    reportedValue_ = value();
+    connect(this, &QDoubleSpinBox::editingFinished, this, &CDoubleSpinBox::reportChange);
+    connect(this, qOverload<double>(&QDoubleSpinBox::valueChanged), [this](double val)->void {
+            if(!hasFocus())
+                gConsole->log2(false, name()+" set "+QString::number(val)); });
+}
+
+void CDoubleSpinBox::mouseReleaseEvent(QMouseEvent *event)
+{
+    QDoubleSpinBox::mouseReleaseEvent(event);
+    reportChange();
+}
+
+void CDoubleSpinBox::reportChange()
+{
+    double val = value();
+    if (val == reportedValue_)
+        return;
+    reportedValue_ = val;
+    gConsole->log2(true, name()+" set "+QString::number(val));
+    emit valueReleased(val);
 }
 
 void CDoubleSpinBox::onCommand(const QStringList& args)
@@ -194,6 +217,10 @@ void CDoubleSpinBox::onCommand(const QStringList& args)
         THROW("Missing argument to command 'set'");
     setValue(TO_DOUBLE(args[1]));
 }
+
+// ************************************************************************** //
+//  other control widget classes with console connection
+// ************************************************************************** //
 
 CCheckBox::CCheckBox(const QString& _name, QAction* action)
     : QCheckBox(action ? action->text().toLower() : "")
