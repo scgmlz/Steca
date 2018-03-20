@@ -25,17 +25,17 @@ ControlsInterpolation::ControlsInterpolation()
     connect(gSession, &Session::sigInterpol, this, &ControlsInterpolation::fromCore);
 
     // outbound connections
-    connect(&stepAlpha_, _SLOT_(QDoubleSpinBox, valueChanged, double), [](double val) {
+    connect(&stepAlpha_, _SLOT_(CDoubleSpinBox, valueReleased, double), [](double val) {
             gSession->interpol().setStepAlpha(val); });
-    connect(&avgAlphaMax_, _SLOT_(QDoubleSpinBox, valueChanged, double), [](double val) {
+    connect(&avgAlphaMax_, _SLOT_(CDoubleSpinBox, valueReleased, double), [](double val) {
             gSession->interpol().setAvgAlphaMax(val); });
-    connect(&stepBeta_, _SLOT_(QDoubleSpinBox, valueChanged, double), [](double val) {
+    connect(&stepBeta_, _SLOT_(CDoubleSpinBox, valueReleased, double), [](double val) {
             gSession->interpol().setStepBeta(val); });
-    connect(&avgRadius_, _SLOT_(QDoubleSpinBox, valueChanged, double), [](double val) {
+    connect(&avgRadius_, _SLOT_(CDoubleSpinBox, valueReleased, double), [](double val) {
             gSession->interpol().setAvgRadius(val); });
-    connect(&idwRadius_, _SLOT_(QDoubleSpinBox, valueChanged, double), [](double val) {
+    connect(&idwRadius_, _SLOT_(CDoubleSpinBox, valueReleased, double), [](double val) {
             gSession->interpol().setIdwRadius(val); });
-    connect(&threshold_, _SLOT_(QSpinBox, valueChanged, int), [](int val) {
+    connect(&threshold_, _SLOT_(CSpinBox, valueReleased, int), [](int val) {
             gSession->interpol().setThreshold(val); });
 
     // layout

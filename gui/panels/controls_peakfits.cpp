@@ -131,11 +131,11 @@ RangeControl::RangeControl()
     connect(gSession, &Session::sigPeakHighlight, this, &RangeControl::onData);
 
     // outbound connections
-    connect(&spinRangeMin_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val) {
+    connect(&spinRangeMin_, _SLOT_(CDoubleSpinBox, valueReleased, double), [this](double val) {
             qDebug() << "MIN CHANGED " << val;
             qreal antival = qMax(spinRangeMax_.value(), val);
             gSession->peaks().selectedPeak()->setRange(Range(val, antival)); });
-    connect(&spinRangeMax_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val) {
+    connect(&spinRangeMax_, _SLOT_(CDoubleSpinBox, valueReleased, double), [this](double val) {
             qDebug() << "MAX CHANGED " << val;
             qreal antival = qMin(spinRangeMin_.value(), val);
             gSession->peaks().selectedPeak()->setRange(Range(antival, val)); });

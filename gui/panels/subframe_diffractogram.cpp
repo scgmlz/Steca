@@ -74,7 +74,7 @@ Diffractogram::Diffractogram()
         gSession->setIntenScaleAvg(on, intenScale_.value());
     });
 
-    connect(&intenScale_, _SLOT_(QDoubleSpinBox, valueChanged, double), [](double val) {
+    connect(&intenScale_, _SLOT_(CDoubleSpinBox, valueReleased, double), [](double val) {
         if (val > 0)
             gSession->setIntenScaleAvg(gSession->intenScaledAvg(), val);
     });

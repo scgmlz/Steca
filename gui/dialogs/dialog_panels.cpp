@@ -76,7 +76,7 @@ PanelGammaSlices::PanelGammaSlices()
 
     rgeGma_ = gSession->experiment().rgeGma();
 
-    connect(&numSlices, _SLOT_(QSpinBox, valueChanged, int), [this]() { updateValues(); });
+    connect(&numSlices, _SLOT_(CSpinBox, valueReleased, int), [this]() { updateValues(); });
 }
 
 PanelGammaSlices::~PanelGammaSlices()

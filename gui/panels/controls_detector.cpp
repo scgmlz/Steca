@@ -48,20 +48,21 @@ private:
 
 GeometryControls::GeometryControls()
 {
+    // initialization
+    fromCore();
+    detPixelSize_.setDecimals(3);
+
     // inbound connection
     connect(gSession, &Session::sigDetector, this, &GeometryControls::fromCore);
 
     // outbound connections and control widget setup
-    connect(&detDistance_, _SLOT_(QDoubleSpinBox, valueChanged, double), [](double val) {
+    connect(&detDistance_, _SLOT_(CDoubleSpinBox, valueReleased, double), [](double val) {
             gSession->geometry().setDetectorDistance(val); });
-
-    detPixelSize_.setDecimals(3);
-    connect(&detPixelSize_, _SLOT_(QDoubleSpinBox, valueChanged, double), [](double val) {
+    connect(&detPixelSize_, _SLOT_(CDoubleSpinBox, valueReleased, double), [](double val) {
             gSession->geometry().setPixSize(val); });
-
-    connect(&beamOffsetI_, _SLOT_(QSpinBox, valueChanged, int), [](int val) {
+    connect(&beamOffsetI_, _SLOT_(CSpinBox, valueReleased, int), [](int val) {
             gSession->geometry().midPixOffset().i = val; emit gSession->sigDetector(); });
-    connect(&beamOffsetJ_, _SLOT_(QSpinBox, valueChanged, int), [](int val) {
+    connect(&beamOffsetJ_, _SLOT_(CSpinBox, valueReleased, int), [](int val) {
             gSession->geometry().midPixOffset().j = val; emit gSession->sigDetector(); });
 
     // layout
@@ -89,9 +90,6 @@ GeometryControls::GeometryControls()
     vbox_.addLayout(&trafoLayout_);
     vbox_.addLayout(&offsetLayout_);
     setLayout(&vbox_);
-
-    // initialization
-    fromCore();
 }
 
 void GeometryControls::fromCore()
@@ -129,13 +127,13 @@ CutControls::CutControls()
     connect(gSession, &Session::sigDetector, this, &CutControls::fromCore);
 
     // outbound connections
-    connect(&cutLeft_, _SLOT_(QSpinBox, valueChanged, int), [](int value) {
+    connect(&cutLeft_, _SLOT_(CSpinBox, valueReleased, int), [](int value) {
             gSession->imageCut().setLeft(value); });
-    connect(&cutRight_,  _SLOT_(QSpinBox, valueChanged, int), [](int value) {
+    connect(&cutRight_,  _SLOT_(CSpinBox, valueReleased, int), [](int value) {
             gSession->imageCut().setRight(value); });
-    connect(&cutTop_,    _SLOT_(QSpinBox, valueChanged, int), [](int value) {
+    connect(&cutTop_,    _SLOT_(CSpinBox, valueReleased, int), [](int value) {
             gSession->imageCut().setTop(value); });
-    connect(&cutBottom_, _SLOT_(QSpinBox, valueChanged, int), [](int value) {
+    connect(&cutBottom_, _SLOT_(CSpinBox, valueReleased, int), [](int value) {
             gSession->imageCut().setBottom(value); });
     connect(&gGui->toggles->linkCuts, &QAction::toggled, [](bool value) {
             gSession->imageCut().setLinked(value); });
@@ -191,7 +189,7 @@ ExperimentControls::ExperimentControls()
     connect(gSession, &Session::sigClusters, this, &ExperimentControls::fromCore);
 
     // outbound connections
-    connect(&combineMeasurements_, _SLOT_(QSpinBox, valueChanged, int),
+    connect(&combineMeasurements_, _SLOT_(CSpinBox, valueReleased, int),
             [](int num) { gSession->dataset().setBinning(num); });
     connect(&dropIncompleteAction_, &QAction::toggled,
             [](bool on) { gSession->dataset().setDropIncomplete(on); });
@@ -238,7 +236,7 @@ GammaControls::GammaControls()
     connect(gSession, &Session::sigClusters, this, &GammaControls::fromCore);
 
     // outbound connections
-    connect(&numSlices_, _SLOT_(QSpinBox, valueChanged, int), [](int val) {
+    connect(&numSlices_, _SLOT_(CSpinBox, valueReleased, int), [](int val) {
             gSession->gammaSelection().setNumSlices(val); });
 
     // layout
