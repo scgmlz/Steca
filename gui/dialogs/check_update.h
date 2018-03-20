@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/dialogs/check_update.h
-//! @brief     Declares class CheckUpdate
+//! @brief     Defines class CheckUpdate
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
