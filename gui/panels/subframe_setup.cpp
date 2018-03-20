@@ -16,6 +16,7 @@
 #include "core/session.h"
 #include "gui/panels/controls_baseline.h"
 #include "gui/panels/controls_detector.h"
+#include "gui/panels/controls_interpolation.h"
 #include "gui/panels/controls_peakfits.h"
 #include "gui/mainwin.h"
 
@@ -27,6 +28,7 @@ SubframeSetup::SubframeSetup()
     addTab(new ControlsDetector(), "Detector");
     addTab(new ControlsBaseline(), "Baseline");
     addTab(new ControlsPeakfits(), "Peakfits");
+    addTab(new ControlsInterpolation(), "Interpol");
 
     connect(this, &SubframeSetup::currentChanged, [](int index) {
             emit gSession->sigDiffractogram(); });

@@ -98,5 +98,4 @@ private:
     QPixmap pixmap() final;
 };
 
-
 #endif // TABIMAGE_H

@@ -17,7 +17,7 @@
 
 #include "gui/base/controls.h"
 
-//! Part of the main window that contains geometry, background, and image controls.
+//! Subframe of the main window, with tabs to control geometry, fits, &c
 
 class SubframeSetup : public CTabWidget {
 public:

@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/controls_baseline.h
-//! @brief     Defines class ControlsBaseline
+//! @file      gui/panels/controls_interpolation.h
+//! @brief     Defines class SubframeSetup
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,21 +12,19 @@
 //
 // ************************************************************************** //
 
-#ifndef CONTROLS_BASELINE_H
-#define CONTROLS_BASELINE_H
+#ifndef CONTROLS_INTERPOLATION_H
+#define CONTROLS_INTERPOLATION_H
 
 #include "gui/base/controls.h"
 
-//! A widget with controls to change the baseline fitting.
+//! A widget with controls to change the interpolation fitting.
 
-class ControlsBaseline : public QWidget {
+class ControlsInterpolation : public QWidget {
 public:
-    ControlsBaseline();
+    ControlsInterpolation();
 private:
     QVBoxLayout box_;
     QHBoxLayout hb_;
-    CSpinBox spinDegree_ {"degree", 4, false, 0, 4,
-            "Degree of the polynomial used to fit the baseline"};
 };
 
-#endif // CONTROLS_BASELINE_H
+#endif // CONTROLS_INTERPOLATION_H
