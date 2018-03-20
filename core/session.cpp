@@ -32,6 +32,7 @@ Session::Session()
     register_peak_functions();
 
     geometry().fromSettings();
+    interpol().fromSettings();
 
     // Some signals imply other signals:
     connect(this, &Session::sigGamma, this, &Session::sigDiffractogram);
@@ -45,6 +46,7 @@ Session::Session()
 Session::~Session()
 {
     geometry().toSettings();
+    interpol().toSettings();
 }
 
 void Session::clear() {

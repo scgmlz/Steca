@@ -29,9 +29,11 @@ public:
 
     int readInt(const QString& key, int def = 0);
     void saveInt(const QString& key, int val) { setValue(key, val); }
+    void getInt(const QString& key, int& target);
 
     qreal readReal(const QString& key, qreal def = 0);
     void saveReal(const QString& key, qreal val) { setValue(key, val); }
+    void getReal(const QString& key, qreal& target);
 
     QString readStr(const QString& key, const QString& def = "") {
         return value(key, def).toString(); }

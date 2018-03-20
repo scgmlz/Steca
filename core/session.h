@@ -16,6 +16,7 @@
 #define SESSION_H
 
 #include "core/calc/baseline.h"
+#include "core/calc/interpol_params.h"
 #include "core/calc/gamma_selection.h"
 #include "core/calc/theta_selection.h"
 #include "core/calc/lens.h"
@@ -62,6 +63,9 @@ public:
 
     ThetaSelection& thetaSelection() { return thetaSelection_; }
     const ThetaSelection& thetaSelection() const { return thetaSelection_; }
+
+    InterpolParams& interpol() { return interpolParams_; }
+    const InterpolParams& interpol() const { return interpolParams_; }
 
     eNorm norm() const { return norm_; }
 
@@ -124,6 +128,7 @@ signals:
     void sigNorm();          //!< normalization has changed
     void sigPeaks();         //!< list of peaks or selected peak has changed
     void sigPeakHighlight(); //!< highlighted Peak has changed
+    void sigInterpol();      //!< interpolation parameters have changed
 
 private:
     Dataset dataset_;
@@ -141,6 +146,7 @@ private:
     GammaSelection gammaSelection_;
     ThetaSelection thetaSelection_;
     eNorm norm_ {eNorm::NONE};
+    InterpolParams interpolParams_;
 
     mutable cache_lazy<ImageKey, AngleMap> angleMapCache_ {360};
 

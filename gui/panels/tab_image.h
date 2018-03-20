@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef TABIMAGE_H
-#define TABIMAGE_H
+#ifndef TAB_IMAGE_H
+#define TAB_IMAGE_H
 
 #include "gui/mainwin.h"
 #include "gui/base/controls.h"
@@ -98,4 +98,4 @@ private:
     QPixmap pixmap() final;
 };
 
-#endif // TABIMAGE_H
+#endif // TAB_IMAGE_H
