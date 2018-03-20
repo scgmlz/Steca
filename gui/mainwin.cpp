@@ -21,7 +21,7 @@
 #include "gui/capture_and_replay/console.h"
 #include "gui/panels/subframe_diffractogram.h"
 #include "gui/panels/subframe_files.h"
-#include "gui/panels/subframe_image.h"
+#include "gui/panels/mainframe.h"
 #include "gui/panels/subframe_clusters.h"
 #include "gui/panels/subframe_metadata.h"
 #include "gui/panels/subframe_setup.h"
@@ -91,7 +91,7 @@ MainWin::~MainWin()
     delete toggles;
     // whereas all the following only reduces the number of perfectly inconsequential leaks:
     delete menus_;
-    delete frameImage_;
+    delete mainframe_;
     delete frameDiffractogram_;
     delete frameSetup_;
     delete dockMetadata_;
@@ -108,7 +108,7 @@ void MainWin::initLayout()
 
     splTop_.setChildrenCollapsible(false);
     splTop_.addWidget(frameSetup_ = new SubframeSetup());
-    splTop_.addWidget(frameImage_ = new SubframeImage());
+    splTop_.addWidget(mainframe_ = new Mainframe());
     splTop_.setStretchFactor(1, 1);
 
     splMain_.setChildrenCollapsible(false);

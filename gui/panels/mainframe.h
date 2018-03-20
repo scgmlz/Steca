@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/subframe_image.h
-//! @brief     Defines class SubframeImage
+//! @file      gui/panels/mainframe.h
+//! @brief     Defines class Mainframe
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef SUBFRAME_IMAGE_H
-#define SUBFRAME_IMAGE_H
+#ifndef MAINFRAME_H
+#define MAINFRAME_H
 
 #include "gui/base/controls.h"
 
@@ -21,14 +21,14 @@
 
 //! There are two tabs: data image and correction data image.
 
-class SubframeImage final : public CTabWidget {
+class Mainframe : public CTabWidget {
 public:
-    SubframeImage();
-    ~SubframeImage();
+    Mainframe();
+    ~Mainframe();
 private:
     void render();
     class DataImageTab* dataImageTab_;
     class CorrImageTab* corrImageTab_;
 };
 
-#endif // SUBFRAME_IMAGE_H
+#endif // MAINFRAME_H

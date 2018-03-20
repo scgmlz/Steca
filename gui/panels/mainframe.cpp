@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "subframe_image.h"
+#include "mainframe.h"
 #include "core/session.h"
 #include "gui/cfg/colors.h"
 #include "gui/mainwin.h"
@@ -387,10 +387,10 @@ QPixmap CorrImageTab::pixmap()
 }
 
 // ************************************************************************** //
-//  class SubframeImage
+//  class Mainframe
 // ************************************************************************** //
 
-SubframeImage::SubframeImage()
+Mainframe::Mainframe()
     : CTabWidget {"images"}
 {
     setTabPosition(QTabWidget::North);
@@ -401,12 +401,12 @@ SubframeImage::SubframeImage()
     setTabEnabled(1, false);
 
     // local connection
-    connect(this, &SubframeImage::currentChanged, [this](int) { render(); });
+    connect(this, &Mainframe::currentChanged, [this](int) { render(); });
     // inbound connection
     connect(gSession, &Session::sigImage, [this]() { render(); });
 }
 
-void SubframeImage::render()
+void Mainframe::render()
 {
     auto currentTab = dynamic_cast<ImageTab*>(currentWidget());
     if (!currentTab)
@@ -414,7 +414,7 @@ void SubframeImage::render()
     currentTab->render();
 }
 
-SubframeImage::~SubframeImage()
+Mainframe::~Mainframe()
 {
     clear();
     delete dataImageTab_;

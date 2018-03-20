@@ -65,7 +65,7 @@ private:
     QDockWidget* dockClusters_;
     QDockWidget* dockMetadata_;
     class SubframeDiffractogram* frameDiffractogram_;
-    class SubframeImage* frameImage_;
+    class Mainframe* mainframe_;
     class SubframeSetup* frameSetup_;
     class Menus* menus_;
 
