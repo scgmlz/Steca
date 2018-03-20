@@ -123,27 +123,32 @@ private:
 
 RangeControl::RangeControl()
 {
-    auto hb = new QHBoxLayout();
-    setLayout(hb);
-
-    hb->addWidget(new QLabel("range"));
-    hb->addWidget(&spinRangeMin_);
     spinRangeMin_.setSingleStep(.1);
-    connect(&spinRangeMin_, _SLOT_(QDoubleSpinBox, valueChanged, double),  [this](double val) {
-            qreal antival = qMax(spinRangeMax_.value(), val);
-            gSession->peaks().selectedPeak()->setRange(Range(val, antival)); });
-
-    hb->addWidget(new QLabel(".."));
-    hb->addWidget(&spinRangeMax_);
     spinRangeMax_.setSingleStep(.1);
-    connect(&spinRangeMax_, _SLOT_(QDoubleSpinBox, valueChanged, double),  [this](double val) {
-            qreal antival = qMin(spinRangeMin_.value(), val);
-            gSession->peaks().selectedPeak()->setRange(Range(antival, val)); });
-    hb->addWidget(new QLabel("deg"));
-    hb->addStretch();
 
+    // inbound connections
     connect(gSession, &Session::sigPeaks, this, &RangeControl::onData);
     connect(gSession, &Session::sigPeakHighlight, this, &RangeControl::onData);
+
+    // outbound connections
+    connect(&spinRangeMin_, _SLOT_(QDoubleSpinBox, valueChanged, double),  [this](double val) {
+            qDebug() << "MIN CHANGED " << val;
+            qreal antival = qMax(spinRangeMax_.value(), val);
+            gSession->peaks().selectedPeak()->setRange(Range(val, antival)); });
+    connect(&spinRangeMax_, _SLOT_(QDoubleSpinBox, valueChanged, double),  [this](double val) {
+            qDebug() << "MAX CHANGED " << val;
+            qreal antival = qMin(spinRangeMin_.value(), val);
+            gSession->peaks().selectedPeak()->setRange(Range(antival, val)); });
+
+    // layout
+    auto hb = new QHBoxLayout();
+    hb->addWidget(new QLabel("range"));
+    hb->addWidget(&spinRangeMin_);
+    hb->addWidget(new QLabel(".."));
+    hb->addWidget(&spinRangeMax_);
+    hb->addWidget(new QLabel("deg"));
+    hb->addStretch();
+    setLayout(hb);
 }
 
 void RangeControl::onData()
