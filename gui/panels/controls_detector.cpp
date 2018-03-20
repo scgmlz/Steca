@@ -263,10 +263,11 @@ void GammaControls::fromCore()
 
 ControlsDetector::ControlsDetector()
 {
-    vbox_.addWidget(new GeometryControls);
-    vbox_.addWidget(new CutControls);
-    vbox_.addWidget(new ExperimentControls);
-    vbox_.addWidget(new GammaControls);
-    vbox_.addStretch();
-    setLayout(&vbox_);
+    auto* vbox = new QVBoxLayout;
+    vbox->addWidget(new GeometryControls);
+    vbox->addWidget(new CutControls);
+    vbox->addWidget(new ExperimentControls);
+    vbox->addWidget(new GammaControls);
+    vbox->addStretch();
+    setLayout(vbox);
 }

@@ -23,8 +23,6 @@
 class ControlsDetector : public QWidget {
 public:
     ControlsDetector();
-private:
-    QVBoxLayout vbox_;
 };
 
 #endif // CONTROLS_DETECTOR_H
