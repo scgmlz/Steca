@@ -266,16 +266,6 @@ ControlsDetector::ControlsDetector()
     vbox->addWidget(new CutControls);
     vbox->addWidget(new ExperimentControls);
     vbox->addWidget(new GammaControls);
-
-    //DEBUG
-    auto* test = new CSpinBox {"test", 5, false};
-    connect(test, &CSpinBox::valueReleased, test, [test](int val) {
-            qDebug() << "TEST CHANGED " << test->value() << " = " << val;
-            QThread::msleep(600);
-            qDebug() << "WOKE UP "; },
-        Qt::QueuedConnection);
-    vbox->addWidget(test);
-
     vbox->addStretch();
     setLayout(vbox);
 }

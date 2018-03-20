@@ -165,8 +165,8 @@ TableWidget::TableWidget()
 {
     // inbound connection
     connect(gSession, &Session::sigPeaks, [this]() {
-            QThread::msleep(3000); });
-            // calculate(); });
+            if (isVisible())
+                calculate(); });
 
     // business logic // TODO: move elsewhere
     const QStringList& headers = PeakInfo::dataTags(false);
