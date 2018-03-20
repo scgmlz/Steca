@@ -162,6 +162,10 @@ ColumnSelector::ColumnSelector(DataView& table, showcol_vec& showCols)
 
 TableWidget::TableWidget()
 {
+    // inbound connection
+    connect(gSession, &Session::sigPeaks, [this]() { calculate(); });
+
+    // business logic // TODO: move elsewhere
     const QStringList& headers = PeakInfo::dataTags(false);
     const QStringList& outHeaders = PeakInfo::dataTags(true);
     const cmp_vec& cmps =PeakInfo::dataCmps();
@@ -172,20 +176,91 @@ TableWidget::TableWidget()
         showCols->append(item);
     }
 
+    // layout
     auto* layout = new QHBoxLayout;
 
-    auto* dataView = new DataView(headers.count()); // the main table
-    layout->addWidget(dataView);
+    dataView_ = new DataView(headers.count()); // the main table
+    layout->addWidget(dataView_);
 
     auto* scrollArea = new QScrollArea;
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    scrollArea->setWidget(new ColumnSelector(*dataView, *showCols));
+    scrollArea->setWidget(new ColumnSelector(*dataView_, *showCols));
     layout->addWidget(scrollArea);
 
     layout->setStretch(0,1000);
     setLayout(layout);
 }
 
-void TableWidget::render()
+void TableWidget::calculate()
 {
+    TakesLongTime __;
+
+    calcPoints_.clear();
+    interpPoints_.clear();
+
+    int reflCount = gSession->peaks().count();
+    if (!reflCount)
+        return;
+
+    Progress progress(reflCount, &gGui->progressBar);
+
+    for_i (reflCount)
+        calcPoints_.append(
+            gSession->makePeakInfos(
+                gSession->peaks().at(i),
+                gSession->gammaSelection().numSlices(),
+                gSession->gammaSelection().range(),
+                &progress));
+
+    interpolate();
+}
+
+void TableWidget::interpolate()
+{
+    TakesLongTime __;
+
+    interpPoints_.clear();
+/*
+    if (pi) {
+        deg alphaStep = pi->stepAlpha.value();
+        deg betaStep = pi->stepBeta.value();
+        qreal idwRadius = pi->idwRadius.value();
+
+        qreal avgRadius = pi->avgRadius.value();
+        qreal avgAlphaMax = pi->avgAlphaMax.value();
+        qreal avgTreshold = pi->avgThreshold.value() / 100.0;
+
+        Progress progress(calcPoints_.count(), &progressBar_);
+
+        for_i (calcPoints_.count())
+            interpPoints_.append(interpolateInfos(
+                calcPoints_.at(i), alphaStep, betaStep, idwRadius, avgAlphaMax, avgRadius,
+                avgTreshold, &progress));
+    } else {
+        for_i (calcPoints_.count())
+            interpPoints_.append(PeakInfos());
+    }
+*/
+    displayPeak(getReflIndex());
+}
+
+// virtual, overwritten by some output frames, and called back by the overwriting function
+void TableWidget::displayPeak(int reflIndex)
+{
+    dataView_->clear();
+
+//    ASSERT(calcPoints_.count() == interpPoints_.count());
+    if (calcPoints_.count() <= reflIndex)
+        return;
+
+    bool interpolated = false; // TODO reactivate
+    for (const PeakInfo& r : (interpolated ? interpPoints_ : calcPoints_).at(reflIndex))
+        dataView_->addRow(r.data(), false);
+
+    dataView_->sortData();
+}
+
+int TableWidget::getReflIndex() const
+{
+    return 1; // TODO URGENT reactivate
 }

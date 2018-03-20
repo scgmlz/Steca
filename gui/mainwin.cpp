@@ -80,6 +80,8 @@ MainWin::MainWin()
     initLayout();
     readSettings();
     updateActionEnabling();
+
+    statusBar()->addWidget(&progressBar);
 }
 
 MainWin::~MainWin()

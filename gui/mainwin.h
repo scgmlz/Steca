@@ -23,6 +23,7 @@
 #include "gui/capture_and_replay/console.h"
 #include <QDir>
 #include <QMainWindow>
+#include <QProgressBar>
 #include <QSplitter>
 
 extern class MainWin* gGui; //!< global pointer to _the_ main window
@@ -39,10 +40,11 @@ public:
     ~MainWin();
 
     class SubframeSetup* setup() const { return frameSetup_; }
-
     class Triggers* triggers;
     class Toggles* toggles;
     class ImageTrafoActions* imageTrafoActions;
+
+    QProgressBar progressBar {this};
 
 private:
     Console console_;
