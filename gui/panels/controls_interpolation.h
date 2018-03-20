@@ -23,8 +23,13 @@ class ControlsInterpolation : public QWidget {
 public:
     ControlsInterpolation();
 private:
-    QVBoxLayout box_;
-    QHBoxLayout hb_;
+    QGridLayout grid_;
+    CDoubleSpinBox stepAlpha_ {"stepAlpha#", 6, 1., 30.};
+    CDoubleSpinBox stepBeta_ {"stepBeta#", 6, 1., 30.};
+    CDoubleSpinBox idwRadius_ {"idwRadius#", 6, 0., 90.};
+    CDoubleSpinBox avgAlphaMax_ {"avgAlphaMax#", 6, 0., 90.};
+    CDoubleSpinBox avgRadius_ {"avgRadius#", 6, 0., 90.};
+    CSpinBox avgThreshold_ {"avgThreshold#", 6, 0, 100};
 };
 
 #endif // CONTROLS_INTERPOLATION_H
