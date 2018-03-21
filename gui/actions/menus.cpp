@@ -48,6 +48,15 @@ Menus::Menus(QMenuBar* mbar)
                 &triggers->quit,
         });
 
+    export_ = actionsToMenu(
+        "&Export",
+        {   &triggers->outputPolefigures,
+                &triggers->outputDiagrams,
+                &triggers->exportDfgram,
+                &triggers->exportTable,
+                &triggers->exportXY,
+        });
+
     image_ = actionsToMenu(
         "&Image",
         {   &gGui->imageTrafoActions->rotateImage,
@@ -69,13 +78,6 @@ Menus::Menus(QMenuBar* mbar)
                 separator(),
                 &toggles->combinedDgram,
                 &toggles->fixedIntenDgram,
-        });
-
-    output_ = actionsToMenu(
-        "&Output",
-        {   &triggers->outputPolefigures,
-                &triggers->outputDiagrams,
-                &triggers->exportDgrams,
         });
 
     actionsToMenu(

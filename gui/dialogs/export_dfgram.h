@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/dialogs/output_diffractograms.h
-//! @brief     Defines class DiffractogramsFrame
+//! @file      gui/dialogs/export_dfgram.h
+//! @brief     Defines class ExportDfgram
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef OUTPUT_DIFFRACTOGRAMS_H
-#define OUTPUT_DIFFRACTOGRAMS_H
+#ifndef EXPORT_DFGRAM_H
+#define EXPORT_DFGRAM_H
 
 #include "frame.h"
 #include <QWidget>
@@ -39,4 +39,4 @@ private:
     void saveAll(bool oneFile);
 };
 
-#endif // OUTPUT_DIFFRACTOGRAMS_H
+#endif // EXPORT_DFGRAM_H

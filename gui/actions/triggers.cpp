@@ -19,7 +19,7 @@
 #include "gui/dialogs/about.h"
 #include "gui/dialogs/check_update.h"
 #include "gui/dialogs/output_diagrams.h"
-#include "gui/dialogs/output_diffractograms.h"
+#include "gui/dialogs/export_dfgram.h"
 #include "gui/dialogs/output_polefigures.h"
 #include <QDesktopServices>
 
@@ -35,7 +35,10 @@ Triggers::Triggers()
     connect(&loadSession, AT, []() { gGui->loadSession(); });
     connect(&online, AT, []() { QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
     connect(&outputDiagrams, AT, [](){ DiagramsFrame().exec(); });
-    connect(&exportDgrams, AT, [](){ DiffractogramsFrame().exec(); });
+    connect(&exportDfgram, AT, [](){ DiffractogramsFrame().exec(); });
+    //connect(&exportDfgram, AT, [](){ ExportDfgram().exec(); });
+    connect(&exportTable, AT, [](){ gSession->exportTable(); });
+    connect(&exportXY, AT, [](){ gSession->exportXY(); });
     connect(&outputPolefigures, AT, []() { PoleFiguresFrame().exec(); });
     connect(&quit, AT, []() { gGui->close(); });
     connect(&removeFile, AT, []() { gSession->dataset().removeFile(); });

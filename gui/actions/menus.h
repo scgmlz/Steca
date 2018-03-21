@@ -25,7 +25,7 @@ public:
     Menus(QMenuBar*);
     QMenu* dgram_;
     QMenu* image_;
-    QMenu* output_;
+    QMenu* export_;
 private:
     QMenuBar* mbar_;
     QAction* separator() const;

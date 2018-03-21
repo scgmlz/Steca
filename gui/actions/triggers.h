@@ -31,10 +31,12 @@ public:
     CTrigger clearSession {"clearSession", "Clear session"};
     CTrigger corrFile {"corrFile", "Add correction file", ":/icon/add",
             Qt::SHIFT | Qt::CTRL | Qt::Key_O};
+    CTrigger exportDfgram {"exportDfgram", "Export diffractogram(s)...", ":/icon/filesave" };
+    CTrigger exportTable {"exportTable", "Export fit result table...", ":/icon/filesave" };
+    CTrigger exportXY {"exportXY", "Export diagram's x,y...", ":/icon/filesave" };
     CTrigger loadSession {"loadSession", "Load session..."};
     CTrigger online  {"online", "Open docs in external browser"};
     CTrigger outputDiagrams {"outputDiagrams", "Diagrams..."};
-    CTrigger exportDgrams {"exportDgrams", "Export diffractograms...", ":/icon/filesave" };
     CTrigger outputPolefigures {"outputPolefigures", "Pole figures..."};
     CTrigger quit {"quit", "Quit", "", QKeySequence::Quit};
     CTrigger removeFile {"removeFile", "Remove highlighted file", ":/icon/rem",

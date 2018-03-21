@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/dialogs/output_diffractograms.cpp
-//! @brief     Implements class DiffractogramsFrame
+//! @file      gui/dialogs/export_dfgram.cpp
+//! @brief     Implements class ExportDfgram
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "gui/dialogs/output_diffractograms.h"
+#include "gui/dialogs/export_dfgram.h"
 #include "core/session.h"
 #include "gui/base/filedialog.h"
 #include "gui/dialogs/dialog_panels.h"
@@ -27,7 +27,6 @@ namespace {
 void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
                 const Range& rgeGma, const QString& separator)
 {
-
     ASSERT(rgeGma.isValid());
     const Metadata* md = cluster->avgeMetadata().data();
     ASSERT(md);

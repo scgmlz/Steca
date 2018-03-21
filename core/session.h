@@ -112,6 +112,9 @@ public:
 
     bool metaSelected(int i) const { return metaSelection_[i]; }
 
+    void exportTable() const;
+    void exportXY() const;
+
 signals:
     void sigFiles();         //!< list of loaded files has changed
     void sigClusters();      //!< list of clusters has changed

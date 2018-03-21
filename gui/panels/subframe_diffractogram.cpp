@@ -45,7 +45,7 @@ private:
     XIconButton combine_ {&gGui->toggles->combinedDgram};
     XIconButton fixInten_ {&gGui->toggles->fixedIntenDgram};
     XIconButton showBg_ {&gGui->toggles->showBackground};
-    XIconButton export_ {&gGui->triggers->exportDgrams};
+    XIconButton export_ {&gGui->triggers->exportDfgram};
 };
 
 

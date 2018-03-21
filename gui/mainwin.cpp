@@ -132,12 +132,14 @@ void MainWin::updateActionEnabling()
     triggers->removeFile.setEnabled(hasFile);
     triggers->removePeak.setEnabled(hasPeak);
     triggers->clearBackground.setEnabled(hasBase);
+    triggers->exportDfgram.setEnabled(hasFile);
+    triggers->exportTable.setEnabled(hasFile && hasPeak);
+    triggers->exportXY.setEnabled(hasFile && hasPeak);
     triggers->outputDiagrams.setEnabled(hasFile && hasPeak);
-    triggers->exportDgrams.setEnabled(hasFile);
     triggers->outputPolefigures.setEnabled(hasFile && hasPeak);
-    menus_->dgram_->setEnabled(hasFile);
+    menus_->export_->setEnabled(hasFile);
     menus_->image_->setEnabled(hasFile);
-    menus_->output_->setEnabled(hasFile);
+    menus_->dgram_->setEnabled(hasFile);
 }
 
 
