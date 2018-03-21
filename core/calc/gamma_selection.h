@@ -35,6 +35,7 @@ public:
     void setRange(const Range&);
 
     const Range& range() const { return range_; }
+    Range slice2range(int) const;
     qreal min() const { return range_.min; }
     qreal max() const { return range_.max; }
     int numSlices() const { return numSlices_; }

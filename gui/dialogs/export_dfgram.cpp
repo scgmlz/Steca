@@ -219,28 +219,18 @@ void ExportDfgram::saveAll(bool oneFile)
             return;
     }
 
-    int gmaSlices = panelGammaSlices->numSlices.value();
-
-    const PanelGammaRange* pr = panelGammaRange;
-    Range rgeGma;
-    if (pr->cbLimitGamma.isChecked())
-        rgeGma.safeSet(pr->minGamma.value(), pr->maxGamma.value());
+    int gmaSlices =
 
     Progress progress(expt.size(), progressBar_);
 
     int picNum = 0;
     int fileNum = 0;
+    int gmaSlices = gSession->gammaSelection().numSlices();
     for (const Cluster* cluster : expt.clusters()) {
         ++picNum;
         progress.step();
 
         qreal normFactor = cluster->normFactor();
-        Range rge = (gmaSlices > 0) ? cluster->rgeGma() : Range::infinite();
-        if (rgeGma.isValid())
-            rge = rge.intersect(rgeGma);
-
-        gmaSlices = qMax(1, gmaSlices);
-        const qreal step = rge.width() / gmaSlices;
         for_i (gmaSlices) {
             if (!oneFile) {
                 QFile* file = new QFile(numberedName(path, ++fileNum, expt.size()+1));
@@ -251,8 +241,7 @@ void ExportDfgram::saveAll(bool oneFile)
             }
             ASSERT(stream);
 
-            const qreal min = rge.min + i * step;
-            const Range gmaStripe(min, min + step);
+            const Range gmaStripe = gSession->gammaSelection().slice2range(i);
             const Curve& curve = cluster->toCurve(normFactor, gmaStripe);
             ASSERT(!curve.isEmpty());
             *stream << "Picture Nr: " << picNum << '\n';

@@ -57,8 +57,7 @@ void GammaSelection::recomputeCache()
         range_ = fullRange_;
     } else if (mode_ == Mode::slicing) {
         iSlice_ = qMin(qMax(iSlice_, 0), numSlices_-1);
-        if (numSlices_)
-            range_ = fullRange_.slice(iSlice_, numSlices_);
+        range_ = slice2range(iSlice_);
     } else if (mode_ == Mode::minmax) {
         range_ = range_.intersect(fullRange_);
     }
@@ -108,4 +107,14 @@ void GammaSelection::setRange(const Range& r)
     setModeMinMax();
     range_ = r;
     recomputeCache();
+}
+
+GammaSelection::Range slice2range(int) const
+{
+    if (!numSlices_) {
+        Range ret;
+        ret.invalidate();
+        return ret;
+    }
+    return fullRange_.slice(iSlice_, numSlices_);
 }
