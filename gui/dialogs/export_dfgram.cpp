@@ -243,10 +243,9 @@ void ExportDfgram::saveAll(bool oneFile)
         const qreal step = rge.width() / gmaSlices;
         for_i (gmaSlices) {
             if (!oneFile) {
-                QFile* file = file_dialog::OutputFile("file",
-                    this, numberedName(path, ++fileNum, expt.size()+1), false);
-                if (!file)
-                    return;
+                QFile* file = new QFile(numberedName(path, ++fileNum, expt.size()+1));
+                if (!file->open(QIODevice::WriteOnly | QIODevice::Text))
+                    THROW("Cannot open file for writing: " + path);
                 delete stream;
                 stream = new QTextStream(file);
             }
