@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/base/filedialog.h
-//! @brief     Defines functions openFileName(s), saveFileName, saveDirName in namespace file_dialog
+//! @brief     Defines functions queryImportFileName(s), queryExportFileName, queryDirectory in namespace file_dialog
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -20,10 +20,10 @@
 namespace file_dialog {
 
 QFile* openFileConfirmOverwrite(const QString&, QWidget*, const QString&);
-QStringList openFileNames(QWidget*, const QString&, QDir&, const QString&, bool plural=true);
-QString openFileName(QWidget*, const QString&, QDir&, const QString&);
-QString saveFileName(QWidget*, const QString&, QDir&, const QString&);
-QString saveDirName(QWidget*, const QString&, QDir&);
+QStringList queryImportFileNames(QWidget*, const QString&, QDir&, const QString&, bool plural=true);
+QString queryImportFileName(QWidget*, const QString&, QDir&, const QString&);
+QString queryExportFileName(QWidget*, const QString&, QDir&, const QString&);
+QString queryDirectory(QWidget*, const QString&, QDir&);
 
 } // namespace file_dialog
 

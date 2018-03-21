@@ -174,7 +174,7 @@ void MainWin::viewReset()
 
 void MainWin::loadSession()
 {
-    QString fileName = file_dialog::openFileName(
+    QString fileName = file_dialog::queryImportFileName(
         this, "Load session", sessionDir_, "Session files (*.ste)");
     if (fileName.isEmpty())
         return;
@@ -196,7 +196,7 @@ void MainWin::loadSession()
 
 void MainWin::saveSession()
 {
-    QString fileName = file_dialog::saveFileName(
+    QString fileName = file_dialog::queryExportFileName(
         this, "Save session", sessionDir_, "Session files (*.ste)");
     if (!fileName.endsWith(".ste"))
         fileName += ".ste";
@@ -212,7 +212,7 @@ void MainWin::saveSession()
 
 void MainWin::addFiles()
 {
-    QStringList fileNames = file_dialog::openFileNames(this, "Add files", dataDir_, dataFormats);
+    QStringList fileNames = file_dialog::queryImportFileNames(this, "Add files", dataDir_, dataFormats);
     repaint();
     if (fileNames.isEmpty())
         return;
@@ -225,7 +225,7 @@ void MainWin::loadCorrFile()
     if (gSession->corrset().hasFile()) {
         gSession->corrset().removeFile();
     } else {
-        QString fileName = file_dialog::openFileName(
+        QString fileName = file_dialog::queryImportFileName(
             this, "Set correction file", dataDir_, dataFormats);
         if (fileName.isEmpty())
             return;

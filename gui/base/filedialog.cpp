@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/base/filedialog.cpp
-//! @brief     Implements functions openFileName(s), saveFileName, saveDirName in ns file_dialog
+//! @brief     Implements functions queryImportFileName(s), queryExportFileName, queryDirectory in ns file_dialog
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -24,7 +24,7 @@
 
 namespace {
 
-//! ??, for use in openFileNames.
+//! ??, for use in queryImportFileNames.
 
 class OpenFileProxyModel : public QSortFilterProxyModel {
 public:
@@ -133,7 +133,7 @@ QFile* openFileConfirmOverwrite(const QString& name, QWidget* parent, const QStr
 }
 
 //! Runs dialog that prompts for input files. Returns list of absolute paths. May change dir.
-QStringList openFileNames(
+QStringList queryImportFileNames(
     QWidget* parent, const QString& caption, QDir& dir, const QString& filter, bool plural)
 {
     FileDialog dlg(parent, caption, dir, filter);
@@ -147,16 +147,16 @@ QStringList openFileNames(
 }
 
 //! Runs dialog that prompts for one input file. Returns absolute path. May change dir.
-QString openFileName(QWidget* parent, const QString& caption, QDir& dir, const QString& filter)
+QString queryImportFileName(QWidget* parent, const QString& caption, QDir& dir, const QString& filter)
 {
-    QStringList fileNames = openFileNames(parent, caption, dir, filter, false);
+    QStringList fileNames = queryImportFileNames(parent, caption, dir, filter, false);
     if (fileNames.isEmpty())
         return "";
     return fileNames.first();
 }
 
 //! Runs dialog that prompts for one output file. Returns absolute path. May change dir.
-QString saveFileName(QWidget* parent, const QString& caption, QDir& dir, const QString& filter)
+QString queryExportFileName(QWidget* parent, const QString& caption, QDir& dir, const QString& filter)
 {
     FileDialog dlg(parent, caption, dir, filter);
     dlg.setFileMode(QFileDialog::AnyFile);
@@ -168,7 +168,7 @@ QString saveFileName(QWidget* parent, const QString& caption, QDir& dir, const Q
 
 //! Runs dialog that prompts for a directory. Returns absolute directory path. May change dir.
 // TODO return value VS dir ???
-QString saveDirName(QWidget* parent, const QString& caption, QDir& dir)
+QString queryDirectory(QWidget* parent, const QString& caption, QDir& dir)
 {
     FileDialog dlg(parent, caption, dir);
     dlg.setFileMode(QFileDialog::Directory);

@@ -38,7 +38,7 @@ TabSave::TabSave(bool withTypes)
     dir_->setReadOnly(true);
 
     connect(actBrowse, &QAction::triggered, [this]() {
-        file_dialog::saveDirName(this, "Select folder", defaultDir);
+        file_dialog::queryDirectory(this, "Select folder", defaultDir);
         dir_->setText(defaultDir.absolutePath()); });
     connect(rbDat, &QRadioButton::clicked, []() { saveFmt = DAT_EXT; });
     connect(rbCsv, &QRadioButton::clicked, []() { saveFmt = CSV_EXT; });
