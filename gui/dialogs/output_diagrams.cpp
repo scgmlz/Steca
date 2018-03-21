@@ -19,7 +19,10 @@
 #include "gui/dialogs/data_table.h"
 #include "gui/dialogs/dialog_panels.h"
 #include "gui/dialogs/tab_save.h"
-#include "QCustomPlot/qcustomplot.h"
+#include "gui/panels/plot_diagram.h"
+
+static const Params::ePanels PANELS =
+    Params::ePanels(Params::REFLECTION | Params::GAMMA | Params::DIAGRAM);
 
 // sorts xs and ys the same way, by (x,y)
 static void sortColumns(vec<qreal>& xs, vec<qreal>& ys, vec<int>& is)
@@ -50,74 +53,6 @@ static void sortColumns(vec<qreal>& xs, vec<qreal>& ys, vec<int>& is)
     for_i (count)
         r[i] = ys.at(is.at(i));
     ys = r;
-}
-
-static const Params::ePanels PANELS =
-    Params::ePanels(Params::REFLECTION | Params::GAMMA | Params::DIAGRAM);
-
-// ************************************************************************** //
-//  local class TabPlot
-// ************************************************************************** //
-
-//! Tab in DiagramsFrame, to display a plot of something against something.
-
-class TabPlot : public QCustomPlot {
-public:
-    TabPlot();
-    void set(PeakInfos);
-    void plot(
-        const vec<qreal>& xs, const vec<qreal>& ys, const vec<qreal>& ysLo, const vec<qreal>& ysUp);
-private:
-    QCPGraph *graph_, *graphLo_, *graphUp_;
-};
-
-TabPlot::TabPlot()
-{
-    graph_ = addGraph();
-    graphLo_ = addGraph();
-    graphUp_ = addGraph();
-}
-
-void TabPlot::plot(
-    const vec<qreal>& xs, const vec<qreal>& ys, const vec<qreal>& ysLo, const vec<qreal>& ysUp)
-{
-    ASSERT(xs.count() == ys.count());
-
-    int count = xs.count();
-
-    graph_->clearData();
-    graphUp_->clearData();
-    graphLo_->clearData();
-
-    Range rgeX, rgeY;
-
-    for_i (count) {
-        rgeX.extendBy(xs.at(i));
-        rgeY.extendBy(ys.at(i));
-    }
-
-    if (!count || rgeX.isEmpty() || rgeY.isEmpty()) {
-        xAxis->setVisible(false);
-        yAxis->setVisible(false);
-        replot();
-        return;
-    }
-
-    xAxis->setRange(rgeX.min, rgeX.max);
-    yAxis->setRange(rgeY.min, rgeY.max);
-    xAxis->setVisible(true);
-    yAxis->setVisible(true);
-
-    graph_->setPen(QPen(Qt::blue));
-    graph_->addData(xs.sup(), ys.sup());
-
-    graphUp_->setPen(QPen(Qt::red));
-    graphUp_->addData(xs.sup(), ysUp.sup());
-
-    graphLo_->setPen(QPen(Qt::green));
-    graphLo_->addData(xs.sup(), ysLo.sup());
-
-    replot();
 }
 
 // ************************************************************************** //
@@ -165,8 +100,8 @@ DiagramsFrame::DiagramsFrame()
         auto* tab = new QWidget();
         tabs_.addTab(tab, "Diagram");
         tab->setLayout(new QVBoxLayout());
-        tabPlot_ = new TabPlot();
-        tab->layout()->addWidget(tabPlot_);
+        plot_ = new PlotDiagram();
+        tab->layout()->addWidget(plot_);
     }
 
     ASSERT(params_->panelDiagram);
@@ -193,7 +128,7 @@ DiagramsFrame::DiagramsFrame()
 DiagramsFrame::~DiagramsFrame()
 {
     delete tabSave_;
-    delete tabPlot_;
+    delete plot_;
 }
 
 DiagramsFrame::eReflAttr DiagramsFrame::xAttr() const
@@ -267,7 +202,7 @@ void DiagramsFrame::recalculate()
         }
     }
 
-    tabPlot_->plot(xs_, ys_, ysErrorLo_, ysErrorUp_);
+    plot_->plot(xs_, ys_, ysErrorLo_, ysErrorUp_);
 }
 
 void DiagramsFrame::saveDiagramOutput()

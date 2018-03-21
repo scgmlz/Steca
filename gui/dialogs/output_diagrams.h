@@ -24,7 +24,7 @@ public:
     ~DiagramsFrame();
 
 private:
-    class TabPlot* tabPlot_;
+    class PlotDiagram* plot_;
     class TabDiagramsSave* tabSave_;
 
     using eReflAttr = PeakInfo::eReflAttr;
