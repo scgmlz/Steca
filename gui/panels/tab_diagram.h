@@ -25,6 +25,8 @@ public:
     DiagramWidget();
     void render();
 private:
+    class PlotDiagram* plot_;
+    class SelectXY* selectXY_;
 };
 
 #endif // TAB_DIAGRAM_H
