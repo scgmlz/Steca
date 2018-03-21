@@ -24,45 +24,42 @@ static QString saveFmt; //!< setting: default format for data export
 }
 
 TabSave::TabSave(bool withTypes)
-    : rbDat_("rbDat#", DAT_SFX)
-    , rbCsv_("rbCsv#", CSV_SFX)
 {
-    setLayout((grid_ = new QGridLayout()));
-    actBrowse = new CTrigger("actBrowse#", "Browse...");
-    actSave = new CTrigger("actSave#", "Save");
-
-    auto* gp = new GridPanel("Destination");
-    grid_->addWidget(gp, 0, 0);
-    QGridLayout* g = &gp->grid_;
-
     static QDir defaultDir = QDir::homePath();
+
+    auto* rbDat = new CRadioButton {"rbDat#", DAT_SFX};
+    auto* rbCsv = new CRadioButton {"rbCsv#", CSV_SFX};
+    auto* actBrowse = new CTrigger("actBrowse#", "Browse...");
+    actSave = new CTrigger("actSave#", "Save");
     dir_ = new QLineEdit(defaultDir.absolutePath());
+    file_ = new QLineEdit();
+
+    rbCsv->setChecked(saveFmt == CSV_SFX);
+    rbDat->setChecked(saveFmt == DAT_SFX);
+    dir_->setReadOnly(true);
+
     connect(actBrowse, &QAction::triggered, [this]() {
         file_dialog::saveDirName(this, "Select folder", defaultDir);
         dir_->setText(defaultDir.absolutePath()); });
-    dir_->setReadOnly(true);
+    connect(rbDat, &QRadioButton::clicked, []() { saveFmt = DAT_SFX; });
+    connect(rbCsv, &QRadioButton::clicked, []() { saveFmt = CSV_SFX; });
 
-    file_ = new QLineEdit();
+    auto* destination = new GridPanel("Destination");
+    destination->grid_.addWidget(new QLabel("Save to folder:"), 0, 0, Qt::AlignRight);
+    destination->grid_.addWidget(dir_, 0, 1);
+    destination->grid_.addWidget(new XTextButton(actBrowse), 0, 2);
+    destination->grid_.addWidget(new QLabel("File name:"), 1, 0, Qt::AlignRight);
+    destination->grid_.addWidget(file_, 1, 1);
 
-    g->addWidget(new QLabel("Save to folder:"), 0, 0, Qt::AlignRight);
-    g->addWidget(dir_, 0, 1);
-    g->addWidget(new XTextButton(actBrowse), 0, 2);
-    g->addWidget(new QLabel("File name:"), 1, 0, Qt::AlignRight);
-    g->addWidget(file_, 1, 1);
+    auto* ftype = new GridPanel("File type");
+    ftype->setVisible(withTypes);
+    ftype->grid_.addWidget(rbDat, 0, 0);
+    ftype->grid_.addWidget(rbCsv, 1, 0);
 
-    gp = new GridPanel("File type");
-    grid_->addWidget(gp, 0, 1);
-    g = &gp->grid_;
-
-    g->addWidget(&rbDat_, 0, 0);
-    g->addWidget(&rbCsv_, 1, 0);
-
-    connect(&rbDat_, &QRadioButton::clicked, []() { saveFmt = DAT_SFX; });
-    connect(&rbCsv_, &QRadioButton::clicked, []() { saveFmt = CSV_SFX; });
-
-    (saveFmt == CSV_SFX ? &rbCsv_ : &rbDat_)->setChecked(true);
-
-    gp->setVisible(withTypes);
+    grid_ = new QGridLayout();
+    setLayout(grid_);
+    grid_->addWidget(destination, 0, 0);
+    grid_->addWidget(ftype, 0, 1);
 }
 
 QString TabSave::filePath(bool withSuffix, bool withNumber)
@@ -74,9 +71,9 @@ QString TabSave::filePath(bool withSuffix, bool withNumber)
     if (withNumber && !fileName.contains("%d"))
         fileName += ".%d";
     if (withSuffix) {
-        QString suffix = rbDat_.isChecked() ? DAT_SFX : CSV_SFX;
-        if ("."+QFileInfo(fileName).suffix()!=suffix)
-            fileName += suffix;
+        QString suffix = saveFmt;
+        if ("."+QFileInfo(fileName).suffix().toLower()!=saveFmt.toLower())
+            fileName += saveFmt;
     }
     file_->setText(fileName);
 
@@ -85,5 +82,10 @@ QString TabSave::filePath(bool withSuffix, bool withNumber)
 
 QString TabSave::separator() const
 {
-    return rbDat_.isChecked() ? DAT_SEP : CSV_SEP;
+    if      (saveFmt==DAT_SFX)
+        return DAT_SEP;
+    else if (saveFmt==CSV_SFX)
+        return CSV_SEP;
+    else
+        THROW("bug: invalid format");
 }

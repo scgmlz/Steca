@@ -24,14 +24,12 @@ public:
     TabSave(bool withTypes);
     QString filePath(bool withSuffix, bool withNumber=false);
     QString separator() const;
-    QAction *actBrowse, *actSave;
+    QAction* actSave;
 protected:
     QGridLayout* grid_;
 private:
     QLineEdit* dir_;
     QLineEdit* file_;
-    CRadioButton rbDat_;
-    CRadioButton rbCsv_;
 };
 
 #endif // TAB_SAVE_H
