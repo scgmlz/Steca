@@ -117,7 +117,7 @@ QString FileDialog::getFile()
 namespace file_dialog {
 
 //! Opens file for writing; asks for confirmation before overwriting.
-QFile* OutputFile(const QString& name, QWidget* parent, const QString& path)
+QFile* openFileConfirmOverwrite(const QString& name, QWidget* parent, const QString& path)
 {
     QFile* ret = new QFile(path);
     if (ret->exists() &&

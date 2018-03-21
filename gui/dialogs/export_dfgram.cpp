@@ -178,7 +178,7 @@ void ExportDfgram::saveCurrent()
     QString path = tabSave_->filePath(true);
     if (path.isEmpty())
         return;
-    QFile* file = file_dialog::OutputFile("file", this, path);
+    QFile* file = file_dialog::openFileConfirmOverwrite("file", this, path);
     if (!file)
         return;
     QTextStream stream(file);
@@ -200,7 +200,7 @@ void ExportDfgram::saveAll(bool oneFile)
         return;
     QTextStream* stream = nullptr;
     if (oneFile) {
-        QFile* file = file_dialog::OutputFile("file", this, path);
+        QFile* file = file_dialog::openFileConfirmOverwrite("file", this, path);
         if (!file)
             return;
         stream = new QTextStream(file);

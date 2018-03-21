@@ -221,7 +221,7 @@ void DiagramsFrame::saveDiagramOutput()
 
 void DiagramsFrame::writeCurrentDiagramOutputFile(const QString& filePath, const QString& separator)
 {
-    QFile* file = file_dialog::OutputFile("file", this, filePath);
+    QFile* file = file_dialog::openFileConfirmOverwrite("file", this, filePath);
     if (!file)
         return;
     QTextStream stream(file);
@@ -242,7 +242,7 @@ void DiagramsFrame::writeCurrentDiagramOutputFile(const QString& filePath, const
 
 void DiagramsFrame::writeAllDataOutputFile(const QString& filePath, const QString& separator)
 {
-    QFile* file = file_dialog::OutputFile("file", this, filePath);
+    QFile* file = file_dialog::openFileConfirmOverwrite("file", this, filePath);
     if (!file)
         return;
     QTextStream stream(file);

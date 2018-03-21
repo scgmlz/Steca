@@ -201,7 +201,7 @@ void MainWin::saveSession()
     if (!fileName.endsWith(".ste"))
         fileName += ".ste";
     QFileInfo fileInfo(fileName);
-    QFile* file = file_dialog::OutputFile("file", this, fileInfo.filePath());
+    QFile* file = file_dialog::openFileConfirmOverwrite("file", this, fileInfo.filePath());
     if (!file)
         return;
     const int result = file->write(gSession->serializeSession());
