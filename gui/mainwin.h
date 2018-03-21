@@ -28,9 +28,6 @@
 
 extern class MainWin* gGui; //!< global pointer to _the_ main window
 
-// make connects shorter
-#define _SLOT_(Type, method, parType) static_cast<void (Type::*)(parType)>(&Type::method)
-
 //! The main window. Its single instance is accessible through the global pointer gGui.
 
 class MainWin : public QMainWindow {

@@ -129,12 +129,10 @@ RangeControl::RangeControl()
     connect(gSession, &Session::sigPeaks, this, &RangeControl::onData);
 
     // outbound connections
-    connect(&spinRangeMin_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val) {
-            qDebug() << "MIN CHANGED " << val;
+    connect(&spinRangeMin_, &CDoubleSpinBox::valueReleased, [this](double val) {
             qreal antival = qMax(spinRangeMax_.value(), val);
             gSession->peaks().selectedPeak()->setRange(Range(val, antival)); });
-    connect(&spinRangeMax_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val) {
-            qDebug() << "MAX CHANGED " << val;
+    connect(&spinRangeMax_, &CDoubleSpinBox::valueReleased, [this](double val) {
             qreal antival = qMin(spinRangeMin_.value(), val);
             gSession->peaks().selectedPeak()->setRange(Range(antival, val)); });
 
@@ -312,7 +310,7 @@ ControlsPeakfits::ControlsPeakfits()
             gSession->peaks().add(comboReflType_.currentText()); });
     connect(&gGui->triggers->removePeak, &QAction::triggered, []() {
             gSession->peaks().remove(); });
-    connect(&comboReflType_, _SLOT_(QComboBox, currentIndexChanged, const QString&),
+    connect(&comboReflType_, qOverload<const QString&>(&QComboBox::currentIndexChanged),
             [](const QString& peakFunctionName) {
                 if (gSession->peaks().selectedPeak()) { // TODO rm this if
                     gSession->peaks().selectedPeak()->setPeakFunction(peakFunctionName);
@@ -324,14 +322,15 @@ ControlsPeakfits::ControlsPeakfits()
     topControls_.addWidget(new XIconButton(&gGui->triggers->addPeak));
     topControls_.addWidget(new XIconButton(&gGui->triggers->removePeak));
 
-    box_.addLayout(&topControls_);
-    box_.addWidget(new PeaksView);
-    box_.addWidget(&comboReflType_);
-    box_.addWidget(new RangeControl);
-    box_.addWidget(new PeakdataView);
-    box_.addStretch(1000);
+    auto* box = new QVBoxLayout;
+    box->addLayout(&topControls_);
+    box->addWidget(new PeaksView);
+    box->addWidget(&comboReflType_);
+    box->addWidget(new RangeControl);
+    box->addWidget(new PeakdataView);
+    box->addStretch(1000);
 
-    setLayout(&box_);
+    setLayout(box);
     update();
 }
 

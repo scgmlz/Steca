@@ -12,17 +12,20 @@
 //
 // ************************************************************************** //
 
+#include "core/typ/exception.h"
+#include "core/typ/types.h"
 #include "gui/base/controls.h"
 #include "gui/base/displays.h"
 #include "gui/capture_and_replay/console.h"
-#include "gui/mainwin.h" // for _SLOT_
 #include <QApplication> // for qApp for new Action
 #include <QtGlobal> // to define Q_OS_WIN
 #include <iostream> // debug
 
 // ************************************************************************** //
-//  class Trigger
+//  QAction overloads CTrigger and CToggle
 // ************************************************************************** //
+
+//! @class CTrigger
 
 CTrigger::CTrigger(const QString& rawname, const QString& text, const QString& iconFile)
     : QAction(text, qApp)
@@ -56,9 +59,7 @@ void CTrigger::onCommand(const QStringList& args)
     trigger();
 }
 
-// ************************************************************************** //
-//  class Toggle
-// ************************************************************************** //
+//! @class CToggle
 
 CToggle::CToggle(const QString& rawname, const QString& text, bool on, const QString& iconFile)
     : QAction(text, qApp)
@@ -125,14 +126,16 @@ XIconButton::XIconButton(QAction* action)
 //  control widget classes with console connection
 // ************************************************************************** //
 
-// A QSpinBox controls an integer value. Therefore normally we need no extra width for a dot.
-// However, sometimes we want to make a QSpinBox exactly as wide as a given QDoubleSpinBox,
-// for nice vertical alignement. Then we use withDot=true.
-
-// The signal QSpinBox::valueChanged cannot be used to trigger lengthy computations
-// because it will cause duplicate incrementation. A workaround is described at
-// https://forum.qt.io/topic/89011. Here, we explicitly deal with editingFinished and
-// mouse release events.
+//! @class CSpinBox
+//!
+//! A QSpinBox controls an integer value. Therefore normally we need no extra width for a dot.
+//! However, sometimes we want to make a QSpinBox exactly as wide as a given QDoubleSpinBox,
+//! for nice vertical alignement. Then we use withDot=true.
+//!
+//! The signal QSpinBox::valueChanged cannot be used to trigger lengthy computations
+//! because it will cause duplicate incrementation. A workaround is described at
+//! https://forum.qt.io/topic/89011. Here, we explicitly deal with editingFinished and
+//! mouse release events.
 
 CSpinBox::CSpinBox(const QString& _name, int ndigits, bool withDot, int min, int max,
                    const QString& tooltip)
@@ -175,6 +178,8 @@ void CSpinBox::onCommand(const QStringList& args)
     setValue(TO_INT(args[1]));
 }
 
+//! @class CDoubleSpinBox
+
 CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, qreal min, qreal max)
     : CSettable(_name)
 {
@@ -182,8 +187,27 @@ CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, qreal min, qre
     ASSERT(min<=max);
     setMinimum(min);
     setMaximum(max);
-    connect(this, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val)->void {
-            gConsole->log2(hasFocus(), name()+" set "+QString::number(val)); });
+    reportedValue_ = value();
+    connect(this, &QDoubleSpinBox::editingFinished, this, &CDoubleSpinBox::reportChange);
+    connect(this, qOverload<double>(&QDoubleSpinBox::valueChanged), [this](double val)->void {
+            if(!hasFocus())
+                gConsole->log2(false, name()+" set "+QString::number(val)); });
+}
+
+void CDoubleSpinBox::mouseReleaseEvent(QMouseEvent *event)
+{
+    QDoubleSpinBox::mouseReleaseEvent(event);
+    reportChange();
+}
+
+void CDoubleSpinBox::reportChange()
+{
+    double val = value();
+    if (val == reportedValue_)
+        return;
+    reportedValue_ = val;
+    gConsole->log2(true, name()+" set "+QString::number(val));
+    emit valueReleased(val);
 }
 
 void CDoubleSpinBox::onCommand(const QStringList& args)
@@ -195,6 +219,8 @@ void CDoubleSpinBox::onCommand(const QStringList& args)
     setValue(TO_DOUBLE(args[1]));
 }
 
+//! @class CCheckBox
+
 CCheckBox::CCheckBox(const QString& _name, QAction* action)
     : QCheckBox(action ? action->text().toLower() : "")
     , CSettable(_name)
@@ -205,7 +231,7 @@ CCheckBox::CCheckBox(const QString& _name, QAction* action)
     connect(action, &QAction::toggled, [this](bool on) { setChecked(on); });
     setToolTip(action->toolTip());
     setChecked(action->isChecked());
-    connect(this, _SLOT_(QCheckBox, stateChanged, int), [this](int val)->void {
+    connect(this, qOverload<int>(&QCheckBox::stateChanged), [this](int val)->void {
             gConsole->log2(hasFocus(), name()+" set "+QString::number(val)); });
 }
 
@@ -224,11 +250,13 @@ void CCheckBox::onCommand(const QStringList& args)
     setChecked(TO_INT(args[1]));
 }
 
+//! @class CRadioButton
+
 CRadioButton::CRadioButton(const QString& _name, const QString& text)
     : QRadioButton(text)
     , CSettable(_name)
 {
-    connect(this, _SLOT_(QRadioButton, toggled, bool), [this](bool val)->void {
+    connect(this, &QRadioButton::toggled, [this](bool val)->void {
             gConsole->log2(hasFocus(), name()+" switch "+(val?"on":"off")); });
 }
 
@@ -246,11 +274,13 @@ void CRadioButton::onCommand(const QStringList& args)
         THROW("Invalid argument to command 'switch'");
 }
 
+//! @class CComboBox
+
 CComboBox::CComboBox(const QString& _name, const QStringList& items)
     : CSettable(_name)
 {
     addItems(items);
-    connect(this, _SLOT_(QComboBox, currentIndexChanged, int), [this](int val)->void {
+    connect(this, qOverload<int>(&QComboBox::currentIndexChanged), [this](int val)->void {
             gConsole->log2(hasFocus(), name()+" choose "+QString::number(val)); });
 }
 
@@ -262,6 +292,8 @@ void CComboBox::onCommand(const QStringList& args)
         THROW("Missing argument to command 'choose'");
     setCurrentIndex(TO_INT(args[1]));
 }
+
+//! @class CTabWidget
 
 CTabWidget::CTabWidget(const QString& _name)
     : CSettable(_name)
@@ -284,9 +316,7 @@ void CTabWidget::onCommand(const QStringList& args)
     setCurrentIndex(val);
 }
 
-// ************************************************************************** //
-//  class CFileDialog
-// ************************************************************************** //
+//! @class CFileDialog
 
 CFileDialog::CFileDialog(QWidget *parent, const QString &caption,
                          const QString &directory, const QString &filter)

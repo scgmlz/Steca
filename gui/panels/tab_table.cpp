@@ -165,8 +165,8 @@ TableWidget::TableWidget()
 {
     // inbound connection
     connect(gSession, &Session::sigPeaks, [this]() {
-            QThread::msleep(3000); });
-            // calculate(); });
+            if (isVisible())
+                calculate(); });
 
     // business logic // TODO: move elsewhere
     const QStringList& headers = PeakInfo::dataTags(false);
@@ -254,7 +254,7 @@ void TableWidget::displayPeak(int reflIndex)
 
 //    ASSERT(calcPoints_.count() == interpPoints_.count());
     if (calcPoints_.count() <= reflIndex)
-        return;
+        THROW("bug: invalid reflection index");
 
     bool interpolated = false; // TODO reactivate
     for (const PeakInfo& r : (interpolated ? interpPoints_ : calcPoints_).at(reflIndex))
@@ -265,5 +265,5 @@ void TableWidget::displayPeak(int reflIndex)
 
 int TableWidget::getReflIndex() const
 {
-    return 1; // TODO URGENT reactivate
+    return gSession->peaks().selectedIndex();
 }

@@ -172,8 +172,10 @@ DiagramsFrame::DiagramsFrame()
     ASSERT(params_->panelDiagram);
     const PanelDiagram*const pd = params_->panelDiagram;
 
-    connect(&pd->xAxis, _SLOT_(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
-    connect(&pd->yAxis, _SLOT_(QComboBox, currentIndexChanged, int), [this]() { recalculate(); });
+    connect(&pd->xAxis, qOverload<int>(&QComboBox::currentIndexChanged), [this]() {
+            recalculate(); });
+    connect(&pd->yAxis, qOverload<int>(&QComboBox::currentIndexChanged), [this]() {
+            recalculate(); });
 
     {
         auto* tab = new QWidget();
