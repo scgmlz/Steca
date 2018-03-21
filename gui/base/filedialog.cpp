@@ -117,10 +117,10 @@ QString FileDialog::getFile()
 namespace file_dialog {
 
 //! Opens file for writing; asks for confirmation before overwriting.
-QFile* OutputFile(const QString& name, QWidget* parent, const QString& path, bool check_overwrite)
+QFile* OutputFile(const QString& name, QWidget* parent, const QString& path)
 {
     QFile* ret = new QFile(path);
-    if (check_overwrite && ret->exists() &&
+    if (ret->exists() &&
         QMessageBox::question(parent, "File exists", "Overwrite "+path+" ?") != QMessageBox::Yes) {
         delete ret;
         return nullptr;

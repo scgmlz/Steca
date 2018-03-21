@@ -19,7 +19,7 @@
 
 namespace file_dialog {
 
-QFile* OutputFile(const QString&, QWidget*, const QString&, bool check_overwrite=true);
+QFile* OutputFile(const QString&, QWidget*, const QString&);
 
 QStringList openFileNames(QWidget*, const QString&, QDir&, const QString&, bool plural=true);
 QString openFileName(QWidget*, const QString&, QDir&, const QString&);
