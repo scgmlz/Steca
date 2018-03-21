@@ -183,13 +183,22 @@ TableWidget::TableWidget()
     dataView_ = new DataView(headers.count()); // the main table
     dataView_->setColumns(headers, outHeaders, cmps);
 
-    auto* scrollArea = new QScrollArea;
-    scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    scrollArea->setWidget(new ColumnSelector(*dataView_, *showCols));
+    auto* colSelBox = new QScrollArea;
+    colSelBox->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    colSelBox->setWidget(new ColumnSelector(*dataView_, *showCols));
+
+    auto* buttonBox = new QHBoxLayout;
+    buttonBox->addStretch(1);
+    buttonBox->addWidget(new XIconButton {&gGui->triggers->exportTable});
+
+    auto* sideBox = new QVBoxLayout;
+    sideBox->addWidget(colSelBox);
+    sideBox->addLayout(buttonBox);
+    sideBox->setStretch(0,1000);
 
     auto* layout = new QHBoxLayout;
     layout->addWidget(dataView_);
-    layout->addWidget(scrollArea);
+    layout->addLayout(sideBox);
     layout->setStretch(0,1000);
     setLayout(layout);
 }
