@@ -15,6 +15,7 @@
 #ifndef TAB_DIAGRAM_H
 #define TAB_DIAGRAM_H
 
+#include "core/calc/peak_info.h"
 #include "gui/mainwin.h"
 #include "gui/base/controls.h"
 
@@ -27,6 +28,16 @@ public:
 private:
     class PlotDiagram* plot_;
     class SelectXY* selectXY_;
+
+    using eReflAttr = PeakInfo::eReflAttr;
+
+    eReflAttr xAttr() const;
+    eReflAttr yAttr() const;
+
+    void displayPeak(int reflIndex, bool interpolated);
+
+    PeakInfos rs_;
+    vec<qreal> xs_, ys_, ysErrorLo_, ysErrorUp_;
 };
 
 #endif // TAB_DIAGRAM_H
