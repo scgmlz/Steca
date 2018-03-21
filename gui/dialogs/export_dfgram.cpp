@@ -24,6 +24,7 @@
 
 namespace {
 
+// TODO move file saving code to Core
 void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
                 const Range& rgeGma, const QString& separator)
 {
@@ -139,6 +140,11 @@ ExportDfgram::ExportDfgram()
     setLayout(vbox);
 
     show();
+}
+
+ExportDfgram::~ExportDfgram()
+{
+    delete tabSave_; // auto deletion would happen in wrong order
 }
 
 void ExportDfgram::onCommand(const QStringList&)

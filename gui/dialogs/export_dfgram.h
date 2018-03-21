@@ -23,12 +23,11 @@
 class ExportDfgram : public QDialog, private CModal {
 public:
     ExportDfgram();
+    ~ExportDfgram();
     void onCommand(const QStringList&);
 
 private:
     QProgressBar* progressBar_;
-    class PanelGammaSlices* panelGammaSlices;
-    class PanelGammaRange* panelGammaRange;
     class TabDiffractogramsSave* tabSave_;
 
     void save();
