@@ -35,7 +35,7 @@ Triggers::Triggers()
     connect(&loadSession, AT, []() { gGui->loadSession(); });
     connect(&online, AT, []() { QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
     connect(&outputDiagrams, AT, [](){ DiagramsFrame().exec(); });
-    connect(&outputDiffractograms, AT, [](){ DiffractogramsFrame().exec(); });
+    connect(&exportDgrams, AT, [](){ DiffractogramsFrame().exec(); });
     connect(&outputPolefigures, AT, []() { PoleFiguresFrame().exec(); });
     connect(&quit, AT, []() { gGui->close(); });
     connect(&removeFile, AT, []() { gSession->dataset().removeFile(); });

@@ -75,7 +75,7 @@ Menus::Menus(QMenuBar* mbar)
         "&Output",
         {   &triggers->outputPolefigures,
                 &triggers->outputDiagrams,
-                &triggers->outputDiffractograms,
+                &triggers->exportDgrams,
         });
 
     actionsToMenu(

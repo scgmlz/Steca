@@ -133,7 +133,7 @@ void MainWin::updateActionEnabling()
     triggers->removePeak.setEnabled(hasPeak);
     triggers->clearBackground.setEnabled(hasBase);
     triggers->outputDiagrams.setEnabled(hasFile && hasPeak);
-    triggers->outputDiffractograms.setEnabled(hasFile);
+    triggers->exportDgrams.setEnabled(hasFile);
     triggers->outputPolefigures.setEnabled(hasFile && hasPeak);
     menus_->dgram_->setEnabled(hasFile);
     menus_->image_->setEnabled(hasFile);
