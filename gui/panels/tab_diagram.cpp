@@ -113,6 +113,26 @@ DiagramWidget::DiagramWidget()
 
 void DiagramWidget::render()
 {
+    int iRefl = gSession->peaks().selectedIndex();
+    TakesLongTime __;
+
+    // TODO rm DUPLICATE from TableWidget:
+
+    vec<PeakInfos> calcPoints_;
+    int reflCount = gSession->peaks().count();
+    if (!reflCount)
+        return;
+    Progress progress(reflCount, &gGui->progressBar);
+
+    for_i (reflCount)
+        calcPoints_.append(
+            gSession->makePeakInfos(
+                gSession->peaks().at(i),
+                gSession->gammaSelection().numSlices(),
+                gSession->gammaSelection().range(),
+                &progress));
+
+    rs_ = calcPoints_.at(iRefl);
     int count = rs_.count();
 
     xs_.resize(count);
@@ -147,7 +167,6 @@ void DiagramWidget::render()
     ysErrorLo_.clear();
     ysErrorUp_.clear();
 
-    int iRefl = gSession->peaks().selectedIndex();
     if (!gSession->peaks().at(iRefl).isRaw()) {
         switch ((PeakInfo::eReflAttr)selectXY_->yAxis.currentIndex()) {
         case eReflAttr::INTEN:
