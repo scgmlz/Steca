@@ -325,14 +325,15 @@ ControlsPeakfits::ControlsPeakfits()
     topControls_.addWidget(new XIconButton(&gGui->triggers->addPeak));
     topControls_.addWidget(new XIconButton(&gGui->triggers->removePeak));
 
-    box_.addLayout(&topControls_);
-    box_.addWidget(new PeaksView);
-    box_.addWidget(&comboReflType_);
-    box_.addWidget(new RangeControl);
-    box_.addWidget(new PeakdataView);
-    box_.addStretch(1000);
+    auto* box = new QVBoxLayout;
+    box->addLayout(&topControls_);
+    box->addWidget(new PeaksView);
+    box->addWidget(&comboReflType_);
+    box->addWidget(new RangeControl);
+    box->addWidget(new PeakdataView);
+    box->addStretch(1000);
 
-    setLayout(&box_);
+    setLayout(box);
     update();
 }
 

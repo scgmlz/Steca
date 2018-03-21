@@ -24,7 +24,6 @@ public:
     ControlsPeakfits();
 private:
     void onPeaks();
-    QVBoxLayout box_;
     QHBoxLayout topControls_;
     CComboBox comboReflType_;
 };
