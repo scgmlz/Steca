@@ -51,55 +51,54 @@ private:
 
 Diffractogram::Diffractogram()
 {
-    setLayout(&box_);
-    box_.addWidget((plot_ = new DiffractogramPlot(*this)));
-    box_.addLayout(&hb_);
-
-    hb_.addWidget(new QLabel("normalize to:"));
-    hb_.addWidget(&comboNormType_);
-
-    connect(&comboNormType_, qOverload<int>(&QComboBox::currentIndexChanged), [](int index) {
-            gSession->setNorm(eNorm(index)); });
-
-    hb_.addWidget(new QLabel(" intensity from:"));
-    hb_.addWidget(&intenSum_);
-    hb_.addWidget(&intenAvg_);
-    hb_.addWidget(&intenScale_);
+    // initializations
+    gGui->toggles->showBackground.setChecked(true);
+    intenAvg_.setChecked(true);
     intenScale_.setDecimals(3);
-    hb_.addStretch();
 
-    connect(&intenAvg_, &QRadioButton::toggled, [this](bool on) {
-        intenScale_.setEnabled(on);
-        intenScale_.setValue(gSession->intenScale());
-        gSession->setIntenScaleAvg(on, intenScale_.value());
-    });
+    // inbound connections
+    connect(gSession, &Session::sigDataHighlight, this, &Diffractogram::onHighlight);
+    connect(gSession, &Session::sigNorm, this, &Diffractogram::onNormChanged);
 
-    connect(&intenScale_, &CDoubleSpinBox::valueReleased, [](double val) {
-        if (val > 0)
-            gSession->setIntenScaleAvg(gSession->intenScaledAvg(), val);
-    });
-
-    hb_.addWidget(&enableZoom_);
-    hb_.addStretch();
-
-    hb_.addWidget(&combine_);
-    hb_.addWidget(&fixInten_);
-    hb_.addWidget(&showBg_);
-    hb_.addStretch();
-
-    hb_.addWidget(&export_);
-
+    // internal connections
     connect(&actZoom_, &QAction::toggled, this, [this](bool on) {
         plot_->setInteraction(QCP::iRangeDrag, on);
         plot_->setInteraction(QCP::iRangeZoom, on);
         plot_->enterZoom(on);
     });
 
-    connect(gSession, &Session::sigDataHighlight, this, &Diffractogram::onHighlight);
-    connect(gSession, &Session::sigNorm, this, &Diffractogram::onNormChanged);
+    // outbound connections
+    connect(&comboNormType_, qOverload<int>(&QComboBox::currentIndexChanged), [](int index) {
+            gSession->setNorm(eNorm(index)); });
+    connect(&intenAvg_, &QRadioButton::toggled, [this](bool on) {
+        intenScale_.setEnabled(on);
+        intenScale_.setValue(gSession->intenScale());
+        gSession->setIntenScaleAvg(on, intenScale_.value());
+    });
+    connect(&intenScale_, &CDoubleSpinBox::valueReleased, [](double val) {
+        if (val > 0)
+            gSession->setIntenScaleAvg(gSession->intenScaledAvg(), val);
+    });
 
-    gGui->toggles->showBackground.setChecked(true);
-    intenAvg_.setChecked(true);
+    // layout
+    hb_.addWidget(new QLabel("normalize to:"));
+    hb_.addWidget(&comboNormType_);
+    hb_.addWidget(new QLabel(" intensity from:"));
+    hb_.addWidget(&intenSum_);
+    hb_.addWidget(&intenAvg_);
+    hb_.addWidget(&intenScale_);
+    hb_.addStretch(); // ---
+    hb_.addWidget(&enableZoom_);
+    hb_.addStretch(); // ---
+    hb_.addWidget(&combine_);
+    hb_.addWidget(&fixInten_);
+    hb_.addWidget(&showBg_);
+    hb_.addStretch(); // ---
+    hb_.addWidget(&export_);
+
+    box_.addWidget((plot_ = new DiffractogramPlot(*this)));
+    box_.addLayout(&hb_);
+    setLayout(&box_);
 }
 
 void Diffractogram::onNormChanged()
