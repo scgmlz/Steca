@@ -92,6 +92,10 @@ Menus::Menus(QMenuBar* mbar)
 #endif
                 &toggles->viewStatusbar,
                 separator(),
+                &triggers->spawnTable,
+                &triggers->spawnXY,
+                &triggers->spawnPolefig,
+                separator(),
                 &triggers->viewReset,
         });
 
