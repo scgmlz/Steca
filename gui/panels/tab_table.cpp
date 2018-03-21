@@ -180,16 +180,16 @@ TableWidget::TableWidget()
     }
 
     // layout
-    auto* layout = new QHBoxLayout;
-
     dataView_ = new DataView(headers.count()); // the main table
-    layout->addWidget(dataView_);
+    dataView_->setColumns(headers, outHeaders, cmps);
 
     auto* scrollArea = new QScrollArea;
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scrollArea->setWidget(new ColumnSelector(*dataView_, *showCols));
-    layout->addWidget(scrollArea);
 
+    auto* layout = new QHBoxLayout;
+    layout->addWidget(dataView_);
+    layout->addWidget(scrollArea);
     layout->setStretch(0,1000);
     setLayout(layout);
 }
