@@ -24,7 +24,7 @@ public:
     ~PoleFiguresFrame();
 
 private:
-    class TabGraph* tabGraph_;
+    class PlotPolefig* plot_;
     class TabPoleFiguresSave* tabSave_;
 
     void displayPeak(int reflIndex, bool interpolated);

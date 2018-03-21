@@ -23,14 +23,14 @@
 #include <QPainter>
 
 // ************************************************************************** //
-//  local class TabGraph
+//  local class PlotPolefig
 // ************************************************************************** //
 
 //! Tab in PoleFiguresFrame, to display the pole figure.
 
-class TabGraph : public QWidget {
+class PlotPolefig : public QWidget {
 public:
-    TabGraph(Params&);
+    PlotPolefig(Params&);
     void set(PeakInfos);
 
 private:
@@ -61,7 +61,7 @@ private:
     CCheckBox cbFlat_;
 };
 
-TabGraph::TabGraph(Params& params)
+PlotPolefig::PlotPolefig(Params& params)
     : params_(params)
     , flat_(false)
     , alphaMax_(90)
@@ -85,20 +85,20 @@ TabGraph::TabGraph(Params& params)
     update();
 }
 
-void TabGraph::set(PeakInfos rs)
+void PlotPolefig::set(PeakInfos rs)
 {
     rs_ = rs;
     update();
 }
 
-void TabGraph::update()
+void PlotPolefig::update()
 {
     avgAlphaMax_ = params_.panelInterpolation->avgAlphaMax.value();
     flat_ = cbFlat_.isChecked();
     QWidget::update();
 }
 
-void TabGraph::paintEvent(QPaintEvent*)
+void PlotPolefig::paintEvent(QPaintEvent*)
 {
     int w = size().width(), h = size().height();
 
@@ -115,30 +115,30 @@ void TabGraph::paintEvent(QPaintEvent*)
 }
 
 //! Point in floating-point precision
-QPointF TabGraph::p(deg alpha, deg beta) const
+QPointF PlotPolefig::p(deg alpha, deg beta) const
 {
     qreal r = r_ * alpha / alphaMax_;
     rad betaRad = beta.toRad();
     return QPointF(r * cos(betaRad), -r * sin(betaRad));
 }
 
-deg TabGraph::alpha(const QPointF& p) const
+deg PlotPolefig::alpha(const QPointF& p) const
 {
     return sqrt(p.x() * p.x() + p.y() * p.y()) / r_ * alphaMax_;
 }
 
-deg TabGraph::beta(const QPointF& p) const
+deg PlotPolefig::beta(const QPointF& p) const
 {
     deg b = rad(atan2(p.y(), p.x())).toDeg();
     return b <= 0 ? -b : 360 - b;
 }
 
-void TabGraph::circle(QPointF c, qreal r)
+void PlotPolefig::circle(QPointF c, qreal r)
 {
     p_->drawEllipse(c, r, r);
 }
 
-void TabGraph::paintGrid()
+void PlotPolefig::paintGrid()
 {
     QPen penMajor(Qt::gray), penMinor(Qt::lightGray);
 
@@ -158,7 +158,7 @@ void TabGraph::paintGrid()
     circle(c_, r_ * avgAlphaMax_ / alphaMax_);
 }
 
-void TabGraph::paintPoints()
+void PlotPolefig::paintPoints()
 {
     qreal rgeMax = rs_.rgeInten().max;
 
@@ -294,8 +294,8 @@ PoleFiguresFrame::PoleFiguresFrame()
         auto* tab = new QWidget();
         tabs_.addTab(tab, "Graph");
         tab->setLayout(new QVBoxLayout());
-        tabGraph_ = new TabGraph(*params_);
-        tab->layout()->addWidget(tabGraph_);
+        plot_ = new PlotPolefig(*params_);
+        tab->layout()->addWidget(plot_);
     }
     {
         auto* actSave = new CTrigger("exportSave", "Save");
@@ -313,14 +313,14 @@ PoleFiguresFrame::PoleFiguresFrame()
 PoleFiguresFrame::~PoleFiguresFrame()
 {
     delete tabSave_;
-    delete tabGraph_;
+    delete plot_;
 }
 
 void PoleFiguresFrame::displayPeak(int reflIndex, bool interpolated)
 {
     Frame::displayPeak(reflIndex, interpolated);
     if (!interpPoints_.isEmpty() && !calcPoints_.isEmpty())
-        tabGraph_->set((interpolated ? interpPoints_ : calcPoints_).at(reflIndex));
+        plot_->set((interpolated ? interpPoints_ : calcPoints_).at(reflIndex));
     tabSave_->rawReflSettings(!gSession->peaks().at(reflIndex).isRaw());
 }
 
