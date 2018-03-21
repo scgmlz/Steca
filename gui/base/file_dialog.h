@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/base/filedialog.h
+//! @file      gui/base/file_dialog.h
 //! @brief     Defines functions queryImportFileName(s), queryExportFileName, queryDirectory in namespace file_dialog
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef FILEDIALOG_H
-#define FILEDIALOG_H
+#ifndef FILE_DIALOG_H
+#define FILE_DIALOG_H
 
 //! Functions for opening files.
 
@@ -27,4 +27,4 @@ QString queryDirectory(QWidget*, const QString&, QDir&);
 
 } // namespace file_dialog
 
-#endif // FILEDIALOG_H
+#endif // FILE_DIALOG_H

@@ -14,7 +14,7 @@
 
 #include "gui/dialogs/tab_save.h"
 #include "gui/dialogs/dialog_panels.h"
-#include "gui/base/filedialog.h"
+#include "gui/base/file_dialog.h"
 #include "gui/mainwin.h"
 
 namespace {

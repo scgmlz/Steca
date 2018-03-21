@@ -14,7 +14,7 @@
 
 #include "gui/dialogs/export_dfgram.h"
 #include "core/session.h"
-#include "gui/base/filedialog.h"
+#include "gui/base/file_dialog.h"
 #include "gui/dialogs/dialog_panels.h"
 #include "gui/dialogs/tab_save.h"
 #include "gui/mainwin.h"
