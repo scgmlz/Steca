@@ -109,8 +109,8 @@ ExportDfgram::ExportDfgram()
     progressBar_ = new QProgressBar;
     tabSave_ = new TabDiffractogramsSave();
 
-    auto* actClose = new CTrigger("exportClose", "Close");
-    auto* actSave = new CTrigger("exportSave", "Save");
+    auto* actClose = new CTrigger("close", "Close");
+    auto* actSave = new CTrigger("save", "Save");
 
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);

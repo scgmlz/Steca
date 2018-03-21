@@ -18,19 +18,19 @@
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
 
+// ************************************************************************** //
+//  local class OpenFileProxyModel
+// ************************************************************************** //
+
 namespace {
 
-typedef const QModelIndex& rcidx;
-
-// ************************************************************************** //
-//  class OpenFileProxyModel (file scope)
-// ************************************************************************** //
+//! ??, for use in openFileNames.
 
 class OpenFileProxyModel : public QSortFilterProxyModel {
 public:
-    int columnCount(rcidx) const { return 2; }
+    int columnCount(const QModelIndex&) const { return 2; }
     QVariant headerData(int, Qt::Orientation, int = Qt::DisplayRole) const;
-    QVariant data(rcidx, int = Qt::DisplayRole) const;
+    QVariant data(const QModelIndex&, int = Qt::DisplayRole) const;
 private:
     mutable QHash<QString, QString> memInfo;
 };
@@ -42,7 +42,7 @@ QVariant OpenFileProxyModel::headerData(int section, Qt::Orientation ori, int ro
     return QSortFilterProxyModel::headerData(section, ori, role);
 }
 
-QVariant OpenFileProxyModel::data(rcidx idx, int role) const
+QVariant OpenFileProxyModel::data(const QModelIndex& idx, int role) const
 {
     if (idx.isValid() && 1 == idx.column()) {
         if (Qt::DisplayRole == role) {
@@ -67,12 +67,11 @@ QVariant OpenFileProxyModel::data(rcidx idx, int role) const
 
 } // namespace
 
-
 // ************************************************************************** //
-//  exported functions
+//  local class FileDialog
 // ************************************************************************** //
 
-namespace file_dialog {
+namespace {
 
 //! Base class for all Steca file dialogs. Manages default directory.
 class FileDialog : public CFileDialog {
@@ -109,6 +108,14 @@ QString FileDialog::getFile()
     return files.first();
 }
 
+} // namespace
+
+// ************************************************************************** //
+//  exported functions
+// ************************************************************************** //
+
+namespace file_dialog {
+
 //! Opens file for writing; runs dialog before overwriting.
 QFile* OutputFile(const QString& name, QWidget* parent, const QString& path, bool check_overwrite)
 {
@@ -125,20 +132,21 @@ QFile* OutputFile(const QString& name, QWidget* parent, const QString& path, boo
     return ret;
 }
 
-QStringList openFileNames(QWidget* parent, const QString& caption, QDir& dir,
-                          const QString& filter, bool plural)
+//! Runs dialog that prompts for input files. Returns list of absolute paths. May change dir.
+QStringList openFileNames(
+    QWidget* parent, const QString& caption, QDir& dir, const QString& filter, bool plural)
 {
     FileDialog dlg(parent, caption, dir, filter);
     dlg.setAcceptMode(QFileDialog::AcceptOpen);
     dlg.setReadOnly(true);
     dlg.setProxyModel(new OpenFileProxyModel);
     dlg.setFileMode(plural ? QFileDialog::ExistingFiles : QFileDialog::ExistingFile);
-
     if (!dlg.exec())
         return {};
     return dlg.getFiles();
 }
 
+//! Runs dialog that prompts for one input file. Returns absolute path. May change dir.
 QString openFileName(QWidget* parent, const QString& caption, QDir& dir, const QString& filter)
 {
     QStringList fileNames = openFileNames(parent, caption, dir, filter, false);
@@ -147,23 +155,24 @@ QString openFileName(QWidget* parent, const QString& caption, QDir& dir, const Q
     return fileNames.first();
 }
 
+//! Runs dialog that prompts for one output file. Returns absolute path. May change dir.
 QString saveFileName(QWidget* parent, const QString& caption, QDir& dir, const QString& filter)
 {
     FileDialog dlg(parent, caption, dir, filter);
     dlg.setFileMode(QFileDialog::AnyFile);
     dlg.setAcceptMode(QFileDialog::AcceptSave);
-
     if (!dlg.exec())
         return "";
     return dlg.getFile();
 }
 
+//! Runs dialog that prompts for a directory. Returns absolute directory path. May change dir.
+// TODO return value VS dir ???
 QString saveDirName(QWidget* parent, const QString& caption, QDir& dir)
 {
     FileDialog dlg(parent, caption, dir);
     dlg.setFileMode(QFileDialog::Directory);
     dlg.setAcceptMode(QFileDialog::AcceptSave);
-
     if (!dlg.exec())
         return "";
     return dlg.getFile();
