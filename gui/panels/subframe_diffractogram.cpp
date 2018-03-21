@@ -34,24 +34,18 @@ private:
     void onHighlight();
 
     class DiffractogramPlot* plot_;
-    QVBoxLayout box_;
-    QHBoxLayout hb_;
     CComboBox comboNormType_ {"normTyp", {"none", "monitor", "Δ monitor", "Δ time", "background"}};
     CRadioButton intenSum_ {"intenSum", "sum"};
     CRadioButton intenAvg_ {"intenAvg", "avg ×"};
     CDoubleSpinBox intenScale_ {"intenScale", 6, 0.001};
     CToggle actZoom_ {"actZoom", "zoom", false, ":/icon/zoom"};
-    XIconButton enableZoom_ {&actZoom_};
-    XIconButton combine_ {&gGui->toggles->combinedDgram};
-    XIconButton fixInten_ {&gGui->toggles->fixedIntenDgram};
-    XIconButton showBg_ {&gGui->toggles->showBackground};
-    XIconButton export_ {&gGui->triggers->exportDfgram};
 };
 
 
 Diffractogram::Diffractogram()
 {
     // initializations
+    plot_ = new DiffractogramPlot(*this);
     gGui->toggles->showBackground.setChecked(true);
     intenAvg_.setChecked(true);
     intenScale_.setDecimals(3);
@@ -81,24 +75,26 @@ Diffractogram::Diffractogram()
     });
 
     // layout
-    hb_.addWidget(new QLabel("normalize to:"));
-    hb_.addWidget(&comboNormType_);
-    hb_.addWidget(new QLabel(" intensity from:"));
-    hb_.addWidget(&intenSum_);
-    hb_.addWidget(&intenAvg_);
-    hb_.addWidget(&intenScale_);
-    hb_.addStretch(); // ---
-    hb_.addWidget(&enableZoom_);
-    hb_.addStretch(); // ---
-    hb_.addWidget(&combine_);
-    hb_.addWidget(&fixInten_);
-    hb_.addWidget(&showBg_);
-    hb_.addStretch(); // ---
-    hb_.addWidget(&export_);
+    auto* hb = new QHBoxLayout;
+    hb->addWidget(new QLabel("normalize to:"));
+    hb->addWidget(&comboNormType_);
+    hb->addWidget(new QLabel(" intensity from:"));
+    hb->addWidget(&intenSum_);
+    hb->addWidget(&intenAvg_);
+    hb->addWidget(&intenScale_);
+    hb->addStretch(); // ---
+    hb->addWidget(new XIconButton {&actZoom_});
+    hb->addStretch(); // ---
+    hb->addWidget(new XIconButton {&gGui->toggles->combinedDgram});
+    hb->addWidget(new XIconButton {&gGui->toggles->fixedIntenDgram});
+    hb->addWidget(new XIconButton {&gGui->toggles->showBackground});
+    hb->addStretch(); // ---
+    hb->addWidget(new XIconButton {&gGui->triggers->exportDfgram});
 
-    box_.addWidget((plot_ = new DiffractogramPlot(*this)));
-    box_.addLayout(&hb_);
-    setLayout(&box_);
+    auto* box = new QVBoxLayout;
+    box->addWidget(plot_);
+    box->addLayout(hb);
+    setLayout(box);
 }
 
 void Diffractogram::onNormChanged()
