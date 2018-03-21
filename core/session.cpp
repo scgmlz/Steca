@@ -35,12 +35,19 @@ Session::Session()
     interpol().fromSettings();
 
     // Some signals imply other signals:
-    connect(this, &Session::sigGamma, this, &Session::sigDiffractogram);
+    connect(this, &Session::sigGamma,         this, &Session::sigDiffractogram);
+
+    connect(this, &Session::sigDataHighlight, this, &Session::sigImage);
+    connect(this, &Session::sigDetector,      this, &Session::sigImage);
+    connect(this, &Session::sigNorm,          this, &Session::sigImage);
+
+    connect(this, &Session::sigActivated,     this, &Session::sigPeaks);
+    connect(this, &Session::sigDetector,      this, &Session::sigPeaks);
+    connect(this, &Session::sigGamma,         this, &Session::sigPeaks);
+    connect(this, &Session::sigBaseline,      this, &Session::sigPeaks);
+
     connect(this, &Session::sigDataHighlight, &gammaSelection_, &GammaSelection::onData);
     connect(this, &Session::sigDataHighlight, &thetaSelection_, &ThetaSelection::onData);
-    connect(this, &Session::sigDataHighlight, this, &Session::sigImage);
-    connect(this, &Session::sigDetector, this, &Session::sigImage);
-    connect(this, &Session::sigNorm, this, &Session::sigImage);
 }
 
 Session::~Session()

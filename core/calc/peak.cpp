@@ -101,7 +101,7 @@ void Peaks::remove() {
 void Peaks::select(int i) {
     ASSERT(i<count());
     selected_ = i;
-    emit gSession->sigPeakHighlight();
+    emit gSession->sigPeaks();
 }
 
 QStringList Peaks::names() const {

@@ -102,7 +102,6 @@ PeaksView::PeaksView()
     : TableView(new PeaksModel())
 {
     connect(gSession, &Session::sigPeaks, this, &PeaksView::onData);
-    connect(gSession, &Session::sigPeakHighlight, this, &PeaksView::onHighlight);
     connect(this, &TableView::clicked, model_, &TableModel::onClicked);
 }
 
@@ -128,7 +127,6 @@ RangeControl::RangeControl()
 
     // inbound connections
     connect(gSession, &Session::sigPeaks, this, &RangeControl::onData);
-    connect(gSession, &Session::sigPeakHighlight, this, &RangeControl::onData);
 
     // outbound connections
     connect(&spinRangeMin_, _SLOT_(QDoubleSpinBox, valueChanged, double), [this](double val) {
@@ -280,7 +278,6 @@ PeakdataView::PeakdataView()
     addWidget(widgets_[1] = new FitPeakdataView());
     widgets_[0]->show(); // setCurrentIndex(0);
     connect(gSession, &Session::sigPeaks, this, &PeakdataView::onData);
-    connect(gSession, &Session::sigPeakHighlight, this, &PeakdataView::onData);
 }
 
 void PeakdataView::onData()

@@ -127,7 +127,6 @@ signals:
     void sigBaseline();      //!< baseline settings have changed
     void sigNorm();          //!< normalization has changed
     void sigPeaks();         //!< list of peaks or selected peak has changed
-    void sigPeakHighlight(); //!< highlighted Peak has changed
     void sigInterpol();      //!< interpolation parameters have changed
 
 private:
