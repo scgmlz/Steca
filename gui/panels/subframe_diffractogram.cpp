@@ -26,7 +26,7 @@
 
 //! A diffractogram display, with associated controls, for use in SubframeDiffractogram.
 
-class Diffractogram final : public QWidget {
+class Diffractogram : public QWidget {
 public:
     Diffractogram();
 private:
@@ -120,6 +120,5 @@ void Diffractogram::onHighlight()
 SubframeDiffractogram::SubframeDiffractogram()
 {
     setTabPosition(QTabWidget::North);
-    auto* tab = new Diffractogram();
-    addTab(tab, "Diffractogram");
+    addTab(new Diffractogram, "Diffractogram");
 }
