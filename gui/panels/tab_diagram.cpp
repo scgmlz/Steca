@@ -100,9 +100,14 @@ DiagramWidget::DiagramWidget()
                 render(); });
 
     // layout
+    auto* buttonBox = new QHBoxLayout;
+    buttonBox->addStretch(1);
+    buttonBox->addWidget(new XIconButton {&gGui->triggers->exportXY});
+
     auto* controls = new QVBoxLayout;
     controls->addLayout(selectXY_);
     controls->addStretch(1); // ---
+    controls->addLayout(buttonBox);
 
     auto* layout = new QHBoxLayout;
     layout->addWidget(plot_);
