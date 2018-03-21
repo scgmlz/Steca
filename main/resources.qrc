@@ -25,6 +25,7 @@
         <file alias="showBackground">icons/show_background.svg</file>
         <file alias="top">icons/top.svg</file>
         <file alias="useCorrection">icons/use_correction.svg</file>
+        <file alias="window">icons/window.svg</file>
         <file alias="zoom">icons/zoom.svg</file>
     </qresource>
 </RCC>

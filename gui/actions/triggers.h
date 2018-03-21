@@ -35,6 +35,9 @@ public:
     CTrigger exportPolefig {"exportPolefig", "Export pole figure...", ":/icon/filesave" };
     CTrigger exportTable {"exportTable", "Export fit result table...", ":/icon/filesave" };
     CTrigger exportXY {"exportXY", "Export diagram...", ":/icon/filesave" };
+    CTrigger spawnTable {"spawnTable", "Spawn table...", ":/icon/window" };
+    CTrigger spawnXY {"spawnXY", "Spawn diagram...", ":/icon/window" };
+    CTrigger spawnPolefig {"spawnPolefig", "Spawn pole figure...", ":/icon/window" };
     CTrigger loadSession {"loadSession", "Load session..."};
     CTrigger online  {"online", "Open docs in external browser"};
     CTrigger outputDiagrams {"outputDiagrams", "Diagrams..."};

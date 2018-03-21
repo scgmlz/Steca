@@ -189,6 +189,7 @@ TableWidget::TableWidget()
 
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);
+    buttonBox->addWidget(new XIconButton {&gGui->triggers->spawnTable});
     buttonBox->addWidget(new XIconButton {&gGui->triggers->exportTable});
 
     auto* sideBox = new QVBoxLayout;

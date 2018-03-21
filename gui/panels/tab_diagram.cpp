@@ -102,6 +102,7 @@ DiagramWidget::DiagramWidget()
     // layout
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);
+    buttonBox->addWidget(new XIconButton {&gGui->triggers->spawnXY});
     buttonBox->addWidget(new XIconButton {&gGui->triggers->exportXY});
 
     auto* controls = new QVBoxLayout;
