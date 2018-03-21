@@ -68,7 +68,7 @@ QString numberedName(const QString& templatedName, int num, int maxNum) {
 //  local class TabDiffractogramsSave
 // ************************************************************************** //
 
-//! The main part of DiffractogramsFrame. Extends TabSave by an output content control.
+//! The main part of ExportDfgram. Extends TabSave by an output content control.
 
 class TabDiffractogramsSave : public TabSave {
 public:
@@ -102,10 +102,10 @@ TabDiffractogramsSave::TabDiffractogramsSave()
 }
 
 // ************************************************************************** //
-//  class DiffractogramsFrame
+//  class ExportDfgram
 // ************************************************************************** //
 
-DiffractogramsFrame::DiffractogramsFrame()
+ExportDfgram::ExportDfgram()
     : QDialog(gGui)
     , CModal("dgram")
 {
@@ -150,20 +150,20 @@ DiffractogramsFrame::DiffractogramsFrame()
     show();
 }
 
-DiffractogramsFrame::~DiffractogramsFrame()
+ExportDfgram::~ExportDfgram()
 {
-    qDebug() << "~DiffractogramsFrame";
+    qDebug() << "~ExportDfgram";
     delete tabSave_;
     delete panelGammaSlices;
     delete panelGammaRange;
 }
 
-void DiffractogramsFrame::onCommand(const QStringList&)
+void ExportDfgram::onCommand(const QStringList&)
 {
 // TODO get rid of this
 }
 
-void DiffractogramsFrame::save()
+void ExportDfgram::save()
 {
     if (tabSave_->currentChecked())
         saveCurrent();
@@ -172,10 +172,10 @@ void DiffractogramsFrame::save()
     else if (tabSave_->allChecked())
         saveAll(true);
     else
-        qFatal("Invalid call of DiffractogramsFrame::saveDiffractogramOutput");
+        qFatal("Invalid call of ExportDfgram::saveDiffractogramOutput");
 }
 
-void DiffractogramsFrame::saveCurrent()
+void ExportDfgram::saveCurrent()
 {
     QString path = tabSave_->filePath(true);
     if (path.isEmpty())
@@ -192,7 +192,7 @@ void DiffractogramsFrame::saveCurrent()
     writeCurve(stream, curve, cluster, cluster->rgeGma(), tabSave_->separator());
 }
 
-void DiffractogramsFrame::saveAll(bool oneFile)
+void ExportDfgram::saveAll(bool oneFile)
 {
     const Experiment& expt = gSession->experiment();
 

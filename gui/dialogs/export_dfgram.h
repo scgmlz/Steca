@@ -20,10 +20,10 @@
 
 //! The modal dialog for saving diffractograms.
 
-class DiffractogramsFrame : public QDialog, private CModal {
+class ExportDfgram : public QDialog, private CModal {
 public:
-    DiffractogramsFrame();
-    ~DiffractogramsFrame();
+    ExportDfgram();
+    ~ExportDfgram();
     void onCommand(const QStringList&);
 
 private:
