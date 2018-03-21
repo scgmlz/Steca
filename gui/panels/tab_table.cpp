@@ -254,7 +254,8 @@ void TableWidget::displayPeak(int reflIndex)
 
 //    ASSERT(calcPoints_.count() == interpPoints_.count());
     if (calcPoints_.count() <= reflIndex)
-        return;
+        THROW("bug: invalid reflection index");
+    qDebug() << "SIZE " << calcPoints_[0].size();
 
     bool interpolated = false; // TODO reactivate
     for (const PeakInfo& r : (interpolated ? interpPoints_ : calcPoints_).at(reflIndex))
@@ -265,5 +266,5 @@ void TableWidget::displayPeak(int reflIndex)
 
 int TableWidget::getReflIndex() const
 {
-    return 1; // TODO URGENT reactivate
+    return 0; // TODO URGENT reactivate
 }
