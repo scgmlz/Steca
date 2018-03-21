@@ -27,7 +27,7 @@
 PolefigWidget::PolefigWidget()
 {
     // initializations
-    auto* plot_ = new PlotPolefig; // the main subframe
+    plot_ = new PlotPolefig; // the main subframe
 
     // internal connections
 
