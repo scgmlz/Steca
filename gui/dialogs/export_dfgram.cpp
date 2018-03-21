@@ -193,7 +193,6 @@ void ExportDfgram::saveCurrent()
 void ExportDfgram::saveAll(bool oneFile)
 {
     const Experiment& expt = gSession->experiment();
-
     // In one-file mode, start output stream; in multi-file mode, only do prepations.
     QString path = tabSave_->filePath(true, !oneFile);
     if (path.isEmpty())
@@ -218,20 +217,15 @@ void ExportDfgram::saveAll(bool oneFile)
             QMessageBox::Yes)
             return;
     }
-
-    int gmaSlices =
-
     Progress progress(expt.size(), progressBar_);
-
     int picNum = 0;
     int fileNum = 0;
-    int gmaSlices = gSession->gammaSelection().numSlices();
+    int nSlices = gSession->gammaSelection().numSlices();
     for (const Cluster* cluster : expt.clusters()) {
         ++picNum;
         progress.step();
-
         qreal normFactor = cluster->normFactor();
-        for_i (gmaSlices) {
+        for (int i=0; i<qMax(1,nSlices); ++i) {
             if (!oneFile) {
                 QFile* file = new QFile(numberedName(path, ++fileNum, expt.size()+1));
                 if (!file->open(QIODevice::WriteOnly | QIODevice::Text))
@@ -240,12 +234,11 @@ void ExportDfgram::saveAll(bool oneFile)
                 stream = new QTextStream(file);
             }
             ASSERT(stream);
-
             const Range gmaStripe = gSession->gammaSelection().slice2range(i);
             const Curve& curve = cluster->toCurve(normFactor, gmaStripe);
             ASSERT(!curve.isEmpty());
             *stream << "Picture Nr: " << picNum << '\n';
-            if (gmaSlices > 1)
+            if (nSlices > 1)
                 *stream << "Gamma slice Nr: " << i+1 << '\n';
             writeCurve(*stream, curve, cluster, gmaStripe, tabSave_->separator());
         }
