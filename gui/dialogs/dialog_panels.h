@@ -20,7 +20,7 @@
 #include "gui/base/controls.h"
 #include <QGroupBox>
 
-//! A panel with grid layout
+//! A group box with grid layout
 
 class GridPanel : public QGroupBox {
 public:
@@ -30,7 +30,7 @@ public:
     void setVerticalStretch(int);
     void setStretch(int horizontal, int vertical);
 
-    QGridLayout grid_; // needed by TabSave, TabDiagramsSave, TabD'gramSave, and others; therefore public
+    QGridLayout grid_;
 };
 
 

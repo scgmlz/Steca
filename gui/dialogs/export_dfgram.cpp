@@ -110,43 +110,37 @@ ExportDfgram::ExportDfgram()
     , CModal("dgram")
 {
     setModal(true);
+    progressBar_->hide();
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowTitle("Diffractograms");
 
-    QVBoxLayout* vbox = new QVBoxLayout();
-    setLayout(vbox);
-
-    auto hb_gamma = new QHBoxLayout();
-    vbox->addLayout(hb_gamma);
-
     tabSave_ = new TabDiffractogramsSave();
-    vbox->addWidget(tabSave_);
-
-    vbox->setStretch(vbox->count() - 1, 1);
-
-    auto hb_bottom = new QHBoxLayout();
-    vbox->addLayout(hb_bottom);
-
     actClose_ = new CTrigger("actClose", "Close");
 
+    connect(actClose_, &QAction::triggered, [this]() { close(); });
+    connect(tabSave_->actSave, &QAction::triggered, [this]() { save(); });
+
+    auto hb_bottom = new QHBoxLayout();
     hb_bottom->addWidget((btnClose_ = new XTextButton(actClose_)));
     hb_bottom->addStretch(1);
     hb_bottom->addWidget((progressBar_ = new QProgressBar));
     hb_bottom->setStretchFactor(progressBar_, 333);
     hb_bottom->addStretch(1);
 
-    progressBar_->hide();
-
+    auto hb_gamma = new QHBoxLayout();
     hb_gamma->addWidget((panelGammaSlices = new PanelGammaSlices()));
     hb_gamma->addWidget((panelGammaRange = new PanelGammaRange()));
     hb_gamma->addStretch();
 
+    QVBoxLayout* vbox = new QVBoxLayout();
+    vbox->addLayout(hb_gamma);
+    vbox->addWidget(tabSave_);
+    vbox->setStretch(vbox->count() - 1, 1);
+    vbox->addLayout(hb_bottom);
+    setLayout(vbox);
+
     panelGammaSlices->updateValues();
     panelGammaRange->updateValues();
-
-    connect(actClose_, &QAction::triggered, [this]() { close(); });
-    connect(tabSave_->actSave, &QAction::triggered, [this]() { save(); });
-
     show();
 }
 

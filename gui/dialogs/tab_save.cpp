@@ -18,31 +18,31 @@
 #include "gui/mainwin.h"
 
 namespace {
-static QString const DAT_SFX(".dat"), DAT_SEP(" "), // suffix, separator
-    CSV_SFX(".csv"), CSV_SEP(", ");
-static QString saveFmt; //!< setting: default format for data export
+static QString const DAT_EXT(".dat"), DAT_SEP(" "), // extension, separator
+    CSV_EXT(".csv"), CSV_SEP(", ");
+static QString saveFmt = DAT_EXT; //!< setting: default format for data export
 }
 
 TabSave::TabSave(bool withTypes)
 {
     static QDir defaultDir = QDir::homePath();
 
-    auto* rbDat = new CRadioButton {"rbDat#", DAT_SFX};
-    auto* rbCsv = new CRadioButton {"rbCsv#", CSV_SFX};
+    auto* rbDat = new CRadioButton {"rbDat#", DAT_EXT};
+    auto* rbCsv = new CRadioButton {"rbCsv#", CSV_EXT};
     auto* actBrowse = new CTrigger("actBrowse#", "Browse...");
     actSave = new CTrigger("actSave#", "Save");
     dir_ = new QLineEdit(defaultDir.absolutePath());
     file_ = new QLineEdit();
 
-    rbCsv->setChecked(saveFmt == CSV_SFX);
-    rbDat->setChecked(saveFmt == DAT_SFX);
+    rbCsv->setChecked(saveFmt == CSV_EXT);
+    rbDat->setChecked(saveFmt == DAT_EXT);
     dir_->setReadOnly(true);
 
     connect(actBrowse, &QAction::triggered, [this]() {
         file_dialog::saveDirName(this, "Select folder", defaultDir);
         dir_->setText(defaultDir.absolutePath()); });
-    connect(rbDat, &QRadioButton::clicked, []() { saveFmt = DAT_SFX; });
-    connect(rbCsv, &QRadioButton::clicked, []() { saveFmt = CSV_SFX; });
+    connect(rbDat, &QRadioButton::clicked, []() { saveFmt = DAT_EXT; });
+    connect(rbCsv, &QRadioButton::clicked, []() { saveFmt = CSV_EXT; });
 
     auto* destination = new GridPanel("Destination");
     destination->grid_.addWidget(new QLabel("Save to folder:"), 0, 0, Qt::AlignRight);
@@ -57,9 +57,9 @@ TabSave::TabSave(bool withTypes)
     ftype->grid_.addWidget(rbCsv, 1, 0);
 
     grid_ = new QGridLayout();
-    setLayout(grid_);
     grid_->addWidget(destination, 0, 0);
     grid_->addWidget(ftype, 0, 1);
+    setLayout(grid_);
 }
 
 QString TabSave::filePath(bool withSuffix, bool withNumber)
@@ -82,9 +82,9 @@ QString TabSave::filePath(bool withSuffix, bool withNumber)
 
 QString TabSave::separator() const
 {
-    if      (saveFmt==DAT_SFX)
+    if      (saveFmt==DAT_EXT)
         return DAT_SEP;
-    else if (saveFmt==CSV_SFX)
+    else if (saveFmt==CSV_EXT)
         return CSV_SEP;
     else
         THROW("bug: invalid format");
