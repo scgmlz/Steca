@@ -83,22 +83,19 @@ private:
     CRadioButton rbAllSequential_ {"rbAllSequential", "All diffractograms to numbered files"};
     CRadioButton rbAll_ {"rbAll", "All diffractograms to one file"};
     GridPanel gp_ {"To save"};
-    XTextButton tb_ {actSave};
 };
 
 TabDiffractogramsSave::TabDiffractogramsSave()
     : TabSave(true)
 {
+    rbAll_.setChecked(true);
+
+    gp_.grid_.addWidget(&rbCurrent_);
+    gp_.grid_.addWidget(&rbAllSequential_);
+    gp_.grid_.addWidget(&rbAll_);
+
     grid_->addWidget(&gp_, grid_->rowCount(), 0, 1, 2);
     grid_->setRowStretch(grid_->rowCount(), 1);
-
-    QGridLayout* g = &gp_.grid_;
-    g->addWidget(&rbCurrent_);
-    g->addWidget(&rbAllSequential_);
-    g->addWidget(&rbAll_);
-    g->addWidget(&tb_, 2, 1);
-
-    rbAll_.setChecked(true);
 }
 
 // ************************************************************************** //
@@ -109,38 +106,45 @@ ExportDfgram::ExportDfgram()
     : QDialog(gGui)
     , CModal("dgram")
 {
+    progressBar_ = new QProgressBar;
+    tabSave_ = new TabDiffractogramsSave();
+
+    auto* actClose = new CTrigger("exportClose", "Close");
+    auto* actSave = new CTrigger("exportSave", "Save");
+
     setModal(true);
-    progressBar_->hide();
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowTitle("Diffractograms");
+    progressBar_->hide();
 
-    tabSave_ = new TabDiffractogramsSave();
-    actClose_ = new CTrigger("actClose", "Close");
+    // internal connections
+    connect(actClose, &QAction::triggered, [this]() { close(); });
+    connect(actSave, &QAction::triggered, [this]() { save(); });
 
-    connect(actClose_, &QAction::triggered, [this]() { close(); });
-    connect(tabSave_->actSave, &QAction::triggered, [this]() { save(); });
-
-    auto hb_bottom = new QHBoxLayout();
-    hb_bottom->addWidget((btnClose_ = new XTextButton(actClose_)));
-    hb_bottom->addStretch(1);
-    hb_bottom->addWidget((progressBar_ = new QProgressBar));
+    // layout
+    auto* hb_bottom = new QHBoxLayout();
+    hb_bottom->addWidget(progressBar_);
     hb_bottom->setStretchFactor(progressBar_, 333);
     hb_bottom->addStretch(1);
+    hb_bottom->addWidget(new XTextButton(actClose));
+    hb_bottom->addWidget(new XTextButton(actSave));
 
-    auto hb_gamma = new QHBoxLayout();
+    auto* hb_gamma = new QHBoxLayout();
     hb_gamma->addWidget((panelGammaSlices = new PanelGammaSlices()));
     hb_gamma->addWidget((panelGammaRange = new PanelGammaRange()));
     hb_gamma->addStretch();
 
-    QVBoxLayout* vbox = new QVBoxLayout();
+    auto* vbox = new QVBoxLayout();
     vbox->addLayout(hb_gamma);
     vbox->addWidget(tabSave_);
     vbox->setStretch(vbox->count() - 1, 1);
     vbox->addLayout(hb_bottom);
     setLayout(vbox);
 
+    // TODO rm
     panelGammaSlices->updateValues();
     panelGammaRange->updateValues();
+
     show();
 }
 

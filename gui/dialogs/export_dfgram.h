@@ -27,8 +27,6 @@ public:
     void onCommand(const QStringList&);
 
 private:
-    QAction *actClose_;
-    QToolButton *btnClose_;
     QProgressBar* progressBar_;
     class PanelGammaSlices* panelGammaSlices;
     class PanelGammaRange* panelGammaRange;

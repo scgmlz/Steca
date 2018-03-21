@@ -24,7 +24,6 @@ public:
     TabSave(bool withTypes);
     QString filePath(bool withSuffix, bool withNumber=false);
     QString separator() const;
-    QAction* actSave;
 protected:
     QGridLayout* grid_;
 private:

@@ -69,7 +69,6 @@ private:
     GridPanel gp_ {"To save"};
     CRadioButton currentDiagram_ {"currentDiagram#", "Current diagram"};
     CRadioButton allData_ {"allData#", "All data"};
-    XTextButton tb_ {actSave};
 };
 
 TabDiagramsSave::TabDiagramsSave()
@@ -78,11 +77,9 @@ TabDiagramsSave::TabDiagramsSave()
     grid_->addWidget(&gp_, grid_->rowCount(), 0, 1, 2);
     grid_->setRowStretch(grid_->rowCount(), 1);
 
-    QGridLayout* g = &gp_.grid_;
-    g->addWidget(&currentDiagram_);
-    g->addWidget(&allData_);
-    g->addWidget(&tb_, 1, 1);
-    g->setColumnStretch(0, 1);
+    gp_.grid_.addWidget(&currentDiagram_);
+    gp_.grid_.addWidget(&allData_);
+    gp_.grid_.setColumnStretch(0, 1);
 
     currentDiagram_.setChecked(true);
 }
@@ -113,12 +110,14 @@ DiagramsFrame::DiagramsFrame()
             recalculate(); });
 
     {
+        auto* actSave = new CTrigger("exportSave", "Save");
         auto* tab = new QWidget();
         tabs_.addTab(tab, "Save");
         tab->setLayout(new QVBoxLayout());
         tabSave_ = new TabDiagramsSave();
         tab->layout()->addWidget(tabSave_);
-        connect(tabSave_->actSave, &QAction::triggered, [this]() { saveDiagramOutput(); });
+        tab->layout()->addWidget(new XTextButton(actSave));
+        connect(actSave, &QAction::triggered, [this]() { saveDiagramOutput(); });
     }
 
     recalculate();

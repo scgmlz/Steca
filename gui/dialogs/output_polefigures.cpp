@@ -246,7 +246,6 @@ TabPoleFiguresSave::TabPoleFiguresSave()
         QGridLayout* g = &p2->grid_;
         g->addWidget(&rbSelectedRefl_);
         g->addWidget(&rbAllRefls_);
-        g->addWidget(new XTextButton(actSave), 2, 1);
         g->setRowStretch(g->rowCount(), 1);
     }
 
@@ -299,12 +298,14 @@ PoleFiguresFrame::PoleFiguresFrame()
         tab->layout()->addWidget(tabGraph_);
     }
     {
+        auto* actSave = new CTrigger("exportSave", "Save");
         auto* tab = new QWidget();
         tabs_.addTab(tab, "Save");
         tab->setLayout(new QVBoxLayout());
         tabSave_ = new TabPoleFiguresSave();
         tab->layout()->addWidget(tabSave_);
-        connect( tabSave_->actSave, &QAction::triggered, [this]() { savePoleFigureOutput(); });
+        tab->layout()->addWidget(new XTextButton(actSave));
+        connect(actSave, &QAction::triggered, [this]() { savePoleFigureOutput(); });
     }
     show();
 }

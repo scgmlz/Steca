@@ -30,7 +30,6 @@ TabSave::TabSave(bool withTypes)
     auto* rbDat = new CRadioButton {"rbDat#", DAT_EXT};
     auto* rbCsv = new CRadioButton {"rbCsv#", CSV_EXT};
     auto* actBrowse = new CTrigger("actBrowse#", "Browse...");
-    actSave = new CTrigger("actSave#", "Save");
     dir_ = new QLineEdit(defaultDir.absolutePath());
     file_ = new QLineEdit();
 
