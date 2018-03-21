@@ -13,23 +13,16 @@
 // ************************************************************************** //
 
 #include "plot_polefig.h"
+#include "core/session.h"
 #include "gui/cfg/colors.h"
-#include "gui/dialogs/dialog_panels.h" // TODO rm
-#include "gui/dialogs/frame.h" // TODO rm
 
-PlotPolefig::PlotPolefig(Params& params)
-    : params_(params)
-    , flat_(false)
+PlotPolefig::PlotPolefig()
+    : flat_(false)
     , alphaMax_(90)
     , avgAlphaMax_(0)
     , cbFlat_("cbFlat#", "no intensity")
 {
     setLayout((grid_ = new QGridLayout()));
-    ASSERT(params_.panelInterpolation);
-
-    connect(
-        &params_.panelInterpolation->avgAlphaMax, &CDoubleSpinBox::valueReleased,
-        [this]() { update(); });
     connect(&cbFlat_, &QCheckBox::toggled, [this]() { update(); });
 
     grid_->addWidget(&cbFlat_, 0, 0);
@@ -39,7 +32,7 @@ PlotPolefig::PlotPolefig(Params& params)
     update();
 }
 
-void PlotPolefig::set(PeakInfos rs)
+void PlotPolefig::set(const PeakInfos& rs)
 {
     rs_ = rs;
     update();
@@ -47,7 +40,7 @@ void PlotPolefig::set(PeakInfos rs)
 
 void PlotPolefig::update()
 {
-    avgAlphaMax_ = params_.panelInterpolation->avgAlphaMax.value();
+    avgAlphaMax_ = gSession->interpol().avgAlphaMax();
     flat_ = cbFlat_.isChecked();
     QWidget::update();
 }

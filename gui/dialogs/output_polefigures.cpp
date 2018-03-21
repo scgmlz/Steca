@@ -122,7 +122,7 @@ PoleFiguresFrame::PoleFiguresFrame()
         auto* tab = new QWidget();
         tabs_.addTab(tab, "Graph");
         tab->setLayout(new QVBoxLayout());
-        plot_ = new PlotPolefig(*params_);
+        plot_ = new PlotPolefig();
         tab->layout()->addWidget(plot_);
     }
     {
@@ -157,10 +157,8 @@ void PoleFiguresFrame::savePoleFigureOutput()
     int reflCount = gSession->peaks().count();
     ASSERT(reflCount); // user should not get here if no peak is defined
     QString path = tabSave_->filePath(false);
-    if (path.isEmpty()) {
-        qWarning() << "cannot save pole figure: file path is empty";
-        return;
-    }
+    if (path.isEmpty())
+        THROW("cannot save pole figure: file path is empty");
     if (tabSave_->onlySelectedRefl()) {
         writePoleFigureOutputFiles(path, getReflIndex());
         return;

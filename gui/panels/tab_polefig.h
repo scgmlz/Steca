@@ -25,6 +25,7 @@ public:
     PolefigWidget();
     void render();
 private:
+    class PlotPolefig* plot_;
 };
 
 #endif // TAB_POLEFIG_H

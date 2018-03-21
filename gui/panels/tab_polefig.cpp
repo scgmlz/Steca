@@ -16,6 +16,7 @@
 #include "core/session.h"
 #include "gui/actions/toggles.h"
 #include "gui/actions/triggers.h"
+#include "gui/panels/plot_polefig.h"
 #include <iostream>
 
 
@@ -26,7 +27,7 @@
 PolefigWidget::PolefigWidget()
 {
     // initializations
-    auto* plot_ = new QWidget; // TODO PlotPolefig; // the main subframe
+    auto* plot_ = new PlotPolefig; // the main subframe
 
     // internal connections
 
@@ -55,4 +56,29 @@ PolefigWidget::PolefigWidget()
 
 void PolefigWidget::render()
 {
+    int iRefl = gSession->peaks().selectedIndex();
+    TakesLongTime __;
+
+    // TODO rm DUPLICATE from TableWidget:
+
+    vec<PeakInfos> calcPoints_;
+    int reflCount = gSession->peaks().count();
+    if (!reflCount)
+        return;
+    Progress progress(reflCount, &gGui->progressBar);
+
+    for_i (reflCount)
+        calcPoints_.append(
+            gSession->makePeakInfos(
+                gSession->peaks().at(i),
+                gSession->gammaSelection().numSlices(),
+                gSession->gammaSelection().range(),
+                &progress));
+
+    if (calcPoints_.isEmpty())
+        THROW("calcPoints is empty");
+    plot_->set(calcPoints_.at(iRefl));
+    // TODO restore interpolation
+    //if (!interpPoints_.isEmpty() && !calcPoints_.isEmpty())
+    //    plot_->set((interpolated ? interpPoints_ : calcPoints_).at(reflIndex));
 }

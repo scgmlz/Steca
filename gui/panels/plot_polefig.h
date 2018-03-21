@@ -24,11 +24,10 @@
 
 class PlotPolefig : public QWidget {
 public:
-    PlotPolefig(class Params&);
-    void set(PeakInfos);
+    PlotPolefig();
+    void set(const PeakInfos&);
 
 private:
-    class Params& params_;
     QGridLayout* grid_;
     void update();
 

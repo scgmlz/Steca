@@ -22,7 +22,7 @@
 //! Metadata, peak fit results, and pole figure angles.
 
 class PeakInfo final {
-    public:
+public:
     PeakInfo();
     PeakInfo(
         shp_Metadata,
