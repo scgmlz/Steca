@@ -32,8 +32,9 @@ public:
     CTrigger corrFile {"corrFile", "Add correction file", ":/icon/add",
             Qt::SHIFT | Qt::CTRL | Qt::Key_O};
     CTrigger exportDfgram {"exportDfgram", "Export diffractogram(s)...", ":/icon/filesave" };
+    CTrigger exportPolefig {"exportPolefig", "Export pole figure...", ":/icon/filesave" };
     CTrigger exportTable {"exportTable", "Export fit result table...", ":/icon/filesave" };
-    CTrigger exportXY {"exportXY", "Export diagram's x,y...", ":/icon/filesave" };
+    CTrigger exportXY {"exportXY", "Export diagram...", ":/icon/filesave" };
     CTrigger loadSession {"loadSession", "Load session..."};
     CTrigger online  {"online", "Open docs in external browser"};
     CTrigger outputDiagrams {"outputDiagrams", "Diagrams..."};

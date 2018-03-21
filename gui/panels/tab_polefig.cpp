@@ -25,19 +25,31 @@
 
 PolefigWidget::PolefigWidget()
 {
+    // initializations
+    auto* plot_ = new QWidget; // TODO PlotPolefig; // the main subframe
+
     // internal connections
-//    connect(&gGui->toggles->enableCorr, &QAction::toggled, [this](bool /*unused*/) { render(); });
+
+    // inbound connection
+    connect(gSession, &Session::sigPeaks, [this]() {
+            if (isVisible())
+                render(); });
 
     // layout
-    /*
-    box1_.addWidget(&btnScale_, Qt::AlignLeft);
-    box1_.addWidget(&btnOverlay_, Qt::AlignLeft);
-    controls_.addLayout(&box1_);
+    auto* buttonBox = new QHBoxLayout;
+    buttonBox->addStretch(1);
+    buttonBox->addWidget(new XIconButton {&gGui->triggers->exportPolefig});
 
-    box_.addLayout(&controls_);
-    box_.addWidget(&imageView_);
-    setLayout(&box_);
-    */
+    auto* controls = new QVBoxLayout;
+    //controls->addLayout(selectXY_);
+    controls->addStretch(1); // ---
+    controls->addLayout(buttonBox);
+
+    auto* layout = new QHBoxLayout;
+    layout->addWidget(plot_);
+    layout->addLayout(controls);
+    layout->setStretch(0,1000);
+    setLayout(layout);
 }
 
 void PolefigWidget::render()

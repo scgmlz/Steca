@@ -114,6 +114,7 @@ public:
 
     void exportTable() const;
     void exportXY() const;
+    void exportPolefig() const;
 
 signals:
     void sigFiles();         //!< list of loaded files has changed

@@ -34,8 +34,9 @@ Triggers::Triggers()
     connect(&corrFile, AT, []() { gGui->loadCorrFile(); });
     connect(&loadSession, AT, []() { gGui->loadSession(); });
     connect(&online, AT, []() { QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
-    connect(&outputDiagrams, AT, [](){ DiagramsFrame().exec(); });
     connect(&exportDfgram, AT, [](){ ExportDfgram().exec(); });
+    connect(&outputDiagrams, AT, [](){ DiagramsFrame().exec(); });
+    connect(&exportPolefig, AT, [](){ gSession->exportPolefig(); });
     connect(&exportTable, AT, [](){ gSession->exportTable(); });
     connect(&exportXY, AT, [](){ gSession->exportXY(); });
     connect(&outputPolefigures, AT, []() { PoleFiguresFrame().exec(); });

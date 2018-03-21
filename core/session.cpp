@@ -277,3 +277,8 @@ void Session::exportXY() const
 {
     qDebug() << "exportXY not yet implemented";
 }
+
+void Session::exportPolefig() const
+{
+    qDebug() << "exportPolefig not yet implemented";
+}
