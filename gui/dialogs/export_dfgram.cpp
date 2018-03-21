@@ -15,10 +15,10 @@
 #include "gui/dialogs/export_dfgram.h"
 #include "core/session.h"
 #include "gui/base/file_dialog.h"
-#include "gui/dialogs/dialog_panels.h"
 #include "gui/dialogs/tab_save.h"
 #include "gui/mainwin.h"
 #include <cmath>
+#include <QGroupBox>
 #include <QMessageBox>
 #include <QProgressBar>
 
@@ -82,7 +82,6 @@ private:
     CRadioButton rbCurrent_ {"rbCurrent", "Current diffractogram"};
     CRadioButton rbAllSequential_ {"rbAllSequential", "All diffractograms to numbered files"};
     CRadioButton rbAll_ {"rbAll", "All diffractograms to one file"};
-    GridPanel gp_ {"To save"};
 };
 
 TabDiffractogramsSave::TabDiffractogramsSave()
@@ -90,11 +89,15 @@ TabDiffractogramsSave::TabDiffractogramsSave()
 {
     rbAll_.setChecked(true);
 
-    gp_.grid_.addWidget(&rbCurrent_);
-    gp_.grid_.addWidget(&rbAllSequential_);
-    gp_.grid_.addWidget(&rbAll_);
+    auto* boxlayout = new QVBoxLayout;
+    boxlayout->addWidget(&rbCurrent_);
+    boxlayout->addWidget(&rbAllSequential_);
+    boxlayout->addWidget(&rbAll_);
 
-    grid_->addWidget(&gp_, grid_->rowCount(), 0, 1, 2);
+    auto* box = new QGroupBox {"Save what"};
+    box->setLayout(boxlayout);
+
+    grid_->addWidget(box, grid_->rowCount(), 0, 1, 2);
     grid_->setRowStretch(grid_->rowCount(), 1);
 }
 
@@ -109,7 +112,7 @@ ExportDfgram::ExportDfgram()
     progressBar_ = new QProgressBar;
     tabSave_ = new TabDiffractogramsSave();
 
-    auto* actClose = new CTrigger("close", "Close");
+    auto* actCancel = new CTrigger("cancel", "Cancel");
     auto* actSave = new CTrigger("save", "Save");
 
     setModal(true);
@@ -118,7 +121,7 @@ ExportDfgram::ExportDfgram()
     progressBar_->hide();
 
     // internal connections
-    connect(actClose, &QAction::triggered, [this]() { close(); });
+    connect(actCancel, &QAction::triggered, [this]() { close(); });
     connect(actSave, &QAction::triggered, [this]() { save(); });
 
     // layout
@@ -126,34 +129,16 @@ ExportDfgram::ExportDfgram()
     hb_bottom->addWidget(progressBar_);
     hb_bottom->setStretchFactor(progressBar_, 333);
     hb_bottom->addStretch(1);
-    hb_bottom->addWidget(new XTextButton(actClose));
+    hb_bottom->addWidget(new XTextButton(actCancel));
     hb_bottom->addWidget(new XTextButton(actSave));
 
-    auto* hb_gamma = new QHBoxLayout();
-    hb_gamma->addWidget((panelGammaSlices = new PanelGammaSlices()));
-    hb_gamma->addWidget((panelGammaRange = new PanelGammaRange()));
-    hb_gamma->addStretch();
-
     auto* vbox = new QVBoxLayout();
-    vbox->addLayout(hb_gamma);
     vbox->addWidget(tabSave_);
     vbox->setStretch(vbox->count() - 1, 1);
     vbox->addLayout(hb_bottom);
     setLayout(vbox);
 
-    // TODO rm
-    panelGammaSlices->updateValues();
-    panelGammaRange->updateValues();
-
     show();
-}
-
-ExportDfgram::~ExportDfgram()
-{
-    qDebug() << "~ExportDfgram";
-    delete tabSave_;
-    delete panelGammaSlices;
-    delete panelGammaRange;
 }
 
 void ExportDfgram::onCommand(const QStringList&)
@@ -171,6 +156,7 @@ void ExportDfgram::save()
         saveAll(true);
     else
         qFatal("Invalid call of ExportDfgram::saveDiffractogramOutput");
+    close();
 }
 
 void ExportDfgram::saveCurrent()

@@ -23,7 +23,6 @@
 class ExportDfgram : public QDialog, private CModal {
 public:
     ExportDfgram();
-    ~ExportDfgram();
     void onCommand(const QStringList&);
 
 private:
