@@ -19,7 +19,9 @@
 
 //! limited QVector, only needed methods reexported
 
-template <typename T> class vec : public /* TODO revert to prot or priv */ QVector<T> {
+// TODO rm for good
+
+template <typename T> class vec : public QVector<T> {
 private:
     using super = QVector<T>;
 public:
@@ -29,9 +31,6 @@ public:
     explicit vec(int count) : super(count) {}
     explicit vec(int count, const T& init) : super(count, init) {}
 
-    int count() const { return super::count(); }
-    void reserve(int n) { super::reserve(n); }
-
     const super& sup() const { return *this; }
 
     vec& fill(const T& init) { return static_cast<vec&>(super::fill(init)); }
@@ -40,14 +39,6 @@ public:
         return static_cast<vec&>(super::fill(init, count));
     }
 
-    void resize(int count) { super::resize(count); }
-    void append(const T& that) { *this += that; }
-    void append(const vec& that) { *this += that; }
-    void remove(int i) { super::remove(i); }
-
-    const T& at(int i) const { return super::at(i); }
-    T& operator[](int i) { return super::operator[](i); }
-    const T& operator[](int i) const { return super::operator[](i); }
 };
 
 #endif // VEC_H

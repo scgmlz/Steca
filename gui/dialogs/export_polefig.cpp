@@ -57,8 +57,6 @@ ExportPolefig::ExportPolefig()
     vbox->addWidget(saveWhat);
     vbox->addLayout(fileField_);
     setLayout(vbox);
-
-    show();
 }
 
 void ExportPolefig::save()

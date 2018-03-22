@@ -15,7 +15,7 @@
 #ifndef EXPORT_TABLE_H
 #define EXPORT_TABLE_H
 
-#include "frame.h"
+#include "gui/capture_and_replay/enhance_widgets.h"
 #include <QWidget>
 
 //! The modal dialog for saving the main table (fit results and metadata).
@@ -24,14 +24,9 @@ class ExportTable : private CModal, public QDialog {
 public:
     ExportTable() = delete;
     ExportTable(bool xyMode);
-
 private:
-    class ExportfileDialogfield* fileField_;
-    CRadioButton rbCurrent_       {"rbCurrent",       "Current diffractogram"};
-    CRadioButton rbAllSequential_ {"rbAllSequential", "All diffractograms to numbered files"};
-    CRadioButton rbAll_           {"rbAll",           "All diffractograms to one file"};
-
     void save();
+    class ExportfileDialogfield* fileField_;
 };
 
 #endif // EXPORT_TABLE_H

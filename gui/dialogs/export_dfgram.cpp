@@ -93,8 +93,6 @@ ExportDfgram::ExportDfgram()
     vbox->addWidget(saveWhat);
     vbox->addLayout(fileField_);
     setLayout(vbox);
-
-    show();
 }
 
 void ExportDfgram::save()

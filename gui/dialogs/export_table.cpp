@@ -36,29 +36,13 @@ ExportTable::ExportTable(bool xyMode)
     : CModal("dgram")
     , QDialog(gGui)
 {
-    rbAll_.setChecked(true);
-
     fileField_ = new ExportfileDialogfield(this, true, [this]()->void{save();});
 
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowTitle("Diffractograms");
 
-    // layout
-    auto* saveWhatLayout = new QVBoxLayout;
-    saveWhatLayout->addWidget(&rbCurrent_);
-    saveWhatLayout->addWidget(&rbAllSequential_);
-    saveWhatLayout->addWidget(&rbAll_);
-
-    auto* saveWhat = new QGroupBox {"Save what"};
-    saveWhat->setLayout(saveWhatLayout);
-
-    auto* vbox = new QVBoxLayout();
-    vbox->addWidget(saveWhat);
-    vbox->addLayout(fileField_);
-    setLayout(vbox);
-
-    show();
+    setLayout(fileField_);
 }
 
 void ExportTable::save()
