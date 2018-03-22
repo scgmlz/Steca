@@ -56,7 +56,8 @@ Session::~Session()
     interpol().toSettings();
 }
 
-void Session::clear() {
+void Session::clear()
+{
     dataset_.clear();
     corrset_.clear();
     baseline_.clear();
@@ -121,17 +122,20 @@ QByteArray Session::serializeSession() const
     return QJsonDocument(top).toJson();
 }
 
-void Session::setMetaSelected(int i, bool on) {
+void Session::setMetaSelected(int i, bool on)
+{
     metaSelection_[i] = on;
     emit gSession->sigMetaSelection();
 }
 
-void Session::updateImageSize() {
+void Session::updateImageSize()
+{
     if (0 == dataset().countFiles() && !corrset().hasFile())
         imageSize_ = size2d(0, 0);
 }
 
-void Session::setImageSize(const size2d& size) THROWS {
+void Session::setImageSize(const size2d& size) THROWS
+{
     if (!(!size.isEmpty())) THROW("image is empty or has ill defined size");
     if (imageSize_.isEmpty())
         imageSize_ = size; // the first one
@@ -139,19 +143,23 @@ void Session::setImageSize(const size2d& size) THROWS {
         THROW("image size differs from previously loaded images");
 }
 
-size2d Session::imageSize() const {
+size2d Session::imageSize() const
+{
     return imageTransform_.isTransposed() ? imageSize_.transposed() : imageSize_;
 }
 
-void Session::setImageTransformMirror(bool on) {
+void Session::setImageTransformMirror(bool on)
+{
     imageTransform_ = imageTransform_.mirror(on);
 }
 
-void Session::setImageTransformRotate(const ImageTransform& rot) {
+void Session::setImageTransformRotate(const ImageTransform& rot)
+{
     imageTransform_ = imageTransform_.rotateTo(rot);
 }
 
-IJ Session::midPix() const {
+IJ Session::midPix() const
+{
     size2d sz = imageSize();
     IJ mid(sz.w / 2, sz.h / 2);
 
@@ -162,7 +170,8 @@ IJ Session::midPix() const {
     return mid;
 }
 
-shp_AngleMap Session::angleMap(const Measurement& one) const {
+shp_AngleMap Session::angleMap(const Measurement& one) const
+{
     ImageKey key(geometry_, imageSize_, imageCut_, midPix(), one.midTth());
     shp_AngleMap map = angleMapCache_.value(key);
     if (map.isNull())
@@ -174,7 +183,6 @@ shp_AngleMap Session::angleMap(const Measurement& one) const {
 PeakInfo Session::makePeakInfo(
     const Cluster* cluster, const Peak& peak, const Range& gmaSector) const
 {
-
     // fit peak, and retrieve peak parameters:
     Curve curve = cluster->toCurve(cluster->normFactor(), gmaSector); // TODO rm arg normfactor
     const Polynom f = Polynom::fromFit(baseline().polynomDegree(), curve, baseline().ranges());
@@ -209,8 +217,8 @@ PeakInfo Session::makePeakInfo(
 //!  the returned infos won't be on the grid.
 //! TODO? gammaStep separately?
 
-PeakInfos Session::makePeakInfos(const Peak& peak, Progress* progress) const {
-
+PeakInfos Session::makePeakInfos(const Peak& peak, Progress* progress) const
+{
     if (progress)
         progress->setTotal(experiment().size());
 
@@ -231,24 +239,28 @@ PeakInfos Session::makePeakInfos(const Peak& peak, Progress* progress) const {
 }
 
 // TODO: split into two functions (see usage in panel_diff..)
-void Session::setIntenScaleAvg(bool avg, qreal scale) {
+void Session::setIntenScaleAvg(bool avg, qreal scale)
+{
     intenScaledAvg_ = avg;
     intenScale_ = scale;
     emit gSession->sigNorm();
 }
 
-void Session::setNorm(eNorm norm) {
+void Session::setNorm(eNorm norm)
+{
     norm_ = norm;
     emit gSession->sigNorm();
 }
 
-qreal Session::calcAvgBackground(const Sequence& seq) const {
+qreal Session::calcAvgBackground(const Sequence& seq) const
+{
     Curve gmaCurve = seq.toCurve(1.);
     Polynom bgPolynom = Polynom::fromFit(baseline().polynomDegree(), gmaCurve, baseline().ranges());
     return bgPolynom.avgY(seq.rgeTth());
 }
 
-qreal Session::calcAvgBackground() const {
+qreal Session::calcAvgBackground() const
+{
     TakesLongTime __;
     qreal bg = 0;
     for (const Cluster* cluster : experiment().clusters())
