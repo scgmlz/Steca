@@ -24,20 +24,17 @@ public:
     XSettings(const QString& group = "");
     ~XSettings();
 
-    bool readBool(const QString& key, bool def = false) { return value(key, def).toBool(); }
-    void saveBool(const QString& key, bool val) { setValue(key, val); }
+    bool readBool(const QString& key, bool def = false);
+    void getBool(const QString& key, bool& val);
 
     int readInt(const QString& key, int def = 0);
-    void saveInt(const QString& key, int val) { setValue(key, val); }
     void getInt(const QString& key, int& target);
 
     qreal readReal(const QString& key, qreal def = 0);
-    void saveReal(const QString& key, qreal val) { setValue(key, val); }
     void getReal(const QString& key, qreal& target);
 
     QString readStr(const QString& key, const QString& def = "") {
         return value(key, def).toString(); }
-    void saveStr(const QString& key, const QString& val) { setValue(key, val); }
 };
 
 #endif // SETTINGS_H

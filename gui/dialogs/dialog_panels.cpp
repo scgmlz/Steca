@@ -79,11 +79,6 @@ PanelGammaSlices::PanelGammaSlices()
     connect(&numSlices, &CSpinBox::valueReleased, [this]() { updateValues(); });
 }
 
-PanelGammaSlices::~PanelGammaSlices()
-{
-    settings_.saveInt("num_slices", numSlices.value());
-}
-
 void PanelGammaSlices::updateValues()
 {
     int nSlices = numSlices.value();
@@ -113,11 +108,6 @@ PanelGammaRange::PanelGammaRange()
     connect(&cbLimitGamma, &QCheckBox::toggled, [this]() { updateValues(); });
 }
 
-PanelGammaRange::~PanelGammaRange()
-{
-    settings_.saveBool("limit", cbLimitGamma.isChecked());
-}
-
 // TODO when min/maxGamma updated -> reflect that in PanelGammaSlices
 
 void PanelGammaRange::updateValues()
@@ -137,11 +127,6 @@ PanelPoints::PanelPoints()
     (settings_.readBool("interpolated", false) ? rbInterp : rbCalc).setChecked(true);
 
     grid_.setRowStretch(grid_.rowCount(), 1);
-}
-
-PanelPoints::~PanelPoints()
-{
-    settings_.saveBool("interpolated", rbInterp.isChecked());
 }
 
 
@@ -171,17 +156,6 @@ PanelInterpolation::PanelInterpolation()
     avgRadius.setValue(settings_.readReal("avg radius", 5));
     avgThreshold.setValue(settings_.readInt("avg threshold", 100));
 }
-
-PanelInterpolation::~PanelInterpolation()
-{
-    settings_.saveReal("step alpha", stepAlpha.value());
-    settings_.saveReal("step beta", stepBeta.value());
-    settings_.saveReal("idw radius", idwRadius.value());
-    settings_.saveReal("avg alpha max", avgAlphaMax.value());
-    settings_.saveReal("avg radius", avgRadius.value());
-    settings_.saveInt("avg threshold", avgThreshold.value());
-}
-
 
 PanelDiagram::PanelDiagram()
     : GridPanel("Diagram#")

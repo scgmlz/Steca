@@ -27,6 +27,7 @@ public:
     void fromJson(const JsonObj& obj);
     void fromSettings();
 
+    void setEnabled(bool);
     void setStepAlpha(double);
     void setStepBeta(double);
     void setIdwRadius(double);
@@ -34,6 +35,7 @@ public:
     void setAvgRadius(double);
     void setThreshold(int);
 
+    bool   enabled()     const { return enabled_; }
     double stepAlpha()   const { return stepAlpha_; }
     double stepBeta()    const { return stepBeta_; }
     double idwRadius()   const { return idwRadius_; }
@@ -45,6 +47,7 @@ public:
     void toSettings() const;
 
 private:
+    bool   enabled_     {false};
     double stepAlpha_   {5.};
     double stepBeta_    {5.};
     double idwRadius_   {10.};

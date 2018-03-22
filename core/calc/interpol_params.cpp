@@ -19,6 +19,7 @@
 void InterpolParams::fromSettings()
 {
     XSettings s("interpolation parameters");
+    s.getBool("enabled", enabled_);
     s.getReal("step alpha", stepAlpha_);
     s.getReal("step beta", stepBeta_);
     s.getReal("idw radius", idwRadius_);
@@ -30,6 +31,7 @@ void InterpolParams::fromSettings()
 void InterpolParams::toSettings() const
 {
     XSettings s("interpolation parameters");
+    s.setValue("enabled", enabled_);
     s.setValue("step alpha", stepAlpha_);
     s.setValue("step beta", stepBeta_);
     s.setValue("idw radius", idwRadius_);
@@ -41,6 +43,7 @@ void InterpolParams::toSettings() const
 QJsonObject InterpolParams::toJson() const
 {
     return {
+        { "enabled", QJsonValue(enabled_) },
         { "step alpha", QJsonValue(stepAlpha_) },
         { "step beta", QJsonValue(stepBeta_) },
         { "idw radius", QJsonValue(idwRadius_) },
@@ -52,12 +55,19 @@ QJsonObject InterpolParams::toJson() const
 
 void InterpolParams::fromJson(const JsonObj& obj)
 {
+    setEnabled(obj.loadBool("enabled"));
     setStepAlpha(obj.loadInt("step alpha"));
     setStepBeta(obj.loadInt("step beta"));
     setIdwRadius(obj.loadInt("idw radius"));
     setAvgAlphaMax(obj.loadInt("alpha max"));
     setAvgRadius(obj.loadInt("avg radius"));
     setThreshold(obj.loadInt("threshold"));
+}
+
+void InterpolParams::setEnabled(bool val)
+{
+    enabled_ = val;
+    emit gSession->sigInterpol();
 }
 
 void InterpolParams::setStepAlpha(double val)

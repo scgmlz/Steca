@@ -25,12 +25,9 @@ XSettings::~XSettings()
     endGroup();
 }
 
-qreal XSettings::readReal(const QString& key, qreal def)
+bool XSettings::readBool(const QString& key, bool def)
 {
-    auto var = value(key);
-    bool ok;
-    qreal val = var.toDouble(&ok);
-    return ok ? val : def;
+    return value(key, def).toBool();
 }
 
 int XSettings::readInt(const QString& key, int def)
@@ -41,14 +38,18 @@ int XSettings::readInt(const QString& key, int def)
     return ok ? val : def;
 }
 
-//! Update target if settings have a double value with given key
-void XSettings::getReal(const QString& key, qreal& target)
+qreal XSettings::readReal(const QString& key, qreal def)
 {
     auto var = value(key);
     bool ok;
     qreal val = var.toDouble(&ok);
-    if (ok)
-        target = val;
+    return ok ? val : def;
+}
+
+//! Update target if settings have a bool value with given key
+void XSettings::getBool(const QString& key, bool& target)
+{
+    target = value(key).toBool();
 }
 
 //! Update target if settings have an int value with given key
@@ -57,6 +58,16 @@ void XSettings::getInt(const QString& key, int& target)
     auto var = value(key);
     bool ok;
     qreal val = var.toInt(&ok);
+    if (ok)
+        target = val;
+}
+
+//! Update target if settings have a double value with given key
+void XSettings::getReal(const QString& key, qreal& target)
+{
+    auto var = value(key);
+    bool ok;
+    qreal val = var.toDouble(&ok);
     if (ok)
         target = val;
 }

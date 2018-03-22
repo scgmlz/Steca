@@ -261,11 +261,15 @@ void GammaControls::fromCore()
 
 ControlsDetector::ControlsDetector()
 {
+    auto* interpol = new CCheckBox("doInterpol", "α,β interpolation");
+    connect(interpol, &QCheckBox::toggled, [](bool on) { gSession->interpol().setEnabled(on); });
+
     auto* vbox = new QVBoxLayout;
     vbox->addWidget(new GeometryControls);
     vbox->addWidget(new CutControls);
     vbox->addWidget(new ExperimentControls);
     vbox->addWidget(new GammaControls);
+    vbox->addWidget(interpol);
     vbox->addStretch();
     setLayout(vbox);
 }
