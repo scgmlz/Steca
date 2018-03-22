@@ -22,7 +22,6 @@
 #include <iostream>
 
 struct showcol_t {
-    QString name;
     CCheckBox* cb;
 };
 
@@ -36,7 +35,7 @@ typedef QVector<showcol_t> showcol_vec;
 
 class ColumnSelector : public QWidget {
 public:
-    ColumnSelector(DataView&, showcol_vec&);
+    ColumnSelector(DataView&, const QStringList&, showcol_vec&);
 private:
     DataView& table_;
     showcol_vec& showCols_;
@@ -44,7 +43,7 @@ private:
     CRadioButton rbHidden_, rbAll_, rbNone_, rbInten_, rbTth_, rbFWHM_;
 };
 
-ColumnSelector::ColumnSelector(DataView& table, showcol_vec& showCols)
+ColumnSelector::ColumnSelector(DataView& table, const QStringList& headers, showcol_vec& showCols)
     : table_(table)
     , showCols_(showCols)
     , rbHidden_("rbHidden", "")
@@ -70,35 +69,30 @@ ColumnSelector::ColumnSelector(DataView& table, showcol_vec& showCols)
 
     for_i (showCols.count()) {
         showcol_t& item = showCols[i];
-        box_.addWidget((item.cb = new CCheckBox("cb"+QString::number(i), item.name)));
+        box_.addWidget((item.cb = new CCheckBox("cb"+QString::number(i), headers[i])));
     }
 
     auto _all = [this]() {
         for (showcol_t& col : showCols_)
-            col.cb->setChecked(true);
-    };
+            col.cb->setChecked(true); };
 
     auto _none = [this]() {
         for (showcol_t& col : showCols_)
-            col.cb->setChecked(false);
-    };
+            col.cb->setChecked(false); };
 
     auto _showInten = [this, _none]() {
         _none();
-        showCols_.at(int(eReflAttr::INTEN)).cb->setChecked(true);
-    };
+        showCols_.at(int(eReflAttr::INTEN)).cb->setChecked(true); };
 
     auto _showTth = [this, _none]() {
         _none();
-        showCols_.at(int(eReflAttr::TTH)).cb->setChecked(true);
-    };
+        showCols_.at(int(eReflAttr::TTH)).cb->setChecked(true); };
 
     auto _showFWHM = [this, _none]() {
         _none();
-        showCols_.at(int(eReflAttr::FWHM)).cb->setChecked(true);
-    };
+        showCols_.at(int(eReflAttr::FWHM)).cb->setChecked(true); };
 
-    auto _updateRbs = [this]() {
+    auto _updateRadiobuttons = [this]() {
         bool isAll = true, isNone = true, isOther = false;
         int nInten = 0, nTth = 0, nFwhm = 0;
 
@@ -137,13 +131,12 @@ ColumnSelector::ColumnSelector(DataView& table, showcol_vec& showCols)
 
     for_i (showCols_.count()) {
         QCheckBox* cb = showCols_.at(i).cb;
-        connect(cb, &QCheckBox::toggled, [this, _updateRbs, i](bool on) {
+        connect(cb, &QCheckBox::toggled, [this, _updateRadiobuttons, i](bool on) {
             if (on)
                 table_.showColumn(i + 1);
             else
                 table_.hideColumn(i + 1);
-
-            _updateRbs();
+            _updateRadiobuttons();
         });
     }
 
@@ -175,7 +168,6 @@ TableWidget::TableWidget()
     auto* showCols = new showcol_vec;
     for_i (headers.count()) {
         showcol_t item;
-        item.name = headers.at(i);
         showCols->append(item);
     }
 
@@ -185,7 +177,7 @@ TableWidget::TableWidget()
 
     auto* colSelBox = new QScrollArea;
     colSelBox->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    colSelBox->setWidget(new ColumnSelector(*dataView_, *showCols));
+    colSelBox->setWidget(new ColumnSelector(*dataView_, headers, *showCols));
 
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);
