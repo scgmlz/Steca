@@ -31,21 +31,20 @@ class ColumnSelector : public QWidget {
 public:
     ColumnSelector(DataView&, const QStringList&);
 private:
-    DataView& table_;
+    DataView& dataView_;
     QVector<CCheckBox*> showCols_;
     QVBoxLayout box_;
-    CRadioButton rbHidden_, rbAll_, rbNone_, rbInten_, rbTth_, rbFWHM_;
+    CRadioButton rbHidden_ {"rbHidden", ""};
+    CRadioButton rbAll_ {"rbAll", "all"};
+    CRadioButton rbNone_ {"rbNone", "none"};
+    CRadioButton rbInten_ {"rbInten", "Intensity"};
+    CRadioButton rbTth_ {"rbTth", "2θ"};
+    CRadioButton rbFWHM_ {"rbFWHM", "fwhm"};
 };
 
-ColumnSelector::ColumnSelector(DataView& table, const QStringList& headers)
-    : table_(table)
+ColumnSelector::ColumnSelector(DataView& dataView, const QStringList& headers)
+    : dataView_(dataView)
     , showCols_ {headers.count()}
-    , rbHidden_("rbHidden", "")
-    , rbAll_("rbAll", "all")
-    , rbNone_("rbNone", "none")
-    , rbInten_("rbInten", "Intensity")
-    , rbTth_("rbTth", "2θ")
-    , rbFWHM_("rbFWHM", "fwhm")
 {
     using eReflAttr = PeakInfo::eReflAttr;
 
@@ -95,9 +94,7 @@ ColumnSelector::ColumnSelector(DataView& table, const QStringList& headers)
                 isAll = false;
                 continue;
             }
-
             isNone = false;
-
             switch (eReflAttr(i)) {
             case eReflAttr::ALPHA:
             case eReflAttr::BETA:
@@ -117,7 +114,6 @@ ColumnSelector::ColumnSelector(DataView& table, const QStringList& headers)
         rbAll_.setChecked(isAll);
 
         int const PRESET_SELECTION = 1;
-
         rbInten_.setChecked(!isOther && PRESET_SELECTION == nInten);
         rbTth_.setChecked(!isOther && PRESET_SELECTION == nTth);
         rbFWHM_.setChecked(!isOther && PRESET_SELECTION == nFwhm);
@@ -126,12 +122,13 @@ ColumnSelector::ColumnSelector(DataView& table, const QStringList& headers)
     for_i (showCols_.count()) {
         QCheckBox* cb = showCols_.at(i);
         connect(cb, &QCheckBox::toggled, [this, _updateRadiobuttons, i](bool on) {
-            if (on)
-                table_.showColumn(i + 1);
-            else
-                table_.hideColumn(i + 1);
-            _updateRadiobuttons();
-        });
+                // here we act directly upon dataView_
+                if (on)
+                    dataView_.showColumn(i + 1);
+                else
+                    dataView_.hideColumn(i + 1);
+                _updateRadiobuttons();
+            });
     }
 
     connect(&rbAll_, &QRadioButton::clicked, _all);
@@ -150,20 +147,19 @@ ColumnSelector::ColumnSelector(DataView& table, const QStringList& headers)
 
 TableWidget::TableWidget()
 {
+    const QStringList& headers = PeakInfo::dataTags(false);
+    const QStringList& outHeaders = PeakInfo::dataTags(true);
+    const cmp_vec& cmps = PeakInfo::dataCmps();
+
+    dataView_ = new DataView(headers.count()); // the main table
+    dataView_->setColumns(headers, outHeaders, cmps);
+
     // inbound connection
     connect(gSession, &Session::sigPeaks, [this]() {
             if (isVisible())
                 calculate(); });
 
-    // business logic // TODO: move elsewhere
-    const QStringList& headers = PeakInfo::dataTags(false);
-    const QStringList& outHeaders = PeakInfo::dataTags(true);
-    const cmp_vec& cmps =PeakInfo::dataCmps();
-
     // layout
-    dataView_ = new DataView(headers.count()); // the main table
-    dataView_->setColumns(headers, outHeaders, cmps);
-
     auto* colSelBox = new QScrollArea;
     colSelBox->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     colSelBox->setWidget(new ColumnSelector(*dataView_, headers));
