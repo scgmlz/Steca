@@ -49,13 +49,13 @@ size2d Measurement::imageSize() const {
 //! Computes intens and counts.
 //! Called only by Sequence::collectIntens.
 void Measurement::collectIntens(
-    inten_vec& intens, vec<int>& counts, const Range& rgeGma, deg minTth, deg deltaTth) const
+    inten_vec& intens, QVector<int>& counts, const Range& rgeGma, deg minTth, deg deltaTth) const
 {
     const shp_AngleMap& angleMap = gSession->angleMap(*this);
     ASSERT(!angleMap.isNull());
     const AngleMap& map = *angleMap;
 
-    vec<int> const* gmaIndexes = nullptr;
+    QVector<int> const* gmaIndexes = nullptr;
     int gmaIndexMin = 0, gmaIndexMax = 0;
     map.getGmaIndexes(rgeGma, gmaIndexes, gmaIndexMin, gmaIndexMax);
 

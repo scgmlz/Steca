@@ -60,7 +60,7 @@ protected:
     QProgressBar progressBar_;
     Params* params_;
     CTabWidget tabs_ {"outputs#"};
-    vec<PeakInfos> calcPoints_, interpPoints_;
+    QVector<PeakInfos> calcPoints_, interpPoints_;
     class DataView* dataView_;
     void calculate();
     void interpolate();

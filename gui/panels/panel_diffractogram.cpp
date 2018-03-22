@@ -307,14 +307,14 @@ void DiffractogramPlot::plot(
     yAxis->setVisible(true);
 
     if (showBgFit_) {
-        bgGraph_->setData(bg.xs().sup(), bg.ys().sup());
+        bgGraph_->setData(bg.xs(), bg.ys());
     } else {
         bgGraph_->clearData();
     }
 
-    dgramGraph_->setData(dgram.xs().sup(), dgram.ys().sup());
-    dgramBgFittedGraph_->setData(dgramBgFitted.xs().sup(), dgramBgFitted.ys().sup());
-    dgramBgFittedGraph2_->setData(dgramBgFitted.xs().sup(), dgramBgFitted.ys().sup());
+    dgramGraph_->setData(dgram.xs(), dgram.ys());
+    dgramBgFittedGraph_->setData(dgramBgFitted.xs(), dgramBgFitted.ys());
+    dgramBgFittedGraph2_->setData(dgramBgFitted.xs(), dgramBgFitted.ys());
 
     clearReflLayer();
     setCurrentLayer("refl");
@@ -324,7 +324,7 @@ void DiffractogramPlot::plot(
         QCPGraph* graph = addGraph();
         reflGraph_.append(graph);
         graph->setPen(QPen(Qt::green, i == currReflIndex ? 2 : 1));
-        graph->setData(r.xs().sup(), r.ys().sup());
+        graph->setData(r.xs(), r.ys());
     }
 
     replot();

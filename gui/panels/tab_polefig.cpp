@@ -61,7 +61,7 @@ void PolefigWidget::render()
 
     // TODO rm DUPLICATE from TableWidget:
 
-    vec<PeakInfos> calcPoints_;
+    QVector<PeakInfos> calcPoints_;
     int reflCount = gSession->peaks().count();
     if (!reflCount)
         return;

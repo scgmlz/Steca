@@ -29,7 +29,7 @@ PlotDiagram::PlotDiagram()
 }
 
 void PlotDiagram::plot(
-    const vec<qreal>& xs, const vec<qreal>& ys, const vec<qreal>& ysLo, const vec<qreal>& ysUp)
+    const QVector<qreal>& xs, const QVector<qreal>& ys, const QVector<qreal>& ysLo, const QVector<qreal>& ysUp)
 {
     ASSERT(xs.count() == ys.count());
 
@@ -59,13 +59,13 @@ void PlotDiagram::plot(
     yAxis->setVisible(true);
 
     graph_->setPen(QPen(Qt::blue));
-    graph_->addData(xs.sup(), ys.sup());
+    graph_->addData(xs, ys);
 
     graphUp_->setPen(QPen(Qt::red));
-    graphUp_->addData(xs.sup(), ysUp.sup());
+    graphUp_->addData(xs, ysUp);
 
     graphLo_->setPen(QPen(Qt::green));
-    graphLo_->addData(xs.sup(), ysLo.sup());
+    graphLo_->addData(xs, ysLo);
 
     replot();
 }

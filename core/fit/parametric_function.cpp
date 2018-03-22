@@ -68,7 +68,7 @@ void Function::reset() {
 JsonObj Function::toJson() const {
     QJsonArray params;
     for (const Parameter& param : parameters_)
-        params.append(param.toJson().sup());
+        params.append(param.toJson());
     JsonObj ret;
     ret.insert("parameters", params);
     return ret;

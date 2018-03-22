@@ -32,15 +32,15 @@ public:
     Range rgeGma() const { return rgeGma_; }
     Range rgeGmaFull() const { return rgeGmaFull_; }
 
-    void getGmaIndexes(const Range&, vec<int> const*&, int&, int&) const;
+    void getGmaIndexes(const Range&, QVector<int> const*&, int&, int&) const;
 
 private:
     ImageKey key_;
     Array2D<ScatterDirection> arrAngles_;
     Range rgeTth_;
     Range rgeGma_, rgeGmaFull_;
-    vec<deg> gmas_; //!< sorted gamma values
-    vec<int> gmaIndexes_;
+    QVector<deg> gmas_; //!< sorted gamma values
+    QVector<int> gmaIndexes_;
 };
 
 typedef QSharedPointer<AngleMap> shp_AngleMap;

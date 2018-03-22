@@ -25,7 +25,7 @@ static const Params::ePanels PANELS =
     Params::ePanels(Params::REFLECTION | Params::GAMMA | Params::DIAGRAM);
 
 // sorts xs and ys the same way, by (x,y)
-static void sortColumns(vec<qreal>& xs, vec<qreal>& ys, vec<int>& is)
+static void sortColumns(QVector<qreal>& xs, QVector<qreal>& ys, QVector<int>& is)
 {
     ASSERT(xs.count() == ys.count());
 
@@ -44,7 +44,7 @@ static void sortColumns(vec<qreal>& xs, vec<qreal>& ys, vec<int>& is)
         return ys.at(i1) < ys.at(i2);
     });
 
-    vec<qreal> r(count);
+    QVector<qreal> r(count);
 
     for_i (count)
         r[i] = xs.at(is.at(i));
@@ -165,7 +165,7 @@ void DiagramsFrame::recalculate()
         ys_[i] = row.at(yi).toDouble();
     }
 
-    vec<int> is;
+    QVector<int> is;
     sortColumns(xs_, ys_, is);
 
     auto _calcErrors = [this, is](eReflAttr attr) {

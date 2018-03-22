@@ -189,7 +189,7 @@ inten_vec Sequence::collectIntens(const Range& rgeGma) const {
     }
 
     inten_vec intens(numBins, 0);
-    vec<int> counts(numBins, 0);
+    QVector<int> counts(numBins, 0);
 
     deg minTth = tthRge.min, deltaTth = tthWdt / numBins;
 

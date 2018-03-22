@@ -56,7 +56,7 @@ private:
     bool showBgFit_;
     QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *dgramBgFittedGraph2_, *guesses_,
         *fits_;
-    vec<QCPGraph*> reflGraph_;
+    QVector<QCPGraph*> reflGraph_;
     DiffractogramPlotOverlay* overlay_;
 
     void calcDgram();

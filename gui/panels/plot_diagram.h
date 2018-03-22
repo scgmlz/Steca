@@ -16,7 +16,7 @@
 #define PLOT_DIAGRAM_H
 
 #include "core/calc/peak_info.h"
-#include "core/typ/vec.h"
+#include "core/def/numbers.h"
 #include "QCustomPlot/qcustomplot.h"
 
 class PlotDiagram : public QCustomPlot {
@@ -24,7 +24,7 @@ public:
     PlotDiagram();
     void set(PeakInfos);
     void plot(
-        const vec<qreal>& xs, const vec<qreal>& ys, const vec<qreal>& ysLo, const vec<qreal>& ysUp);
+        const QVector<qreal>& xs, const QVector<qreal>& ys, const QVector<qreal>& ysLo, const QVector<qreal>& ysUp);
 private:
     QCPGraph *graph_, *graphLo_, *graphUp_;
 };

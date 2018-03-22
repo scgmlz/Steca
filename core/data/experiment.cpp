@@ -90,7 +90,7 @@ void Experiment::invalidateAvgMutables() const {
 
 //! Computed cached avgeCurve_.
 void Experiment::computeAvgeCurve() const {
-    vec<const Measurement*> group;
+    QVector<const Measurement*> group;
     for (Cluster const* cluster : clusters_)
         for (const Measurement* one: cluster->members())
             group.append(one);

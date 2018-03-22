@@ -62,7 +62,7 @@ public:
     virtual QString name() const = 0;
 
 protected:
-    vec<Parameter> parameters_;
+    QVector<Parameter> parameters_;
     qreal parValue(int parIndex, qreal const* parValues) const;
     void setValue(int parIndex, qreal val);
 };

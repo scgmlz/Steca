@@ -48,7 +48,7 @@ private:
     // The are needed to detect changes of state, which in turn helps us to
     // update display items only if they have changed. Whether this is really
     // useful is to be determined. The cache for the activation state is gone.
-    vec<int> metaInfoNums_; //!< indices of metadata items selected for display
+    QVector<int> metaInfoNums_; //!< indices of metadata items selected for display
 };
 
 void ExperimentModel::onMetaSelection()

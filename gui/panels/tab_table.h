@@ -29,7 +29,7 @@ private:
     void interpolate();
     virtual void displayPeak(int reflIndex);
     int getReflIndex() const;
-    vec<PeakInfos> calcPoints_, interpPoints_;
+    QVector<PeakInfos> calcPoints_, interpPoints_;
     class DataView* dataView_;
 };
 

@@ -47,7 +47,7 @@ private:
     int sortColumn_ {-1};
 
     QStringList headers_;
-    vec<int> colIndexMap_;
+    QVector<int> colIndexMap_;
     cmp_vec cmpFunctions_;
 
     struct numRow {
@@ -58,7 +58,7 @@ private:
         row_t row;
     };
 
-    vec<numRow> rows_;
+    QVector<numRow> rows_;
 };
 
 //! A data table view, for use in the 'Points' tab of an output Frame.

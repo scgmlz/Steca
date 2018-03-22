@@ -15,13 +15,13 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include "core/typ/vec.h"
+#include "core/def/numbers.h"
 #include "core/typ/exception.h"
 
 typedef float inten_t;
 typedef float fwhm_t;
 
-typedef vec<inten_t> inten_vec;
+typedef QVector<inten_t> inten_vec;
 
 enum class eNorm {
     NONE,

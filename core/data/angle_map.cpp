@@ -19,7 +19,7 @@
 namespace {
 
 //! Returns index i for which v[i-1]<x<=v[i], provided i1<=i<i2.
-static int lowerBound(const vec<deg>& vec, deg x, int i1, int i2) {
+static int lowerBound(const QVector<deg>& vec, deg x, int i1, int i2) {
     ASSERT(i1 < i2);
     if (i2-i1 == 1)
         return i1;
@@ -30,7 +30,7 @@ static int lowerBound(const vec<deg>& vec, deg x, int i1, int i2) {
 }
 
 //! Returns index i for which v[i-1]<=x<v[i], provided i1<i<=i2.
-static int upperBound(const vec<deg>& vec, deg x, int i1, int i2) {
+static int upperBound(const QVector<deg>& vec, deg x, int i1, int i2) {
     ASSERT(i1 < i2);
     if (i2-i1 == 1)
         return i2;
@@ -78,25 +78,25 @@ AngleMap::AngleMap(const ImageKey& key)
     }
 
     // compute indices of sorted gmas_:
-    vec<int> is(countWithoutCut);
+    QVector<int> is(countWithoutCut);
     for_i (is.count())
         is[i] = i;
     std::sort(is.begin(), is.end(), [this](int i1, int i2) {
         return gmas_.at(i1) < gmas_.at(i2); });
     // sort gmas_:
-    vec<deg> gv(countWithoutCut);
+    QVector<deg> gv(countWithoutCut);
     for_i (countWithoutCut)
         gv[i] = gmas_.at(is.at(i));
     gmas_ = gv;
     // sort gmaIndexes_:
-    vec<int> uv(countWithoutCut);
+    QVector<int> uv(countWithoutCut);
     for_i (countWithoutCut)
         uv[i] = gmaIndexes_.at(is.at(i));
     gmaIndexes_ = uv;
 }
 
 void AngleMap::getGmaIndexes(
-    const Range& rgeGma, vec<int> const*& indexes, int& minIndex, int& maxIndex) const
+    const Range& rgeGma, QVector<int> const*& indexes, int& minIndex, int& maxIndex) const
 {
     indexes = &gmaIndexes_;
     minIndex = lowerBound(gmas_, rgeGma.min, 0, gmas_.count());

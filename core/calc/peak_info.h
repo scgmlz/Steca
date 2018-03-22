@@ -76,7 +76,7 @@ private:
 
 //! A list of PeakInfo's
 
-class PeakInfos : public vec<PeakInfo> {
+class PeakInfos : public QVector<PeakInfo> {
 public:
     PeakInfos() { invalidate(); }
 

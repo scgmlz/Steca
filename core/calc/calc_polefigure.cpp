@@ -35,8 +35,8 @@ void itf_t::operator+=(const itf_t& that) {
     fwhm += that.fwhm;
 }
 
-typedef vec<itf_t> itfs_t;
-typedef vec<PeakInfo const*> info_vec;
+typedef QVector<itf_t> itfs_t;
+typedef QVector<PeakInfo const*> info_vec;
 
 // Calculates the difference of two angles. Parameters should be in [0, 360].
 deg calculateDeltaBeta(deg beta1, deg beta2) {
@@ -71,7 +71,7 @@ enum class eQuadrant {
 
 static int NUM_QUADRANTS = 4;
 
-typedef vec<eQuadrant> Quadrants;
+typedef QVector<eQuadrant> Quadrants;
 
 Quadrants allQuadrants() {
     return { eQuadrant::NORTHEAST, eQuadrant::SOUTHEAST, eQuadrant::SOUTHWEST,
@@ -118,7 +118,7 @@ void searchPoints(deg alpha, deg beta, deg radius, const PeakInfos& infos, itfs_
 // Searches closest PeakInfos to given alpha and beta in quadrants.
 void searchInQuadrants(
     const Quadrants& quadrants, deg alpha, deg beta, deg searchRadius, const PeakInfos& infos,
-    info_vec& foundInfos, vec<qreal>& distances) {
+    info_vec& foundInfos, QVector<qreal>& distances) {
     ASSERT(quadrants.count() <= NUM_QUADRANTS);
     // Take only peak infos with beta within +/- BETA_LIMIT degrees into
     // account. Original STeCa used something like +/- 1.5*36 degrees.
@@ -147,13 +147,13 @@ void searchInQuadrants(
     }
 }
 
-itf_t inverseDistanceWeighing(const vec<qreal>& distances, const info_vec& infos) {
+itf_t inverseDistanceWeighing(const QVector<qreal>& distances, const info_vec& infos) {
     int N = NUM_QUADRANTS;
     // Generally, only distances.count() == values.count() > 0 is needed for this
     // algorithm. However, in this context we expect exactly the following:
     if (!(distances.count() == N)) qFatal("distances size should be 4");
     if (!(infos.count() == N)) qFatal("infos size should be 4");
-    vec<qreal> inverseDistances(N);
+    QVector<qreal> inverseDistances(N);
     qreal inverseDistanceSum = 0;
     for_i (NUM_QUADRANTS) {
         if (distances.at(i) == .0) {
@@ -184,7 +184,7 @@ itf_t inverseDistanceWeighing(const vec<qreal>& distances, const info_vec& infos
 // Interpolates peak infos to a single point using idw.
 itf_t interpolateValues(deg searchRadius, const PeakInfos& infos, deg alpha, deg beta) {
     info_vec interpolationInfos;
-    vec<qreal> distances;
+    QVector<qreal> distances;
     searchInQuadrants(
         allQuadrants(), alpha, beta, searchRadius, infos, interpolationInfos, distances);
     // Check that infos were found in all quadrants.
@@ -202,7 +202,7 @@ itf_t interpolateValues(deg searchRadius, const PeakInfos& infos, deg alpha, deg
             : -alpha;
         qreal newBeta = beta < 180 ? beta + 180 : beta - 180;
         info_vec renewedSearch;
-        vec<qreal> newDistance;
+        QVector<qreal> newDistance;
         searchInQuadrants(
             { newQ }, newAlpha, newBeta, searchRadius, infos, renewedSearch, newDistance);
         ASSERT(renewedSearch.count() == 1);

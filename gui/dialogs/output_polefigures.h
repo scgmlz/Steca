@@ -31,9 +31,9 @@ private:
 
     void savePoleFigureOutput();
     void writePoleFigureOutputFiles(const QString& filePath, int index);
-    void writePoleFile(const QString& filePath, PeakInfos, const vec<qreal>&);
-    void writeListFile(const QString& filePath, PeakInfos, const vec<qreal>&);
-    void writeErrorMask(const QString& filePath, PeakInfos, const vec<qreal>&);
+    void writePoleFile(const QString& filePath, PeakInfos, const QVector<qreal>&);
+    void writeListFile(const QString& filePath, PeakInfos, const QVector<qreal>&);
+    void writeErrorMask(const QString& filePath, PeakInfos, const QVector<qreal>&);
 };
 
 #endif // OUTPUT_POLEFIGURES_H

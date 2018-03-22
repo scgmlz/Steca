@@ -16,7 +16,7 @@
 #define PLOT_POLEFIG_H
 
 #include "core/calc/peak_info.h"
-#include "core/typ/vec.h"
+#include "core/def/numbers.h"
 #include "gui/base/controls.h"
 #include "QCustomPlot/qcustomplot.h"
 

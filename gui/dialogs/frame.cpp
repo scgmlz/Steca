@@ -25,7 +25,7 @@ struct showcol_t {
     CCheckBox* cb;
 };
 
-typedef vec<showcol_t> showcol_vec;
+typedef QVector<showcol_t> showcol_vec;
 
 // ************************************************************************** //
 //  local class ShowColsWidget (only used by TabTable)

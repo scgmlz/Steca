@@ -151,7 +151,7 @@ QString Range::to_s(int precision, int digitsAfter) const {
 // ************************************************************************** //
 
 bool Ranges::add(const Range& range) {
-    vec<Range> newRanges;
+    QVector<Range> newRanges;
     Range addRange = range;
     for (const Range& r : ranges_) {
         if (r.contains(range))
@@ -170,7 +170,7 @@ bool Ranges::add(const Range& range) {
 }
 
 bool Ranges::remove(const Range& removeRange) {
-    vec<Range> newRanges;
+    QVector<Range> newRanges;
     bool changed = false;
 
     for (const Range& r : ranges_) {

@@ -17,7 +17,7 @@
 
 #include "core/def/comparable.h"
 #include "core/typ/exception.h"
-#include "core/typ/vec.h"
+#include "core/def/numbers.h"
 #include <QJsonArray>
 
 class JsonObj;
@@ -82,7 +82,7 @@ public:
 
 private:
     void sort();
-    vec<Range> ranges_;
+    QVector<Range> ranges_;
 };
 
 #endif // RANGE_H
