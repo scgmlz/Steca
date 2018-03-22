@@ -20,7 +20,6 @@
 #include <cmath>
 #include <QGroupBox>
 #include <QMessageBox>
-#include <QProgressBar>
 
 namespace {
 
@@ -74,20 +73,12 @@ ExportDfgram::ExportDfgram()
     , QDialog(gGui)
 {
     rbAll_.setChecked(true);
-    progressBar_ = new QProgressBar;
-    fileField_ = new ExportfileDialogfield(this, true);
 
-    auto* actCancel = new CTrigger("cancel", "Cancel");
-    auto* actSave = new CTrigger("save", "Save");
+    fileField_ = new ExportfileDialogfield(this, true, [this]()->void{save();});
 
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowTitle("Diffractograms");
-    progressBar_->hide();
-
-    // internal connections
-    connect(actCancel, &QAction::triggered, [this]() { close(); });
-    connect(actSave, &QAction::triggered, [this]() { save(); });
 
     // layout
     auto* saveWhatLayout = new QVBoxLayout;
@@ -98,18 +89,9 @@ ExportDfgram::ExportDfgram()
     auto* saveWhat = new QGroupBox {"Save what"};
     saveWhat->setLayout(saveWhatLayout);
 
-    auto* hb_bottom = new QHBoxLayout();
-    hb_bottom->addWidget(progressBar_);
-    hb_bottom->setStretchFactor(progressBar_, 333);
-    hb_bottom->addStretch(1);
-    hb_bottom->addWidget(new XTextButton(actCancel));
-    hb_bottom->addWidget(new XTextButton(actSave));
-
     auto* vbox = new QVBoxLayout();
     vbox->addWidget(saveWhat);
     vbox->addLayout(fileField_);
-    vbox->setStretch(vbox->count() - 1, 1);
-    vbox->addLayout(hb_bottom);
     setLayout(vbox);
 
     show();
@@ -177,7 +159,7 @@ void ExportDfgram::saveAll(bool oneFile)
             QMessageBox::Yes)
             return;
     }
-    Progress progress(expt.size(), progressBar_);
+    Progress progress(expt.size(), &fileField_->progressBar);
     int picNum = 0;
     int fileNum = 0;
     int nSlices = gSession->gammaSelection().numSlices();

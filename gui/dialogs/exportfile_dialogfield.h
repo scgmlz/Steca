@@ -16,14 +16,19 @@
 #define EXPORTFILE_DIALOGFIELD_H
 
 #include "gui/base/controls.h"
+#include <QProgressBar>
 
 //! Base class for dialogs for saving some output to a file.
 
-class ExportfileDialogfield : public QHBoxLayout {
+class ExportfileDialogfield : public QVBoxLayout {
 public:
-    ExportfileDialogfield(QWidget* parent, bool withTypes);
+    ExportfileDialogfield() = delete;
+    ExportfileDialogfield(ExportfileDialogfield&) = delete;
+    ExportfileDialogfield(QWidget* parent, bool withTypes, std::function<void(void)> onSave);
+
     QString filePath(bool withSuffix, bool withNumber=false);
     QString separator() const;
+    QProgressBar progressBar;
 private:
     QLineEdit* dir_;
     QLineEdit* file_;

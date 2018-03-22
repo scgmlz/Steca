@@ -23,26 +23,37 @@ static QString const DAT_EXT(".dat"), DAT_SEP(" "), // extension, separator
 static QString saveFmt = DAT_EXT; //!< setting: default format for data export
 }
 
-ExportfileDialogfield::ExportfileDialogfield(QWidget* parent, bool withTypes)
+ExportfileDialogfield::ExportfileDialogfield(
+    QWidget* parent, bool withTypes, std::function<void(void)> onSave)
 {
+    progressBar.hide();
+
     static QDir defaultDir = QDir::homePath();
 
+    dir_ = new QLineEdit(defaultDir.absolutePath());
+    file_ = new QLineEdit();
     auto* rbDat = new CRadioButton {"fmtDat", DAT_EXT};
     auto* rbCsv = new CRadioButton {"fmtCsv", CSV_EXT};
     auto* actBrowse = new CTrigger("selectDir", "Browse...");
-    dir_ = new QLineEdit(defaultDir.absolutePath());
-    file_ = new QLineEdit();
+    auto* actCancel = new CTrigger("cancel", "Cancel");
+    auto* actSave = new CTrigger("save", "Save");
 
     rbCsv->setChecked(saveFmt == CSV_EXT);
     rbDat->setChecked(saveFmt == DAT_EXT);
     dir_->setReadOnly(true);
 
+    // internal connections
     connect(actBrowse, &QAction::triggered, [this, parent]() {
         file_dialog::queryDirectory(parent, "Select folder", defaultDir);
         dir_->setText(defaultDir.absolutePath()); });
     connect(rbDat, &QRadioButton::clicked, []() { saveFmt = DAT_EXT; });
     connect(rbCsv, &QRadioButton::clicked, []() { saveFmt = CSV_EXT; });
 
+    // outgoing connections
+    connect(actCancel, &QAction::triggered, [parent]() { parent->close(); });
+    connect(actSave, &QAction::triggered, onSave);
+
+    // layout
     auto* destinationGrid = new QGridLayout;
     destinationGrid->addWidget(new QLabel("Save to folder:"), 0, 0, Qt::AlignRight);
     destinationGrid->addWidget(dir_,                          0, 1);
@@ -61,9 +72,19 @@ ExportfileDialogfield::ExportfileDialogfield(QWidget* parent, bool withTypes)
     ftype->setVisible(withTypes);
     ftype->setLayout(ftypeGrid);
 
-    // compose *this
-    addWidget(destination);
-    addWidget(ftype);
+    auto* setup = new QHBoxLayout;
+    setup->addWidget(destination);
+    setup->addWidget(ftype);
+
+    auto* bottom = new QHBoxLayout();
+    bottom->addWidget(&progressBar);
+    bottom->setStretchFactor(&progressBar, 333);
+    bottom->addStretch(1);
+    bottom->addWidget(new XTextButton(actCancel));
+    bottom->addWidget(new XTextButton(actSave));
+
+    addLayout(setup);
+    addLayout(bottom);
 }
 
 QString ExportfileDialogfield::filePath(bool withSuffix, bool withNumber)
