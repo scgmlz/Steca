@@ -26,6 +26,7 @@ public:
     ExportTable(bool xyMode);
 private:
     void save();
+    bool xyMode_;
     class ExportfileDialogfield* fileField_;
 };
 
