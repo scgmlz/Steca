@@ -28,7 +28,10 @@ public:
 
 private:
     QProgressBar* progressBar_;
-    class TabDiffractogramsSave* tabSave_;
+    class TabSave* tabSave_;
+    CRadioButton rbCurrent_       {"rbCurrent",       "Current diffractogram"};
+    CRadioButton rbAllSequential_ {"rbAllSequential", "All diffractograms to numbered files"};
+    CRadioButton rbAll_           {"rbAll",           "All diffractograms to one file"};
 
     void save();
     void saveCurrent();

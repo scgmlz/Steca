@@ -66,43 +66,6 @@ QString numberedName(const QString& templatedName, int num, int maxNum) {
 
 
 // ************************************************************************** //
-//  local class TabDiffractogramsSave
-// ************************************************************************** //
-
-//! The main part of ExportDfgram. Extends TabSave by an output content control.
-
-class TabDiffractogramsSave : public TabSave {
-public:
-    TabDiffractogramsSave();
-
-    bool currentChecked() { return rbCurrent_.isChecked(); }
-    bool allSequentialChecked() { return rbAllSequential_.isChecked(); }
-    bool allChecked() { return rbAll_.isChecked(); }
-
-private:
-    CRadioButton rbCurrent_ {"rbCurrent", "Current diffractogram"};
-    CRadioButton rbAllSequential_ {"rbAllSequential", "All diffractograms to numbered files"};
-    CRadioButton rbAll_ {"rbAll", "All diffractograms to one file"};
-};
-
-TabDiffractogramsSave::TabDiffractogramsSave()
-    : TabSave(true)
-{
-    rbAll_.setChecked(true);
-
-    auto* boxlayout = new QVBoxLayout;
-    boxlayout->addWidget(&rbCurrent_);
-    boxlayout->addWidget(&rbAllSequential_);
-    boxlayout->addWidget(&rbAll_);
-
-    auto* box = new QGroupBox {"Save what"};
-    box->setLayout(boxlayout);
-
-    grid_->addWidget(box, grid_->rowCount(), 0, 1, 2);
-    grid_->setRowStretch(grid_->rowCount(), 1);
-}
-
-// ************************************************************************** //
 //  class ExportDfgram
 // ************************************************************************** //
 
@@ -110,8 +73,9 @@ ExportDfgram::ExportDfgram()
     : QDialog(gGui)
     , CModal("dgram")
 {
+    rbAll_.setChecked(true);
     progressBar_ = new QProgressBar;
-    tabSave_ = new TabDiffractogramsSave();
+    tabSave_ = new TabSave(true);
 
     auto* actCancel = new CTrigger("cancel", "Cancel");
     auto* actSave = new CTrigger("save", "Save");
@@ -126,6 +90,14 @@ ExportDfgram::ExportDfgram()
     connect(actSave, &QAction::triggered, [this]() { save(); });
 
     // layout
+    auto* saveWhatLayout = new QVBoxLayout;
+    saveWhatLayout->addWidget(&rbCurrent_);
+    saveWhatLayout->addWidget(&rbAllSequential_);
+    saveWhatLayout->addWidget(&rbAll_);
+
+    auto* saveWhat = new QGroupBox {"Save what"};
+    saveWhat->setLayout(saveWhatLayout);
+
     auto* hb_bottom = new QHBoxLayout();
     hb_bottom->addWidget(progressBar_);
     hb_bottom->setStretchFactor(progressBar_, 333);
@@ -134,6 +106,7 @@ ExportDfgram::ExportDfgram()
     hb_bottom->addWidget(new XTextButton(actSave));
 
     auto* vbox = new QVBoxLayout();
+    vbox->addWidget(saveWhat);
     vbox->addWidget(tabSave_);
     vbox->setStretch(vbox->count() - 1, 1);
     vbox->addLayout(hb_bottom);
@@ -154,11 +127,11 @@ void ExportDfgram::onCommand(const QStringList&)
 
 void ExportDfgram::save()
 {
-    if (tabSave_->currentChecked())
+    if (rbCurrent_.isChecked())
         saveCurrent();
-    else if (tabSave_->allSequentialChecked())
+    else if (rbAllSequential_.isChecked())
         saveAll(false);
-    else if (tabSave_->allChecked())
+    else if (rbAll_.isChecked())
         saveAll(true);
     else
         qFatal("Invalid call of ExportDfgram::saveDiffractogramOutput");
