@@ -132,11 +132,7 @@ void DiagramWidget::render()
 
     for_i (reflCount)
         calcPoints_.append(
-            gSession->makePeakInfos(
-                gSession->peaks().at(i),
-                gSession->gammaSelection().numSlices(),
-                gSession->gammaSelection().range(),
-                &progress));
+            gSession->makePeakInfos(gSession->peaks().at(i), &progress));
 
     rs_ = calcPoints_.at(iRefl);
     int count = rs_.count();

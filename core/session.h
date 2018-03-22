@@ -102,7 +102,7 @@ public:
     static shp_AngleMap angleMap(const Session& session, const Measurement& ds) {
         return session.angleMap(ds); }
 
-    PeakInfos makePeakInfos(const Peak&, int gmaSlices, const Range&, Progress*) const;
+    PeakInfos makePeakInfos(const Peak&, Progress*) const;
 
     bool intenScaledAvg() const { return intenScaledAvg_; }
     qreal intenScale() const { return intenScale_; }

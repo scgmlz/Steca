@@ -324,20 +324,11 @@ void Frame::calculate()
     if (!reflCount)
         return;
 
-    const PanelGammaSlices* ps = params_->panelGammaSlices;
-    int gammaSlices = ps->numSlices.value();
-
-    const PanelGammaRange* pr = params_->panelGammaRange;
-    Range rgeGamma;
-    if (pr->cbLimitGamma.isChecked())
-        rgeGamma.safeSet(pr->minGamma.value(), pr->maxGamma.value());
-
     Progress progress(reflCount, &progressBar_);
 
     for_i (reflCount)
         calcPoints_.append(
-            gSession->makePeakInfos(
-                gSession->peaks().at(i), gammaSlices, rgeGamma, &progress));
+            gSession->makePeakInfos(gSession->peaks().at(i), &progress));
 
     interpolate();
 }

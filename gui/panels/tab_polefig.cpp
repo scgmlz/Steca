@@ -69,11 +69,7 @@ void PolefigWidget::render()
 
     for_i (reflCount)
         calcPoints_.append(
-            gSession->makePeakInfos(
-                gSession->peaks().at(i),
-                gSession->gammaSelection().numSlices(),
-                gSession->gammaSelection().range(),
-                &progress));
+            gSession->makePeakInfos(gSession->peaks().at(i), &progress));
 
     if (calcPoints_.isEmpty())
         THROW("calcPoints is empty");

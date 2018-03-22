@@ -209,8 +209,7 @@ PeakInfo Session::makePeakInfo(
 //!  the returned infos won't be on the grid.
 //! TODO? gammaStep separately?
 
-PeakInfos Session::makePeakInfos(
-    const Peak& peak, int gmaSlices, const Range& rgeGma, Progress* progress) const {
+PeakInfos Session::makePeakInfos(const Peak& peak, Progress* progress) const {
 
     if (progress)
         progress->setTotal(experiment().size());
@@ -220,21 +219,9 @@ PeakInfos Session::makePeakInfos(
     for (const Cluster* cluster : experiment().clusters()) {
         if (progress)
             progress->step();
-
-        const qreal normFactor = cluster->normFactor();
-
-        Range rge = (gmaSlices > 0) ? cluster->rgeGma() : cluster->rgeGmaFull();
-        if (rgeGma.isValid())
-            rge = rge.intersect(rgeGma);
-        if (rge.isEmpty())
-            continue;
-
-        gmaSlices = qMax(1, gmaSlices);
-        qreal step = rge.width() / gmaSlices;
-        for_i (int(gmaSlices)) {
-            qreal min = rge.min + i * step;
-            Range gmaStripe(min, min + step);
-            const PeakInfo refInfo = makePeakInfo(cluster, peak, gmaStripe);
+        int n = qMax(1, gammaSelection().numSlices());
+        for_i (n) {
+            const PeakInfo refInfo = makePeakInfo(cluster, peak, gammaSelection().slice2range(i));
             if (!qIsNaN(refInfo.inten()))
                 ret.append(refInfo);
         }
