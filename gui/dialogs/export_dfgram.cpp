@@ -70,12 +70,12 @@ QString numberedName(const QString& templatedName, int num, int maxNum) {
 // ************************************************************************** //
 
 ExportDfgram::ExportDfgram()
-    : QDialog(gGui)
-    , CModal("dgram")
+    : CModal("dgram")
+    , QDialog(gGui)
 {
     rbAll_.setChecked(true);
     progressBar_ = new QProgressBar;
-    fileField_ = new ExportfileDialogfield(true);
+    fileField_ = new ExportfileDialogfield(this, true);
 
     auto* actCancel = new CTrigger("cancel", "Cancel");
     auto* actSave = new CTrigger("save", "Save");
@@ -107,17 +107,12 @@ ExportDfgram::ExportDfgram()
 
     auto* vbox = new QVBoxLayout();
     vbox->addWidget(saveWhat);
-    vbox->addWidget(fileField_);
+    vbox->addLayout(fileField_);
     vbox->setStretch(vbox->count() - 1, 1);
     vbox->addLayout(hb_bottom);
     setLayout(vbox);
 
     show();
-}
-
-ExportDfgram::~ExportDfgram()
-{
-    delete fileField_; // auto deletion would happen in wrong order
 }
 
 void ExportDfgram::onCommand(const QStringList&)

@@ -12,6 +12,8 @@
 //
 // ************************************************************************** //
 
+// TODO rm this along with old output dialogs
+
 #ifndef TAB_SAVE_H
 #define TAB_SAVE_H
 

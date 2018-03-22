@@ -19,13 +19,11 @@
 
 //! Base class for dialogs for saving some output to a file.
 
-class ExportfileDialogfield : public QWidget {
+class ExportfileDialogfield : public QHBoxLayout {
 public:
-    ExportfileDialogfield(bool withTypes);
+    ExportfileDialogfield(QWidget* parent, bool withTypes);
     QString filePath(bool withSuffix, bool withNumber=false);
     QString separator() const;
-protected:
-    QGridLayout* grid_;
 private:
     QLineEdit* dir_;
     QLineEdit* file_;
