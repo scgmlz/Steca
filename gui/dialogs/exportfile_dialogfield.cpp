@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/dialogs/tab_save.cpp
-//! @brief     Implements classes TabSave
+//! @file      gui/dialogs/exportfile_dialogfield.cpp
+//! @brief     Implements classes ExportfileDialogfield
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "gui/dialogs/tab_save.h"
+#include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/dialogs/dialog_panels.h"
 #include "gui/base/file_dialog.h"
 #include "gui/mainwin.h"
@@ -23,7 +23,7 @@ static QString const DAT_EXT(".dat"), DAT_SEP(" "), // extension, separator
 static QString saveFmt = DAT_EXT; //!< setting: default format for data export
 }
 
-TabSave::TabSave(bool withTypes)
+ExportfileDialogfield::ExportfileDialogfield(bool withTypes)
 {
     static QDir defaultDir = QDir::homePath();
 
@@ -61,7 +61,7 @@ TabSave::TabSave(bool withTypes)
     setLayout(grid_);
 }
 
-QString TabSave::filePath(bool withSuffix, bool withNumber)
+QString ExportfileDialogfield::filePath(bool withSuffix, bool withNumber)
 {
     QString dir = dir_->text().trimmed();
     QString fileName = file_->text().trimmed();
@@ -79,7 +79,7 @@ QString TabSave::filePath(bool withSuffix, bool withNumber)
     return QFileInfo(dir + '/' + fileName).absoluteFilePath();
 }
 
-QString TabSave::separator() const
+QString ExportfileDialogfield::separator() const
 {
     if      (saveFmt==DAT_EXT)
         return DAT_SEP;

@@ -15,7 +15,7 @@
 #include "gui/dialogs/export_dfgram.h"
 #include "core/session.h"
 #include "gui/base/file_dialog.h"
-#include "gui/dialogs/tab_save.h"
+#include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/mainwin.h"
 #include <cmath>
 #include <QGroupBox>
@@ -75,7 +75,7 @@ ExportDfgram::ExportDfgram()
 {
     rbAll_.setChecked(true);
     progressBar_ = new QProgressBar;
-    tabSave_ = new TabSave(true);
+    fileField_ = new ExportfileDialogfield(true);
 
     auto* actCancel = new CTrigger("cancel", "Cancel");
     auto* actSave = new CTrigger("save", "Save");
@@ -107,7 +107,7 @@ ExportDfgram::ExportDfgram()
 
     auto* vbox = new QVBoxLayout();
     vbox->addWidget(saveWhat);
-    vbox->addWidget(tabSave_);
+    vbox->addWidget(fileField_);
     vbox->setStretch(vbox->count() - 1, 1);
     vbox->addLayout(hb_bottom);
     setLayout(vbox);
@@ -117,7 +117,7 @@ ExportDfgram::ExportDfgram()
 
 ExportDfgram::~ExportDfgram()
 {
-    delete tabSave_; // auto deletion would happen in wrong order
+    delete fileField_; // auto deletion would happen in wrong order
 }
 
 void ExportDfgram::onCommand(const QStringList&)
@@ -140,7 +140,7 @@ void ExportDfgram::save()
 
 void ExportDfgram::saveCurrent()
 {
-    QString path = tabSave_->filePath(true);
+    QString path = fileField_->filePath(true);
     if (path.isEmpty())
         return;
     QFile* file = file_dialog::openFileConfirmOverwrite("file", this, path);
@@ -152,14 +152,14 @@ void ExportDfgram::saveCurrent()
     const Curve& curve = cluster->toCurve();
     if (curve.isEmpty())
         qFatal("curve is empty");
-    writeCurve(stream, curve, cluster, cluster->rgeGma(), tabSave_->separator());
+    writeCurve(stream, curve, cluster, cluster->rgeGma(), fileField_->separator());
 }
 
 void ExportDfgram::saveAll(bool oneFile)
 {
     const Experiment& expt = gSession->experiment();
     // In one-file mode, start output stream; in multi-file mode, only do prepations.
-    QString path = tabSave_->filePath(true, !oneFile);
+    QString path = fileField_->filePath(true, !oneFile);
     if (path.isEmpty())
         return;
     QTextStream* stream = nullptr;
@@ -205,7 +205,7 @@ void ExportDfgram::saveAll(bool oneFile)
             *stream << "Picture Nr: " << picNum << '\n';
             if (nSlices > 1)
                 *stream << "Gamma slice Nr: " << i+1 << '\n';
-            writeCurve(*stream, curve, cluster, gmaStripe, tabSave_->separator());
+            writeCurve(*stream, curve, cluster, gmaStripe, fileField_->separator());
         }
     }
     delete stream;
