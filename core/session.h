@@ -149,7 +149,7 @@ private:
 
     mutable cache_lazy<ImageKey, AngleMap> angleMapCache_ {360};
 
-    PeakInfo makePeakInfo(const Cluster*, const qreal, const Peak&, const Range&) const;
+    PeakInfo makePeakInfo(const Cluster*, const Peak&, const Range&) const;
 };
 
 #endif // SESSION_H

@@ -171,11 +171,12 @@ shp_AngleMap Session::angleMap(const Measurement& one) const {
 }
 
 //! Fits peak to the given gamma sector and constructs a PeakInfo.
-PeakInfo Session::makePeakInfo(const Cluster* cluster, const qreal normFactor,
-                               const Peak& peak, const Range& gmaSector) const {
+PeakInfo Session::makePeakInfo(
+    const Cluster* cluster, const Peak& peak, const Range& gmaSector) const
+{
 
     // fit peak, and retrieve peak parameters:
-    Curve curve = cluster->toCurve(normFactor, gmaSector);
+    Curve curve = cluster->toCurve(cluster->normFactor(), gmaSector); // TODO rm arg normfactor
     const Polynom f = Polynom::fromFit(baseline().polynomDegree(), curve, baseline().ranges());
     curve.subtract([f](qreal x) {return f.y(x);});
 
@@ -233,7 +234,7 @@ PeakInfos Session::makePeakInfos(
         for_i (int(gmaSlices)) {
             qreal min = rge.min + i * step;
             Range gmaStripe(min, min + step);
-            const PeakInfo refInfo = makePeakInfo(cluster, normFactor, peak, gmaStripe);
+            const PeakInfo refInfo = makePeakInfo(cluster, peak, gmaStripe);
             if (!qIsNaN(refInfo.inten()))
                 ret.append(refInfo);
         }
