@@ -327,8 +327,7 @@ void Frame::calculate()
     Progress progress(reflCount, &progressBar_);
 
     for_i (reflCount)
-        calcPoints_.append(
-            gSession->makePeakInfos(gSession->peaks().at(i), &progress));
+        calcPoints_.append(PeakInfos {gSession->peaks().at(i), &progress});
 
     interpolate();
 }

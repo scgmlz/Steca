@@ -209,35 +209,6 @@ PeakInfo Session::makePeakInfo(
         : PeakInfo(metadata, alpha, beta, gmaSector);
 }
 
-//! Gathers PeakInfos from Datasets.
-
-//! Either uses the whole gamma range of the cluster (if gammaSector is invalid),
-//!  or user limits the range.
-//! Even though the betaStep of the equidistant polefigure grid is needed here,
-//!  the returned infos won't be on the grid.
-//! TODO? gammaStep separately?
-
-PeakInfos Session::makePeakInfos(const Peak& peak, Progress* progress) const
-{
-    if (progress)
-        progress->setTotal(experiment().size());
-
-    PeakInfos ret;
-
-    for (const Cluster* cluster : experiment().clusters()) {
-        if (progress)
-            progress->step();
-        int n = qMax(1, gammaSelection().numSlices());
-        for_i (n) {
-            const PeakInfo refInfo = makePeakInfo(cluster, peak, gammaSelection().slice2range(i));
-            if (!qIsNaN(refInfo.inten()))
-                ret.append(refInfo);
-        }
-    }
-
-    return ret;
-}
-
 // TODO: split into two functions (see usage in panel_diff..)
 void Session::setIntenScaleAvg(bool avg, qreal scale)
 {

@@ -78,6 +78,7 @@ private:
 
 class PeakInfos : public QVector<PeakInfo> {
 public:
+    PeakInfos(const class Peak& peak, class Progress* progress);
     PeakInfos() { invalidate(); }
 
     void append(const PeakInfo&);

@@ -61,19 +61,9 @@ void PolefigWidget::render()
 
     // TODO rm DUPLICATE from TableWidget:
 
-    QVector<PeakInfos> calcPoints_;
-    int reflCount = gSession->peaks().count();
-    if (!reflCount)
-        return;
-    Progress progress(reflCount, &gGui->progressBar);
+    Progress progress(1, &gGui->progressBar);
 
-    for_i (reflCount)
-        calcPoints_.append(
-            gSession->makePeakInfos(gSession->peaks().at(i), &progress));
-
-    if (calcPoints_.isEmpty())
-        THROW("calcPoints is empty");
-    plot_->set(calcPoints_.at(iRefl));
+    plot_->set(PeakInfos {gSession->peaks().at(iRefl), &progress});
     // TODO restore interpolation
     //if (!interpPoints_.isEmpty() && !calcPoints_.isEmpty())
     //    plot_->set((interpolated ? interpPoints_ : calcPoints_).at(reflIndex));

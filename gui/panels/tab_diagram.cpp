@@ -124,17 +124,9 @@ void DiagramWidget::render()
 
     // TODO rm DUPLICATE from TableWidget:
 
-    QVector<PeakInfos> calcPoints_;
-    int reflCount = gSession->peaks().count();
-    if (!reflCount)
-        return;
-    Progress progress(reflCount, &gGui->progressBar);
+    Progress progress(1, &gGui->progressBar);
 
-    for_i (reflCount)
-        calcPoints_.append(
-            gSession->makePeakInfos(gSession->peaks().at(i), &progress));
-
-    rs_ = calcPoints_.at(iRefl);
+    rs_ = PeakInfos {gSession->peaks().at(iRefl), &progress};
     int count = rs_.count();
 
     xs_.resize(count);

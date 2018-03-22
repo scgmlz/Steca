@@ -14,6 +14,8 @@
 
 #include "core/calc/peak_info.h"
 #include "core/def/idiomatic_for.h"
+#include "core/typ/async.h"
+#include "core/session.h"
 
 // ************************************************************************** //
 //  class PeakInfo
@@ -116,6 +118,32 @@ QString const PeakInfo::reflStringTag(int attr, bool out) {
 // ************************************************************************** //
 //  class PeakInfos
 // ************************************************************************** //
+
+//! Gathers PeakInfos from Datasets.
+
+//! Either uses the whole gamma range of the cluster (if gammaSector is invalid),
+//!  or user limits the range.
+//! Even though the betaStep of the equidistant polefigure grid is needed here,
+//!  the returned infos won't be on the grid.
+//! TODO? gammaStep separately?
+
+PeakInfos::PeakInfos(const Peak& peak, Progress* progress)
+{
+    if (progress)
+        progress->setTotal(gSession->experiment().size());
+    int nGamma = qMax(1, gSession->gammaSelection().numSlices());
+    for (const Cluster* cluster : gSession->experiment().clusters()) {
+        if (progress)
+            progress->step();
+        for_i (nGamma) {
+            const PeakInfo refInfo = gSession->makePeakInfo(
+                cluster, peak, gSession->gammaSelection().slice2range(i));
+            if (!qIsNaN(refInfo.inten()))
+                this->append(refInfo);
+        }
+    }
+}
+
 
 void PeakInfos::append(const PeakInfo& info) {
     QVector<PeakInfo>::append(info);

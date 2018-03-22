@@ -196,8 +196,7 @@ void TableWidget::calculate()
     Progress progress(reflCount, &gGui->progressBar);
 
     for_i (reflCount)
-        calcPoints_.append(
-            gSession->makePeakInfos(gSession->peaks().at(i), &progress));
+        calcPoints_.append(PeakInfos {gSession->peaks().at(i), &progress});
 
     interpolate();
 }

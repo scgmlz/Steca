@@ -102,8 +102,6 @@ public:
     static shp_AngleMap angleMap(const Session& session, const Measurement& ds) {
         return session.angleMap(ds); }
 
-    PeakInfos makePeakInfos(const Peak&, Progress*) const;
-
     bool intenScaledAvg() const { return intenScaledAvg_; }
     qreal intenScale() const { return intenScale_; }
 
@@ -111,6 +109,8 @@ public:
     qreal calcAvgBackground() const;
 
     bool metaSelected(int i) const { return metaSelection_[i]; }
+
+    PeakInfo makePeakInfo(const Cluster*, const Peak&, const Range&) const;
 
 signals:
     void sigFiles();         //!< list of loaded files has changed
@@ -148,8 +148,6 @@ private:
     InterpolParams interpolParams_;
 
     mutable cache_lazy<ImageKey, AngleMap> angleMapCache_ {360};
-
-    PeakInfo makePeakInfo(const Cluster*, const Peak&, const Range&) const;
 };
 
 #endif // SESSION_H
