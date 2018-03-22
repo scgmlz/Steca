@@ -69,7 +69,7 @@ QString numberedName(const QString& templatedName, int num, int maxNum) {
 // ************************************************************************** //
 
 ExportDfgram::ExportDfgram()
-    : CModal("dgram")
+    : CModal("dfgram")
     , QDialog(gGui)
 {
     rbAll_.setChecked(true);
@@ -78,7 +78,7 @@ ExportDfgram::ExportDfgram()
 
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-    setWindowTitle("Diffractograms");
+    setWindowTitle("Export diffractogram(s)");
 
     // layout
     auto* saveWhatLayout = new QVBoxLayout;

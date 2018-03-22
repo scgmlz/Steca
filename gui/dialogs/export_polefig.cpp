@@ -33,7 +33,7 @@ namespace {
 // ************************************************************************** //
 
 ExportPolefig::ExportPolefig()
-    : CModal("dgram")
+    : CModal("polefig")
     , QDialog(gGui)
 {
     rbAll_.setChecked(true);
@@ -42,7 +42,7 @@ ExportPolefig::ExportPolefig()
 
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-    setWindowTitle("Diffractograms");
+    setWindowTitle("Export pole figure data");
 
     // layout
     auto* saveWhatLayout = new QVBoxLayout;
@@ -63,3 +63,128 @@ void ExportPolefig::save()
 {
     close();
 }
+
+/*
+void PoleFiguresFrame::savePoleFigureOutput()
+{
+    int reflCount = gSession->peaks().count();
+    ASSERT(reflCount); // user should not get here if no peak is defined
+    QString path = tabSave_->filePath(false);
+    if (path.isEmpty())
+        THROW("cannot save pole figure: file path is empty");
+    if (tabSave_->onlySelectedRefl()) {
+        writePoleFigureOutputFiles(path, getReflIndex());
+        return;
+    }
+    // all peaks
+    for_i (reflCount) // TODO collect output into one message
+        writePoleFigureOutputFiles(path, i);
+}
+
+static QString const OUT_FILE_TAG(".refl%1");
+static int const MAX_LINE_LENGTH_POL(9);
+
+void PoleFiguresFrame::writePoleFigureOutputFiles(const QString& filePath, int index)
+{
+    PeakInfos reflInfo;
+    if (getInterpolated())
+        reflInfo = interpPoints_.at(index);
+    else
+        reflInfo = calcPoints_.at(index);
+    bool withFit = !gSession->peaks().at(index).isRaw();
+    QString path = QString(filePath + OUT_FILE_TAG).arg(index + 1);
+    bool check = false;
+    int numSavedFiles = 0;
+
+    if (tabSave_->outputInten()) {
+        QVector<qreal> output;
+        for_i (reflInfo.count())
+            output.append(reflInfo.at(i).inten());
+        const QString intenFilePath = path + ".inten";
+        writeListFile(intenFilePath, reflInfo, output);
+        writePoleFile(intenFilePath, reflInfo, output);
+        writeErrorMask(intenFilePath, reflInfo, output);
+        check = true;
+        numSavedFiles += 3;
+    }
+
+    if (tabSave_->outputTth() && withFit) {
+        QVector<qreal> output;
+        for_i (reflInfo.count())
+            output.append(reflInfo.at(i).tth());
+        const QString tthFilePath = filePath + ".tth";
+        writeListFile(tthFilePath, reflInfo, output);
+        writePoleFile(tthFilePath, reflInfo, output);
+        check = true;
+        numSavedFiles += 2;
+    }
+
+    if (tabSave_->outputFWHM() && withFit) {
+        QVector<qreal> output;
+        for_i (reflInfo.count())
+            output.append(reflInfo.at(i).fwhm());
+        const QString fwhmFilePath = filePath + ".fwhm";
+        writeListFile(fwhmFilePath, reflInfo, output);
+        writePoleFile(fwhmFilePath, reflInfo, output);
+        check = true;
+        numSavedFiles += 2;
+    }
+
+    if (numSavedFiles > 0)
+        qWarning() << "something went wrong, yet " << numSavedFiles << " files have been saved";
+    else
+        qWarning() << "no files saved";
+}
+
+void PoleFiguresFrame::writeErrorMask(
+    const QString& filePath, PeakInfos reflInfo, const QVector<qreal>& output)
+{
+    QFile* file = file_dialog::openFileConfirmOverwrite("file", this, filePath);
+    if (!file)
+        return;
+    QTextStream stream(file);
+
+    for (int j = 0, jEnd = reflInfo.count(); j < jEnd; j += 9) {
+        int max = j + MAX_LINE_LENGTH_POL;
+        for (int i = j; i < max; i++) {
+            if (qIsNaN(output.at(i)))
+                stream << "0 ";
+            else
+                stream << "1 ";
+        }
+        stream << '\n';
+    }
+}
+
+void PoleFiguresFrame::writePoleFile(
+    const QString& filePath, PeakInfos reflInfo, const QVector<qreal>& output)
+{
+    QFile* file = file_dialog::openFileConfirmOverwrite("file", this, filePath);
+    if (!file)
+        return;
+    QTextStream stream(file);
+
+    for (int j = 0, jEnd = reflInfo.count(); j < jEnd; j += 9) {
+        int max = j + MAX_LINE_LENGTH_POL;
+        for (int i = j; i < max; i++) {
+            if (qIsNaN(output.at(i)))
+                stream << " -1  ";
+            else
+                stream << output.at(i) << " ";
+        }
+        stream << '\n';
+    }
+}
+
+void PoleFiguresFrame::writeListFile(
+    const QString& filePath, PeakInfos reflInfo, const QVector<qreal>& output)
+{
+    QFile* file = file_dialog::openFileConfirmOverwrite("file", this, filePath);
+    QTextStream stream(file);
+
+    for_i (reflInfo.count()) {
+        stream << qreal(reflInfo.at(i).alpha()) << " " << qreal(reflInfo.at(i).beta()) << " "
+               << output.at(i) << '\n';
+    }
+}
+*/

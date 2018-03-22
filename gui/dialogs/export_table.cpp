@@ -33,7 +33,7 @@ namespace {
 // ************************************************************************** //
 
 ExportTable::ExportTable(bool xyMode)
-    : CModal("dgram")
+    : CModal("table")
     , QDialog(gGui)
     , xyMode_(xyMode)
 {
@@ -41,7 +41,7 @@ ExportTable::ExportTable(bool xyMode)
 
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-    setWindowTitle("Diffractograms");
+    setWindowTitle(xyMode ? "Export diagram data" : "Export table");
 
     setLayout(fileField_);
 }
