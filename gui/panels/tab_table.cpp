@@ -159,7 +159,7 @@ TableWidget::TableWidget()
     // inbound connection
     connect(gSession, &Session::sigPeaks, [this]() {
             if (isVisible())
-                calculate(); });
+                render(); });
 
     // layout
     auto* colSelBox = new QScrollArea;
@@ -183,70 +183,26 @@ TableWidget::TableWidget()
     setLayout(layout);
 }
 
-void TableWidget::calculate()
+void TableWidget::render()
 {
     TakesLongTime __;
+    int iRefl = gSession->peaks().selectedIndex();
+    Progress progress(1, &gGui->progressBar);
 
-    calcPoints_.clear();
+    PeakInfos calcPoints_ {gSession->peaks().at(iRefl), &progress};
 
-    int reflCount = gSession->peaks().count();
-    if (!reflCount)
-        return;
-
-    Progress progress(reflCount, &gGui->progressBar);
-
-    for_i (reflCount)
-        calcPoints_.append(PeakInfos {gSession->peaks().at(i), &progress});
-
-    interpolate();
-}
-
-void TableWidget::interpolate()
-{
-    TakesLongTime __;
-
-    interpPoints_.clear();
-/*
-    if (pi) {
-        deg alphaStep = pi->stepAlpha.value();
-        deg betaStep = pi->stepBeta.value();
-        qreal idwRadius = pi->idwRadius.value();
-
-        qreal avgRadius = pi->avgRadius.value();
-        qreal avgAlphaMax = pi->avgAlphaMax.value();
-        qreal avgTreshold = pi->avgThreshold.value() / 100.0;
-
+    PeakInfos points_ = calcPoints_;
+    if (gSession->interpol().enabled()) {
+        /*
         Progress progress(calcPoints_.count(), &progressBar_);
-
-        for_i (calcPoints_.count())
-            interpPoints_.append(interpolateInfos(
-                calcPoints_.at(i), alphaStep, betaStep, idwRadius, avgAlphaMax, avgRadius,
+        points_ = interpolateInfos(
+                calcPoints_, alphaStep, betaStep, idwRadius, avgAlphaMax, avgRadius,
                 avgTreshold, &progress));
-    } else {
-        for_i (calcPoints_.count())
-            interpPoints_.append(PeakInfos());
+        */
     }
-*/
-    displayPeak(getReflIndex());
-}
 
-// virtual, overwritten by some output frames, and called back by the overwriting function
-void TableWidget::displayPeak(int reflIndex)
-{
     dataView_->clear();
-
-//    ASSERT(calcPoints_.count() == interpPoints_.count());
-    if (calcPoints_.count() <= reflIndex)
-        THROW("bug: invalid reflection index");
-
-    bool interpolated = false; // TODO reactivate
-    for (const PeakInfo& r : (interpolated ? interpPoints_ : calcPoints_).at(reflIndex))
+    for (const PeakInfo& r : points_)
         dataView_->addRow(r.data(), false);
-
     dataView_->sortData();
-}
-
-int TableWidget::getReflIndex() const
-{
-    return gSession->peaks().selectedIndex();
 }

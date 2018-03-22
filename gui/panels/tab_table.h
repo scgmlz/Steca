@@ -25,11 +25,7 @@ class TableWidget : public QWidget {
 public:
     TableWidget();
 private:
-    void calculate();
-    void interpolate();
-    virtual void displayPeak(int reflIndex);
-    int getReflIndex() const;
-    QVector<PeakInfos> calcPoints_, interpPoints_;
+    void render();
     class DataView* dataView_;
 };
 
