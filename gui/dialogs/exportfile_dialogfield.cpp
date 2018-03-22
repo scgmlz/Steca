@@ -12,10 +12,10 @@
 //
 // ************************************************************************** //
 
+#include "core/typ/exception.h"
 #include "gui/dialogs/exportfile_dialogfield.h"
-#include "gui/dialogs/dialog_panels.h"
 #include "gui/base/file_dialog.h"
-#include "gui/mainwin.h"
+#include <QGroupBox>
 
 namespace {
 static QString const DAT_EXT(".dat"), DAT_SEP(" "), // extension, separator
