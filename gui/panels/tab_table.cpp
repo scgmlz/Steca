@@ -188,7 +188,6 @@ void TableWidget::calculate()
     TakesLongTime __;
 
     calcPoints_.clear();
-    interpPoints_.clear();
 
     int reflCount = gSession->peaks().count();
     if (!reflCount)
