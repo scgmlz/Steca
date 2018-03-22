@@ -21,8 +21,6 @@
 #include <QThread> // for sleep for debugging
 #include <iostream>
 
-typedef QVector<CCheckBox*> showcol_vec;
-
 // ************************************************************************** //
 //  local class ColumnSelector
 // ************************************************************************** //
@@ -31,17 +29,17 @@ typedef QVector<CCheckBox*> showcol_vec;
 
 class ColumnSelector : public QWidget {
 public:
-    ColumnSelector(DataView&, const QStringList&, showcol_vec&);
+    ColumnSelector(DataView&, const QStringList&);
 private:
     DataView& table_;
-    showcol_vec& showCols_;
+    QVector<CCheckBox*> showCols_;
     QVBoxLayout box_;
     CRadioButton rbHidden_, rbAll_, rbNone_, rbInten_, rbTth_, rbFWHM_;
 };
 
-ColumnSelector::ColumnSelector(DataView& table, const QStringList& headers, showcol_vec& showCols)
+ColumnSelector::ColumnSelector(DataView& table, const QStringList& headers)
     : table_(table)
-    , showCols_(showCols)
+    , showCols_ {headers.count()}
     , rbHidden_("rbHidden", "")
     , rbAll_("rbAll", "all")
     , rbNone_("rbNone", "none")
@@ -65,7 +63,7 @@ ColumnSelector::ColumnSelector(DataView& table, const QStringList& headers, show
 
     for_i (showCols_.count()) {
         showCols_[i] = new CCheckBox("cb"+QString::number(i), headers[i]);
-        box_.addWidget(showCols[i]);
+        box_.addWidget(showCols_[i]);
     }
 
     auto _all = [this]() {
@@ -161,7 +159,6 @@ TableWidget::TableWidget()
     const QStringList& headers = PeakInfo::dataTags(false);
     const QStringList& outHeaders = PeakInfo::dataTags(true);
     const cmp_vec& cmps =PeakInfo::dataCmps();
-    auto* showCols = new showcol_vec(headers.count()); // TODO ensure deletion
 
     // layout
     dataView_ = new DataView(headers.count()); // the main table
@@ -169,7 +166,7 @@ TableWidget::TableWidget()
 
     auto* colSelBox = new QScrollArea;
     colSelBox->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    colSelBox->setWidget(new ColumnSelector(*dataView_, headers, *showCols));
+    colSelBox->setWidget(new ColumnSelector(*dataView_, headers));
 
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);
