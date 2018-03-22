@@ -40,13 +40,14 @@ private:
     CRadioButton rbInten_ {"rbInten", "Intensity"};
     CRadioButton rbTth_ {"rbTth", "2θ"};
     CRadioButton rbFWHM_ {"rbFWHM", "fwhm"};
+    void updateRadiobuttons();
+    using eReflAttr = PeakInfo::eReflAttr;
 };
 
 ColumnSelector::ColumnSelector(DataView& dataView, const QStringList& headers)
     : dataView_(dataView)
     , showCols_ {headers.count()}
 {
-    using eReflAttr = PeakInfo::eReflAttr;
 
     setLayout(&box_);
 
@@ -85,49 +86,15 @@ ColumnSelector::ColumnSelector(DataView& dataView, const QStringList& headers)
         _none();
         showCols_.at(int(eReflAttr::FWHM))->setChecked(true); };
 
-    auto _updateRadiobuttons = [this]() {
-        bool isAll = true, isNone = true, isOther = false;
-        int nInten = 0, nTth = 0, nFwhm = 0;
-
-        for_i (showCols_.count()) {
-            if (!showCols_.at(i)->isChecked()) {
-                isAll = false;
-                continue;
-            }
-            isNone = false;
-            switch (eReflAttr(i)) {
-            case eReflAttr::ALPHA:
-            case eReflAttr::BETA:
-                ++nInten;
-                ++nTth;
-                ++nFwhm;
-                break;
-            case eReflAttr::INTEN: ++nInten; break;
-            case eReflAttr::TTH: ++nTth; break;
-            case eReflAttr::FWHM: ++nFwhm; break;
-            default: isOther = true; break;
-            }
-        }
-
-        rbHidden_.setChecked(true);
-        rbNone_.setChecked(isNone);
-        rbAll_.setChecked(isAll);
-
-        int const PRESET_SELECTION = 1;
-        rbInten_.setChecked(!isOther && PRESET_SELECTION == nInten);
-        rbTth_.setChecked(!isOther && PRESET_SELECTION == nTth);
-        rbFWHM_.setChecked(!isOther && PRESET_SELECTION == nFwhm);
-    };
-
     for_i (showCols_.count()) {
         QCheckBox* cb = showCols_.at(i);
-        connect(cb, &QCheckBox::toggled, [this, _updateRadiobuttons, i](bool on) {
+        connect(cb, &QCheckBox::toggled, [this, i](bool on) {
                 // here we act directly upon dataView_
                 if (on)
                     dataView_.showColumn(i + 1);
                 else
                     dataView_.hideColumn(i + 1);
-                _updateRadiobuttons();
+                updateRadiobuttons();
             });
     }
 
@@ -139,6 +106,41 @@ ColumnSelector::ColumnSelector(DataView& dataView, const QStringList& headers)
 
     rbAll_.click();
 }
+
+void ColumnSelector::updateRadiobuttons()
+{
+    bool isAll = true, isNone = true, isOther = false;
+    int nInten = 0, nTth = 0, nFwhm = 0;
+
+    for_i (showCols_.count()) {
+        if (!showCols_.at(i)->isChecked()) {
+            isAll = false;
+            continue;
+        }
+        isNone = false;
+        switch (eReflAttr(i)) {
+        case eReflAttr::ALPHA:
+        case eReflAttr::BETA:
+            ++nInten;
+            ++nTth;
+            ++nFwhm;
+            break;
+        case eReflAttr::INTEN: ++nInten; break;
+        case eReflAttr::TTH: ++nTth; break;
+        case eReflAttr::FWHM: ++nFwhm; break;
+        default: isOther = true; break;
+        }
+    }
+
+    rbHidden_.setChecked(true);
+    rbNone_.setChecked(isNone);
+    rbAll_.setChecked(isAll);
+
+    int const PRESET_SELECTION = 1;
+    rbInten_.setChecked(!isOther && PRESET_SELECTION == nInten);
+    rbTth_.setChecked(!isOther && PRESET_SELECTION == nTth);
+    rbFWHM_.setChecked(!isOther && PRESET_SELECTION == nFwhm);
+};
 
 
 // ************************************************************************** //
