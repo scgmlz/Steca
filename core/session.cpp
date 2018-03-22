@@ -179,36 +179,6 @@ shp_AngleMap Session::angleMap(const Measurement& one) const
     return map;
 }
 
-//! Fits peak to the given gamma sector and constructs a PeakInfo.
-PeakInfo Session::makePeakInfo(
-    const Cluster* cluster, const Peak& peak, const Range& gmaSector) const
-{
-    // fit peak, and retrieve peak parameters:
-    Curve curve = cluster->toCurve(cluster->normFactor(), gmaSector); // TODO rm arg normfactor
-    const Polynom f = Polynom::fromFit(baseline().polynomDegree(), curve, baseline().ranges());
-    curve.subtract([f](qreal x) {return f.y(x);});
-
-    std::unique_ptr<PeakFunction> peakFunction( FunctionRegistry::clone(peak.peakFunction()) );
-    peakFunction->fit(curve);
-    const Range& rgeTth = peakFunction->range();
-    qpair fitresult = peakFunction->fittedPeak();
-    fwhm_t fwhm = peakFunction->fittedFWHM();
-    qpair peakError = peakFunction->peakError();
-    fwhm_t fwhmError = peakFunction->fwhmError();
-
-    // compute alpha, beta:
-    deg alpha, beta;
-    cluster->calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
-
-    shp_Metadata metadata = cluster->avgeMetadata();
-
-    return rgeTth.contains(fitresult.x)
-        ? PeakInfo(
-              metadata, alpha, beta, gmaSector, inten_t(fitresult.y), inten_t(peakError.y),
-              deg(fitresult.x), deg(peakError.x), fwhm_t(fwhm), fwhm_t(fwhmError))
-        : PeakInfo(metadata, alpha, beta, gmaSector);
-}
-
 // TODO: split into two functions (see usage in panel_diff..)
 void Session::setIntenScaleAvg(bool avg, qreal scale)
 {

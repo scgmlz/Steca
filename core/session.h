@@ -110,8 +110,6 @@ public:
 
     bool metaSelected(int i) const { return metaSelection_[i]; }
 
-    PeakInfo makePeakInfo(const Cluster*, const Peak&, const Range&) const;
-
 signals:
     void sigFiles();         //!< list of loaded files has changed
     void sigClusters();      //!< list of clusters has changed

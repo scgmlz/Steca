@@ -33,6 +33,7 @@ public:
         deg alpha, deg beta, Range, inten_t, inten_t /*error*/, deg, deg /*error*/,
         fwhm_t, fwhm_t /*error*/);
     PeakInfo(deg alpha, deg beta);
+    PeakInfo(const class Cluster* cluster, const class Peak& peak, const Range& gmaSector);
 
     enum class eReflAttr {
         ALPHA,
