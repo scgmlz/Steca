@@ -22,6 +22,8 @@
 //! Mix-in for control widgets that can be changed by a console command.
 class CSettable {
 public:
+    CSettable() = delete;
+    CSettable(CSettable&) = delete;
     CSettable(const QString& name);
     ~CSettable();
     virtual void onCommand(const QStringList&) = 0;
@@ -33,6 +35,8 @@ private:
 //! Mix-in for modal dialogs.
 class CModal { // TODO try private
 public:
+    CModal() = delete;
+    CModal(CModal&) = delete;
     CModal(const QString& name);
     ~CModal();
 };
@@ -41,7 +45,7 @@ public:
 class CModelessDialog : public QDialog, public CSettable {
 public:
     CModelessDialog(QWidget* parent, const QString& name);
-    virtual void onCommand(const QStringList&);
+    virtual void onCommand(const QStringList&) {}
 };
 
 #endif // ENHANCE_WIDGETS_H

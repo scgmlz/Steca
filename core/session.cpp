@@ -267,18 +267,3 @@ qreal Session::calcAvgBackground() const {
         bg += calcAvgBackground(*cluster);
     return bg / experiment().size();
 }
-
-void Session::exportTable() const
-{
-    qDebug() << "exportTable not yet implemented";
-}
-
-void Session::exportXY() const
-{
-    qDebug() << "exportXY not yet implemented";
-}
-
-void Session::exportPolefig() const
-{
-    qDebug() << "exportPolefig not yet implemented";
-}

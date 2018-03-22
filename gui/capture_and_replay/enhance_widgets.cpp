@@ -54,7 +54,3 @@ CModelessDialog::CModelessDialog(QWidget* parent, const QString& name)
 {
     setModal(false);
 }
-
-void CModelessDialog::onCommand(const QStringList&)
-{
-}

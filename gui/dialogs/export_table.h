@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/dialogs/export_dfgram.h
-//! @brief     Defines class ExportDfgram
+//! @file      gui/dialogs/export_table.h
+//! @brief     Defines class ExportTable
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,17 +12,18 @@
 //
 // ************************************************************************** //
 
-#ifndef EXPORT_DFGRAM_H
-#define EXPORT_DFGRAM_H
+#ifndef EXPORT_TABLE_H
+#define EXPORT_TABLE_H
 
 #include "frame.h"
 #include <QWidget>
 
-//! The modal dialog for saving diffractograms.
+//! The modal dialog for saving the main table (fit results and metadata).
 
-class ExportDfgram : private CModal, public QDialog {
+class ExportTable : private CModal, public QDialog {
 public:
-    ExportDfgram();
+    ExportTable() = delete;
+    ExportTable(bool xyMode);
 
 private:
     class ExportfileDialogfield* fileField_;
@@ -31,8 +32,6 @@ private:
     CRadioButton rbAll_           {"rbAll",           "All diffractograms to one file"};
 
     void save();
-    void saveCurrent();
-    void saveAll(bool oneFile);
 };
 
-#endif // EXPORT_DFGRAM_H
+#endif // EXPORT_TABLE_H

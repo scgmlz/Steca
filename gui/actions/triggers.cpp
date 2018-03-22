@@ -18,9 +18,11 @@
 #include "gui/mainwin.h"
 #include "gui/dialogs/about.h"
 #include "gui/dialogs/check_update.h"
-#include "gui/dialogs/output_diagrams.h"
 #include "gui/dialogs/export_dfgram.h"
-#include "gui/dialogs/output_polefigures.h"
+#include "gui/dialogs/export_table.h"
+#include "gui/dialogs/export_polefig.h"
+#include "gui/dialogs/output_diagrams.h"     // TODO rm
+#include "gui/dialogs/output_polefigures.h"  // TODO rm
 #include <QDesktopServices>
 
 Triggers::Triggers()
@@ -32,13 +34,13 @@ Triggers::Triggers()
     connect(&clearBackground, AT, []() { gSession->baseline().setRanges({}); });
     connect(&clearSession, AT, []() { gSession->clear(); });
     connect(&corrFile, AT, []() { gGui->loadCorrFile(); });
+    connect(&exportDfgram, AT, [](){ ExportDfgram().exec(); });
+    connect(&exportPolefig, AT, [](){ ExportPolefig().exec(); });
+    connect(&exportTable, AT, [](){ ExportTable(false).exec(); });
+    connect(&exportXY, AT, [](){ ExportTable(true).exec(); });
     connect(&loadSession, AT, []() { gGui->loadSession(); });
     connect(&online, AT, []() { QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
-    connect(&exportDfgram, AT, [](){ ExportDfgram().exec(); });
     connect(&outputDiagrams, AT, [](){ DiagramsFrame().exec(); });
-    connect(&exportPolefig, AT, [](){ gSession->exportPolefig(); });
-    connect(&exportTable, AT, [](){ gSession->exportTable(); });
-    connect(&exportXY, AT, [](){ gSession->exportXY(); });
     connect(&outputPolefigures, AT, []() { PoleFiguresFrame().exec(); });
     connect(&quit, AT, []() { gGui->close(); });
     connect(&removeFile, AT, []() { gSession->dataset().removeFile(); });

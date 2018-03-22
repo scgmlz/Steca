@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "gui/dialogs/export_dfgram.h"
+#include "export_dfgram.h"
 #include "core/session.h"
 #include "gui/base/file_dialog.h"
 #include "gui/dialogs/exportfile_dialogfield.h"
@@ -97,11 +97,6 @@ ExportDfgram::ExportDfgram()
     show();
 }
 
-void ExportDfgram::onCommand(const QStringList&)
-{
-// TODO get rid of this
-}
-
 void ExportDfgram::save()
 {
     if (rbCurrent_.isChecked())
@@ -111,7 +106,7 @@ void ExportDfgram::save()
     else if (rbAll_.isChecked())
         saveAll(true);
     else
-        qFatal("Invalid call of ExportDfgram::saveDiffractogramOutput");
+        qFatal("bug: invalid case in ExportDfgram::save");
     close();
 }
 
