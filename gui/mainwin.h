@@ -60,6 +60,8 @@ private:
     void addFiles();
     void loadCorrFile() THROWS;
 
+    void runPeakfit();
+
     QDockWidget* dockFiles_;
     QDockWidget* dockClusters_;
     QDockWidget* dockMetadata_;

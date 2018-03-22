@@ -232,3 +232,8 @@ void MainWin::loadCorrFile()
         gSession->corrset().loadFile(fileName);
     }
 }
+
+void MainWin::runPeakfit()
+{
+
+}
