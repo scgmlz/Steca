@@ -25,6 +25,8 @@ ControlsInterpolation::ControlsInterpolation()
     connect(gSession, &Session::sigInterpol, this, &ControlsInterpolation::fromCore);
 
     // outbound connections
+    connect(&doInterpol_, &QCheckBox::toggled, [](bool on) {
+            gSession->interpol().setEnabled(on); });
     connect(&stepAlpha_, &CDoubleSpinBox::valueReleased, [](double val) {
             gSession->interpol().setStepAlpha(val); });
     connect(&avgAlphaMax_, &CDoubleSpinBox::valueReleased, [](double val) {
@@ -40,18 +42,19 @@ ControlsInterpolation::ControlsInterpolation()
 
     // layout
     auto* grid = new QGridLayout;
-    grid->addWidget(new QLabel("step α"), 0, 0, Qt::AlignRight);
-    grid->addWidget(&stepAlpha_, 0, 1);
-    grid->addWidget(new QLabel("avg. α max"), 1, 0, Qt::AlignRight);
-    grid->addWidget(&avgAlphaMax_, 1, 1);
-    grid->addWidget(new QLabel("β"), 2, 0, Qt::AlignRight);
-    grid->addWidget(&stepBeta_, 2, 1);
-    grid->addWidget(new QLabel("radius"), 3, 0, Qt::AlignRight);
-    grid->addWidget(&avgRadius_, 3, 1);
-    grid->addWidget(new QLabel("idw radius"), 4, 0, Qt::AlignRight);
-    grid->addWidget(&idwRadius_, 4, 1);
-    grid->addWidget(new QLabel("inclusion %"), 5, 0, Qt::AlignRight);
-    grid->addWidget(&threshold_, 5, 1);
+    grid->addWidget(&doInterpol_,              0, 1);
+    grid->addWidget(new QLabel("step α"),      1, 0, Qt::AlignRight);
+    grid->addWidget(&stepAlpha_,               1, 1);
+    grid->addWidget(new QLabel("avg. α max"),  2, 0, Qt::AlignRight);
+    grid->addWidget(&avgAlphaMax_,             2, 1);
+    grid->addWidget(new QLabel("β"),           3, 0, Qt::AlignRight);
+    grid->addWidget(&stepBeta_,                3, 1);
+    grid->addWidget(new QLabel("radius"),      4, 0, Qt::AlignRight);
+    grid->addWidget(&avgRadius_,               4, 1);
+    grid->addWidget(new QLabel("idw radius"),  5, 0, Qt::AlignRight);
+    grid->addWidget(&idwRadius_,               5, 1);
+    grid->addWidget(new QLabel("inclusion %"), 6, 0, Qt::AlignRight);
+    grid->addWidget(&threshold_,               6, 1);
 
     grid->setColumnStretch(grid->columnCount(), 1000);
     grid->setRowStretch   (grid->   rowCount(), 1000);
@@ -60,12 +63,22 @@ ControlsInterpolation::ControlsInterpolation()
     fromCore();
 }
 
+
 void ControlsInterpolation::fromCore()
 {
-    stepAlpha_  .setValue(gSession->interpol().stepAlpha());
-    stepBeta_   .setValue(gSession->interpol().stepBeta());
-    idwRadius_  .setValue(gSession->interpol().idwRadius());
-    avgAlphaMax_.setValue(gSession->interpol().avgAlphaMax());
-    avgRadius_  .setValue(gSession->interpol().avgRadius());
-    threshold_  .setValue(gSession->interpol().threshold());
+    doInterpol_ .setChecked(gSession->interpol().enabled());
+    stepAlpha_  .setValue  (gSession->interpol().stepAlpha());
+    stepBeta_   .setValue  (gSession->interpol().stepBeta());
+    idwRadius_  .setValue  (gSession->interpol().idwRadius());
+    avgAlphaMax_.setValue  (gSession->interpol().avgAlphaMax());
+    avgRadius_  .setValue  (gSession->interpol().avgRadius());
+    threshold_  .setValue  (gSession->interpol().threshold());
+
+    bool on = gSession->interpol().enabled();
+    stepAlpha_  .setEnabled(on);
+    stepBeta_   .setEnabled(on);
+    idwRadius_  .setEnabled(on);
+    avgAlphaMax_.setEnabled(on);
+    avgRadius_  .setEnabled(on);
+    threshold_  .setEnabled(on);
 }
