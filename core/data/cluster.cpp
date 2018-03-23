@@ -138,13 +138,9 @@ Curve Sequence::toCurve(qreal _normFactor, const Range& _rgeGma) const {
 };
 
 qreal Sequence::normFactor() const {
-    return normFactor(gSession->norm());
-};
-
-qreal Sequence::normFactor(eNorm norm) const {
     qreal num = 1, den = 1;
 
-    switch (norm) {
+    switch (gSession->normMode()) {
     case eNorm::MONITOR:
         num = gSession->activeClusters().avgMonitorCount();
         den = avgMonitorCount();

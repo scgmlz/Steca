@@ -63,7 +63,7 @@ void Session::clear()
     baseline_.clear();
     peaks_.clear();
 
-    norm_ = eNorm::NONE;
+    normMode_ = eNorm::NONE;
 
     angleMapCache_.clear();
 
@@ -187,9 +187,9 @@ void Session::setIntenScaleAvg(bool avg, qreal scale)
     emit gSession->sigNorm();
 }
 
-void Session::setNorm(eNorm norm)
+void Session::setNormMode(eNorm normMode)
 {
-    norm_ = norm;
+    normMode_ = normMode;
     emit gSession->sigNorm();
 }
 

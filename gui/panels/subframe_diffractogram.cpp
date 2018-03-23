@@ -63,7 +63,7 @@ Diffractogram::Diffractogram()
 
     // outbound connections
     connect(&comboNormType_, qOverload<int>(&QComboBox::currentIndexChanged), [](int index) {
-            gSession->setNorm(eNorm(index)); });
+            gSession->setNormMode(eNorm(index)); });
     connect(&intenAvg_, &QRadioButton::toggled, [this](bool on) {
         intenScale_.setEnabled(on);
         intenScale_.setValue(gSession->intenScale());

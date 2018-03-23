@@ -72,6 +72,9 @@ public:
     PeakInfos& peakInfos() { return peakInfos_; }
     const PeakInfos& peakInfos() const { return peakInfos_; }
 
+    void setNormMode(eNorm);
+    eNorm normMode() const { return normMode_; }
+
     // modifying methods:
     void clear();
     void sessionFromJson(const QByteArray&) THROWS;
@@ -81,14 +84,12 @@ public:
     void setImageTransformMirror(bool);
     void setImageTransformRotate(const ImageTransform&);
     void setIntenScaleAvg(bool, qreal);
-    void setNorm(eNorm);
     void updateImageSize(); //!< Clears image size if session has no files
     void setImageSize(const size2d&) THROWS; //!< Ensures same size for all images
 
     // const methods:
     QByteArray serializeSession() const;
 
-    eNorm norm() const { return norm_; }
     bool intenScaledAvg() const { return intenScaledAvg_; }
     qreal intenScale() const { return intenScale_; }
     bool metaSelected(int i) const { return metaSelection_[i]; }
@@ -133,7 +134,7 @@ private:
     ThetaSelection thetaSelection_;
     InterpolParams interpolParams_;
     PeakInfos peakInfos_;
-    eNorm norm_ {eNorm::NONE};
+    eNorm normMode_ {eNorm::NONE};
     // others
     bool intenScaledAvg_ {true}; // if not, summed
     qreal intenScale_ {1};

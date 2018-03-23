@@ -55,8 +55,6 @@ public:
     Curve toCurve() const;
     Curve toCurve(const Range&) const;
     Curve toCurve(qreal) const;
-    qreal normFactor() const;
-    qreal normFactor(eNorm norm) const;
 
 private:
     QVector<const Measurement*> members_;
@@ -65,6 +63,7 @@ private:
     inten_vec collectIntens(const Range&) const;
     void compute_metadata() const;
     Curve toCurve(qreal, const Range&) const;
+    qreal normFactor() const;
 };
 
 
