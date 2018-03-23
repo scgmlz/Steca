@@ -14,7 +14,7 @@
 
 #include "fitting.h"
 #include "core/session.h"
-#include "core/algo/calc_polefigure.h"
+#include "core/algo/interpolate_polefig.h"
 #include "core/algo/coord_trafos.h"
 
 //! Fits peak to the given gamma sector and constructs a PeakInfo.
