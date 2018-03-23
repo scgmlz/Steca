@@ -52,7 +52,6 @@ public:
     qreal avgDeltaTime() const;
 
     size2d imageSize() const;
-    void calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const;
 
     Curve toCurve() const;
     Curve toCurve(const Range&) const;
