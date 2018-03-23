@@ -21,8 +21,6 @@
 #include "gui/dialogs/export_dfgram.h"
 #include "gui/dialogs/export_table.h"
 #include "gui/dialogs/export_polefig.h"
-#include "gui/dialogs/output_diagrams.h"     // TODO rm
-#include "gui/dialogs/output_polefigures.h"  // TODO rm
 #include <QDesktopServices>
 
 Triggers::Triggers()
@@ -40,8 +38,6 @@ Triggers::Triggers()
     connect(&exportXY, AT, [](){ ExportTable(true).exec(); });
     connect(&loadSession, AT, []() { gGui->loadSession(); });
     connect(&online, AT, []() { QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
-    connect(&outputDiagrams, AT, [](){ DiagramsFrame().exec(); });
-    connect(&outputPolefigures, AT, []() { PoleFiguresFrame().exec(); });
     connect(&quit, AT, []() { gGui->close(); });
     connect(&removeFile, AT, []() { gSession->dataset().removeFile(); });
     connect(&saveSession, AT, []() { gGui->saveSession(); });

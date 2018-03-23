@@ -40,8 +40,6 @@ public:
     CTrigger spawnPolefig {"spawnPolefig", "Spawn pole figure...", ":/icon/window" };
     CTrigger loadSession {"loadSession", "Load session..."};
     CTrigger online  {"online", "Open docs in external browser"};
-    CTrigger outputDiagrams {"outputDiagrams", "Diagrams..."};
-    CTrigger outputPolefigures {"outputPolefigures", "Pole figures..."};
     CTrigger quit {"quit", "Quit", "", QKeySequence::Quit};
     CTrigger removeFile {"removeFile", "Remove highlighted file", ":/icon/rem",
             QKeySequence::Delete};

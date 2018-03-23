@@ -132,8 +132,6 @@ void MainWin::updateActionEnabling()
     triggers->exportDfgram.setEnabled(hasFile);
     triggers->exportTable.setEnabled(hasFile && hasPeak);
     triggers->exportXY.setEnabled(hasFile && hasPeak);
-    triggers->outputDiagrams.setEnabled(hasFile && hasPeak);
-    triggers->outputPolefigures.setEnabled(hasFile && hasPeak);
     menus_->export_->setEnabled(hasFile);
     menus_->image_->setEnabled(hasFile);
     menus_->dgram_->setEnabled(hasFile);

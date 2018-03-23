@@ -23,13 +23,6 @@
 #include <QGroupBox>
 #include <QMessageBox>
 
-namespace {
-
-// TODO move file saving code to Core
-
-} // namespace
-
-
 // ************************************************************************** //
 //  class ExportTable
 // ************************************************************************** //
