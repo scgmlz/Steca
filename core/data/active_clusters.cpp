@@ -14,7 +14,6 @@
 
 #include "active_clusters.h"
 #include "core/session.h"
-#include "core/algo/calc_polefigure.h"
 
 ActiveClusters::ActiveClusters() {
     invalidateAvgMutables();
@@ -107,36 +106,4 @@ qreal ActiveClusters::calcAvgMutable(qreal (Cluster::*avgFct)() const) const {
         cnt += cluster->count();
     }
     return sum/cnt;
-}
-
-//! Gathers PeakInfos from Datasets.
-
-//! Either uses the whole gamma range of the cluster (if gammaSector is invalid),
-//!  or user limits the range.
-//! Even though the betaStep of the equidistant polefigure grid is needed here,
-//!  the returned infos won't be on the grid.
-//! TODO? gammaStep separately?
-
-PeakInfos ActiveClusters::rawFits(const Peak& peak, Progress* progress) const
-{
-    PeakInfos ret;
-    bool interpol = gSession->interpol().enabled();
-    if (progress)
-        progress->setTotal((interpol ? 2 : 1)*size());
-    int nGamma = qMax(1, gSession->gammaSelection().numSlices());
-    for (const Cluster* cluster : clusters()) {
-        if (progress)
-            progress->step();
-        for_i (nGamma) {
-            const PeakInfo refInfo = cluster->rawFit(
-                peak, gSession->gammaSelection().slice2range(i));
-            if (!qIsNaN(refInfo.inten()))
-                ret.append(refInfo);
-        }
-    }
-
-    if (interpol)
-        ret = interpolateInfos(ret, progress);
-
-    return ret;
 }

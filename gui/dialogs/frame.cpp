@@ -14,6 +14,7 @@
 
 #include "gui/dialogs/frame.h"
 #include "core/algo/calc_polefigure.h"
+#include "core/algo/fitting.h"
 #include "core/session.h"
 #include "gui/dialogs/data_table.h"
 #include "gui/dialogs/dialog_panels.h"
@@ -326,7 +327,7 @@ void Frame::calculate()
     Progress progress(reflCount, &progressBar_);
 
     for_i (reflCount)
-        calcPoints_.append(gSession->activeClusters().rawFits(gSession->peaks().at(i), &progress));
+        calcPoints_.append(algo::rawFits(gSession->activeClusters(), gSession->peaks().at(i), &progress));
 
     interpolate();
 }
