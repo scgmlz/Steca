@@ -74,8 +74,8 @@ static int NUM_QUADRANTS = 4;
 typedef QVector<eQuadrant> Quadrants;
 
 Quadrants allQuadrants() {
-    return { eQuadrant::NORTHEAST, eQuadrant::SOUTHEAST, eQuadrant::SOUTHWEST,
-             eQuadrant::NORTHWEST };
+    return { eQuadrant::NORTHEAST, eQuadrant::SOUTHEAST,
+            eQuadrant::SOUTHWEST, eQuadrant::NORTHWEST };
 }
 
 bool inQuadrant(eQuadrant quadrant, deg deltaAlpha, deg deltaBeta) {
@@ -139,9 +139,8 @@ void searchInQuadrants(
                 if (d >= distances.at(i))
                     continue;
                 distances[i] = d;
-                if (qIsNaN(searchRadius) || d < searchRadius) {
+                if (qIsNaN(searchRadius) || d < searchRadius)
                     foundInfos[i] = &info;
-                }
             }
         }
     }
@@ -194,8 +193,8 @@ itf_t interpolateValues(deg searchRadius, const PeakInfos& infos, deg alpha, deg
             ++numQuadrantsOk;
             continue;
         }
-        // No info found in quadrant? Try another quadrant. See
-        // [J.Appl.Cryst.(2011),44,641] for the angle mapping.
+        // No info found in quadrant? Try another quadrant.
+        // See J.Appl.Cryst.(2011),44,641 for the angle mapping.
         eQuadrant newQ = remapQuadrant(eQuadrant(i));
         qreal const newAlpha = i == int(eQuadrant::NORTHEAST) || i == int(eQuadrant::SOUTHEAST)
             ? 180 - alpha
