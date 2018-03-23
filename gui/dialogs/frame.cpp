@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "gui/dialogs/frame.h"
-#include "core/calc/calc_polefigure.h"
+#include "core/algo/calc_polefigure.h"
 #include "core/session.h"
 #include "gui/dialogs/data_table.h"
 #include "gui/dialogs/dialog_panels.h"

@@ -14,7 +14,7 @@
 
 #include "active_clusters.h"
 #include "core/session.h"
-#include "core/calc/calc_polefigure.h"
+#include "core/algo/calc_polefigure.h"
 
 ActiveClusters::ActiveClusters() {
     invalidateAvgMutables();

@@ -17,7 +17,7 @@
 
 #include "gui/mainwin.h"
 #include "gui/base/controls.h"
-#include "core/calc/calc_polefigure.h" // includes peak_info.h
+#include "core/algo/calc_polefigure.h" // includes peak_info.h
 
 //! Tabular display of fit results and metadata, with associated controls.
 

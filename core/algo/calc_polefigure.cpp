@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/calc/calc_polefigure.cpp
+//! @file      core/algo/calc_polefigure.cpp
 //! @brief     Implements function interpolateInfos
 //!
 //! @homepage  https://github.com/scgmlz/Steca
