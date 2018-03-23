@@ -75,8 +75,8 @@ inten_t ImageLens::imageInten(int i, int j) const {
     if (cut_)
         doCut(i, j);
     inten_t inten = image_.inten(i, j);
-    if (gSession->intensCorr())
-        inten *= gSession->intensCorr()->inten(i, j);
+    if (auto* corr = gSession->corrset().intensCorr())
+        inten *= corr->inten(i, j);
     return inten;
 }
 

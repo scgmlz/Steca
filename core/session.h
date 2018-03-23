@@ -39,7 +39,7 @@ public:
     Session();
     ~Session();
 
-    // Accessor methods:
+    // accessor methods:
     Dataset& dataset() { return dataset_; }
     const Dataset& dataset() const { return dataset_; }
 
@@ -52,11 +52,13 @@ public:
     Baseline& baseline() { return baseline_; }
     const Baseline& baseline() const { return baseline_; }
 
+    Geometry& geometry() { return geometry_; }
+    const Geometry& geometry() const { return geometry_; }
+
     ImageCut& imageCut() { return imageCut_; }
     const ImageCut& imageCut() const { return imageCut_; }
 
-    Geometry& geometry() { return geometry_; }
-    const Geometry& geometry() const { return geometry_; }
+    const ImageTransform& imageTransform() const { return imageTransform_; }
 
     GammaSelection& gammaSelection() { return gammaSelection_; }
     const GammaSelection& gammaSelection() const { return gammaSelection_; }
@@ -67,9 +69,10 @@ public:
     InterpolParams& interpol() { return interpolParams_; }
     const InterpolParams& interpol() const { return interpolParams_; }
 
-    eNorm norm() const { return norm_; }
+    PeakInfos& peakInfos() { return peakInfos_; }
+    const PeakInfos& peakInfos() const { return peakInfos_; }
 
-    // Modifying methods:
+    // modifying methods:
     void clear();
     void sessionFromJson(const QByteArray&) THROWS;
 
@@ -82,31 +85,26 @@ public:
     void updateImageSize(); //!< Clears image size if session has no files
     void setImageSize(const size2d&) THROWS; //!< Ensures same size for all images
 
-    // Const methods: // TODO expand corrset() calls in calling code
+    // const methods:
     QByteArray serializeSession() const;
+
+    eNorm norm() const { return norm_; }
+    bool intenScaledAvg() const { return intenScaledAvg_; }
+    qreal intenScale() const { return intenScale_; }
+    bool metaSelected(int i) const { return metaSelection_[i]; }
 
     bool hasData() const { return dataset().countFiles(); }
     bool hasCorrFile() const { return corrset().hasFile(); }
-    const Image* intensCorr() const { return corrset().intensCorr(); }
-
     const ActiveClusters& activeClusters() const { return dataset().activeClusters(); }
 
     size2d imageSize() const;
-    const ImageTransform& imageTransform() const { return imageTransform_; }
-
     IJ midPix() const;
-
     shp_AngleMap angleMap(const Measurement&) const;
-    static shp_AngleMap angleMap(const Session& session, const Measurement& ds) {
-        return session.angleMap(ds); }
-
-    bool intenScaledAvg() const { return intenScaledAvg_; }
-    qreal intenScale() const { return intenScale_; }
-
     qreal calcAvgBackground(const Sequence&) const;
     qreal calcAvgBackground() const;
 
-    bool metaSelected(int i) const { return metaSelection_[i]; }
+    static shp_AngleMap angleMap(const Session& session, const Measurement& ds) {
+        return session.angleMap(ds); }
 
 signals:
     void sigFiles();         //!< list of loaded files has changed
@@ -131,18 +129,19 @@ private:
     Corrset corrset_;
     Peaks peaks_;
     Baseline baseline_;
-    ImageCut imageCut_;
     Geometry geometry_;
+    ImageCut imageCut_;
+    ImageTransform imageTransform_;
     GammaSelection gammaSelection_;
     ThetaSelection thetaSelection_;
     InterpolParams interpolParams_;
+    PeakInfos peakInfos_;
     eNorm norm_ {eNorm::NONE};
-    // with get/set methods:
-    std::vector<bool> metaSelection_; //!< true if meta datum is to be displayed
+    // others
     bool intenScaledAvg_ {true}; // if not, summed
     qreal intenScale_ {1};
+    std::vector<bool> metaSelection_; //!< true if meta datum is to be displayed
     size2d imageSize_; //!< All images must have this same size
-    ImageTransform imageTransform_;
     // deeply private:
     mutable cache_lazy<ImageKey, AngleMap> angleMapCache_ {360};
 };
