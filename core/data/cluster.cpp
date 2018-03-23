@@ -26,17 +26,18 @@ Sequence::Sequence(const QVector<const Measurement*>& measurements)
 }
 
 //! Returns metadata, averaged over Sequence members. Result is cached.
-shp_Metadata Sequence::avgeMetadata() const {
+shp_Metadata Sequence::avgeMetadata() const
+{
     if (md_.isNull())
         compute_metadata();
     return md_;
 }
 
-#define AVG_ONES(what_function)                                                  \
-    qreal avg = 0;                                                      \
-    for (const Measurement* one : members_)                            \
-        avg += one->what_function();                                             \
-    avg /= count();                                                     \
+#define AVG_ONES(what_function)                 \
+    qreal avg = 0;                              \
+    for (const Measurement* one : members_)     \
+        avg += one->what_function();            \
+    avg /= count();                             \
     return avg;
 
 deg Sequence::omg() const { AVG_ONES(omg) }
@@ -46,17 +47,15 @@ deg Sequence::phi() const { AVG_ONES(phi) }
 deg Sequence::chi() const { AVG_ONES(chi) }
 
 // combined range of combined cluster
-#define RGE_COMBINE(combineOp, what)                                    \
-    Range rge;                                                          \
-    for (const Measurement* one : members_)                            \
-        rge.combineOp(one->what);                                       \
+#define RGE_COMBINE(combineOp, what)            \
+    Range rge;                                  \
+    for (const Measurement* one : members_)     \
+        rge.combineOp(one->what);               \
     return rge;
 
 Range Sequence::rgeGma() const { RGE_COMBINE(extendBy, rgeGma()) }
 
-Range Sequence::rgeGmaFull() const {
-    RGE_COMBINE(extendBy, rgeGmaFull())
-}
+Range Sequence::rgeGmaFull() const { RGE_COMBINE(extendBy, rgeGmaFull()) }
 
 Range Sequence::rgeTth() const { RGE_COMBINE(extendBy, rgeTth()) }
 
@@ -68,7 +67,8 @@ qreal Sequence::avgDeltaMonitorCount() const { AVG_ONES(deltaMonitorCount) }
 
 qreal Sequence::avgDeltaTime() const { AVG_ONES(deltaTime) }
 
-size2d Sequence::imageSize() const {
+size2d Sequence::imageSize() const
+{
     // all images have the same size; simply take the first one
     return first()->imageSize();
 }
@@ -78,8 +78,8 @@ size2d Sequence::imageSize() const {
 
 //! tth: Center of peak's 2theta interval.
 //! gma: Center of gamma slice.
-void Sequence::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const {
-
+void Sequence::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const
+{
     // Rotate a unit vector initially parallel to the y axis with regards to the
     // angles. As a result, the vector is a point on a unit sphere
     // corresponding to the location of a polefigure point.
@@ -110,20 +110,24 @@ void Sequence::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const
     beta = betaRad.toDeg();
 }
 
-Curve Sequence::toCurve() const {
+Curve Sequence::toCurve() const
+{
     return toCurve(rgeGma());
 };
 
-Curve Sequence::toCurve(const Range& _rgeGma) const {
+Curve Sequence::toCurve(const Range& _rgeGma) const
+{
     double _normFactor = normFactor();
     return toCurve(_normFactor, _rgeGma);
 };
 
-Curve Sequence::toCurve(qreal _normFactor) const {
+Curve Sequence::toCurve(qreal _normFactor) const
+{
     return toCurve(_normFactor, rgeGma());
 };
 
-Curve Sequence::toCurve(qreal _normFactor, const Range& _rgeGma) const {
+Curve Sequence::toCurve(qreal _normFactor, const Range& _rgeGma) const
+{
     inten_vec intens = collectIntens(_rgeGma);
     int count = intens.count();
     if (!count)
@@ -137,7 +141,8 @@ Curve Sequence::toCurve(qreal _normFactor, const Range& _rgeGma) const {
     return res;
 };
 
-qreal Sequence::normFactor() const {
+qreal Sequence::normFactor() const
+{
     qreal num = 1, den = 1;
 
     switch (gSession->normMode()) {
@@ -168,7 +173,8 @@ qreal Sequence::normFactor() const {
 }
 
 //! Called only by toCurve(..).
-inten_vec Sequence::collectIntens(const Range& rgeGma) const {
+inten_vec Sequence::collectIntens(const Range& rgeGma) const
+{
     const Range tthRge = rgeTth();
     const deg tthWdt = tthRge.width();
 
@@ -206,7 +212,8 @@ inten_vec Sequence::collectIntens(const Range& rgeGma) const {
 }
 
 //! Computes metadata cache md_.
-void Sequence::compute_metadata() const {
+void Sequence::compute_metadata() const
+{
     const_cast<Sequence*>(this)->md_ = shp_Metadata(new Metadata);
     Metadata* m = const_cast<Metadata*>(md_.data());
 
@@ -294,16 +301,19 @@ Cluster::Cluster(
 }
 
 //! note: the caller must emit sigActivated
-void Cluster::setActivated(bool on) {
+void Cluster::setActivated(bool on)
+{
     if (on==activated_)
         return;
     activated_ = on;
 }
 
-int Cluster::totalOffset() const {
+int Cluster::totalOffset() const
+{
     return file_.offset_ + offset();
 }
 
-bool Cluster::isIncomplete() const {
+bool Cluster::isIncomplete() const
+{
     return count()<gSession->dataset().binning();
 }
