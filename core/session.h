@@ -103,9 +103,6 @@ public:
     qreal calcAvgBackground(const Sequence&) const;
     qreal calcAvgBackground() const;
 
-    static shp_AngleMap angleMap(const Session& session, const Measurement& ds) {
-        return session.angleMap(ds); }
-
 signals:
     void sigFiles();         //!< list of loaded files has changed
     void sigClusters();      //!< list of clusters has changed
