@@ -242,7 +242,7 @@ itf_t interpolateValues(deg searchRadius, const PeakInfos& infos, deg alpha, deg
 // ************************************************************************** //
 
 //! Interpolates infos to equidistant grid in alpha and beta.
-PeakInfos interpolateInfos(const PeakInfos& infos, Progress* progress)
+PeakInfos algo::interpolateInfos(const PeakInfos& infos, Progress* progress)
 {
     if (!gSession->interpol().enabled())
         THROW("bug: call to interpolateInfos though interpolation is disabled");

@@ -18,6 +18,10 @@
 #include "core/data/peak_info.h"
 #include "core/typ/async.h"
 
+namespace algo {
+
 PeakInfos interpolateInfos(const PeakInfos&, Progress*);
+
+} // namespace algo
 
 #endif // CALC_POLEFIGURE_H

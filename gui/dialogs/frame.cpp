@@ -351,7 +351,7 @@ void Frame::interpolate()
         Progress progress(calcPoints_.count(), &progressBar_);
 
         for_i (calcPoints_.count())
-            interpPoints_.append(interpolateInfos(calcPoints_.at(i), &progress));
+            interpPoints_.append(algo::interpolateInfos(calcPoints_.at(i), &progress));
     } else {
         for_i (calcPoints_.count())
             interpPoints_.append(PeakInfos());
