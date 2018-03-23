@@ -12,9 +12,14 @@
 //
 // ************************************************************************** //
 
-#include "core/calc/calc_polefigure.h"
+#include "calc_polefigure.h"
 #include "core/def/idiomatic_for.h"
+#include "core/session.h"
 #include <qmath.h>
+
+// ************************************************************************** //
+//  local methods
+// ************************************************************************** //
 
 namespace {
 
@@ -29,7 +34,8 @@ struct itf_t {
     fwhm_t fwhm;
 };
 
-void itf_t::operator+=(const itf_t& that) {
+void itf_t::operator+=(const itf_t& that)
+{
     inten += that.inten;
     tth += that.tth;
     fwhm += that.fwhm;
@@ -39,7 +45,8 @@ typedef QVector<itf_t> itfs_t;
 typedef QVector<PeakInfo const*> info_vec;
 
 // Calculates the difference of two angles. Parameters should be in [0, 360].
-deg calculateDeltaBeta(deg beta1, deg beta2) {
+deg calculateDeltaBeta(deg beta1, deg beta2)
+{
     // Due to cyclicity of angles (360 is equivalent to 0), some magic is needed.
     qreal deltaBeta = beta1 - beta2;
     qreal tempDelta = deltaBeta - 360;
@@ -53,7 +60,8 @@ deg calculateDeltaBeta(deg beta1, deg beta2) {
 }
 
 // Calculates the angle between two points on a unit sphere.
-deg angle(deg alpha1, deg alpha2, deg deltaBeta) {
+deg angle(deg alpha1, deg alpha2, deg deltaBeta)
+{
     // Absolute value of deltaBeta is not needed because cos is an even function.
     deg ret = rad(acos( cos(alpha1.toRad()) * cos(alpha2.toRad())
                        + sin(alpha1.toRad()) * sin(alpha2.toRad()) * cos(deltaBeta.toRad())))
@@ -73,12 +81,14 @@ static int NUM_QUADRANTS = 4;
 
 typedef QVector<eQuadrant> Quadrants;
 
-Quadrants allQuadrants() {
+Quadrants allQuadrants()
+{
     return { eQuadrant::NORTHEAST, eQuadrant::SOUTHEAST,
             eQuadrant::SOUTHWEST, eQuadrant::NORTHWEST };
 }
 
-bool inQuadrant(eQuadrant quadrant, deg deltaAlpha, deg deltaBeta) {
+bool inQuadrant(eQuadrant quadrant, deg deltaAlpha, deg deltaBeta)
+{
     switch (quadrant) {
     case eQuadrant::NORTHEAST: return deltaAlpha >= 0 && deltaBeta >= 0;
     case eQuadrant::SOUTHEAST: return deltaAlpha >= 0 && deltaBeta < 0;
@@ -89,7 +99,8 @@ bool inQuadrant(eQuadrant quadrant, deg deltaAlpha, deg deltaBeta) {
 }
 
 // Search quadrant remapping in case no point was found.
-eQuadrant remapQuadrant(eQuadrant q) {
+eQuadrant remapQuadrant(eQuadrant q)
+{
     switch (q) {
     case eQuadrant::NORTHEAST: return eQuadrant::NORTHWEST;
     case eQuadrant::SOUTHEAST: return eQuadrant::SOUTHWEST;
@@ -100,14 +111,16 @@ eQuadrant remapQuadrant(eQuadrant q) {
 }
 
 // Checks if (alpha,beta) is inside radius from (centerAlpha,centerBeta).
-bool inRadius(deg alpha, deg beta, deg centerAlpha, deg centerBeta, deg radius) {
+bool inRadius(deg alpha, deg beta, deg centerAlpha, deg centerBeta, deg radius)
+{
     qreal a = angle(alpha, centerAlpha, calculateDeltaBeta(beta, centerBeta));
     return qAbs(a) < radius;
 }
 
 // Adds data from peak infos within radius from alpha and beta
 // to the peak parameter lists.
-void searchPoints(deg alpha, deg beta, deg radius, const PeakInfos& infos, itfs_t& itfs) {
+void searchPoints(deg alpha, deg beta, deg radius, const PeakInfos& infos, itfs_t& itfs)
+{
     // REVIEW Use value trees to improve performance.
     for (const PeakInfo& info : infos) {
         if (inRadius(info.alpha(), info.beta(), alpha, beta, radius))
@@ -118,7 +131,8 @@ void searchPoints(deg alpha, deg beta, deg radius, const PeakInfos& infos, itfs_
 // Searches closest PeakInfos to given alpha and beta in quadrants.
 void searchInQuadrants(
     const Quadrants& quadrants, deg alpha, deg beta, deg searchRadius, const PeakInfos& infos,
-    info_vec& foundInfos, QVector<qreal>& distances) {
+    info_vec& foundInfos, QVector<qreal>& distances)
+{
     ASSERT(quadrants.count() <= NUM_QUADRANTS);
     // Take only peak infos with beta within +/- BETA_LIMIT degrees into
     // account. Original STeCa used something like +/- 1.5*36 degrees.
@@ -146,7 +160,8 @@ void searchInQuadrants(
     }
 }
 
-itf_t inverseDistanceWeighing(const QVector<qreal>& distances, const info_vec& infos) {
+itf_t inverseDistanceWeighing(const QVector<qreal>& distances, const info_vec& infos)
+{
     int N = NUM_QUADRANTS;
     // Generally, only distances.count() == values.count() > 0 is needed for this
     // algorithm. However, in this context we expect exactly the following:
@@ -181,7 +196,8 @@ itf_t inverseDistanceWeighing(const QVector<qreal>& distances, const info_vec& i
 }
 
 // Interpolates peak infos to a single point using idw.
-itf_t interpolateValues(deg searchRadius, const PeakInfos& infos, deg alpha, deg beta) {
+itf_t interpolateValues(deg searchRadius, const PeakInfos& infos, deg alpha, deg beta)
+{
     info_vec interpolationInfos;
     QVector<qreal> distances;
     searchInQuadrants(
@@ -221,59 +237,62 @@ itf_t interpolateValues(deg searchRadius, const PeakInfos& infos, deg alpha, deg
 
 } // local methods
 
+// ************************************************************************** //
+//  exported function
+// ************************************************************************** //
+
 //! Interpolates infos to equidistant grid in alpha and beta.
-PeakInfos interpolateInfos(
-    const PeakInfos& infos, deg alphaStep, deg betaStep, deg idwRadius, deg averagingAlphaMax,
-    deg averagingRadius, qreal inclusionTreshold, Progress* progress) {
+PeakInfos interpolateInfos(const PeakInfos& infos, Progress* progress)
+{
+    if (!gSession->interpol().enabled())
+        THROW("bug: call to interpolateInfos though interpolation is disabled");
+    double stepAlpha   = gSession->interpol().stepAlpha();
+    double stepBeta    = gSession->interpol().stepBeta();
+    double idwRadius   = gSession->interpol().idwRadius();
+    double avgAlphaMax = gSession->interpol().avgAlphaMax();
+    double avgRadius   = gSession->interpol().avgRadius();
+    int    threshold   = gSession->interpol().threshold();
+
     // Two interpolation methods are used here:
     // If grid point alpha <= averagingAlphaMax, points within averagingRadius
     // will be averaged.
     // If averaging fails, or alpha > averagingAlphaMax, inverse distance weighing
     // will be used.
 
-    ASSERT(0 < alphaStep && alphaStep <= 90);
-    ASSERT(0 < betaStep && betaStep <= 360);
-    ASSERT(0 <= averagingAlphaMax && averagingAlphaMax <= 90);
-    ASSERT(0 <= averagingRadius);
-    // Setting idwRadius = NaN disables idw radius checks and falling back to
-    // idw when averaging fails.
-    ASSERT(qIsNaN(idwRadius) || 0 <= idwRadius);
-    ASSERT(0 <= inclusionTreshold && inclusionTreshold <= 1);
-
     // NOTE We expect all infos to have the same gamma range.
 
     // REVIEW qRound oder qCeil?
-    int numAlphas = qRound(90. / alphaStep);
-    int numBetas = qRound(360. / betaStep);
+    int numAlphas = qRound(90. / stepAlpha);
+    int numBetas = qRound(360. / stepBeta);
 
-    PeakInfos interpolatedInfos; // Output data.
+    PeakInfos ret; // Output data.
 
-    interpolatedInfos.reserve(numAlphas * numBetas);
+    ret.reserve(numAlphas * numBetas);
 
     if (progress)
         progress->setTotal(numAlphas * numBetas); // REVIEW + 1?
 
     for_int (i, numAlphas + 1) { // REVIEW why + 1
-        deg const alpha = i * alphaStep;
+        deg const alpha = i * stepAlpha;
         for_int (j, numBetas) {
-            deg const beta = j * betaStep;
+            deg const beta = j * stepBeta;
 
             if (progress)
                 progress->step();
 
             if (infos.isEmpty()) {
-                interpolatedInfos.append(PeakInfo(alpha, beta));
+                ret.append(PeakInfo(alpha, beta));
                 continue;
             }
 
-            if (alpha <= averagingAlphaMax) {
+            if (alpha <= avgAlphaMax) {
                 // Use averaging.
 
                 itfs_t itfs;
-                searchPoints(alpha, beta, averagingRadius, infos, itfs);
+                searchPoints(alpha, beta, avgRadius, infos, itfs);
 
                 if (!itfs.isEmpty()) {
-                    // If inclusionTreshold < 1, we'll only use a fraction of largest
+                    // If treshold < 1, we'll only use a fraction of largest
                     // peak parameter values.
                     std::sort(itfs.begin(), itfs.end(), [](const itf_t& i1, const itf_t& i2) {
                         return i1.inten < i2.inten;
@@ -282,14 +301,14 @@ PeakInfos interpolateInfos(
                     itf_t avg(0, 0, 0);
 
                     int iEnd = itfs.count();
-                    int iBegin = qMin(qRound(itfs.count() * (1. - inclusionTreshold)), iEnd - 1);
+                    int iBegin = qMin(qRound(itfs.count() * (1. - threshold)), iEnd - 1);
                     ASSERT(iBegin < iEnd);
                     int n = iEnd - iBegin;
 
                     for (int i = iBegin; i < iEnd; ++i)
                         avg += itfs.at(i);
 
-                    interpolatedInfos.append(PeakInfo(
+                    ret.append(PeakInfo(
                         alpha, beta, infos.first().rgeGma(), avg.inten / n, inten_t(NAN),
                         avg.tth / n, deg(NAN), avg.fwhm / n, fwhm_t(NAN)));
                     continue;
@@ -297,19 +316,18 @@ PeakInfos interpolateInfos(
 
                 if (qIsNaN(idwRadius)) {
                     // Don't fall back to idw, just add an unmeasured info.
-                    interpolatedInfos.append(PeakInfo(alpha, beta));
+                    ret.append(PeakInfo(alpha, beta));
                     continue;
                 }
             }
 
-            // Use idw, if alpha > averagingAlphaMax OR averaging failed (too small
-            // averagingRadius?).
+            // Use idw, if alpha > avgAlphaMax OR averaging failed (too small avgRadius?).
             itf_t itf = interpolateValues(idwRadius, infos, alpha, beta);
-            interpolatedInfos.append(PeakInfo(
+            ret.append(PeakInfo(
                 alpha, beta, infos.first().rgeGma(), itf.inten, inten_t(NAN), itf.tth, deg(NAN),
                 itf.fwhm, fwhm_t(NAN)));
         }
     }
 
-    return interpolatedInfos;
+    return ret;
 }

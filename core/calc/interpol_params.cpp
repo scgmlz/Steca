@@ -72,36 +72,38 @@ void InterpolParams::setEnabled(bool val)
 
 void InterpolParams::setStepAlpha(double val)
 {
-    stepAlpha_ = val;
+    stepAlpha_ = qMax(0., qMin(val, 90.));
     emit gSession->sigInterpol();
 }
 
 void InterpolParams::setStepBeta(double val)
 {
-    stepBeta_ = val;
+    stepBeta_ = qMax(0., qMin(val, 360.));
     emit gSession->sigInterpol();
 }
 
 void InterpolParams::setIdwRadius(double val)
 {
+    if (!qIsNaN(val))
+        val = qMax(0., val);
     idwRadius_ = val;
     emit gSession->sigInterpol();
 }
 
 void InterpolParams::setAvgAlphaMax(double val)
 {
-    avgAlphaMax_ = val;
+    avgAlphaMax_ = qMax(0., qMin(val, 90.));
     emit gSession->sigInterpol();
 }
 
 void InterpolParams::setAvgRadius(double val)
 {
-    avgRadius_ = val;
+    avgRadius_ = qMax(0., val);
     emit gSession->sigInterpol();
 }
 
 void InterpolParams::setThreshold(int val)
 {
-    threshold_ = val;
+    threshold_ = qMax(0, qMin(val, 1)); // TODO check
     emit gSession->sigInterpol();
 }

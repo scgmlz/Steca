@@ -12,7 +12,9 @@
 //
 // ************************************************************************** //
 
+#include "active_clusters.h"
 #include "core/session.h"
+#include "core/calc/calc_polefigure.h"
 
 ActiveClusters::ActiveClusters() {
     invalidateAvgMutables();
@@ -118,8 +120,9 @@ qreal ActiveClusters::calcAvgMutable(qreal (Cluster::*avgFct)() const) const {
 PeakInfos ActiveClusters::rawFits(const Peak& peak, Progress* progress) const
 {
     PeakInfos ret;
+    bool interpol = gSession->interpol().enabled();
     if (progress)
-        progress->setTotal(size());
+        progress->setTotal((interpol ? 2 : 1)*size());
     int nGamma = qMax(1, gSession->gammaSelection().numSlices());
     for (const Cluster* cluster : clusters()) {
         if (progress)
@@ -131,5 +134,9 @@ PeakInfos ActiveClusters::rawFits(const Peak& peak, Progress* progress) const
                 ret.append(refInfo);
         }
     }
+
+    if (interpol)
+        ret = interpolateInfos(ret, progress);
+
     return ret;
 }

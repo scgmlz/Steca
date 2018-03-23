@@ -178,12 +178,8 @@ TabTable::TabTable(const QString& name, const QStringList& headers,
     : dataView_ {headers.count()}
 {
     QGridLayout* grid_ = new QGridLayout();
-    setLayout(grid_);
     ASSERT(headers.count() == cmps.count());
     int numCols = headers.count();
-
-    grid_->addWidget(&dataView_, 0, 0);
-    grid_->setColumnStretch(0, 1);
 
     dataView_.setColumns(headers, outHeaders, cmps);
 
@@ -197,7 +193,10 @@ TabTable::TabTable(const QString& name, const QStringList& headers,
     scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scrollArea->setWidget((showColumnsWidget_ = new ShowColsWidget(name, dataView_, showCols_)));
 
+    grid_->addWidget(&dataView_, 0, 0);
     grid_->addWidget(scrollArea, 0, 1);
+    grid_->setColumnStretch(0, 1);
+    setLayout(grid_);
 }
 
 TabTable::~TabTable() {
@@ -351,9 +350,7 @@ void Frame::interpolate()
         Progress progress(calcPoints_.count(), &progressBar_);
 
         for_i (calcPoints_.count())
-            interpPoints_.append(interpolateInfos(
-                calcPoints_.at(i), alphaStep, betaStep, idwRadius, avgAlphaMax, avgRadius,
-                avgTreshold, &progress));
+            interpPoints_.append(interpolateInfos(calcPoints_.at(i), &progress));
     } else {
         for_i (calcPoints_.count())
             interpPoints_.append(PeakInfos());

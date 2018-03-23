@@ -18,8 +18,6 @@
 #include "core/data/peak_info.h"
 #include "core/typ/async.h"
 
-PeakInfos interpolateInfos(
-    const PeakInfos&, deg alphaStep, deg betaStep, deg idwRadius,
-    deg averagingAlphaMax, deg averagingRadius, qreal inclusionTreshold, Progress*);
+PeakInfos interpolateInfos(const PeakInfos&, Progress*);
 
 #endif // CALC_POLEFIGURE_H

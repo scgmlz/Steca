@@ -57,7 +57,4 @@ PolefigWidget::PolefigWidget()
 void PolefigWidget::render()
 {
     plot_->set(gSession->peakInfos());
-    // TODO restore interpolation
-    //if (!interpPoints_.isEmpty() && !calcPoints_.isEmpty())
-    //    plot_->set((interpolated ? interpPoints_ : calcPoints_).at(reflIndex));
 }

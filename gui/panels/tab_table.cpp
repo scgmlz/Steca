@@ -186,16 +186,6 @@ TableWidget::TableWidget()
 void TableWidget::render()
 {
     PeakInfos points_ = gSession->peakInfos();
-
-    if (gSession->interpol().enabled()) {
-        /*
-        Progress progress(calcPoints_.count(), &progressBar_);
-        points_ = interpolateInfos(
-                points_, alphaStep, betaStep, idwRadius, avgAlphaMax, avgRadius,
-                avgTreshold, &progress));
-        */
-    }
-
     dataView_->clear();
     for (const PeakInfo& r : points_)
         dataView_->addRow(r.data(), false);
