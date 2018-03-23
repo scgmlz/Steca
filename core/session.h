@@ -96,8 +96,6 @@ public:
 
     IJ midPix() const;
 
-    const Range& gammaRange() const { return gammaSelection().range(); }
-
     shp_AngleMap angleMap(const Measurement&) const;
     static shp_AngleMap angleMap(const Session& session, const Measurement& ds) {
         return session.angleMap(ds); }
@@ -128,23 +126,24 @@ signals:
     void sigInterpol();      //!< interpolation parameters have changed
 
 private:
+    // with reference accessor methods:
     Dataset dataset_;
     Corrset corrset_;
     Peaks peaks_;
     Baseline baseline_;
-
+    ImageCut imageCut_;
+    Geometry geometry_;
+    GammaSelection gammaSelection_;
+    ThetaSelection thetaSelection_;
+    InterpolParams interpolParams_;
+    eNorm norm_ {eNorm::NONE};
+    // with get/set methods:
     std::vector<bool> metaSelection_; //!< true if meta datum is to be displayed
     bool intenScaledAvg_ {true}; // if not, summed
     qreal intenScale_ {1};
     size2d imageSize_; //!< All images must have this same size
     ImageTransform imageTransform_;
-    Geometry geometry_;
-    ImageCut imageCut_;
-    GammaSelection gammaSelection_;
-    ThetaSelection thetaSelection_;
-    eNorm norm_ {eNorm::NONE};
-    InterpolParams interpolParams_;
-
+    // deeply private:
     mutable cache_lazy<ImageKey, AngleMap> angleMapCache_ {360};
 };
 
