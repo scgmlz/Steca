@@ -16,7 +16,7 @@
 #include "core/session.h"
 #include "gui/actions/toggles.h"
 #include "gui/actions/triggers.h"
-#include "gui/panels/plot_polefig.h"
+#include "gui/plot/plot_polefig.h"
 #include <iostream>
 
 

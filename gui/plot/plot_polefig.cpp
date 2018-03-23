@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/plot_polefig.cpp
+//! @file      gui/plot/plot_polefig.cpp
 //! @brief     Implements class PlotPolefig
 //!
 //! @homepage  https://github.com/scgmlz/Steca
