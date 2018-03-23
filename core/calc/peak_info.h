@@ -34,7 +34,8 @@ public:
         fwhm_t, fwhm_t /*error*/);
     PeakInfo(deg alpha, deg beta);
     // TODO revert from constructor to function to emphasize that all the fitting takes place here
-    PeakInfo(const class Cluster* cluster, const class Peak& peak, const Range& gmaSector);
+    static PeakInfo rawFit(
+        const class Cluster* cluster, const class Peak& peak, const Range& gmaSector);
 
     enum class eReflAttr {
         ALPHA,

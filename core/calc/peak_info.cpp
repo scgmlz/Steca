@@ -33,10 +33,8 @@ PeakInfo::PeakInfo()
           NAN, NAN, Range(), inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), NAN, NAN)
 {}
 
-PeakInfo::PeakInfo(
-    shp_Metadata md,
-    deg alpha, deg beta, Range rgeGma, inten_t inten, inten_t intenError,
-    deg tth, deg tthError, fwhm_t fwhm, fwhm_t fwhmError)
+PeakInfo::PeakInfo(shp_Metadata md, deg alpha, deg beta, Range rgeGma, inten_t inten,
+                   inten_t intenError, deg tth, deg tthError, fwhm_t fwhm, fwhm_t fwhmError)
     : md_(md)
     , alpha_(alpha)
     , beta_(beta)
@@ -49,29 +47,24 @@ PeakInfo::PeakInfo(
     , fwhmError_(fwhmError)
 {}
 
-PeakInfo::PeakInfo(
-    shp_Metadata md, deg alpha, deg beta, Range rgeGma)
-    : PeakInfo(
-        md, alpha, beta, rgeGma, inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), fwhm_t(NAN),
-        fwhm_t(NAN))
+PeakInfo::PeakInfo(shp_Metadata md, deg alpha, deg beta, Range rgeGma)
+    : PeakInfo(md, alpha, beta, rgeGma, inten_t(NAN), inten_t(NAN),
+               deg(NAN), deg(NAN), fwhm_t(NAN), fwhm_t(NAN))
 {}
 
-PeakInfo::PeakInfo(
-    deg alpha, deg beta, Range rgeGma, inten_t inten, inten_t intenError, deg tth,
-    deg tthError, fwhm_t fwhm, fwhm_t fwhmError)
-    : PeakInfo(
-        shp_Metadata(),
-        alpha, beta, rgeGma, inten, intenError, tth, tthError, fwhm, fwhmError)
+PeakInfo::PeakInfo(deg alpha, deg beta, Range rgeGma, inten_t inten, inten_t intenError, deg tth,
+                   deg tthError, fwhm_t fwhm, fwhm_t fwhmError)
+    : PeakInfo(shp_Metadata(), alpha, beta, rgeGma, inten, intenError,
+               tth, tthError, fwhm, fwhmError)
 {}
 
 PeakInfo::PeakInfo(deg alpha, deg beta)
-    : PeakInfo(
-          alpha, beta, Range(), inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), fwhm_t(NAN),
-          fwhm_t(NAN))
+    : PeakInfo(alpha, beta, Range(), inten_t(NAN), inten_t(NAN),
+               deg(NAN), deg(NAN), fwhm_t(NAN), fwhm_t(NAN))
 {}
 
 //! Fits peak to the given gamma sector and constructs a PeakInfo.
-PeakInfo::PeakInfo(const Cluster* cluster, const Peak& peak, const Range& gmaSector)
+PeakInfo PeakInfo::rawFit(const Cluster* cluster, const Peak& peak, const Range& gmaSector)
 {
     // fit peak, and retrieve peak parameters:
     Curve curve = cluster->toCurve(gmaSector);
@@ -93,14 +86,15 @@ PeakInfo::PeakInfo(const Cluster* cluster, const Peak& peak, const Range& gmaSec
 
     shp_Metadata metadata = cluster->avgeMetadata();
 
-    *this = rgeTth.contains(fitresult.x)
+    return rgeTth.contains(fitresult.x)
         ? PeakInfo(
               metadata, alpha, beta, gmaSector, inten_t(fitresult.y), inten_t(peakError.y),
               deg(fitresult.x), deg(peakError.x), fwhm_t(fwhm), fwhm_t(fwhmError))
         : PeakInfo(metadata, alpha, beta, gmaSector);
 }
 
-QStringList PeakInfo::dataTags(bool out) {
+QStringList PeakInfo::dataTags(bool out)
+{
     QStringList tags;
     for_i (int(eReflAttr::NUM_REFL_ATTR))
         tags.append(reflStringTag(i, out));
@@ -108,7 +102,8 @@ QStringList PeakInfo::dataTags(bool out) {
     return tags;
 }
 
-cmp_vec PeakInfo::dataCmps() {
+cmp_vec PeakInfo::dataCmps()
+{
     static cmp_vec cmps;
     if (cmps.isEmpty()) {
         cmps = cmp_vec{ cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
@@ -118,17 +113,18 @@ cmp_vec PeakInfo::dataCmps() {
     return cmps;
 }
 
-row_t PeakInfo::data() const {
+row_t PeakInfo::data() const
+{
     row_t row{ QVariant(alpha()),      QVariant(beta()),     QVariant(rgeGma().min),
                     QVariant(rgeGma().max), QVariant(inten()),    QVariant(intenError()),
                     QVariant(tth()),        QVariant(tthError()), QVariant(fwhm()),
                     QVariant(fwhmError()) };
-
     row.append(md_ ? md_->attributeValues() : Metadata::attributeNaNs());
     return row;
 }
 
-QString const PeakInfo::reflStringTag(int attr, bool out) {
+QString const PeakInfo::reflStringTag(int attr, bool out)
+{
     switch (eReflAttr(attr)) {
     case eReflAttr::ALPHA: return out ? "alpha" : "α";
     case eReflAttr::BETA: return out ? "beta" : "β";
@@ -167,7 +163,8 @@ PeakInfos PeakInfos::rawFits(const Peak& peak, Progress* progress)
         if (progress)
             progress->step();
         for_i (nGamma) {
-            const PeakInfo refInfo {cluster, peak, gSession->gammaSelection().slice2range(i)};
+            const PeakInfo refInfo
+                = PeakInfo::rawFit(cluster, peak, gSession->gammaSelection().slice2range(i));
             if (!qIsNaN(refInfo.inten()))
                 ret.append(refInfo);
         }
@@ -176,12 +173,14 @@ PeakInfos PeakInfos::rawFits(const Peak& peak, Progress* progress)
 }
 
 
-void PeakInfos::append(const PeakInfo& info) {
+void PeakInfos::append(const PeakInfo& info)
+{
     QVector<PeakInfo>::append(info);
     invalidate();
 }
 
-inten_t PeakInfos::averageInten() const {
+inten_t PeakInfos::averageInten() const
+{
     if (qIsNaN(avgInten_)) {
         avgInten_ = 0;
         int cnt = 0;
@@ -198,7 +197,8 @@ inten_t PeakInfos::averageInten() const {
     return avgInten_;
 }
 
-const Range& PeakInfos::rgeInten() const {
+const Range& PeakInfos::rgeInten() const
+{
     if (!rgeInten_.isValid()) {
         for_i (count())
             rgeInten_.extendBy(at(i).inten());
@@ -206,7 +206,8 @@ const Range& PeakInfos::rgeInten() const {
     return rgeInten_;
 }
 
-void PeakInfos::invalidate() {
+void PeakInfos::invalidate()
+{
     avgInten_ = inten_t(NAN);
     rgeInten_.invalidate();
 }
