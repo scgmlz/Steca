@@ -74,7 +74,7 @@ PeakInfo::PeakInfo(deg alpha, deg beta)
 PeakInfo::PeakInfo(const Cluster* cluster, const Peak& peak, const Range& gmaSector)
 {
     // fit peak, and retrieve peak parameters:
-    Curve curve = cluster->toCurve(cluster->normFactor(), gmaSector); // TODO rm arg normfactor
+    Curve curve = cluster->toCurve(gmaSector);
     auto& baseline = gSession->baseline();
     const Polynom f = Polynom::fromFit(baseline.polynomDegree(), curve, baseline.ranges());
     curve.subtract([f](qreal x) {return f.y(x);});

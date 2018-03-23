@@ -159,7 +159,6 @@ void ExportDfgram::saveAll(bool oneFile)
     for (const Cluster* cluster : expt.clusters()) {
         ++picNum;
         progress.step();
-        qreal normFactor = cluster->normFactor();
         for (int i=0; i<qMax(1,nSlices); ++i) {
             if (!oneFile) {
                 QFile* file = new QFile(numberedName(path, ++fileNum, expt.size()+1));
@@ -170,7 +169,7 @@ void ExportDfgram::saveAll(bool oneFile)
             }
             ASSERT(stream);
             const Range gmaStripe = gSession->gammaSelection().slice2range(i);
-            const Curve& curve = cluster->toCurve(normFactor, gmaStripe);
+            const Curve& curve = cluster->toCurve(gmaStripe);
             ASSERT(!curve.isEmpty());
             *stream << "Picture Nr: " << picNum << '\n';
             if (nSlices > 1)
