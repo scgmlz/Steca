@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/data/experiment.h
-//! @brief     Defines class Experiment
+//! @file      core/data/active_clusters.h
+//! @brief     Defines class ActiveClusters
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,17 +12,17 @@
 //
 // ************************************************************************** //
 
-#ifndef EXPERIMENT_H
-#define EXPERIMENT_H
+#ifndef ACTIVE_CLUSTERS_H
+#define ACTIVE_CLUSTERS_H
 
 #include "core/data/cluster.h" // no auto rm
 #include <QSharedPointer> // required by some compilers
 
 //! The list of activated Cluster|s, and cached averages
 
-class Experiment {
+class ActiveClusters {
 public:
-    Experiment();
+    ActiveClusters();
 
     void appendHere(const Cluster*);
 
@@ -53,4 +53,4 @@ private:
     mutable Curve avgCurve_;
 };
 
-#endif // EXPERIMENT_H
+#endif // ACTIVE_CLUSTERS_H

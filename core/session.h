@@ -89,7 +89,7 @@ public:
     bool hasCorrFile() const { return corrset().hasFile(); }
     const Image* intensCorr() const { return corrset().intensCorr(); }
 
-    const Experiment& experiment() const { return dataset().experiment(); }
+    const ActiveClusters& activeClusters() const { return dataset().activeClusters(); }
 
     size2d imageSize() const;
     const ImageTransform& imageTransform() const { return imageTransform_; }

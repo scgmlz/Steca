@@ -20,14 +20,14 @@
 #include "gui/mainwin.h"
 
 // ************************************************************************** //
-//  local class ExperimentModel
+//  local class ActiveClustersModel
 // ************************************************************************** //
 
-//! The model for ExperimentView.
+//! The model for ActiveClustersView.
 
-class ExperimentModel : public CheckTableModel { // < QAbstractTableModel < QAbstractItemModel
+class ActiveClustersModel : public CheckTableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
-    ExperimentModel() : CheckTableModel("measurement") {}
+    ActiveClustersModel() : CheckTableModel("measurement") {}
     void onMetaSelection();
     void activateCluster(bool, int, bool);
     int metaCount() const { return metaInfoNums_.count(); }
@@ -51,7 +51,7 @@ private:
     QVector<int> metaInfoNums_; //!< indices of metadata items selected for display
 };
 
-void ExperimentModel::onMetaSelection()
+void ActiveClustersModel::onMetaSelection()
 {
     beginResetModel(); // needed because columnCount may have shrinked
     metaInfoNums_.clear();
@@ -63,7 +63,7 @@ void ExperimentModel::onMetaSelection()
     endResetModel();
 }
 
-QVariant ExperimentModel::data(const QModelIndex& index, int role) const
+QVariant ActiveClustersModel::data(const QModelIndex& index, int role) const
 {
     int row = index.row();
     if (row < 0 || row >= rowCount())
@@ -125,7 +125,7 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const
     }
 }
 
-QVariant ExperimentModel::headerData(int col, Qt::Orientation ori, int role) const
+QVariant ActiveClustersModel::headerData(int col, Qt::Orientation ori, int role) const
 {
     if (ori!=Qt::Horizontal)
         return {};
@@ -140,44 +140,44 @@ QVariant ExperimentModel::headerData(int col, Qt::Orientation ori, int role) con
 
 
 // ************************************************************************** //
-//  local class ExperimentView
+//  local class ActiveClustersView
 // ************************************************************************** //
 
 //! Main item in SubframeMeasurement: View and control of measurements list.
 
-class ExperimentView : public CheckTableView { // < QTreeView < QAbstractItemView
+class ActiveClustersView : public CheckTableView { // < QTreeView < QAbstractItemView
 public:
-    ExperimentView();
+    ActiveClustersView();
 private:
     void currentChanged(const QModelIndex& current, const QModelIndex&) override final {
         gotoCurrent(current); }
     void onMetaSelection();
     int sizeHintForColumn(int) const override final;
-    ExperimentModel* model() { return static_cast<ExperimentModel*>(model_); }
+    ActiveClustersModel* model() { return static_cast<ActiveClustersModel*>(model_); }
 };
 
-ExperimentView::ExperimentView()
-    : CheckTableView(new ExperimentModel())
+ActiveClustersView::ActiveClustersView()
+    : CheckTableView(new ActiveClustersModel())
 {
     setSelectionMode(QAbstractItemView::NoSelection);
 
     connect(gSession, &Session::sigClusters, this, &TableView::onData);
     connect(gSession, &Session::sigDataHighlight, this, &TableView::onHighlight);
     connect(gSession, &Session::sigActivated, this, &CheckTableView::onActivated);
-    connect(gSession, &Session::sigMetaSelection, this, &ExperimentView::onMetaSelection);
-    connect(this, &ExperimentView::clicked, model(), &CheckTableModel::onClicked);
+    connect(gSession, &Session::sigMetaSelection, this, &ActiveClustersView::onMetaSelection);
+    connect(this, &ActiveClustersView::clicked, model(), &CheckTableModel::onClicked);
 }
 
-void ExperimentView::onMetaSelection()
+void ActiveClustersView::onMetaSelection()
 {
     model()->onMetaSelection();
     setHeaderHidden(model()->metaCount()==0);
 }
 
-int ExperimentView::sizeHintForColumn(int col) const
+int ActiveClustersView::sizeHintForColumn(int col) const
 {
     switch (col) {
-    case ExperimentModel::COL_CHECK: {
+    case ActiveClustersModel::COL_CHECK: {
         return 2*mWidth();
     } default:
         return 3*mWidth();
@@ -191,5 +191,5 @@ int ExperimentView::sizeHintForColumn(int col) const
 
 SubframeClusters::SubframeClusters() : DockWidget("Measurements", "dock-cluster")
 {
-    box_.addWidget(new ExperimentView()); // list of Cluster|s
+    box_.addWidget(new ActiveClustersView()); // list of Cluster|s
 }

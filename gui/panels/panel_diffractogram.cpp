@@ -235,7 +235,7 @@ void DiffractogramPlot::calcDgram()
     if (!gSession->hasData())
         return;
     if (gGui->toggles->combinedDgram.isChecked()) {
-        dgram_ = gSession->experiment().avgCurve();
+        dgram_ = gSession->activeClusters().avgCurve();
     } else {
         dgram_ = gSession->dataset().highlight().cluster()->toCurve(gSession->gammaRange());
     }

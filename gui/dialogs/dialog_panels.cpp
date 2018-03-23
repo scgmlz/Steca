@@ -74,7 +74,7 @@ PanelGammaSlices::PanelGammaSlices()
 
     grid_.setRowStretch(grid_.rowCount(), 1);
 
-    rgeGma_ = gSession->experiment().rgeGma();
+    rgeGma_ = gSession->activeClusters().rgeGma();
 
     connect(&numSlices, &CSpinBox::valueReleased, [this]() { updateValues(); });
 }
@@ -100,7 +100,7 @@ PanelGammaRange::PanelGammaRange()
     grid_.addWidget(new QLabel("max"), 2, 0); grid_.addWidget(&maxGamma, 2, 1);
     grid_.setRowStretch(grid_.rowCount(), 1);
 
-    rgeGma_ = gSession->experiment().rgeGma();
+    rgeGma_ = gSession->activeClusters().rgeGma();
 
     minGamma.setValue(rgeGma_.min);
     maxGamma.setValue(rgeGma_.max);

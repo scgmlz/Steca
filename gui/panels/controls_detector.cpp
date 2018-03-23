@@ -163,14 +163,14 @@ void CutControls::fromCore()
 }
 
 // ************************************************************************** //
-//  local class ExperimentControls
+//  local class ActiveClustersControls
 // ************************************************************************** //
 
 //! Control widgets that govern the combination of Measurement|s into Cluster|s.
 
-class ExperimentControls : public QWidget {
+class ActiveClustersControls : public QWidget {
 public:
-    ExperimentControls();
+    ActiveClustersControls();
 private:
     void fromCore();
 
@@ -183,10 +183,10 @@ private:
     XIconButton dropIncompleteButton_ { &dropIncompleteAction_ };
 };
 
-ExperimentControls::ExperimentControls()
+ActiveClustersControls::ActiveClustersControls()
 {
     // inbound connection
-    connect(gSession, &Session::sigClusters, this, &ExperimentControls::fromCore);
+    connect(gSession, &Session::sigClusters, this, &ActiveClustersControls::fromCore);
 
     // outbound connections
     connect(&combineMeasurements_, &CSpinBox::valueReleased,
@@ -207,7 +207,7 @@ ExperimentControls::ExperimentControls()
     fromCore();
 }
 
-void ExperimentControls::fromCore()
+void ActiveClustersControls::fromCore()
 {
     combineMeasurements_.setValue(gSession->dataset().binning());
     dropIncompleteAction_.setEnabled(gSession->dataset().hasIncomplete());
@@ -264,7 +264,7 @@ ControlsDetector::ControlsDetector()
     auto* vbox = new QVBoxLayout;
     vbox->addWidget(new GeometryControls);
     vbox->addWidget(new CutControls);
-    vbox->addWidget(new ExperimentControls);
+    vbox->addWidget(new ActiveClustersControls);
     vbox->addWidget(new GammaControls);
     vbox->addStretch();
     setLayout(vbox);

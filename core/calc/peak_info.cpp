@@ -160,9 +160,9 @@ QString const PeakInfo::reflStringTag(int attr, bool out) {
 PeakInfos::PeakInfos(const Peak& peak, Progress* progress)
 {
     if (progress)
-        progress->setTotal(gSession->experiment().size());
+        progress->setTotal(gSession->activeClusters().size());
     int nGamma = qMax(1, gSession->gammaSelection().numSlices());
-    for (const Cluster* cluster : gSession->experiment().clusters()) {
+    for (const Cluster* cluster : gSession->activeClusters().clusters()) {
         if (progress)
             progress->step();
         for_i (nGamma) {

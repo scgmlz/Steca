@@ -16,7 +16,7 @@
 #define DATASET_H
 
 #include "core/data/angle_map.h"
-#include "core/data/experiment.h"
+#include "core/data/active_clusters.h"
 #include "core/typ/async.h"
 #include "core/typ/cache.h"
 #include <QSharedPointer> // no auto rm
@@ -94,7 +94,7 @@ public:
     bool dropIncomplete() const { return dropIncomplete_; }
     bool hasIncomplete() const { return hasIncomplete_; }
 
-    const Experiment& experiment() const { return experiment_; }
+    const ActiveClusters& activeClusters() const { return activeClusters_; }
 
     QJsonObject toJson() const;
 
@@ -107,12 +107,12 @@ private:
 
     HighlightedData highlight_; //!< wraps pointer to highlighted Datafile and Cluster
 
-    Experiment experiment_; //!< active clusters
+    ActiveClusters activeClusters_; //!< active clusters
 
     void onFileChanged();
     void onClusteringChanged();
     void updateClusters();
-    void updateExperiment();
+    void updateActiveClusters();
 
     bool hasFile(const QString& fileName) const;
 };

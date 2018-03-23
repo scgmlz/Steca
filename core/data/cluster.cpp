@@ -146,15 +146,15 @@ qreal Sequence::normFactor(eNorm norm) const {
 
     switch (norm) {
     case eNorm::MONITOR:
-        num = gSession->experiment().avgMonitorCount();
+        num = gSession->activeClusters().avgMonitorCount();
         den = avgMonitorCount();
         break;
     case eNorm::DELTA_MONITOR:
-        num = gSession->experiment().avgDeltaMonitorCount();
+        num = gSession->activeClusters().avgDeltaMonitorCount();
         den = avgDeltaMonitorCount();
         break;
     case eNorm::DELTA_TIME:
-        num = gSession->experiment().avgDeltaTime();
+        num = gSession->activeClusters().avgDeltaTime();
         den = avgDeltaTime();
         break;
     case eNorm::BACKGROUND:

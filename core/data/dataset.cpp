@@ -162,7 +162,7 @@ void Dataset::setDropIncomplete(bool on) {
 
 void Dataset::activateCluster(int index, bool on) {
     allClusters_.at(index)->setActivated(on);
-    updateExperiment();
+    updateActiveClusters();
     emit gSession->sigActivated();
 }
 
@@ -170,7 +170,7 @@ void Dataset::setFileActivation(int index, bool on) {
     const Datafile& fil = fileAt(index);
     for (Cluster* cluster : fil.clusters_)
         cluster->setActivated(on);
-    updateExperiment();
+    updateActiveClusters();
     emit gSession->sigActivated();
 }
 
@@ -215,14 +215,14 @@ void Dataset::updateClusters() {
             file.clusters_.push_back(cluster.data());
         }
     }
-    updateExperiment();
+    updateActiveClusters();
 }
 
-void Dataset::updateExperiment() {
-    experiment_ = {};
+void Dataset::updateActiveClusters() {
+    activeClusters_ = {};
     for (const shp_Cluster& cluster : allClusters_) {
         if (cluster->isActivated())
-            experiment_.appendHere(cluster.data());
+            activeClusters_.appendHere(cluster.data());
     }
 }
 

@@ -127,7 +127,7 @@ void ExportDfgram::saveCurrent()
 
 void ExportDfgram::saveAll(bool oneFile)
 {
-    const Experiment& expt = gSession->experiment();
+    const ActiveClusters& expt = gSession->activeClusters();
     // In one-file mode, start output stream; in multi-file mode, only do prepations.
     QString path = fileField_->filePath(true, !oneFile);
     if (path.isEmpty())

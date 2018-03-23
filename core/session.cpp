@@ -204,7 +204,7 @@ qreal Session::calcAvgBackground() const
 {
     TakesLongTime __;
     qreal bg = 0;
-    for (const Cluster* cluster : experiment().clusters())
+    for (const Cluster* cluster : activeClusters().clusters())
         bg += calcAvgBackground(*cluster);
-    return bg / experiment().size();
+    return bg / activeClusters().size();
 }
