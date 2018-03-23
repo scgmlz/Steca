@@ -17,7 +17,6 @@
 
 #include "core/data/rawfile.h"
 
-
 //! Functions loadRawfile and loadComment, and their dependences.
 
 namespace load {
@@ -27,6 +26,6 @@ QSharedPointer<Rawfile> loadRawfile(const QString& filePath) THROWS;
 
 QString loadComment(const QFileInfo& info);
 
-} // namespace io
+} // namespace load
 
 #endif // LOADERS_H

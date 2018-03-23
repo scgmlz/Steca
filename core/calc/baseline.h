@@ -31,7 +31,6 @@ public:
     void setPolynomDegree(int);
 
     QJsonObject toJson() const;
-
     const Ranges& ranges() const { return ranges_; }
     int polynomDegree() const { return polynomDegree_; }
 

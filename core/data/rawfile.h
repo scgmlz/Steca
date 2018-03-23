@@ -18,7 +18,6 @@
 #include "core/data/measurement.h"
 #include <QFileInfo>
 
-
 //! A file (loaded from a disk file) that contains a data sequence.
 class Rawfile final {
 public:
