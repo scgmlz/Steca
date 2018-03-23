@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "calc_polefigure.h"
+#include "interpolate_polefig.h"
 #include "core/session.h"
 #include <qmath.h>
 
@@ -234,7 +234,7 @@ itf_t interpolateValues(deg searchRadius, const PeakInfos& infos, deg alpha, deg
         return {};
 }
 
-} // local methods
+} // namespace
 
 // ************************************************************************** //
 //  exported function
