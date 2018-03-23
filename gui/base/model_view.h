@@ -15,7 +15,6 @@
 #ifndef MODEL_VIEW_H
 #define MODEL_VIEW_H
 
-#include "core/def/debug.h"
 #include "gui/capture_and_replay/enhance_widgets.h"
 #include <QTreeView>
 

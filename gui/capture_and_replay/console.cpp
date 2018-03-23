@@ -18,7 +18,6 @@
 #include <QApplication> // tmp
 #include <QDateTime>
 #include <QDir> // tmp
-#include <QFile>
 #include <QSocketNotifier>
 
 Console* gConsole; //!< global

@@ -15,7 +15,6 @@
 #include "toggles.h"
 #include "core/session.h"
 #include "gui/mainwin.h"
-#include "gui/dialogs/about.h"
 #include <QDockWidget>
 #include <QStatusBar>
 

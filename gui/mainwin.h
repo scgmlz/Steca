@@ -17,8 +17,6 @@
 
 #include "core/calc/lens.h"
 #include "core/data/rawfile.h"
-#include "core/data/image_transform.h"
-#include "core/typ/singleton.h"
 #include "core/def/settings.h"
 #include "gui/capture_and_replay/console.h"
 #include <QDir>

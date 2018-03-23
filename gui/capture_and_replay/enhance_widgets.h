@@ -17,7 +17,6 @@
 
 #include <functional> // no auto rm
 #include <QDialog>
-#include <QString>
 
 //! Mix-in for control widgets that can be changed by a console command.
 class CSettable {

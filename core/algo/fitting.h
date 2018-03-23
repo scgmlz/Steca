@@ -21,7 +21,6 @@ class ActiveClusters;
 class Cluster;
 class Peak;
 class Progress;
-class Range;
 
 //! @namespace algo
 //! Core algorithms.

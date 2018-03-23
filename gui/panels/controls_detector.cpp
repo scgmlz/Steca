@@ -13,13 +13,9 @@
 // ************************************************************************** //
 
 #include "controls_detector.h"
-#include "core/data/geometry.h"
 #include "core/session.h"
 #include "gui/actions/image_trafo_actions.h"
 #include "gui/actions/toggles.h"
-#include "gui/actions/triggers.h"
-#include "gui/base/controls.h"
-#include "gui/base/displays.h"
 #include "gui/mainwin.h"
 #include <QThread> // for sleep for debugging
 

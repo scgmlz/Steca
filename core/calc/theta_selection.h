@@ -15,7 +15,6 @@
 #ifndef THETA_SELECTION_H
 #define THETA_SELECTION_H
 
-#include "core/typ/range.h"
 
 //! Select a theta bin for overlay in scattering image.
 

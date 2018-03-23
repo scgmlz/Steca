@@ -16,7 +16,6 @@
 #include "../manifest.h"
 #include <QApplication>
 #include <QMessageBox>
-#include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QStringBuilder> // for ".." % ..
 

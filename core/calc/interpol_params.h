@@ -15,8 +15,6 @@
 #ifndef INTERPOL_PARAMS_H
 #define INTERPOL_PARAMS_H
 
-#include "core/typ/json.h"
-#include <QObject>
 
 //! Supports different ways of setting a gamma range.
 

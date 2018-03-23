@@ -17,7 +17,6 @@
 
 #include "core/data/peak_info.h"
 #include "gui/mainwin.h"
-#include "gui/base/controls.h"
 
 //! Plot of a pair of fit results or metadata, with associated controls.
 

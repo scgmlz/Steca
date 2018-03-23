@@ -14,10 +14,6 @@
 
 #include "controls_interpolation.h"
 #include "core/session.h"
-#include "gui/base/model_view.h"
-#include "gui/mainwin.h"
-#include "gui/actions/toggles.h"
-#include "gui/actions/triggers.h"
 
 ControlsInterpolation::ControlsInterpolation()
 {

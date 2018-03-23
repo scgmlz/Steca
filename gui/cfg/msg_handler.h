@@ -15,7 +15,6 @@
 #ifndef MSG_HANDLER_H
 #define MSG_HANDLER_H
 
-#include <QString>
 
 void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString& msg);
 

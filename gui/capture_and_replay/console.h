@@ -15,7 +15,6 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include "core/typ/singleton.h"
 #include "gui/capture_and_replay/enhance_widgets.h"
 #include <stack>
 #include <QTextStream>

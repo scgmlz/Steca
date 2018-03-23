@@ -15,9 +15,6 @@
 #ifndef CLUSTER_H
 #define CLUSTER_H
 
-#include "core/data/measurement.h"
-#include "core/data/peak_info.h"
-#include "core/typ/curve.h"
 #include <QSharedPointer> // no auto rm
 
 //! A group of one or more Measurement|s.

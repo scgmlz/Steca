@@ -15,7 +15,6 @@
 #ifndef GAMMA_SELECTION_H
 #define GAMMA_SELECTION_H
 
-#include "core/typ/range.h"
 
 //! Supports different ways of setting a gamma range.
 

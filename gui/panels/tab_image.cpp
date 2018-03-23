@@ -16,9 +16,7 @@
 #include "core/session.h"
 #include "gui/cfg/colors.h"
 #include "gui/actions/toggles.h"
-#include "gui/actions/triggers.h"
 #include <qmath.h>
-#include <iostream>
 
 // ************************************************************************** //
 //  class ImageWidget

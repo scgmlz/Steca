@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "core/typ/exception.h"
 #include "core/typ/types.h"
 #include "gui/base/controls.h"
 #include "gui/base/displays.h"

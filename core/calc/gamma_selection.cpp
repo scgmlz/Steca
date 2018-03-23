@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "gamma_selection.h"
 #include "core/session.h"
 
 GammaSelection::GammaSelection()

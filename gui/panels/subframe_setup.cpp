@@ -18,7 +18,6 @@
 #include "gui/panels/controls_detector.h"
 #include "gui/panels/controls_interpolation.h"
 #include "gui/panels/controls_peakfits.h"
-#include "gui/mainwin.h"
 
 SubframeSetup::SubframeSetup()
     : CTabWidget {"setup"}

@@ -12,9 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "core/data/peak_info.h"
-#include "core/def/idiomatic_for.h"
-#include "core/typ/async.h"
 #include "core/session.h"
 
 // ************************************************************************** //

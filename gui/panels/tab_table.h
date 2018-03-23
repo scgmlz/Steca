@@ -16,7 +16,6 @@
 #define TAB_TABLE_H
 
 #include "gui/mainwin.h"
-#include "gui/base/controls.h"
 #include "gui/panels/data_table.h"
 #include "core/algo/calc_polefigure.h" // includes peak_info.h
 

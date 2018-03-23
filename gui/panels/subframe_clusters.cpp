@@ -14,10 +14,7 @@
 
 #include "gui/panels/subframe_clusters.h"
 #include "core/session.h"
-#include "gui/base/controls.h"
 #include "gui/base/model_view.h"
-#include "gui/capture_and_replay/console.h"
-#include "gui/mainwin.h"
 
 // ************************************************************************** //
 //  local class ActiveClustersModel

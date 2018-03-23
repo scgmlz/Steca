@@ -18,7 +18,6 @@
 #include "core/typ/variant.h"
 #include "gui/base/model_view.h"
 #include <memory>
-#include <QTreeView>
 
 //! Model for the DataView view.
 

@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "active_clusters.h"
 #include "core/session.h"
 
 ActiveClusters::ActiveClusters() {

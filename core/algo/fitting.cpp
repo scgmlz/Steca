@@ -16,7 +16,6 @@
 #include "core/session.h"
 #include "core/algo/calc_polefigure.h"
 #include "core/algo/coord_trafos.h"
-#include "core/typ/async.h"
 
 //! Fits peak to the given gamma sector and constructs a PeakInfo.
 PeakInfo algo::rawFit(const Cluster& cluster, const Peak& peak, const Range& gmaSector)

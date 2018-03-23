@@ -15,7 +15,6 @@
 #ifndef CONTROLS_DETECTOR_H
 #define CONTROLS_DETECTOR_H
 
-#include <QVBoxLayout>
 #include <QWidget>
 
 //! Aggregated control widgets that govern the detector setup.

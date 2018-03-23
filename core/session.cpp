@@ -19,7 +19,6 @@
 
 #include "core/session.h"
 #include "core/fit/peak_functions.h"
-#include <QDir>
 #include <QJsonDocument>
 
 Session* gSession; //!< global, for data handling

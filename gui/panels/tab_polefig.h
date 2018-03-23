@@ -16,7 +16,6 @@
 #define TAB_POLEFIG_H
 
 #include "gui/mainwin.h"
-#include "gui/base/controls.h"
 
 //! Tabular display of fit results and metadata, with associated controls.
 

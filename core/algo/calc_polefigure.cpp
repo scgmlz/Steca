@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "calc_polefigure.h"
-#include "core/def/idiomatic_for.h"
 #include "core/session.h"
 #include <qmath.h>
 

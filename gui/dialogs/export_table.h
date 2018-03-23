@@ -16,7 +16,6 @@
 #define EXPORT_TABLE_H
 
 #include "gui/capture_and_replay/enhance_widgets.h"
-#include <QWidget>
 
 //! The modal dialog for saving the main table (fit results and metadata).
 

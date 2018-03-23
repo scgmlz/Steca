@@ -19,7 +19,6 @@
 #include "gui/actions/image_trafo_actions.h"
 #include "gui/actions/toggles.h"
 #include "gui/actions/triggers.h"
-#include "gui/capture_and_replay/console.h"
 #include "gui/panels/subframe_diffractogram.h"
 #include "gui/panels/subframe_files.h"
 #include "gui/panels/mainframe.h"
@@ -27,7 +26,6 @@
 #include "gui/panels/subframe_metadata.h"
 #include "gui/panels/subframe_setup.h"
 #include "gui/base/file_dialog.h"
-#include <QMenuBar>
 #include <QStatusBar>
 #include <QStringBuilder> // for ".." % ..
 #include <iostream> // debug

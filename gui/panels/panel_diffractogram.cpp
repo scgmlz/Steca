@@ -14,9 +14,7 @@
 
 #include "panel_diffractogram.h"
 #include "core/session.h"
-#include "gui/capture_and_replay/console.h"
 #include "gui/actions/toggles.h"
-#include "gui/actions/triggers.h"
 #include "gui/panels/subframe_setup.h"
 
 // ************************************************************************** //

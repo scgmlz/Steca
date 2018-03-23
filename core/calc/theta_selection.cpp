@@ -12,7 +12,6 @@
 //
 // ************************************************************************** //
 
-#include "theta_selection.h"
 #include "core/session.h"
 
 ThetaSelection::ThetaSelection()
