@@ -16,7 +16,7 @@
 #include "core/session.h"
 #include "gui/actions/toggles.h"
 #include "gui/actions/triggers.h"
-#include "gui/panels/plot_diagram.h"
+#include "gui/plot/plot_diagram.h"
 #include <iostream>
 
 // sorts xs and ys the same way, by (x,y)
