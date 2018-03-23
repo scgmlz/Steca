@@ -53,10 +53,8 @@ MainWin::MainWin()
     setWindowIcon(QIcon(":/icon/retroStier"));
     setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
 
-    // connect signals
-    QObject::connect(gSession, &Session::sigFiles, [this]() {
-            updateActionEnabling();
-        });
+    // inbound signals
+    QObject::connect(gSession, &Session::sigFiles, [this]() { updateActionEnabling(); });
     QObject::connect(gSession, &Session::sigCorr, [this]() {
             bool hasCorr = gSession->hasCorrFile();
             triggers->corrFile.setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
@@ -66,16 +64,14 @@ MainWin::MainWin()
             toggles->enableCorr.setChecked(gSession->corrset().isEnabled());
             updateActionEnabling();
             emit gSession->sigDiffractogram();
-            emit gSession->sigImage();
-        });
+            emit gSession->sigImage(); });
     QObject::connect(gSession, &Session::sigPeaks, [this]() {
             updateActionEnabling();
             emit gSession->sigDiffractogram();
-        });
+            runFits(); });
     QObject::connect(gSession, &Session::sigBaseline, [this]() {
             updateActionEnabling();
-            emit gSession->sigDiffractogram();
-        });
+            emit gSession->sigDiffractogram(); });
 
     initLayout();
     readSettings();
@@ -212,7 +208,8 @@ void MainWin::saveSession()
 
 void MainWin::addFiles()
 {
-    QStringList fileNames = file_dialog::queryImportFileNames(this, "Add files", dataDir_, dataFormats);
+    QStringList fileNames
+        = file_dialog::queryImportFileNames(this, "Add files", dataDir_, dataFormats);
     repaint();
     if (fileNames.isEmpty())
         return;
@@ -233,7 +230,15 @@ void MainWin::loadCorrFile()
     }
 }
 
-void MainWin::runPeakfit()
+void MainWin::runFits()
 {
-
+    if (!gSession->peaks().count()) {
+        gSession->peakInfos().invalidate();
+        return;
+    }
+    Progress progress(1, &gGui->progressBar);
+    int iRefl = gSession->peaks().selectedIndex();
+    gSession->peakInfos()
+        = gSession->activeClusters().rawFits(gSession->peaks().at(iRefl), &progress);
+    emit gSession->sigRawFits();
 }

@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/calc/peak_info.cpp
+//! @file      core/data/peak_info.cpp
 //! @brief     Implements classes PeakInfo, PeakInfos
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "core/calc/peak_info.h"
+#include "core/data/peak_info.h"
 #include "core/def/idiomatic_for.h"
 #include "core/typ/async.h"
 #include "core/session.h"
@@ -62,36 +62,6 @@ PeakInfo::PeakInfo(deg alpha, deg beta)
     : PeakInfo(alpha, beta, Range(), inten_t(NAN), inten_t(NAN),
                deg(NAN), deg(NAN), fwhm_t(NAN), fwhm_t(NAN))
 {}
-
-//! Fits peak to the given gamma sector and constructs a PeakInfo.
-PeakInfo PeakInfo::rawFit(const Cluster* cluster, const Peak& peak, const Range& gmaSector)
-{
-    // fit peak, and retrieve peak parameters:
-    Curve curve = cluster->toCurve(gmaSector);
-    auto& baseline = gSession->baseline();
-    const Polynom f = Polynom::fromFit(baseline.polynomDegree(), curve, baseline.ranges());
-    curve.subtract([f](qreal x) {return f.y(x);});
-
-    std::unique_ptr<PeakFunction> peakFunction( FunctionRegistry::clone(peak.peakFunction()) );
-    peakFunction->fit(curve);
-    const Range& rgeTth = peakFunction->range();
-    qpair fitresult = peakFunction->fittedPeak();
-    fwhm_t fwhm = peakFunction->fittedFWHM();
-    qpair peakError = peakFunction->peakError();
-    fwhm_t fwhmError = peakFunction->fwhmError();
-
-    // compute alpha, beta:
-    deg alpha, beta;
-    cluster->calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
-
-    shp_Metadata metadata = cluster->avgeMetadata();
-
-    return rgeTth.contains(fitresult.x)
-        ? PeakInfo(
-              metadata, alpha, beta, gmaSector, inten_t(fitresult.y), inten_t(peakError.y),
-              deg(fitresult.x), deg(peakError.x), fwhm_t(fwhm), fwhm_t(fwhmError))
-        : PeakInfo(metadata, alpha, beta, gmaSector);
-}
 
 QStringList PeakInfo::dataTags(bool out)
 {
@@ -144,34 +114,6 @@ QString const PeakInfo::reflStringTag(int attr, bool out)
 // ************************************************************************** //
 //  class PeakInfos
 // ************************************************************************** //
-
-//! Gathers PeakInfos from Datasets.
-
-//! Either uses the whole gamma range of the cluster (if gammaSector is invalid),
-//!  or user limits the range.
-//! Even though the betaStep of the equidistant polefigure grid is needed here,
-//!  the returned infos won't be on the grid.
-//! TODO? gammaStep separately?
-
-PeakInfos PeakInfos::rawFits(const Peak& peak, Progress* progress)
-{
-    PeakInfos ret;
-    if (progress)
-        progress->setTotal(gSession->activeClusters().size());
-    int nGamma = qMax(1, gSession->gammaSelection().numSlices());
-    for (const Cluster* cluster : gSession->activeClusters().clusters()) {
-        if (progress)
-            progress->step();
-        for_i (nGamma) {
-            const PeakInfo refInfo
-                = PeakInfo::rawFit(cluster, peak, gSession->gammaSelection().slice2range(i));
-            if (!qIsNaN(refInfo.inten()))
-                ret.append(refInfo);
-        }
-    }
-    return ret;
-}
-
 
 void PeakInfos::append(const PeakInfo& info)
 {

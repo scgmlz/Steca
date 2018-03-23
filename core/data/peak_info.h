@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/calc/peak_info.h
+//! @file      core/data/peak_info.h
 //! @brief     Defines classes PeakInfo, PeakInfos
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -33,9 +33,6 @@ public:
         deg alpha, deg beta, Range, inten_t, inten_t /*error*/, deg, deg /*error*/,
         fwhm_t, fwhm_t /*error*/);
     PeakInfo(deg alpha, deg beta);
-    // TODO revert from constructor to function to emphasize that all the fitting takes place here
-    static PeakInfo rawFit(
-        const class Cluster* cluster, const class Peak& peak, const Range& gmaSector);
 
     enum class eReflAttr {
         ALPHA,
@@ -82,19 +79,13 @@ private:
 class PeakInfos : public QVector<PeakInfo> {
 public:
     PeakInfos() { invalidate(); }
-
-    static PeakInfos rawFits(const class Peak& peak, class Progress* progress);
-
+    void invalidate();
     void append(const PeakInfo&);
-
     inten_t averageInten() const;
     const Range& rgeInten() const;
-
 private:
     mutable inten_t avgInten_;
     mutable Range rgeInten_;
-
-    void invalidate();
 };
 
 #endif // PEAK_INFO_H

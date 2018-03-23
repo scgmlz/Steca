@@ -84,6 +84,7 @@ public:
     int totalOffset() const;
     bool isIncomplete() const;
     bool isActivated() const { return activated_; }
+    PeakInfo rawFit(const class Peak& peak, const Range& gmaSector) const;
 
 private:
     const class Datafile& file_;

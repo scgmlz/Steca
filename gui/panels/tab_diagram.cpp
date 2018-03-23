@@ -95,7 +95,7 @@ DiagramWidget::DiagramWidget()
             render(); });
 
     // inbound connection
-    connect(gSession, &Session::sigPeaks, [this]() {
+    connect(gSession, &Session::sigRawFits, [this]() {
             if (isVisible())
                 render(); });
 
@@ -119,14 +119,7 @@ DiagramWidget::DiagramWidget()
 
 void DiagramWidget::render()
 {
-    int iRefl = gSession->peaks().selectedIndex();
-    TakesLongTime __;
-
-    // TODO rm DUPLICATE from TableWidget:
-
-    Progress progress(1, &gGui->progressBar);
-
-    rs_ = PeakInfos::rawFits(gSession->peaks().at(iRefl), &progress);
+    rs_ = gSession->peakInfos();
     int count = rs_.count();
 
     xs_.resize(count);
@@ -161,6 +154,7 @@ void DiagramWidget::render()
     ysErrorLo_.clear();
     ysErrorUp_.clear();
 
+    int iRefl = gSession->peaks().selectedIndex();
     if (!gSession->peaks().at(iRefl).isRaw()) {
         switch ((PeakInfo::eReflAttr)selectXY_->yAxis.currentIndex()) {
         case eReflAttr::INTEN:

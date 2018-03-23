@@ -15,7 +15,7 @@
 #ifndef CALC_POLEFIGURE_H
 #define CALC_POLEFIGURE_H
 
-#include "core/calc/peak_info.h"
+#include "core/data/peak_info.h"
 #include "core/typ/async.h"
 
 PeakInfos interpolateInfos(

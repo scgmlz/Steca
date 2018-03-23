@@ -15,7 +15,7 @@
 #ifndef TAB_DIAGRAM_H
 #define TAB_DIAGRAM_H
 
-#include "core/calc/peak_info.h"
+#include "core/data/peak_info.h"
 #include "gui/mainwin.h"
 #include "gui/base/controls.h"
 

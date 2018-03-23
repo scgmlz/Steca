@@ -157,7 +157,7 @@ TableWidget::TableWidget()
     dataView_->setColumns(headers, outHeaders, cmps);
 
     // inbound connection
-    connect(gSession, &Session::sigPeaks, [this]() {
+    connect(gSession, &Session::sigRawFits, [this]() {
             if (isVisible())
                 render(); });
 
@@ -185,10 +185,7 @@ TableWidget::TableWidget()
 
 void TableWidget::render()
 {
-    TakesLongTime __;
-    int iRefl = gSession->peaks().selectedIndex();
-    Progress progress(1, &gGui->progressBar);
-    PeakInfos points_ = PeakInfos::rawFits(gSession->peaks().at(iRefl), &progress);
+    PeakInfos points_ = gSession->peakInfos();
 
     if (gSession->interpol().enabled()) {
         /*

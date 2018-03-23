@@ -32,7 +32,7 @@ PolefigWidget::PolefigWidget()
     // internal connections
 
     // inbound connection
-    connect(gSession, &Session::sigPeaks, [this]() {
+    connect(gSession, &Session::sigRawFits, [this]() {
             if (isVisible())
                 render(); });
 
@@ -56,14 +56,7 @@ PolefigWidget::PolefigWidget()
 
 void PolefigWidget::render()
 {
-    int iRefl = gSession->peaks().selectedIndex();
-    TakesLongTime __;
-
-    // TODO rm DUPLICATE from TableWidget:
-
-    Progress progress(1, &gGui->progressBar);
-
-    plot_->set(PeakInfos::rawFits(gSession->peaks().at(iRefl), &progress));
+    plot_->set(gSession->peakInfos());
     // TODO restore interpolation
     //if (!interpPoints_.isEmpty() && !calcPoints_.isEmpty())
     //    plot_->set((interpolated ? interpPoints_ : calcPoints_).at(reflIndex));

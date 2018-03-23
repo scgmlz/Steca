@@ -15,7 +15,7 @@
 #ifndef FRAME_H
 #define FRAME_H
 
-#include "core/calc/peak_info.h"
+#include "core/data/peak_info.h"
 #include "gui/base/controls.h"
 #include <QDialog>
 #include <QProgressBar>

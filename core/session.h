@@ -21,7 +21,7 @@
 #include "core/calc/theta_selection.h"
 #include "core/calc/lens.h"
 #include "core/calc/peak.h"
-#include "core/calc/peak_info.h"
+#include "core/data/peak_info.h"
 #include "core/data/corrset.h"
 #include "core/data/dataset.h"
 #include "core/data/image_transform.h"
@@ -120,6 +120,7 @@ signals:
     void sigNorm();          //!< normalization has changed
     void sigPeaks();         //!< list of peaks or selected peak has changed
     void sigInterpol();      //!< interpolation parameters have changed
+    void sigRawFits();       //!< fit results have changed
 
 private:
     // with reference accessor methods:

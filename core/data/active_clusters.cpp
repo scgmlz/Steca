@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/data/activeClusters.cpp
+//! @file      core/data/active_clusters.cpp
 //! @brief     Implements class ActiveClusters
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -105,4 +105,31 @@ qreal ActiveClusters::calcAvgMutable(qreal (Cluster::*avgFct)() const) const {
         cnt += cluster->count();
     }
     return sum/cnt;
+}
+
+//! Gathers PeakInfos from Datasets.
+
+//! Either uses the whole gamma range of the cluster (if gammaSector is invalid),
+//!  or user limits the range.
+//! Even though the betaStep of the equidistant polefigure grid is needed here,
+//!  the returned infos won't be on the grid.
+//! TODO? gammaStep separately?
+
+PeakInfos ActiveClusters::rawFits(const Peak& peak, Progress* progress) const
+{
+    PeakInfos ret;
+    if (progress)
+        progress->setTotal(size());
+    int nGamma = qMax(1, gSession->gammaSelection().numSlices());
+    for (const Cluster* cluster : clusters()) {
+        if (progress)
+            progress->step();
+        for_i (nGamma) {
+            const PeakInfo refInfo = cluster->rawFit(
+                peak, gSession->gammaSelection().slice2range(i));
+            if (!qIsNaN(refInfo.inten()))
+                ret.append(refInfo);
+        }
+    }
+    return ret;
 }

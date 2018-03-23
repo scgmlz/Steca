@@ -317,3 +317,33 @@ bool Cluster::isIncomplete() const
 {
     return count()<gSession->dataset().binning();
 }
+
+//! Fits peak to the given gamma sector and constructs a PeakInfo.
+PeakInfo Cluster::rawFit(const Peak& peak, const Range& gmaSector) const
+{
+    // fit peak, and retrieve peak parameters:
+    Curve curve = toCurve(gmaSector);
+    auto& baseline = gSession->baseline();
+    const Polynom f = Polynom::fromFit(baseline.polynomDegree(), curve, baseline.ranges());
+    curve.subtract([f](qreal x) {return f.y(x);});
+
+    std::unique_ptr<PeakFunction> peakFunction( FunctionRegistry::clone(peak.peakFunction()) );
+    peakFunction->fit(curve);
+    const Range& rgeTth = peakFunction->range();
+    qpair fitresult = peakFunction->fittedPeak();
+    fwhm_t fwhm = peakFunction->fittedFWHM();
+    qpair peakError = peakFunction->peakError();
+    fwhm_t fwhmError = peakFunction->fwhmError();
+
+    // compute alpha, beta:
+    deg alpha, beta;
+    calculateAlphaBeta(rgeTth.center(), gmaSector.center(), alpha, beta);
+
+    shp_Metadata metadata = avgeMetadata();
+
+    return rgeTth.contains(fitresult.x)
+        ? PeakInfo(
+              metadata, alpha, beta, gmaSector, inten_t(fitresult.y), inten_t(peakError.y),
+              deg(fitresult.x), deg(peakError.x), fwhm_t(fwhm), fwhm_t(fwhmError))
+        : PeakInfo(metadata, alpha, beta, gmaSector);
+}
