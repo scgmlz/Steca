@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "gui/dialogs/data_table.h"
+#include "gui/panels/data_table.h"
 #include "core/def/idiomatic_for.h"
 #include <QApplication>
 #include <QClipboard>

@@ -16,7 +16,7 @@
 #include "core/session.h"
 #include "gui/actions/toggles.h"
 #include "gui/actions/triggers.h"
-#include "gui/dialogs/data_table.h"
+#include "gui/panels/data_table.h"
 #include <QScrollArea>
 #include <QThread> // for sleep for debugging
 #include <iostream>
