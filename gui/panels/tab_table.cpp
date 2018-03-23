@@ -188,15 +188,13 @@ void TableWidget::render()
     TakesLongTime __;
     int iRefl = gSession->peaks().selectedIndex();
     Progress progress(1, &gGui->progressBar);
+    PeakInfos points_ = PeakInfos::rawFits(gSession->peaks().at(iRefl), &progress);
 
-    PeakInfos calcPoints_ {gSession->peaks().at(iRefl), &progress};
-
-    PeakInfos points_ = calcPoints_;
     if (gSession->interpol().enabled()) {
         /*
         Progress progress(calcPoints_.count(), &progressBar_);
         points_ = interpolateInfos(
-                calcPoints_, alphaStep, betaStep, idwRadius, avgAlphaMax, avgRadius,
+                points_, alphaStep, betaStep, idwRadius, avgAlphaMax, avgRadius,
                 avgTreshold, &progress));
         */
     }

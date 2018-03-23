@@ -126,7 +126,7 @@ void DiagramWidget::render()
 
     Progress progress(1, &gGui->progressBar);
 
-    rs_ = PeakInfos {gSession->peaks().at(iRefl), &progress};
+    rs_ = PeakInfos::rawFits(gSession->peaks().at(iRefl), &progress);
     int count = rs_.count();
 
     xs_.resize(count);

@@ -81,8 +81,8 @@ private:
 class PeakInfos : public QVector<PeakInfo> {
 public:
     PeakInfos() { invalidate(); }
-    // TODO revert from constructor to function to emphasize that all the fitting takes place here
-    PeakInfos(const class Peak& peak, class Progress* progress);
+
+    static PeakInfos rawFits(const class Peak& peak, class Progress* progress);
 
     void append(const PeakInfo&);
 

@@ -157,8 +157,9 @@ QString const PeakInfo::reflStringTag(int attr, bool out) {
 //!  the returned infos won't be on the grid.
 //! TODO? gammaStep separately?
 
-PeakInfos::PeakInfos(const Peak& peak, Progress* progress)
+PeakInfos PeakInfos::rawFits(const Peak& peak, Progress* progress)
 {
+    PeakInfos ret;
     if (progress)
         progress->setTotal(gSession->activeClusters().size());
     int nGamma = qMax(1, gSession->gammaSelection().numSlices());
@@ -168,9 +169,10 @@ PeakInfos::PeakInfos(const Peak& peak, Progress* progress)
         for_i (nGamma) {
             const PeakInfo refInfo {cluster, peak, gSession->gammaSelection().slice2range(i)};
             if (!qIsNaN(refInfo.inten()))
-                this->append(refInfo);
+                ret.append(refInfo);
         }
     }
+    return ret;
 }
 
 

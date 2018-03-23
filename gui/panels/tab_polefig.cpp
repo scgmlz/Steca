@@ -63,7 +63,7 @@ void PolefigWidget::render()
 
     Progress progress(1, &gGui->progressBar);
 
-    plot_->set(PeakInfos {gSession->peaks().at(iRefl), &progress});
+    plot_->set(PeakInfos::rawFits(gSession->peaks().at(iRefl), &progress));
     // TODO restore interpolation
     //if (!interpPoints_.isEmpty() && !calcPoints_.isEmpty())
     //    plot_->set((interpolated ? interpPoints_ : calcPoints_).at(reflIndex));
