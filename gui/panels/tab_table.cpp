@@ -33,7 +33,6 @@ public:
 private:
     DataView& dataView_;
     QVector<CCheckBox*> showCols_;
-    QVBoxLayout box_;
     CRadioButton rbHidden_ {"rbHidden", ""};
     CRadioButton rbAll_ {"rbAll", "all"};
     CRadioButton rbNone_ {"rbNone", "none"};
@@ -45,26 +44,24 @@ private:
 };
 
 ColumnSelector::ColumnSelector(DataView& dataView, const QStringList& headers)
-    : dataView_(dataView)
+    : dataView_ {dataView}
     , showCols_ {headers.count()}
 {
-
-    setLayout(&box_);
-
-    box_.addWidget(&rbHidden_);
     rbHidden_.hide();
 
-    box_.addWidget(&rbAll_);
-    box_.addWidget(&rbNone_);
-    box_.addWidget(&rbInten_);
-    box_.addWidget(&rbTth_);
-    box_.addWidget(&rbFWHM_);
-    box_.addSpacing(8);
-
+    auto* box = new QVBoxLayout;
+    box->addWidget(&rbHidden_);
+    box->addWidget(&rbAll_);
+    box->addWidget(&rbNone_);
+    box->addWidget(&rbInten_);
+    box->addWidget(&rbTth_);
+    box->addWidget(&rbFWHM_);
+    box->addSpacing(8);
     for_i (showCols_.count()) {
         showCols_[i] = new CCheckBox("cb"+QString::number(i), headers[i]);
-        box_.addWidget(showCols_[i]);
+        box->addWidget(showCols_[i]);
     }
+    setLayout(box);
 
     auto _all = [this]() {
         for (auto* col : showCols_)

@@ -264,3 +264,24 @@ QString DataView::exportSelection()
     }
     return ret;
 }
+
+void DataView::toFile(QTextStream& stream, const QString& separator) const
+{
+    const QStringList& headers = outHeaders();
+    for_i (headers.count())
+        stream << headers.at(i) << separator;
+    stream << '\n';
+
+    for_i (model_->columnCount()) {
+        const row_t& r = row(i);
+        for_i (r.count()) {
+            const QVariant& var = r.at(i);
+            if (isNumeric(var))
+                stream << var.toDouble();
+            else
+                stream << var.toString();
+            stream << separator;
+        }
+        stream << '\n';
+    }
+}

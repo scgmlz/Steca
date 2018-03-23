@@ -36,7 +36,9 @@ public:
     MainWin();
     ~MainWin();
 
-    class SubframeSetup* setup() const { return frameSetup_; }
+    const class Mainframe& mainframe() const { return *mainframe_; }
+    const class SubframeSetup* setup() const { return frameSetup_; }
+
     class Triggers* triggers;
     class Toggles* toggles;
     class ImageTrafoActions* imageTrafoActions;
@@ -62,12 +64,12 @@ private:
 
     void runFits();
 
+    class Mainframe* mainframe_;
+    class SubframeDiffractogram* frameDiffractogram_;
+    class SubframeSetup* frameSetup_;
     QDockWidget* dockFiles_;
     QDockWidget* dockClusters_;
     QDockWidget* dockMetadata_;
-    class SubframeDiffractogram* frameDiffractogram_;
-    class Mainframe* mainframe_;
-    class SubframeSetup* frameSetup_;
     class Menus* menus_;
 
     QSplitter splMain_ {Qt::Vertical};
@@ -76,7 +78,7 @@ private:
     QDir sessionDir_ {QDir::homePath()};
     QDir dataDir_ {QDir::homePath()};
 
-friend Triggers;
+    friend Triggers;
     friend Toggles;
 };
 

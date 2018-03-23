@@ -24,6 +24,8 @@
 class Mainframe : public CTabWidget {
 public:
     Mainframe();
+    const class TableWidget& tableWidget() const { return *tableWidget_; }
+
 private:
     void render();
     class DataImageTab*  dataImageTab_;

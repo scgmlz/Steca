@@ -75,6 +75,7 @@ public:
     QStringList outHeaders() const { return outHeaders_; }
     int rowCount() const;
     const row_t& row(int) const;
+    void toFile(QTextStream& stream, const QString& separator) const;
 
 private:
     void keyPressEvent(QKeyEvent *event);

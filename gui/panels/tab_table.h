@@ -17,6 +17,7 @@
 
 #include "gui/mainwin.h"
 #include "gui/base/controls.h"
+#include "gui/dialogs/data_table.h"
 #include "core/algo/calc_polefigure.h" // includes peak_info.h
 
 //! Tabular display of fit results and metadata, with associated controls.
@@ -24,6 +25,7 @@
 class TableWidget : public QWidget {
 public:
     TableWidget();
+    const class DataView& dataView() const { return *dataView_; }
 private:
     void render();
     class DataView* dataView_;

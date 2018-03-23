@@ -17,6 +17,8 @@
 #include "gui/base/file_dialog.h"
 #include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/mainwin.h"
+#include "gui/panels/mainframe.h"
+#include "gui/panels/tab_table.h"
 #include <cmath>
 #include <QGroupBox>
 #include <QMessageBox>
@@ -62,9 +64,11 @@ void ExportTable::save()
     if (xyMode_)
         ;//writeCurrentDiagramOutputFile(stream, separator);
     else
-        ;//writeAllDataOutputFile(stream, separator);
+        gGui->mainframe().tableWidget().dataView().toFile(stream, separator);
     close();
 }
+
+
 /*
 void DiagramsFrame::writeCurrentDiagramOutputFile(QTextStream& stream, const QString& separator)
 {
