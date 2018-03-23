@@ -19,12 +19,14 @@
 #include "core/def/numbers.h"
 #include "QCustomPlot/qcustomplot.h"
 
+//! Tab in DiagramsFrame, to display a plot of something against something.
+
 class PlotDiagram : public QCustomPlot {
 public:
     PlotDiagram();
     void set(PeakInfos);
-    void plot(
-        const QVector<qreal>& xs, const QVector<qreal>& ys, const QVector<qreal>& ysLo, const QVector<qreal>& ysUp);
+    void plot(const QVector<qreal>& xs, const QVector<qreal>& ys,
+              const QVector<qreal>& ysLo, const QVector<qreal>& ysUp);
 private:
     QCPGraph *graph_, *graphLo_, *graphUp_;
 };

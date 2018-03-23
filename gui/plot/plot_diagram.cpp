@@ -19,8 +19,6 @@
 //  local class PlotDiagram
 // ************************************************************************** //
 
-//! Tab in DiagramsFrame, to display a plot of something against something.
-
 PlotDiagram::PlotDiagram()
 {
     graph_ = addGraph();
