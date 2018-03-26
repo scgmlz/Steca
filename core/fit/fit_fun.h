@@ -20,7 +20,6 @@
 #include "core/typ/registry.h"
 #include "core/typ/curve.h"
 #include "core/typ/realpair.h"
-#include "core/typ/types.h"
 
 //! A polynomial, for fitting the background of a diffractogram
 

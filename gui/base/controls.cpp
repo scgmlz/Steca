@@ -14,7 +14,7 @@
 
 #include "controls.h"
 #include "core/typ/exception.h"
-#include "core/typ/types.h"
+#include "core/typ/convert.h"
 #include "core/def/debug.h"
 #include "gui/base/displays.h"
 #include "gui/capture_and_replay/console.h"

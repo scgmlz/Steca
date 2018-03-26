@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/typ/types.cpp
-//! @brief     Implements types TO_(INT|DOUBLE)
+//! @file      core/typ/convert.cpp
+//! @brief     Implements functions TO_INT, TO_DOUBLE
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "types.h"
+#include "convert.h"
 #include "core/typ/exception.h"
 
 int TO_INT(const QString& s) {

@@ -28,6 +28,14 @@
 
 extern class Session* gSession;
 
+enum class eNorm {
+    NONE,
+    MONITOR,
+    DELTA_MONITOR,
+    DELTA_TIME,
+    BACKGROUND,
+};
+
 //! Companion of MainWin and MainWin, holds data and data-related settings.
 
 //! One instance of this class coexists with the main window. It is accessible from everywhere

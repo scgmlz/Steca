@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/typ/types.h
-//! @brief     Defines types float, float, QVector<float>, eNorm, TO_(INT|DOUBLE)
+//! @file      core/typ/convert.h
+//! @brief     Defines functions TO_INT, TO_DOUBLE
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -16,14 +16,6 @@
 #define TYPES_H
 
 #include "core/def/macros.h"
-
-enum class eNorm {
-    NONE,
-    MONITOR,
-    DELTA_MONITOR,
-    DELTA_TIME,
-    BACKGROUND,
-};
 
 int TO_INT(const QString&) THROWS;
 double TO_DOUBLE(const QString&) THROWS;
