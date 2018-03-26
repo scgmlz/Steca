@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef EXPORT_TABLE_H
-#define EXPORT_TABLE_H
+#ifndef EXPORT_BIGTABLE_H
+#define EXPORT_BIGTABLE_H
 
 #include "gui/capture_and_replay/enhance_widgets.h"
 
@@ -29,4 +29,4 @@ private:
     class ExportfileDialogfield* fileField_;
 };
 
-#endif // EXPORT_TABLE_H
+#endif // EXPORT_BIGTABLE_H

@@ -17,6 +17,7 @@
 #include "gui/base/displays.h"
 #include "gui/base/model_view.h"
 #include "gui/mainwin.h"
+#include "gui/state.h"
 #include "gui/actions/triggers.h"
 #include <QStackedWidget>
 
@@ -339,3 +340,13 @@ void ControlsPeakfits::onPeaks()
     if (peak)
         comboReflType_.setCurrentText(peak->functionName());
 };
+
+void ControlsPeakfits::hideEvent(QHideEvent*)
+{
+    gGui->state->editingPeakfits = false;
+}
+
+void ControlsPeakfits::showEvent(QShowEvent*)
+{
+    gGui->state->editingPeakfits = true;
+}

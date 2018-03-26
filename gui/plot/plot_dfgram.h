@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef PANEL_DIFFRACTOGRAM_H
-#define PANEL_DIFFRACTOGRAM_H
+#ifndef PLOT_DFGRAM_H
+#define PLOT_DFGRAM_H
 
 #include "gui/mainwin.h" // for eFittingTab
 #include "gui/base/plot_overlay.h"
@@ -67,4 +67,4 @@ private:
     int currReflIndex_ {0};
 };
 
-#endif // PANEL_DIFFRACTOGRAM_H
+#endif // PLOT_DFGRAM_H

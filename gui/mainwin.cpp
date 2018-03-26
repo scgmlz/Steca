@@ -15,6 +15,7 @@
 #include "mainwin.h"
 #include "core/algo/fitting.h"
 #include "core/session.h"
+#include "gui/state.h"
 #include "gui/actions/menus.h"
 #include "gui/actions/image_trafo_actions.h"
 #include "gui/actions/toggles.h"
@@ -46,6 +47,7 @@ MainWin::MainWin()
 
     triggers = new Triggers;
     toggles = new Toggles;
+    state = new GuiState;
     imageTrafoActions = new ImageTrafoActions;
     menus_ = new Menus(menuBar());
 

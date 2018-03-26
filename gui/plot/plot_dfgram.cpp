@@ -14,6 +14,7 @@
 
 #include "plot_dfgram.h"
 #include "core/session.h"
+#include "gui/state.h"
 #include "gui/actions/toggles.h"
 #include "gui/panels/subframe_setup.h"
 
@@ -28,9 +29,9 @@ DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& parent)
 
 void DiffractogramPlotOverlay::addRange(const Range& range)
 {
-    if        (gGui->setup()->editingBaseline()) {
+    if        (gGui->state->editingBaseline) {
         gSession->baseline().addRange(range);
-    } else if (gGui->setup()->editingPeaks()) {
+    } else if (gGui->state->editingPeakfits) {
         if (Peak* peak = gSession->peaks().selectedPeak()) {
             peak->setRange(range);
             gConsole->log("peakRangeMin set "+QString::number(range.min));
@@ -41,19 +42,19 @@ void DiffractogramPlotOverlay::addRange(const Range& range)
 
 void DiffractogramPlotOverlay::subtractRange(const Range& range)
 {
-    if        (gGui->setup()->editingBaseline()) {
+    if        (gGui->state->editingBaseline) {
         gSession->baseline().removeRange(range);
-    } else if (gGui->setup()->editingPeaks()) {
+    } else if (gGui->state->editingPeakfits) {
         ; // do nothing
     }
 }
 
 bool DiffractogramPlotOverlay::addModeColor(QColor& color) const
 {
-    if        (gGui->setup()->editingBaseline()) {
+    if        (gGui->state->editingBaseline) {
         color = {0x98, 0xfb, 0x98, 0x70}; // medium green
         return true;
-    } else if (gGui->setup()->editingPeaks()) {
+    } else if (gGui->state->editingPeakfits) {
         color = {0x87, 0xce, 0xfa, 0x70}; // medium blue
         return true;
     }
@@ -62,7 +63,7 @@ bool DiffractogramPlotOverlay::addModeColor(QColor& color) const
 
 bool DiffractogramPlotOverlay::subtractModeColor(QColor& color) const
 {
-    if        (gGui->setup()->editingBaseline()) {
+    if        (gGui->state->editingBaseline) {
         color = {0xf8, 0xf8, 0xff, 0x90}; // almost white
         return true;
     }

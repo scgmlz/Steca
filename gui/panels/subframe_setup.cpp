@@ -48,13 +48,3 @@ void SubframeSetup::updateTabsAvailability()
         setCurrentIndex(0);
     }
 }
-
-bool SubframeSetup::editingBaseline() const
-{
-    return currentIndex()==1;
-}
-
-bool SubframeSetup::editingPeaks() const
-{
-    return currentIndex()==2;
-}

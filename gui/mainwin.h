@@ -39,6 +39,7 @@ public:
 
     class Triggers* triggers;
     class Toggles* toggles;
+    class GuiState* state;
     class ImageTrafoActions* imageTrafoActions;
 
     QProgressBar progressBar {this};

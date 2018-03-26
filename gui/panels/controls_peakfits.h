@@ -26,6 +26,8 @@ private:
     void onPeaks();
     QHBoxLayout topControls_;
     CComboBox comboReflType_;
+    void hideEvent(QHideEvent*) final;
+    void showEvent(QShowEvent*) final;
 };
 
 #endif // CONTROLS_PEAKFITS_H

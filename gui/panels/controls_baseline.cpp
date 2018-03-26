@@ -16,6 +16,7 @@
 #include "core/session.h"
 #include "gui/base/model_view.h"
 #include "gui/mainwin.h"
+#include "gui/state.h"
 #include "gui/actions/triggers.h"
 
 // ************************************************************************** //
@@ -110,4 +111,14 @@ ControlsBaseline::ControlsBaseline()
 
     connect(gSession, &Session::sigBaseline, [this]() {
             spinDegree_.setValue(gSession->baseline().polynomDegree()); });
+}
+
+void ControlsBaseline::hideEvent(QHideEvent*)
+{
+    gGui->state->editingBaseline = false;
+}
+
+void ControlsBaseline::showEvent(QShowEvent*)
+{
+    gGui->state->editingBaseline = true;
 }

@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/typ/convert.h
-//! @brief     Defines functions TO_INT, TO_DOUBLE
+//! @file      gui/state.h
+//! @brief     Defines class MainWin
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,12 +12,13 @@
 //
 // ************************************************************************** //
 
-#ifndef CONVERT_H
-#define CONVERT_H
+#ifndef STATE_H
+#define STATE_H
 
-#include <QtGlobal>
+class GuiState {
+public:
+    bool editingBaseline;
+    bool editingPeakfits;
+};
 
-int TO_INT(const QString&);
-double TO_DOUBLE(const QString&);
-
-#endif // CONVERT_H
+#endif // STATE_H

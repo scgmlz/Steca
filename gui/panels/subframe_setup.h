@@ -22,8 +22,6 @@
 class SubframeSetup : public CTabWidget {
 public:
     SubframeSetup();
-    bool editingBaseline() const;
-    bool editingPeaks() const;
 private:
     void updateTabsAvailability();
 };
