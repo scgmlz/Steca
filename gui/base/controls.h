@@ -15,7 +15,7 @@
 #ifndef CONTROLS_H
 #define CONTROLS_H
 
-#include "core/def/macros.h"
+#include <QtGlobal>
 #include "gui/capture_and_replay/enhance_widgets.h"
 #include <QAction>
 #include <QCheckBox>

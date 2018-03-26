@@ -15,7 +15,7 @@
 #ifndef JSON_H
 #define JSON_H
 
-#include "core/def/macros.h"
+#include <QtGlobal>
 #include <QJsonObject>
 
 QJsonValue double_to_json(const double num);

@@ -15,7 +15,7 @@
 #ifndef ANGLES_H
 #define ANGLES_H
 
-#include "core/def/macros.h"
+#include <QtGlobal>
 
 class rad;
 

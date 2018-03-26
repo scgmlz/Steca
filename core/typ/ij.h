@@ -16,7 +16,7 @@
 #define IJ_H
 
 #include "core/def/comparable.h"
-#include "core/def/macros.h"
+#include <QtGlobal>
 #include <QJsonObject>
 
 //! A pair of integers, for use as image coordinates

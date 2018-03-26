@@ -15,7 +15,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include "core/def/macros.h"
+#include <QtGlobal>
 
 int TO_INT(const QString&);
 double TO_DOUBLE(const QString&);

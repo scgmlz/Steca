@@ -15,7 +15,7 @@
 #ifndef RANGE_H
 #define RANGE_H
 
-#include "core/def/macros.h"
+#include <QtGlobal>
 #include "core/def/comparable.h"
 #include "core/typ/exception.h"
 #include <QJsonArray>

@@ -15,7 +15,7 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include "core/def/macros.h"
+#include <QtGlobal>
 
 struct vec3r;
 
