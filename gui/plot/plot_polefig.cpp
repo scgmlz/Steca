@@ -22,10 +22,6 @@ PlotPolefig::PlotPolefig()
     , avgAlphaMax_(0)
 
 {
-    setLayout((grid_ = new QGridLayout()));
-    grid_->setRowStretch(grid_->rowCount(), 1);
-    grid_->setColumnStretch(grid_->columnCount(), 1);
-
     update();
 }
 

@@ -27,7 +27,6 @@ public:
     void set(const PeakInfos&, bool flat);
 
 private:
-    QGridLayout* grid_;
     void update();
 
     PeakInfos rs_;

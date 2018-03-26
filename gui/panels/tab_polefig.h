@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/tab_polefig.h
-//! @brief     Defines class PolefigTab, and its dependences
+//! @brief     Defines class PolefigTab
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -17,7 +17,7 @@
 
 #include "gui/panels/tab_mainframe.h"
 
-//! Tabular display of fit results and metadata, with associated controls.
+//! Mainframe tab to plot a polefigure plot, with associated controls.
 
 class PolefigTab : public TabMainframe {
 public:

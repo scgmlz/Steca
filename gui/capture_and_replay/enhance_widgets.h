@@ -44,7 +44,7 @@ public:
 class CModelessDialog : public QDialog, public CSettable {
 public:
     CModelessDialog(QWidget* parent, const QString& name);
-    virtual void onCommand(const QStringList&) {}
+    virtual void onCommand(const QStringList&);
 };
 
 #endif // ENHANCE_WIDGETS_H

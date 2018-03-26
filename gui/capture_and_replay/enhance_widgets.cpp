@@ -12,6 +12,7 @@
 //
 // ************************************************************************** //
 
+#include "core/typ/exception.h"
 #include "gui/capture_and_replay/console.h"
 
 // ************************************************************************** //
@@ -52,4 +53,11 @@ CModelessDialog::CModelessDialog(QWidget* parent, const QString& name)
     , CSettable(name)
 {
     setModal(false);
+}
+
+void CModelessDialog::onCommand(const QStringList& args)
+{
+    if (args[0]!="close")
+        THROW("Unexpected command");
+    close();
 }

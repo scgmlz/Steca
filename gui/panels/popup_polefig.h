@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/tab_bigtable.h
-//! @brief     Defines class BigtableTab, and its dependences
+//! @file      gui/panels/popup_polefig.h
+//! @brief     Defines class PopupPolefig
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,20 +12,18 @@
 //
 // ************************************************************************** //
 
-#ifndef TAB_BIGTABLE_H
-#define TAB_BIGTABLE_H
+#ifndef POPUP_POLEFIG_H
+#define POPUP_POLEFIG_H
 
-#include "gui/panels/tab_mainframe.h"
+#include "gui/capture_and_replay/enhance_widgets.h"
 
-//! Tabular display of fit results and metadata, with associated controls.
+//! Popup display of the present pole figure.
 
-class BigtableTab : public TabMainframe {
+class PopupPolefig : public CModelessDialog {
 public:
-    BigtableTab();
-    const class DataView& dataView() const { return *dataView_; }
-    void render() final;
+    PopupPolefig();
 private:
-    class DataView* dataView_;
+    class PlotPolefig* plot_;
 };
 
-#endif // TAB_BIGTABLE_H
+#endif // POPUP_POLEFIG_H

@@ -21,6 +21,7 @@
 #include "gui/dialogs/export_dfgram.h"
 #include "gui/dialogs/export_table.h"
 #include "gui/dialogs/export_polefig.h"
+#include "gui/panels/popup_polefig.h"
 #include <QDesktopServices>
 
 Triggers::Triggers()
@@ -41,5 +42,6 @@ Triggers::Triggers()
     connect(&quit, AT, []() { gGui->close(); });
     connect(&removeFile, AT, []() { gSession->dataset().removeFile(); });
     connect(&saveSession, AT, []() { gGui->saveSession(); });
+    connect(&spawnPolefig, AT, [](){ new PopupPolefig(); });
     connect(&viewReset, AT, []() { gGui->viewReset(); });
 }
