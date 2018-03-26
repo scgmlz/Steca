@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/popup_polefig.h
+//! @file      gui/dialogs/popup_polefig.h
 //! @brief     Defines class PopupPolefig
 //!
 //! @homepage  https://github.com/scgmlz/Steca

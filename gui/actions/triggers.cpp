@@ -21,7 +21,7 @@
 #include "gui/dialogs/export_dfgram.h"
 #include "gui/dialogs/export_table.h"
 #include "gui/dialogs/export_polefig.h"
-#include "gui/panels/popup_polefig.h"
+#include "gui/dialogs/popup_polefig.h"
 #include <QDesktopServices>
 
 Triggers::Triggers()
