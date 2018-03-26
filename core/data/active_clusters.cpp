@@ -31,7 +31,7 @@ size2d ActiveClusters::imageSize() const {
     return clusters_.front()->imageSize();
 }
 
-qreal ActiveClusters::avgMonitorCount() const {
+double ActiveClusters::avgMonitorCount() const {
     if (qIsNaN(avgMonitorCount_)) {
         avgMonitorCount_ = calcAvgMutable(&Cluster::avgMonitorCount);
         qDebug() << "recomputed avgMonitorCount: " << avgMonitorCount_;
@@ -39,13 +39,13 @@ qreal ActiveClusters::avgMonitorCount() const {
     return avgMonitorCount_;
 }
 
-qreal ActiveClusters::avgDeltaMonitorCount() const {
+double ActiveClusters::avgDeltaMonitorCount() const {
     if (qIsNaN(avgDeltaMonitorCount_))
         avgDeltaMonitorCount_ = calcAvgMutable(&Cluster::avgDeltaMonitorCount);
     return avgDeltaMonitorCount_;
 }
 
-qreal ActiveClusters::avgDeltaTime() const {
+double ActiveClusters::avgDeltaTime() const {
     if (qIsNaN(avgDeltaTime_))
         avgDeltaTime_ = calcAvgMutable(&Cluster::avgDeltaTime);
     return avgDeltaTime_;
@@ -96,8 +96,8 @@ void ActiveClusters::computeAvgeCurve() const {
     avgCurve_ = Sequence(group).toCurve();
 }
 
-qreal ActiveClusters::calcAvgMutable(qreal (Cluster::*avgFct)() const) const {
-    qreal sum = 0;
+double ActiveClusters::calcAvgMutable(double (Cluster::*avgFct)() const) const {
+    double sum = 0;
     int cnt = 0;
     for (Cluster const* cluster : clusters_) {
         sum += ((*cluster).*avgFct)() * cluster->count();

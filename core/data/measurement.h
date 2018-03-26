@@ -33,9 +33,9 @@ public:
 
     deg midTth() const;
 
-    qreal monitorCount() const;
-    qreal deltaMonitorCount() const;
-    qreal deltaTime() const;
+    double monitorCount() const;
+    double deltaMonitorCount() const;
+    double deltaTime() const;
 
     deg omg() const;
     deg phi() const;

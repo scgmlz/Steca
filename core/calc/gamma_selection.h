@@ -35,8 +35,8 @@ public:
 
     const Range& range() const { return range_; }
     Range slice2range(int) const;
-    qreal min() const { return range_.min; }
-    qreal max() const { return range_.max; }
+    double min() const { return range_.min; }
+    double max() const { return range_.max; }
     int numSlices() const { return numSlices_; }
     int idxSlice() const { return iSlice_; }
     bool isModeMinMax() const { return mode_==Mode::minmax; }

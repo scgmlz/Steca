@@ -24,7 +24,7 @@ PeakInfo algo::rawFit(const Cluster& cluster, const Peak& peak, const Range& gma
     Curve curve = cluster.toCurve(gmaSector);
     auto& baseline = gSession->baseline();
     const Polynom f = Polynom::fromFit(baseline.polynomDegree(), curve, baseline.ranges());
-    curve.subtract([f](qreal x) {return f.y(x);});
+    curve.subtract([f](double x) {return f.y(x);});
 
     std::unique_ptr<PeakFunction> peakFunction( FunctionRegistry::clone(peak.peakFunction()) );
     peakFunction->fit(curve);

@@ -36,7 +36,7 @@ private:
     deg alpha(const QPointF&) const;
     deg beta(const QPointF&) const;
 
-    void circle(QPointF c, qreal r);
+    void circle(QPointF c, double r);
 
     void paintGrid();
     void paintPoints();
@@ -44,10 +44,10 @@ private:
     // valid during paintEvent
     QPainter* p_;
     QPointF c_;
-    qreal r_;
+    double r_;
 
     bool flat_;
-    qreal alphaMax_, avgAlphaMax_;
+    double alphaMax_, avgAlphaMax_;
 };
 
 #endif // PLOT_POLEFIG_H

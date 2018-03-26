@@ -28,7 +28,7 @@ Range::Range() {
     invalidate();
 }
 
-Range::Range(qreal min, qreal max) {
+Range::Range(double min, double max) {
     set(min, max);
 }
 
@@ -57,11 +57,11 @@ bool Range::isEmpty() const {
     return !isValid() || min >= max;
 }
 
-qreal Range::width() const {
+double Range::width() const {
     return isValid() ? max - min : Q_QNAN;
 }
 
-qreal Range::center() const {
+double Range::center() const {
     return isValid() ? (min + max) / 2 : Q_QNAN;
 }
 
@@ -73,25 +73,25 @@ Range Range::slice(int i, int n) const {
     return Range(min+i*delta, min+(i+1)*delta);
 }
 
-void Range::set(qreal min_, qreal max_) {
+void Range::set(double min_, double max_) {
     min = min_;
     max = max_;
     ASSERT(!isValid() || min <= max);
 }
 
-void Range::safeSet(qreal v1, qreal v2) {
+void Range::safeSet(double v1, double v2) {
     if (v1 > v2)
         qSwap(v1, v2);
     set(v1, v2);
 }
 
-Range Range::safeFrom(qreal v1, qreal v2) {
+Range Range::safeFrom(double v1, double v2) {
     Range range;
     range.safeSet(v1, v2);
     return range;
 }
 
-void Range::extendBy(qreal val) {
+void Range::extendBy(double val) {
     min = qIsNaN(min) ? val : qMin(min, val);
     max = qIsNaN(max) ? val : qMax(max, val);
 }
@@ -101,7 +101,7 @@ void Range::extendBy(const Range& that) {
     extendBy(that.max);
 }
 
-bool Range::contains(qreal val) const {
+bool Range::contains(double val) const {
     return min <= val && val <= max;
 }
 
@@ -117,23 +117,23 @@ Range Range::intersect(const Range& that) const {
     if (!isValid() || !that.isValid())
         return Range();
 
-    const qreal min_ = qMax(min, that.min), max_ = qMin(max, that.max);
+    const double min_ = qMax(min, that.min), max_ = qMin(max, that.max);
     if (min_ <= max_)
         return Range(min_, max_);
 
     // disjoint
-    const qreal val = that.min < min ? min : max;
+    const double val = that.min < min ? min : max;
     return Range(val, val); // empty, isValid()
 }
 
-qreal Range::bound(qreal value) const {
+double Range::bound(double value) const {
     if (isValid() && !qIsNaN(value))
         return qBound(min, value, max);
     return Q_QNAN;
 }
 
 QJsonObject Range::toJson() const {
-    return { { "min", qreal_to_json(min) }, { "max", qreal_to_json(max) } };
+    return { { "min", double_to_json(min) }, { "max", double_to_json(max) } };
 }
 
 void Range::fromJson(const JsonObj& obj) THROWS {

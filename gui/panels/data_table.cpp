@@ -12,7 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "gui/panels/data_table.h"
+#include "data_table.h"
+#include "core/def/debug.h"
 #include "core/def/idiomatic_for.h"
 #include <QApplication>
 #include <QClipboard>

@@ -12,8 +12,10 @@
 //
 // ************************************************************************** //
 
+#include "controls.h"
+#include "core/typ/exception.h"
 #include "core/typ/types.h"
-#include "gui/base/controls.h"
+#include "core/def/debug.h"
 #include "gui/base/displays.h"
 #include "gui/capture_and_replay/console.h"
 #include <QApplication> // for qApp for new Action
@@ -179,7 +181,7 @@ void CSpinBox::onCommand(const QStringList& args)
 
 //! @class CDoubleSpinBox
 
-CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, qreal min, qreal max)
+CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, double min, double max)
     : CSettable(_name)
 {
     widgetUtils::setWidth(this, 2+ndigits, true);

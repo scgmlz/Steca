@@ -108,7 +108,7 @@ cmp_vec Metadata::attributeCmps() {
 }
 
 QString Metadata::attributeStrValue(int i) const {
-    qreal value = 0;
+    double value = 0;
 
     switch (eAttr(i)) {
     case eAttr::MOTOR_XT: value = motorXT; break;
@@ -149,16 +149,16 @@ QVariant Metadata::attributeValue(int i) const {
     switch (eAttr(i)) {
     case eAttr::DATE: return date;
     case eAttr::COMMENT: return comment;
-    case eAttr::MOTOR_XT: return qreal(motorXT);
-    case eAttr::MOTOR_YT: return qreal(motorYT);
-    case eAttr::MOTOR_ZT: return qreal(motorZT);
-    case eAttr::MOTOR_OMG: return qreal(motorOmg);
-    case eAttr::MOTOR_TTH: return qreal(motorTth);
-    case eAttr::MOTOR_PHI: return qreal(motorPhi);
-    case eAttr::MOTOR_CHI: return qreal(motorChi);
-    case eAttr::MOTOR_PST: return qreal(motorPST);
-    case eAttr::MOTOR_SST: return qreal(motorSST);
-    case eAttr::MOTOR_OMGM: return qreal(motorOMGM);
+    case eAttr::MOTOR_XT: return double(motorXT);
+    case eAttr::MOTOR_YT: return double(motorYT);
+    case eAttr::MOTOR_ZT: return double(motorZT);
+    case eAttr::MOTOR_OMG: return double(motorOmg);
+    case eAttr::MOTOR_TTH: return double(motorTth);
+    case eAttr::MOTOR_PHI: return double(motorPhi);
+    case eAttr::MOTOR_CHI: return double(motorChi);
+    case eAttr::MOTOR_PST: return double(motorPST);
+    case eAttr::MOTOR_SST: return double(motorSST);
+    case eAttr::MOTOR_OMGM: return double(motorOMGM);
     case eAttr::T: return nmT;
     case eAttr::TELOAD: return nmTeload;
     case eAttr::TEPOS: return nmTepos;

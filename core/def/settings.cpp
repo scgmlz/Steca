@@ -37,11 +37,11 @@ int XSettings::readInt(const QString& key, int def)
     return ok ? val : def;
 }
 
-qreal XSettings::readReal(const QString& key, qreal def)
+double XSettings::readReal(const QString& key, double def)
 {
     auto var = value(key);
     bool ok;
-    qreal val = var.toDouble(&ok);
+    double val = var.toDouble(&ok);
     return ok ? val : def;
 }
 
@@ -56,17 +56,17 @@ void XSettings::getInt(const QString& key, int& target)
 {
     auto var = value(key);
     bool ok;
-    qreal val = var.toInt(&ok);
+    double val = var.toInt(&ok);
     if (ok)
         target = val;
 }
 
 //! Update target if settings have a double value with given key
-void XSettings::getReal(const QString& key, qreal& target)
+void XSettings::getReal(const QString& key, double& target)
 {
     auto var = value(key);
     bool ok;
-    qreal val = var.toDouble(&ok);
+    double val = var.toDouble(&ok);
     if (ok)
         target = val;
 }

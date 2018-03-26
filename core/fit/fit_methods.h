@@ -29,12 +29,12 @@ public:
 private:
     // these pointers are valid during fit() call
     Function* function_;
-    qreal const* xValues_;
+    double const* xValues_;
 
-    void fit_exec(qreal*, qreal const*, qreal const*, qreal*, int, qreal const*, int);
+    void fit_exec(double*, double const*, double const*, double*, int, double const*, int);
 
-    void callbackY(qreal*, qreal*, int, int, void*);
-    void callbackJacobianLM(qreal*, qreal*, int, int, void*);
+    void callbackY(double*, double*, int, int, void*);
+    void callbackJacobianLM(double*, double*, int, int, void*);
 };
 
 #endif // FIT_METHODS_H

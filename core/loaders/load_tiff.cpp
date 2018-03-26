@@ -20,7 +20,7 @@
 namespace load {
 
 // implemented below
-static void loadTiff(Rawfile*, const QString&, deg, qreal, qreal) THROWS;
+static void loadTiff(Rawfile*, const QString&, deg, double, double) THROWS;
 
 // The dat file looks like so:
 /*
@@ -71,13 +71,13 @@ Rawfile loadTiffDat(const QString& filePath) THROWS {
         deg phi = lst.at(1).toDouble(&ok);
         if (!(ok)) THROW("bad phi value");
 
-        qreal monitor = 0;
+        double monitor = 0;
         if (cnt > 2) {
             monitor = lst.at(2).toDouble(&ok);
             if (!(ok)) THROW("bad monitor value");
         }
 
-        qreal expTime = 0;
+        double expTime = 0;
         if (cnt > 3) {
             expTime = lst.at(3).toDouble(&ok);
             if (!(ok)) THROW("bad expTime value");
@@ -95,7 +95,7 @@ Rawfile loadTiffDat(const QString& filePath) THROWS {
 }
 
 static void loadTiff(
-    Rawfile* file, const QString& filePath, deg phi, qreal monitor, qreal expTime) THROWS
+    Rawfile* file, const QString& filePath, deg phi, double monitor, double expTime) THROWS
 {
     Metadata md;
     md.motorPhi = phi;

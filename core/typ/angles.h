@@ -22,35 +22,35 @@ class rad;
 //! An angle in degrees
 class deg {
 public:
-    deg(qreal val = 0) : val_(val) {}
-    operator qreal() const { return val_; }
+    deg(double val = 0) : val_(val) {}
+    operator double() const { return val_; }
 
     explicit deg(rad);
     rad toRad() const;
 
     deg& operator+=(const deg&);
-    deg& operator*=(qreal);
+    deg& operator*=(double);
 
     deg normalized();
 
 private:
-    qreal val_;
+    double val_;
 };
 
 //! An angle in radians
 class rad {
 public:
-    rad(qreal val = 0) : val_(val) {}
-    operator qreal() const { return val_; }
+    rad(double val = 0) : val_(val) {}
+    operator double() const { return val_; }
 
     explicit rad(deg);
     deg toDeg() const;
 
     rad& operator+=(const rad&);
-    rad& operator*=(qreal);
+    rad& operator*=(double);
 
 private:
-    qreal val_;
+    double val_;
 };
 
 #endif // ANGLES_H

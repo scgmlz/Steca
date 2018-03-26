@@ -46,9 +46,9 @@ public:
         motorOMGM;
 
     // new metadata
-    qreal nmT, nmTeload, nmTepos, nmTeext, nmXe, nmYe, nmZe;
-    qreal monitorCount, deltaMonitorCount;
-    qreal time, deltaTime;
+    double nmT, nmTeload, nmTepos, nmTeext, nmXe, nmYe, nmZe;
+    double monitorCount, deltaMonitorCount;
+    double time, deltaTime;
 };
 
 typedef QSharedPointer<const Metadata> shp_Metadata;

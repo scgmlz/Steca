@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "plot_diagram.h"
+#include "core/def/debug.h"
 #include "core/def/idiomatic_for.h"
 
 // ************************************************************************** //
@@ -26,8 +27,8 @@ PlotDiagram::PlotDiagram()
     graphUp_ = addGraph();
 }
 
-void PlotDiagram::plot(const QVector<qreal>& xs, const QVector<qreal>& ys,
-                       const QVector<qreal>& ysLo, const QVector<qreal>& ysUp)
+void PlotDiagram::plot(const QVector<double>& xs, const QVector<double>& ys,
+                       const QVector<double>& ysLo, const QVector<double>& ysUp)
 {
     ASSERT(xs.count() == ys.count());
 

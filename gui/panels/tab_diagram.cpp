@@ -21,7 +21,7 @@
 namespace {
 
 // sorts xs and ys the same way, by (x,y)
-static void sortColumns(QVector<qreal>& xs, QVector<qreal>& ys, QVector<int>& is)
+static void sortColumns(QVector<double>& xs, QVector<double>& ys, QVector<int>& is)
 {
     ASSERT(xs.count() == ys.count());
 
@@ -32,7 +32,7 @@ static void sortColumns(QVector<qreal>& xs, QVector<qreal>& ys, QVector<int>& is
         is[i] = i;
 
     std::sort(is.begin(), is.end(), [&xs, &ys](int i1, int i2) {
-        qreal x1 = xs.at(i1), x2 = xs.at(i2);
+        double x1 = xs.at(i1), x2 = xs.at(i2);
         if (x1 < x2)
             return true;
         if (x1 > x2)
@@ -40,7 +40,7 @@ static void sortColumns(QVector<qreal>& xs, QVector<qreal>& ys, QVector<int>& is
         return ys.at(i1) < ys.at(i2);
     });
 
-    QVector<qreal> r(count);
+    QVector<double> r(count);
 
     for_i (count)
         r[i] = xs.at(is.at(i));
@@ -148,8 +148,8 @@ void DiagramTab::render()
 
         for_i (count) {
             const row_t row = peakInfos.at(is.at(i)).data(); // access error over sorted index vec
-            qreal sigma = row.at(int(attr)).toDouble();
-            qreal y = ys_.at(i);
+            double sigma = row.at(int(attr)).toDouble();
+            double y = ys_.at(i);
             ysErrorLo_[i] = y - sigma;
             ysErrorUp_[i] = y + sigma;
         }

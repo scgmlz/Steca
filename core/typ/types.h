@@ -15,7 +15,7 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include "core/typ/exception.h"
+#include "core/def/macros.h"
 
 enum class eNorm {
     NONE,

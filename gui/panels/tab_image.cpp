@@ -44,7 +44,7 @@ void ImageView::setScale()
     } else {
         const QSize& sz = size();
         const QSize& os = original_.size();
-        scale_ = qMin(qreal(sz.width() - 2) / os.width(), qreal(sz.height() - 2) / os.height());
+        scale_ = qMin(double(sz.width() - 2) / os.width(), double(sz.height() - 2) / os.height());
     }
 
     if (scale_ <= 0)

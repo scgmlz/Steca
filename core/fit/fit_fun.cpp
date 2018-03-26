@@ -20,8 +20,8 @@
 namespace { // file-scope functions
 
 //! Compute a low power with an exponent of type int
-static qreal pow_n(qreal x, int n) {
-    qreal val = 1;
+static double pow_n(double x, int n) {
+    double val = 1;
     while (n-- > 0)
         val *= x;
     return val;
@@ -43,8 +43,8 @@ void Polynom::setDegree(int degree) {
     setParameterCount(degree + 1);
 }
 
-qreal Polynom::y(qreal x, qreal const* parValues) const {
-    qreal val = 0, xPow = 1;
+double Polynom::y(double x, double const* parValues) const {
+    double val = 0, xPow = 1;
     for_i (parameters_.count()) {
         val += parValue(i, parValues) * xPow;
         xPow *= x;
@@ -52,21 +52,21 @@ qreal Polynom::y(qreal x, qreal const* parValues) const {
     return val;
 }
 
-qreal Polynom::dy(qreal x, int i, qreal const*) const {
+double Polynom::dy(double x, int i, double const*) const {
     return pow_n(x, i);
 }
 
 // REVIEW
-qreal Polynom::avgY(const Range& rgeX, qreal const* parValues) const {
+double Polynom::avgY(const Range& rgeX, double const* parValues) const {
     ASSERT(rgeX.isValid());
 
-    qreal w = rgeX.width();
+    double w = rgeX.width();
     if (w <= 0)
         return y(rgeX.min, parValues);
 
-    qreal minY = 0, maqpair = 0, minPow = 1, maxPow = 1;
+    double minY = 0, maqpair = 0, minPow = 1, maxPow = 1;
     for_i (parameters_.count()) {
-        qreal facY = parValue(i, parValues) / (i + 1);
+        double facY = parValue(i, parValues) / (i + 1);
         minY += facY * (minPow *= rgeX.min);
         maqpair += facY * (maxPow *= rgeX.max);
     }
@@ -114,8 +114,8 @@ void PeakFunction::fit(const Curve& curve, const Range& range) {
     //  if (!guessedPeak().isValid()) {  // calculate guesses // TODO caching
     //  temporarily disabled, until it works correctly
     const int peakIndex = c.maqpairindex();
-    const qreal peakTth = c.x(peakIndex);
-    const qreal peakIntens = c.y(peakIndex);
+    const double peakTth = c.x(peakIndex);
+    const double peakIntens = c.y(peakIndex);
 
     // half-maximum indices
     int hmi1 = peakIndex, hmi2 = peakIndex;
@@ -147,7 +147,7 @@ JsonObj PeakFunction::toJson() const {
     JsonObj ret = Function::toJson();
     ret.insert("range", range_.toJson());
     ret.insert("guessed peak", guessedPeak_.toJson());
-    ret.insert("guessed fwhm", qreal_to_json(guessedFWHM_));
+    ret.insert("guessed fwhm", double_to_json(guessedFWHM_));
     ret.insert("type", name());
     return ret;
 }

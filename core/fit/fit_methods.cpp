@@ -27,7 +27,7 @@ void FitWrapper::fit(Function& function, const Curve& curve) {
 
     // prepare data in a debug::ensured format
     int parCount = function_->parameterCount();
-    QVector<qreal> parValue(parCount), parMin(parCount), parMax(parCount), parError(parCount);
+    QVector<double> parValue(parCount), parMin(parCount), parMax(parCount), parError(parCount);
 
     for_i (parCount) {
         const Function::Parameter& par = function_->parameterAt(i);
@@ -51,12 +51,12 @@ template <typename T> T* remove_const(T const* t) {
 }
 
 void FitWrapper::fit_exec(
-    qreal* params, // IO initial parameter estimates -> estimated solution
-    qreal const* paramsLimitMin, // I
-    qreal const* paramsLimitMax, // I
-    qreal* paramsError, // O
+    double* params, // IO initial parameter estimates -> estimated solution
+    double const* paramsLimitMin, // I
+    double const* paramsLimitMax, // I
+    double* paramsError, // O
     int paramsCount, // I
-    qreal const* yValues, // I
+    double const* yValues, // I
     int dataPointsCount) // I
 {
     DelegateCalculationDbl function(this, &FitWrapper::callbackY);
@@ -69,7 +69,7 @@ void FitWrapper::fit_exec(
     double info[LM_INFO_SZ];
 
     // output covariance matrix
-    QVector<qreal> covar(paramsCount * paramsCount);
+    QVector<double> covar(paramsCount * paramsCount);
 
     int const maxIterations = 1000;
 
@@ -82,13 +82,13 @@ void FitWrapper::fit_exec(
         paramsError[i] = sqrt(covar[i * paramsCount + i]); // the diagonal
 }
 
-void FitWrapper::callbackY(qreal* parValues, qreal* yValues, int /*parCount*/, int xLength, void*) {
+void FitWrapper::callbackY(double* parValues, double* yValues, int /*parCount*/, int xLength, void*) {
     for_i (xLength)
         yValues[i] = function_->y(xValues_[i], parValues);
 }
 
 void FitWrapper::callbackJacobianLM(
-    qreal* parValues, qreal* jacobian, int parameterLength, int xLength, void*) {
+    double* parValues, double* jacobian, int parameterLength, int xLength, void*) {
     for_int (ix, xLength) {
         for_int (ip, parameterLength) {
             *jacobian++ = function_->dy(xValues_[ix], ip, parValues);

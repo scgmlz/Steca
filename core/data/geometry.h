@@ -23,8 +23,8 @@
 //! Detector geometry.
 class Geometry {
 public:
-    static qreal const DEF_DETECTOR_DISTANCE;
-    static qreal const DEF_DETECTOR_PIXEL_SIZE;
+    static double const DEF_DETECTOR_DISTANCE;
+    static double const DEF_DETECTOR_PIXEL_SIZE;
 
     Geometry();
     COMPARABLE(const Geometry&);
@@ -32,20 +32,20 @@ public:
     void fromSettings();
     void fromJson(const JsonObj& obj);
 
-    void setDetectorDistance(qreal);
-    void setPixSize(qreal);
+    void setDetectorDistance(double);
+    void setPixSize(double);
     void setOffset(const IJ& midPixOffset);
 
-    qreal detectorDistance() const { return detectorDistance_; }
-    qreal pixSize() const { return pixSize_; }
+    double detectorDistance() const { return detectorDistance_; }
+    double pixSize() const { return pixSize_; }
     IJ& midPixOffset() { return midPixOffset_; }
     const IJ& midPixOffset() const { return midPixOffset_; }
     void toSettings() const;
     QJsonObject toJson() const;
 
 private:
-    qreal detectorDistance_; // the distance from the sample to the detector
-    qreal pixSize_; // size of the detector pixel
+    double detectorDistance_; // the distance from the sample to the detector
+    double pixSize_; // size of the detector pixel
     IJ midPixOffset_;
 };
 

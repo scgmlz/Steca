@@ -18,7 +18,7 @@
 #include "core/def/macros.h"
 #include <QJsonObject>
 
-QJsonValue qreal_to_json(const qreal num);
+QJsonValue double_to_json(const double num);
 
 class Range;
 class IJ;
@@ -46,11 +46,11 @@ public:
     int loadPint(const QString& key) const THROWS;
     int loadPint(const QString& key, int def) const THROWS;
 
-    qreal loadQreal(const QString& key) const THROWS;
-    qreal loadQreal(const QString& key, qreal def) const THROWS;
+    double loadQreal(const QString& key) const THROWS;
+    double loadQreal(const QString& key, double def) const THROWS;
 
-    qreal loadPreal(const QString& key) const THROWS;
-    qreal loadPreal(const QString& key, qreal def) const THROWS;
+    double loadPreal(const QString& key) const THROWS;
+    double loadPreal(const QString& key, double def) const THROWS;
 
     bool loadBool(const QString& key) const THROWS;
     bool loadBool(const QString& key, bool def) const THROWS;

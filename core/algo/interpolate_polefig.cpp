@@ -47,8 +47,8 @@ typedef QVector<PeakInfo const*> info_vec;
 deg calculateDeltaBeta(deg beta1, deg beta2)
 {
     // Due to cyclicity of angles (360 is equivalent to 0), some magic is needed.
-    qreal deltaBeta = beta1 - beta2;
-    qreal tempDelta = deltaBeta - 360;
+    double deltaBeta = beta1 - beta2;
+    double tempDelta = deltaBeta - 360;
     if (qAbs(tempDelta) < qAbs(deltaBeta))
         deltaBeta = tempDelta;
     tempDelta = deltaBeta + 360;
@@ -112,7 +112,7 @@ eQuadrant remapQuadrant(eQuadrant q)
 // Checks if (alpha,beta) is inside radius from (centerAlpha,centerBeta).
 bool inRadius(deg alpha, deg beta, deg centerAlpha, deg centerBeta, deg radius)
 {
-    qreal a = angle(alpha, centerAlpha, calculateDeltaBeta(beta, centerBeta));
+    double a = angle(alpha, centerAlpha, calculateDeltaBeta(beta, centerBeta));
     return qAbs(a) < radius;
 }
 
@@ -130,13 +130,13 @@ void searchPoints(deg alpha, deg beta, deg radius, const PeakInfos& infos, itfs_
 // Searches closest PeakInfos to given alpha and beta in quadrants.
 void searchInQuadrants(
     const Quadrants& quadrants, deg alpha, deg beta, deg searchRadius, const PeakInfos& infos,
-    info_vec& foundInfos, QVector<qreal>& distances)
+    info_vec& foundInfos, QVector<double>& distances)
 {
     ASSERT(quadrants.count() <= NUM_QUADRANTS);
     // Take only peak infos with beta within +/- BETA_LIMIT degrees into
     // account. Original STeCa used something like +/- 1.5*36 degrees.
-    qreal const BETA_LIMIT = 30;
-    distances.fill(std::numeric_limits<qreal>::max(), quadrants.count());
+    double const BETA_LIMIT = 30;
+    distances.fill(std::numeric_limits<double>::max(), quadrants.count());
     foundInfos.fill(nullptr, quadrants.count());
     // Find infos closest to given alpha and beta in each quadrant.
     for (const PeakInfo& info : infos) {
@@ -159,15 +159,15 @@ void searchInQuadrants(
     }
 }
 
-itf_t inverseDistanceWeighing(const QVector<qreal>& distances, const info_vec& infos)
+itf_t inverseDistanceWeighing(const QVector<double>& distances, const info_vec& infos)
 {
     int N = NUM_QUADRANTS;
     // Generally, only distances.count() == values.count() > 0 is needed for this
     // algorithm. However, in this context we expect exactly the following:
     if (!(distances.count() == N)) qFatal("distances size should be 4");
     if (!(infos.count() == N)) qFatal("infos size should be 4");
-    QVector<qreal> inverseDistances(N);
-    qreal inverseDistanceSum = 0;
+    QVector<double> inverseDistances(N);
+    double inverseDistanceSum = 0;
     for_i (NUM_QUADRANTS) {
         if (distances.at(i) == .0) {
             // Points coincide; no need to interpolate.
@@ -178,12 +178,12 @@ itf_t inverseDistanceWeighing(const QVector<qreal>& distances, const info_vec& i
         inverseDistanceSum += inverseDistances.at(i);
     }
     // REVIEW The RAW peak may need different handling.
-    qreal offset = 0;
-    qreal height = 0;
-    qreal fwhm = 0;
+    double offset = 0;
+    double height = 0;
+    double fwhm = 0;
     for_i (N) {
         const PeakInfo* in = infos.at(i);
-        qreal d = inverseDistances.at(i);
+        double d = inverseDistances.at(i);
         offset += in->tth() * d;
         height += in->inten() * d;
         fwhm += in->fwhm() * d;
@@ -198,7 +198,7 @@ itf_t inverseDistanceWeighing(const QVector<qreal>& distances, const info_vec& i
 itf_t interpolateValues(deg searchRadius, const PeakInfos& infos, deg alpha, deg beta)
 {
     info_vec interpolationInfos;
-    QVector<qreal> distances;
+    QVector<double> distances;
     searchInQuadrants(
         allQuadrants(), alpha, beta, searchRadius, infos, interpolationInfos, distances);
     // Check that infos were found in all quadrants.
@@ -211,12 +211,12 @@ itf_t interpolateValues(deg searchRadius, const PeakInfos& infos, deg alpha, deg
         // No info found in quadrant? Try another quadrant.
         // See J.Appl.Cryst.(2011),44,641 for the angle mapping.
         eQuadrant newQ = remapQuadrant(eQuadrant(i));
-        qreal const newAlpha = i == int(eQuadrant::NORTHEAST) || i == int(eQuadrant::SOUTHEAST)
+        double const newAlpha = i == int(eQuadrant::NORTHEAST) || i == int(eQuadrant::SOUTHEAST)
             ? 180 - alpha
             : -alpha;
-        qreal newBeta = beta < 180 ? beta + 180 : beta - 180;
+        double newBeta = beta < 180 ? beta + 180 : beta - 180;
         info_vec renewedSearch;
-        QVector<qreal> newDistance;
+        QVector<double> newDistance;
         searchInQuadrants(
             { newQ }, newAlpha, newBeta, searchRadius, infos, renewedSearch, newDistance);
         ASSERT(renewedSearch.count() == 1);

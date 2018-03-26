@@ -44,15 +44,15 @@ public:
     Range rgeInten() const;
 
     shp_Metadata avgeMetadata() const;
-    qreal avgMonitorCount() const;
-    qreal avgDeltaMonitorCount() const;
-    qreal avgDeltaTime() const;
+    double avgMonitorCount() const;
+    double avgDeltaMonitorCount() const;
+    double avgDeltaTime() const;
 
     size2d imageSize() const;
 
     Curve toCurve() const;
     Curve toCurve(const Range&) const;
-    Curve toCurve(qreal) const;
+    Curve toCurve(double) const;
 
 private:
     QVector<const Measurement*> members_;
@@ -60,8 +60,8 @@ private:
 
     QVector<float> collectIntens(const Range&) const;
     void compute_metadata() const;
-    Curve toCurve(qreal, const Range&) const;
-    qreal normFactor() const;
+    Curve toCurve(double, const Range&) const;
+    double normFactor() const;
 };
 
 

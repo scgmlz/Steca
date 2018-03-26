@@ -25,18 +25,18 @@ Range Function::Parameter::valueRange() const {
     return range_.isValid() ? range_ : Range(value_, value_);
 }
 
-void Function::Parameter::setValueRange(qreal min, qreal max) {
+void Function::Parameter::setValueRange(double min, double max) {
     range_.set(min, max);
 }
 
-void Function::Parameter::setValue(qreal value, qreal error) {
+void Function::Parameter::setValue(double value, double error) {
     value_ = value;
     error_ = error;
 }
 
 JsonObj Function::Parameter::toJson() const {
     JsonObj ret;
-    ret.insert("value", qreal_to_json(value_));
+    ret.insert("value", double_to_json(value_));
     ret.insert("range", range_.toJson());
     return ret;
 }
@@ -82,10 +82,10 @@ void Function::fromJson(const JsonObj& obj) THROWS {
         parameters_[i].fromJson(params.at(i).toObject());
 }
 
-qreal Function::parValue(int i, qreal const* parValues) const {
+double Function::parValue(int i, double const* parValues) const {
     return parValues ? parValues[i] : parameters_.at(i).value();
 }
 
-void Function::setValue(int i, qreal val) {
+void Function::setValue(int i, double val) {
     parameters_[i].setValue(val, 0);
 }

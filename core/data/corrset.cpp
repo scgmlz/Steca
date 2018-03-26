@@ -68,16 +68,16 @@ void Corrset::calcIntensCorr() const {
 
     int w = size.w, h = size.h, di = gSession->imageCut().left(), dj = gSession->imageCut().top();
 
-    qreal sum = 0;
+    double sum = 0;
     for_ij (w, h)
         sum += corrImage_->inten(i + di, j + dj);
-    qreal avg = sum / (w * h);
+    double avg = sum / (w * h);
 
     intensCorr_.fill(1, corrImage_->size());
 
     for_ij (w, h) {
         const float inten = corrImage_->inten(i + di, j + dj);
-        qreal fact;
+        double fact;
         if (inten > 0) {
             fact = avg / inten;
         } else {

@@ -33,7 +33,7 @@ shp_Metadata Sequence::avgeMetadata() const
 }
 
 #define AVG_ONES(what_function)                 \
-    qreal avg = 0;                              \
+    double avg = 0;                              \
     for (const Measurement* one : members_)     \
         avg += one->what_function();            \
     avg /= count();                             \
@@ -60,11 +60,11 @@ Range Sequence::rgeTth() const { RGE_COMBINE(extendBy, rgeTth()) }
 
 Range Sequence::rgeInten() const { RGE_COMBINE(intersect, rgeInten()) }
 
-qreal Sequence::avgMonitorCount() const { AVG_ONES(monitorCount) }
+double Sequence::avgMonitorCount() const { AVG_ONES(monitorCount) }
 
-qreal Sequence::avgDeltaMonitorCount() const { AVG_ONES(deltaMonitorCount) }
+double Sequence::avgDeltaMonitorCount() const { AVG_ONES(deltaMonitorCount) }
 
-qreal Sequence::avgDeltaTime() const { AVG_ONES(deltaTime) }
+double Sequence::avgDeltaTime() const { AVG_ONES(deltaTime) }
 
 size2d Sequence::imageSize() const
 {
@@ -83,12 +83,12 @@ Curve Sequence::toCurve(const Range& _rgeGma) const
     return toCurve(_normFactor, _rgeGma);
 };
 
-Curve Sequence::toCurve(qreal _normFactor) const
+Curve Sequence::toCurve(double _normFactor) const
 {
     return toCurve(_normFactor, rgeGma());
 };
 
-Curve Sequence::toCurve(qreal _normFactor, const Range& _rgeGma) const
+Curve Sequence::toCurve(double _normFactor, const Range& _rgeGma) const
 {
     QVector<float> intens = collectIntens(_rgeGma);
     int count = intens.count();
@@ -99,13 +99,13 @@ Curve Sequence::toCurve(qreal _normFactor, const Range& _rgeGma) const
     deg minTth = _rgeTth.min;
     deg deltaTth = _rgeTth.width() / count;
     for_i (count)
-        res.append(minTth + deltaTth * i, qreal(intens.at(i) * _normFactor));
+        res.append(minTth + deltaTth * i, double(intens.at(i) * _normFactor));
     return res;
 };
 
-qreal Sequence::normFactor() const
+double Sequence::normFactor() const
 {
-    qreal num = 1, den = 1;
+    double num = 1, den = 1;
 
     switch (gSession->normMode()) {
     case eNorm::MONITOR:
@@ -128,7 +128,7 @@ qreal Sequence::normFactor() const
         break;
     }
 
-    qreal ret = float((num > 0 && den > 0) ? num / den : Q_QNAN);
+    double ret = float((num > 0 && den > 0) ? num / den : Q_QNAN);
     if (qIsNaN(ret))
         qWarning() << "Bad normalisation value";
     return ret;
@@ -162,7 +162,7 @@ QVector<float> Sequence::collectIntens(const Range& rgeGma) const
 
     // sum or average
     if (gSession->intenScaledAvg()) {
-        qreal scale = gSession->intenScale();
+        double scale = gSession->intenScale();
         for_i (numBins) {
             int cnt = counts.at(i);
             if (cnt > 0)
@@ -223,7 +223,7 @@ void Sequence::compute_metadata() const
         m->time = d->time;
     }
 
-    qreal fac = 1.0 / count();
+    double fac = 1.0 / count();
 
     m->motorXT *= fac;
     m->motorYT *= fac;

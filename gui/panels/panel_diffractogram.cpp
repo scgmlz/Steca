@@ -187,7 +187,7 @@ void DiffractogramPlot::onPeakData()
         const qpair gp = fun.guessedPeak();
         if (gp.isValid()) {
             guesses_->addData(gp.x, gp.y);
-            qreal gw2 = fun.guessedFWHM() / 2;
+            double gw2 = fun.guessedFWHM() / 2;
             guesses_->addData(gp.x - gw2, gp.y / 2);
             guesses_->addData(gp.x + gw2, gp.y / 2);
         }
@@ -195,7 +195,7 @@ void DiffractogramPlot::onPeakData()
         const qpair fp = fun.fittedPeak();
         if (fp.isValid()) {
             fits_->addData(fp.x, fp.y);
-            qreal fw2 = fun.fittedFWHM() / 2;
+            double fw2 = fun.fittedFWHM() / 2;
             fits_->addData(fp.x - fw2, fp.y / 2);
             fits_->addData(fp.x + fw2, fp.y / 2);
         }
@@ -250,7 +250,7 @@ void DiffractogramPlot::calcBackground()
         // TODO bundle this code line which similarly appears in at least one other place
 
     for_i (dgram_.count()) {
-        qreal x = dgram_.x(i), y = bgPolynom.y(x);
+        double x = dgram_.x(i), y = bgPolynom.y(x);
         bg_.append(x, y);
         dgramBgFitted_.append(x, dgram_.y(i) - y);
     }
@@ -273,7 +273,7 @@ void DiffractogramPlot::calcPeaks()
 
         Curve c;
         for_i (dgramBgFitted_.count()) {
-            qreal x = dgramBgFitted_.x(i);
+            double x = dgramBgFitted_.x(i);
             if (rge.contains(x))
                 c.append(x, fun.y(x));
         }

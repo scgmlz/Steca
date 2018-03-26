@@ -30,8 +30,8 @@ public:
     int readInt(const QString& key, int def = 0);
     void getInt(const QString& key, int& target);
 
-    qreal readReal(const QString& key, qreal def = 0);
-    void getReal(const QString& key, qreal& target);
+    double readReal(const QString& key, double def = 0);
+    void getReal(const QString& key, double& target);
 
     QString readStr(const QString& key, const QString& def = "") {
         return value(key, def).toString(); }

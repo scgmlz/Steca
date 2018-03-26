@@ -17,7 +17,6 @@
 #include "realpair.h"
 #include "core/def/debug.h"
 #include "core/def/comparators.h"
-#include "core/typ/json.h"
 
 int qpair::compare(const qpair& that) const {
     ASSERT(isValid() && that.isValid());
@@ -33,7 +32,7 @@ void qpair::invalidate() {
 }
 
 QJsonObject qpair::toJson() const {
-    return { { "x", qreal_to_json(x) }, { "y", qreal_to_json(y) } };
+    return { { "x", double_to_json(x) }, { "y", double_to_json(y) } };
 }
 
 void qpair::fromJson(const JsonObj& obj) THROWS {

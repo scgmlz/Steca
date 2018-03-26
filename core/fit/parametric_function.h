@@ -26,29 +26,29 @@ public:
     public:
         Parameter();
 
-        qreal value() const { return value_; }
-        qreal error() const { return error_; }
+        double value() const { return value_; }
+        double error() const { return error_; }
 
         Range valueRange() const; // allowed range of values
-        void setValueRange(qreal min, qreal max);
+        void setValueRange(double min, double max);
 
-        void setValue(qreal value, qreal error);
+        void setValue(double value, double error);
 
         JsonObj toJson() const;
         void fromJson(const JsonObj&) THROWS;
 
     private:
-        qreal value_, error_;
+        double value_, error_;
         Range range_; //!< allowed range of values
     };
 
     virtual ~Function() {}
 
     // evaluate the function y = f(x), with given (parValues) or own parameters
-    virtual qreal y(qreal x, qreal const* parValues = nullptr) const = 0;
+    virtual double y(double x, double const* parValues = nullptr) const = 0;
 
     // partial derivative / parameter, with given (parValues) or own parameters
-    virtual qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const = 0;
+    virtual double dy(double x, int parIndex, double const* parValues = nullptr) const = 0;
 
 public:
     void setParameterCount(int);
@@ -63,8 +63,8 @@ public:
 
 protected:
     QVector<Parameter> parameters_;
-    qreal parValue(int parIndex, qreal const* parValues) const;
-    void setValue(int parIndex, qreal val);
+    double parValue(int parIndex, double const* parValues) const;
+    void setValue(int parIndex, double val);
 };
 
 #endif // PARAMETRIC_FUNCTION_H

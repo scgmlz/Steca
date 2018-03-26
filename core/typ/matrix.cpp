@@ -29,21 +29,21 @@ bool vec3f::operator==(rc that) const {
 
 vec3f::vec3f(const vec3r& v) : vec3f(float(v._0), float(v._1), float(v._2)) {}
 
-vec3r::vec3r(qreal _0_, qreal _1_, qreal _2_) {
+vec3r::vec3r(double _0_, double _1_, double _2_) {
     _0 = _0_;
     _1 = _1_;
     _2 = _2_;
 }
 
-vec3r::vec3r(const vec3f& v) : vec3r(qreal(v._0), qreal(v._1), qreal(v._2)) {}
+vec3r::vec3r(const vec3f& v) : vec3r(double(v._0), double(v._1), double(v._2)) {}
 
 bool vec3r::operator==(rc that) const {
     return _0 == that._0 && _1 == that._1 && _2 == that._2;
 }
 
 mat3r::mat3r(
-    qreal _00_, qreal _01_, qreal _02_, qreal _10_, qreal _11_, qreal _12_, qreal _20_, qreal _21_,
-    qreal _22_) {
+    double _00_, double _01_, double _02_, double _10_, double _11_, double _12_, double _20_, double _21_,
+    double _22_) {
     _00 = _00_;
     _01 = _01_;
     _02 = _02_;
@@ -88,14 +88,14 @@ vec3r mat3r::operator*(const vec3r& v) const {
         _20 * v._0 + _21 * v._1 + _22 * v._2);
 }
 
-mat3r mat3r::rotationCWx(qreal angle) {
+mat3r mat3r::rotationCWx(double angle) {
     return mat3r(1, 0, 0, 0, cos(angle), -sin(angle), 0, sin(angle), cos(angle));
 }
 
-mat3r mat3r::rotationCWz(qreal angle) {
+mat3r mat3r::rotationCWz(double angle) {
     return mat3r(cos(angle), -sin(angle), 0, sin(angle), cos(angle), 0, 0, 0, 1);
 }
 
-mat3r mat3r::rotationCCWz(qreal angle) {
+mat3r mat3r::rotationCCWz(double angle) {
     return rotationCWz(angle).transposed();
 }

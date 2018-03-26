@@ -95,9 +95,9 @@ void Measurement::collectIntens(
 
 deg Measurement::midTth() const { return md_->motorTth; }
 
-qreal Measurement::monitorCount() const { return md_->monitorCount; }
-qreal Measurement::deltaMonitorCount() const { return md_->deltaMonitorCount; }
-qreal Measurement::deltaTime() const { return md_->deltaTime; }
+double Measurement::monitorCount() const { return md_->monitorCount; }
+double Measurement::deltaMonitorCount() const { return md_->deltaMonitorCount; }
+double Measurement::deltaTime() const { return md_->deltaTime; }
 
 deg Measurement::omg() const { return md_->motorOmg; }
 deg Measurement::phi() const { return md_->motorPhi; }

@@ -88,7 +88,7 @@ void Session::sessionFromJson(const QByteArray& json) THROWS
     baseline().fromJson(top.loadObj("baseline"));
 
     bool arg1 = top.loadBool("average intensity?", true);
-    qreal arg2 = top.loadPreal("intensity scale", 1);
+    double arg2 = top.loadPreal("intensity scale", 1);
     setIntenScaleAvg(arg1, arg2);
 
     geometry().fromJson(top.loadObj("detector"));
@@ -111,7 +111,7 @@ QByteArray Session::serializeSession() const
     // TODO serialize metaSelection_
 
     top.insert("average intensity?", intenScaledAvg());
-    top.insert("intensity scale", qreal_to_json((qreal)intenScale()));
+    top.insert("intensity scale", double_to_json((double)intenScale()));
     // TODO serialize image rotation and mirror
     top.insert("detector", geometry().toJson());
     top.insert("cut", imageCut().toJson());
@@ -179,7 +179,7 @@ shp_AngleMap Session::angleMap(const Measurement& one) const
 }
 
 // TODO: split into two functions (see usage in panel_diff..)
-void Session::setIntenScaleAvg(bool avg, qreal scale)
+void Session::setIntenScaleAvg(bool avg, double scale)
 {
     intenScaledAvg_ = avg;
     intenScale_ = scale;
@@ -192,17 +192,17 @@ void Session::setNormMode(eNorm normMode)
     emit gSession->sigNorm();
 }
 
-qreal Session::calcAvgBackground(const Sequence& seq) const
+double Session::calcAvgBackground(const Sequence& seq) const
 {
     Curve gmaCurve = seq.toCurve(1.);
     Polynom bgPolynom = Polynom::fromFit(baseline().polynomDegree(), gmaCurve, baseline().ranges());
     return bgPolynom.avgY(seq.rgeTth());
 }
 
-qreal Session::calcAvgBackground() const
+double Session::calcAvgBackground() const
 {
     TakesLongTime __;
-    qreal bg = 0;
+    double bg = 0;
     for (const Cluster* cluster : activeClusters().clusters())
         bg += calcAvgBackground(*cluster);
     return bg / activeClusters().size();

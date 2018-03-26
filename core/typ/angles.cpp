@@ -30,14 +30,14 @@ deg& deg::operator+=(const deg& that) {
     return *this;
 }
 
-deg& deg::operator*=(qreal fac) {
+deg& deg::operator*=(double fac) {
     val_ *= fac;
     return *this;
 }
 
 deg deg::normalized() {
-    static qreal const MAX = 360;
-    qreal norm = fmod(val_, MAX);
+    static double const MAX = 360;
+    double norm = fmod(val_, MAX);
     if (norm < 0)
         norm += MAX;
     return norm;
@@ -56,7 +56,7 @@ rad& rad::operator+=(const rad& that) {
     return *this;
 }
 
-rad& rad::operator*=(qreal fac) {
+rad& rad::operator*=(double fac) {
     val_ *= fac;
     return *this;
 }

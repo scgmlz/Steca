@@ -29,9 +29,9 @@ public:
     const std::vector<const Cluster*>& clusters() const { return clusters_; }
     int size() const { return clusters_.size(); }
     size2d imageSize() const;
-    qreal avgMonitorCount() const;
-    qreal avgDeltaMonitorCount() const;
-    qreal avgDeltaTime() const;
+    double avgMonitorCount() const;
+    double avgDeltaMonitorCount() const;
+    double avgDeltaTime() const;
     const Range& rgeGma() const;
     const Range& rgeFixedInten(bool trans, bool cut) const;
     Curve avgCurve() const;
@@ -42,14 +42,14 @@ public:
 
 private:
     void computeAvgeCurve() const;
-    qreal calcAvgMutable(qreal (Cluster::*avgFct)() const) const;
+    double calcAvgMutable(double (Cluster::*avgFct)() const) const;
 
     std::vector<const Cluster*> clusters_;
 
     // computed on demand (NaNs or emptiness indicate yet unknown values)
-    mutable qreal avgMonitorCount_;
-    mutable qreal avgDeltaMonitorCount_;
-    mutable qreal avgDeltaTime_;
+    mutable double avgMonitorCount_;
+    mutable double avgDeltaMonitorCount_;
+    mutable double avgDeltaTime_;
     mutable Range rgeFixedInten_;
     mutable Range rgeGma_;
     mutable Curve avgCurve_;

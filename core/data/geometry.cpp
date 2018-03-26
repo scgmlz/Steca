@@ -29,8 +29,8 @@
 // ************************************************************************** //
 
 // StressSpec standard geometry:
-qreal const Geometry::DEF_DETECTOR_DISTANCE = 1035;
-qreal const Geometry::DEF_DETECTOR_PIXEL_SIZE = 1;
+double const Geometry::DEF_DETECTOR_DISTANCE = 1035;
+double const Geometry::DEF_DETECTOR_PIXEL_SIZE = 1;
 
 Geometry::Geometry()
     : detectorDistance_ {DEF_DETECTOR_DISTANCE}
@@ -72,13 +72,13 @@ QJsonObject Geometry::toJson() const
     };
 }
 
-void Geometry::setDetectorDistance(qreal detectorDistance)
+void Geometry::setDetectorDistance(double detectorDistance)
 {
     detectorDistance_ = qMin(qMax(detectorDistance, 10.), 9999.);
     emit gSession->sigDetector();
 }
 
-void Geometry::setPixSize(qreal pixSize)
+void Geometry::setPixSize(double pixSize)
 {
     pixSize_ = qMin(qMax(pixSize, .1), 9.9);
     emit gSession->sigDetector();
@@ -247,20 +247,20 @@ void ImageKey::computeAngles(Array2D<ScatterDirection>& ret) const
     // detector coordinates: d_x, ... (d_z = const)
     // beam coordinates: b_x, ..; b_y = d_y
     ret.resize(size);
-    const qreal t = midTth.toRad();
-    const qreal c = cos(t);
-    const qreal s = sin(t);
-    const qreal d_z = geometry.detectorDistance();
-    const qreal b_x1 = d_z * s;
-    const qreal b_z1 = d_z * c;
+    const double t = midTth.toRad();
+    const double c = cos(t);
+    const double s = sin(t);
+    const double d_z = geometry.detectorDistance();
+    const double b_x1 = d_z * s;
+    const double b_z1 = d_z * c;
     for_int (i, size.w) {
-        const qreal d_x = (i - midPix.i) * geometry.pixSize();
-        const qreal b_x = b_x1 + d_x * c;
-        const qreal b_z = b_z1 - d_x * s;
-        const qreal b_x2 = b_x * b_x;
+        const double d_x = (i - midPix.i) * geometry.pixSize();
+        const double b_x = b_x1 + d_x * c;
+        const double b_z = b_z1 - d_x * s;
+        const double b_x2 = b_x * b_x;
         for_int (j, size.h) {
-            const qreal b_y = (midPix.j - j) * geometry.pixSize(); // == d_y
-            const qreal b_r = sqrt(b_x2 + b_y * b_y);
+            const double b_y = (midPix.j - j) * geometry.pixSize(); // == d_y
+            const double b_r = sqrt(b_x2 + b_y * b_y);
             const rad gma = atan2(b_y, b_x);
             const rad tth = atan2(b_r, b_z);
             ret.setAt(i, j, ScatterDirection(tth.toDeg(), gma.toDeg()));

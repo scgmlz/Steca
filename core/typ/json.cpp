@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/typ/json.cpp
-//! @brief     Implements function qreal_to_json and class JsonObj
+//! @brief     Implements function double_to_json and class JsonObj
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -21,7 +21,7 @@
 //  To support Json output
 // ************************************************************************** //
 
-QJsonValue qreal_to_json(const qreal num) {
+QJsonValue double_to_json(const double num) {
     if (qIsNaN(num))
         return "nan";
     else if (qIsInf(num))
@@ -98,7 +98,7 @@ int JsonObj::loadPint(const QString& key, int def) const {
     return value(key).isUndefined() ? def : loadPint(key);
 }
 
-qreal JsonObj::loadQreal(const QString& key) const THROWS {
+double JsonObj::loadQreal(const QString& key) const THROWS {
     const QJsonValue& val = value(key);
 
     switch (val.type()) {
@@ -118,17 +118,17 @@ qreal JsonObj::loadQreal(const QString& key) const THROWS {
     }
 }
 
-qreal JsonObj::loadQreal(const QString& key, qreal def) const THROWS{
+double JsonObj::loadQreal(const QString& key, double def) const THROWS{
     return value(key).isUndefined() ? def : loadQreal(key);
 }
 
-qreal JsonObj::loadPreal(const QString& key) const {
-    qreal num = loadQreal(key);
+double JsonObj::loadPreal(const QString& key) const {
+    double num = loadQreal(key);
     if (!(num > 0)) THROW("expecting positive number");
     return num;
 }
 
-qreal JsonObj::loadPreal(const QString& key, qreal def) const {
+double JsonObj::loadPreal(const QString& key, double def) const {
     return value(key).isUndefined() ? def : loadPreal(key);
 }
 

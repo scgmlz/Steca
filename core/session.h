@@ -83,7 +83,7 @@ public:
 
     void setImageTransformMirror(bool);
     void setImageTransformRotate(const ImageTransform&);
-    void setIntenScaleAvg(bool, qreal);
+    void setIntenScaleAvg(bool, double);
     void updateImageSize(); //!< Clears image size if session has no files
     void setImageSize(const size2d&) THROWS; //!< Ensures same size for all images
 
@@ -91,7 +91,7 @@ public:
     QByteArray serializeSession() const;
 
     bool intenScaledAvg() const { return intenScaledAvg_; }
-    qreal intenScale() const { return intenScale_; }
+    double intenScale() const { return intenScale_; }
     bool metaSelected(int i) const { return metaSelection_[i]; }
 
     bool hasData() const { return dataset().countFiles(); }
@@ -101,8 +101,8 @@ public:
     size2d imageSize() const;
     IJ midPix() const;
     shp_AngleMap angleMap(const Measurement&) const;
-    qreal calcAvgBackground(const Sequence&) const;
-    qreal calcAvgBackground() const;
+    double calcAvgBackground(const Sequence&) const;
+    double calcAvgBackground() const;
 
 signals:
     void sigFiles();         //!< list of loaded files has changed
@@ -138,7 +138,7 @@ private:
     eNorm normMode_ {eNorm::NONE};
     // others
     bool intenScaledAvg_ {true}; // if not, summed
-    qreal intenScale_ {1};
+    double intenScale_ {1};
     std::vector<bool> metaSelection_; //!< true if meta datum is to be displayed
     size2d imageSize_; //!< All images must have this same size
     // deeply private:

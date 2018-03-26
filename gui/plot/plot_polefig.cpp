@@ -57,7 +57,7 @@ void PlotPolefig::paintEvent(QPaintEvent*)
 //! Point in floating-point precision
 QPointF PlotPolefig::p(deg alpha, deg beta) const
 {
-    qreal r = r_ * alpha / alphaMax_;
+    double r = r_ * alpha / alphaMax_;
     rad betaRad = beta.toRad();
     return QPointF(r * cos(betaRad), -r * sin(betaRad));
 }
@@ -73,7 +73,7 @@ deg PlotPolefig::beta(const QPointF& p) const
     return b <= 0 ? -b : 360 - b;
 }
 
-void PlotPolefig::circle(QPointF c, qreal r)
+void PlotPolefig::circle(QPointF c, double r)
 {
     p_->drawEllipse(c, r, r);
 }
@@ -83,7 +83,7 @@ void PlotPolefig::paintGrid()
     QPen penMajor(Qt::gray), penMinor(Qt::lightGray);
 
     for (int alpha = 10; alpha <= 90; alpha += 10) {
-        qreal r = r_ / alphaMax_ * alpha;
+        double r = r_ / alphaMax_ * alpha;
         p_->setPen(!(alpha % 30) ? penMajor : penMinor);
         circle(c_, r);
     }
@@ -100,7 +100,7 @@ void PlotPolefig::paintGrid()
 
 void PlotPolefig::paintPoints()
 {
-    qreal rgeMax = rs_.rgeInten().max;
+    double rgeMax = rs_.rgeInten().max;
 
     /*
 [Jan:] As I read the code: the body of the 'for' loop (for all points) is guarded by
@@ -116,7 +116,7 @@ NaNs (intensities) do not occur in computed points, only in interpolated points,
 when interpolation fails.
     */
     for (const PeakInfo& r : rs_) {
-        qreal inten = r.inten();
+        double inten = r.inten();
         if (!qIsFinite(inten)) // nan comes from interpolation
             continue;
         const QPointF& pp = p(r.alpha(), r.beta());

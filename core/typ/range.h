@@ -27,7 +27,7 @@ class JsonObj;
 class Range {
 public:
     Range(); //!< invalid (NaN)
-    Range(qreal min, qreal max); //!< normal
+    Range(double min, double max); //!< normal
 
     static Range infinite(); //!< factory: -inf .. +inf
 
@@ -37,26 +37,26 @@ public:
     bool isValid() const; //!< is not NaN
     bool isEmpty() const; //!< is invalid or empty
 
-    qreal width() const;
-    qreal center() const;
+    double width() const;
+    double center() const;
     Range slice(int i, int n) const;
 
-    qreal min, max; // this is the range
+    double min, max; // this is the range
 
-    void set(qreal min, qreal max); //!< must be: min <= max
-    void safeSet(qreal, qreal); //!< will be set in the right order min/max
+    void set(double min, double max); //!< must be: min <= max
+    void safeSet(double, double); //!< will be set in the right order min/max
 
-    static Range safeFrom(qreal, qreal); //!< safe factory
+    static Range safeFrom(double, double); //!< safe factory
 
-    void extendBy(qreal); //!< extend to include the number
+    void extendBy(double); //!< extend to include the number
     void extendBy(const Range&); //!< extend to include the range
 
-    bool contains(qreal) const;
+    bool contains(double) const;
     bool contains(const Range&) const;
     bool intersects(const Range&) const;
     Range intersect(const Range&) const;
 
-    qreal bound(qreal) const; //!< limit the number to the interval, as qBound would
+    double bound(double) const; //!< limit the number to the interval, as qBound would
 
     QJsonObject toJson() const;
     void fromJson(const JsonObj&) THROWS;

@@ -13,6 +13,7 @@
 // ************************************************************************** //
 
 #include "types.h"
+#include "core/typ/exception.h"
 
 int TO_INT(const QString& s) {
     int ret;

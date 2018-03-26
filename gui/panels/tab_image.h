@@ -30,7 +30,7 @@ public:
 private:
     void resizeEvent(QResizeEvent*);
     void paintEvent(QPaintEvent*);
-    qreal scale_;
+    double scale_;
     QPixmap original_, scaled_;
 };
 

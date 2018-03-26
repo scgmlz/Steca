@@ -86,7 +86,7 @@ const Range& ImageLens::rgeInten(bool fixed) const {
     if (!rgeInten_.isValid()) {
         size2d sz = imgSize();
         for_ij (sz.w, sz.h)
-            rgeInten_.extendBy(qreal(imageInten(i, j)));
+            rgeInten_.extendBy(double(imageInten(i, j)));
     }
     return rgeInten_;
 }

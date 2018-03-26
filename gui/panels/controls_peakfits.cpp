@@ -21,8 +21,8 @@
 #include <QStackedWidget>
 
 namespace {
-qreal safeReal(qreal val) { return qIsFinite(val) ? val : 0.0; }
-QString safeRealText(qreal val) { return qIsFinite(val) ? QString::number(val) : ""; }
+double safeReal(double val) { return qIsFinite(val) ? val : 0.0; }
+QString safeRealText(double val) { return qIsFinite(val) ? QString::number(val) : ""; }
 } // local methods
 
 // ************************************************************************** //
@@ -129,10 +129,10 @@ RangeControl::RangeControl()
 
     // outbound connections
     connect(&spinRangeMin_, &CDoubleSpinBox::valueReleased, [this](double val) {
-            qreal antival = qMax(spinRangeMax_.value(), val);
+            double antival = qMax(spinRangeMax_.value(), val);
             gSession->peaks().selectedPeak()->setRange(Range(val, antival)); });
     connect(&spinRangeMax_, &CDoubleSpinBox::valueReleased, [this](double val) {
-            qreal antival = qMin(spinRangeMin_.value(), val);
+            double antival = qMin(spinRangeMin_.value(), val);
             gSession->peaks().selectedPeak()->setRange(Range(antival, val)); });
 
     // layout

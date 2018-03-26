@@ -31,10 +31,10 @@ public:
     int degree() const;
     void setDegree(int);
 
-    qreal y(qreal x, qreal const* parValues = nullptr) const;
-    qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const;
+    double y(double x, double const* parValues = nullptr) const;
+    double dy(double x, int parIndex, double const* parValues = nullptr) const;
 
-    qreal avgY(const Range&, qreal const* parValues = nullptr) const;
+    double avgY(const Range&, double const* parValues = nullptr) const;
 
     void fit(const Curve&, const Ranges&);
     static Polynom fromFit(int degree, const Curve&, const Ranges&);

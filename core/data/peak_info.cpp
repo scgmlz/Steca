@@ -103,6 +103,7 @@ QString const PeakInfo::reflStringTag(int attr, bool out)
     case eReflAttr::SIGMA_TTH: return out ? "s2theta" : "σ2θ";
     case eReflAttr::FWHM: return "fwhm";
     case eReflAttr::SIGMA_FWHM: return out ? "sfwhm" : "σfwhm";
+    default: ;
     }
     qFatal("impossible case");
 }
@@ -124,7 +125,7 @@ float PeakInfos::averageInten() const
         avgInten_ = 0;
         int cnt = 0;
         for (auto& info : *this) {
-            qreal inten = info.inten();
+            double inten = info.inten();
             if (qIsFinite(inten)) {
                 avgInten_ += inten;
                 ++cnt;

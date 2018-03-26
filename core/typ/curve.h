@@ -28,14 +28,14 @@ public:
     int count() const;
     bool isOrdered() const;
 
-    void append(qreal x, qreal y);
+    void append(double x, double y);
 
     // access to underlying data vectors
-    const QVector<qreal>& xs() const { return xs_; }
-    const QVector<qreal>& ys() const { return ys_; }
+    const QVector<double>& xs() const { return xs_; }
+    const QVector<double>& ys() const { return ys_; }
 
-    qreal x(int i) const { return xs_.at(i); }
-    qreal y(int i) const { return ys_.at(i); }
+    double x(int i) const { return xs_.at(i); }
+    double y(int i) const { return ys_.at(i); }
 
     const Range& rgeX() const { return rgeX_; }
     const Range& rgeY() const { return rgeY_; }
@@ -43,14 +43,14 @@ public:
     Curve intersect(const Range&) const;
     Curve intersect(const Ranges&) const;
 
-    void subtract(const std::function<qreal(qreal)>& func);
+    void subtract(const std::function<double(double)>& func);
 
     int maqpairindex() const; // the index of the maximum y value
 
-    qreal sumY() const;
+    double sumY() const;
 
 private:
-    QVector<qreal> xs_, ys_;
+    QVector<double> xs_, ys_;
     Range rgeX_, rgeY_;
 };
 

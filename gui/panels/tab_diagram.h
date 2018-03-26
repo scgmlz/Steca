@@ -35,7 +35,7 @@ private:
 
     void displayPeak(int reflIndex, bool interpolated);
 
-    QVector<qreal> xs_, ys_, ysErrorLo_, ysErrorUp_;
+    QVector<double> xs_, ys_, ysErrorLo_, ysErrorUp_;
 };
 
 #endif // TAB_DIAGRAM_H
