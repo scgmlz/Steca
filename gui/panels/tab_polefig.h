@@ -25,6 +25,7 @@ public:
     void render() final;
 private:
     class PlotPolefig* plot_;
+    class CCheckBox* cbFlat_;
 };
 
 #endif // TAB_POLEFIG_H

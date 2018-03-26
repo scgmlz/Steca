@@ -24,7 +24,7 @@
 class PlotPolefig : public QWidget {
 public:
     PlotPolefig();
-    void set(const PeakInfos&);
+    void set(const PeakInfos&, bool flat);
 
 private:
     QGridLayout* grid_;
@@ -49,8 +49,6 @@ private:
 
     bool flat_;
     qreal alphaMax_, avgAlphaMax_;
-
-    CCheckBox cbFlat_;
 };
 
 #endif // PLOT_POLEFIG_H

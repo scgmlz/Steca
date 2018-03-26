@@ -20,28 +20,25 @@ PlotPolefig::PlotPolefig()
     : flat_(false)
     , alphaMax_(90)
     , avgAlphaMax_(0)
-    , cbFlat_("cbFlat#", "no intensity")
+
 {
     setLayout((grid_ = new QGridLayout()));
-    connect(&cbFlat_, &QCheckBox::toggled, [this]() { update(); });
-
-    grid_->addWidget(&cbFlat_, 0, 0);
     grid_->setRowStretch(grid_->rowCount(), 1);
     grid_->setColumnStretch(grid_->columnCount(), 1);
 
     update();
 }
 
-void PlotPolefig::set(const PeakInfos& rs)
+void PlotPolefig::set(const PeakInfos& rs, bool flat)
 {
     rs_ = rs;
+    flat_ = flat;
     update();
 }
 
 void PlotPolefig::update()
 {
     avgAlphaMax_ = gSession->interpol().avgAlphaMax();
-    flat_ = cbFlat_.isChecked();
     QWidget::update();
 }
 

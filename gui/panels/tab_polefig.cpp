@@ -27,8 +27,10 @@ PolefigTab::PolefigTab()
 {
     // initializations
     plot_ = new PlotPolefig; // the main subframe
+    cbFlat_ = new CCheckBox {"gridPts", "grid points"};
 
     // internal connections
+    connect(cbFlat_, &QCheckBox::toggled, [this]() { render(); });
 
     // inbound connection
     connect(gSession, &Session::sigRawFits, [this]() { render(); });
@@ -40,7 +42,7 @@ PolefigTab::PolefigTab()
     buttonBox->addWidget(new XIconButton {&gGui->triggers->exportPolefig});
 
     auto* controls = new QVBoxLayout;
-    //controls->addLayout(selectXY_);
+    controls->addWidget(cbFlat_);
     controls->addStretch(1); // ---
     controls->addLayout(buttonBox);
 
@@ -55,5 +57,5 @@ void PolefigTab::render()
 {
     if (!isVisible())
         return;
-    plot_->set(gSession->peakInfos());
+    plot_->set(gSession->peakInfos(), cbFlat_->isChecked());
 }
