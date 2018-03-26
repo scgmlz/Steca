@@ -17,7 +17,6 @@
 
 #include "core/data/metadata.h"
 #include "core/typ/range.h"
-#include "core/typ/types.h"
 
 //! Metadata, peak fit results, and pole figure angles.
 

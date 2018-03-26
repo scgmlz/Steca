@@ -27,7 +27,7 @@
 PeakInfo::PeakInfo()
     : PeakInfo(
           shp_Metadata(),
-          NAN, NAN, Range(), float(NAN), float(NAN), deg(NAN), deg(NAN), NAN, NAN)
+          Q_QNAN, Q_QNAN, Range(), float(Q_QNAN), float(Q_QNAN), deg(Q_QNAN), deg(Q_QNAN), Q_QNAN, Q_QNAN)
 {}
 
 PeakInfo::PeakInfo(shp_Metadata md, deg alpha, deg beta, Range rgeGma, float inten,
@@ -45,8 +45,8 @@ PeakInfo::PeakInfo(shp_Metadata md, deg alpha, deg beta, Range rgeGma, float int
 {}
 
 PeakInfo::PeakInfo(shp_Metadata md, deg alpha, deg beta, Range rgeGma)
-    : PeakInfo(md, alpha, beta, rgeGma, float(NAN), float(NAN),
-               deg(NAN), deg(NAN), float(NAN), float(NAN))
+    : PeakInfo(md, alpha, beta, rgeGma, float(Q_QNAN), float(Q_QNAN),
+               deg(Q_QNAN), deg(Q_QNAN), float(Q_QNAN), float(Q_QNAN))
 {}
 
 PeakInfo::PeakInfo(deg alpha, deg beta, Range rgeGma, float inten, float intenError, deg tth,
@@ -56,8 +56,8 @@ PeakInfo::PeakInfo(deg alpha, deg beta, Range rgeGma, float inten, float intenEr
 {}
 
 PeakInfo::PeakInfo(deg alpha, deg beta)
-    : PeakInfo(alpha, beta, Range(), float(NAN), float(NAN),
-               deg(NAN), deg(NAN), float(NAN), float(NAN))
+    : PeakInfo(alpha, beta, Range(), float(Q_QNAN), float(Q_QNAN),
+               deg(Q_QNAN), deg(Q_QNAN), float(Q_QNAN), float(Q_QNAN))
 {}
 
 QStringList PeakInfo::dataTags(bool out)
@@ -147,6 +147,6 @@ const Range& PeakInfos::rgeInten() const
 
 void PeakInfos::invalidate()
 {
-    avgInten_ = float(NAN);
+    avgInten_ = float(Q_QNAN);
     rgeInten_.invalidate();
 }

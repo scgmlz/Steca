@@ -16,7 +16,7 @@
 #define ARRAY2D_H
 
 #include "core/def/comparable.h"
-#include "core/def/numbers.h"
+#include "core/def/debug.h"
 
 //! Geometry of a rectangle
 struct size2d {
@@ -41,7 +41,8 @@ struct size2d {
 };
 
 //! 2D (indexed by int i/j) array
-template <typename T> class Array2D {
+template <typename T>
+class Array2D {
     private:
     size2d size_;
 

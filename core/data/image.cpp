@@ -18,7 +18,7 @@ Image::Image(const size2d& size) {
     fill(0, size);
 }
 
-Image::Image(const inten_arr& that) : Image(that.size()) {
+Image::Image(const Array2D<float>& that) : Image(that.size()) {
     addIntens(that);
 }
 

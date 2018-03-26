@@ -81,7 +81,7 @@ void Corrset::calcIntensCorr() const {
         if (inten > 0) {
             fact = avg / inten;
         } else {
-            fact = NAN;
+            fact = Q_QNAN;
             hasNANs_ = true;
         }
         intensCorr_.setInten(i + di, j + dj, float(fact));

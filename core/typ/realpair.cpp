@@ -14,9 +14,10 @@
 //
 // ************************************************************************** //
 
+#include "realpair.h"
+#include "core/def/debug.h"
 #include "core/def/comparators.h"
 #include "core/typ/json.h"
-#include "core/typ/realpair.h"
 
 int qpair::compare(const qpair& that) const {
     ASSERT(isValid() && that.isValid());
@@ -28,7 +29,7 @@ int qpair::compare(const qpair& that) const {
 VALID_EQ_NE_OPERATOR(qpair)
 
 void qpair::invalidate() {
-    x = y = NAN;
+    x = y = Q_QNAN;
 }
 
 QJsonObject qpair::toJson() const {

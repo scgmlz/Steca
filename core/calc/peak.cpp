@@ -30,7 +30,7 @@ void Peak::setRange(const Range& range) {
 
 void Peak::invalidateGuesses() {
     peakFunction_->setGuessedPeak(qpair());
-    peakFunction_->setGuessedFWHM(NAN);
+    peakFunction_->setGuessedFWHM(Q_QNAN);
     emit gSession->sigPeaks();
 }
 

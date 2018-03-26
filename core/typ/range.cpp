@@ -14,10 +14,11 @@
 //
 // ************************************************************************** //
 
+#include "range.h"
+#include "core/def/debug.h"
 #include "core/def/comparators.h"
 #include "core/def/idiomatic_for.h"
 #include "core/typ/json.h"
-#include "core/typ/range.h"
 
 // ************************************************************************** //
 //  class Range
@@ -32,7 +33,7 @@ Range::Range(qreal min, qreal max) {
 }
 
 Range Range::infinite() {
-    return Range(-INF, +INF);
+    return Range(-Q_INFINITY, +Q_INFINITY);
 }
 
 int Range::compare(const Range& that) const {
@@ -45,7 +46,7 @@ int Range::compare(const Range& that) const {
 VALID_EQ_NE_OPERATOR(Range)
 
 void Range::invalidate() {
-    set(NAN, NAN);
+    set(Q_QNAN, Q_QNAN);
 }
 
 bool Range::isValid() const {
@@ -57,11 +58,11 @@ bool Range::isEmpty() const {
 }
 
 qreal Range::width() const {
-    return isValid() ? max - min : NAN;
+    return isValid() ? max - min : Q_QNAN;
 }
 
 qreal Range::center() const {
-    return isValid() ? (min + max) / 2 : NAN;
+    return isValid() ? (min + max) / 2 : Q_QNAN;
 }
 
 Range Range::slice(int i, int n) const {
@@ -128,7 +129,7 @@ Range Range::intersect(const Range& that) const {
 qreal Range::bound(qreal value) const {
     if (isValid() && !qIsNaN(value))
         return qBound(min, value, max);
-    return NAN;
+    return Q_QNAN;
 }
 
 QJsonObject Range::toJson() const {

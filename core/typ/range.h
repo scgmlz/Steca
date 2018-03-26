@@ -15,10 +15,11 @@
 #ifndef RANGE_H
 #define RANGE_H
 
+#include "core/def/macros.h"
 #include "core/def/comparable.h"
 #include "core/typ/exception.h"
-#include "core/def/numbers.h"
 #include <QJsonArray>
+#include <QVector>
 
 class JsonObj;
 

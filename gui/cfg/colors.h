@@ -15,7 +15,6 @@
 #ifndef COLORS_H
 #define COLORS_H
 
-#include "core/typ/types.h"
 #include <QColor>
 
 //! Color maps for use in detector image and pole figure.

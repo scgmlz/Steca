@@ -12,7 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "core/fit/fit_methods.h"
+#include "fit_methods.h"
+#include "core/def/debug.h"
 #include "core/def/idiomatic_for.h"
 #include "LM/levmar.h"
 #include <qmath.h>

@@ -15,8 +15,6 @@
 #ifndef IMAGE_TRANSFORM_H
 #define IMAGE_TRANSFORM_H
 
-#include "core/def/numbers.h" // for int
-
 //! Encodes chosen rotation and mirror operations
 
 class ImageTransform {

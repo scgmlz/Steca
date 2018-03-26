@@ -12,7 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "core/typ/curve.h"
+#include "curve.h"
+#include "core/def/debug.h"
 #include "core/def/idiomatic_for.h"
 
 void Curve::clear() {

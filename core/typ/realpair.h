@@ -28,7 +28,7 @@ class qpair {
 
     COMPARABLE(const qpair&);
 
-    void invalidate(); // x,y <- NAN
+    void invalidate(); // x,y <- Q_QNAN
     bool isValid() const { return !qIsNaN(x) && !qIsNaN(y); }
 
     QJsonObject toJson() const;

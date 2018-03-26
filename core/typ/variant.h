@@ -15,7 +15,7 @@
 #ifndef VARIANT_H
 #define VARIANT_H
 
-#include "core/def/numbers.h"
+#include <QVariant>
 
 bool isNumeric(const QVariant&);
 

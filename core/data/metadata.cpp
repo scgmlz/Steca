@@ -185,6 +185,6 @@ row_t Metadata::attributeNaNs() {
     static row_t row;
     if (row.isEmpty())
         for_i (int(eAttr::NUM_ALL_ATTRIBUTES))
-            row.append(NAN);
+            row.append(Q_QNAN);
     return row;
 }

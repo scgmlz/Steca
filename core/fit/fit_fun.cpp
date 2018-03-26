@@ -12,7 +12,8 @@
 //
 // ************************************************************************** //
 
-#include "core/fit/fit_fun.h"
+#include "fit_fun.h"
+#include "core/def/debug.h"
 #include "core/def/idiomatic_for.h"
 #include "core/fit/fit_methods.h"
 
@@ -97,7 +98,7 @@ void Polynom::fromJson(const JsonObj& obj) THROWS {
 //  class PeakFunction
 // ************************************************************************** //
 
-PeakFunction::PeakFunction() : guessedPeak_(), guessedFWHM_(NAN) {}
+PeakFunction::PeakFunction() : guessedPeak_(), guessedFWHM_(Q_QNAN) {}
 
 void PeakFunction::reset() {
     Function::reset();

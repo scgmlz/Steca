@@ -15,7 +15,6 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#include "core/def/numbers.h"
 #include "core/typ/exception.h"
 
 enum class eNorm {

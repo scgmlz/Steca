@@ -23,7 +23,7 @@
 namespace {
 
 struct itf_t {
-    itf_t() : itf_t(float(NAN), deg(NAN), float(NAN)) {}
+    itf_t() : itf_t(float(Q_QNAN), deg(Q_QNAN), float(Q_QNAN)) {}
     itf_t(float _inten, deg _tth, float _fwhm) : inten(_inten), tth(_tth), fwhm(_fwhm) {}
 
     void operator+=(const itf_t&); // used once to compute average
@@ -308,8 +308,8 @@ PeakInfos algo::interpolateInfos(const PeakInfos& infos, Progress* progress)
                         avg += itfs.at(i);
 
                     ret.append(PeakInfo(
-                        alpha, beta, infos.first().rgeGma(), avg.inten / n, float(NAN),
-                        avg.tth / n, deg(NAN), avg.fwhm / n, float(NAN)));
+                        alpha, beta, infos.first().rgeGma(), avg.inten / n, float(Q_QNAN),
+                        avg.tth / n, deg(Q_QNAN), avg.fwhm / n, float(Q_QNAN)));
                     continue;
                 }
 
@@ -323,8 +323,8 @@ PeakInfos algo::interpolateInfos(const PeakInfos& infos, Progress* progress)
             // Use idw, if alpha > avgAlphaMax OR averaging failed (too small avgRadius?).
             itf_t itf = interpolateValues(idwRadius, infos, alpha, beta);
             ret.append(PeakInfo(
-                alpha, beta, infos.first().rgeGma(), itf.inten, float(NAN), itf.tth, deg(NAN),
-                itf.fwhm, float(NAN)));
+                alpha, beta, infos.first().rgeGma(), itf.inten, float(Q_QNAN), itf.tth, deg(Q_QNAN),
+                itf.fwhm, float(Q_QNAN)));
         }
     }
 

@@ -128,7 +128,7 @@ qreal Sequence::normFactor() const
         break;
     }
 
-    qreal ret = float((num > 0 && den > 0) ? num / den : NAN);
+    qreal ret = float((num > 0 && den > 0) ? num / den : Q_QNAN);
     if (qIsNaN(ret))
         qWarning() << "Bad normalisation value";
     return ret;

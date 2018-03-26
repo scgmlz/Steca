@@ -17,15 +17,12 @@
 
 #include "core/typ/array2d.h"
 #include "core/typ/range.h"
-#include "core/typ/types.h"
-
-typedef Array2D<float> inten_arr;
 
 //! Holds a detector image, and provides read and write access
 class Image final {
     public:
     Image(const size2d& = size2d(0, 0));
-    Image(const inten_arr&);
+    Image(const Array2D<float>&);
 
     const size2d& size() const { return intens_.size(); }
 
@@ -51,7 +48,7 @@ class Image final {
     const Range& rgeInten() const { return rgeInten_; }
 
 private:
-    inten_arr intens_;
+    Array2D<float> intens_;
     Range rgeInten_;
 };
 

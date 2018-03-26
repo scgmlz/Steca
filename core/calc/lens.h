@@ -17,7 +17,6 @@
 
 #include "core/typ/array2d.h"
 #include "core/typ/curve.h"
-#include "core/typ/types.h"
 
 class Image;
 

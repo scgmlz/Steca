@@ -81,7 +81,7 @@ Curve ActiveClusters::avgCurve() const {
 }
 
 void ActiveClusters::invalidateAvgMutables() const {
-    avgMonitorCount_ = avgDeltaMonitorCount_ = avgDeltaTime_ = NAN;
+    avgMonitorCount_ = avgDeltaMonitorCount_ = avgDeltaTime_ = Q_QNAN;
     rgeFixedInten_.invalidate();
     rgeGma_.invalidate();
     avgCurve_.clear();
