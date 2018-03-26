@@ -35,7 +35,6 @@ private:
 
     void displayPeak(int reflIndex, bool interpolated);
 
-    PeakInfos rs_;
     QVector<qreal> xs_, ys_, ysErrorLo_, ysErrorUp_;
 };
 

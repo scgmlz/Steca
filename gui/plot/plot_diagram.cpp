@@ -26,8 +26,8 @@ PlotDiagram::PlotDiagram()
     graphUp_ = addGraph();
 }
 
-void PlotDiagram::plot(
-    const QVector<qreal>& xs, const QVector<qreal>& ys, const QVector<qreal>& ysLo, const QVector<qreal>& ysUp)
+void PlotDiagram::plot(const QVector<qreal>& xs, const QVector<qreal>& ys,
+                       const QVector<qreal>& ysLo, const QVector<qreal>& ysUp)
 {
     ASSERT(xs.count() == ys.count());
 
@@ -47,6 +47,9 @@ void PlotDiagram::plot(
     if (!count || rgeX.isEmpty() || rgeY.isEmpty()) {
         xAxis->setVisible(false);
         yAxis->setVisible(false);
+        qDebug() << "plot diagram disabled: count=" << count
+                 << ", rgeX=" << rgeX.to_s()
+                 << ", rgeY=" << rgeY.to_s();
         replot();
         return;
     }

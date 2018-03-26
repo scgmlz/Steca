@@ -18,6 +18,8 @@
 #include "gui/mainwin.h"
 #include "gui/plot/plot_diagram.h"
 
+namespace {
+
 // sorts xs and ys the same way, by (x,y)
 static void sortColumns(QVector<qreal>& xs, QVector<qreal>& ys, QVector<int>& is)
 {
@@ -49,6 +51,9 @@ static void sortColumns(QVector<qreal>& xs, QVector<qreal>& ys, QVector<int>& is
     ys = r;
 }
 
+
+} // namespace
+
 // ************************************************************************** //
 //  local class SelectXY
 // ************************************************************************** //
@@ -74,7 +79,6 @@ SelectXY::SelectXY()
     addWidget(&xAxis, 1, 1);
     addWidget(new QLabel("y"), 0, 0);
     addWidget(&yAxis, 0, 1);
-    //setColumnStretch(2, 1);
 }
 
 // ************************************************************************** //
@@ -118,8 +122,9 @@ void DiagramTab::render()
 {
     if (!isVisible())
         return;
-    rs_ = gSession->peakInfos();
-    int count = rs_.count();
+
+    const PeakInfos& peakInfos = gSession->peakInfos();
+    int count = peakInfos.count();
 
     xs_.resize(count);
     ys_.resize(count);
@@ -128,7 +133,7 @@ void DiagramTab::render()
     int yi = int(selectXY_->yAxis.currentIndex());
 
     for_i (count) {
-        const row_t row = rs_.at(i).data();
+        const row_t row = peakInfos.at(i).data();
         xs_[i] = row.at(xi).toDouble();
         ys_[i] = row.at(yi).toDouble();
     }
@@ -136,13 +141,13 @@ void DiagramTab::render()
     QVector<int> is;
     sortColumns(xs_, ys_, is);
 
-    auto _calcErrors = [this, is](eReflAttr attr) {
+    auto _calcErrors = [this, peakInfos, is](eReflAttr attr) {
         int count = ys_.count();
         ysErrorLo_.resize(count);
         ysErrorUp_.resize(count);
 
         for_i (count) {
-            const row_t row = rs_.at(is.at(i)).data(); // access error over sorted index vec
+            const row_t row = peakInfos.at(is.at(i)).data(); // access error over sorted index vec
             qreal sigma = row.at(int(attr)).toDouble();
             qreal y = ys_.at(i);
             ysErrorLo_[i] = y - sigma;
