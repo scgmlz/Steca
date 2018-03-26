@@ -15,15 +15,16 @@
 #ifndef TAB_IMAGE_H
 #define TAB_IMAGE_H
 
-#include "gui/mainwin.h"
+#include "core/data/image.h"
+#include "gui/panels/tab_mainframe.h"
 #include "gui/base/controls.h"
 #include <QPainter>
 
 //! Displays a 2d detector image, and possibly some overlay. Used in ImageTab.
 
-class ImageWidget final : public QWidget {
+class ImageView final : public QWidget {
 public:
-    ImageWidget();
+    ImageView();
     void setPixmap(const QPixmap&);
     void setScale();
 private:
@@ -44,17 +45,17 @@ private:
 
 //! Pure virtual base class for DataImageTab and CorrImageTab, shows a detector image and controls.
 
-class ImageTab : public QWidget {
+class ImageTab : public TabMainframe {
 public:
     ImageTab();
-    void render();
+    void render() final;
 protected:
     virtual QPixmap pixmap() = 0;
     QPixmap makePixmap(shp_Image);
     QPixmap makeOverlayPixmap(const class Measurement&);
     QPixmap makeBlankPixmap();
     QImage makeImage(shp_Image);
-    ImageWidget imageView_;
+    ImageView imageView_;
     QHBoxLayout box_;
     QVBoxLayout controls_;
     QHBoxLayout box1_;

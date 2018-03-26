@@ -16,13 +16,14 @@
 #include "core/session.h"
 #include "gui/cfg/colors.h"
 #include "gui/actions/toggles.h"
+#include "gui/mainwin.h"
 #include <qmath.h>
 
 // ************************************************************************** //
-//  class ImageWidget
+//  class ImageView
 // ************************************************************************** //
 
-ImageWidget::ImageWidget()
+ImageView::ImageView()
     : scale_(0)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -30,13 +31,13 @@ ImageWidget::ImageWidget()
     connect(&gGui->toggles->showOverlay, &QAction::toggled, [this](bool /*unused*/) { update(); });
 }
 
-void ImageWidget::setPixmap(const QPixmap& pixmap)
+void ImageView::setPixmap(const QPixmap& pixmap)
 {
     original_ = pixmap;
     setScale();
 }
 
-void ImageWidget::setScale()
+void ImageView::setScale()
 {
     if (original_.isNull()) {
         scale_ = 0;
@@ -54,13 +55,13 @@ void ImageWidget::setScale()
     update();
 }
 
-void ImageWidget::resizeEvent(QResizeEvent* e)
+void ImageView::resizeEvent(QResizeEvent* e)
 {
     QWidget::resizeEvent(e);
     setScale();
 }
 
-void ImageWidget::paintEvent(QPaintEvent*)
+void ImageView::paintEvent(QPaintEvent*)
 {
     // paint centered
     const QSize margin = (size() - scaled_.size()) / 2;

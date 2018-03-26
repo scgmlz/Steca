@@ -16,7 +16,9 @@
 #include "core/session.h"
 #include "gui/base/file_dialog.h"
 #include "gui/dialogs/exportfile_dialogfield.h"
+#include "gui/mainwin.h"
 #include "gui/panels/mainframe.h"
+#include "gui/panels/data_table.h"
 #include "gui/panels/tab_table.h"
 
 // ************************************************************************** //

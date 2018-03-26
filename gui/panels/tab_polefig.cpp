@@ -16,6 +16,7 @@
 #include "core/session.h"
 #include "gui/actions/triggers.h"
 #include "gui/plot/plot_polefig.h"
+#include "gui/mainwin.h"
 
 
 // ************************************************************************** //
@@ -30,9 +31,7 @@ PolefigWidget::PolefigWidget()
     // internal connections
 
     // inbound connection
-    connect(gSession, &Session::sigRawFits, [this]() {
-            if (isVisible())
-                render(); });
+    connect(gSession, &Session::sigRawFits, [this]() { render(); });
 
     // layout
     auto* buttonBox = new QHBoxLayout;
@@ -54,5 +53,7 @@ PolefigWidget::PolefigWidget()
 
 void PolefigWidget::render()
 {
+    if (!isVisible())
+        return;
     plot_->set(gSession->peakInfos());
 }

@@ -16,14 +16,14 @@
 #define TAB_DIAGRAM_H
 
 #include "core/data/peak_info.h"
-#include "gui/mainwin.h"
+#include "gui/panels/tab_mainframe.h"
 
 //! Plot of a pair of fit results or metadata, with associated controls.
 
-class DiagramWidget : public QWidget {
+class DiagramWidget : public TabMainframe {
 public:
     DiagramWidget();
-    void render();
+    void render() final;
 private:
     class PlotDiagram* plot_;
     class SelectXY* selectXY_;

@@ -15,6 +15,7 @@
 #include "tab_diagram.h"
 #include "core/session.h"
 #include "gui/actions/triggers.h"
+#include "gui/mainwin.h"
 #include "gui/plot/plot_diagram.h"
 
 // sorts xs and ys the same way, by (x,y)
@@ -93,9 +94,7 @@ DiagramWidget::DiagramWidget()
             render(); });
 
     // inbound connection
-    connect(gSession, &Session::sigRawFits, [this]() {
-            if (isVisible())
-                render(); });
+    connect(gSession, &Session::sigRawFits, [this]() { render(); });
 
     // layout
     auto* buttonBox = new QHBoxLayout;
@@ -117,6 +116,8 @@ DiagramWidget::DiagramWidget()
 
 void DiagramWidget::render()
 {
+    if (!isVisible())
+        return;
     rs_ = gSession->peakInfos();
     int count = rs_.count();
 
@@ -170,5 +171,4 @@ void DiagramWidget::render()
     }
 
     plot_->plot(xs_, ys_, ysErrorLo_, ysErrorUp_);
-    show();
 }

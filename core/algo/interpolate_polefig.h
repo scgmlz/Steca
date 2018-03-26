@@ -12,8 +12,8 @@
 //
 // ************************************************************************** //
 
-#ifndef CALC_POLEFIGURE_H
-#define CALC_POLEFIGURE_H
+#ifndef INTERPOLATE_POLEFIG_H
+#define INTERPOLATE_POLEFIG_H
 
 #include "core/data/peak_info.h"
 #include "core/typ/async.h"
@@ -24,4 +24,4 @@ PeakInfos interpolateInfos(const PeakInfos&, Progress*);
 
 } // namespace algo
 
-#endif // CALC_POLEFIGURE_H
+#endif // INTERPOLATE_POLEFIG_H

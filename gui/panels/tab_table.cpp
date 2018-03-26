@@ -13,8 +13,11 @@
 // ************************************************************************** //
 
 #include "tab_table.h"
+#include "core/algo/interpolate_polefig.h" // includes peak_info.h
 #include "core/session.h"
 #include "gui/actions/triggers.h"
+#include "gui/panels/data_table.h"
+#include "gui/mainwin.h"
 #include <QScrollArea>
 #include <QThread> // for sleep for debugging
 
@@ -151,9 +154,7 @@ TableWidget::TableWidget()
     dataView_->setColumns(headers, outHeaders, cmps);
 
     // inbound connection
-    connect(gSession, &Session::sigRawFits, [this]() {
-            if (isVisible())
-                render(); });
+    connect(gSession, &Session::sigRawFits, [this]() { render(); });
 
     // layout
     auto* colSelBox = new QScrollArea;
@@ -179,6 +180,8 @@ TableWidget::TableWidget()
 
 void TableWidget::render()
 {
+    if (!isVisible())
+        return;
     PeakInfos points_ = gSession->peakInfos();
     dataView_->clear();
     for (const PeakInfo& r : points_)

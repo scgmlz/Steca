@@ -15,18 +15,16 @@
 #ifndef TAB_TABLE_H
 #define TAB_TABLE_H
 
-#include "gui/mainwin.h"
-#include "gui/panels/data_table.h"
-#include "core/algo/interpolate_polefig.h" // includes peak_info.h
+#include "gui/panels/tab_mainframe.h"
 
 //! Tabular display of fit results and metadata, with associated controls.
 
-class TableWidget : public QWidget {
+class TableWidget : public TabMainframe {
 public:
     TableWidget();
     const class DataView& dataView() const { return *dataView_; }
+    void render() final;
 private:
-    void render();
     class DataView* dataView_;
 };
 

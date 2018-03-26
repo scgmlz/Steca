@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/tab_polefig.h
-//! @brief     Defines class PolefigWidget, and its dependences
+//! @file      gui/panels/tab_mainframe.h
+//! @brief     Defines class TabMainframe, and its dependences
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,19 +12,16 @@
 //
 // ************************************************************************** //
 
-#ifndef TAB_POLEFIG_H
-#define TAB_POLEFIG_H
+#ifndef TAB_MAINFRAME_H
+#define TAB_MAINFRAME_H
 
-#include "gui/panels/tab_mainframe.h"
+#include <QWidget>
 
-//! Tabular display of fit results and metadata, with associated controls.
+//! Pure virtual base class for tabs in the Mainframe.
 
-class PolefigWidget : public TabMainframe {
+class TabMainframe : public QWidget {
 public:
-    PolefigWidget();
-    void render() final;
-private:
-    class PlotPolefig* plot_;
+    virtual void render() = 0;
 };
 
-#endif // TAB_POLEFIG_H
+#endif // TAB_MAINFRAME_H
