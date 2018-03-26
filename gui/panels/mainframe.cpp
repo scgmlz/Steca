@@ -24,7 +24,7 @@
 // ************************************************************************** //
 
 Mainframe::Mainframe()
-    : CTabWidget {"images"}
+    : CTabWidget {"mainframe"}
 {
     // local connection
     connect(this, &Mainframe::currentChanged, [this](int) { render(); });
