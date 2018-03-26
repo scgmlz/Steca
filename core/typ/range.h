@@ -59,7 +59,7 @@ public:
     double bound(double) const; //!< limit the number to the interval, as qBound would
 
     QJsonObject toJson() const;
-    void fromJson(const JsonObj&) THROWS;
+    void fromJson(const JsonObj&);
 
     QString to_s(int precision=5, int digitsAfter=2) const;
 };
@@ -79,7 +79,7 @@ public:
     bool remove(const Range&); //!< removes (cuts out) a range; returns whether there was a change
 
     QJsonArray toJson() const;
-    void fromJson(const QJsonArray&) THROWS;
+    void fromJson(const QJsonArray&);
 
 private:
     void sort();

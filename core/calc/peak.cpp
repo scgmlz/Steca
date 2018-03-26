@@ -60,7 +60,7 @@ JsonObj Peak::toJson() const {
     return peakFunction_->toJson();
 }
 
-Peak* Peak::fromJson(const JsonObj& obj) THROWS {
+Peak* Peak::fromJson(const JsonObj& obj) {
     QString functionName = obj.loadString("type");
     Peak* ret = new Peak(functionName);
     ret->peakFunction_->fromJson(obj); // may throw

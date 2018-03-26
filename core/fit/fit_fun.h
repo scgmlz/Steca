@@ -39,7 +39,7 @@ public:
     static Polynom fromFit(int degree, const Curve&, const Ranges&);
 
     JsonObj toJson() const final;
-    void fromJson(const JsonObj&) THROWS final;
+    void fromJson(const JsonObj&) final;
 
     QString name() const final { return "polynom"; }
 };
@@ -54,7 +54,7 @@ public:
     void reset();
     void fit(const Curve& curve) { return fit(curve, range_); }
     virtual void fit(const Curve&, const Range&);
-    void fromJson(const JsonObj&) THROWS;
+    void fromJson(const JsonObj&);
     virtual void setRange(const Range& range) { range_ = range; }
     virtual void setGuessedPeak(const qpair& peak) { guessedPeak_ = peak; }
     virtual void setGuessedFWHM(const float fwhm) { guessedFWHM_ = fwhm; }
@@ -86,7 +86,7 @@ typedef class PeakFunction* (*initializer_type)();
 class FunctionRegistry : public IRegistry<initializer_type>, public ISingleton<FunctionRegistry> {
 public:
     void register_fct(const initializer_type f);
-    static PeakFunction* name2new(const QString&) THROWS;
+    static PeakFunction* name2new(const QString&);
     static PeakFunction* clone(const PeakFunction& old);
 };
 

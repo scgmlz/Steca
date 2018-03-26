@@ -29,7 +29,7 @@ void Corrset::removeFile() {
     emit gSession->sigCorr();
 }
 
-void Corrset::loadFile(const QString& filePath) THROWS {
+void Corrset::loadFile(const QString& filePath) {
     if (filePath.isEmpty())
         THROW("invalid call of Corrset::loadFile with empty filePath argument");
     QSharedPointer<Rawfile> rawfile = load::loadRawfile(filePath);

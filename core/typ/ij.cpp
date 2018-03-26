@@ -34,7 +34,7 @@ QJsonObject IJ::toJson() const {
     return { { "i", i }, { "j", j } };
 }
 
-void IJ::fromJson(const JsonObj& obj) THROWS {
+void IJ::fromJson(const JsonObj& obj) {
     i = obj.loadInt("i");
     j = obj.loadInt("j");
 }

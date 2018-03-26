@@ -90,7 +90,7 @@ JsonObj Polynom::toJson() const {
     return ret;
 }
 
-void Polynom::fromJson(const JsonObj& obj) THROWS {
+void Polynom::fromJson(const JsonObj& obj) {
     Function::fromJson(obj);
 }
 
@@ -152,7 +152,7 @@ JsonObj PeakFunction::toJson() const {
     return ret;
 }
 
-void PeakFunction::fromJson(const JsonObj& obj) THROWS {
+void PeakFunction::fromJson(const JsonObj& obj) {
     Function::fromJson(obj);
     range_ = obj.loadRange("range");
     guessedPeak_.fromJson(obj.loadObj("guessed peak"));

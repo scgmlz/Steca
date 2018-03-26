@@ -33,7 +33,7 @@ class qpair {
     bool isValid() const { return !qIsNaN(x) && !qIsNaN(y); }
 
     QJsonObject toJson() const;
-    void fromJson(const class JsonObj&) THROWS;
+    void fromJson(const class JsonObj&);
 };
 
 #endif // REALPAIR_H

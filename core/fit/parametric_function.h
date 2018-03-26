@@ -35,7 +35,7 @@ public:
         void setValue(double value, double error);
 
         JsonObj toJson() const;
-        void fromJson(const JsonObj&) THROWS;
+        void fromJson(const JsonObj&);
 
     private:
         double value_, error_;
@@ -58,7 +58,7 @@ public:
     virtual void reset();
 
     virtual JsonObj toJson() const;
-    virtual void fromJson(const JsonObj&) THROWS;
+    virtual void fromJson(const JsonObj&);
     virtual QString name() const = 0;
 
 protected:

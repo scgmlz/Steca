@@ -70,7 +70,7 @@ void Session::clear()
     intenScale_ = 1;
 }
 
-void Session::sessionFromJson(const QByteArray& json) THROWS
+void Session::sessionFromJson(const QByteArray& json)
 {
     QJsonParseError parseError;
     QJsonDocument doc(QJsonDocument::fromJson(json, &parseError));
@@ -133,7 +133,7 @@ void Session::updateImageSize()
         imageSize_ = size2d(0, 0);
 }
 
-void Session::setImageSize(const size2d& size) THROWS
+void Session::setImageSize(const size2d& size)
 {
     if (!(!size.isEmpty())) THROW("image is empty or has ill defined size");
     if (imageSize_.isEmpty())

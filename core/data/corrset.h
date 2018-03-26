@@ -28,7 +28,7 @@ public:
     void clear();
     void fromJson(const JsonObj& obj);
     void removeFile();
-    void loadFile(const QString& filePath) THROWS;
+    void loadFile(const QString& filePath);
     void tryEnable(bool on);
     void clearIntens() { intensCorr_.clear(); } // lazy
 

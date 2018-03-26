@@ -41,7 +41,7 @@ JsonObj Function::Parameter::toJson() const {
     return ret;
 }
 
-void Function::Parameter::fromJson(const JsonObj& obj) THROWS {
+void Function::Parameter::fromJson(const JsonObj& obj) {
     value_ = obj.loadQreal("value");
     range_ = obj.loadRange("range");
 }
@@ -74,7 +74,7 @@ JsonObj Function::toJson() const {
     return ret;
 }
 
-void Function::fromJson(const JsonObj& obj) THROWS {
+void Function::fromJson(const JsonObj& obj) {
     QJsonArray params = obj.loadArr("parameters");
     int parCount = params.count();
     setParameterCount(parCount);

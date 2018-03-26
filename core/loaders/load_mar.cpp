@@ -20,7 +20,7 @@ namespace load {
 
 // Code taken from the original STeCa, only slightly modified.
 
-Rawfile loadMar(const QString& filePath) THROWS {
+Rawfile loadMar(const QString& filePath) {
     typedef short WORD;
 
     Rawfile ret(filePath);

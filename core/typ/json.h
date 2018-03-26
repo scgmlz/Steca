@@ -33,34 +33,34 @@ public:
 
     const super& sup() const { return *this; }
 
-    JsonObj loadObj(const QString& key, bool defEmpty = false) const THROWS;
+    JsonObj loadObj(const QString& key, bool defEmpty = false) const;
 
-    QJsonArray loadArr(const QString& key, bool defEmpty = false) const THROWS;
+    QJsonArray loadArr(const QString& key, bool defEmpty = false) const;
 
-    int loadInt(const QString& key) const THROWS;
-    int loadInt(const QString& key, int def) const THROWS;
+    int loadInt(const QString& key) const;
+    int loadInt(const QString& key, int def) const;
 
-    int loadUint(const QString& key) const THROWS;
-    int loadUint(const QString& key, int def) const THROWS;
+    int loadUint(const QString& key) const;
+    int loadUint(const QString& key, int def) const;
 
-    int loadPint(const QString& key) const THROWS;
-    int loadPint(const QString& key, int def) const THROWS;
+    int loadPint(const QString& key) const;
+    int loadPint(const QString& key, int def) const;
 
-    double loadQreal(const QString& key) const THROWS;
-    double loadQreal(const QString& key, double def) const THROWS;
+    double loadQreal(const QString& key) const;
+    double loadQreal(const QString& key, double def) const;
 
-    double loadPreal(const QString& key) const THROWS;
-    double loadPreal(const QString& key, double def) const THROWS;
+    double loadPreal(const QString& key) const;
+    double loadPreal(const QString& key, double def) const;
 
-    bool loadBool(const QString& key) const THROWS;
-    bool loadBool(const QString& key, bool def) const THROWS;
+    bool loadBool(const QString& key) const;
+    bool loadBool(const QString& key, bool def) const;
 
-    QString loadString(const QString& key) const THROWS;
-    QString loadString(const QString& key, const QString& def) const THROWS;
+    QString loadString(const QString& key) const;
+    QString loadString(const QString& key, const QString& def) const;
 
-    Range loadRange(const QString& key) const THROWS;
+    Range loadRange(const QString& key) const;
 
-    IJ loadIJ(const QString& key) const THROWS;
+    IJ loadIJ(const QString& key) const;
 };
 
 #endif // JSON_H

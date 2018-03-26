@@ -58,7 +58,7 @@ private:
     void clearSession();
 
     void addFiles();
-    void loadCorrFile() THROWS;
+    void loadCorrFile();
 
     void runFits();
 

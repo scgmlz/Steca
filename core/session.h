@@ -85,7 +85,7 @@ public:
 
     // modifying methods:
     void clear();
-    void sessionFromJson(const QByteArray&) THROWS;
+    void sessionFromJson(const QByteArray&);
 
     void setMetaSelected(int, bool);
 
@@ -93,7 +93,7 @@ public:
     void setImageTransformRotate(const ImageTransform&);
     void setIntenScaleAvg(bool, double);
     void updateImageSize(); //!< Clears image size if session has no files
-    void setImageSize(const size2d&) THROWS; //!< Ensures same size for all images
+    void setImageSize(const size2d&); //!< Ensures same size for all images
 
     // const methods:
     QByteArray serializeSession() const;

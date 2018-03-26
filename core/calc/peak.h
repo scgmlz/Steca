@@ -26,7 +26,7 @@ public:
     Peak() = delete;
     Peak(const QString& functionName = "Raw");
 
-    static Peak* fromJson(const JsonObj&) THROWS;
+    static Peak* fromJson(const JsonObj&);
 
     void setPeakFunction(const QString&);
     void setRange(const Range&);

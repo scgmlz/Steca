@@ -35,7 +35,7 @@ QJsonObject qpair::toJson() const {
     return { { "x", double_to_json(x) }, { "y", double_to_json(y) } };
 }
 
-void qpair::fromJson(const JsonObj& obj) THROWS {
+void qpair::fromJson(const JsonObj& obj) {
     x = obj.loadQreal("x");
     y = obj.loadQreal("y");
 }

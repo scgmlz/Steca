@@ -22,7 +22,7 @@
 namespace load {
 
 //! load a file; file type will be sensed
-QSharedPointer<Rawfile> loadRawfile(const QString& filePath) THROWS;
+QSharedPointer<Rawfile> loadRawfile(const QString& filePath);
 
 QString loadComment(const QFileInfo& info);
 

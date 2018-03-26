@@ -30,7 +30,7 @@ public:
     COMPARABLE(const IJ&)
 
     QJsonObject toJson() const;
-    void fromJson(const class JsonObj&) THROWS;
+    void fromJson(const class JsonObj&);
 };
 
 #endif // IJ_H

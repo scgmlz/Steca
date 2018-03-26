@@ -76,7 +76,7 @@ public:
     // Modifying methods:
     void clear();
     void fromJson(const JsonObj& obj);
-    void addGivenFiles(const QStringList& filePaths) THROWS;
+    void addGivenFiles(const QStringList& filePaths);
     void removeFile();
     void setBinning(int by);
     void setDropIncomplete(bool on);

@@ -43,7 +43,7 @@ class Image final {
     void addInten(int i, int j, float val) { intens_.refAt(i, j) += val; }
 
     // Sum all intensities with new ones.
-    void addIntens(const Image&) THROWS;
+    void addIntens(const Image&);
 
     const Range& rgeInten() const { return rgeInten_; }
 

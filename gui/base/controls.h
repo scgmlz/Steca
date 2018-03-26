@@ -35,7 +35,7 @@ public:
     CTrigger(const QString& name, const QString& text, const QString& iconFile="");
     CTrigger(const QString& name, const QString& text, const QString& iconFile,
              const QKeySequence& shortcut);
-    void onCommand(const QStringList&) THROWS override;
+    void onCommand(const QStringList&) override;
 private:
     QString tooltip_;
 };
@@ -47,7 +47,7 @@ public:
     CToggle(const QString& name, const QString& text, bool on, const QString& iconFile="");
     CToggle(const QString& name, const QString& text, bool on, const QString& iconFile,
             const QKeySequence& shortcut);
-    void onCommand(const QStringList&) THROWS override;
+    void onCommand(const QStringList&) override;
 private:
     QString tooltip_;
 };
@@ -70,7 +70,7 @@ class CSpinBox : public QSpinBox, private CSettable {
 public:
     CSpinBox(const QString& name, int ndigits, bool withDot, int min = INT_MIN, int max = INT_MAX,
              const QString& tooltip="");
-    void onCommand(const QStringList&) THROWS override;
+    void onCommand(const QStringList&) override;
 signals:
     void valueReleased(int); //! Improving over valueChanged, do not signal intermediate states
 private:
@@ -84,7 +84,7 @@ class CDoubleSpinBox : public QDoubleSpinBox, private CSettable {
     Q_OBJECT
 public:
     CDoubleSpinBox(const QString& name, int ndigits, double min = LLONG_MIN, double max = LLONG_MAX);
-    void onCommand(const QStringList&) THROWS override;
+    void onCommand(const QStringList&) override;
 signals:
     void valueReleased(double); //! Improving over valueChanged, do not signal intermediate states
 private:
@@ -98,28 +98,28 @@ class CCheckBox : public QCheckBox, private CSettable {
 public:
     CCheckBox(const QString& name, QAction*);
     CCheckBox(const QString& name, const QString& text);
-    void onCommand(const QStringList&) THROWS override;
+    void onCommand(const QStringList&) override;
 };
 
 //! Named QRadioButton that can be set by console command.
 class CRadioButton : public QRadioButton, private CSettable {
 public:
     CRadioButton(const QString& name, const QString& text);
-    void onCommand(const QStringList&) THROWS override;
+    void onCommand(const QStringList&) override;
 };
 
 //! Named QComboBox that can be set by console command.
 class CComboBox : public QComboBox, private CSettable {
 public:
     CComboBox(const QString& name, const QStringList& items = {});
-    void onCommand(const QStringList&) THROWS override;
+    void onCommand(const QStringList&) override;
 };
 
 //! Named QTabWidget that can be set by console command.
 class CTabWidget : public QTabWidget, private CSettable {
 public:
     CTabWidget(const QString& name);
-    void onCommand(const QStringList&) THROWS override;
+    void onCommand(const QStringList&) override;
 };
 
 //! QFileDialog, for modal use, with console commands to select files and to close the dialog.
@@ -129,7 +129,7 @@ public:
                 const QString &directory = QString(), const QString &filter = QString());
     ~CFileDialog();
     int exec() override;
-    void onCommand(const QStringList&) THROWS override;
+    void onCommand(const QStringList&) override;
 };
 
 #endif // CONTROLS_H

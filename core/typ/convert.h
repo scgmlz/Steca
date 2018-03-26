@@ -17,7 +17,7 @@
 
 #include "core/def/macros.h"
 
-int TO_INT(const QString&) THROWS;
-double TO_DOUBLE(const QString&) THROWS;
+int TO_INT(const QString&);
+double TO_DOUBLE(const QString&);
 
 #endif // TYPES_H

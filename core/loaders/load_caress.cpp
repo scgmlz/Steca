@@ -22,7 +22,7 @@
 
 namespace load {
 
-Rawfile loadCaress(const QString& filePath) THROWS {
+Rawfile loadCaress(const QString& filePath) {
     Rawfile ret(filePath);
 
     if(open_data_file(filePath.toLocal8Bit().data(), nullptr))
