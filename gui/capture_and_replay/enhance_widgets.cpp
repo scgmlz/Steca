@@ -14,6 +14,8 @@
 
 #include "core/typ/exception.h"
 #include "gui/capture_and_replay/console.h"
+#include <QDebug>
+#include <QtGlobal>
 
 // ************************************************************************** //
 //  class CSettable
@@ -53,6 +55,17 @@ CModelessDialog::CModelessDialog(QWidget* parent, const QString& name)
     , CSettable(name)
 {
     setModal(false);
+}
+
+CModelessDialog::~CModelessDialog()
+{
+    qDebug() << "closing modeless dialog " << name();
+}
+
+void CModelessDialog::closeEvent(QCloseEvent* event)
+{
+    qDebug() << "to close modeless dialog " << name();
+    deleteLater();
 }
 
 void CModelessDialog::onCommand(const QStringList& args)

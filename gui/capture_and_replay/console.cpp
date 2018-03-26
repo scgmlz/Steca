@@ -54,7 +54,7 @@ QString CommandRegistry::learn(const QString& name, CSettable* widget)
             idxEntry = ++(numberedEntry->second);
         ret.replace("#", QString::number(idxEntry));
     }
-    qDebug() << "registry " << name_ << " learns " << ret;
+    //qDebug() << "registry " << name_ << " learns " << ret;
     if (widgets_.find(ret)!=widgets_.end())
         qFatal("Duplicate widget registry entry '%s'", ret.toLatin1().constData());
     widgets_[ret] = widget;
@@ -63,7 +63,7 @@ QString CommandRegistry::learn(const QString& name, CSettable* widget)
 
 void CommandRegistry::forget(const QString& name)
 {
-    qDebug() << "registry " << name_ << " forgets " << name;
+    //qDebug() << "registry " << name_ << " forgets " << name;
     auto it = widgets_.find(name);
     if (it==widgets_.end())
         qFatal("Cannot deregister, there is no entry '%s' in the widget registry",
