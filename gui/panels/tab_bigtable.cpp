@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/tab_table.cpp
+//! @file      gui/panels/tab_bigtable.cpp
 //! @brief     Implements class BigtableTab, and its dependences
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "tab_table.h"
+#include "tab_bigtable.h"
 #include "core/algo/interpolate_polefig.h" // includes peak_info.h
 #include "core/session.h"
 #include "gui/actions/triggers.h"
