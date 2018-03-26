@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/tab_diagram.h
-//! @brief     Defines class DiagramWidget, and its dependences
+//! @brief     Defines class DiagramTab, and its dependences
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -20,9 +20,9 @@
 
 //! Plot of a pair of fit results or metadata, with associated controls.
 
-class DiagramWidget : public TabMainframe {
+class DiagramTab : public TabMainframe {
 public:
-    DiagramWidget();
+    DiagramTab();
     void render() final;
 private:
     class PlotDiagram* plot_;

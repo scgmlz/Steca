@@ -24,15 +24,15 @@
 class Mainframe : public CTabWidget {
 public:
     Mainframe();
-    const class TableWidget& tableWidget() const { return *tableWidget_; }
+    const class BigtableTab& bigtableTab() const { return *bigtableTab_; }
 
 private:
     void render();
     class DataImageTab*  dataImageTab_;
     class CorrImageTab*  corrImageTab_;
-    class TableWidget*   tableWidget_;
-    class DiagramWidget* diagramWidget_;
-    class PolefigWidget* polefigWidget_;
+    class BigtableTab*   bigtableTab_;
+    class DiagramTab* diagramTab_;
+    class PolefigTab* polefigTab_;
 };
 
 #endif // MAINFRAME_H

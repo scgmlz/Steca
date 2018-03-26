@@ -55,7 +55,7 @@ void ExportTable::save()
     if (xyMode_)
         ;//writeCurrentDiagramOutputFile(stream, separator);
     else
-        gGui->mainframe().tableWidget().dataView().toFile(stream, separator);
+        gGui->mainframe().bigtableTab().dataView().toFile(stream, separator);
     close();
 }
 

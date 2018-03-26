@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/tab_table.cpp
-//! @brief     Implements class TableWidget, and its dependences
+//! @brief     Implements class BigtableTab, and its dependences
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -141,10 +141,10 @@ void ColumnSelector::updateRadiobuttons()
 
 
 // ************************************************************************** //
-//  class TableWidget
+//  class BigtableTab
 // ************************************************************************** //
 
-TableWidget::TableWidget()
+BigtableTab::BigtableTab()
 {
     const QStringList& headers = PeakInfo::dataTags(false);
     const QStringList& outHeaders = PeakInfo::dataTags(true);
@@ -178,7 +178,7 @@ TableWidget::TableWidget()
     setLayout(layout);
 }
 
-void TableWidget::render()
+void BigtableTab::render()
 {
     if (!isVisible())
         return;

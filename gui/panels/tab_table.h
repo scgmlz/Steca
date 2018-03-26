@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/tab_table.h
-//! @brief     Defines class TableWidget, and its dependences
+//! @brief     Defines class BigtableTab, and its dependences
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -19,9 +19,9 @@
 
 //! Tabular display of fit results and metadata, with associated controls.
 
-class TableWidget : public TabMainframe {
+class BigtableTab : public TabMainframe {
 public:
-    TableWidget();
+    BigtableTab();
     const class DataView& dataView() const { return *dataView_; }
     void render() final;
 private:

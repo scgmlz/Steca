@@ -38,9 +38,9 @@ Mainframe::Mainframe()
     setTabPosition(QTabWidget::North);
     addTab((dataImageTab_ = new DataImageTab), "Data image");
     addTab((corrImageTab_ = new CorrImageTab), "Corr image");
-    addTab((tableWidget_ = new TableWidget), "Table");
-    addTab((diagramWidget_ = new DiagramWidget), "Diagram");
-    addTab((polefigWidget_ = new PolefigWidget), "Polefig");
+    addTab((bigtableTab_ = new BigtableTab), "Table");
+    addTab((diagramTab_ = new DiagramTab), "Diagram");
+    addTab((polefigTab_ = new PolefigTab), "Polefig");
     setTabEnabled(1, false);
 }
 

@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/tab_diagram.cpp
-//! @brief     Implements class DiagramWidget, and its dependences
+//! @brief     Implements class DiagramTab, and its dependences
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -78,10 +78,10 @@ SelectXY::SelectXY()
 }
 
 // ************************************************************************** //
-//  class DiagramWidget
+//  class DiagramTab
 // ************************************************************************** //
 
-DiagramWidget::DiagramWidget()
+DiagramTab::DiagramTab()
 {
     // initializations
     plot_ = new PlotDiagram; // the main subframe
@@ -114,7 +114,7 @@ DiagramWidget::DiagramWidget()
     setLayout(layout);
 }
 
-void DiagramWidget::render()
+void DiagramTab::render()
 {
     if (!isVisible())
         return;

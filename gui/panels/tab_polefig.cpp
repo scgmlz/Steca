@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/tab_polefig.cpp
-//! @brief     Implements class PolefigWidget, and its dependences
+//! @brief     Implements class PolefigTab, and its dependences
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -20,10 +20,10 @@
 
 
 // ************************************************************************** //
-//  class PolefigWidget
+//  class PolefigTab
 // ************************************************************************** //
 
-PolefigWidget::PolefigWidget()
+PolefigTab::PolefigTab()
 {
     // initializations
     plot_ = new PlotPolefig; // the main subframe
@@ -51,7 +51,7 @@ PolefigWidget::PolefigWidget()
     setLayout(layout);
 }
 
-void PolefigWidget::render()
+void PolefigTab::render()
 {
     if (!isVisible())
         return;

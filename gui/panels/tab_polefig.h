@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/tab_polefig.h
-//! @brief     Defines class PolefigWidget, and its dependences
+//! @brief     Defines class PolefigTab, and its dependences
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -19,9 +19,9 @@
 
 //! Tabular display of fit results and metadata, with associated controls.
 
-class PolefigWidget : public TabMainframe {
+class PolefigTab : public TabMainframe {
 public:
-    PolefigWidget();
+    PolefigTab();
     void render() final;
 private:
     class PlotPolefig* plot_;
