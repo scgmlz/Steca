@@ -22,6 +22,8 @@ public:
     bool editingPeakfits;
 
     class CCheckBox* polefigShowGridPts;
+    class CComboBox* diagramX;
+    class CComboBox* diagramY;
 };
 
 #endif // STATE_H

@@ -24,8 +24,7 @@ class PlotDiagram : public QCustomPlot {
 public:
     PlotDiagram();
     void set(PeakInfos);
-    void plot(const QVector<double>& xs, const QVector<double>& ys,
-              const QVector<double>& ysLo, const QVector<double>& ysUp);
+    void refresh();
 private:
     QCPGraph *graph_, *graphLo_, *graphUp_;
 };

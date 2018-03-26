@@ -26,16 +26,6 @@ public:
     void render();
 private:
     class PlotDiagram* plot_;
-    class SelectXY* selectXY_;
-
-    using eReflAttr = PeakInfo::eReflAttr;
-
-    eReflAttr xAttr() const;
-    eReflAttr yAttr() const;
-
-    void displayPeak(int reflIndex, bool interpolated);
-
-    QVector<double> xs_, ys_, ysErrorLo_, ysErrorUp_;
     void showEvent(QShowEvent*) { render(); }
 };
 

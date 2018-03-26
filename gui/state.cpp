@@ -13,9 +13,22 @@
 // ************************************************************************** //
 
 #include "state.h"
+#include "core/data/peak_info.h"
+#include "core/def/idiomatic_for.h"
 #include "gui/base/controls.h"
 
 GuiState::GuiState()
 {
     polefigShowGridPts = new CCheckBox {"gridPts", "grid points"};
+
+    diagramX = new CComboBox {"xAxis"};
+    diagramY = new CComboBox {"yAxis"};
+
+    // initialize
+    QStringList tags = PeakInfo::dataTags(false);
+    for_i (Metadata::numAttributes(false) - Metadata::numAttributes(true))
+        tags.removeLast(); // remove all tags that are not numbers
+    diagramX->addItems(tags);
+    diagramY->addItems(tags);
+
 }
