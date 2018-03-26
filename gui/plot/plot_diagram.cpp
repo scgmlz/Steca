@@ -70,49 +70,45 @@ PlotDiagram::PlotDiagram()
 
 void PlotDiagram::refresh()
 {
-    QVector<double> xs_, ys_, ysErrorLo_, ysErrorUp_;
+    QVector<double> xs, ys, ysLow, ysHig;
 
     const PeakInfos& peakInfos = gSession->peakInfos();
     int count = peakInfos.count();
 
-    xs_.resize(count);
-    ys_.resize(count);
+    xs.resize(count);
+    ys.resize(count);
 
     int xi = int(gGui->state->diagramX->currentIndex());
     int yi = int(gGui->state->diagramY->currentIndex());
 
     for_i (count) {
         const row_t row = peakInfos.at(i).data();
-        xs_[i] = row.at(xi).toDouble();
-        ys_[i] = row.at(yi).toDouble();
+        xs[i] = row.at(xi).toDouble();
+        ys[i] = row.at(yi).toDouble();
     }
 
     QVector<int> is;
-    sortColumns(xs_, ys_, is);
+    sortColumns(xs, ys, is);
 
     using eReflAttr = PeakInfo::eReflAttr;
     eReflAttr ye = (eReflAttr) yi;
-
-    ysErrorLo_.clear();
-    ysErrorUp_.clear();
 
     int iRefl = gSession->peaks().selectedIndex();
 
     if (!gSession->peaks().at(iRefl).isRaw()
         && (ye==eReflAttr::INTEN || ye==eReflAttr::TTH || ye==eReflAttr::FWHM)) {
 
-        ysErrorLo_.resize(count);
-        ysErrorUp_.resize(count);
+        ysLow.resize(count);
+        ysHig.resize(count);
 
         for_i (count) {
             const row_t row = peakInfos.at(is.at(i)).data(); // access error over sorted index vec
             double sigma = row.at(yi+1).toDouble(); // SIGMA_X has tag position of X plus 1
-            double y = ys_.at(i);
-            ysErrorLo_[i] = y - sigma;
-            ysErrorUp_[i] = y + sigma;
+            double y = ys.at(i);
+            ysLow[i] = y - sigma;
+            ysHig[i] = y + sigma;
         }
     }
-
 
     graph_->clearData();
     graphUp_->clearData();
@@ -121,8 +117,8 @@ void PlotDiagram::refresh()
     Range rgeX, rgeY;
 
     for_i (count) {
-        rgeX.extendBy(xs_.at(i));
-        rgeY.extendBy(ys_.at(i));
+        rgeX.extendBy(xs.at(i));
+        rgeY.extendBy(ys.at(i));
     }
 
     if (!count || rgeX.isEmpty() || rgeY.isEmpty()) {
@@ -141,13 +137,13 @@ void PlotDiagram::refresh()
     yAxis->setVisible(true);
 
     graph_->setPen(QPen(Qt::blue));
-    graph_->addData(xs_, ys_);
+    graph_->addData(xs, ys);
 
     graphUp_->setPen(QPen(Qt::red));
-    graphUp_->addData(xs_, ysErrorUp_);
+    graphUp_->addData(xs, ysHig);
 
     graphLo_->setPen(QPen(Qt::green));
-    graphLo_->addData(xs_, ysErrorLo_);
+    graphLo_->addData(xs, ysLow);
 
     replot();
 }
