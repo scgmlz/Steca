@@ -116,8 +116,8 @@ public:
     RangeControl();
     void onData();
 private:
-    CDoubleSpinBox spinRangeMin_{"peakRangeMin", 6, 0., 89.9};
-    CDoubleSpinBox spinRangeMax_{"peakRangeMax", 6, 0., 90.};
+    CDoubleSpinBox spinRangeMin_ {"peakRangeMin", 6, 0., 89.9};
+    CDoubleSpinBox spinRangeMax_ {"peakRangeMax", 6, 0., 90.};
 };
 
 RangeControl::RangeControl()

@@ -176,7 +176,9 @@ void CSpinBox::onCommand(const QStringList& args)
         THROW("Unexpected command");
     if      (args.size()<2)
         THROW("Missing argument to command 'set'");
-    setValue(TO_INT(args[1]));
+    int val = TO_INT(args[1]);
+    setValue(val);
+    emit valueReleased(val);
 }
 
 //! @class CDoubleSpinBox
@@ -217,7 +219,9 @@ void CDoubleSpinBox::onCommand(const QStringList& args)
         THROW("Unexpected command");
     if      (args.size()<2)
         THROW("Missing argument to command 'set'");
-    setValue(TO_DOUBLE(args[1]));
+    double val = TO_DOUBLE(args[1]);
+    setValue(val);
+    emit valueReleased(val);
 }
 
 //! @class CCheckBox

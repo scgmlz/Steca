@@ -124,9 +124,9 @@ void PlotDiagram::refresh()
     if (!count || rgeX.isEmpty() || rgeY.isEmpty()) {
         xAxis->setVisible(false);
         yAxis->setVisible(false);
-        qDebug() << "plot diagram disabled: count=" << count
-                 << ", rgeX=" << rgeX.to_s()
-                 << ", rgeY=" << rgeY.to_s();
+        //qDebug() << "plot diagram disabled: count=" << count
+        //         << ", rgeX=" << rgeX.to_s()
+        //         << ", rgeY=" << rgeY.to_s();
         replot();
         return;
     }
