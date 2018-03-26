@@ -21,6 +21,7 @@
 #include "gui/dialogs/export_dfgram.h"
 #include "gui/dialogs/export_bigtable.h"
 #include "gui/dialogs/export_polefig.h"
+#include "gui/dialogs/popup_diagram.h"
 #include "gui/dialogs/popup_polefig.h"
 #include <QDesktopServices>
 
@@ -36,12 +37,13 @@ Triggers::Triggers()
     connect(&exportDfgram, AT, [](){ ExportDfgram().exec(); });
     connect(&exportPolefig, AT, [](){ ExportPolefig().exec(); });
     connect(&exportTable, AT, [](){ ExportTable(false).exec(); });
-    connect(&exportXY, AT, [](){ ExportTable(true).exec(); });
+    connect(&exportDiagram, AT, [](){ ExportTable(true).exec(); });
     connect(&loadSession, AT, []() { gGui->loadSession(); });
     connect(&online, AT, []() { QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
     connect(&quit, AT, []() { gGui->close(); });
     connect(&removeFile, AT, []() { gSession->dataset().removeFile(); });
     connect(&saveSession, AT, []() { gGui->saveSession(); });
+    connect(&spawnDiagram, AT, [](){ new PopupDiagram(); });
     connect(&spawnPolefig, AT, [](){ new PopupPolefig(); });
     connect(&viewReset, AT, []() { gGui->viewReset(); });
 }

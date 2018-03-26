@@ -57,14 +57,8 @@ CModelessDialog::CModelessDialog(QWidget* parent, const QString& name)
     setModal(false);
 }
 
-CModelessDialog::~CModelessDialog()
-{
-    qDebug() << "closing modeless dialog " << name();
-}
-
 void CModelessDialog::closeEvent(QCloseEvent* event)
 {
-    qDebug() << "to close modeless dialog " << name();
     deleteLater();
 }
 

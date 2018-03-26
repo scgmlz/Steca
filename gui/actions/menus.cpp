@@ -52,7 +52,7 @@ Menus::Menus(QMenuBar* mbar)
         "&Export",
         {       &triggers->exportDfgram,
                 &triggers->exportTable,
-                &triggers->exportXY,
+                &triggers->exportDiagram,
                 &triggers->exportPolefig,
         });
 
@@ -91,7 +91,7 @@ Menus::Menus(QMenuBar* mbar)
                 &toggles->viewStatusbar,
                 separator(),
                 &triggers->spawnTable,
-                &triggers->spawnXY,
+                &triggers->spawnDiagram,
                 &triggers->spawnPolefig,
                 separator(),
                 &triggers->viewReset,

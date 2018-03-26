@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/dialogs/popup_polefig.cpp
-//! @brief     Implements class PopupPolefig
+//! @file      gui/dialogs/popup_diagram.cpp
+//! @brief     Implements class PopupDiagram
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,20 +12,20 @@
 //
 // ************************************************************************** //
 
-#include "popup_polefig.h"
+#include "popup_diagram.h"
 #include "core/session.h"
-#include "gui/plot/plot_polefig.h"
+#include "gui/plot/plot_diagram.h"
 #include "gui/mainwin.h"
 #include "gui/state.h"
+#include <QVBoxLayout>
 
-
-PopupPolefig::PopupPolefig()
+PopupDiagram::PopupDiagram()
     : CModelessDialog(gGui, "polefig#")
 {
     setWindowTitle("Steca " + name());
 
     // initializations
-    plot_ = new PlotPolefig; // the main subframe
+    plot_ = new PlotDiagram; // the main subframe
     plot_->setMinimumSize(300,300); // TODO store and reuse user setting; freeze aspect ratio
 
     // layout
@@ -35,6 +35,6 @@ PopupPolefig::PopupPolefig()
     // TODO add info about used parameters
     setLayout(layout);
 
-    plot_->set(gSession->peakInfos(), gGui->state->polefigShowGridPts->checkState());
+    plot_->refresh();
     show();
 }
