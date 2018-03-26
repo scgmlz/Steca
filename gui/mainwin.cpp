@@ -171,11 +171,12 @@ void MainWin::loadSession()
         this, "Load session", sessionDir_, "Session files (*.ste)");
     if (fileName.isEmpty())
         return;
+    QFile file(fileName);
+    if (!(file.open(QIODevice::ReadOnly | QIODevice::Text))) {
+        qWarning() << ("Cannot open file for reading: " % fileName);
+        return;
+    }
     try {
-        TR("going to load session from file '"+fileName+"'");
-        QFile file(fileName);
-        if (!(file.open(QIODevice::ReadOnly | QIODevice::Text)))
-            THROW("Cannot open file for reading: " % fileName);
         TakesLongTime __;
         gSession->sessionFromJson(file.readAll());
     } catch(Exception& ex) {
@@ -200,7 +201,7 @@ void MainWin::saveSession()
     const int result = file->write(gSession->serializeSession());
     delete file;
     if (!(result >= 0))
-        THROW("Could not write session");
+        qWarning() << "Could not write session";
 }
 
 void MainWin::addFiles()
