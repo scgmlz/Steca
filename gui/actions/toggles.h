@@ -23,6 +23,7 @@ class Toggles : private QObject {
 public:
     Toggles();
     CToggle combinedDgram {"dfg.all", "All measurements", false, ":/icon/all"};
+    CToggle crosshair {"crosshair", "Show crosshair", false, ":/icon/crop"};
     CToggle enableCorr {"enableCorr", "Enable correction file", false, ":/icon/useCorrection"};
     CToggle fixedIntenDgram {"dfg.fixInt", "Fixed intensity scale", false, ":/icon/scale"};
     CToggle fixedIntenImage {"img.fixInt", "Global intensity scale", false, ":/icon/scale"};
@@ -30,7 +31,6 @@ public:
     CToggle showBackground {"showBackground", "Show fitted background", false,
             ":/icon/showBackground"};
     CToggle showBins {"showBins", "Show bins", false, ":/icon/angle"};
-    CToggle showOverlay {"showOverlay", "Show overlay", false, ":/icon/crop"};
     CToggle viewClusters {"viewMeasurements", "Measurements", true, "", Qt::Key_F9};
     CToggle viewFiles {"viewFiles", "Files", true, "", Qt::Key_F8};
     CToggle viewMetadata {"viewMetadata", "Metadata", true, "", Qt::Key_F10};

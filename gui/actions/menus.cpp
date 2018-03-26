@@ -62,7 +62,7 @@ Menus::Menus(QMenuBar* mbar)
                 &gGui->imageTrafoActions->mirrorImage,
                 &toggles->fixedIntenImage,
                 &toggles->linkCuts,
-                &toggles->showOverlay,
+                &toggles->crosshair,
                 &toggles->showBins,
         });
 

@@ -28,7 +28,7 @@ ImageView::ImageView()
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
-    connect(&gGui->toggles->showOverlay, &QAction::toggled, [this](bool /*unused*/) { update(); });
+    connect(&gGui->toggles->crosshair, &QAction::toggled, [this](bool /*unused*/) { update(); });
 }
 
 void ImageView::setPixmap(const QPixmap& pixmap)
@@ -72,8 +72,8 @@ void ImageView::paintEvent(QPaintEvent*)
     // image
     p.drawPixmap(rect.left(), rect.top(), scaled_);
 
-    // overlay
-    if (gGui->toggles->showOverlay.isChecked()) {
+    // crosshair overlay
+    if (gGui->toggles->crosshair.isChecked()) {
         p.setPen(Qt::lightGray);
 
         // cut
@@ -145,7 +145,7 @@ void IdxMeas::fromCore()
 
 ImageTab::ImageTab()
     : btnScale_ {&gGui->toggles->fixedIntenImage}
-    , btnOverlay_ {&gGui->toggles->showOverlay}
+    , btnOverlay_ {&gGui->toggles->crosshair}
 {
     // internal connections
     connect(&gGui->toggles->enableCorr, &QAction::toggled, [this](bool /*unused*/) { render(); });
