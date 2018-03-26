@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/tab_mainframe.h
-//! @brief     Defines class TabMainframe, and its dependences
+//! @file      gui/state.cpp
+//! @brief     Defines class GuiState
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,16 +12,10 @@
 //
 // ************************************************************************** //
 
-#ifndef TAB_MAINFRAME_H
-#define TAB_MAINFRAME_H
+#include "state.h"
+#include "gui/base/controls.h"
 
-#include <QWidget>
-
-//! Pure virtual base class for tabs in the Mainframe.
-
-class TabMainframe : public QWidget {
-public:
-    virtual void render() = 0;
-};
-
-#endif // TAB_MAINFRAME_H
+GuiState::GuiState()
+{
+    polefigShowGridPts = new CCheckBox {"gridPts", "grid points"};
+}

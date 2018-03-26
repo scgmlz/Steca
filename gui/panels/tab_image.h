@@ -16,7 +16,6 @@
 #define TAB_IMAGE_H
 
 #include "core/data/image.h"
-#include "gui/panels/tab_mainframe.h"
 #include "gui/base/controls.h"
 #include <QPainter>
 
@@ -45,10 +44,9 @@ private:
 
 //! Pure virtual base class for DataImageTab and CorrImageTab, shows a detector image and controls.
 
-class ImageTab : public TabMainframe {
+class ImageTab : public QWidget {
 public:
     ImageTab();
-    void render() final;
 protected:
     virtual QPixmap pixmap() = 0;
     QPixmap makePixmap(shp_Image);
@@ -60,6 +58,7 @@ protected:
     QVBoxLayout controls_;
     QHBoxLayout box1_;
 private:
+    void render();
     XIconButton btnScale_;
     XIconButton btnOverlay_;
 };

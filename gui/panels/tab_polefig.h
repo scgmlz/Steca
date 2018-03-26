@@ -15,17 +15,17 @@
 #ifndef TAB_POLEFIG_H
 #define TAB_POLEFIG_H
 
-#include "gui/panels/tab_mainframe.h"
+#include <QWidget>
 
 //! Mainframe tab to plot a polefigure plot, with associated controls.
 
-class PolefigTab : public TabMainframe {
+class PolefigTab : public QWidget {
 public:
     PolefigTab();
-    void render() final;
+    void render();
 private:
     class PlotPolefig* plot_;
-    class CCheckBox* cbFlat_;
+    void showEvent(QShowEvent*) { render(); }
 };
 
 #endif // TAB_POLEFIG_H

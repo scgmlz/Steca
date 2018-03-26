@@ -14,9 +14,9 @@
 
 #include "popup_polefig.h"
 #include "core/session.h"
-#include "gui/actions/triggers.h"
 #include "gui/plot/plot_polefig.h"
 #include "gui/mainwin.h"
+#include "gui/state.h"
 
 
 // ************************************************************************** //
@@ -39,6 +39,6 @@ PopupPolefig::PopupPolefig()
     // TODO add info about used parameters
     setLayout(layout);
 
-    plot_->set(gSession->peakInfos(), false); // what shall we TODO with cbFlat_->isChecked()) ?
+    plot_->set(gSession->peakInfos(), gGui->state->polefigShowGridPts->checkState());
     show();
 }

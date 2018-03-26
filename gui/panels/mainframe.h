@@ -27,7 +27,6 @@ public:
     const class BigtableTab& bigtableTab() const { return *bigtableTab_; }
 
 private:
-    void render();
     class DataImageTab*  dataImageTab_;
     class CorrImageTab*  corrImageTab_;
     class BigtableTab*   bigtableTab_;

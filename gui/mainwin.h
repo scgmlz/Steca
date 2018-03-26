@@ -45,8 +45,6 @@ public:
     QProgressBar progressBar {this};
 
 private:
-    Console console_;
-
     void initLayout();
     void updateActionEnabling();
 

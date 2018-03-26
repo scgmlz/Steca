@@ -16,14 +16,14 @@
 #define TAB_DIAGRAM_H
 
 #include "core/data/peak_info.h"
-#include "gui/panels/tab_mainframe.h"
+#include <QWidget>
 
 //! Mainframe tab to plot a pair of fit results or metadata, with associated controls.
 
-class DiagramTab : public TabMainframe {
+class DiagramTab : public QWidget {
 public:
     DiagramTab();
-    void render() final;
+    void render();
 private:
     class PlotDiagram* plot_;
     class SelectXY* selectXY_;
@@ -36,6 +36,7 @@ private:
     void displayPeak(int reflIndex, bool interpolated);
 
     QVector<double> xs_, ys_, ysErrorLo_, ysErrorUp_;
+    void showEvent(QShowEvent*) { render(); }
 };
 
 #endif // TAB_DIAGRAM_H

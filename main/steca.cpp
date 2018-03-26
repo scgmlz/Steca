@@ -86,6 +86,7 @@ int main(int argc, char* argv[]) {
     qInstallMessageHandler(messageHandler);
 
     Session session;
+    Console console;
     MainWin mainwin;
     mainwin.show();
     if (nonoptArgs.size())

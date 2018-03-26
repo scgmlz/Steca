@@ -26,11 +26,7 @@
 Mainframe::Mainframe()
     : CTabWidget {"mainframe"}
 {
-    // local connection
-    connect(this, &Mainframe::currentChanged, [this](int) { render(); });
-
     // inbound connections
-    connect(gSession, &Session::sigImage, [this]() { render(); });
     connect(gSession, &Session::sigCorr, [this]() {
             setTabEnabled(1, gSession->corrset().hasFile()); });
 
@@ -42,9 +38,4 @@ Mainframe::Mainframe()
     addTab((diagramTab_ = new DiagramTab), "Diagram");
     addTab((polefigTab_ = new PolefigTab), "Polefig");
     setTabEnabled(1, false);
-}
-
-void Mainframe::render()
-{
-    dynamic_cast<TabMainframe*>(currentWidget())->render();
 }

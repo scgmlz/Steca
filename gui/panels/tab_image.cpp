@@ -147,6 +147,9 @@ ImageTab::ImageTab()
     : btnScale_ {&gGui->toggles->fixedIntenImage}
     , btnOverlay_ {&gGui->toggles->crosshair}
 {
+    // inbound connections
+    connect(gSession, &Session::sigImage, [this]() { render(); });
+
     // internal connections
     connect(&gGui->toggles->enableCorr, &QAction::toggled, [this](bool /*unused*/) { render(); });
     connect(&gGui->toggles->showBins, &QAction::toggled, [this](bool /*unused*/) { render(); });

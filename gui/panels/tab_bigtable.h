@@ -15,17 +15,18 @@
 #ifndef TAB_BIGTABLE_H
 #define TAB_BIGTABLE_H
 
-#include "gui/panels/tab_mainframe.h"
+#include <QWidget>
 
 //! Tabular display of fit results and metadata, with associated controls.
 
-class BigtableTab : public TabMainframe {
+class BigtableTab : public QWidget {
 public:
     BigtableTab();
     const class DataView& dataView() const { return *dataView_; }
-    void render() final;
+    void render();
 private:
     class DataView* dataView_;
+    void showEvent(QShowEvent*) { render(); }
 };
 
 #endif // TAB_BIGTABLE_H
