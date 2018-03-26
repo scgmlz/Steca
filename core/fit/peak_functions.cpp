@@ -29,10 +29,10 @@ public:
     qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const;
 
     qpair fittedPeak() const;
-    fwhm_t fittedFWHM() const;
+    float fittedFWHM() const;
 
     qpair peakError() const;
-    fwhm_t fwhmError() const;
+    float fwhmError() const;
 
     void setRange(const Range&);
     void fit(const Curve&, const Range&);
@@ -67,15 +67,15 @@ qpair Raw::fittedPeak() const {
     return qpair(range_.center(), sum_y_);
 }
 
-fwhm_t Raw::fittedFWHM() const {
-    return fwhm_t(range_.width()); // kind-of
+float Raw::fittedFWHM() const {
+    return float(range_.width()); // kind-of
 }
 
 qpair Raw::peakError() const {
     return qpair(0, 0);
 }
 
-fwhm_t Raw::fwhmError() const {
+float Raw::fwhmError() const {
     return 0;
 }
 
@@ -118,13 +118,13 @@ public:
     qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const;
 
     void setGuessedPeak(const qpair&);
-    void setGuessedFWHM(fwhm_t);
+    void setGuessedFWHM(float);
 
     qpair fittedPeak() const;
-    fwhm_t fittedFWHM() const;
+    float fittedFWHM() const;
 
     qpair peakError() const;
-    fwhm_t fwhmError() const;
+    float fwhmError() const;
 
     QString name() const final { return "Gaussian"; }
 };
@@ -178,7 +178,7 @@ void Gaussian::setGuessedPeak(const qpair& qpair) {
     setValue(parAMPL, qpair.y);
 }
 
-void Gaussian::setGuessedFWHM(fwhm_t fwhm) {
+void Gaussian::setGuessedFWHM(float fwhm) {
     PeakFunction::setGuessedFWHM(fwhm);
     // sigma = FWHM * 1/4 * (SQRT(2)/SQRT(ln(2))) = FWHM * 0.424661
     setValue(parSIGMA, fwhm * 0.424661);
@@ -188,17 +188,17 @@ qpair Gaussian::fittedPeak() const {
     return qpair(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
 }
 
-fwhm_t Gaussian::fittedFWHM() const {
-    return fwhm_t(parameters_.at(parSIGMA).value() / 0.424661);
+float Gaussian::fittedFWHM() const {
+    return float(parameters_.at(parSIGMA).value() / 0.424661);
 }
 
 qpair Gaussian::peakError() const {
     return qpair(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
 }
 
-fwhm_t Gaussian::fwhmError() const {
+float Gaussian::fwhmError() const {
     // TODO REVIEW
-    return fwhm_t(parameters_.at(parSIGMA).error());
+    return float(parameters_.at(parSIGMA).error());
 }
 
 
@@ -218,13 +218,13 @@ public:
     qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const;
 
     void setGuessedPeak(const qpair&);
-    void setGuessedFWHM(fwhm_t);
+    void setGuessedFWHM(float);
 
     qpair fittedPeak() const;
-    fwhm_t fittedFWHM() const;
+    float fittedFWHM() const;
 
     qpair peakError() const;
-    fwhm_t fwhmError() const;
+    float fwhmError() const;
 
     QString name() const final { return "Lorentzian"; }
 };
@@ -277,7 +277,7 @@ void Lorentzian::setGuessedPeak(const qpair& qpair) {
     setValue(parAMPL, qpair.y);
 }
 
-void Lorentzian::setGuessedFWHM(fwhm_t fwhm) {
+void Lorentzian::setGuessedFWHM(float fwhm) {
     PeakFunction::setGuessedFWHM(fwhm);
     // gamma = HWHM = FWHM / 2
     setValue(parGAMMA, fwhm / 2);
@@ -287,16 +287,16 @@ qpair Lorentzian::fittedPeak() const {
     return qpair(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
 }
 
-fwhm_t Lorentzian::fittedFWHM() const {
-    return fwhm_t(parameters_.at(parGAMMA).value() * 2);
+float Lorentzian::fittedFWHM() const {
+    return float(parameters_.at(parGAMMA).value() * 2);
 }
 
 qpair Lorentzian::peakError() const {
     return qpair(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
 }
 
-fwhm_t Lorentzian::fwhmError() const {
-    return fwhm_t(parameters_.at(parGAMMA).error());
+float Lorentzian::fwhmError() const {
+    return float(parameters_.at(parGAMMA).error());
 }
 
 
@@ -317,13 +317,13 @@ public:
     qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const;
 
     void setGuessedPeak(const qpair&);
-    void setGuessedFWHM(fwhm_t);
+    void setGuessedFWHM(float);
 
     qpair fittedPeak() const;
-    fwhm_t fittedFWHM() const;
+    float fittedFWHM() const;
 
     qpair peakError() const;
-    fwhm_t fwhmError() const;
+    float fwhmError() const;
 
     QString name() const final { return "PseudoVoigt1"; }
 };
@@ -394,7 +394,7 @@ void PseudoVoigt1::setGuessedPeak(const qpair& qpair) {
     setValue(parAMPL, qpair.y);
 }
 
-void PseudoVoigt1::setGuessedFWHM(fwhm_t fwhm) {
+void PseudoVoigt1::setGuessedFWHM(float fwhm) {
     PeakFunction::setGuessedFWHM(fwhm);
     setValue(parSIGMAGAMMA, fwhm / 2);
 }
@@ -403,16 +403,16 @@ qpair PseudoVoigt1::fittedPeak() const {
     return qpair(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
 }
 
-fwhm_t PseudoVoigt1::fittedFWHM() const {
-    return fwhm_t(parameters_.at(parSIGMAGAMMA).value() * 2);
+float PseudoVoigt1::fittedFWHM() const {
+    return float(parameters_.at(parSIGMAGAMMA).value() * 2);
 }
 
 qpair PseudoVoigt1::peakError() const {
     return qpair(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
 }
 
-fwhm_t PseudoVoigt1::fwhmError() const {
-    return fwhm_t(parameters_.at(parSIGMAGAMMA).error());
+float PseudoVoigt1::fwhmError() const {
+    return float(parameters_.at(parSIGMAGAMMA).error());
 }
 
 
@@ -433,13 +433,13 @@ public:
     qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const;
 
     void setGuessedPeak(const qpair&);
-    void setGuessedFWHM(fwhm_t);
+    void setGuessedFWHM(float);
 
     qpair fittedPeak() const;
-    fwhm_t fittedFWHM() const;
+    float fittedFWHM() const;
 
     qpair peakError() const;
-    fwhm_t fwhmError() const;
+    float fwhmError() const;
 
     QString name() const final { return "PseudoVoigt2"; }
 };
@@ -523,7 +523,7 @@ void PseudoVoigt2::setGuessedPeak(const qpair& qpair) {
     setValue(parAMPL, qpair.y);
 }
 
-void PseudoVoigt2::setGuessedFWHM(fwhm_t fwhm) {
+void PseudoVoigt2::setGuessedFWHM(float fwhm) {
     PeakFunction::setGuessedFWHM(fwhm);
     setValue(parSIGMA, fwhm * 0.424661);
     setValue(parGAMMA, fwhm / 2);
@@ -533,9 +533,9 @@ qpair PseudoVoigt2::fittedPeak() const {
     return qpair(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
 }
 
-fwhm_t PseudoVoigt2::fittedFWHM() const {
+float PseudoVoigt2::fittedFWHM() const {
     qreal eta = parameters_.at(parETA).value();
-    return fwhm_t(
+    return float(
         ((1 - eta) * parameters_.at(parSIGMA).value() / 0.424661
          + eta * parameters_.at(parGAMMA).value() * 2)
         / 2);
@@ -545,9 +545,9 @@ qpair PseudoVoigt2::peakError() const {
     return qpair(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
 }
 
-fwhm_t PseudoVoigt2::fwhmError() const {
+float PseudoVoigt2::fwhmError() const {
     // REVIEW
-    return fwhm_t(parameters_.at(parSIGMA).error() + parameters_.at(parGAMMA).error());
+    return float(parameters_.at(parSIGMA).error() + parameters_.at(parGAMMA).error());
 }
 
 } // local methods

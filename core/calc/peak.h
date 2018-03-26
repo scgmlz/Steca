@@ -17,7 +17,7 @@
 
 #include <memory>
 #include "core/fit/fit_fun.h"
-#include "core/typ/types.h" // for fwhm_t
+#include "core/typ/types.h" // for float
 #include <QSharedPointer> // no auto rm
 
 //! Wraps a PeakFunction (pimpl idiom)
@@ -33,7 +33,7 @@ public:
     void setRange(const Range&);
     void invalidateGuesses();
     void setGuessPeak(const qpair& peak);
-    void setGuessFWHM(fwhm_t fwhm);
+    void setGuessFWHM(float fwhm);
     void fit(const Curve&);
 
     const PeakFunction& peakFunction() const;

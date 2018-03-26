@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/dialogs/export_table.h
+//! @file      gui/dialogs/export_bigtable.h
 //! @brief     Defines class ExportTable
 //!
 //! @homepage  https://github.com/scgmlz/Steca

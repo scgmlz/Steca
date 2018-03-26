@@ -12,9 +12,6 @@
 //
 // ************************************************************************** //
 
-// adapted parts of https://github.com/Microsoft/GSL.git
-// added some more
-
 #ifndef NUMBERS_H
 #define NUMBERS_H
 

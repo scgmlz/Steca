@@ -23,14 +23,14 @@
 namespace {
 
 struct itf_t {
-    itf_t() : itf_t(inten_t(NAN), deg(NAN), fwhm_t(NAN)) {}
-    itf_t(inten_t _inten, deg _tth, fwhm_t _fwhm) : inten(_inten), tth(_tth), fwhm(_fwhm) {}
+    itf_t() : itf_t(float(NAN), deg(NAN), float(NAN)) {}
+    itf_t(float _inten, deg _tth, float _fwhm) : inten(_inten), tth(_tth), fwhm(_fwhm) {}
 
     void operator+=(const itf_t&); // used once to compute average
 
-    inten_t inten;
+    float inten;
     deg tth;
-    fwhm_t fwhm;
+    float fwhm;
 };
 
 void itf_t::operator+=(const itf_t& that)
@@ -189,9 +189,9 @@ itf_t inverseDistanceWeighing(const QVector<qreal>& distances, const info_vec& i
         fwhm += in->fwhm() * d;
     }
 
-    return { inten_t(height/inverseDistanceSum),
+    return { float(height/inverseDistanceSum),
             deg(offset/inverseDistanceSum),
-            fwhm_t(fwhm/inverseDistanceSum) };
+            float(fwhm/inverseDistanceSum) };
 }
 
 // Interpolates peak infos to a single point using idw.
@@ -308,8 +308,8 @@ PeakInfos algo::interpolateInfos(const PeakInfos& infos, Progress* progress)
                         avg += itfs.at(i);
 
                     ret.append(PeakInfo(
-                        alpha, beta, infos.first().rgeGma(), avg.inten / n, inten_t(NAN),
-                        avg.tth / n, deg(NAN), avg.fwhm / n, fwhm_t(NAN)));
+                        alpha, beta, infos.first().rgeGma(), avg.inten / n, float(NAN),
+                        avg.tth / n, deg(NAN), avg.fwhm / n, float(NAN)));
                     continue;
                 }
 
@@ -323,8 +323,8 @@ PeakInfos algo::interpolateInfos(const PeakInfos& infos, Progress* progress)
             // Use idw, if alpha > avgAlphaMax OR averaging failed (too small avgRadius?).
             itf_t itf = interpolateValues(idwRadius, infos, alpha, beta);
             ret.append(PeakInfo(
-                alpha, beta, infos.first().rgeGma(), itf.inten, inten_t(NAN), itf.tth, deg(NAN),
-                itf.fwhm, fwhm_t(NAN)));
+                alpha, beta, infos.first().rgeGma(), itf.inten, float(NAN), itf.tth, deg(NAN),
+                itf.fwhm, float(NAN)));
         }
     }
 

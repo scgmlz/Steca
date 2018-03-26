@@ -26,7 +26,7 @@ class Measurement {
 public:
     Measurement() = delete;
     Measurement(const Measurement&) = delete;
-    Measurement(const int position, const Metadata&, const size2d&, const inten_vec&);
+    Measurement(const int position, const Metadata&, const size2d&, const QVector<float>&);
 
     int position() const { return position_; }
     shp_Metadata metadata() const { return md_; }
@@ -50,7 +50,7 @@ public:
     shp_Image image() const { return image_; }
     size2d imageSize() const;
 
-    void collectIntens(inten_vec&, QVector<int>&, const Range&, deg minTth, deg deltaTth) const;
+    void collectIntens(QVector<float>&, QVector<int>&, const Range&, deg minTth, deg deltaTth) const;
 
 private:
     const int position_; //! position in file_

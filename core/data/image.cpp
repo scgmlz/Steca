@@ -26,7 +26,7 @@ void Image::addIntens(const Image& that) THROWS {
     if (!(size() == that.size())) THROW("inconsistent image size");
     for (int i = 0; i < size().w; ++i)
         for (int j = 0; j < size().h; ++j) {
-            inten_t inten = that.inten(i, j);
+            float inten = that.inten(i, j);
             rgeInten_.extendBy(inten);
             addInten(i, j, inten);
         }

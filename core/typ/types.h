@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/typ/types.h
-//! @brief     Defines types inten_t, fwhm_t, inten_vec, eNorm, TO_(INT|DOUBLE)
+//! @brief     Defines types float, float, QVector<float>, eNorm, TO_(INT|DOUBLE)
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -17,11 +17,6 @@
 
 #include "core/def/numbers.h"
 #include "core/typ/exception.h"
-
-typedef float inten_t;
-typedef float fwhm_t;
-
-typedef QVector<inten_t> inten_vec;
 
 enum class eNorm {
     NONE,

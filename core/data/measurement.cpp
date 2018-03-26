@@ -16,7 +16,7 @@
 #include <qmath.h>
 
 Measurement::Measurement(
-    const int position, const Metadata& md, const size2d& size, const inten_vec& intens)
+    const int position, const Metadata& md, const size2d& size, const QVector<float>& intens)
     : position_(position)
     , md_(new Metadata(md))
     , image_(new Image(size))
@@ -49,7 +49,7 @@ size2d Measurement::imageSize() const {
 //! Computes intens and counts.
 //! Called only by Sequence::collectIntens.
 void Measurement::collectIntens(
-    inten_vec& intens, QVector<int>& counts, const Range& rgeGma, deg minTth, deg deltaTth) const
+    QVector<float>& intens, QVector<int>& counts, const Range& rgeGma, deg minTth, deg deltaTth) const
 {
     const shp_AngleMap& angleMap = gSession->angleMap(*this);
     ASSERT(!angleMap.isNull());
@@ -70,11 +70,11 @@ void Measurement::collectIntens(
 
     for (int i = gmaIndexMin; i < gmaIndexMax; ++i) {
         int ind = gmaIndexes->at(i);
-        inten_t inten = image_->inten(ind);
+        float inten = image_->inten(ind);
         if (qIsNaN(inten))
             continue;
 
-        inten_t corr
+        float corr
             = gSession->corrset().isActive() ? gSession->corrset().intensCorr()->inten(ind) : 1;
         if (qIsNaN(corr))
             continue;

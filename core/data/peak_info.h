@@ -26,12 +26,12 @@ public:
     PeakInfo();
     PeakInfo(
         shp_Metadata,
-        deg alpha, deg beta, Range, inten_t, inten_t /*error*/,
-        deg, deg /*error*/, fwhm_t, fwhm_t /*error*/);
+        deg alpha, deg beta, Range, float, float /*error*/,
+        deg, deg /*error*/, float, float /*error*/);
     PeakInfo(shp_Metadata, deg alpha, deg beta, Range);
     PeakInfo(
-        deg alpha, deg beta, Range, inten_t, inten_t /*error*/, deg, deg /*error*/,
-        fwhm_t, fwhm_t /*error*/);
+        deg alpha, deg beta, Range, float, float /*error*/, deg, deg /*error*/,
+        float, float /*error*/);
     PeakInfo(deg alpha, deg beta);
 
     enum class eReflAttr {
@@ -54,21 +54,21 @@ public:
     deg alpha() const { return alpha_; }
     deg beta() const { return beta_; }
     Range rgeGma() const { return rgeGma_; }
-    inten_t inten() const { return inten_; }
-    inten_t intenError() const { return intenError_; }
+    float inten() const { return inten_; }
+    float intenError() const { return intenError_; }
     deg tth() const { return tth_; }
     deg tthError() const { return tthError_; }
-    fwhm_t fwhm() const { return fwhm_; }
-    fwhm_t fwhmError() const { return fwhmError_; }
+    float fwhm() const { return fwhm_; }
+    float fwhmError() const { return fwhmError_; }
     row_t data() const;
 
 private:
     shp_Metadata md_;
     deg alpha_, beta_;
     Range rgeGma_;
-    inten_t inten_, intenError_;
+    float inten_, intenError_;
     deg tth_, tthError_;
-    fwhm_t fwhm_, fwhmError_;
+    float fwhm_, fwhmError_;
 
     static QString const reflStringTag(int attr, bool out);
 };
@@ -81,10 +81,10 @@ public:
     PeakInfos() { invalidate(); }
     void invalidate();
     void append(const PeakInfo&);
-    inten_t averageInten() const;
+    float averageInten() const;
     const Range& rgeInten() const;
 private:
-    mutable inten_t avgInten_;
+    mutable float avgInten_;
     mutable Range rgeInten_;
 };
 

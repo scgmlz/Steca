@@ -218,7 +218,7 @@ QImage ImageTab::makeImage(shp_Image image)
 
     bool fixedScale = gGui->toggles->fixedIntenImage.isChecked();
     const Range rgeInten = imageLens.rgeInten(fixedScale);
-    inten_t maxInten = inten_t(rgeInten.max);
+    float maxInten = float(rgeInten.max);
 
     for_ij (size.w, size.h)
         ret.setPixel(i, j, colormap::intenImage(imageLens.imageInten(i, j), maxInten, !fixedScale));

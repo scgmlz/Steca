@@ -38,7 +38,7 @@ void Peak::setGuessPeak(const qpair& peak) {
     peakFunction_->setGuessedPeak(peak);
 }
 
-void Peak::setGuessFWHM(fwhm_t fwhm) {
+void Peak::setGuessFWHM(float fwhm) {
     peakFunction_->setGuessedFWHM(fwhm);
 }
 

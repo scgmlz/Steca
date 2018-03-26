@@ -196,10 +196,10 @@ Rawfile loadMar(const QString& filePath) THROWS {
     }
 
     size2d size(pixSizeX, pixSizeY);
-    inten_vec convertedIntens(pixelSize);
+    QVector<float> convertedIntens(pixelSize);
 
     for_i (pixelSize)
-        convertedIntens[i] = inten_t(i4_image[i]);
+        convertedIntens[i] = float(i4_image[i]);
 
     Metadata md;
 

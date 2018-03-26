@@ -216,7 +216,7 @@ static void loadTiff(
     size2d size(imageWidth, imageHeight);
 
     int count = imageWidth * imageHeight;
-    inten_vec intens(count);
+    QVector<float> intens(count);
 
     if (!((bitsPerSample / 8) * count == stripByteCounts)) THROW("bad format");
 

@@ -16,7 +16,7 @@
 #define BASELINE_H
 
 #include "core/typ/range.h"
-#include "core/typ/types.h" // for fwhm_t
+#include "core/typ/types.h" // for float
 #include <QSharedPointer> // no auto rm
 
 //! Settings needed for fitting the baseline.

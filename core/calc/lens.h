@@ -28,7 +28,7 @@ public:
     ImageLens(const Image&, bool trans, bool cut);
 
     size2d imgSize() const;
-    inten_t imageInten(int i, int j) const;
+    float imageInten(int i, int j) const;
     const Range& rgeInten(bool fixed) const;
 
 private:

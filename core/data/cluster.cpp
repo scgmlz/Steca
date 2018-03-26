@@ -90,7 +90,7 @@ Curve Sequence::toCurve(qreal _normFactor) const
 
 Curve Sequence::toCurve(qreal _normFactor, const Range& _rgeGma) const
 {
-    inten_vec intens = collectIntens(_rgeGma);
+    QVector<float> intens = collectIntens(_rgeGma);
     int count = intens.count();
     if (!count)
         return {};
@@ -128,14 +128,14 @@ qreal Sequence::normFactor() const
         break;
     }
 
-    qreal ret = inten_t((num > 0 && den > 0) ? num / den : NAN);
+    qreal ret = float((num > 0 && den > 0) ? num / den : NAN);
     if (qIsNaN(ret))
         qWarning() << "Bad normalisation value";
     return ret;
 }
 
 //! Called only by toCurve(..).
-inten_vec Sequence::collectIntens(const Range& rgeGma) const
+QVector<float> Sequence::collectIntens(const Range& rgeGma) const
 {
     const Range tthRge = rgeTth();
     const deg tthWdt = tthRge.width();
@@ -152,7 +152,7 @@ inten_vec Sequence::collectIntens(const Range& rgeGma) const
         numBins = pixWidth; // simply match the pixels
     }
 
-    inten_vec intens(numBins, 0);
+    QVector<float> intens(numBins, 0);
     QVector<int> counts(numBins, 0);
 
     deg minTth = tthRge.min, deltaTth = tthWdt / numBins;

@@ -30,9 +30,9 @@ PeakInfo algo::rawFit(const Cluster& cluster, const Peak& peak, const Range& gma
     peakFunction->fit(curve);
     const Range& rgeTth = peakFunction->range();
     qpair fitresult = peakFunction->fittedPeak();
-    fwhm_t fwhm = peakFunction->fittedFWHM();
+    float fwhm = peakFunction->fittedFWHM();
     qpair peakError = peakFunction->peakError();
-    fwhm_t fwhmError = peakFunction->fwhmError();
+    float fwhmError = peakFunction->fwhmError();
 
     // compute alpha, beta:
     deg alpha, beta;
@@ -43,8 +43,8 @@ PeakInfo algo::rawFit(const Cluster& cluster, const Peak& peak, const Range& gma
 
     return rgeTth.contains(fitresult.x)
         ? PeakInfo(
-              metadata, alpha, beta, gmaSector, inten_t(fitresult.y), inten_t(peakError.y),
-              deg(fitresult.x), deg(peakError.x), fwhm_t(fwhm), fwhm_t(fwhmError))
+              metadata, alpha, beta, gmaSector, float(fitresult.y), float(peakError.y),
+              deg(fitresult.x), deg(peakError.x), float(fwhm), float(fwhmError))
         : PeakInfo(metadata, alpha, beta, gmaSector);
 }
 

@@ -27,11 +27,11 @@
 PeakInfo::PeakInfo()
     : PeakInfo(
           shp_Metadata(),
-          NAN, NAN, Range(), inten_t(NAN), inten_t(NAN), deg(NAN), deg(NAN), NAN, NAN)
+          NAN, NAN, Range(), float(NAN), float(NAN), deg(NAN), deg(NAN), NAN, NAN)
 {}
 
-PeakInfo::PeakInfo(shp_Metadata md, deg alpha, deg beta, Range rgeGma, inten_t inten,
-                   inten_t intenError, deg tth, deg tthError, fwhm_t fwhm, fwhm_t fwhmError)
+PeakInfo::PeakInfo(shp_Metadata md, deg alpha, deg beta, Range rgeGma, float inten,
+                   float intenError, deg tth, deg tthError, float fwhm, float fwhmError)
     : md_(md)
     , alpha_(alpha)
     , beta_(beta)
@@ -45,19 +45,19 @@ PeakInfo::PeakInfo(shp_Metadata md, deg alpha, deg beta, Range rgeGma, inten_t i
 {}
 
 PeakInfo::PeakInfo(shp_Metadata md, deg alpha, deg beta, Range rgeGma)
-    : PeakInfo(md, alpha, beta, rgeGma, inten_t(NAN), inten_t(NAN),
-               deg(NAN), deg(NAN), fwhm_t(NAN), fwhm_t(NAN))
+    : PeakInfo(md, alpha, beta, rgeGma, float(NAN), float(NAN),
+               deg(NAN), deg(NAN), float(NAN), float(NAN))
 {}
 
-PeakInfo::PeakInfo(deg alpha, deg beta, Range rgeGma, inten_t inten, inten_t intenError, deg tth,
-                   deg tthError, fwhm_t fwhm, fwhm_t fwhmError)
+PeakInfo::PeakInfo(deg alpha, deg beta, Range rgeGma, float inten, float intenError, deg tth,
+                   deg tthError, float fwhm, float fwhmError)
     : PeakInfo(shp_Metadata(), alpha, beta, rgeGma, inten, intenError,
                tth, tthError, fwhm, fwhmError)
 {}
 
 PeakInfo::PeakInfo(deg alpha, deg beta)
-    : PeakInfo(alpha, beta, Range(), inten_t(NAN), inten_t(NAN),
-               deg(NAN), deg(NAN), fwhm_t(NAN), fwhm_t(NAN))
+    : PeakInfo(alpha, beta, Range(), float(NAN), float(NAN),
+               deg(NAN), deg(NAN), float(NAN), float(NAN))
 {}
 
 QStringList PeakInfo::dataTags(bool out)
@@ -118,7 +118,7 @@ void PeakInfos::append(const PeakInfo& info)
     invalidate();
 }
 
-inten_t PeakInfos::averageInten() const
+float PeakInfos::averageInten() const
 {
     if (qIsNaN(avgInten_)) {
         avgInten_ = 0;
@@ -147,6 +147,6 @@ const Range& PeakInfos::rgeInten() const
 
 void PeakInfos::invalidate()
 {
-    avgInten_ = inten_t(NAN);
+    avgInten_ = float(NAN);
     rgeInten_.invalidate();
 }

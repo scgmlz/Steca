@@ -76,7 +76,7 @@ void Corrset::calcIntensCorr() const {
     intensCorr_.fill(1, corrImage_->size());
 
     for_ij (w, h) {
-        const inten_t inten = corrImage_->inten(i + di, j + dj);
+        const float inten = corrImage_->inten(i + di, j + dj);
         qreal fact;
         if (inten > 0) {
             fact = avg / inten;
@@ -84,7 +84,7 @@ void Corrset::calcIntensCorr() const {
             fact = NAN;
             hasNANs_ = true;
         }
-        intensCorr_.setInten(i + di, j + dj, inten_t(fact));
+        intensCorr_.setInten(i + di, j + dj, float(fact));
     }
 }
 

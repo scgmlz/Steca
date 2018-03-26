@@ -58,23 +58,23 @@ public:
     void fromJson(const JsonObj&) THROWS;
     virtual void setRange(const Range& range) { range_ = range; }
     virtual void setGuessedPeak(const qpair& peak) { guessedPeak_ = peak; }
-    virtual void setGuessedFWHM(const fwhm_t fwhm) { guessedFWHM_ = fwhm; }
+    virtual void setGuessedFWHM(const float fwhm) { guessedFWHM_ = fwhm; }
 
     PeakFunction* clone() const;
     const Range& range() const { return range_; }
     const qpair& guessedPeak() const { return guessedPeak_; }
-    fwhm_t guessedFWHM() const { return guessedFWHM_; }
+    float guessedFWHM() const { return guessedFWHM_; }
     virtual qpair fittedPeak() const = 0;
-    virtual fwhm_t fittedFWHM() const = 0;
+    virtual float fittedFWHM() const = 0;
     virtual qpair peakError() const = 0;
-    virtual fwhm_t fwhmError() const = 0;
+    virtual float fwhmError() const = 0;
     JsonObj toJson() const final;
     virtual bool isRaw() const { return false; } //!< overwritten in class Raw, obviously
 
 protected:
     Range range_;
     qpair guessedPeak_;
-    fwhm_t guessedFWHM_;
+    float guessedFWHM_;
 
     Curve prepareFit(const Curve&, const Range&);
 };

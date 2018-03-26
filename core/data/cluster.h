@@ -58,7 +58,7 @@ private:
     QVector<const Measurement*> members_;
     shp_Metadata md_; //!< averaged Metadata, cached, computed only once
 
-    inten_vec collectIntens(const Range&) const;
+    QVector<float> collectIntens(const Range&) const;
     void compute_metadata() const;
     Curve toCurve(qreal, const Range&) const;
     qreal normFactor() const;

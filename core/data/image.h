@@ -19,7 +19,7 @@
 #include "core/typ/range.h"
 #include "core/typ/types.h"
 
-typedef Array2D<inten_t> inten_arr;
+typedef Array2D<float> inten_arr;
 
 //! Holds a detector image, and provides read and write access
 class Image final {
@@ -33,17 +33,17 @@ class Image final {
 
     bool isEmpty() const { return intens_.isEmpty(); }
 
-    void fill(inten_t val, const size2d& size) { intens_.fill(val, size); }
+    void fill(float val, const size2d& size) { intens_.fill(val, size); }
 
-    inten_t inten(int i) const { return intens_.at(i); }
+    float inten(int i) const { return intens_.at(i); }
 
-    inten_t inten(int i, int j) const { return intens_.at(i, j); }
+    float inten(int i, int j) const { return intens_.at(i, j); }
 
-    void setInten(int i, inten_t val) { intens_.setAt(i, val); }
+    void setInten(int i, float val) { intens_.setAt(i, val); }
 
-    void setInten(int i, int j, inten_t val) { intens_.setAt(i, j, val); }
+    void setInten(int i, int j, float val) { intens_.setAt(i, j, val); }
 
-    void addInten(int i, int j, inten_t val) { intens_.refAt(i, j) += val; }
+    void addInten(int i, int j, float val) { intens_.refAt(i, j) += val; }
 
     // Sum all intensities with new ones.
     void addIntens(const Image&) THROWS;
