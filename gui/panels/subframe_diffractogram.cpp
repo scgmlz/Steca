@@ -14,7 +14,7 @@
 
 #include "subframe_diffractogram.h"
 #include "core/session.h"
-#include "gui/panels/panel_diffractogram.h"
+#include "gui/plot/plot_dfgram.h"
 #include "gui/actions/toggles.h"
 #include "gui/actions/triggers.h"
 

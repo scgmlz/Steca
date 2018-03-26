@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/panel_diffractogram.h
+//! @file      gui/plot/plot_dfgram.h
 //! @brief     Defines classes DiffractogramPlot and Diffractogram.
 //!
 //! @homepage  https://github.com/scgmlz/Steca
