@@ -17,28 +17,11 @@
 
 #include <QtGlobal> // to define Q_OS_WIN
 
-#ifdef Q_CC_GNU
-
-#pragma GCC diagnostic ignored "-Wpragmas"
-
-// for clang static analyser
-#pragma GCC diagnostic ignored "-Wfloat-equal"
-#pragma GCC diagnostic ignored "-Wswitch-enum"
-#pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
-#pragma GCC diagnostic ignored "-Wpadded"
-#pragma GCC diagnostic ignored "-Wcomment"
-
-#endif
-
 // exception specification macro
 #ifdef Q_OS_WIN
-
-#define THROWS
-
+    #define THROWS
 #else
-
-#define THROWS noexcept(false)
-
+    #define THROWS noexcept(false)
 #endif
 
 #endif // MACROS_H
