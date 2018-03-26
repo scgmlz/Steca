@@ -75,7 +75,6 @@ const Range& ActiveClusters::rgeFixedInten(bool trans, bool cut) const {
 Curve ActiveClusters::avgCurve() const {
     if (avgCurve_.isEmpty()) {
         TakesLongTime __;
-        qDebug() << "averaging curve over activeClusters sized " << size();
         computeAvgeCurve();
     }
     return avgCurve_;
