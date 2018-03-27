@@ -78,8 +78,6 @@ private:
 
     QString exportSelection() const;
     QStringList outHeaders() const { return outHeaders_; }
-    int rowCount() const;
-    const row_t& row(int) const;
 
     std::unique_ptr<DataModel> model_;
     QStringList outHeaders_;

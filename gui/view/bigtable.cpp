@@ -232,16 +232,6 @@ void DataView::updateShownColumns()
     }
 }
 
-int DataView::rowCount() const
-{
-    return model_->rowCount();
-}
-
-const row_t& DataView::row(int i) const
-{
-    return model_->row(i);
-}
-
 //! To enable copying to external applications
 void DataView::keyPressEvent(QKeyEvent *event)
 {
@@ -280,7 +270,7 @@ void DataView::toFile(QTextStream& stream, const QString& separator) const
     stream << '\n';
 
     for_i (model_->columnCount()) {
-        const row_t& r = row(i);
+        const row_t& r = model_->row(i);
         for_i (r.count()) {
             const QVariant& var = r.at(i);
             if (isNumeric(var))
