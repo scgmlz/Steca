@@ -63,7 +63,6 @@ class TableView : public QTreeView {
 public:
     TableView() = delete;
     TableView(TableModel*);
-    ~TableView() { delete model_; }
     void onData();
     void onHighlight();
 protected:
