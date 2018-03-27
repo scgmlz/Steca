@@ -103,10 +103,13 @@ void DataModel::setSortColumn(int col)
     sortColumn_ = col < 0 ? col : colIndexMap_.at(col);
 }
 
-void DataModel::clear()
+void DataModel::refresh()
 {
     beginResetModel();
     rows_.clear();
+    for (const PeakInfo& r : gSession->peakInfos())
+        rows_.append(numRow(rows_.count() + 1, r.data()));
+    sortData();
     endResetModel();
 }
 
@@ -209,10 +212,7 @@ DataView::DataView()
 
 void DataView::refresh()
 {
-    model()->clear();
-    for (const PeakInfo& r : gSession->peakInfos())
-        model()->addRow(r.data(), false);
-    model()->sortData();
+    model()->refresh();
 }
 
 void DataView::updateShownColumns()

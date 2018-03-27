@@ -26,7 +26,7 @@ public:
     DataModel();
     DataModel(DataModel&) = delete;
 
-    void clear();
+    void refresh();
     void moveColumn(int from, int to);
     void setSortColumn(int);
     void addRow(const row_t&, bool sort = true);
@@ -35,8 +35,8 @@ public:
 
     int columnCount() const final { return numCols_ + 1; }
     int rowCount() const final { return rows_.count(); }
-    int highlighted() const final { return 0; }// gSession->dataset().highlight().clusterIndex(); }
-    void setHighlight(int i) final { ; } //gSession->dataset().highlight().setCluster(i); }
+    int highlighted() const final { return 0; } // unused
+    void setHighlight(int i) final { ; }        // unused
 
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const;
