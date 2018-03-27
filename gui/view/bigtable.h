@@ -43,10 +43,9 @@ public:
 private:
     QStringList headers_;
     QVector<int> colIndexMap_;
-    QVector<VariantComparator*> VariantComparatorctions_;
+    QVector<VariantComparator*> comparators_;
 
     struct numRow {
-        typedef const numRow& rc;
         numRow() : n(0), row() {}
         numRow(int n_, const QVector<QVariant>& row_) : n(n_), row(row_) {}
         int n;

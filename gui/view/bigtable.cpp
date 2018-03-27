@@ -31,8 +31,8 @@ DataModel::DataModel()
     : TableModel("data#")
 {
     headers_ = PeakInfo::dataTags(false);
-    VariantComparatorctions_ = PeakInfo::dataCmps();
-    ASSERT(VariantComparatorctions_.count() == headers_.count());
+    comparators_ = PeakInfo::dataCmps();
+    ASSERT(comparators_.count() == headers_.count());
     numCols_ = headers_.count();
     colIndexMap_.resize(numCols_);
     for_i (numCols_)
@@ -47,7 +47,7 @@ QVariant DataModel::data(const QModelIndex& index, int role) const
     int numRows = rowCount(), numCols = columnCount();
 
     if (indexCol < 0 || indexRow < 0)
-        return QVariant();
+        return {};
 
     switch (role) {
     case Qt::DisplayRole:
@@ -78,18 +78,18 @@ QVariant DataModel::data(const QModelIndex& index, int role) const
     default: break;
     }
 
-    return QVariant();
+    return {};
 }
 
 QVariant DataModel::headerData(int section, Qt::Orientation, int role) const
 {
     if (section < 0 || headers_.count() < section)
-        return QVariant();
+        return {};
 
     if (Qt::DisplayRole == role)
         return 0 == section ? "#" : headers_.at(section - 1);
 
-    return QVariant();
+    return {};
 }
 
 void DataModel::moveColumn(int from, int to)
@@ -122,7 +122,7 @@ void DataModel::sortData()
 {
     auto _cmpRows = [this](int col, const QVector<QVariant>& r1, const QVector<QVariant>& r2) {
         col = colIndexMap_.at(col);
-        return VariantComparatorctions_.at(col)(r1.at(col), r2.at(col));
+        return comparators_.at(col)(r1.at(col), r2.at(col));
     };
 
     // sort by sortColumn first, then left-to-right
@@ -173,7 +173,6 @@ DataView::DataView()
     setSelectionMode(QAbstractItemView::ContiguousSelection);
 
     QHeaderView* h = header();
-
     h->setSectionResizeMode(0, QHeaderView::Fixed);
     h->setSectionsMovable(true);
     h->setSectionsClickable(true);
