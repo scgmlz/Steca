@@ -62,7 +62,7 @@ private:
 
 //! A data table view, for use in the 'Points' tab of an output Frame.
 
-class DataView : public QTreeView {
+class DataView : public TableView {
 public:
     DataView();
     DataView(DataView&) = delete;
@@ -74,11 +74,11 @@ public:
 private:
     void updateShownColumns();
     void keyPressEvent(QKeyEvent *event);
+    DataModel* model() const { return dynamic_cast<DataModel*>(model_); }
 
     QString exportSelection() const;
     QStringList outHeaders() const { return outHeaders_; }
 
-    std::unique_ptr<DataModel> model_;
     QStringList outHeaders_;
 };
 

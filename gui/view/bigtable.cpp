@@ -167,11 +167,10 @@ void DataModel::sortData()
 // ************************************************************************** //
 
 DataView::DataView()
-    : model_ {new DataModel}
+    : TableView {new DataModel}
 {
     outHeaders_ = PeakInfo::dataTags(true);
 
-    setModel(model_.get());
     setHeader(new QHeaderView(Qt::Horizontal));
     setAlternatingRowColors(true);
     setSelectionBehavior(QAbstractItemView::SelectItems);
@@ -195,30 +194,30 @@ DataView::DataView()
         [this](int /*logicalIndex*/, int oldVisualIndex, int newVisualIndex) {
             ASSERT(oldVisualIndex > 0 && newVisualIndex > 0);
             header()->setSortIndicatorShown(false);
-            model_->moveColumn(oldVisualIndex-1, newVisualIndex-1);
-            model_->sortData();
+            model()->moveColumn(oldVisualIndex-1, newVisualIndex-1);
+            model()->sortData();
         });
 
     connect(header(), &QHeaderView::sectionClicked, [this](int logicalIndex) {
         QHeaderView* h = header();
         h->setSortIndicatorShown(true);
         h->setSortIndicator(logicalIndex, Qt::AscendingOrder);
-        model_->setSortColumn(logicalIndex-1);
-        model_->sortData();
+        model()->setSortColumn(logicalIndex-1);
+        model()->sortData();
     });
 }
 
 void DataView::refresh()
 {
-    model_->clear();
+    model()->clear();
     for (const PeakInfo& r : gSession->peakInfos())
-        model_->addRow(r.data(), false);
-    model_->sortData();
+        model()->addRow(r.data(), false);
+    model()->sortData();
 }
 
 void DataView::updateShownColumns()
 {
-    int nCol = model_->columnCount();
+    int nCol = model()->columnCount();
     for_i (nCol-1) {
         if (gGui->state->bigtableShowCol[i])
             showColumn(i + 1);
@@ -251,7 +250,7 @@ QString DataView::exportSelection() const
             ret.append('\n');
         else
             ret.append('\t');
-        ret.append(model_->data(current, Qt::DisplayRole).toString());
+        ret.append(model()->data(current, Qt::DisplayRole).toString());
         previous_row = current.row();
     }
     return ret;
@@ -264,8 +263,8 @@ void DataView::toFile(QTextStream& stream, const QString& separator) const
         stream << headers.at(i) << separator;
     stream << '\n';
 
-    for_i (model_->columnCount()) {
-        const row_t& r = model_->row(i);
+    for_i (model()->columnCount()) {
+        const row_t& r = model()->row(i);
         for_i (r.count()) {
             const QVariant& var = r.at(i);
             if (isNumeric(var))
