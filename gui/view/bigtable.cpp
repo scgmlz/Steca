@@ -113,13 +113,6 @@ void DataModel::refresh()
     endResetModel();
 }
 
-void DataModel::addRow(const row_t& row, bool sort)
-{
-    rows_.append(numRow(rows_.count() + 1, row));
-    if (sort)
-        sortData();
-}
-
 const row_t& DataModel::row(int index)
 {
     return rows_.at(index).row;

@@ -29,7 +29,6 @@ public:
     void refresh();
     void moveColumn(int from, int to);
     void setSortColumn(int);
-    void addRow(const row_t&, bool sort = true);
     void sortData();
     const row_t& row(int);
 
