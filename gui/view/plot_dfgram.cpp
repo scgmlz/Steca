@@ -222,7 +222,7 @@ void DiffractogramPlot::renderAll()
     calcDgram();
     calcBackground();
     calcPeaks();
-    plot(dgram_, dgramBgFitted_, bg_, refls_, currReflIndex_);
+    plott(dgram_, dgramBgFitted_, bg_, refls_, currReflIndex_);
 }
 
 void DiffractogramPlot::calcDgram()
@@ -278,7 +278,7 @@ void DiffractogramPlot::calcPeaks()
     }
 }
 
-void DiffractogramPlot::plot(
+void DiffractogramPlot::plott(
     const Curve& dgram, const Curve& dgramBgFitted, const Curve& bg, const curve_vec& refls,
     int currReflIndex)
 {
