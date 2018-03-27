@@ -15,6 +15,9 @@
 #include "data_table.h"
 #include "core/def/debug.h"
 #include "core/def/idiomatic_for.h"
+#include "core/session.h"
+#include "gui/mainwin.h"
+#include "gui/state.h"
 #include <QApplication>
 #include <QClipboard>
 #include <QHeaderView>
@@ -185,9 +188,13 @@ DataView::DataView(int numDataColumns)
 
     int w = QFontMetrics(h->font()).width("000000000");
     setColumnWidth(0, w);
+
+    // inbound connections:
+    connect(gSession, &Session::sigBigtableCols, this, &DataView::updateShownColumns);
 }
 
-void DataView::setColumns(const QStringList& headers, const QStringList& outHeaders, const cmp_vec& cmps)
+void DataView::setColumns(
+    const QStringList& headers, const QStringList& outHeaders, const cmp_vec& cmps)
 {
     model_->setColumns(headers, cmps);
     ASSERT(headers.count() == outHeaders.count());
@@ -214,6 +221,17 @@ void DataView::setColumns(const QStringList& headers, const QStringList& outHead
 void DataView::clear()
 {
     model_->clear();
+}
+
+void DataView::updateShownColumns()
+{
+    int nCol = model_->columnCount();
+    for_i (nCol-1) {
+        if (gGui->state->bigtableShowCol[i])
+            showColumn(i + 1);
+        else
+            hideColumn(i + 1);
+    }
 }
 
 void DataView::addRow(const row_t& row, bool sort)

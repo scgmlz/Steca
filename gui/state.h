@@ -15,6 +15,8 @@
 #ifndef STATE_H
 #define STATE_H
 
+#include <QVector>
+
 class GuiState {
 public:
     GuiState();
@@ -24,6 +26,8 @@ public:
     class CCheckBox* polefigShowGridPts;
     class CComboBox* diagramX;
     class CComboBox* diagramY;
+
+    QVector<bool> bigtableShowCol;
 };
 
 #endif // STATE_H

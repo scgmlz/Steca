@@ -77,6 +77,7 @@ public:
     void toFile(QTextStream& stream, const QString& separator) const;
 
 private:
+    void updateShownColumns();
     void keyPressEvent(QKeyEvent *event);
     QString exportSelection();
     std::unique_ptr<DataModel> model_;

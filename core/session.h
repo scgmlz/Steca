@@ -129,6 +129,7 @@ signals:
     void sigPeaks();         //!< list of peaks or selected peak has changed
     void sigInterpol();      //!< interpolation parameters have changed
     void sigRawFits();       //!< fit results have changed
+    void sigBigtableCols();  //!< column selection in bigtable has changed
 
 private:
     // with reference accessor methods:

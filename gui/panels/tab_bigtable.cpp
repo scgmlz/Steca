@@ -18,6 +18,7 @@
 #include "gui/actions/triggers.h"
 #include "gui/panels/data_table.h"
 #include "gui/mainwin.h"
+#include "gui/state.h"
 #include <QScrollArea>
 #include <QThread> // for sleep for debugging
 
@@ -81,12 +82,9 @@ ColumnSelector::ColumnSelector(DataView& dataView, const QStringList& headers)
     for_i (showCols_.count()) {
         QCheckBox* cb = showCols_.at(i);
         connect(cb, &QCheckBox::toggled, [this, i](bool on) {
-                // here we act directly upon dataView_
-                if (on)
-                    dataView_.showColumn(i + 1);
-                else
-                    dataView_.hideColumn(i + 1);
+                gGui->state->bigtableShowCol[i] = on;
                 updateRadiobuttons();
+                emit gSession->sigBigtableCols();
             });
     }
 

@@ -16,6 +16,7 @@
 #include "core/data/peak_info.h"
 #include "core/def/idiomatic_for.h"
 #include "gui/base/controls.h"
+#include <QDebug>
 
 GuiState::GuiState()
 {
@@ -31,4 +32,5 @@ GuiState::GuiState()
     diagramX->addItems(tags);
     diagramY->addItems(tags);
 
+    bigtableShowCol.fill(true, PeakInfo::dataTags(false).count());
 }
