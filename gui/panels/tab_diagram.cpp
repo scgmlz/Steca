@@ -16,7 +16,7 @@
 #include "core/session.h"
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"
-#include "gui/plot/plot_diagram.h"
+#include "gui/view/plot_diagram.h"
 #include "gui/state.h"
 
 // ************************************************************************** //

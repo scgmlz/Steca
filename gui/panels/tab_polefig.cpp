@@ -15,7 +15,7 @@
 #include "tab_polefig.h"
 #include "core/session.h"
 #include "gui/actions/triggers.h"
-#include "gui/plot/plot_polefig.h"
+#include "gui/view/plot_polefig.h"
 #include "gui/mainwin.h"
 #include "gui/state.h"
 
