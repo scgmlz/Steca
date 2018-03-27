@@ -154,14 +154,12 @@ QStringList DataModel::getHeaders() const
     for_i (headers.count())
         if (gGui->state->bigtableShowCol[i])
             ret.append(headers.at(i));
-    qDebug() << "headers done " << headers.count();
     return ret;
 }
 
 QVector<QVector<const QVariant*>> DataModel::getData() const
 {
     QVector<QVector<const QVariant*>> ret(rowCount());
-    qDebug() << "data go " << columnCount() << ", " << rowCount();
     for_ij (rowCount(), columnCount()-1)
         if (gGui->state->bigtableShowCol[j])
             ret[i].append(&(rows_[i].row.at(j)));
