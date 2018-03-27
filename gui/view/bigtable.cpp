@@ -151,12 +151,15 @@ void DataModel::toFile(QTextStream& stream, const QString& separator) const
 {
     const QStringList& headers = PeakInfo::dataTags(true);
     for_i (headers.count())
-        stream << headers.at(i) << separator;
+        if (gGui->state->bigtableShowCol[i])
+            stream << headers.at(i) << separator;
     stream << '\n';
 
     for_i (columnCount()) {
         const QVector<QVariant>& r = row(i);
         for_i (r.count()) {
+            if (!gGui->state->bigtableShowCol[i])
+                continue;
             const QVariant& var = r.at(i);
             if (isNumeric(var))
                 stream << var.toDouble();

@@ -45,10 +45,12 @@ private:
     QVector<int> colIndexMap_;
     QVector<VariantComparator*> comparators_;
 
+    // TODO: Treat the row number column as any other column, so that it can also be exported.
+    // Then replace XRow by QVector<QVariant>.
     struct XRow {
         XRow() {} // see https://bugreports.qt.io/browse/QTBUG-67357
         XRow(int n_, const QVector<QVariant>& row_) : n(n_), row(row_) {}
-        int n;
+        int n; // number of row = contents of first columns
         QVector<QVariant> row;
     };
 
