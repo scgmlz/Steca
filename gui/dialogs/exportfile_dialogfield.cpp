@@ -32,8 +32,8 @@ ExportfileDialogfield::ExportfileDialogfield(
 
     dir_ = new QLineEdit(defaultDir.absolutePath());
     file_ = new QLineEdit();
-    auto* rbDat = new CRadioButton {"fmtDat", DAT_EXT};
-    auto* rbCsv = new CRadioButton {"fmtCsv", CSV_EXT};
+    auto* rbDat = new CRadioButton("fmtDat", DAT_EXT);
+    auto* rbCsv = new CRadioButton("fmtCsv", CSV_EXT);
     auto* actBrowse = new CTrigger("selectDir", "Browse...");
     auto* actCancel = new CTrigger("cancel", "Cancel");
     auto* actSave = new CTrigger("save", "Save");
@@ -57,7 +57,7 @@ ExportfileDialogfield::ExportfileDialogfield(
     auto* destinationGrid = new QGridLayout;
     destinationGrid->addWidget(new QLabel("Save to folder:"), 0, 0, Qt::AlignRight);
     destinationGrid->addWidget(dir_,                          0, 1);
-    destinationGrid->addWidget(new XTextButton(actBrowse),    0, 2);
+    destinationGrid->addWidget(new CTextButton(actBrowse),    0, 2);
     destinationGrid->addWidget(new QLabel("File name:"),      1, 0, Qt::AlignRight);
     destinationGrid->addWidget(file_,                         1, 1);
 
@@ -80,8 +80,8 @@ ExportfileDialogfield::ExportfileDialogfield(
     bottom->addWidget(&progressBar);
     bottom->setStretchFactor(&progressBar, 333);
     bottom->addStretch(1);
-    bottom->addWidget(new XTextButton(actCancel));
-    bottom->addWidget(new XTextButton(actSave));
+    bottom->addWidget(new CTextButton(actCancel));
+    bottom->addWidget(new CTextButton(actSave));
 
     addLayout(setup);
     addLayout(bottom);

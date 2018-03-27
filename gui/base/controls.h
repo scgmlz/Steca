@@ -64,6 +64,18 @@ public:
     XIconButton(QAction*);
 };
 
+//! QToolButton with text display and owned QAction.
+class CTextButton : public QToolButton {
+public:
+    CTextButton(QAction*);
+};
+
+//! QToolButton with icon and owned QAction.
+class CIconButton : public QToolButton {
+public:
+    CIconButton(QAction*);
+};
+
 //! Named QSpinBox that can be set by console command.
 class CSpinBox : public QSpinBox, private CSettable {
     Q_OBJECT

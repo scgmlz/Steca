@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/dialogs/export_bigtable.cpp
-//! @brief     Implements class ExportTable
+//! @brief     Implements class ExportBigtable
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -22,11 +22,11 @@
 #include "gui/panels/tab_bigtable.h"
 
 // ************************************************************************** //
-//  class ExportTable
+//  class ExportBigtable
 // ************************************************************************** //
 
-ExportTable::ExportTable(bool xyMode)
-    : CModal("table")
+ExportBigtable::ExportBigtable(bool xyMode)
+    : CModal("exportTable")
     , QDialog(gGui)
     , xyMode_(xyMode)
 {
@@ -39,7 +39,7 @@ ExportTable::ExportTable(bool xyMode)
     setLayout(fileField_);
 }
 
-void ExportTable::save()
+void ExportBigtable::save()
 {
     QString path = fileField_->filePath(true);
     if (path.isEmpty()) {

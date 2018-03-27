@@ -51,7 +51,7 @@ Menus::Menus(QMenuBar* mbar)
     export_ = actionsToMenu(
         "&Export",
         {       &triggers->exportDfgram,
-                &triggers->exportTable,
+                &triggers->exportBigtable,
                 &triggers->exportDiagram,
                 &triggers->exportPolefig,
         });

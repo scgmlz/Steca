@@ -131,7 +131,7 @@ void MainWin::updateActionEnabling()
     triggers->removePeak.setEnabled(hasPeak);
     triggers->clearBackground.setEnabled(hasBase);
     triggers->exportDfgram.setEnabled(hasFile);
-    triggers->exportTable.setEnabled(hasFile && hasPeak);
+    triggers->exportBigtable.setEnabled(hasFile && hasPeak);
     triggers->exportDiagram.setEnabled(hasFile && hasPeak);
     menus_->export_->setEnabled(hasFile);
     menus_->image_->setEnabled(hasFile);

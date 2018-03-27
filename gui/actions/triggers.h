@@ -33,7 +33,7 @@ public:
             Qt::SHIFT | Qt::CTRL | Qt::Key_O};
     CTrigger exportDfgram {"exportDfgram", "Export diffractogram(s)...", ":/icon/filesave" };
     CTrigger exportPolefig {"exportPolefig", "Export pole figure...", ":/icon/filesave" };
-    CTrigger exportTable {"exportTable", "Export fit result table...", ":/icon/filesave" };
+    CTrigger exportBigtable {"exportBigtable", "Export fit result table...", ":/icon/filesave" };
     CTrigger exportDiagram {"exportDiagram", "Export diagram...", ":/icon/filesave" };
     CTrigger spawnTable {"spawnTable", "Spawn table...", ":/icon/window" };
     CTrigger spawnDiagram {"spawnDiagram", "Spawn diagram...", ":/icon/window" };
