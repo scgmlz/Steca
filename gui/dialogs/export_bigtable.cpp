@@ -46,14 +46,36 @@ void ExportBigtable::save()
     QTextStream stream(file);
 
     QString separator = fileField_->separator();
-    if (xyMode_)
+
+    // get data
+    QStringList headers;
+    QVector<QVector<const QVariant*>> data;
+    if (xyMode_) {
         ;//writeCurrentDiagramOutputFile(stream, separator);
-    else
-        gGui->state->bigtableModel->toFile(stream, separator);
+    } else {
+        headers = gGui->state->bigtableModel->getHeaders();
+        data = gGui->state->bigtableModel->getData();
+    }
+
+    // write header
+    for (const QString& header: headers)
+        stream << header << separator;
+    stream << '\n';
+
+    // write data table
+    for (const QVector<const QVariant*>& row: data) {
+        for (const QVariant* var: row) {
+            if (isNumeric(*var))
+                stream << var->toDouble();
+            else
+                stream << var->toString();
+            stream << separator;
+        }
+        stream << '\n';
+    }
+
     close();
 }
-
-
 /*
 void DiagramsFrame::writeCurrentDiagramOutputFile(QTextStream& stream, const QString& separator)
 {

@@ -147,28 +147,25 @@ void DataModel::sortData()
     endResetModel();
 }
 
-void DataModel::toFile(QTextStream& stream, const QString& separator) const
+QStringList DataModel::getHeaders() const
 {
+    QStringList ret;
     const QStringList& headers = PeakInfo::dataTags(true);
     for_i (headers.count())
         if (gGui->state->bigtableShowCol[i])
-            stream << headers.at(i) << separator;
-    stream << '\n';
+            ret.append(headers.at(i));
+    qDebug() << "headers done " << headers.count();
+    return ret;
+}
 
-    for_i (columnCount()) {
-        const QVector<QVariant>& r = row(i);
-        for_i (r.count()) {
-            if (!gGui->state->bigtableShowCol[i])
-                continue;
-            const QVariant& var = r.at(i);
-            if (isNumeric(var))
-                stream << var.toDouble();
-            else
-                stream << var.toString();
-            stream << separator;
-        }
-        stream << '\n';
-    }
+QVector<QVector<const QVariant*>> DataModel::getData() const
+{
+    QVector<QVector<const QVariant*>> ret(rowCount());
+    qDebug() << "data go " << columnCount() << ", " << rowCount();
+    for_ij (rowCount(), columnCount()-1)
+        if (gGui->state->bigtableShowCol[j])
+            ret[i].append(&(rows_[i].row.at(j)));
+    return ret;
 }
 
 // ************************************************************************** //
