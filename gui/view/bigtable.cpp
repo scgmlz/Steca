@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/data_table.cpp
+//! @file      gui/view/bigtable.cpp
 //! @brief     Implements classes DataView
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 // ************************************************************************** //
 
-#include "data_table.h"
+#include "bigtable.h"
 #include "core/def/debug.h"
 #include "core/def/idiomatic_for.h"
 #include "core/session.h"
@@ -217,8 +217,8 @@ void DataView::refresh()
 {
     clear();
     for (const PeakInfo& r : gSession->peakInfos())
-        addRow(r.data(), false);
-    sortData();
+        model_->addRow(r.data(), false);
+    model_->sortData();
 }
 
 void DataView::updateShownColumns()
@@ -230,16 +230,6 @@ void DataView::updateShownColumns()
         else
             hideColumn(i + 1);
     }
-}
-
-void DataView::addRow(const row_t& row, bool sort)
-{
-    model_->addRow(row, sort);
-}
-
-void DataView::sortData()
-{
-    model_->sortData();
 }
 
 int DataView::rowCount() const

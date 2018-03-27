@@ -15,7 +15,7 @@
 #include "tab_bigtable.h"
 #include "core/session.h"
 #include "gui/actions/triggers.h"
-#include "gui/panels/data_table.h"
+#include "gui/view/bigtable.h"
 #include "gui/mainwin.h"
 #include "gui/state.h"
 #include <QScrollArea>

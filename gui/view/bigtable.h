@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/data_table.h
+//! @file      gui/view/bigtable.h
 //! @brief     Defines classes DataView
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -73,8 +73,6 @@ public:
     void toFile(QTextStream& stream, const QString& separator) const;
 
 private:
-    void addRow(const row_t&, bool sort);
-    void sortData();
     void updateShownColumns();
     void keyPressEvent(QKeyEvent *event);
 

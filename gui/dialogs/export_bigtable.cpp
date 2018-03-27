@@ -18,7 +18,7 @@
 #include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/mainwin.h"
 #include "gui/panels/mainframe.h"
-#include "gui/panels/data_table.h"
+#include "gui/view/bigtable.h"
 #include "gui/panels/tab_bigtable.h"
 
 // ************************************************************************** //

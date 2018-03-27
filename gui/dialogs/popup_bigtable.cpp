@@ -13,7 +13,7 @@
 // ************************************************************************** //
 
 #include "popup_bigtable.h"
-#include "gui/panels/data_table.h"
+#include "gui/view/bigtable.h"
 #include "gui/mainwin.h"
 #include <QVBoxLayout>
 
