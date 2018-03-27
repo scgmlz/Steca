@@ -17,6 +17,8 @@
 
 #include <QVector>
 
+//! Collection of GUI state variables and controls.
+
 class GuiState {
 public:
     GuiState();

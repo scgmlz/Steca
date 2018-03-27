@@ -27,14 +27,19 @@
 //  class DataModel
 // ************************************************************************** //
 
-DataModel::DataModel(int numColumns_)
+DataModel::DataModel(const QStringList& headers, const cmp_vec& cmps)
     : TableModel("data#")
-    , numCols_(numColumns_)
+    , numCols_(headers.count())
 {
+    ASSERT(cmps.count() == numCols_);
+
     colIndexMap_.resize(numCols_);
     for_i (numCols_)
         colIndexMap_[i] = i;
+    headers_ = headers;
+    cmpFunctions_ = cmps;
 }
+
 
 
 //! The first column contains row numbers. The remaining numCols columns contain data.
@@ -94,13 +99,6 @@ void DataModel::moveColumn(int from, int to)
 {
     ASSERT(from < colIndexMap_.count() && to < colIndexMap_.count());
     qSwap(colIndexMap_[from], colIndexMap_[to]);
-}
-
-void DataModel::setColumns(const QStringList& headers, const cmp_vec& cmps)
-{
-    ASSERT(headers.count() == numCols_ && cmps.count() == numCols_);
-    headers_ = headers;
-    cmpFunctions_ = cmps;
 }
 
 void DataModel::setSortColumn(int col)
@@ -171,9 +169,12 @@ void DataModel::sortData()
 //  class DataView
 // ************************************************************************** //
 
-DataView::DataView(int numDataColumns)
-    : model_(new DataModel(numDataColumns))
+DataView::DataView(const QStringList& headers, const QStringList& outHeaders, const cmp_vec& cmps)
+    : model_(new DataModel(headers, cmps))
 {
+    ASSERT(headers.count() == outHeaders.count());
+    outHeaders_ = outHeaders;
+
     setModel(model_.get());
     setHeader(new QHeaderView(Qt::Horizontal));
     setAlternatingRowColors(true);
@@ -191,15 +192,8 @@ DataView::DataView(int numDataColumns)
 
     // inbound connections:
     connect(gSession, &Session::sigBigtableCols, this, &DataView::updateShownColumns);
-}
 
-void DataView::setColumns(
-    const QStringList& headers, const QStringList& outHeaders, const cmp_vec& cmps)
-{
-    model_->setColumns(headers, cmps);
-    ASSERT(headers.count() == outHeaders.count());
-    outHeaders_ = outHeaders;
-
+    // internal connections:
     connect(
         header(), &QHeaderView::sectionMoved,
         [this](int /*logicalIndex*/, int oldVisualIndex, int newVisualIndex) {
@@ -221,6 +215,14 @@ void DataView::setColumns(
 void DataView::clear()
 {
     model_->clear();
+}
+
+void DataView::refresh()
+{
+    clear();
+    for (const PeakInfo& r : gSession->peakInfos())
+        addRow(r.data(), false);
+    sortData();
 }
 
 void DataView::updateShownColumns()
@@ -265,7 +267,7 @@ void DataView::keyPressEvent(QKeyEvent *event)
 }
 
 //! Encodes selected items as a string with separators '\t' and '\n', for use in keyPressEvent.
-QString DataView::exportSelection()
+QString DataView::exportSelection() const
 {
     // TODO: improve https://stackoverflow.com/questions/1230222
     QString ret;

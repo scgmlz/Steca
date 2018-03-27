@@ -23,10 +23,10 @@ class BigtableTab : public QWidget {
 public:
     BigtableTab();
     const class DataView& dataView() const { return *dataView_; }
-    void render();
 private:
-    class DataView* dataView_;
+    void render();
     void showEvent(QShowEvent*) { render(); }
+    class DataView* dataView_;
 };
 
 #endif // TAB_BIGTABLE_H

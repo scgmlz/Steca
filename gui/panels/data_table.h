@@ -23,11 +23,10 @@
 
 class DataModel : public TableModel {
 public:
-    DataModel(int numCols_);
+    DataModel(const QStringList& headers, const cmp_vec&);
 
     void clear();
     void moveColumn(int from, int to);
-    void setColumns(const QStringList& headers, const cmp_vec&);
     void setSortColumn(int);
     void addRow(const row_t&, bool sort = true);
     void sortData();
@@ -64,22 +63,26 @@ private:
 
 class DataView : public QTreeView {
 public:
-    DataView(int numDataColumns);
+    DataView() = delete;
+    DataView(DataView&) = delete;
+    DataView(const QStringList& headers, const QStringList& outHeaders, const cmp_vec&);
 
     void clear();
-    void setColumns(const QStringList& headers, const QStringList& outHeaders, const cmp_vec&);
-    void addRow(const row_t&, bool sort);
-    void sortData();
+    void refresh();
 
-    QStringList outHeaders() const { return outHeaders_; }
-    int rowCount() const;
-    const row_t& row(int) const;
     void toFile(QTextStream& stream, const QString& separator) const;
 
 private:
+    void addRow(const row_t&, bool sort);
+    void sortData();
     void updateShownColumns();
     void keyPressEvent(QKeyEvent *event);
-    QString exportSelection();
+
+    QString exportSelection() const;
+    QStringList outHeaders() const { return outHeaders_; }
+    int rowCount() const;
+    const row_t& row(int) const;
+
     std::unique_ptr<DataModel> model_;
     QStringList outHeaders_;
 };

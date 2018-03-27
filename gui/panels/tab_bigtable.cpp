@@ -13,7 +13,6 @@
 // ************************************************************************** //
 
 #include "tab_bigtable.h"
-#include "core/algo/interpolate_polefig.h" // includes peak_info.h
 #include "core/session.h"
 #include "gui/actions/triggers.h"
 #include "gui/panels/data_table.h"
@@ -143,8 +142,7 @@ BigtableTab::BigtableTab()
     const QStringList& outHeaders = PeakInfo::dataTags(true);
     const cmp_vec& cmps = PeakInfo::dataCmps();
 
-    dataView_ = new DataView(headers.count()); // the main table
-    dataView_->setColumns(headers, outHeaders, cmps);
+    dataView_ = new DataView(headers, outHeaders, cmps); // the main table
 
     // inbound connection
     connect(gSession, &Session::sigRawFits, [this]() { render(); });
@@ -175,9 +173,5 @@ void BigtableTab::render()
 {
     if (!isVisible())
         return;
-    PeakInfos points_ = gSession->peakInfos();
-    dataView_->clear();
-    for (const PeakInfo& r : points_)
-        dataView_->addRow(r.data(), false);
-    dataView_->sortData();
+    dataView_->refresh();
 }
