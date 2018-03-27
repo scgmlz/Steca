@@ -31,8 +31,8 @@ DataModel::DataModel()
     : TableModel("data#")
 {
     headers_ = PeakInfo::dataTags(false);
-    cmpFunctions_ = PeakInfo::dataCmps();
-    ASSERT(cmpFunctions_.count() == headers_.count());
+    VariantComparatorctions_ = PeakInfo::dataCmps();
+    ASSERT(VariantComparatorctions_.count() == headers_.count());
     numCols_ = headers_.count();
     colIndexMap_.resize(numCols_);
     for_i (numCols_)
@@ -122,7 +122,7 @@ void DataModel::sortData()
 {
     auto _cmpRows = [this](int col, const QVector<QVariant>& r1, const QVector<QVariant>& r2) {
         col = colIndexMap_.at(col);
-        return cmpFunctions_.at(col)(r1.at(col), r2.at(col));
+        return VariantComparatorctions_.at(col)(r1.at(col), r2.at(col));
     };
 
     // sort by sortColumn first, then left-to-right

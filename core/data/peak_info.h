@@ -48,7 +48,7 @@ public:
     };
 
     static QStringList dataTags(bool out);
-    static cmp_vec dataCmps();
+    static QVector<VariantComparator*> dataCmps();
 
     deg alpha() const { return alpha_; }
     deg beta() const { return beta_; }

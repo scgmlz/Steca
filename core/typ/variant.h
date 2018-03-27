@@ -20,8 +20,7 @@
 bool isNumeric(const QVariant&);
 
 // The usual comparators: <0, 0, >0
-typedef int cmpFun(const QVariant&, const QVariant&);
-typedef QVector<cmpFun*> cmp_vec;
+typedef int VariantComparator(const QVariant&, const QVariant&);
 
 int cmp_int(const QVariant&, const QVariant&);
 int cmp_str(const QVariant&, const QVariant&);

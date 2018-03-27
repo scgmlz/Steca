@@ -69,11 +69,11 @@ QStringList PeakInfo::dataTags(bool out)
     return tags;
 }
 
-cmp_vec PeakInfo::dataCmps()
+QVector<VariantComparator*> PeakInfo::dataCmps()
 {
-    static cmp_vec cmps;
+    static QVector<VariantComparator*> cmps;
     if (cmps.isEmpty()) {
-        cmps = cmp_vec{ cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
+        cmps = QVector<VariantComparator*>{ cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
                         cmp_real, cmp_real, cmp_real, cmp_real, cmp_real };
         cmps.append(Metadata::attributeCmps());
     }

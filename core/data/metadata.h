@@ -31,7 +31,7 @@ public:
 
     static const QString& attributeTag(int, bool out);
     static QStringList attributeTags(bool out);
-    static cmp_vec attributeCmps();
+    static QVector<VariantComparator*> attributeCmps();
 
     QString attributeStrValue(int) const;
     QVariant attributeValue(int) const;

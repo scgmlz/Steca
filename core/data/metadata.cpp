@@ -98,8 +98,8 @@ QStringList Metadata::attributeTags(bool out) {
     return out ? outTags : tags;
 }
 
-cmp_vec Metadata::attributeCmps() {
-    static cmp_vec const cmps = {
+QVector<VariantComparator*> Metadata::attributeCmps() {
+    static QVector<VariantComparator*> const cmps = {
         cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
         cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
         cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_date, cmp_str,

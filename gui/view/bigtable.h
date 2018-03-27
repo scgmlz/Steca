@@ -43,7 +43,7 @@ public:
 private:
     QStringList headers_;
     QVector<int> colIndexMap_;
-    cmp_vec cmpFunctions_;
+    QVector<VariantComparator*> VariantComparatorctions_;
 
     struct numRow {
         typedef const numRow& rc;
