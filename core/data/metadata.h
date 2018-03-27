@@ -35,9 +35,9 @@ public:
 
     QString attributeStrValue(int) const;
     QVariant attributeValue(int) const;
-    row_t attributeValues() const;
+    QVector<QVariant> attributeValues() const;
 
-    static row_t attributeNaNs();
+    static QVector<QVariant> attributeNaNs();
     static int size() { return attributeNaNs().count(); }
 
     QString date, comment;

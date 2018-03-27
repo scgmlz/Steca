@@ -28,6 +28,4 @@ int cmp_str(const QVariant&, const QVariant&);
 int cmp_real(const QVariant&, const QVariant&);
 int cmp_date(const QVariant&, const QVariant&);
 
-typedef QVector<QVariant> row_t;
-
 #endif // VARIANT_H

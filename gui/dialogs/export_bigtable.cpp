@@ -85,7 +85,7 @@ void DiagramsFrame::writeAllDataOutputFile(QTextStream& stream, const QString& s
     stream << '\n';
 
     for_i (calcPoints_.at(getReflIndex()).count()) {
-        const row_t& row = dataView_->row(i);
+        const QVector<QVariant>& row = dataView_->row(i);
         for_i (row.count()) {
             const QVariant& var = row.at(i);
             if (isNumeric(var))

@@ -59,7 +59,7 @@ public:
     deg tthError() const { return tthError_; }
     float fwhm() const { return fwhm_; }
     float fwhmError() const { return fwhmError_; }
-    row_t data() const;
+    QVector<QVariant> data() const;
 
 private:
     shp_Metadata md_;

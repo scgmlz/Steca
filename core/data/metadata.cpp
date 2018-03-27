@@ -174,15 +174,15 @@ QVariant Metadata::attributeValue(int i) const {
     }
 }
 
-row_t Metadata::attributeValues() const {
-    row_t attrs;
+QVector<QVariant> Metadata::attributeValues() const {
+    QVector<QVariant> attrs;
     for_i (int(eAttr::NUM_ALL_ATTRIBUTES))
         attrs.append(attributeValue(i));
     return attrs;
 }
 
-row_t Metadata::attributeNaNs() {
-    static row_t row;
+QVector<QVariant> Metadata::attributeNaNs() {
+    static QVector<QVariant> row;
     if (row.isEmpty())
         for_i (int(eAttr::NUM_ALL_ATTRIBUTES))
             row.append(Q_QNAN);

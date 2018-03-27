@@ -113,14 +113,14 @@ void DataModel::refresh()
     endResetModel();
 }
 
-const row_t& DataModel::row(int index)
+const QVector<QVariant>& DataModel::row(int index)
 {
     return rows_.at(index).row;
 }
 
 void DataModel::sortData()
 {
-    auto _cmpRows = [this](int col, const row_t& r1, const row_t& r2) {
+    auto _cmpRows = [this](int col, const QVector<QVariant>& r1, const QVector<QVariant>& r2) {
         col = colIndexMap_.at(col);
         return cmpFunctions_.at(col)(r1.at(col), r2.at(col));
     };
@@ -257,7 +257,7 @@ void DataView::toFile(QTextStream& stream, const QString& separator) const
     stream << '\n';
 
     for_i (model()->columnCount()) {
-        const row_t& r = model()->row(i);
+        const QVector<QVariant>& r = model()->row(i);
         for_i (r.count()) {
             const QVariant& var = r.at(i);
             if (isNumeric(var))

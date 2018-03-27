@@ -82,7 +82,7 @@ void PlotDiagram::refresh()
     int yi = int(gGui->state->diagramY->currentIndex());
 
     for_i (count) {
-        const row_t row = peakInfos.at(i).data();
+        const QVector<QVariant> row = peakInfos.at(i).data();
         xs[i] = row.at(xi).toDouble();
         ys[i] = row.at(yi).toDouble();
     }
@@ -102,7 +102,7 @@ void PlotDiagram::refresh()
         ysHig.resize(count);
 
         for_i (count) {
-            const row_t row = peakInfos.at(is.at(i)).data(); // access error over sorted index vec
+            const QVector<QVariant> row = peakInfos.at(is.at(i)).data(); // access error over sorted index vec
             double sigma = row.at(yi+1).toDouble(); // SIGMA_X has tag position of X plus 1
             double y = ys.at(i);
             ysLow[i] = y - sigma;

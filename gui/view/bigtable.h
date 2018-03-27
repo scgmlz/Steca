@@ -30,7 +30,7 @@ public:
     void moveColumn(int from, int to);
     void setSortColumn(int);
     void sortData();
-    const row_t& row(int);
+    const QVector<QVariant>& row(int);
 
     int columnCount() const final { return numCols_ + 1; }
     int rowCount() const final { return rows_.count(); }
@@ -41,9 +41,6 @@ public:
     QVariant headerData(int, Qt::Orientation, int) const;
 
 private:
-    int numCols_;
-    int sortColumn_ {-1};
-
     QStringList headers_;
     QVector<int> colIndexMap_;
     cmp_vec cmpFunctions_;
@@ -51,11 +48,13 @@ private:
     struct numRow {
         typedef const numRow& rc;
         numRow() : n(0), row() {}
-        numRow(int n_, const row_t& row_) : n(n_), row(row_) {}
+        numRow(int n_, const QVector<QVariant>& row_) : n(n_), row(row_) {}
         int n;
-        row_t row;
+        QVector<QVariant> row;
     };
 
+    int numCols_;
+    int sortColumn_ {-1};
     QVector<numRow> rows_;
 };
 

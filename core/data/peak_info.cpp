@@ -80,9 +80,9 @@ cmp_vec PeakInfo::dataCmps()
     return cmps;
 }
 
-row_t PeakInfo::data() const
+QVector<QVariant> PeakInfo::data() const
 {
-    row_t row{ QVariant(alpha()),      QVariant(beta()),     QVariant(rgeGma().min),
+    QVector<QVariant> row{ QVariant(alpha()),      QVariant(beta()),     QVariant(rgeGma().min),
                     QVariant(rgeGma().max), QVariant(inten()),    QVariant(intenError()),
                     QVariant(tth()),        QVariant(tthError()), QVariant(fwhm()),
                     QVariant(fwhmError()) };
