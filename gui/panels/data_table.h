@@ -23,6 +23,8 @@
 
 class DataModel : public TableModel {
 public:
+    DataModel() = delete;
+    DataModel(DataModel&) = delete;
     DataModel(const QStringList& headers, const cmp_vec&);
 
     void clear();
