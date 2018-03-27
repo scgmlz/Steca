@@ -70,12 +70,9 @@ public:
 private:
     void updateShownColumns();
     void keyPressEvent(QKeyEvent *event);
+
     DataModel* model() const { return dynamic_cast<DataModel*>(model_); }
-
     QString exportSelection() const;
-    QStringList outHeaders() const { return outHeaders_; }
-
-    QStringList outHeaders_;
 };
 
 #endif // DATA_TABLE_H

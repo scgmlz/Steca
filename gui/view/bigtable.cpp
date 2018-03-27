@@ -153,8 +153,6 @@ void DataModel::sortData()
 DataView::DataView()
     : TableView {new DataModel}
 {
-    outHeaders_ = PeakInfo::dataTags(true);
-
     setHeader(new QHeaderView(Qt::Horizontal));
     setAlternatingRowColors(true);
     setSelectionBehavior(QAbstractItemView::SelectItems);
@@ -237,7 +235,7 @@ QString DataView::exportSelection() const
 
 void DataView::toFile(QTextStream& stream, const QString& separator) const
 {
-    const QStringList& headers = outHeaders();
+    const QStringList& headers = PeakInfo::dataTags(true);
     for_i (headers.count())
         stream << headers.at(i) << separator;
     stream << '\n';
