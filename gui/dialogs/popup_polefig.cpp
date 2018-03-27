@@ -13,10 +13,8 @@
 // ************************************************************************** //
 
 #include "popup_polefig.h"
-#include "core/session.h"
 #include "gui/plot/plot_polefig.h"
 #include "gui/mainwin.h"
-#include "gui/state.h"
 
 PopupPolefig::PopupPolefig()
     : CModelessDialog(gGui, "polefig#")
@@ -34,6 +32,6 @@ PopupPolefig::PopupPolefig()
     // TODO add info about used parameters
     setLayout(layout);
 
-    plot->set(gSession->peakInfos(), gGui->state->polefigShowGridPts->checkState());
+    plot->refresh();
     show();
 }

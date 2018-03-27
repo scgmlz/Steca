@@ -24,7 +24,7 @@
 class PlotPolefig : public QWidget {
 public:
     PlotPolefig();
-    void set(const PeakInfos&, bool flat);
+    void refresh();
 
 private:
     void update();

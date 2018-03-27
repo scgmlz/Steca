@@ -15,6 +15,8 @@
 #include "plot_polefig.h"
 #include "core/session.h"
 #include "gui/cfg/colors.h"
+#include "gui/mainwin.h"
+#include "gui/state.h"
 
 PlotPolefig::PlotPolefig()
     : flat_(false)
@@ -25,10 +27,10 @@ PlotPolefig::PlotPolefig()
     update();
 }
 
-void PlotPolefig::set(const PeakInfos& rs, bool flat)
+void PlotPolefig::refresh()
 {
-    rs_ = rs;
-    flat_ = flat;
+    rs_ = gSession->peakInfos();
+    flat_ = gGui->state->polefigShowGridPts->checkState();
     update();
 }
 

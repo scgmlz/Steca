@@ -53,5 +53,5 @@ void PolefigTab::render()
 {
     if (!isVisible())
         return;
-    plot_->set(gSession->peakInfos(), gGui->state->polefigShowGridPts->checkState());
+    plot_->refresh();
 }
