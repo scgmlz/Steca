@@ -37,6 +37,7 @@ public:
     int columnCount() const final { return numCols_ + 1; }
     int rowCount() const final { return rows_.count(); }
     const QVector<QVariant>& row(int) const;
+    void toFile(QTextStream& stream, const QString& separator) const;
     int highlighted() const final { return 0; } // unused
 
 private:
@@ -64,8 +65,6 @@ public:
     DataView(DataView&) = delete;
 
     void refresh();
-
-    void toFile(QTextStream& stream, const QString& separator) const;
 
 private:
     void updateShownColumns();

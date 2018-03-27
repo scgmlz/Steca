@@ -30,6 +30,7 @@ public:
     class CComboBox* diagramY;
 
     QVector<bool> bigtableShowCol;
+    const class DataModel* bigtableModel;
 };
 
 #endif // STATE_H

@@ -31,6 +31,7 @@
 DataModel::DataModel()
     : TableModel("data#")
 {
+    gGui->state->bigtableModel = this;
     headers_ = PeakInfo::dataTags(false);
     comparators_ = PeakInfo::dataCmps();
     ASSERT(comparators_.count() == headers_.count());
@@ -146,6 +147,27 @@ void DataModel::sortData()
     endResetModel();
 }
 
+void DataModel::toFile(QTextStream& stream, const QString& separator) const
+{
+    const QStringList& headers = PeakInfo::dataTags(true);
+    for_i (headers.count())
+        stream << headers.at(i) << separator;
+    stream << '\n';
+
+    for_i (columnCount()) {
+        const QVector<QVariant>& r = row(i);
+        for_i (r.count()) {
+            const QVariant& var = r.at(i);
+            if (isNumeric(var))
+                stream << var.toDouble();
+            else
+                stream << var.toString();
+            stream << separator;
+        }
+        stream << '\n';
+    }
+}
+
 // ************************************************************************** //
 //!  @class DataView
 //!
@@ -231,25 +253,4 @@ QString DataView::exportSelection() const
         previous_row = current.row();
     }
     return ret;
-}
-
-void DataView::toFile(QTextStream& stream, const QString& separator) const
-{
-    const QStringList& headers = PeakInfo::dataTags(true);
-    for_i (headers.count())
-        stream << headers.at(i) << separator;
-    stream << '\n';
-
-    for_i (model()->columnCount()) {
-        const QVector<QVariant>& r = model()->row(i);
-        for_i (r.count()) {
-            const QVariant& var = r.at(i);
-            if (isNumeric(var))
-                stream << var.toDouble();
-            else
-                stream << var.toString();
-            stream << separator;
-        }
-        stream << '\n';
-    }
 }

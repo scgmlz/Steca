@@ -17,9 +17,8 @@
 #include "gui/base/file_dialog.h"
 #include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/mainwin.h"
-#include "gui/panels/mainframe.h"
+#include "gui/state.h"
 #include "gui/view/bigtable.h"
-#include "gui/panels/tab_bigtable.h"
 
 // ************************************************************************** //
 //  class ExportBigtable
@@ -55,7 +54,7 @@ void ExportBigtable::save()
     if (xyMode_)
         ;//writeCurrentDiagramOutputFile(stream, separator);
     else
-        gGui->mainframe().bigtableTab().dataView().toFile(stream, separator);
+        gGui->state->bigtableModel->toFile(stream, separator);
     close();
 }
 
