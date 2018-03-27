@@ -87,7 +87,7 @@ ExportfileDialogfield::ExportfileDialogfield(
     addLayout(bottom);
 }
 
-QString ExportfileDialogfield::filePath(bool withSuffix, bool withNumber)
+QString ExportfileDialogfield::path(bool withSuffix, bool withNumber)
 {
     QString dir = dir_->text().trimmed();
     QString fileName = file_->text().trimmed();
@@ -103,6 +103,14 @@ QString ExportfileDialogfield::filePath(bool withSuffix, bool withNumber)
     file_->setText(fileName);
 
     return QFileInfo(dir + '/' + fileName).absoluteFilePath();
+}
+
+QFile* ExportfileDialogfield::file()
+{
+    QString tmp = path(true);
+    if (tmp.isEmpty())
+        return {};
+    return file_dialog::openFileConfirmOverwrite("file", parentWidget(), tmp);
 }
 
 QString ExportfileDialogfield::separator() const

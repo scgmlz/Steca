@@ -40,12 +40,7 @@ ExportBigtable::ExportBigtable(bool xyMode)
 
 void ExportBigtable::save()
 {
-    QString path = fileField_->filePath(true);
-    if (path.isEmpty()) {
-        qWarning() << "cannot save diagram: path is empty";
-        return;
-    }
-    QFile* file = file_dialog::openFileConfirmOverwrite("file", this, path);
+    QFile* file = fileField_->file();
     if (!file)
         return;
     QTextStream stream(file);

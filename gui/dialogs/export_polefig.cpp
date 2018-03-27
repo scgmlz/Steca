@@ -65,7 +65,7 @@ void PoleFiguresFrame::savePoleFigureOutput()
 {
     int reflCount = gSession->peaks().count();
     ASSERT(reflCount); // user should not get here if no peak is defined
-    QString path = tabSave_->filePath(false);
+    QString path = tabSave_->path(false);
     if (path.isEmpty())
         THROW("cannot save pole figure: file path is empty");
     if (tabSave_->onlySelectedRefl()) {

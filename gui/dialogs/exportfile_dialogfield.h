@@ -26,7 +26,8 @@ public:
     ExportfileDialogfield(ExportfileDialogfield&) = delete;
     ExportfileDialogfield(QWidget* parent, bool withTypes, std::function<void(void)> onSave);
 
-    QString filePath(bool withSuffix, bool withNumber=false);
+    QString path(bool withSuffix, bool withNumber=false);
+    QFile* file();
     QString separator() const;
     QProgressBar progressBar;
 private:

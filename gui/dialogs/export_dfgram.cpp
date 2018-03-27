@@ -110,10 +110,7 @@ void ExportDfgram::save()
 
 void ExportDfgram::saveCurrent()
 {
-    QString path = fileField_->filePath(true);
-    if (path.isEmpty())
-        return;
-    QFile* file = file_dialog::openFileConfirmOverwrite("file", this, path);
+    QFile* file = fileField_->file();
     if (!file)
         return;
     QTextStream stream(file);
@@ -129,7 +126,7 @@ void ExportDfgram::saveAll(bool oneFile)
 {
     const ActiveClusters& expt = gSession->activeClusters();
     // In one-file mode, start output stream; in multi-file mode, only do prepations.
-    QString path = fileField_->filePath(true, !oneFile);
+    QString path = fileField_->path(true, !oneFile);
     if (path.isEmpty())
         return;
     QTextStream* stream = nullptr;
