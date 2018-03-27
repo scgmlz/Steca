@@ -16,7 +16,6 @@
 #include "core/session.h"
 #include "gui/state.h"
 #include "gui/actions/toggles.h"
-#include "gui/panels/subframe_setup.h"
 
 // ************************************************************************** //
 //  class DiffractogramPlotOverlay
