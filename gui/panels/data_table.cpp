@@ -27,20 +27,17 @@
 //  class DataModel
 // ************************************************************************** //
 
-DataModel::DataModel(const QStringList& headers, const cmp_vec& cmps)
+DataModel::DataModel()
     : TableModel("data#")
-    , numCols_(headers.count())
 {
-    ASSERT(cmps.count() == numCols_);
-
+    headers_ = PeakInfo::dataTags(false);
+    cmpFunctions_ = PeakInfo::dataCmps();
+    ASSERT(cmpFunctions_.count() == headers_.count());
+    numCols_ = headers_.count();
     colIndexMap_.resize(numCols_);
     for_i (numCols_)
         colIndexMap_[i] = i;
-    headers_ = headers;
-    cmpFunctions_ = cmps;
 }
-
-
 
 //! The first column contains row numbers. The remaining numCols columns contain data.
 
@@ -169,11 +166,10 @@ void DataModel::sortData()
 //  class DataView
 // ************************************************************************** //
 
-DataView::DataView(const QStringList& headers, const QStringList& outHeaders, const cmp_vec& cmps)
-    : model_(new DataModel(headers, cmps))
+DataView::DataView()
+    : model_ {new DataModel}
 {
-    ASSERT(headers.count() == outHeaders.count());
-    outHeaders_ = outHeaders;
+    outHeaders_ = PeakInfo::dataTags(true);
 
     setModel(model_.get());
     setHeader(new QHeaderView(Qt::Horizontal));

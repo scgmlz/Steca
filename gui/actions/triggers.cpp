@@ -21,6 +21,7 @@
 #include "gui/dialogs/export_dfgram.h"
 #include "gui/dialogs/export_bigtable.h"
 #include "gui/dialogs/export_polefig.h"
+#include "gui/dialogs/popup_bigtable.h"
 #include "gui/dialogs/popup_diagram.h"
 #include "gui/dialogs/popup_polefig.h"
 #include <QDesktopServices>
@@ -44,6 +45,7 @@ Triggers::Triggers()
     connect(&removeFile, AT, []() { gSession->dataset().removeFile(); });
     connect(&saveSession, AT, []() { gGui->saveSession(); });
     connect(&spawnDiagram, AT, [](){ new PopupDiagram(); });
+    connect(&spawnTable, AT, [](){ new PopupBigtable(); });
     connect(&spawnPolefig, AT, [](){ new PopupPolefig(); });
     connect(&viewReset, AT, []() { gGui->viewReset(); });
 }

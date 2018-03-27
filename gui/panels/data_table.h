@@ -23,9 +23,8 @@
 
 class DataModel : public TableModel {
 public:
-    DataModel() = delete;
+    DataModel();
     DataModel(DataModel&) = delete;
-    DataModel(const QStringList& headers, const cmp_vec&);
 
     void clear();
     void moveColumn(int from, int to);
@@ -65,9 +64,8 @@ private:
 
 class DataView : public QTreeView {
 public:
-    DataView() = delete;
+    DataView();
     DataView(DataView&) = delete;
-    DataView(const QStringList& headers, const QStringList& outHeaders, const cmp_vec&);
 
     void clear();
     void refresh();

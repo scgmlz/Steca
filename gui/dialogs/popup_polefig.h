@@ -22,8 +22,6 @@
 class PopupPolefig : public CModelessDialog {
 public:
     PopupPolefig();
-private:
-    class PlotPolefig* plot_;
 };
 
 #endif // POPUP_POLEFIG_H

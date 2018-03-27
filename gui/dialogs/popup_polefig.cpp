@@ -18,23 +18,22 @@
 #include "gui/mainwin.h"
 #include "gui/state.h"
 
-
 PopupPolefig::PopupPolefig()
     : CModelessDialog(gGui, "polefig#")
 {
     setWindowTitle("Steca " + name());
 
     // initializations
-    plot_ = new PlotPolefig; // the main subframe
-    plot_->setMinimumSize(300,300); // TODO store and reuse user setting; freeze aspect ratio
+    auto* plot = new PlotPolefig; // the main subframe
+    plot->setMinimumSize(300,300); // TODO store and reuse user setting; freeze aspect ratio
 
     // layout
     auto* layout = new QVBoxLayout;
-    layout->addWidget(plot_);
+    layout->addWidget(plot);
     layout->setStretch(0,1000);
     // TODO add info about used parameters
     setLayout(layout);
 
-    plot_->set(gSession->peakInfos(), gGui->state->polefigShowGridPts->checkState());
+    plot->set(gSession->peakInfos(), gGui->state->polefigShowGridPts->checkState());
     show();
 }

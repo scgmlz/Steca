@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/dialogs/popup_diagram.h
-//! @brief     Defines class PopupDiagram
+//! @file      gui/dialogs/popup_bigtable.h
+//! @brief     Defines class PopupBigtable
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,16 +12,16 @@
 //
 // ************************************************************************** //
 
-#ifndef POPUP_DIAGRAM_H
-#define POPUP_DIAGRAM_H
+#ifndef POPUP_BIGTABLE_H
+#define POPUP_BIGTABLE_H
 
 #include "gui/capture_and_replay/enhance_widgets.h"
 
 //! Popup display of the present XY diagram.
 
-class PopupDiagram : public CModelessDialog {
+class PopupBigtable : public CModelessDialog {
 public:
-    PopupDiagram();
+    PopupBigtable();
 };
 
-#endif // POPUP_DIAGRAM_H
+#endif // POPUP_BIGTABLE_H

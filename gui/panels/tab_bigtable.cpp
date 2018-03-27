@@ -29,9 +29,8 @@
 
 class ColumnSelector : public QWidget {
 public:
-    ColumnSelector(DataView&, const QStringList&);
+    ColumnSelector();
 private:
-    DataView& dataView_;
     QVector<CCheckBox*> showCols_;
     CRadioButton rbHidden_ {"rbHidden", ""};
     CRadioButton rbAll_ {"rbAll", "all"};
@@ -44,10 +43,9 @@ private:
     using eReflAttr = PeakInfo::eReflAttr;
 };
 
-ColumnSelector::ColumnSelector(DataView& dataView, const QStringList& headers)
-    : dataView_ {dataView}
-    , showCols_ {headers.count()}
+ColumnSelector::ColumnSelector()
 {
+    const QStringList& headers = PeakInfo::dataTags(false);
     rbHidden_.hide();
 
     auto* box = new QVBoxLayout;
@@ -58,6 +56,7 @@ ColumnSelector::ColumnSelector(DataView& dataView, const QStringList& headers)
     box->addWidget(&rbTth_);
     box->addWidget(&rbFWHM_);
     box->addSpacing(8);
+    showCols_.resize(headers.count());
     for_i (showCols_.count()) {
         showCols_[i] = new CCheckBox("cb"+QString::number(i), headers[i]);
         box->addWidget(showCols_[i]);
@@ -137,20 +136,15 @@ void ColumnSelector::updateRadiobuttons()
 // ************************************************************************** //
 
 BigtableTab::BigtableTab()
+    : dataView_ {new DataView()}
 {
-    const QStringList& headers = PeakInfo::dataTags(false);
-    const QStringList& outHeaders = PeakInfo::dataTags(true);
-    const cmp_vec& cmps = PeakInfo::dataCmps();
-
-    dataView_ = new DataView(headers, outHeaders, cmps); // the main table
-
     // inbound connection
     connect(gSession, &Session::sigRawFits, [this]() { render(); });
 
     // layout
     auto* colSelBox = new QScrollArea;
     colSelBox->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    colSelBox->setWidget(new ColumnSelector(*dataView_, headers));
+    colSelBox->setWidget(new ColumnSelector());
 
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);
