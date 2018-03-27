@@ -24,8 +24,9 @@
 #include <QKeyEvent>
 
 // ************************************************************************** //
-//  class DataModel
-// ************************************************************************** //
+//! @class DataModel
+//!
+//! The first column contains row numbers. The remaining numCols columns contain data.
 
 DataModel::DataModel()
     : TableModel("data#")
@@ -39,12 +40,19 @@ DataModel::DataModel()
         colIndexMap_[i] = i;
 }
 
-//! The first column contains row numbers. The remaining numCols columns contain data.
+void DataModel::refresh()
+{
+    beginResetModel();
+    rows_.clear();
+    for (const PeakInfo& r : gSession->peakInfos())
+        rows_.append(XRow(rows_.count() + 1, r.data()));
+    sortData();
+    endResetModel();
+}
 
 QVariant DataModel::data(const QModelIndex& index, int role) const
 {
     int indexRow = index.row(), indexCol = index.column();
-    int numRows = rowCount(), numCols = columnCount();
 
     if (indexCol < 0 || indexRow < 0)
         return {};
@@ -74,16 +82,15 @@ QVariant DataModel::data(const QModelIndex& index, int role) const
 
 QVariant DataModel::headerData(int section, Qt::Orientation, int role) const
 {
-    if (section < 0 || headers_.count() < section)
+    if (section < 0)
         return {};
-
     if (Qt::DisplayRole == role)
         return 0 == section ? "#" : headers_.at(section - 1);
-
     return {};
 }
 
-void DataModel::moveColumn(int from, int to)
+//! Called upon QHeaderView::sectionMoved.
+void DataModel::onColumnMove(int from, int to)
 {
     ASSERT(from < colIndexMap_.count() && to < colIndexMap_.count());
     qSwap(colIndexMap_[from], colIndexMap_[to]);
@@ -94,17 +101,7 @@ void DataModel::setSortColumn(int col)
     sortColumn_ = col < 0 ? col : colIndexMap_.at(col);
 }
 
-void DataModel::refresh()
-{
-    beginResetModel();
-    rows_.clear();
-    for (const PeakInfo& r : gSession->peakInfos())
-        rows_.append(numRow(rows_.count() + 1, r.data()));
-    sortData();
-    endResetModel();
-}
-
-const QVector<QVariant>& DataModel::row(int index)
+const QVector<QVariant>& DataModel::row(int index) const
 {
     return rows_.at(index).row;
 }
@@ -117,7 +114,7 @@ void DataModel::sortData()
     };
 
     // sort by sortColumn first, then left-to-right
-    auto _cmp = [this, _cmpRows](const numRow& r1, const numRow& r2) {
+    auto _cmp = [this, _cmpRows](const XRow& r1, const XRow& r2) {
         if (0 <= sortColumn_) {
             int c = _cmpRows(sortColumn_, r1.row, r2.row);
             if (c < 0)
@@ -150,8 +147,8 @@ void DataModel::sortData()
 }
 
 // ************************************************************************** //
-//  class DataView
-// ************************************************************************** //
+//!  @class DataView
+//!
 
 DataView::DataView()
     : TableView {new DataModel}
@@ -180,7 +177,7 @@ DataView::DataView()
         [this](int /*logicalIndex*/, int oldVisualIndex, int newVisualIndex) {
             ASSERT(oldVisualIndex > 0 && newVisualIndex > 0);
             header()->setSortIndicatorShown(false);
-            model()->moveColumn(oldVisualIndex-1, newVisualIndex-1);
+            model()->onColumnMove(oldVisualIndex-1, newVisualIndex-1);
             model()->sortData();
         });
 
@@ -212,11 +209,10 @@ void DataView::updateShownColumns()
 //! To enable copying to external applications
 void DataView::keyPressEvent(QKeyEvent *event)
 {
-    if (event->key() == Qt::Key_C && event->modifiers() & Qt::ControlModifier) {
+    if (event->key() == Qt::Key_C && event->modifiers() & Qt::ControlModifier)
         QApplication::clipboard()->setText(exportSelection());
-    } else {
+    else
         QTreeView::keyPressEvent(event);
-    }
 }
 
 //! Encodes selected items as a string with separators '\t' and '\n', for use in keyPressEvent.

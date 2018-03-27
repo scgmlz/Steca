@@ -27,34 +27,33 @@ public:
     DataModel(DataModel&) = delete;
 
     void refresh();
-    void moveColumn(int from, int to);
+    void onColumnMove(int from, int to);
     void setSortColumn(int);
     void sortData();
-    const QVector<QVariant>& row(int);
-
-    int columnCount() const final { return numCols_ + 1; }
-    int rowCount() const final { return rows_.count(); }
-    int highlighted() const final { return 0; } // unused
     void setHighlight(int i) final { ; }        // unused
 
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const;
+    int columnCount() const final { return numCols_ + 1; }
+    int rowCount() const final { return rows_.count(); }
+    const QVector<QVariant>& row(int) const;
+    int highlighted() const final { return 0; } // unused
 
 private:
     QStringList headers_;
     QVector<int> colIndexMap_;
     QVector<VariantComparator*> comparators_;
 
-    struct numRow {
-        numRow() : n(0), row() {}
-        numRow(int n_, const QVector<QVariant>& row_) : n(n_), row(row_) {}
+    struct XRow {
+        XRow() {} // see https://bugreports.qt.io/browse/QTBUG-67357
+        XRow(int n_, const QVector<QVariant>& row_) : n(n_), row(row_) {}
         int n;
         QVector<QVariant> row;
     };
 
     int numCols_;
     int sortColumn_ {-1};
-    QVector<numRow> rows_;
+    QVector<XRow> rows_;
 };
 
 //! A data table view, for use in the 'Points' tab of an output Frame.
