@@ -39,6 +39,7 @@ private:
     CRadioButton rbInten_ {"rbInten", "Intensity"};
     CRadioButton rbTth_ {"rbTth", "2θ"};
     CRadioButton rbFWHM_ {"rbFWHM", "fwhm"};
+    void setAll(bool on);
     void updateRadiobuttons();
     using eReflAttr = PeakInfo::eReflAttr;
 };
@@ -63,25 +64,19 @@ ColumnSelector::ColumnSelector(DataView& dataView, const QStringList& headers)
     }
     setLayout(box);
 
-    auto _all = [this]() {
-        for (auto* col : showCols_)
-            col->setChecked(true); };
-
-    auto _none = [this]() {
-        for (auto* col : showCols_)
-            col->setChecked(false); };
-
-    auto _showInten = [this, _none]() {
-        _none();
-        showCols_.at(int(eReflAttr::INTEN))->setChecked(true); };
-
-    auto _showTth = [this, _none]() {
-        _none();
-        showCols_.at(int(eReflAttr::TTH))->setChecked(true); };
-
-    auto _showFWHM = [this, _none]() {
-        _none();
-        showCols_.at(int(eReflAttr::FWHM))->setChecked(true); };
+    connect(&rbAll_, &QRadioButton::clicked, [this]() {
+            setAll(true); });
+    connect(&rbNone_, &QRadioButton::clicked, [this]() {
+            setAll(false); });
+    connect(&rbInten_, &QRadioButton::clicked, [this]() {
+            setAll(false);
+            showCols_.at(int(eReflAttr::INTEN))->setChecked(true); });
+    connect(&rbTth_, &QRadioButton::clicked, [this]() {
+            setAll(false);
+            showCols_.at(int(eReflAttr::TTH))->setChecked(true); });
+    connect(&rbFWHM_, &QRadioButton::clicked, [this]() {
+            setAll(false);
+            showCols_.at(int(eReflAttr::FWHM))->setChecked(true); });
 
     for_i (showCols_.count()) {
         QCheckBox* cb = showCols_.at(i);
@@ -95,13 +90,13 @@ ColumnSelector::ColumnSelector(DataView& dataView, const QStringList& headers)
             });
     }
 
-    connect(&rbAll_, &QRadioButton::clicked, _all);
-    connect(&rbNone_, &QRadioButton::clicked, _none);
-    connect(&rbInten_, &QRadioButton::clicked, _showInten);
-    connect(&rbTth_, &QRadioButton::clicked, _showTth);
-    connect(&rbFWHM_, &QRadioButton::clicked, _showFWHM);
-
     rbAll_.click();
+}
+
+void ColumnSelector::setAll(bool on)
+{
+    for (auto* col : showCols_)
+        col->setChecked(on);
 }
 
 void ColumnSelector::updateRadiobuttons()
