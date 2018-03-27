@@ -127,13 +127,8 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
     fits_->setLineStyle(QCPGraph::lsNone);
     fits_->setPen(QPen(Qt::red));
 
-    connect(&gGui->toggles->showBackground, &QAction::toggled, [this](bool on) {
-        renderAll();
-    });
-
+    // inbound connections:
     connect(gSession, &Session::sigPeaks, this, &DiffractogramPlot::renderAll);
-    // indirect: connect(gSession, &Session::sigActivated, this, &DiffractogramPlot::renderAll);
-    // indirect: connect(gSession, &Session::sigDetector, this, &DiffractogramPlot::renderAll);
     connect(gSession, &Session::sigDiffractogram, this, &DiffractogramPlot::renderAll);
 }
 

@@ -36,6 +36,9 @@ Toggles::Toggles()
         emit gSession->sigImage();
         emit gSession->sigDiffractogram();
         });
+    connect(&showBackground, AT, [](bool on) {
+        emit gSession->sigDiffractogram();
+        });
 
     connect(&viewStatusbar, AT, [](bool on) { gGui->statusBar()->setVisible(on); });
 #ifndef Q_OS_OSX
