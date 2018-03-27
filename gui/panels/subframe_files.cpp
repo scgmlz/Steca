@@ -14,6 +14,7 @@
 
 #include "gui/panels/subframe_files.h"
 #include "core/session.h"
+#include "gui/base/displays.h"
 #include "gui/base/model_view.h"
 #include "gui/mainwin.h"
 #include "gui/actions/toggles.h"
@@ -106,22 +107,37 @@ int FilesView::sizeHintForColumn(int col) const
 //  class SubframeFiles
 // ************************************************************************** //
 
-SubframeFiles::SubframeFiles() : DockWidget("Files", "dock-files")
+SubframeFiles::SubframeFiles()
 {
-    dataControls_.addStretch();
-    dataControls_.addWidget(new XIconButton(&gGui->triggers->addFiles));
-    dataControls_.addWidget(new XIconButton(&gGui->triggers->removeFile));
-    box_.addLayout(&dataControls_);
+    setFeatures(DockWidgetMovable);
+    setWindowTitle("Files");
+    setObjectName("dock-files");
 
-    box_.addWidget(new FilesView());
-    box_.addWidget(new QLabel("Correction file"));
+    // layout
+    setWidget(new QWidget);
 
-    corrControls_.addWidget(&corrFileView_);
-    corrControls_.addWidget(new XIconButton(&gGui->triggers->corrFile));
-    corrControls_.addWidget(new XIconButton(&gGui->toggles->enableCorr));
-    box_.addLayout(&corrControls_);
+    auto* dataControls = new QHBoxLayout;
+    dataControls->addStretch();
+    dataControls->addWidget(new XIconButton(&gGui->triggers->addFiles));
+    dataControls->addWidget(new XIconButton(&gGui->triggers->removeFile));
 
-    connect(gSession, &Session::sigCorr, [this]() {
-            corrFileView_.setText( gSession->corrset().hasFile() ?
+    auto* corrFileView = new XLineDisplay;
+
+    auto* corrControls = new QHBoxLayout;
+    corrControls->addWidget(corrFileView);
+    corrControls->addWidget(new XIconButton(&gGui->triggers->corrFile));
+    corrControls->addWidget(new XIconButton(&gGui->toggles->enableCorr));
+
+    auto* box = new QVBoxLayout;
+    box->addLayout(dataControls);
+    box->addWidget(new FilesView());
+    box->addWidget(new QLabel("Correction file"));
+    box->addLayout(corrControls);
+    box->setContentsMargins(0,0,0,0);
+    widget()->setLayout(box);
+
+    // inbound connection
+    connect(gSession, &Session::sigCorr, [corrFileView]() {
+            corrFileView->setText( gSession->corrset().hasFile() ?
                                    gSession->corrset().raw().fileName() : ""); });
 }

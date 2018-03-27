@@ -78,6 +78,7 @@ MainWin::MainWin()
     readSettings();
     updateActionEnabling();
 
+    setContentsMargins(5,5,5,5);
     statusBar()->addWidget(&progressBar);
 }
 

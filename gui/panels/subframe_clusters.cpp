@@ -186,7 +186,10 @@ int ActiveClustersView::sizeHintForColumn(int col) const
 //  class SubframeClusters
 // ************************************************************************** //
 
-SubframeClusters::SubframeClusters() : DockWidget("Measurements", "dock-cluster")
+SubframeClusters::SubframeClusters()
 {
-    box_.addWidget(new ActiveClustersView()); // list of Cluster|s
+    setFeatures(DockWidgetMovable);
+    setWindowTitle("Measurements");
+    setObjectName("dock-measurements");
+    setWidget(new ActiveClustersView()); // list of Cluster|s
 }
