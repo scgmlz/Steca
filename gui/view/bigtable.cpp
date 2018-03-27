@@ -50,31 +50,22 @@ QVariant DataModel::data(const QModelIndex& index, int role) const
         return {};
 
     switch (role) {
-    case Qt::DisplayRole:
+    case Qt::DisplayRole: {
         if (0 == indexCol)
             return rows_.at(indexRow).n;
-
-        if (--indexCol < numCols && indexRow < numRows) {
-            QVariant var = rows_.at(indexRow).row.at(indexCol);
-            if (isNumeric(var) && qIsNaN(var.toDouble()))
-                var = QVariant(); // hide nans
-            return var;
-        }
-
-        break;
-
-    case Qt::TextAlignmentRole:
+        const QVariant var = rows_.at(indexRow).row.at(indexCol-1);
+        if (isNumeric(var) && qIsNaN(var.toDouble()))
+            return {}; // show blank field instead of NAN
+        return var;
+    }
+    case Qt::TextAlignmentRole: {
         if (0 == indexCol)
             return Qt::AlignRight;
-
-        if (--indexCol < numCols && indexRow < numRows) {
-            const QVariant& var = rows_.at(indexRow).row.at(indexCol);
-            if (isNumeric(var))
-                return Qt::AlignRight;
-        }
-
+        const QVariant& var = rows_.at(indexRow).row.at(indexCol-1);
+        if (isNumeric(var))
+            return Qt::AlignRight;
         return Qt::AlignLeft;
-
+    }
     default: break;
     }
 
