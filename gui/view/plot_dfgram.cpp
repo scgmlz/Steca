@@ -76,7 +76,6 @@ bool DiffractogramPlotOverlay::subtractModeColor(QColor& color) const
 
 DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
     : diffractogram_(diffractogram)
-    , showBgFit_(false)
     , overlay_(new DiffractogramPlotOverlay(*this))
 {
     QCPAxisRect* ar = axisRect();
@@ -129,7 +128,6 @@ DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
     fits_->setPen(QPen(Qt::red));
 
     connect(&gGui->toggles->showBackground, &QAction::toggled, [this](bool on) {
-        showBgFit_ = on;
         renderAll();
     });
 
@@ -232,12 +230,11 @@ void DiffractogramPlot::calcDgram()
     dgram_.clear();
     if (!gSession->hasData())
         return;
-    if (gGui->toggles->combinedDgram.isChecked()) {
+    if (gGui->toggles->combinedDgram.isChecked())
         dgram_ = gSession->activeClusters().avgCurve();
-    } else {
+    else
         dgram_ = gSession->dataset().highlight().cluster()->toCurve(
             gSession->gammaSelection().range());
-    }
 }
 
 void DiffractogramPlot::calcBackground()
@@ -305,11 +302,10 @@ void DiffractogramPlot::plot(
     xAxis->setVisible(true);
     yAxis->setVisible(true);
 
-    if (showBgFit_) {
+    if (gGui->toggles->showBackground.isChecked())
         bgGraph_->setData(bg.xs(), bg.ys());
-    } else {
+    else
         bgGraph_->clearData();
-    }
 
     dgramGraph_->setData(dgram.xs(), dgram.ys());
     dgramBgFittedGraph_->setData(dgramBgFitted.xs(), dgramBgFitted.ys());

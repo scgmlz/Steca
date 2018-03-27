@@ -53,7 +53,6 @@ private:
 
     Diffractogram& diffractogram_;
 
-    bool showBgFit_;
     QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *dgramBgFittedGraph2_, *guesses_,
         *fits_;
     QVector<QCPGraph*> reflGraph_;
