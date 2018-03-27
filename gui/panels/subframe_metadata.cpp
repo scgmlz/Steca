@@ -87,8 +87,12 @@ private:
 MetadataView::MetadataView()
     : CheckTableView(new MetadataModel())
 {
+    // inbound connections:
+    connect(gSession, &Session::sigDataHighlight, this, &TableView::onData);
     connect(gSession, &Session::sigClusters, this, &TableView::onData);
     connect(gSession, &Session::sigMetaSelection, this, &TableView::onHighlight);
+
+    // internal connection:
     connect(this, &MetadataView::clicked, model(), &CheckTableModel::onClicked);
 }
 

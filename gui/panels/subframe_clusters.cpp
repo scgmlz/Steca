@@ -158,10 +158,13 @@ ActiveClustersView::ActiveClustersView()
 {
     setSelectionMode(QAbstractItemView::NoSelection);
 
+    // inbound connections:
     connect(gSession, &Session::sigClusters, this, &TableView::onData);
     connect(gSession, &Session::sigDataHighlight, this, &TableView::onHighlight);
     connect(gSession, &Session::sigActivated, this, &CheckTableView::onActivated);
     connect(gSession, &Session::sigMetaSelection, this, &ActiveClustersView::onMetaSelection);
+
+    // internal connection:
     connect(this, &ActiveClustersView::clicked, model(), &CheckTableModel::onClicked);
 }
 
