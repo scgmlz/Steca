@@ -67,7 +67,6 @@ public:
     DataView();
     DataView(DataView&) = delete;
 
-    void clear();
     void refresh();
 
     void toFile(QTextStream& stream, const QString& separator) const;

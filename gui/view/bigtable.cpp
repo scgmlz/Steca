@@ -208,14 +208,9 @@ DataView::DataView()
     });
 }
 
-void DataView::clear()
-{
-    model_->clear();
-}
-
 void DataView::refresh()
 {
-    clear();
+    model_->clear();
     for (const PeakInfo& r : gSession->peakInfos())
         model_->addRow(r.data(), false);
     model_->sortData();
