@@ -20,8 +20,7 @@
 #include <QThread> // for sleep for debugging
 
 // ************************************************************************************************
-//  local class GeometryControls
-// ************************************************************************************************
+//! @class GeometryControls (local scope)
 
 //! Control widgets that govern the detector geometry.
 
@@ -98,8 +97,7 @@ void GeometryControls::fromCore()
 }
 
 // ************************************************************************************************
-//  local class CutControls
-// ************************************************************************************************
+//! @class CutControls (local scope)
 
 //! Control widgets that govern the detector cuts.
 
@@ -159,8 +157,7 @@ void CutControls::fromCore()
 }
 
 // ************************************************************************************************
-//  local class ActiveClustersControls
-// ************************************************************************************************
+//! @class ActiveClustersControls (local scope)
 
 //! Control widgets that govern the combination of Measurement|s into Cluster|s.
 
@@ -210,8 +207,7 @@ void ActiveClustersControls::fromCore()
 }
 
 // ************************************************************************************************
-//  local class GammaControls
-// ************************************************************************************************
+//! @class GammaControls (local scope)
 
 //! Control widgets that govern the gamma slicing.
 

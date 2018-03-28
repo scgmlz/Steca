@@ -27,8 +27,7 @@ QString safeRealText(double val) { return qIsFinite(val) ? QString::number(val) 
 } // local methods
 
 // ************************************************************************************************
-//  local class PeaksModel, used in PeaksView
-// ************************************************************************************************
+//! @class PeaksModel, used in PeaksView (local scope)
 
 //! Model for PeaksView.
 
@@ -85,8 +84,7 @@ QVariant PeaksModel::data(const QModelIndex& index, int role) const
 
 
 // ************************************************************************************************
-//  local class PeaksView
-// ************************************************************************************************
+//! @class PeaksView (local scope)
 
 //! List view of user-defined Bragg peaks.
 
@@ -106,8 +104,7 @@ PeaksView::PeaksView()
 }
 
 // ************************************************************************************************
-//  local class RangeControl
-// ************************************************************************************************
+//! @class RangeControl (local scope)
 
 //! A horizontal row with labels and spin boxes to view and change one peak fit range.
 
@@ -160,8 +157,7 @@ void RangeControl::onData()
 
 
 // ************************************************************************************************
-//  local class PeakdataView and its dependences
-// ************************************************************************************************
+//! @class PeakdataView and its dependences (local scope)
 
 //! Virtual base class for RawPeakdataView and FitPeakdataView.
 

@@ -19,8 +19,7 @@
 #include <QSortFilterProxyModel>
 
 // ************************************************************************************************
-//  local class OpenFileProxyModel
-// ************************************************************************************************
+//! @class OpenFileProxyModel (local scope)
 
 namespace {
 
@@ -68,8 +67,7 @@ QVariant OpenFileProxyModel::data(const QModelIndex& idx, int role) const
 } // namespace
 
 // ************************************************************************************************
-//  local class FileDialog
-// ************************************************************************************************
+//! @class FileDialog (local scope)
 
 namespace {
 

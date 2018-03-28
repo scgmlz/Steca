@@ -20,8 +20,7 @@
 #include "gui/actions/triggers.h"
 
 // ************************************************************************************************
-//  local class BaseRangesModel, used in BaseRangesView
-// ************************************************************************************************
+//! @class BaseRangesModel, used in BaseRangesView (local scope)
 
 //! Model for BaseRangesView.
 
@@ -71,8 +70,7 @@ QVariant BaseRangesModel::data(const QModelIndex& index, int role) const
 }
 
 // ************************************************************************************************
-//  local class BaseRangesView
-// ************************************************************************************************
+//! @class BaseRangesView (local scope)
 
 //! List view of user-defined Bragg peaks.
 

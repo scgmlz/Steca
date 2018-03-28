@@ -22,8 +22,7 @@
 #include <QThread> // for sleep for debugging
 
 // ************************************************************************************************
-//  local class ColumnSelector
-// ************************************************************************************************
+//! @class ColumnSelector (local scope)
 
 //! A row of controls for choosing which data columns are to be displayed in a TabTable.
 

@@ -17,8 +17,7 @@
 #include "gui/base/model_view.h"
 
 // ************************************************************************************************
-//  local class ActiveClustersModel
-// ************************************************************************************************
+//! @class ActiveClustersModel (local scope)
 
 //! The model for ActiveClustersView.
 
@@ -137,8 +136,7 @@ QVariant ActiveClustersModel::headerData(int col, Qt::Orientation ori, int role)
 
 
 // ************************************************************************************************
-//  local class ActiveClustersView
-// ************************************************************************************************
+//! @class ActiveClustersView (local scope)
 
 //! Main item in SubframeMeasurement: View and control of measurements list.
 

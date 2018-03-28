@@ -20,8 +20,7 @@
 
 
 // ************************************************************************************************
-//  local class Diffractogram
-// ************************************************************************************************
+//! @class Diffractogram (local scope)
 
 //! A diffractogram display, with associated controls, for use in SubframeDiffractogram.
 

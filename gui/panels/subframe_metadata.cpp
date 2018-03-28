@@ -17,8 +17,7 @@
 #include "gui/base/model_view.h"
 
 // ************************************************************************************************
-//  local class MetadataModel
-// ************************************************************************************************
+//! @class MetadataModel (local scope)
 
 //! The model for MetadatView.
 
@@ -69,8 +68,7 @@ QVariant MetadataModel::data(const QModelIndex& index, int role) const
 
 
 // ************************************************************************************************
-//  local class MetadataView
-// ************************************************************************************************
+//! @class MetadataView (local scope)
 
 //! Main item in SubframeMetadata: View and control the list of Metadata.
 

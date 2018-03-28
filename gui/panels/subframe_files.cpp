@@ -22,8 +22,7 @@
 
 
 // ************************************************************************************************
-//  local class FilesModel
-// ************************************************************************************************
+//! @class FilesModel (local scope)
 
 //! The model for FilesView
 
@@ -68,8 +67,7 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const
 
 
 // ************************************************************************************************
-//  local class FilesView
-// ************************************************************************************************
+//! @class FilesView (local scope)
 
 //! Main item in SubframeFiles: View and control the list of DataFile's
 
