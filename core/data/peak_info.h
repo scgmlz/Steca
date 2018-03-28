@@ -82,6 +82,9 @@ public:
     void append(const PeakInfo&);
     float averageInten() const;
     const Range& rgeInten() const;
+    void get4(const int idxX, const int idxY,
+              QVector<double>& xs, QVector<double>& ys,
+              QVector<double>& ysLow, QVector<double>& ysHig) const;
 private:
     mutable float avgInten_;
     mutable Range rgeInten_;
