@@ -14,7 +14,6 @@
 
 #include "controls.h"
 #include "gui/base/convert.h"
-#include "core/def/debug.h"
 #include "gui/base/displays.h"
 #include "gui/capture_and_replay/cmdexception.h"
 #include "gui/capture_and_replay/console.h"
@@ -204,7 +203,8 @@ CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, double min, do
     : CSettable(_name)
 {
     widgetUtils::setWidth(this, 2+ndigits, true);
-    ASSERT(min<=max);
+    if (min>max)
+        qSwap(min, max);
     setMinimum(min);
     setMaximum(max);
     reportedValue_ = value();
