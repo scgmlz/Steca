@@ -113,23 +113,23 @@ public:
     double calcAvgBackground() const;
 
 signals:
-    void sigFiles();         //!< list of loaded files has changed
-    void sigClusters();      //!< list of clusters has changed
-    void sigDataHighlight(); //!< highlighted File or/and Cluster has changed
-    void sigMetaSelection(); //!< meta data selected for display have changed
-    void sigCorr();          //!< corr file has been loaded or unloaded or enabled or disabled
     void sigActivated();     //!< selection of active clusters has changed
-    void sigDetector();      //!< detector geometry has changed
-    void sigGamma();         //!< gamma selection has changed
-    void sigTheta();         //!< theta selection has changed
-    void sigDiffractogram(); //!< diffractogram must be repainted
-    void sigImage();         //!< image must be repainted
     void sigBaseline();      //!< baseline settings have changed
+    void sigBigtableCols();  //!< column selection in bigtable has changed
+    void sigClusters();      //!< list of clusters has changed
+    void sigCorr();          //!< corr file has been loaded or unloaded or enabled or disabled
+    void sigDataHighlight(); //!< highlighted File or/and Cluster has changed
+    void sigDetector();      //!< detector geometry has changed
+    void sigDiffractogram(); //!< diffractogram must be repainted
+    void sigFiles();         //!< list of loaded files has changed
+    void sigGamma();         //!< gamma selection has changed
+    void sigImage();         //!< image must be repainted
+    void sigInterpol();      //!< interpolation parameters have changed
+    void sigMetaSelection(); //!< meta data selected for display have changed
     void sigNorm();          //!< normalization has changed
     void sigPeaks();         //!< list of peaks or selected peak has changed
-    void sigInterpol();      //!< interpolation parameters have changed
     void sigRawFits();       //!< fit results have changed
-    void sigBigtableCols();  //!< column selection in bigtable has changed
+    void sigTheta();         //!< theta selection has changed
 
 private:
     // with reference accessor methods:
