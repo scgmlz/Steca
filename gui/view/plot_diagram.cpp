@@ -96,11 +96,8 @@ void PlotDiagram::refresh()
         ys[i] = row.at(yi).toDouble();
     }
 
-    Range rgeX, rgeY;
-    for_i (count) {
-        rgeX.extendBy(xs.at(i));
-        rgeY.extendBy(ys.at(i));
-    }
+    Range rgeX(xs);
+    Range rgeY(ys);
     if (rgeX.isEmpty() || rgeY.isEmpty())
         return erase();
 

@@ -27,7 +27,8 @@ class JsonObj;
 class Range {
 public:
     Range(); //!< invalid (NaN)
-    Range(double min, double max); //!< normal
+    Range(double min, double max);
+    Range(const QVector<double>&);
 
     static Range infinite(); //!< factory: -inf .. +inf
 
