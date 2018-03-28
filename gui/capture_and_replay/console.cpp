@@ -13,10 +13,10 @@
 //  ***********************************************************************************************
 
 #include "console.h"
-#include "core/def/debug.h"
 #include "core/typ/exception.h"
 #include <QApplication> // tmp
 #include <QDateTime>
+#include <QDebug>
 #include <QDir> // tmp
 #include <QSocketNotifier>
 
