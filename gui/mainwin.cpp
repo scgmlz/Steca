@@ -238,6 +238,7 @@ void MainWin::runFits()
     }
     Progress progress(1, &gGui->progressBar);
     int iRefl = gSession->peaks().selectedIndex();
-    gSession->peakInfos() = algo::rawFits(gSession->activeClusters(), gSession->peaks().at(iRefl), &progress);
+    gSession->peakInfos()
+        = algo::rawFits(gSession->activeClusters(), gSession->peaks().at(iRefl), &progress);
     emit gSession->sigRawFits();
 }

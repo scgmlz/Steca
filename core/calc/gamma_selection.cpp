@@ -107,12 +107,12 @@ void GammaSelection::setRange(const Range& r)
     recomputeCache();
 }
 
-Range GammaSelection::slice2range(int) const
+Range GammaSelection::slice2range(int i) const
 {
     if (!numSlices_) {
         Range ret;
         ret.invalidate();
         return ret;
     }
-    return fullRange_.slice(iSlice_, numSlices_);
+    return fullRange_.slice(i, numSlices_);
 }
