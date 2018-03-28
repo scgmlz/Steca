@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "convert.h"
-#include "core/typ/exception.h"
+#include "gui/capture_and_replay/cmdexception.h"
 
 int TO_INT(const QString& s)
 {
@@ -21,7 +21,7 @@ int TO_INT(const QString& s)
     bool ok;
     ret = s.toInt(&ok);
     if (!ok)
-        THROW("Expected an integer number, found string '" + s + "'");
+        throw CmdException("Expected an integer number, found string '" + s + "'");
     return ret;
 }
 
@@ -31,6 +31,6 @@ double TO_DOUBLE(const QString& s)
     bool ok;
     ret = s.toDouble(&ok);
     if (!ok)
-        THROW("Expected a floating-point number, found string '" + s + "'");
+        throw CmdException("Expected a floating-point number, found string '" + s + "'");
     return ret;
 }
