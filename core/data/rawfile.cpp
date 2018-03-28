@@ -15,10 +15,13 @@
 #include "core/data/rawfile.h"
 #include <QStringBuilder> // for ".." % ..
 
-Rawfile::Rawfile(const QString& fileName) : fileInfo_(fileName) {}
+Rawfile::Rawfile(const QString& fileName)
+    : fileInfo_(fileName)
+{}
 
 //! The loaders use this function to push cluster
-void Rawfile::addDataset(const Metadata& md, const size2d& sz, const QVector<float>& ivec) {
+void Rawfile::addDataset(const Metadata& md, const size2d& sz, const QVector<float>& ivec)
+{
     if (measurements_.isEmpty())
         imageSize_ = sz;
     else if (sz != imageSize_)
@@ -34,15 +37,18 @@ QVector<const Measurement*> const Rawfile::measurements() const
     return ret;
 }
 
-const QFileInfo& Rawfile::fileInfo() const {
+const QFileInfo& Rawfile::fileInfo() const
+{
     return fileInfo_;
 }
 
-QString Rawfile::fileName() const {
+QString Rawfile::fileName() const
+{
     return fileInfo_.fileName();
 }
 
-shp_Image Rawfile::foldedImage() const {
+shp_Image Rawfile::foldedImage() const
+{
     ASSERT(!measurements_.isEmpty());
     shp_Image ret(new Image(measurements_.first()->imageSize()));
     for (shp_Measurement one : measurements_)

@@ -15,7 +15,8 @@
 #include "convert.h"
 #include "core/typ/exception.h"
 
-int TO_INT(const QString& s) {
+int TO_INT(const QString& s)
+{
     int ret;
     bool ok;
     ret = s.toInt(&ok);
@@ -24,7 +25,8 @@ int TO_INT(const QString& s) {
     return ret;
 }
 
-double TO_DOUBLE(const QString& s) {
+double TO_DOUBLE(const QString& s)
+{
     double ret;
     bool ok;
     ret = s.toDouble(&ok);

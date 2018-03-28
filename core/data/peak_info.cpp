@@ -26,8 +26,8 @@
 
 PeakInfo::PeakInfo()
     : PeakInfo(
-          shp_Metadata(),
-          Q_QNAN, Q_QNAN, Range(), float(Q_QNAN), float(Q_QNAN), deg(Q_QNAN), deg(Q_QNAN), Q_QNAN, Q_QNAN)
+          shp_Metadata(), Q_QNAN, Q_QNAN, Range(), float(Q_QNAN), float(Q_QNAN),
+          deg(Q_QNAN), deg(Q_QNAN), Q_QNAN, Q_QNAN)
 {}
 
 PeakInfo::PeakInfo(shp_Metadata md, deg alpha, deg beta, Range rgeGma, float inten,

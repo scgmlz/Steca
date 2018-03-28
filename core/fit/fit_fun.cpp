@@ -20,7 +20,8 @@
 namespace { // file-scope functions
 
 //! Compute a low power with an exponent of type int
-static double pow_n(double x, int n) {
+static double pow_n(double x, int n)
+{
     double val = 1;
     while (n-- > 0)
         val *= x;
@@ -33,17 +34,20 @@ static double pow_n(double x, int n) {
 //  class Polynom
 // ************************************************************************** //
 
-int Polynom::degree() const {
+int Polynom::degree() const
+{
     int parCount = parameterCount();
     ASSERT(parCount > 0);
     return parCount - 1;
 }
 
-void Polynom::setDegree(int degree) {
+void Polynom::setDegree(int degree)
+{
     setParameterCount(degree + 1);
 }
 
-double Polynom::y(double x, double const* parValues) const {
+double Polynom::y(double x, double const* parValues) const
+{
     double val = 0, xPow = 1;
     for_i (parameters_.count()) {
         val += parValue(i, parValues) * xPow;
@@ -52,12 +56,14 @@ double Polynom::y(double x, double const* parValues) const {
     return val;
 }
 
-double Polynom::dy(double x, int i, double const*) const {
+double Polynom::dy(double x, int i, double const*) const
+{
     return pow_n(x, i);
 }
 
 // REVIEW
-double Polynom::avgY(const Range& rgeX, double const* parValues) const {
+double Polynom::avgY(const Range& rgeX, double const* parValues) const
+{
     ASSERT(rgeX.isValid());
 
     double w = rgeX.width();
@@ -74,23 +80,27 @@ double Polynom::avgY(const Range& rgeX, double const* parValues) const {
     return (1 / w) * (maqpair - minY);
 }
 
-void Polynom::fit(const Curve& curve, const Ranges& ranges) {
+void Polynom::fit(const Curve& curve, const Ranges& ranges)
+{
     FitWrapper().fit(*this, curve.intersect(ranges));
 }
 
-Polynom Polynom::fromFit(int degree, const Curve& curve, const Ranges& ranges) {
+Polynom Polynom::fromFit(int degree, const Curve& curve, const Ranges& ranges)
+{
     Polynom poly(degree);
     poly.fit(curve, ranges);
     return poly;
 }
 
-JsonObj Polynom::toJson() const {
+JsonObj Polynom::toJson() const
+{
     JsonObj ret = Function::toJson();
     ret.insert("type", name());
     return ret;
 }
 
-void Polynom::fromJson(const JsonObj& obj) {
+void Polynom::fromJson(const JsonObj& obj)
+{
     Function::fromJson(obj);
 }
 
@@ -98,15 +108,19 @@ void Polynom::fromJson(const JsonObj& obj) {
 //  class PeakFunction
 // ************************************************************************** //
 
-PeakFunction::PeakFunction() : guessedPeak_(), guessedFWHM_(Q_QNAN) {}
+PeakFunction::PeakFunction()
+    : guessedPeak_(), guessedFWHM_(Q_QNAN)
+{}
 
-void PeakFunction::reset() {
+void PeakFunction::reset()
+{
     Function::reset();
     setGuessedPeak(guessedPeak_);
     setGuessedFWHM(guessedFWHM_);
 }
 
-void PeakFunction::fit(const Curve& curve, const Range& range) {
+void PeakFunction::fit(const Curve& curve, const Range& range)
+{
     const Curve c = prepareFit(curve, range);
     if (c.isEmpty())
         return;
@@ -138,12 +152,14 @@ void PeakFunction::fit(const Curve& curve, const Range& range) {
     FitWrapper().fit(*this, c);
 }
 
-Curve PeakFunction::prepareFit(const Curve& curve, const Range& range) {
+Curve PeakFunction::prepareFit(const Curve& curve, const Range& range)
+{
     reset();
     return curve.intersect(range);
 }
 
-JsonObj PeakFunction::toJson() const {
+JsonObj PeakFunction::toJson() const
+{
     JsonObj ret = Function::toJson();
     ret.insert("range", range_.toJson());
     ret.insert("guessed peak", guessedPeak_.toJson());
@@ -152,7 +168,8 @@ JsonObj PeakFunction::toJson() const {
     return ret;
 }
 
-void PeakFunction::fromJson(const JsonObj& obj) {
+void PeakFunction::fromJson(const JsonObj& obj)
+{
     Function::fromJson(obj);
     range_ = obj.loadRange("range");
     guessedPeak_.fromJson(obj.loadObj("guessed peak"));
@@ -164,18 +181,21 @@ void PeakFunction::fromJson(const JsonObj& obj) {
 //  FunctionRegistry
 // ************************************************************************** //
 
-void FunctionRegistry::register_fct(const initializer_type f) {
+void FunctionRegistry::register_fct(const initializer_type f)
+{
     PeakFunction* tmp = f(); // implicit 'new'
     register_item(tmp->name(), f);
     delete tmp;
-};
+}
 
-PeakFunction* FunctionRegistry::name2new(const QString& peakFunctionName) {
+PeakFunction* FunctionRegistry::name2new(const QString& peakFunctionName)
+{
     initializer_type make_new = instance()->find_or_fail(peakFunctionName);
     return make_new();
 }
 
-PeakFunction* FunctionRegistry::clone(const PeakFunction& old) {
+PeakFunction* FunctionRegistry::clone(const PeakFunction& old)
+{
     PeakFunction* ret = name2new(old.name());
     *ret = old;
     return ret;

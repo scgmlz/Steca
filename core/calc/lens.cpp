@@ -24,7 +24,8 @@ ImageLens::ImageLens(const Image& image, bool trans, bool cut)
     , image_(image)
 {}
 
-size2d ImageLens::imgSize() const {
+size2d ImageLens::imgSize() const
+{
     size2d ret = image_.size();
     if (trans_ && gSession->imageTransform().isTransposed())
         ret = ret.transposed();
@@ -33,7 +34,8 @@ size2d ImageLens::imgSize() const {
     return ret;
 }
 
-void ImageLens::doTrans(int& x, int& y) const {
+void ImageLens::doTrans(int& x, int& y) const
+{
     size2d s = imgSize();
     int w = s.w;
     int h = s.h;
@@ -63,13 +65,15 @@ void ImageLens::doTrans(int& x, int& y) const {
     }
 }
 
-void ImageLens::doCut(int& i, int& j) const {
+void ImageLens::doCut(int& i, int& j) const
+{
     i += gSession->imageCut().left();
     j += gSession->imageCut().top();
 }
 
 
-float ImageLens::imageInten(int i, int j) const {
+float ImageLens::imageInten(int i, int j) const
+{
     if (trans_)
         doTrans(i, j);
     if (cut_)
@@ -80,7 +84,8 @@ float ImageLens::imageInten(int i, int j) const {
     return inten;
 }
 
-const Range& ImageLens::rgeInten(bool fixed) const {
+const Range& ImageLens::rgeInten(bool fixed) const
+{
     if (fixed)
         return gSession->activeClusters().rgeFixedInten(trans_, cut_);
     if (!rgeInten_.isValid()) {

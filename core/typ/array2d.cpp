@@ -17,7 +17,8 @@
 #include "core/def/comparators.h"
 #include "core/typ/array2d.h"
 
-int size2d::compare(const size2d& that) const {
+int size2d::compare(const size2d& that) const
+{
     RET_COMPARE_VALUE(w)
     RET_COMPARE_VALUE(h)
     return 0;

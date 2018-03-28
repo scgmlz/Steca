@@ -16,16 +16,22 @@
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QApplication>
 
-TakesLongTime::TakesLongTime() {
+TakesLongTime::TakesLongTime()
+{
     qApp->setOverrideCursor(Qt::WaitCursor);
 }
 
-TakesLongTime::~TakesLongTime() {
+TakesLongTime::~TakesLongTime()
+{
     qApp->restoreOverrideCursor();
 }
 
 Progress::Progress(int mulTotal, QProgressBar* bar)
-    : total_(0), mulTotal_(mulTotal), i_(0), bar_(bar) {
+    : total_(0)
+    , mulTotal_(mulTotal)
+    , i_(0)
+    , bar_(bar)
+{
     setTotal(1);
     if (bar_) {
         bar_->setRange(0, total_);
@@ -34,22 +40,26 @@ Progress::Progress(int mulTotal, QProgressBar* bar)
     }
 }
 
-Progress::~Progress() {
+Progress::~Progress()
+{
     if (bar_)
         bar_->hide();
 }
 
-void Progress::setTotal(int total) {
+void Progress::setTotal(int total)
+{
     total_ = total * mulTotal_;
 }
 
-void Progress::setProgress(int i) {
+void Progress::setProgress(int i)
+{
     if (bar_) {
         bar_->setRange(0, total_);
         bar_->setValue((i_ = qBound(0, i, total_)));
     }
 }
 
-void Progress::step() {
+void Progress::step()
+{
     setProgress(i_ + 1);
 }

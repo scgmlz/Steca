@@ -14,15 +14,18 @@
 
 #include "core/data/image.h"
 
-Image::Image(const size2d& size) {
+Image::Image(const size2d& size)
+{
     fill(0, size);
 }
 
-Image::Image(const Array2D<float>& that) : Image(that.size()) {
+Image::Image(const Array2D<float>& that) : Image(that.size())
+{
     addIntens(that);
 }
 
-void Image::addIntens(const Image& that) {
+void Image::addIntens(const Image& that)
+{
     if (!(size() == that.size())) THROW("inconsistent image size");
     for (int i = 0; i < size().w; ++i)
         for (int j = 0; j < size().h; ++j) {

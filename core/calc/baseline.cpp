@@ -14,37 +14,44 @@
 
 #include "core/session.h"
 
-void Baseline::fromJson(const JsonObj obj) {
+void Baseline::fromJson(const JsonObj obj)
+{
     ranges_.fromJson(obj.loadArr("ranges"));
     polynomDegree_ = obj.loadUint("polynom degree");
 }
 
-void Baseline::clear() {
+void Baseline::clear()
+{
     polynomDegree_ = 0;
     ranges_.clear();
 }
 
-void Baseline::setRanges(const Ranges& rr) {
+void Baseline::setRanges(const Ranges& rr)
+{
     ranges_ = rr;
     emit gSession->sigBaseline();
 }
 
-void Baseline::addRange(const Range& r) {
+void Baseline::addRange(const Range& r)
+{
     ranges_.add(r);
     emit gSession->sigBaseline();
 }
 
-void Baseline::removeRange(const Range& r) {
+void Baseline::removeRange(const Range& r)
+{
     ranges_.remove(r);
     emit gSession->sigBaseline();
 }
 
-void Baseline::setPolynomDegree(int degree) {
+void Baseline::setPolynomDegree(int degree)
+{
     polynomDegree_ = degree;
     emit gSession->sigBaseline();
 }
 
-QJsonObject Baseline::toJson() const {
+QJsonObject Baseline::toJson() const
+{
     QJsonObject ret;
     ret.insert("polynom degree", polynomDegree());
     ret.insert("ranges", ranges().toJson());

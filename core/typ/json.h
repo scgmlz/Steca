@@ -25,13 +25,9 @@ class IJ;
 
 //! Extends QJsonObject by read-out methods; used to load a session from a .ste file
 class JsonObj : public QJsonObject {
-private:
-    using super = QJsonObject;
 public:
-    JsonObj();
+    JsonObj() {}
     JsonObj(const QJsonObject&);
-
-    const super& sup() const { return *this; }
 
     JsonObj loadObj(const QString& key, bool defEmpty = false) const;
 

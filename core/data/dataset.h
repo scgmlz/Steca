@@ -52,12 +52,12 @@ public:
     void unset();
     void setMeasurement(int val);
 
-    const Cluster* cluster() const;
+    const Cluster* cluster() const { return current_; }
     int clusterIndex() const;
     const Datafile* file() const;
     int fileIndex() const;
     const Measurement* measurement() const;
-    int measurementIndex() const;
+    int measurementIndex() const { return measurement_; }
 
 private:
     const Cluster* current_ { nullptr };

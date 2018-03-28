@@ -72,17 +72,21 @@ Metadata::Metadata()
     , monitorCount(0)
     , deltaMonitorCount(0)
     , time(0)
-    , deltaTime(0) {}
+    , deltaTime(0)
+{}
 
-int Metadata::numAttributes(bool onlyNum) {
+int Metadata::numAttributes(bool onlyNum)
+{
     return int(onlyNum ? eAttr::NUM_NUMERICAL_ATTRIBUTES : eAttr::NUM_ALL_ATTRIBUTES);
 }
 
-const QString& Metadata::attributeTag(int i, bool out) {
+const QString& Metadata::attributeTag(int i, bool out)
+{
     return attributeTags(out).at(i);
 }
 
-QStringList Metadata::attributeTags(bool out) {
+QStringList Metadata::attributeTags(bool out)
+{
     static const QStringList tags = {
         "X",   "Y",   "Z",    "ω",      "mid 2θ", "φ",     "χ",       "PST",
         "SST", "ΩM",  "T",    "teload", "tepos",  "teext", "xe",      "ye",
@@ -98,7 +102,8 @@ QStringList Metadata::attributeTags(bool out) {
     return out ? outTags : tags;
 }
 
-QVector<VariantComparator*> Metadata::attributeCmps() {
+QVector<VariantComparator*> Metadata::attributeCmps()
+{
     static QVector<VariantComparator*> const cmps = {
         cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
         cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
@@ -107,7 +112,8 @@ QVector<VariantComparator*> Metadata::attributeCmps() {
     return cmps;
 }
 
-QString Metadata::attributeStrValue(int i) const {
+QString Metadata::attributeStrValue(int i) const
+{
     double value = 0;
 
     switch (eAttr(i)) {
@@ -145,7 +151,8 @@ QString Metadata::attributeStrValue(int i) const {
     return QString::number(value);
 }
 
-QVariant Metadata::attributeValue(int i) const {
+QVariant Metadata::attributeValue(int i) const
+{
     switch (eAttr(i)) {
     case eAttr::DATE: return date;
     case eAttr::COMMENT: return comment;
@@ -174,14 +181,16 @@ QVariant Metadata::attributeValue(int i) const {
     }
 }
 
-QVector<QVariant> Metadata::attributeValues() const {
+QVector<QVariant> Metadata::attributeValues() const
+{
     QVector<QVariant> attrs;
     for_i (int(eAttr::NUM_ALL_ATTRIBUTES))
         attrs.append(attributeValue(i));
     return attrs;
 }
 
-QVector<QVariant> Metadata::attributeNaNs() {
+QVector<QVariant> Metadata::attributeNaNs()
+{
     static QVector<QVariant> row;
     if (row.isEmpty())
         for_i (int(eAttr::NUM_ALL_ATTRIBUTES))

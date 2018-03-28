@@ -19,7 +19,8 @@
 namespace {
 
 //! Returns index i for which v[i-1]<x<=v[i], provided i1<=i<i2.
-static int lowerBound(const QVector<deg>& vec, deg x, int i1, int i2) {
+static int lowerBound(const QVector<deg>& vec, deg x, int i1, int i2)
+{
     ASSERT(i1 < i2);
     if (i2-i1 == 1)
         return i1;
@@ -30,7 +31,8 @@ static int lowerBound(const QVector<deg>& vec, deg x, int i1, int i2) {
 }
 
 //! Returns index i for which v[i-1]<=x<v[i], provided i1<i<=i2.
-static int upperBound(const QVector<deg>& vec, deg x, int i1, int i2) {
+static int upperBound(const QVector<deg>& vec, deg x, int i1, int i2)
+{
     ASSERT(i1 < i2);
     if (i2-i1 == 1)
         return i2;

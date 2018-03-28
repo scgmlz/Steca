@@ -49,7 +49,8 @@ private:
     mutable double sum_y_;
 };
 
-double Raw::y(double x, double const* /*parValues*/) const {
+double Raw::y(double x, double const* /*parValues*/) const
+{
     if (!x_count_ || !range_.contains(x))
         return 0;
 
@@ -57,39 +58,47 @@ double Raw::y(double x, double const* /*parValues*/) const {
     return fittedCurve_.y(i);
 }
 
-double Raw::dy(double, int, double const*) const {
+double Raw::dy(double, int, double const*) const
+{
     return 0; // fake
 }
 
-qpair Raw::fittedPeak() const {
+qpair Raw::fittedPeak() const
+{
     if (qIsNaN(sum_y_))
         fittedCurve_.count();
     return qpair(range_.center(), sum_y_);
 }
 
-float Raw::fittedFWHM() const {
+float Raw::fittedFWHM() const
+{
     return float(range_.width()); // kind-of
 }
 
-qpair Raw::peakError() const {
+qpair Raw::peakError() const
+{
     return qpair(0, 0);
 }
 
-float Raw::fwhmError() const {
+float Raw::fwhmError() const
+{
     return 0;
 }
 
-void Raw::setRange(const Range& range) {
+void Raw::setRange(const Range& range)
+{
     PeakFunction::setRange(range);
     prepareY();
 }
 
-void Raw::fit(const Curve& curve, const Range& range) {
+void Raw::fit(const Curve& curve, const Range& range)
+{
     fittedCurve_ = prepareFit(curve, range); // do no more than this
     prepareY();
 }
 
-void Raw::prepareY() {
+void Raw::prepareY()
+{
     if (range_.isEmpty() || fittedCurve_.isEmpty()) {
         x_count_ = 0;
         dx_ = 0;
@@ -129,7 +138,8 @@ public:
     QString name() const final { return "Gaussian"; }
 };
 
-Gaussian::Gaussian(double ampl, double xShift, double sigma) {
+Gaussian::Gaussian(double ampl, double xShift, double sigma)
+{
     setParameterCount(3);
 
     auto& parAmpl = parameters_[parAMPL];
@@ -145,7 +155,8 @@ Gaussian::Gaussian(double ampl, double xShift, double sigma) {
     parSigma.setValue(sigma, 0);
 }
 
-double Gaussian::y(double x, double const* parValues) const {
+double Gaussian::y(double x, double const* parValues) const
+{
     double ampl = parValue(parAMPL, parValues);
     double xShift = parValue(parXSHIFT, parValues);
     double sigma = parValue(parSIGMA, parValues);
@@ -156,7 +167,8 @@ double Gaussian::y(double x, double const* parValues) const {
     return ampl * exa;
 }
 
-double Gaussian::dy(double x, int parIndex, double const* parValues) const {
+double Gaussian::dy(double x, int parIndex, double const* parValues) const
+{
     double ampl = parValue(parAMPL, parValues);
     double xShift = parValue(parXSHIFT, parValues);
     double sigma = parValue(parSIGMA, parValues);
@@ -172,31 +184,37 @@ double Gaussian::dy(double x, int parIndex, double const* parValues) const {
     qFatal("impossible case");
 }
 
-void Gaussian::setGuessedPeak(const qpair& qpair) {
+void Gaussian::setGuessedPeak(const qpair& qpair)
+{
     PeakFunction::setGuessedPeak(qpair);
     setValue(parXSHIFT, qpair.x);
     setValue(parAMPL, qpair.y);
 }
 
-void Gaussian::setGuessedFWHM(float fwhm) {
+void Gaussian::setGuessedFWHM(float fwhm)
+{
     PeakFunction::setGuessedFWHM(fwhm);
     // sigma = FWHM * 1/4 * (SQRT(2)/SQRT(ln(2))) = FWHM * 0.424661
     setValue(parSIGMA, fwhm * 0.424661);
 }
 
-qpair Gaussian::fittedPeak() const {
+qpair Gaussian::fittedPeak() const
+{
     return qpair(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
 }
 
-float Gaussian::fittedFWHM() const {
+float Gaussian::fittedFWHM() const
+{
     return float(parameters_.at(parSIGMA).value() / 0.424661);
 }
 
-qpair Gaussian::peakError() const {
+qpair Gaussian::peakError() const
+{
     return qpair(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
 }
 
-float Gaussian::fwhmError() const {
+float Gaussian::fwhmError() const
+{
     // TODO REVIEW
     return float(parameters_.at(parSIGMA).error());
 }
@@ -229,7 +247,8 @@ public:
     QString name() const final { return "Lorentzian"; }
 };
 
-Lorentzian::Lorentzian(double ampl, double xShift, double gamma) {
+Lorentzian::Lorentzian(double ampl, double xShift, double gamma)
+{
     setParameterCount(3);
 
     auto& parAmpl = parameters_[parAMPL];
@@ -254,7 +273,8 @@ double Lorentzian::y(double x, double const* parValues) const {
     return ampl / (1 + arg * arg);
 }
 
-double Lorentzian::dy(double x, int parIndex, double const* parValues) const {
+double Lorentzian::dy(double x, int parIndex, double const* parValues) const
+{
     double ampl = parValue(parAMPL, parValues);
     double xShift = parValue(parXSHIFT, parValues);
     double gamma = parValue(parGAMMA, parValues);
@@ -271,31 +291,37 @@ double Lorentzian::dy(double x, int parIndex, double const* parValues) const {
     qFatal("impossible case");
 }
 
-void Lorentzian::setGuessedPeak(const qpair& qpair) {
+void Lorentzian::setGuessedPeak(const qpair& qpair)
+{
     PeakFunction::setGuessedPeak(qpair);
     setValue(parXSHIFT, qpair.x);
     setValue(parAMPL, qpair.y);
 }
 
-void Lorentzian::setGuessedFWHM(float fwhm) {
+void Lorentzian::setGuessedFWHM(float fwhm)
+{
     PeakFunction::setGuessedFWHM(fwhm);
     // gamma = HWHM = FWHM / 2
     setValue(parGAMMA, fwhm / 2);
 }
 
-qpair Lorentzian::fittedPeak() const {
+qpair Lorentzian::fittedPeak() const
+{
     return qpair(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
 }
 
-float Lorentzian::fittedFWHM() const {
+float Lorentzian::fittedFWHM() const
+{
     return float(parameters_.at(parGAMMA).value() * 2);
 }
 
-qpair Lorentzian::peakError() const {
+qpair Lorentzian::peakError() const
+{
     return qpair(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
 }
 
-float Lorentzian::fwhmError() const {
+float Lorentzian::fwhmError() const
+{
     return float(parameters_.at(parGAMMA).error());
 }
 
@@ -328,7 +354,8 @@ public:
     QString name() const final { return "PseudoVoigt1"; }
 };
 
-PseudoVoigt1::PseudoVoigt1(double ampl, double xShift, double sigmaGamma, double eta) {
+PseudoVoigt1::PseudoVoigt1(double ampl, double xShift, double sigmaGamma, double eta)
+{
     setParameterCount(4);
 
     auto& parAmpl = parameters_[parAMPL];
@@ -348,7 +375,8 @@ PseudoVoigt1::PseudoVoigt1(double ampl, double xShift, double sigmaGamma, double
     parEta.setValue(eta, 0);
 }
 
-double PseudoVoigt1::y(double x, double const* parValues) const {
+double PseudoVoigt1::y(double x, double const* parValues) const
+{
     double ampl = parValue(parAMPL, parValues);
     double xShift = parValue(parXSHIFT, parValues);
     double sigmaGamma = parValue(parSIGMAGAMMA, parValues);
@@ -362,7 +390,8 @@ double PseudoVoigt1::y(double x, double const* parValues) const {
     return (1 - eta) * gaussian + eta * lorentz;
 }
 
-double PseudoVoigt1::dy(double x, int parIndex, double const* parValues) const {
+double PseudoVoigt1::dy(double x, int parIndex, double const* parValues) const
+{
     double ampl = parValue(parAMPL, parValues);
     double xShift = parValue(parXSHIFT, parValues);
     double sigmaGamma = parValue(parSIGMAGAMMA, parValues);
@@ -388,30 +417,36 @@ double PseudoVoigt1::dy(double x, int parIndex, double const* parValues) const {
     qFatal("impossible case");
 }
 
-void PseudoVoigt1::setGuessedPeak(const qpair& qpair) {
+void PseudoVoigt1::setGuessedPeak(const qpair& qpair)
+{
     PeakFunction::setGuessedPeak(qpair);
     setValue(parXSHIFT, qpair.x);
     setValue(parAMPL, qpair.y);
 }
 
-void PseudoVoigt1::setGuessedFWHM(float fwhm) {
+void PseudoVoigt1::setGuessedFWHM(float fwhm)
+{
     PeakFunction::setGuessedFWHM(fwhm);
     setValue(parSIGMAGAMMA, fwhm / 2);
 }
 
-qpair PseudoVoigt1::fittedPeak() const {
+qpair PseudoVoigt1::fittedPeak() const
+{
     return qpair(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
 }
 
-float PseudoVoigt1::fittedFWHM() const {
+float PseudoVoigt1::fittedFWHM() const
+{
     return float(parameters_.at(parSIGMAGAMMA).value() * 2);
 }
 
-qpair PseudoVoigt1::peakError() const {
+qpair PseudoVoigt1::peakError() const
+{
     return qpair(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
 }
 
-float PseudoVoigt1::fwhmError() const {
+float PseudoVoigt1::fwhmError() const
+{
     return float(parameters_.at(parSIGMAGAMMA).error());
 }
 
@@ -444,7 +479,8 @@ public:
     QString name() const final { return "PseudoVoigt2"; }
 };
 
-PseudoVoigt2::PseudoVoigt2(double ampl, double mu, double hwhmG, double hwhmL, double eta) {
+PseudoVoigt2::PseudoVoigt2(double ampl, double mu, double hwhmG, double hwhmL, double eta)
+{
     setParameterCount(5);
 
     auto& parAmpl = parameters_[parAMPL];
@@ -486,7 +522,8 @@ double PseudoVoigt2::y(double x, double const* parValues) const {
     return (1 - eta) * gaussian + eta * lorentz;
 }
 
-double PseudoVoigt2::dy(double x, int parIndex, double const* parValues) const {
+double PseudoVoigt2::dy(double x, int parIndex, double const* parValues) const
+{
     double ampl = parValue(parAMPL, parValues);
     double xShift = parValue(parXSHIFT, parValues);
     double sigma = parValue(parSIGMA, parValues);
@@ -517,23 +554,27 @@ double PseudoVoigt2::dy(double x, int parIndex, double const* parValues) const {
     qFatal("impossible case");
 }
 
-void PseudoVoigt2::setGuessedPeak(const qpair& qpair) {
+void PseudoVoigt2::setGuessedPeak(const qpair& qpair)
+{
     PeakFunction::setGuessedPeak(qpair);
     setValue(parXSHIFT, qpair.x);
     setValue(parAMPL, qpair.y);
 }
 
-void PseudoVoigt2::setGuessedFWHM(float fwhm) {
+void PseudoVoigt2::setGuessedFWHM(float fwhm)
+{
     PeakFunction::setGuessedFWHM(fwhm);
     setValue(parSIGMA, fwhm * 0.424661);
     setValue(parGAMMA, fwhm / 2);
 }
 
-qpair PseudoVoigt2::fittedPeak() const {
+qpair PseudoVoigt2::fittedPeak() const
+{
     return qpair(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
 }
 
-float PseudoVoigt2::fittedFWHM() const {
+float PseudoVoigt2::fittedFWHM() const
+{
     double eta = parameters_.at(parETA).value();
     return float(
         ((1 - eta) * parameters_.at(parSIGMA).value() / 0.424661
@@ -541,11 +582,13 @@ float PseudoVoigt2::fittedFWHM() const {
         / 2);
 }
 
-qpair PseudoVoigt2::peakError() const {
+qpair PseudoVoigt2::peakError() const
+{
     return qpair(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
 }
 
-float PseudoVoigt2::fwhmError() const {
+float PseudoVoigt2::fwhmError() const
+{
     // REVIEW
     return float(parameters_.at(parSIGMA).error() + parameters_.at(parGAMMA).error());
 }
@@ -556,7 +599,8 @@ float PseudoVoigt2::fwhmError() const {
 //!  Register peak functions
 // ************************************************************************** //
 
-void register_peak_functions() {
+void register_peak_functions()
+{
     auto G = FunctionRegistry::instance();
     G->register_fct([]()->PeakFunction*{return new Raw();});
     G->register_fct([]()->PeakFunction*{return new Gaussian();});

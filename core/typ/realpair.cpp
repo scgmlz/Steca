@@ -18,7 +18,8 @@
 #include "core/def/debug.h"
 #include "core/def/comparators.h"
 
-int qpair::compare(const qpair& that) const {
+int qpair::compare(const qpair& that) const
+{
     ASSERT(isValid() && that.isValid());
     RET_COMPARE_VALUE(x)
     RET_COMPARE_VALUE(y)
@@ -27,15 +28,18 @@ int qpair::compare(const qpair& that) const {
 
 VALID_EQ_NE_OPERATOR(qpair)
 
-void qpair::invalidate() {
+void qpair::invalidate()
+{
     x = y = Q_QNAN;
 }
 
-QJsonObject qpair::toJson() const {
+QJsonObject qpair::toJson() const
+{
     return { { "x", double_to_json(x) }, { "y", double_to_json(y) } };
 }
 
-void qpair::fromJson(const JsonObj& obj) {
+void qpair::fromJson(const JsonObj& obj)
+{
     x = obj.loadQreal("x");
     y = obj.loadQreal("y");
 }

@@ -18,7 +18,8 @@
 #include "LM/levmar.h"
 #include <qmath.h>
 
-void FitWrapper::fit(Function& function, const Curve& curve) {
+void FitWrapper::fit(Function& function, const Curve& curve)
+{
     if (curve.isEmpty())
         return;
 
@@ -46,7 +47,9 @@ void FitWrapper::fit(Function& function, const Curve& curve) {
         function_->parameterAt(i).setValue(parValue[i], parError[i]);
 }
 
-template <typename T> T* remove_const(T const* t) {
+template <typename T>
+T* remove_const(T const* t)
+{
     return const_cast<T*>(t);
 }
 
@@ -82,13 +85,16 @@ void FitWrapper::fit_exec(
         paramsError[i] = sqrt(covar[i * paramsCount + i]); // the diagonal
 }
 
-void FitWrapper::callbackY(double* parValues, double* yValues, int /*parCount*/, int xLength, void*) {
+void FitWrapper::callbackY(
+    double* parValues, double* yValues, int /*parCount*/, int xLength, void*)
+{
     for_i (xLength)
         yValues[i] = function_->y(xValues_[i], parValues);
 }
 
 void FitWrapper::callbackJacobianLM(
-    double* parValues, double* jacobian, int parameterLength, int xLength, void*) {
+    double* parValues, double* jacobian, int parameterLength, int xLength, void*)
+{
     for_int (ix, xLength) {
         for_int (ip, parameterLength) {
             *jacobian++ = function_->dy(xValues_[ix], ip, parValues);

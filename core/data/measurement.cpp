@@ -26,30 +26,36 @@ Measurement::Measurement(
         image_->setInten(i, intens.at(i));
 }
 
-Range Measurement::rgeGma() const {
+Range Measurement::rgeGma() const
+{
     return gSession->angleMap(*this)->rgeGma();
 }
 
-Range Measurement::rgeGmaFull() const {
+Range Measurement::rgeGmaFull() const
+{
     return gSession->angleMap(*this)->rgeGmaFull();
 }
 
-Range Measurement::rgeTth() const {
+Range Measurement::rgeTth() const
+{
     return gSession->angleMap(*this)->rgeTth();
 }
 
-Range Measurement::rgeInten() const {
+Range Measurement::rgeInten() const
+{
     return image_->rgeInten();
 }
 
-size2d Measurement::imageSize() const {
+size2d Measurement::imageSize() const
+{
     return image_->size();
 }
 
 //! Computes intens and counts.
 //! Called only by Sequence::collectIntens.
 void Measurement::collectIntens(
-    QVector<float>& intens, QVector<int>& counts, const Range& rgeGma, deg minTth, deg deltaTth) const
+    QVector<float>& intens, QVector<int>& counts, const Range& rgeGma,
+    deg minTth, deg deltaTth) const
 {
     const shp_AngleMap& angleMap = gSession->angleMap(*this);
     ASSERT(!angleMap.isNull());

@@ -15,13 +15,15 @@
 #include "core/session.h"
 #include "core/loaders/loaders.h"
 
-void Corrset::clear() {
+void Corrset::clear()
+{
     removeFile();
     enabled_ = true;
     hasNANs_ = false;
 }
 
-void Corrset::removeFile() {
+void Corrset::removeFile()
+{
     raw_.clear();
     corrImage_.clear();
     intensCorr_.clear();
@@ -29,7 +31,8 @@ void Corrset::removeFile() {
     emit gSession->sigCorr();
 }
 
-void Corrset::loadFile(const QString& filePath) {
+void Corrset::loadFile(const QString& filePath)
+{
     if (filePath.isEmpty())
         THROW("invalid call of Corrset::loadFile with empty filePath argument");
     QSharedPointer<Rawfile> rawfile = load::loadRawfile(filePath);
@@ -44,14 +47,16 @@ void Corrset::loadFile(const QString& filePath) {
     emit gSession->sigCorr();
 }
 
-void Corrset::tryEnable(bool on) {
+void Corrset::tryEnable(bool on)
+{
     if ((on && !hasFile()) || on==enabled_)
         return;
     enabled_ = on;
     emit gSession->sigCorr();
 }
 
-const Image* Corrset::intensCorr() const {
+const Image* Corrset::intensCorr() const
+{
     if (!hasFile() || !enabled_)
         return nullptr;
     if (intensCorr_.isEmpty())
@@ -59,7 +64,8 @@ const Image* Corrset::intensCorr() const {
     return &intensCorr_;
 }
 
-void Corrset::calcIntensCorr() const {
+void Corrset::calcIntensCorr() const
+{
     hasNANs_ = false;
 
     ASSERT(corrImage_);
@@ -88,7 +94,8 @@ void Corrset::calcIntensCorr() const {
     }
 }
 
-QJsonObject Corrset::toJson() const {
+QJsonObject Corrset::toJson() const
+{
     QJsonObject ret;
     if (hasFile())
         ret.insert("file", raw_->fileInfo().absoluteFilePath());

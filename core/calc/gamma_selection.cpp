@@ -15,8 +15,7 @@
 #include "core/session.h"
 
 GammaSelection::GammaSelection()
-{
-}
+{}
 
 QJsonObject GammaSelection::toJson() const
 {

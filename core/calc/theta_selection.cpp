@@ -15,8 +15,7 @@
 #include "core/session.h"
 
 ThetaSelection::ThetaSelection()
-{
-}
+{}
 
 QJsonObject ThetaSelection::toJson() const
 {

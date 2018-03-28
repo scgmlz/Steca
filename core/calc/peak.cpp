@@ -14,39 +14,47 @@
 
 #include "core/session.h"
 
-Peak::Peak(const QString& functionName) : peakFunction_(nullptr) {
+Peak::Peak(const QString& functionName) : peakFunction_(nullptr)
+{
     setPeakFunction(functionName);
 }
 
-const PeakFunction& Peak::peakFunction() const {
+const PeakFunction& Peak::peakFunction() const
+{
     ASSERT(peakFunction_);
     return *peakFunction_;
 }
 
-void Peak::setRange(const Range& range) {
+void Peak::setRange(const Range& range)
+{
     peakFunction_->setRange(range);
     invalidateGuesses();
 }
 
-void Peak::invalidateGuesses() {
+void Peak::invalidateGuesses()
+{
     peakFunction_->setGuessedPeak(qpair());
     peakFunction_->setGuessedFWHM(Q_QNAN);
     emit gSession->sigPeaks();
 }
 
-void Peak::setGuessPeak(const qpair& peak) {
+void Peak::setGuessPeak(const qpair& peak)
+{
     peakFunction_->setGuessedPeak(peak);
 }
 
-void Peak::setGuessFWHM(float fwhm) {
+void Peak::setGuessFWHM(float fwhm)
+{
     peakFunction_->setGuessedFWHM(fwhm);
 }
 
-void Peak::fit(const Curve& curve) {
+void Peak::fit(const Curve& curve)
+{
     peakFunction_->fit(curve);
 }
 
-void Peak::setPeakFunction(const QString& peakFunctionName) {
+void Peak::setPeakFunction(const QString& peakFunctionName)
+{
     bool haveRange = (bool)peakFunction_;
     Range oldRange;
     if (haveRange)
@@ -56,11 +64,13 @@ void Peak::setPeakFunction(const QString& peakFunctionName) {
         peakFunction_->setRange(oldRange);
 }
 
-JsonObj Peak::toJson() const {
+JsonObj Peak::toJson() const
+{
     return peakFunction_->toJson();
 }
 
-Peak* Peak::fromJson(const JsonObj& obj) {
+Peak* Peak::fromJson(const JsonObj& obj)
+{
     QString functionName = obj.loadString("type");
     Peak* ret = new Peak(functionName);
     ret->peakFunction_->fromJson(obj); // may throw
@@ -72,24 +82,28 @@ Peak* Peak::fromJson(const JsonObj& obj) {
 //  class Peaks
 // ************************************************************************** //
 
-void Peaks::clear() {
+void Peaks::clear()
+{
     while (count())
         remove();
 }
 
-void Peaks::add(const QString& functionName) {
+void Peaks::add(const QString& functionName)
+{
     Peak* peak(new Peak(functionName));
     ASSERT(peak);
     add(peak);
 }
 
-void Peaks::add(Peak* peak) {
+void Peaks::add(Peak* peak)
+{
     peaks_.push_back(peak);
     selected_ = count()-1;
     emit gSession->sigPeaks();
 }
 
-void Peaks::remove() {
+void Peaks::remove()
+{
     ASSERT(0<=selected_ && selected_<count());
     delete peaks_[selected_];
     peaks_.erase(peaks_.begin()+selected_);
@@ -98,13 +112,15 @@ void Peaks::remove() {
     emit gSession->sigPeaks();
 }
 
-void Peaks::select(int i) {
+void Peaks::select(int i)
+{
     ASSERT(i<count());
     selected_ = i;
     emit gSession->sigPeaks();
 }
 
-QStringList Peaks::names() const {
+QStringList Peaks::names() const
+{
     QStringList ret;
     for_i (gSession->peaks().count())
         ret.append(QStringLiteral("%1: %2")
@@ -113,7 +129,8 @@ QStringList Peaks::names() const {
     return ret;
 }
 
-QJsonArray Peaks::toJson() const {
+QJsonArray Peaks::toJson() const
+{
     QJsonArray ret;
     for (auto& peak : peaks_)
         ret.append(peak->toJson());

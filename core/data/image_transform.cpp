@@ -14,16 +14,21 @@
 
 #include "core/data/image_transform.h"
 
-ImageTransform::ImageTransform(int val_) : val(eTransform(val_ & 7)) {}
+ImageTransform::ImageTransform(int val_)
+    : val(eTransform(val_ & 7))
+{}
 
-ImageTransform ImageTransform::mirror(bool on) const {
+ImageTransform ImageTransform::mirror(bool on) const
+{
     return on ? ImageTransform(val | MIRROR) : ImageTransform(val & ~MIRROR);
 }
 
-ImageTransform ImageTransform::rotateTo(const ImageTransform& rot) const {
+ImageTransform ImageTransform::rotateTo(const ImageTransform& rot) const
+{
     return ImageTransform((val & MIRROR) | (rot.val & 3));
 }
 
-ImageTransform ImageTransform::nextRotate() const {
+ImageTransform ImageTransform::nextRotate() const
+{
     return rotateTo(val + 1);
 }
