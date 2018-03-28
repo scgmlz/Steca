@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/base/file_dialog.h
+//! @file      gui/dialogs/file_dialog.h
 //! @brief     Defines functions queryImportFileName(s), queryExportFileName, queryDirectory in namespace file_dialog
 //!
 //! @homepage  https://github.com/scgmlz/Steca

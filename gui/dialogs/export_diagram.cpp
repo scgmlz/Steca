@@ -14,7 +14,7 @@
 
 #include "export_diagram.h"
 #include "core/session.h"
-#include "gui/base/file_dialog.h"
+#include "gui/dialogs/file_dialog.h"
 #include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/mainwin.h"
 #include "gui/state.h"

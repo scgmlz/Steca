@@ -26,7 +26,7 @@
 #include "gui/panels/subframe_clusters.h"
 #include "gui/panels/subframe_metadata.h"
 #include "gui/panels/subframe_setup.h"
-#include "gui/base/file_dialog.h"
+#include "gui/dialogs/file_dialog.h"
 #include <QStatusBar>
 #include <QStringBuilder> // for ".." % ..
 #include <iostream> // debug

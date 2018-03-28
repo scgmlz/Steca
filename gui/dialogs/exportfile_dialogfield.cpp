@@ -14,7 +14,7 @@
 
 #include "core/typ/exception.h"
 #include "gui/dialogs/exportfile_dialogfield.h"
-#include "gui/base/file_dialog.h"
+#include "gui/dialogs/file_dialog.h"
 #include <QGroupBox>
 
 namespace {
