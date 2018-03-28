@@ -12,10 +12,9 @@
 //
 //  ***********************************************************************************************
 
-#include "core/typ/exception.h"
 #include "gui/capture_and_replay/console.h"
+#include "gui/capture_and_replay/cmdexception.h"
 #include <QDebug>
-#include <QtGlobal>
 
 //  ***********************************************************************************************
 //! @class CSettable
@@ -62,6 +61,6 @@ void CModelessDialog::closeEvent(QCloseEvent* event)
 void CModelessDialog::onCommand(const QStringList& args)
 {
     if (args[0]!="close")
-        THROW("Unexpected command");
+        throw CmdException("Unexpected command");
     close();
 }

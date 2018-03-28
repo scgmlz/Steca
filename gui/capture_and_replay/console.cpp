@@ -13,11 +13,10 @@
 //  ***********************************************************************************************
 
 #include "console.h"
-#include "core/typ/exception.h"
-#include <QApplication> // tmp
+#include "cmdexception.h"
 #include <QDateTime>
 #include <QDebug>
-#include <QDir> // tmp
+#include <QFile>
 #include <QSocketNotifier>
 
 Console* gConsole; //!< global
@@ -228,7 +227,7 @@ Console::Result Console::exec(QString line)
     try {
         f->onCommand(args); // execute command
         return Result::ok;
-    } catch (Exception &ex) {
+    } catch (CmdException &ex) {
         qterr << "Command '" << line << "' failed:\n" << ex.msg() << "\n";
     }
     return Result::err;
