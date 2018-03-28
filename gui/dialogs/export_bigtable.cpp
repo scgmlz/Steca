@@ -21,8 +21,7 @@
 #include "gui/view/bigtable.h"
 
 // ************************************************************************************************
-//  class ExportBigtable
-// ************************************************************************************************
+//! @class ExportBigtable
 
 ExportBigtable::ExportBigtable(bool xyMode)
     : CModal("exportTable")

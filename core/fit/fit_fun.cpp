@@ -31,8 +31,7 @@ static double pow_n(double x, int n)
 } // file-scope functions
 
 // ************************************************************************************************
-//  class Polynom
-// ************************************************************************************************
+//! @class Polynom
 
 int Polynom::degree() const
 {
@@ -105,8 +104,7 @@ void Polynom::fromJson(const JsonObj& obj)
 }
 
 // ************************************************************************************************
-//  class PeakFunction
-// ************************************************************************************************
+//! @class PeakFunction
 
 PeakFunction::PeakFunction()
     : guessedPeak_(), guessedFWHM_(Q_QNAN)

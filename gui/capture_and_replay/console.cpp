@@ -23,8 +23,7 @@
 Console* gConsole; //!< global
 
 // ************************************************************************************************
-//  class CommandRegistry
-// ************************************************************************************************
+//! @class CommandRegistry
 
 //! Holds console (= terminal = command-line) commands to be defined and executed by class Console.
 class CommandRegistry {
@@ -87,8 +86,7 @@ void CommandRegistry::dump(QTextStream& stream)
 }
 
 // ************************************************************************************************
-//  class Console
-// ************************************************************************************************
+//! @class Console
 
 Console::Console()
 {

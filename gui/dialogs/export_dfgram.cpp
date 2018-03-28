@@ -65,8 +65,7 @@ QString numberedName(const QString& templatedName, int num, int maxNum) {
 
 
 // ************************************************************************************************
-//  class ExportDfgram
-// ************************************************************************************************
+//! @class ExportDfgram
 
 ExportDfgram::ExportDfgram()
     : CModal("dfgram")

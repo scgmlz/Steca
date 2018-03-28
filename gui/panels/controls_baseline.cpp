@@ -91,8 +91,7 @@ BaseRangesView::BaseRangesView()
 }
 
 // ************************************************************************************************
-//  class ControlsBaseline
-// ************************************************************************************************
+//! @class ControlsBaseline
 
 ControlsBaseline::ControlsBaseline()
 {

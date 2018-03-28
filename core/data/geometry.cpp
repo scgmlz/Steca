@@ -25,8 +25,7 @@
 
 
 // ************************************************************************************************
-//  class Geometry
-// ************************************************************************************************
+//! @class Geometry
 
 // StressSpec standard geometry:
 double const Geometry::DEF_DETECTOR_DISTANCE = 1035;
@@ -101,8 +100,7 @@ int Geometry::compare(const Geometry& that) const
 EQ_NE_OPERATOR(Geometry)
 
 // ************************************************************************************************
-//  class ImageCut
-// ************************************************************************************************
+//! @class ImageCut
 
 ImageCut::ImageCut(int left, int top, int right, int bottom)
     : left_(left), top_(top), right_(right), bottom_(bottom)
@@ -212,8 +210,7 @@ size2d ImageCut::marginSize() const
 
 
 // ************************************************************************************************
-//  class ScatterDirection
-// ************************************************************************************************
+//! @class ScatterDirection
 
 ScatterDirection::ScatterDirection() : ScatterDirection(0, 0) {}
 
@@ -221,8 +218,7 @@ ScatterDirection::ScatterDirection(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
 
 
 // ************************************************************************************************
-//  class ImageKey
-// ************************************************************************************************
+//! @class ImageKey
 
 ImageKey::ImageKey(const Geometry& geometry_, const size2d& size_, const ImageCut& cut_,
                    const IJ& midPix_, deg midTth_)

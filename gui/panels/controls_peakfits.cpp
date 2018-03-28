@@ -296,8 +296,7 @@ void PeakdataView::updatePeakFun(const PeakFunction& peakFun)
 
 
 // ************************************************************************************************
-//  class ControlsPeakfits
-// ************************************************************************************************
+//! @class ControlsPeakfits
 
 ControlsPeakfits::ControlsPeakfits()
     : comboReflType_ {"reflTyp", FunctionRegistry::instance()->keys()}

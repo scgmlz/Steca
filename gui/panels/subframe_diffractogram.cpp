@@ -113,8 +113,7 @@ void Diffractogram::onHighlight()
 }
 
 // ************************************************************************************************
-//  class SubframeDiffractogram
-// ************************************************************************************************
+//! @class SubframeDiffractogram
 
 SubframeDiffractogram::SubframeDiffractogram()
 {

@@ -18,8 +18,7 @@
 #include "gui/actions/toggles.h"
 
 // ************************************************************************************************
-//  class DiffractogramPlotOverlay
-// ************************************************************************************************
+//! @class DiffractogramPlotOverlay
 
 DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& parent)
     : PlotOverlay(parent)
@@ -71,8 +70,7 @@ bool DiffractogramPlotOverlay::subtractModeColor(QColor& color) const
 
 
 // ************************************************************************************************
-//  class DiffractogramPlot
-// ************************************************************************************************
+//! @class DiffractogramPlot
 
 DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)
     : diffractogram_(diffractogram)

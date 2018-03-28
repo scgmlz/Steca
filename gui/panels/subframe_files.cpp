@@ -104,8 +104,7 @@ int FilesView::sizeHintForColumn(int col) const
 
 
 // ************************************************************************************************
-//  class SubframeFiles
-// ************************************************************************************************
+//! @class SubframeFiles
 
 SubframeFiles::SubframeFiles()
 {

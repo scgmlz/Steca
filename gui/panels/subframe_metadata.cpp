@@ -107,8 +107,7 @@ int MetadataView::sizeHintForColumn(int col) const
 }
 
 // ************************************************************************************************
-//  class SubframeMetadata
-// ************************************************************************************************
+//! @class SubframeMetadata
 
 SubframeMetadata::SubframeMetadata()
 {

@@ -15,8 +15,7 @@
 #include "core/session.h"
 
 // ************************************************************************************************
-//  class PeakInfo
-// ************************************************************************************************
+//! @class PeakInfo
 
 /* NOTE Invalid output parameters are set to NaNs. However, some analysis
  * programs
@@ -110,8 +109,7 @@ QString const PeakInfo::reflStringTag(int attr, bool out)
 
 
 // ************************************************************************************************
-//  class PeakInfos
-// ************************************************************************************************
+//! @class PeakInfos
 
 void PeakInfos::append(const PeakInfo& info)
 {

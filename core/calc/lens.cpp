@@ -15,8 +15,7 @@
 #include "core/session.h"
 
 // ************************************************************************************************
-//   class ImageLens
-// ************************************************************************************************
+//! @class ImageLens
 
 ImageLens::ImageLens(const Image& image, bool trans, bool cut)
     : trans_(trans)

@@ -16,8 +16,7 @@
 #include <qmath.h>
 
 // ************************************************************************************************
-//  class Sequence
-// ************************************************************************************************
+//! @class Sequence
 
 Sequence::Sequence(const QVector<const Measurement*>& measurements)
     : members_(measurements)
@@ -248,8 +247,7 @@ void Sequence::compute_metadata() const
 }
 
 // ************************************************************************************************
-//  class Cluster
-// ************************************************************************************************
+//! @class Cluster
 
 Cluster::Cluster(
     const QVector<const Measurement*>& measurements,

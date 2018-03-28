@@ -132,8 +132,7 @@ void ColumnSelector::updateRadiobuttons()
 
 
 // ************************************************************************************************
-//  class BigtableTab
-// ************************************************************************************************
+//! @class BigtableTab
 
 BigtableTab::BigtableTab()
     : dataView_ {new DataView()}

@@ -20,8 +20,7 @@
 #include "gui/capture_and_replay/console.h"
 
 // ************************************************************************************************
-//  class TableModel
-// ************************************************************************************************
+//! @class TableModel
 
 TableModel::TableModel(const QString& name)
     : CSettable(name)
@@ -63,8 +62,7 @@ void TableModel::onClicked(const QModelIndex& cell)
 }
 
 // ************************************************************************************************
-//  class CheckTableModel
-// ************************************************************************************************
+//! @class CheckTableModel
 
 CheckTableModel::CheckTableModel(const QString& _name) : TableModel(_name)
 {
@@ -108,8 +106,7 @@ void CheckTableModel::activateAndLog(bool primaryCall, int row, bool on)
 
 
 // ************************************************************************************************
-//  class TableView
-// ************************************************************************************************
+//! @class TableView
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Woverloaded-virtual" // TODO try without
@@ -184,8 +181,7 @@ void TableView::onData()
 }
 
 // ************************************************************************************************
-//  class CheckTableView
-// ************************************************************************************************
+//! @class CheckTableView
 
 void CheckTableView::onActivated()
 {

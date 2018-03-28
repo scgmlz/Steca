@@ -108,8 +108,7 @@ void CToggle::onCommand(const QStringList& args)
 }
 
 // ************************************************************************************************
-//  classes with no console connection
-// ************************************************************************************************
+//! @classes with no console connection
 
 XTextButton::XTextButton(QAction* action)
 {

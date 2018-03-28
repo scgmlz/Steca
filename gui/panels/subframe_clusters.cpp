@@ -186,8 +186,7 @@ int ActiveClustersView::sizeHintForColumn(int col) const
 
 
 // ************************************************************************************************
-//  class SubframeClusters
-// ************************************************************************************************
+//! @class SubframeClusters
 
 SubframeClusters::SubframeClusters()
 {
