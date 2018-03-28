@@ -16,7 +16,7 @@
 #define PLOT_DFGRAM_H
 
 #include "gui/mainwin.h" // for eFittingTab
-#include "gui/base/plot_overlay.h"
+#include "gui/view/plot_overlay.h"
 
 //! Listens to mouse events to select subranges of a DiffractogramPlot.
 
