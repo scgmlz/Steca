@@ -1,4 +1,4 @@
-// ************************************************************************************************
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,7 +10,7 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************************************
+//  ***********************************************************************************************
 
 #include "subframe_diffractogram.h"
 #include "core/session.h"
@@ -19,7 +19,7 @@
 #include "gui/actions/triggers.h"
 
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class Diffractogram (local scope)
 
 //! A diffractogram display, with associated controls, for use in SubframeDiffractogram.
@@ -111,7 +111,7 @@ void Diffractogram::onHighlight()
     plot_->renderAll();
 }
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class SubframeDiffractogram
 
 SubframeDiffractogram::SubframeDiffractogram()

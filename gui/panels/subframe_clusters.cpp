@@ -1,4 +1,4 @@
-// ************************************************************************************************
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,13 +10,13 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************************************
+//  ***********************************************************************************************
 
 #include "gui/panels/subframe_clusters.h"
 #include "core/session.h"
 #include "gui/base/model_view.h"
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class ActiveClustersModel (local scope)
 
 //! The model for ActiveClustersView.
@@ -135,7 +135,7 @@ QVariant ActiveClustersModel::headerData(int col, Qt::Orientation ori, int role)
 }
 
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class ActiveClustersView (local scope)
 
 //! Main item in SubframeMeasurement: View and control of measurements list.
@@ -183,7 +183,7 @@ int ActiveClustersView::sizeHintForColumn(int col) const
 }
 
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class SubframeClusters
 
 SubframeClusters::SubframeClusters()

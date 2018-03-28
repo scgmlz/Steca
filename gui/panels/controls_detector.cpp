@@ -1,4 +1,4 @@
-// ************************************************************************************************
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,7 +10,7 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************************************
+//  ***********************************************************************************************
 
 #include "controls_detector.h"
 #include "core/session.h"
@@ -19,7 +19,7 @@
 #include "gui/mainwin.h"
 #include <QThread> // for sleep for debugging
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class GeometryControls (local scope)
 
 //! Control widgets that govern the detector geometry.
@@ -96,7 +96,7 @@ void GeometryControls::fromCore()
     beamOffsetJ_.setValue(g.midPixOffset().j);
 }
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class CutControls (local scope)
 
 //! Control widgets that govern the detector cuts.
@@ -156,7 +156,7 @@ void CutControls::fromCore()
     cutBottom_.setValue(cut.bottom());
 }
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class ActiveClustersControls (local scope)
 
 //! Control widgets that govern the combination of Measurement|s into Cluster|s.
@@ -206,7 +206,7 @@ void ActiveClustersControls::fromCore()
     dropIncompleteAction_.setEnabled(gSession->dataset().hasIncomplete());
 }
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class GammaControls (local scope)
 
 //! Control widgets that govern the gamma slicing.
@@ -247,7 +247,7 @@ void GammaControls::fromCore()
     emit gSession->sigImage(); // TODO redundant with emission from idxSlice
 }
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class ControlsDetector
 
 ControlsDetector::ControlsDetector()

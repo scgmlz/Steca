@@ -1,4 +1,4 @@
-// ************************************************************************************************
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,7 +10,7 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************************************
+//  ***********************************************************************************************
 
 #include "model_view.h"
 #include "core/def/debug.h"
@@ -19,7 +19,7 @@
 #include "core/typ/exception.h"
 #include "gui/capture_and_replay/console.h"
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class TableModel
 
 TableModel::TableModel(const QString& name)
@@ -61,7 +61,7 @@ void TableModel::onClicked(const QModelIndex& cell)
     gConsole->log(name() + " highlight " + QString::number(row));
 }
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class CheckTableModel
 
 CheckTableModel::CheckTableModel(const QString& _name) : TableModel(_name)
@@ -105,7 +105,7 @@ void CheckTableModel::activateAndLog(bool primaryCall, int row, bool on)
 
 
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class TableView
 
 #pragma GCC diagnostic push
@@ -180,7 +180,7 @@ void TableView::onData()
     updateScroll();
 }
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class CheckTableView
 
 void CheckTableView::onActivated()

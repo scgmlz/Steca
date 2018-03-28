@@ -1,4 +1,4 @@
-// ************************************************************************************************
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,13 +10,13 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************************************
+//  ***********************************************************************************************
 
 #include "core/session.h"
 #include "gui/panels/subframe_metadata.h"
 #include "gui/base/model_view.h"
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class MetadataModel (local scope)
 
 //! The model for MetadatView.
@@ -67,7 +67,7 @@ QVariant MetadataModel::data(const QModelIndex& index, int role) const
 }
 
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class MetadataView (local scope)
 
 //! Main item in SubframeMetadata: View and control the list of Metadata.
@@ -104,7 +104,7 @@ int MetadataView::sizeHintForColumn(int col) const
     }
 }
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class SubframeMetadata
 
 SubframeMetadata::SubframeMetadata()

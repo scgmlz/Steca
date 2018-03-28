@@ -1,4 +1,4 @@
-// ************************************************************************************************
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,14 +10,14 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************************************
+//  ***********************************************************************************************
 
 #include "plot_dfgram.h"
 #include "core/session.h"
 #include "gui/state.h"
 #include "gui/actions/toggles.h"
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class DiffractogramPlotOverlay
 
 DiffractogramPlotOverlay::DiffractogramPlotOverlay(DiffractogramPlot& parent)
@@ -69,7 +69,7 @@ bool DiffractogramPlotOverlay::subtractModeColor(QColor& color) const
 }
 
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class DiffractogramPlot
 
 DiffractogramPlot::DiffractogramPlot(Diffractogram& diffractogram)

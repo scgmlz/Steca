@@ -1,4 +1,4 @@
-// ************************************************************************************************
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,7 +10,7 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************************************
+//  ***********************************************************************************************
 
 #include "core/session.h"
 #include "core/def/comparators.h"
@@ -24,7 +24,7 @@
         return cmp;
 
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class Geometry
 
 // StressSpec standard geometry:
@@ -99,7 +99,7 @@ int Geometry::compare(const Geometry& that) const
 
 EQ_NE_OPERATOR(Geometry)
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class ImageCut
 
 ImageCut::ImageCut(int left, int top, int right, int bottom)
@@ -209,7 +209,7 @@ size2d ImageCut::marginSize() const
 }
 
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class ScatterDirection
 
 ScatterDirection::ScatterDirection() : ScatterDirection(0, 0) {}
@@ -217,7 +217,7 @@ ScatterDirection::ScatterDirection() : ScatterDirection(0, 0) {}
 ScatterDirection::ScatterDirection(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
 
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class ImageKey
 
 ImageKey::ImageKey(const Geometry& geometry_, const size2d& size_, const ImageCut& cut_,

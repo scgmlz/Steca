@@ -1,4 +1,4 @@
-// ************************************************************************************************
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,7 +10,7 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************************************
+//  ***********************************************************************************************
 
 #include "controls_baseline.h"
 #include "core/session.h"
@@ -19,7 +19,7 @@
 #include "gui/state.h"
 #include "gui/actions/triggers.h"
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class BaseRangesModel, used in BaseRangesView (local scope)
 
 //! Model for BaseRangesView.
@@ -69,7 +69,7 @@ QVariant BaseRangesModel::data(const QModelIndex& index, int role) const
     }
 }
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class BaseRangesView (local scope)
 
 //! List view of user-defined Bragg peaks.
@@ -88,7 +88,7 @@ BaseRangesView::BaseRangesView()
     connect(gSession, &Session::sigBaseline, this, &BaseRangesView::onData);
 }
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class ControlsBaseline
 
 ControlsBaseline::ControlsBaseline()

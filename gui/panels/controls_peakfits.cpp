@@ -1,4 +1,4 @@
-// ************************************************************************************************
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,7 +10,7 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************************************
+//  ***********************************************************************************************
 
 #include "controls_peakfits.h"
 #include "core/session.h"
@@ -26,7 +26,7 @@ double safeReal(double val) { return qIsFinite(val) ? val : 0.0; }
 QString safeRealText(double val) { return qIsFinite(val) ? QString::number(val) : ""; }
 } // local methods
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class PeaksModel, used in PeaksView (local scope)
 
 //! Model for PeaksView.
@@ -83,7 +83,7 @@ QVariant PeaksModel::data(const QModelIndex& index, int role) const
 }
 
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class PeaksView (local scope)
 
 //! List view of user-defined Bragg peaks.
@@ -103,7 +103,7 @@ PeaksView::PeaksView()
     connect(this, &TableView::clicked, model_, &TableModel::onClicked);
 }
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class RangeControl (local scope)
 
 //! A horizontal row with labels and spin boxes to view and change one peak fit range.
@@ -156,7 +156,7 @@ void RangeControl::onData()
 }
 
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class PeakdataView and its dependences (local scope)
 
 //! Virtual base class for RawPeakdataView and FitPeakdataView.
@@ -291,7 +291,7 @@ void PeakdataView::updatePeakFun(const PeakFunction& peakFun)
 }
 
 
-// ************************************************************************************************
+//  ***********************************************************************************************
 //! @class ControlsPeakfits
 
 ControlsPeakfits::ControlsPeakfits()
