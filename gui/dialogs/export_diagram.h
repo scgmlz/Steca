@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/dialogs/export_bigtable.h
-//! @brief     Defines class ExportBigtable
+//! @file      gui/dialogs/export_diagram.h
+//! @brief     Defines class ExportDiagram
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,19 +12,19 @@
 //
 //  ***********************************************************************************************
 
-#ifndef EXPORT_BIGTABLE_H
-#define EXPORT_BIGTABLE_H
+#ifndef EXPORT_DIAGRAM_H
+#define EXPORT_DIAGRAM_H
 
 #include "gui/capture_and_replay/enhance_widgets.h"
 
-//! The modal dialog for saving the main table (fit results and metadata).
+//! The modal dialog for the data shown in the diagram
 
-class ExportBigtable : private CModal, public QDialog {
+class ExportDiagram : private CModal, public QDialog {
 public:
-    ExportBigtable();
+    ExportDiagram();
 private:
     void save();
     class ExportfileDialogfield* fileField_;
 };
 
-#endif // EXPORT_BIGTABLE_H
+#endif // EXPORT_DIAGRAM_H

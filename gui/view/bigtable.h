@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef DATA_TABLE_H
-#define DATA_TABLE_H
+#ifndef BIGTABLE_H
+#define BIGTABLE_H
 
 #include "core/typ/variant.h"
 #include "gui/base/model_view.h"
@@ -77,4 +77,4 @@ private:
     QString exportSelection() const;
 };
 
-#endif // DATA_TABLE_H
+#endif // BIGTABLE_H

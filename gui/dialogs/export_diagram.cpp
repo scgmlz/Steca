@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/dialogs/export_bigtable.cpp
-//! @brief     Implements class ExportBigtable
+//! @file      gui/dialogs/export_diagram.cpp
+//! @brief     Implements class ExportDiagram
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "export_bigtable.h"
+#include "export_diagram.h"
 #include "core/session.h"
 #include "gui/base/file_dialog.h"
 #include "gui/dialogs/exportfile_dialogfield.h"
@@ -21,22 +21,22 @@
 #include "gui/view/bigtable.h"
 
 //  ***********************************************************************************************
-//! @class ExportBigtable
+//! @class ExportDiagram
 
-ExportBigtable::ExportBigtable()
-    : CModal("exportTable")
+ExportDiagram::ExportDiagram()
+    : CModal("exportDiagram")
     , QDialog(gGui)
 {
     fileField_ = new ExportfileDialogfield(this, true, [this]()->void{save();});
 
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-    setWindowTitle("Export table");
+    setWindowTitle("Export diagram data");
 
     setLayout(fileField_);
 }
 
-void ExportBigtable::save()
+void ExportDiagram::save()
 {
     QFile* file = fileField_->file();
     if (!file)
@@ -46,23 +46,20 @@ void ExportBigtable::save()
     QString separator = fileField_->separator();
 
     // get data
-    QStringList headers {gGui->state->bigtableModel->getHeaders()};
-    QVector<QVector<const QVariant*>> data {gGui->state->bigtableModel->getData()};
-
-    // write header
-    for (const QString& header: headers)
-        stream << header << separator;
-    stream << '\n';
+    const int xi = int(gGui->state->diagramX->currentIndex());
+    const int yi = int(gGui->state->diagramY->currentIndex());
+    QVector<double> xs, ys, ysLow, ysHig;
+    gSession->peakInfos().get4(xi, yi, xs, ys, ysLow, ysHig);
+    if (!xs.count()) {
+        qWarning() << "no data available";
+        return;
+    }
 
     // write data table
-    for (const QVector<const QVariant*>& row: data) {
-        for (const QVariant* var: row) {
-            if (isNumeric(*var))
-                stream << var->toDouble();
-            else
-                stream << var->toString();
-            stream << separator;
-        }
+    for_i (xs.count()) {
+        stream << xs.at(i) << separator << ys.at(i);
+        if (ysLow.count())
+            stream << separator << ysLow.at(i) << separator << ysHig.at(i);
         stream << '\n';
     }
 

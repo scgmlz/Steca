@@ -20,6 +20,7 @@
 #include "gui/dialogs/check_update.h"
 #include "gui/dialogs/export_dfgram.h"
 #include "gui/dialogs/export_bigtable.h"
+#include "gui/dialogs/export_diagram.h"
 #include "gui/dialogs/export_polefig.h"
 #include "gui/dialogs/popup_bigtable.h"
 #include "gui/dialogs/popup_diagram.h"
@@ -37,8 +38,8 @@ Triggers::Triggers()
     connect(&corrFile, AT, []() { gGui->loadCorrFile(); });
     connect(&exportDfgram, AT, [](){ ExportDfgram().exec(); });
     connect(&exportPolefig, AT, [](){ ExportPolefig().exec(); });
-    connect(&exportBigtable, AT, [](){ ExportBigtable(false).exec(); });
-    connect(&exportDiagram, AT, [](){ ExportBigtable(true).exec(); });
+    connect(&exportBigtable, AT, [](){ ExportBigtable().exec(); });
+    connect(&exportDiagram, AT, [](){ ExportDiagram().exec(); });
     connect(&loadSession, AT, []() { gGui->loadSession(); });
     connect(&online, AT, []() { QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
     connect(&quit, AT, []() { gGui->close(); });
