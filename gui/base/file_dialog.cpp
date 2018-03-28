@@ -145,7 +145,8 @@ QStringList queryImportFileNames(
 }
 
 //! Runs dialog that prompts for one input file. Returns absolute path. May change dir.
-QString queryImportFileName(QWidget* parent, const QString& caption, QDir& dir, const QString& filter)
+QString queryImportFileName(
+    QWidget* parent, const QString& caption, QDir& dir, const QString& filter)
 {
     QStringList fileNames = queryImportFileNames(parent, caption, dir, filter, false);
     if (fileNames.isEmpty())
@@ -154,7 +155,8 @@ QString queryImportFileName(QWidget* parent, const QString& caption, QDir& dir, 
 }
 
 //! Runs dialog that prompts for one output file. Returns absolute path. May change dir.
-QString queryExportFileName(QWidget* parent, const QString& caption, QDir& dir, const QString& filter)
+QString queryExportFileName(
+    QWidget* parent, const QString& caption, QDir& dir, const QString& filter)
 {
     FileDialog dlg(parent, caption, dir, filter);
     dlg.setFileMode(QFileDialog::AnyFile);
