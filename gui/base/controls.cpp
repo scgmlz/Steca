@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "controls.h"
-#include "core/typ/convert.h"
+#include "gui/base/convert.h"
 #include "core/def/debug.h"
 #include "gui/base/displays.h"
 #include "gui/capture_and_replay/cmdexception.h"
