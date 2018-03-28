@@ -13,7 +13,6 @@
 //  ***********************************************************************************************
 
 #include "model_view.h"
-#include "core/def/idiomatic_for.h"
 #include "gui/base/convert.h"
 #include "gui/capture_and_replay/console.h"
 #include "gui/capture_and_replay/cmdexception.h"
@@ -118,7 +117,7 @@ TableView::TableView(TableModel* model)
     QTreeView::setModel(model);
     hideColumn(0); // this should look like a list; 0th column is tree-like
     connect(model, &QAbstractItemModel::modelReset, [this, model]() {
-            for_i (model->columnCount())
+            for (int i=0; i<model->columnCount(); ++i)
                 resizeColumnToContents(i);
         });
     // other settings
