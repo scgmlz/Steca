@@ -66,17 +66,26 @@ PlotDiagram::PlotDiagram()
     graph_ = addGraph();
     graphLo_ = addGraph();
     graphUp_ = addGraph();
+
+    graph_->setPen(QPen(Qt::blue));
+    graphUp_->setPen(QPen(Qt::red));
+    graphLo_->setPen(QPen(Qt::green));
 }
 
 void PlotDiagram::refresh()
 {
-    QVector<double> xs, ys, ysLow, ysHig;
+    graph_->clearData();
+    graphUp_->clearData();
+    graphLo_->clearData();
 
+    // retrieve, sort, and plot xs,ys:
     const PeakInfos& peakInfos = gSession->peakInfos();
     int count = peakInfos.count();
+    if (!count)
+        return erase();
 
-    xs.resize(count);
-    ys.resize(count);
+    QVector<double> xs(count);
+    QVector<double> ys(count);
 
     int xi = int(gGui->state->diagramX->currentIndex());
     int yi = int(gGui->state->diagramY->currentIndex());
@@ -87,63 +96,48 @@ void PlotDiagram::refresh()
         ys[i] = row.at(yi).toDouble();
     }
 
-    QVector<int> is;
-    sortColumns(xs, ys, is);
-
-    using eReflAttr = PeakInfo::eReflAttr;
-    eReflAttr ye = (eReflAttr) yi;
-
-    int iRefl = gSession->peaks().selectedIndex();
-
-    if (!gSession->peaks().at(iRefl).isRaw()
-        && (ye==eReflAttr::INTEN || ye==eReflAttr::TTH || ye==eReflAttr::FWHM)) {
-
-        ysLow.resize(count);
-        ysHig.resize(count);
-
-        for_i (count) {
-            const QVector<QVariant> row = peakInfos.at(is.at(i)).data(); // access error over sorted index vec
-            double sigma = row.at(yi+1).toDouble(); // SIGMA_X has tag position of X plus 1
-            double y = ys.at(i);
-            ysLow[i] = y - sigma;
-            ysHig[i] = y + sigma;
-        }
-    }
-
-    graph_->clearData();
-    graphUp_->clearData();
-    graphLo_->clearData();
-
     Range rgeX, rgeY;
-
     for_i (count) {
         rgeX.extendBy(xs.at(i));
         rgeY.extendBy(ys.at(i));
     }
-
-    if (!count || rgeX.isEmpty() || rgeY.isEmpty()) {
-        xAxis->setVisible(false);
-        yAxis->setVisible(false);
-        //qDebug() << "plot diagram disabled: count=" << count
-        //         << ", rgeX=" << rgeX.to_s()
-        //         << ", rgeY=" << rgeY.to_s();
-        replot();
-        return;
-    }
+    if (rgeX.isEmpty() || rgeY.isEmpty())
+        return erase();
 
     xAxis->setRange(rgeX.min, rgeX.max);
     yAxis->setRange(rgeY.min, rgeY.max);
     xAxis->setVisible(true);
     yAxis->setVisible(true);
 
-    graph_->setPen(QPen(Qt::blue));
+    QVector<int> is;
+    sortColumns(xs, ys, is);
     graph_->addData(xs, ys);
 
-    graphUp_->setPen(QPen(Qt::red));
-    graphUp_->addData(xs, ysHig);
+    // retrieve, sort, and plot error of ys:
+    using eReflAttr = PeakInfo::eReflAttr;
+    eReflAttr ye = (eReflAttr) yi;
+    int iRefl = gSession->peaks().selectedIndex();
+    if (!gSession->peaks().at(iRefl).isRaw()
+        && (ye==eReflAttr::INTEN || ye==eReflAttr::TTH || ye==eReflAttr::FWHM)) {
+        QVector<double> ysLow(count);
+        QVector<double> ysHig(count);
+        for_i (count) {
+            const QVector<QVariant> row = peakInfos.at(is.at(i)).data();
+            double sigma = row.at(yi+1).toDouble(); // SIGMA_X has tag position of X plus 1
+            double y = ys.at(i);
+            ysLow[i] = y - sigma;
+            ysHig[i] = y + sigma;
+        }
+        graphUp_->addData(xs, ysHig);
+        graphLo_->addData(xs, ysLow);
+    }
 
-    graphLo_->setPen(QPen(Qt::green));
-    graphLo_->addData(xs, ysLow);
+    replot();
+}
 
+void PlotDiagram::erase()
+{
+    xAxis->setVisible(false);
+    yAxis->setVisible(false);
     replot();
 }

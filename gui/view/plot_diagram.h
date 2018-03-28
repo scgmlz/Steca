@@ -26,6 +26,7 @@ public:
     void set(PeakInfos);
     void refresh();
 private:
+    void erase();
     QCPGraph *graph_, *graphLo_, *graphUp_;
 };
 
