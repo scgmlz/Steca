@@ -16,8 +16,8 @@
 #include "core/def/debug.h"
 #include "core/def/idiomatic_for.h"
 #include "gui/base/convert.h"
-#include "core/typ/exception.h"
 #include "gui/capture_and_replay/console.h"
+#include "gui/capture_and_replay/cmdexception.h"
 
 //  ***********************************************************************************************
 //! @class TableModel
@@ -30,9 +30,9 @@ TableModel::TableModel(const QString& name)
 void TableModel::onCommand(const QStringList& args)
 {
     if (args[0]!="highlight")
-        THROW("Unexpected command");
+        throw CmdException("Unexpected command");
     if      (args.size()<2)
-        THROW("Missing argument to command 'highlight'");
+        throw CmdException("Missing argument to command 'highlight'");
     setHighlight(TO_INT(args[1]));
 }
 
@@ -72,14 +72,14 @@ void CheckTableModel::onCommand(const QStringList& args)
 {
     if        (args[0]=="activate") {
         if (args.size()<2)
-            THROW("Missing argument to command 'activate'");
+            throw CmdException("Missing argument to command 'activate'");
         activateAndLog(false, TO_INT(args[1]), true);
     } else if (args[0]=="deactivate") {
         if (args.size()<2)
-            THROW("Missing argument to command 'deactivate'");
+            throw CmdException("Missing argument to command 'deactivate'");
         activateAndLog(false, TO_INT(args[1]), false);
     } else
-        THROW("Unexpected command");
+        throw CmdException("Unexpected command");
 }
 
 //! Refreshes the check box column.
@@ -100,7 +100,8 @@ void CheckTableModel::onClicked(const QModelIndex& cell)
 void CheckTableModel::activateAndLog(bool primaryCall, int row, bool on)
 {
     setActivated(row, on);
-    gConsole->log2(primaryCall, name() + ( on ? " activate " : " deactivate ") + QString::number(row));
+    gConsole->log2(primaryCall,
+                   name() + ( on ? " activate " : " deactivate ") + QString::number(row));
 }
 
 
