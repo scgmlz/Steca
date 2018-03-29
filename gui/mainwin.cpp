@@ -54,28 +54,16 @@ MainWin::MainWin()
     setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
 
     // inbound signals
-    QObject::connect(gSession, &Session::sigFiles, [this]() { updateActionEnabling(); });
-    QObject::connect(gSession, &Session::sigCorr, [this]() {
-            bool hasCorr = gSession->hasCorrFile();
-            triggers->corrFile.setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
-            QString text = QString(hasCorr ? "Remove" : "Add") + " correction file";
-            triggers->corrFile.setText(text);
-            triggers->corrFile.setToolTip(text.toLower());
-            toggles->enableCorr.setChecked(gSession->corrset().isEnabled());
-            updateActionEnabling();
-            EMIT(gSession->sigDfgram());
-            EMIT(gSession->sigImage()); });
-    QObject::connect(gSession, &Session::sigPeaks, [this]() {
-            updateActionEnabling();
-            EMIT(gSession->sigDfgram());
-            runFits(); });
-    QObject::connect(gSession, &Session::sigBaseline, [this]() {
-            updateActionEnabling();
-            EMIT(gSession->sigDfgram()); });
+    QObject::connect(gSession, &Session::sigFiles, this, &MainWin::updateAbilities);
+    QObject::connect(gSession, &Session::sigCorr, this, &MainWin::updateAbilities);
+    QObject::connect(gSession, &Session::sigPeaks, this, &MainWin::updateAbilities);
+    QObject::connect(gSession, &Session::sigBaseline, this, &MainWin::updateAbilities);
+
+    QObject::connect(gSession, &Session::sigDoFits, this, &MainWin::runFits);
 
     initLayout();
     readSettings();
-    updateActionEnabling();
+    updateAbilities();
 
     setContentsMargins(5,5,5,5);
     statusBar()->addWidget(&progressBar);
@@ -119,13 +107,17 @@ void MainWin::initLayout()
     statusBar();
 }
 
-void MainWin::updateActionEnabling()
+void MainWin::updateAbilities()
 {
     bool hasFile = gSession->dataset().countFiles();
     bool hasCorr = gSession->hasCorrFile();
     bool hasPeak = gSession->peaks().count();
     bool hasBase = gSession->baseline().ranges().count();
-    toggles->enableCorr.setEnabled(hasCorr);
+    triggers->corrFile.setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
+    toggles->enableCorr.setChecked(gSession->corrset().isEnabled());
+    QString text = QString(hasCorr ? "Remove" : "Add") + " correction file";
+    triggers->corrFile.setText(text);
+    triggers->corrFile.setToolTip(text.toLower());
     triggers->removeFile.setEnabled(hasFile);
     triggers->removePeak.setEnabled(hasPeak);
     triggers->clearBackground.setEnabled(hasBase);

@@ -34,16 +34,20 @@ Session::Session()
     interpol().fromSettings();
 
     // Some signals imply other signals:
+    connect(this, &Session::sigActivated      this, &Session::sigDfgram);
+    connect(this, &Session::sigBaseline,      this, &Session::sigDfgram);
+    connect(this, &Session::sigCorr,          this, &Session::sigDfgram);
+    connect(this, &Session::sigDetector,      this, &Session::sigDfgram);
     connect(this, &Session::sigGamma,         this, &Session::sigDfgram);
+    connect(this, &Session::sigNorm,          this, &Session::sigDfgram);
+    connect(this, &Session::sigPeaks,         this, &Session::sigDfgram);
 
+    connect(this, &Session::sigCorr,          this, &Session::sigImage);
     connect(this, &Session::sigDataHighlight, this, &Session::sigImage);
     connect(this, &Session::sigDetector,      this, &Session::sigImage);
     connect(this, &Session::sigNorm,          this, &Session::sigImage);
 
-    connect(this, &Session::sigActivated,     this, &Session::sigPeaks);
-    connect(this, &Session::sigDetector,      this, &Session::sigPeaks);
-    connect(this, &Session::sigGamma,         this, &Session::sigPeaks);
-    connect(this, &Session::sigBaseline,      this, &Session::sigPeaks);
+    connect(this, &Session::sigDfgram,        this, &Session::sigDoFits);
 
     connect(this, &Session::sigDataHighlight, &gammaSelection_, &GammaSelection::onData);
     connect(this, &Session::sigDataHighlight, &thetaSelection_, &ThetaSelection::onData);

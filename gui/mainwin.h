@@ -46,7 +46,7 @@ public:
 
 private:
     void initLayout();
-    void updateActionEnabling();
+    void updateAbilities();
 
     void readSettings();
     void saveSettings() const;

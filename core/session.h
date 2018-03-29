@@ -124,13 +124,14 @@ signals:
     void sigDataHighlight(); //!< highlighted File or/and Cluster has changed
     void sigDetector();      //!< detector geometry has changed
     void sigDfgram(); //!< diffractogram must be repainted
+    void sigDoFits();        //!< fits must be redone
     void sigFiles();         //!< list of loaded files has changed
     void sigGamma();         //!< gamma selection has changed
     void sigImage();         //!< image must be repainted
     void sigInterpol();      //!< interpolation parameters have changed
     void sigMetaSelection(); //!< meta data selected for display have changed
     void sigNorm();          //!< normalization has changed
-    void sigPeaks();         //!< list of peaks or selected peak has changed
+    void sigPeaks();         //!< peak list or selected peak or peak settings has changed
     void sigRawFits();       //!< fit results have changed
     void sigTheta();         //!< theta selection has changed
 
