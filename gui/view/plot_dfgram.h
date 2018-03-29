@@ -46,8 +46,6 @@ public:
     void enterZoom(bool);
 
 private:
-    // TODO rm all arguments! called only once!
-    void plott(const Curve&, const Curve&, const Curve&, const curve_vec&, int);
     void addBgItem(const Range&, const QColor&);
     void resizeEvent(QResizeEvent*);
     void onPeakData();

@@ -22,8 +22,8 @@
 class GuiState {
 public:
     GuiState();
-    bool editingBaseline;
-    bool editingPeakfits;
+    bool editingBaseline {false};
+    bool editingPeakfits {false};
 
     class CCheckBox* polefigShowGridPts;
     class CComboBox* diagramX;

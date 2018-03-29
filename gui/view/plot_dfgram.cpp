@@ -22,8 +22,7 @@
 
 PlotDfgramOverlay::PlotDfgramOverlay(PlotDfgram& parent)
     : PlotOverlay(parent)
-{
-}
+{}
 
 void PlotDfgramOverlay::addRange(const Range& range)
 {
@@ -213,9 +212,49 @@ void PlotDfgram::renderAll()
         return;
     }
     calcDgram();
+    if (dgram_.isEmpty()) {
+        plotEmpty();
+        return;
+    }
     calcBackground();
     calcPeaks();
-    plott(dgram_, dgramBgFitted_, bg_, refls_, currReflIndex_);
+
+    const Range& tthRange = dgram_.rgeX();
+    Range intenRange;
+    if (gGui->toggles->fixedIntenDgram.isChecked()) {
+        intenRange = gSession->dataset().highlight().cluster()->rgeInten();
+    } else {
+        intenRange = dgramBgFitted_.rgeY();
+        intenRange.extendBy(dgram_.rgeY());
+    }
+
+    xAxis->setRange(tthRange.min, tthRange.max);
+    yAxis->setRange(qMin(0., intenRange.min), intenRange.max);
+    yAxis->setNumberFormat("g");
+    xAxis->setVisible(true);
+    yAxis->setVisible(true);
+
+    if (gGui->toggles->showBackground.isChecked())
+        bgGraph_->setData(bg_.xs(), bg_.ys());
+    else
+        bgGraph_->clearData();
+
+    dgramGraph_->setData(dgram_.xs(), dgram_.ys());
+    dgramBgFittedGraph_->setData(dgramBgFitted_.xs(), dgramBgFitted_.ys());
+    dgramBgFittedGraph2_->setData(dgramBgFitted_.xs(), dgramBgFitted_.ys());
+
+    clearReflLayer();
+    setCurrentLayer("refl");
+
+    for_i (refls_.count()) {
+        const Curve& r = refls_.at(i);
+        QCPGraph* graph = addGraph();
+        reflGraph_.append(graph);
+        graph->setPen(QPen(Qt::green, i == currReflIndex_ ? 2 : 1));
+        graph->setData(r.xs(), r.ys());
+    }
+
+    replot();
 }
 
 void PlotDfgram::calcDgram()
@@ -269,53 +308,6 @@ void PlotDfgram::calcPeaks()
         }
         refls_.append(c);
     }
-}
-
-void PlotDfgram::plott(
-    const Curve& dgram, const Curve& dgramBgFitted, const Curve& bg, const curve_vec& refls,
-    int currReflIndex)
-{
-    if (dgram.isEmpty()) {
-        plotEmpty();
-        return;
-    }
-    const Range& tthRange = dgram.rgeX();
-
-    Range intenRange;
-    if (gGui->toggles->fixedIntenDgram.isChecked()) {
-        intenRange = gSession->dataset().highlight().cluster()->rgeInten();
-    } else {
-        intenRange = dgramBgFitted.rgeY();
-        intenRange.extendBy(dgram.rgeY());
-    }
-
-    xAxis->setRange(tthRange.min, tthRange.max);
-    yAxis->setRange(qMin(0., intenRange.min), intenRange.max);
-    yAxis->setNumberFormat("g");
-    xAxis->setVisible(true);
-    yAxis->setVisible(true);
-
-    if (gGui->toggles->showBackground.isChecked())
-        bgGraph_->setData(bg.xs(), bg.ys());
-    else
-        bgGraph_->clearData();
-
-    dgramGraph_->setData(dgram.xs(), dgram.ys());
-    dgramBgFittedGraph_->setData(dgramBgFitted.xs(), dgramBgFitted.ys());
-    dgramBgFittedGraph2_->setData(dgramBgFitted.xs(), dgramBgFitted.ys());
-
-    clearReflLayer();
-    setCurrentLayer("refl");
-
-    for_i (refls.count()) {
-        const Curve& r = refls.at(i);
-        QCPGraph* graph = addGraph();
-        reflGraph_.append(graph);
-        graph->setPen(QPen(Qt::green, i == currReflIndex ? 2 : 1));
-        graph->setData(r.xs(), r.ys());
-    }
-
-    replot();
 }
 
 void PlotDfgram::plotEmpty()
