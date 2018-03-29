@@ -51,7 +51,6 @@ class PeakFunction : public ParametricFunction {
 public:
     PeakFunction();
 
-    void reset();
     void fit(const Curve& curve) { return fit(curve, range_); }
     void fromJson(const JsonObj&);
     virtual void setRange(const Range& range) { range_ = range; }

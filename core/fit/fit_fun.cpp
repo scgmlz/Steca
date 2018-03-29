@@ -110,11 +110,6 @@ PeakFunction::PeakFunction()
     : guessedPeak_(), guessedFWHM_(Q_QNAN)
 {}
 
-void PeakFunction::reset()
-{
-    ParametricFunction::reset();
-}
-
 void PeakFunction::fit(const Curve& curve, const Range& range)
 {
     const Curve c = prepareFit(curve, range);
