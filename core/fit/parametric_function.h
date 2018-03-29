@@ -46,7 +46,6 @@ public:
 
     //! evaluate the function y = f(x), with given (parValues) or own parameters
     virtual double y(double x, double const* parValues = nullptr) const = 0;
-
     //! partial derivative / parameter, with given (parValues) or own parameters
     virtual double dy(double x, int parIndex, double const* parValues = nullptr) const = 0;
 
@@ -62,9 +61,9 @@ public:
     virtual QString name() const = 0;
 
 protected:
-    QVector<Parameter> parameters_;
     double parValue(int parIndex, double const* parValues) const;
-    void setValue(int parIndex, double val);
+    void setParValue(int parIndex, double val);
+    QVector<Parameter> parameters_;
 };
 
 #endif // PARAMETRIC_FUNCTION_H

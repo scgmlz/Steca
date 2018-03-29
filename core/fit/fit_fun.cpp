@@ -17,7 +17,7 @@
 #include "core/def/idiomatic_for.h"
 #include "core/fit/fit_methods.h"
 
-namespace { // file-scope functions
+namespace {
 
 //! Compute a low power with an exponent of type int
 static double pow_n(double x, int n)
@@ -28,22 +28,10 @@ static double pow_n(double x, int n)
     return val;
 }
 
-} // file-scope functions
+} // namespace
 
 //  ***********************************************************************************************
 //! @class Polynom
-
-int Polynom::degree() const
-{
-    int parCount = parameterCount();
-    ASSERT(parCount > 0);
-    return parCount - 1;
-}
-
-void Polynom::setDegree(int degree)
-{
-    setParameterCount(degree + 1);
-}
 
 double Polynom::y(double x, double const* parValues) const
 {
@@ -96,11 +84,6 @@ JsonObj Polynom::toJson() const
     JsonObj ret = ParametricFunction::toJson();
     ret.insert("type", name());
     return ret;
-}
-
-void Polynom::fromJson(const JsonObj& obj)
-{
-    ParametricFunction::fromJson(obj);
 }
 
 //  ***********************************************************************************************
@@ -167,10 +150,8 @@ void PeakFunction::fromJson(const JsonObj& obj)
     guessedFWHM_ = obj.loadQreal("guessed fwhm");
 }
 
-
 //  ***********************************************************************************************
 //  FunctionRegistry
-//  ***********************************************************************************************
 
 void FunctionRegistry::register_fct(const initializer_type f)
 {

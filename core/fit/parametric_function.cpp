@@ -101,7 +101,7 @@ double ParametricFunction::parValue(int i, double const* parValues) const
     return parValues ? parValues[i] : parameters_.at(i).value();
 }
 
-void ParametricFunction::setValue(int i, double val)
+void ParametricFunction::setParValue(int i, double val)
 {
     parameters_[i].setValue(val, 0);
 }

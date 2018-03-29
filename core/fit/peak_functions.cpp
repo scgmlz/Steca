@@ -24,8 +24,6 @@ namespace { // file scope
 
 class Raw : public PeakFunction {
 public:
-    double y(double x, double const* parValues = nullptr) const;
-    double dy(double x, int parIndex, double const* parValues = nullptr) const;
 
     qpair fittedPeak() const;
     float fittedFWHM() const;
@@ -40,6 +38,8 @@ public:
     bool isRaw() const final { return true; }
 
 private:
+    double y(double x, double const* parValues = nullptr) const final;
+    double dy(double x, int parIndex, double const* parValues = nullptr) const final;
     Curve fittedCurve_; // saved from fitting
     void prepareY();
 
@@ -121,9 +121,6 @@ public:
 
     Gaussian(double ampl = 1, double xShift = 0, double sigma = 1);
 
-    double y(double x, double const* parValues = nullptr) const;
-    double dy(double x, int parIndex, double const* parValues = nullptr) const;
-
     void setGuessedPeak(const qpair&);
     void setGuessedFWHM(float);
 
@@ -134,6 +131,9 @@ public:
     float fwhmError() const;
 
     QString name() const final { return "Gaussian"; }
+
+    double y(double x, double const* parValues = nullptr) const final;
+    double dy(double x, int parIndex, double const* parValues = nullptr) const final;
 };
 
 Gaussian::Gaussian(double ampl, double xShift, double sigma)
@@ -185,15 +185,15 @@ double Gaussian::dy(double x, int parIndex, double const* parValues) const
 void Gaussian::setGuessedPeak(const qpair& qpair)
 {
     PeakFunction::setGuessedPeak(qpair);
-    setValue(parXSHIFT, qpair.x);
-    setValue(parAMPL, qpair.y);
+    setParValue(parXSHIFT, qpair.x);
+    setParValue(parAMPL, qpair.y);
 }
 
 void Gaussian::setGuessedFWHM(float fwhm)
 {
     PeakFunction::setGuessedFWHM(fwhm);
     // sigma = FWHM * 1/4 * (SQRT(2)/SQRT(ln(2))) = FWHM * 0.424661
-    setValue(parSIGMA, fwhm * 0.424661);
+    setParValue(parSIGMA, fwhm * 0.424661);
 }
 
 qpair Gaussian::fittedPeak() const
@@ -229,8 +229,8 @@ public:
 
     Lorentzian(double ampl = 1, double xShift = 0, double gamma = 1);
 
-    double y(double x, double const* parValues = nullptr) const;
-    double dy(double x, int parIndex, double const* parValues = nullptr) const;
+    double y(double x, double const* parValues = nullptr) const final;
+    double dy(double x, int parIndex, double const* parValues = nullptr) const final;
 
     void setGuessedPeak(const qpair&);
     void setGuessedFWHM(float);
@@ -291,15 +291,15 @@ double Lorentzian::dy(double x, int parIndex, double const* parValues) const
 void Lorentzian::setGuessedPeak(const qpair& qpair)
 {
     PeakFunction::setGuessedPeak(qpair);
-    setValue(parXSHIFT, qpair.x);
-    setValue(parAMPL, qpair.y);
+    setParValue(parXSHIFT, qpair.x);
+    setParValue(parAMPL, qpair.y);
 }
 
 void Lorentzian::setGuessedFWHM(float fwhm)
 {
     PeakFunction::setGuessedFWHM(fwhm);
     // gamma = HWHM = FWHM / 2
-    setValue(parGAMMA, fwhm / 2);
+    setParValue(parGAMMA, fwhm / 2);
 }
 
 qpair Lorentzian::fittedPeak() const
@@ -335,8 +335,8 @@ public:
 
     PseudoVoigt1(double ampl = 1, double xShift = 0, double sigmaGamma = 1, double eta = 0.1);
 
-    double y(double x, double const* parValues = nullptr) const;
-    double dy(double x, int parIndex, double const* parValues = nullptr) const;
+    double y(double x, double const* parValues = nullptr) const final;
+    double dy(double x, int parIndex, double const* parValues = nullptr) const final;
 
     void setGuessedPeak(const qpair&);
     void setGuessedFWHM(float);
@@ -416,14 +416,14 @@ double PseudoVoigt1::dy(double x, int parIndex, double const* parValues) const
 void PseudoVoigt1::setGuessedPeak(const qpair& qpair)
 {
     PeakFunction::setGuessedPeak(qpair);
-    setValue(parXSHIFT, qpair.x);
-    setValue(parAMPL, qpair.y);
+    setParValue(parXSHIFT, qpair.x);
+    setParValue(parAMPL, qpair.y);
 }
 
 void PseudoVoigt1::setGuessedFWHM(float fwhm)
 {
     PeakFunction::setGuessedFWHM(fwhm);
-    setValue(parSIGMAGAMMA, fwhm / 2);
+    setParValue(parSIGMAGAMMA, fwhm / 2);
 }
 
 qpair PseudoVoigt1::fittedPeak() const
@@ -459,8 +459,8 @@ public:
     PseudoVoigt2(
         double ampl = 1, double xShift = 0, double sigma = 1, double gamma = 1, double eta = 0.1);
 
-    double y(double x, double const* parValues = nullptr) const;
-    double dy(double x, int parIndex, double const* parValues = nullptr) const;
+    double y(double x, double const* parValues = nullptr) const final;
+    double dy(double x, int parIndex, double const* parValues = nullptr) const final;
 
     void setGuessedPeak(const qpair&);
     void setGuessedFWHM(float);
@@ -552,15 +552,15 @@ double PseudoVoigt2::dy(double x, int parIndex, double const* parValues) const
 void PseudoVoigt2::setGuessedPeak(const qpair& qpair)
 {
     PeakFunction::setGuessedPeak(qpair);
-    setValue(parXSHIFT, qpair.x);
-    setValue(parAMPL, qpair.y);
+    setParValue(parXSHIFT, qpair.x);
+    setParValue(parAMPL, qpair.y);
 }
 
 void PseudoVoigt2::setGuessedFWHM(float fwhm)
 {
     PeakFunction::setGuessedFWHM(fwhm);
-    setValue(parSIGMA, fwhm * 0.424661);
-    setValue(parGAMMA, fwhm / 2);
+    setParValue(parSIGMA, fwhm * 0.424661);
+    setParValue(parGAMMA, fwhm / 2);
 }
 
 qpair PseudoVoigt2::fittedPeak() const

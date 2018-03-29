@@ -25,23 +25,22 @@
 
 class Polynom : public ParametricFunction {
 public:
-    Polynom(int degree = 0) { setDegree(degree); }
+    Polynom(int _degree = 0) { setDegree(_degree); }
 
-    int degree() const;
-    void setDegree(int);
+    int degree() const { return parameterCount()-1; }
+    void setDegree(int _degree) { setParameterCount(_degree + 1); }
 
-    double y(double x, double const* parValues = nullptr) const;
-    double dy(double x, int parIndex, double const* parValues = nullptr) const;
-
+    double y(double x, double const* parValues = nullptr) const final;
     double avgY(const Range&, double const* parValues = nullptr) const;
 
     void fit(const Curve&, const Ranges&);
     static Polynom fromFit(int degree, const Curve&, const Ranges&);
 
     JsonObj toJson() const final;
-    void fromJson(const JsonObj&) final;
 
     QString name() const final { return "polynom"; }
+private:
+    double dy(double x, int parIndex, double const* parValues = nullptr) const final;
 };
 
 
