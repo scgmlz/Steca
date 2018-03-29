@@ -20,8 +20,7 @@
 
 Sequence::Sequence(const QVector<const Measurement*>& measurements)
     : members_(measurements)
-{
-}
+{}
 
 //! Returns metadata, averaged over Sequence members. Result is cached.
 shp_Metadata Sequence::avgeMetadata() const
