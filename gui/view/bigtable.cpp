@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/view/bigtable.cpp
-//! @brief     Implements classes DataView
+//! @brief     Implements classes BigtableView
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -24,11 +24,11 @@
 #include <QKeyEvent>
 
 //  ***********************************************************************************************
-//! @class DataModel
+//! @class BigtableModel
 //!
 //! The first column contains row numbers. The remaining numCols columns contain data.
 
-DataModel::DataModel()
+BigtableModel::BigtableModel()
     : TableModel("data#")
 {
     gGui->state->bigtableModel = this;
@@ -41,7 +41,7 @@ DataModel::DataModel()
         colIndexMap_[i] = i;
 }
 
-void DataModel::refresh()
+void BigtableModel::refresh()
 {
     beginResetModel();
     rows_.clear();
@@ -51,7 +51,7 @@ void DataModel::refresh()
     endResetModel();
 }
 
-QVariant DataModel::data(const QModelIndex& index, int role) const
+QVariant BigtableModel::data(const QModelIndex& index, int role) const
 {
     int indexRow = index.row(), indexCol = index.column();
 
@@ -81,7 +81,7 @@ QVariant DataModel::data(const QModelIndex& index, int role) const
     return {};
 }
 
-QVariant DataModel::headerData(int section, Qt::Orientation, int role) const
+QVariant BigtableModel::headerData(int section, Qt::Orientation, int role) const
 {
     if (section < 0)
         return {};
@@ -91,23 +91,23 @@ QVariant DataModel::headerData(int section, Qt::Orientation, int role) const
 }
 
 //! Called upon QHeaderView::sectionMoved.
-void DataModel::onColumnMove(int from, int to)
+void BigtableModel::onColumnMove(int from, int to)
 {
     ASSERT(from < colIndexMap_.count() && to < colIndexMap_.count());
     qSwap(colIndexMap_[from], colIndexMap_[to]);
 }
 
-void DataModel::setSortColumn(int col)
+void BigtableModel::setSortColumn(int col)
 {
     sortColumn_ = col < 0 ? col : colIndexMap_.at(col);
 }
 
-const QVector<QVariant>& DataModel::row(int index) const
+const QVector<QVariant>& BigtableModel::row(int index) const
 {
     return rows_.at(index).row;
 }
 
-void DataModel::sortData()
+void BigtableModel::sortData()
 {
     auto _cmpRows = [this](int col, const QVector<QVariant>& r1, const QVector<QVariant>& r2) {
         col = colIndexMap_.at(col);
@@ -147,7 +147,7 @@ void DataModel::sortData()
     endResetModel();
 }
 
-QStringList DataModel::getHeaders() const
+QStringList BigtableModel::getHeaders() const
 {
     QStringList ret;
     const QStringList& headers = PeakInfo::dataTags(true);
@@ -157,7 +157,7 @@ QStringList DataModel::getHeaders() const
     return ret;
 }
 
-QVector<QVector<const QVariant*>> DataModel::getData() const
+QVector<QVector<const QVariant*>> BigtableModel::getData() const
 {
     QVector<QVector<const QVariant*>> ret(rowCount());
     for_ij (rowCount(), columnCount()-1)
@@ -167,11 +167,11 @@ QVector<QVector<const QVariant*>> DataModel::getData() const
 }
 
 //  ***********************************************************************************************
-//!  @class DataView
+//!  @class BigtableView
 //!
 
-DataView::DataView()
-    : TableView {new DataModel}
+BigtableView::BigtableView()
+    : TableView {new BigtableModel}
 {
     setHeader(new QHeaderView(Qt::Horizontal));
     setAlternatingRowColors(true);
@@ -187,7 +187,7 @@ DataView::DataView()
     setColumnWidth(0, w);
 
     // inbound connections:
-    connect(gSession, &Session::sigBigtableCols, this, &DataView::updateShownColumns);
+    connect(gSession, &Session::sigBigtableCols, this, &BigtableView::updateShownColumns);
 
     // internal connections:
     connect(
@@ -208,12 +208,12 @@ DataView::DataView()
     });
 }
 
-void DataView::refresh()
+void BigtableView::refresh()
 {
     model()->refresh();
 }
 
-void DataView::updateShownColumns()
+void BigtableView::updateShownColumns()
 {
     int nCol = model()->columnCount();
     for_i (nCol-1) {
@@ -225,7 +225,7 @@ void DataView::updateShownColumns()
 }
 
 //! To enable copying to external applications
-void DataView::keyPressEvent(QKeyEvent *event)
+void BigtableView::keyPressEvent(QKeyEvent *event)
 {
     if (event->key() == Qt::Key_C && event->modifiers() & Qt::ControlModifier)
         QApplication::clipboard()->setText(exportSelection());
@@ -234,7 +234,7 @@ void DataView::keyPressEvent(QKeyEvent *event)
 }
 
 //! Encodes selected items as a string with separators '\t' and '\n', for use in keyPressEvent.
-QString DataView::exportSelection() const
+QString BigtableView::exportSelection() const
 {
     // TODO: improve https://stackoverflow.com/questions/1230222
     QString ret;

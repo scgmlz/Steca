@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/view/bigtable.h
-//! @brief     Defines classes DataView
+//! @brief     Defines classes BigtableView
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -19,12 +19,12 @@
 #include "gui/base/model_view.h"
 #include <memory>
 
-//! Model for the DataView view.
+//! Model for the BigtableView view.
 
-class DataModel : public TableModel {
+class BigtableModel : public TableModel {
 public:
-    DataModel();
-    DataModel(DataModel&) = delete;
+    BigtableModel();
+    BigtableModel(BigtableModel&) = delete;
 
     void refresh();
     void onColumnMove(int from, int to);
@@ -62,10 +62,10 @@ private:
 
 //! A data table view, for use in the 'Points' tab of an output Frame.
 
-class DataView : public TableView {
+class BigtableView : public TableView {
 public:
-    DataView();
-    DataView(DataView&) = delete;
+    BigtableView();
+    BigtableView(BigtableView&) = delete;
 
     void refresh();
 
@@ -73,7 +73,7 @@ private:
     void updateShownColumns();
     void keyPressEvent(QKeyEvent *event);
 
-    DataModel* model() const { return dynamic_cast<DataModel*>(model_); }
+    BigtableModel* model() const { return dynamic_cast<BigtableModel*>(model_); }
     QString exportSelection() const;
 };
 

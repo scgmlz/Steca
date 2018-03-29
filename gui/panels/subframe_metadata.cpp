@@ -17,13 +17,13 @@
 #include "gui/base/model_view.h"
 
 //  ***********************************************************************************************
-//! @class MetadataModel (local scope)
+//! @class MetabigtableModel (local scope)
 
 //! The model for MetadatView.
 
-class MetadataModel : public CheckTableModel {
+class MetabigtableModel : public CheckTableModel {
 public:
-    MetadataModel() : CheckTableModel("meta") {}
+    MetabigtableModel() : CheckTableModel("meta") {}
 
     void reset();
 
@@ -40,7 +40,7 @@ public:
     enum { COL_CHECK = 1, COL_TAG, COL_VALUE, NUM_COLUMNS };
 };
 
-QVariant MetadataModel::data(const QModelIndex& index, int role) const
+QVariant MetabigtableModel::data(const QModelIndex& index, int role) const
 {
     int row = index.row();
     if (row < 0 || rowCount() <= row)
@@ -68,22 +68,22 @@ QVariant MetadataModel::data(const QModelIndex& index, int role) const
 
 
 //  ***********************************************************************************************
-//! @class MetadataView (local scope)
+//! @class MetabigtableView (local scope)
 
 //! Main item in SubframeMetadata: View and control the list of Metadata.
 
-class MetadataView : public CheckTableView {
+class MetabigtableView : public CheckTableView {
 public:
-    MetadataView();
+    MetabigtableView();
 private:
     void currentChanged(const QModelIndex& current, const QModelIndex&) override final {
         gotoCurrent(current); }
     int sizeHintForColumn(int) const final;
-    MetadataModel* model() { return static_cast<MetadataModel*>(model_); }
+    MetabigtableModel* model() { return static_cast<MetabigtableModel*>(model_); }
 };
 
-MetadataView::MetadataView()
-    : CheckTableView(new MetadataModel())
+MetabigtableView::MetabigtableView()
+    : CheckTableView(new MetabigtableModel())
 {
     // inbound connections:
     connect(gSession, &Session::sigDataHighlight, this, &TableView::onData);
@@ -91,13 +91,13 @@ MetadataView::MetadataView()
     connect(gSession, &Session::sigMetaSelection, this, &TableView::onHighlight);
 
     // internal connection:
-    connect(this, &MetadataView::clicked, model(), &CheckTableModel::onClicked);
+    connect(this, &MetabigtableView::clicked, model(), &CheckTableModel::onClicked);
 }
 
-int MetadataView::sizeHintForColumn(int col) const
+int MetabigtableView::sizeHintForColumn(int col) const
 {
     switch (col) {
-    case MetadataModel::COL_CHECK:
+    case MetabigtableModel::COL_CHECK:
         return 2*mWidth();
     default:
         return 3*mWidth();
@@ -112,5 +112,5 @@ SubframeMetadata::SubframeMetadata()
     setFeatures(DockWidgetMovable);
     setWindowTitle("Metadata");
     setObjectName("dock-metadata");
-    setWidget(new MetadataView());
+    setWidget(new MetabigtableView());
 }

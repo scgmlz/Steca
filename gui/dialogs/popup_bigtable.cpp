@@ -20,14 +20,14 @@
 PopupBigtable::PopupBigtable()
     : CModelessDialog(gGui, "table#")
 {
-    auto* dataView = new DataView;
-    dataView->setMinimumSize(600,600);
+    auto* bigtableView = new BigtableView;
+    bigtableView->setMinimumSize(600,600);
 
     auto* layout = new QVBoxLayout;
-    layout->addWidget(dataView);
+    layout->addWidget(bigtableView);
     layout->setStretch(0,1000);
     setLayout(layout);
 
-    dataView->refresh();
+    bigtableView->refresh();
     show();
 }

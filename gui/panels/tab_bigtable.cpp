@@ -134,7 +134,7 @@ void ColumnSelector::updateRadiobuttons()
 //! @class BigtableTab
 
 BigtableTab::BigtableTab()
-    : dataView_ {new DataView()}
+    : bigtableView_ {new BigtableView()}
 {
     // inbound connection
     connect(gSession, &Session::sigRawFits, [this]() { render(); });
@@ -155,7 +155,7 @@ BigtableTab::BigtableTab()
     sideBox->setStretch(0,1000);
 
     auto* layout = new QHBoxLayout;
-    layout->addWidget(dataView_);
+    layout->addWidget(bigtableView_);
     layout->addLayout(sideBox);
     layout->setStretch(0,1000);
     setLayout(layout);
@@ -165,5 +165,5 @@ void BigtableTab::render()
 {
     if (!isVisible())
         return;
-    dataView_->refresh();
+    bigtableView_->refresh();
 }
