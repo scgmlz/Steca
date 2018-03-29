@@ -41,7 +41,7 @@ sigDataHighlight // highlighted File or/and Cluster has changed
 < Dataset::onClusteringChanged (emits sigClusters, sigActivated, sigDataHighlight)
 -> sigImage
 -> ActiveClustersView::TableView::onHighlight
--> Diffractogram::onHighlight
+-> Dfgram::onHighlight
 -> FilesView::TableView::onHighlight
 -> MetadataView::TableView::onData
 -> IdxMeas::fromCore
@@ -100,7 +100,7 @@ sigNorm          // normalization has changed
 < Session::setIntenScaleAvg
 < Session::setNormMode
 -> sigImage
--> Diffractogram::onNormChanged
+-> Dfgram::onNormChanged
 sigPeaks         // list of peaks or selected peak has changed
 < Peak::invalidateGuesses
 < Peaks::add
