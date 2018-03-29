@@ -15,19 +15,14 @@
 #ifndef GAMMA_SELECTION_H
 #define GAMMA_SELECTION_H
 
-
 //! Supports different ways of setting a gamma range.
 
 class GammaSelection : public QObject {
 public:
-    GammaSelection();
+    GammaSelection() {}
 
     void fromJson(const JsonObj& obj);
     void onData();
-
-    void setModeTakeAll();
-    void setModeSlicing();
-    void setModeMinMax();
 
     void setNumSlices(int);
     void selectSlice(int);
@@ -39,12 +34,10 @@ public:
     double max() const { return range_.max; }
     int numSlices() const { return numSlices_; }
     int idxSlice() const { return iSlice_; }
-    bool isModeMinMax() const { return mode_==Mode::minmax; }
     QJsonObject toJson() const;
 
 private:
     void recomputeCache();
-    enum class Mode { all, slicing, minmax } mode_ {Mode::slicing};
     Range fullRange_;
     Range range_;
     int numSlices_ {1};

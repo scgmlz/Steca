@@ -34,20 +34,20 @@ Session::Session()
     interpol().fromSettings();
 
     // Some signals imply other signals:
-    connect(this, &Session::sigActivated,     this, &Session::sigDfgram);
-    connect(this, &Session::sigBaseline,      this, &Session::sigDfgram);
-    connect(this, &Session::sigCorr,          this, &Session::sigDfgram);
-    connect(this, &Session::sigDetector,      this, &Session::sigDfgram);
-    connect(this, &Session::sigGamma,         this, &Session::sigDfgram);
-    connect(this, &Session::sigNorm,          this, &Session::sigDfgram);
-    connect(this, &Session::sigPeaks,         this, &Session::sigDfgram);
+    connect(this, &Session::sigActivated,     [this]() {EMIT(sigDfgram());} );
+    connect(this, &Session::sigBaseline,      [this]() {EMIT(sigDfgram());} );
+    connect(this, &Session::sigCorr,          [this]() {EMIT(sigDfgram());} );
+    connect(this, &Session::sigDetector,      [this]() {EMIT(sigDfgram());} );
+    connect(this, &Session::sigGamma,         [this]() {EMIT(sigDfgram());} );
+    connect(this, &Session::sigNorm,          [this]() {EMIT(sigDfgram());} );
+    connect(this, &Session::sigPeaks,         [this]() {EMIT(sigDfgram());} );
 
-    connect(this, &Session::sigCorr,          this, &Session::sigImage);
-    connect(this, &Session::sigDataHighlight, this, &Session::sigImage);
-    connect(this, &Session::sigDetector,      this, &Session::sigImage);
-    connect(this, &Session::sigNorm,          this, &Session::sigImage);
+    connect(this, &Session::sigCorr,          [this]() {EMIT(sigImage());} );
+    connect(this, &Session::sigDataHighlight, [this]() {EMIT(sigImage());} );
+    connect(this, &Session::sigDetector,      [this]() {EMIT(sigImage());} );
+    connect(this, &Session::sigNorm,          [this]() {EMIT(sigImage());} );
 
-    connect(this, &Session::sigDfgram,        this, &Session::sigDoFits);
+    connect(this, &Session::sigDfgram,        [this]() {EMIT(sigDoFits());} );
 
     connect(this, &Session::sigDataHighlight, &gammaSelection_, &GammaSelection::onData);
     connect(this, &Session::sigDataHighlight, &thetaSelection_, &ThetaSelection::onData);

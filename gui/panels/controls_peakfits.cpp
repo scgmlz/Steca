@@ -157,13 +157,13 @@ void RangeControl::onData()
 
 
 //  ***********************************************************************************************
-//! @class PeakdataView and its dependences (local scope)
+//! @class ParamsView and its dependences (local scope)
 
-//! Virtual base class for RawPeakdataView and FitPeakdataView.
+//! Virtual base class for RawParamsView and FitParamsView.
 
-class AnyPeakdataView : public QWidget {
+class AnyParamsView : public QWidget {
 public:
-    AnyPeakdataView();
+    AnyParamsView();
     virtual void updatePeakFun(const PeakFunction&);
 protected:
     QGridLayout grid_;
@@ -172,13 +172,14 @@ protected:
     XLineDisplay readFitFWHM_ {6, true};
 };
 
-AnyPeakdataView::AnyPeakdataView()
+AnyParamsView::AnyParamsView()
 {
     setLayout(&grid_);
 }
 
-void AnyPeakdataView::updatePeakFun(const PeakFunction& peakFun)
+void AnyParamsView::updatePeakFun(const PeakFunction& peakFun)
 {
+    qDebug() << "APV update";
     const qpair& fittedPeak = peakFun.fittedPeak();
     readFitPeakX_.setText(safeRealText(fittedPeak.x));
     readFitPeakY_.setText(safeRealText(fittedPeak.y));
@@ -187,12 +188,12 @@ void AnyPeakdataView::updatePeakFun(const PeakFunction& peakFun)
 
 //! Displays outcome of raw data analysis.
 
-class RawPeakdataView : public AnyPeakdataView {
+class RawParamsView : public AnyParamsView {
 public:
-    RawPeakdataView();
+    RawParamsView();
 };
 
-RawPeakdataView::RawPeakdataView()
+RawParamsView::RawParamsView()
 {
     grid_.addWidget(new QLabel(""), 0, 0);
 
@@ -212,9 +213,9 @@ RawPeakdataView::RawPeakdataView()
 
 //! Displays outcome of peak fit.
 
-class FitPeakdataView : public AnyPeakdataView {
+class FitParamsView : public AnyParamsView {
 public:
-    FitPeakdataView();
+    FitParamsView();
     virtual void updatePeakFun(const PeakFunction&);
 private:
     XLineDisplay spinGuessPeakX_ {6, true};
@@ -222,7 +223,7 @@ private:
     XLineDisplay spinGuessFWHM_ {6, true};
 };
 
-FitPeakdataView::FitPeakdataView()
+FitParamsView::FitParamsView()
 {
     grid_.addWidget(new QLabel("guess"), 0, 1);
     grid_.addWidget(new QLabel("fitted"), 0, 2);
@@ -244,9 +245,10 @@ FitPeakdataView::FitPeakdataView()
     grid_.setColumnStretch(4, 1);
 }
 
-void FitPeakdataView::updatePeakFun(const PeakFunction& peakFun)
+void FitParamsView::updatePeakFun(const PeakFunction& peakFun)
 {
-    AnyPeakdataView::updatePeakFun(peakFun);
+    qDebug() << "FPV update";
+    AnyParamsView::updatePeakFun(peakFun);
 
     const qpair& guessedPeak = peakFun.guessedPeak();
     spinGuessPeakX_.setText(safeRealText(guessedPeak.x));
@@ -257,35 +259,33 @@ void FitPeakdataView::updatePeakFun(const PeakFunction& peakFun)
 
 //! Displays result of either raw data analysis or peak fit.
 
-class PeakdataView : public QStackedWidget {
+class ParamsView : public QStackedWidget {
 public:
-    PeakdataView();
-    void onData();
-    void updatePeakFun(const PeakFunction&);
+    ParamsView();
 private:
-    AnyPeakdataView* widgets_[2];
+    void onData();
+    AnyParamsView* widgets_[2];
 };
 
-PeakdataView::PeakdataView()
+ParamsView::ParamsView()
 {
-    addWidget(widgets_[0] = new RawPeakdataView());
-    addWidget(widgets_[1] = new FitPeakdataView());
-    widgets_[0]->show(); // setCurrentIndex(0);
-    connect(gSession, &Session::sigPeaks, this, &PeakdataView::onData);
+    addWidget(widgets_[0] = new RawParamsView());
+    addWidget(widgets_[1] = new FitParamsView());
+    widgets_[0]->show();
+    connect(gSession, &Session::sigDoFits, this, &ParamsView::onData);
 }
 
-void PeakdataView::onData()
+void ParamsView::onData()
 {
     Peak* peak = gSession->peaks().selectedPeak();
     setEnabled(peak);
+    qDebug() << "ParamsView::onData: " << peak;
     if (!peak)
         return;
-    updatePeakFun(peak->peakFunction());
-}
-
-void PeakdataView::updatePeakFun(const PeakFunction& peakFun)
-{
+    qDebug() << "  fctName=" << peak->functionName();
+    const PeakFunction& peakFun = peak->peakFunction();
     int i = peakFun.isRaw() ? 0 : 1;
+    qDebug() << "ParamsView::updatePF " << i;
     widgets_[i]->updatePeakFun(peakFun);
     setCurrentIndex(i);
 }
@@ -322,7 +322,7 @@ ControlsPeakfits::ControlsPeakfits()
     box->addWidget(new PeaksView);
     box->addWidget(&comboReflType_);
     box->addWidget(new RangeControl);
-    box->addWidget(new PeakdataView);
+    box->addWidget(new ParamsView);
     box->addStretch(1000);
 
     setLayout(box);

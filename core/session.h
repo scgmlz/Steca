@@ -25,9 +25,9 @@
 #include "core/data/corrset.h"
 #include "core/data/dataset.h"
 #include "core/data/image_transform.h"
-#include <iostream>
+#include <QDebug>
 
-#define EMIT(sig) std::cerr<<"emitting "<<#sig<<"\n"; emit sig;
+#define EMIT(sig) qDebug()<<"emitting "<<#sig; emit sig;
 
 extern class Session* gSession;
 
