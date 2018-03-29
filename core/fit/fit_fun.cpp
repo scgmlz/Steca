@@ -113,8 +113,6 @@ PeakFunction::PeakFunction()
 void PeakFunction::reset()
 {
     ParametricFunction::reset();
-    setGuessedPeak(guessedPeak_);
-    setGuessedFWHM(guessedFWHM_);
 }
 
 void PeakFunction::fit(const Curve& curve, const Range& range)
