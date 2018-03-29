@@ -124,7 +124,7 @@ QByteArray Session::serializeSession() const
 void Session::setMetaSelected(int i, bool on)
 {
     metaSelection_[i] = on;
-    emit gSession->sigMetaSelection();
+    EMIT(gSession->sigMetaSelection());
 }
 
 void Session::updateImageSize()
@@ -183,13 +183,13 @@ void Session::setIntenScaleAvg(bool avg, double scale)
 {
     intenScaledAvg_ = avg;
     intenScale_ = scale;
-    emit gSession->sigNorm();
+    EMIT(gSession->sigNorm());
 }
 
 void Session::setNormMode(eNorm normMode)
 {
     normMode_ = normMode;
-    emit gSession->sigNorm();
+    EMIT(gSession->sigNorm());
 }
 
 double Session::calcAvgBackground(const Sequence& seq) const

@@ -54,8 +54,8 @@ void ActiveClustersModel::onMetaSelection()
     for_i (Metadata::size())
         if (gSession->metaSelected(i))
             metaInfoNums_.append(i);
-    emit dataChanged(createIndex(0,COL_ATTRS), createIndex(rowCount(),columnCount()));
-    emit headerDataChanged(Qt::Horizontal, COL_ATTRS, columnCount());
+    EMIT(dataChanged(createIndex(0,COL_ATTRS), createIndex(rowCount(),columnCount())));
+    EMIT(headerDataChanged(Qt::Horizontal, COL_ATTRS, columnCount()));
     endResetModel();
 }
 

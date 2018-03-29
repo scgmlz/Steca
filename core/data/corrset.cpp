@@ -28,7 +28,7 @@ void Corrset::removeFile()
     corrImage_.clear();
     intensCorr_.clear();
     gSession->updateImageSize();
-    emit gSession->sigCorr();
+    EMIT(gSession->sigCorr());
 }
 
 void Corrset::loadFile(const QString& filePath)
@@ -44,7 +44,7 @@ void Corrset::loadFile(const QString& filePath)
     // all ok
     raw_ = rawfile;
     enabled_ = true;
-    emit gSession->sigCorr();
+    EMIT(gSession->sigCorr());
 }
 
 void Corrset::tryEnable(bool on)
@@ -52,7 +52,7 @@ void Corrset::tryEnable(bool on)
     if ((on && !hasFile()) || on==enabled_)
         return;
     enabled_ = on;
-    emit gSession->sigCorr();
+    EMIT(gSession->sigCorr());
 }
 
 const Image* Corrset::intensCorr() const

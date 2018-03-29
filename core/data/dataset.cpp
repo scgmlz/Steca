@@ -53,7 +53,7 @@ void HighlightedData::setCluster(int i)
         return unset();
     ASSERT(i<gSession->dataset().countClusters());
     current_ = &gSession->dataset().clusterAt(i);
-    emit gSession->sigDataHighlight();
+    EMIT(gSession->sigDataHighlight());
 }
 
 void HighlightedData::reset()
@@ -66,13 +66,13 @@ void HighlightedData::reset()
 void HighlightedData::unset()
 {
     current_ = nullptr;
-    emit gSession->sigDataHighlight();
+    EMIT(gSession->sigDataHighlight());
 }
 
 void HighlightedData::setMeasurement(int val)
 {
     measurement_ = current_ ? qMin( val, current_->count()-1 ) : 0;
-    emit gSession->sigDataHighlight();
+    EMIT(gSession->sigDataHighlight());
 }
 
 const Datafile* HighlightedData::file() const
@@ -168,7 +168,7 @@ void Dataset::activateCluster(int index, bool on)
 {
     allClusters_.at(index)->setActivated(on);
     updateActiveClusters();
-    emit gSession->sigActivated();
+    EMIT(gSession->sigActivated());
 }
 
 void Dataset::setFileActivation(int index, bool on)
@@ -177,7 +177,7 @@ void Dataset::setFileActivation(int index, bool on)
     for (Cluster* cluster : fil.clusters_)
         cluster->setActivated(on);
     updateActiveClusters();
-    emit gSession->sigActivated();
+    EMIT(gSession->sigActivated());
 }
 
 void Dataset::onFileChanged()
@@ -190,18 +190,18 @@ void Dataset::onFileChanged()
         cnt += file.count();
     }
     updateClusters();
-    emit gSession->sigFiles();
-    emit gSession->sigClusters();
-    emit gSession->sigActivated();
+    EMIT(gSession->sigFiles());
+    EMIT(gSession->sigClusters());
+    EMIT(gSession->sigActivated());
 }
 
 void Dataset::onClusteringChanged()
 {
     updateClusters();
     highlight().reset();
-    emit gSession->sigClusters();
-    emit gSession->sigActivated();
-    emit gSession->sigDataHighlight();
+    EMIT(gSession->sigClusters());
+    EMIT(gSession->sigActivated());
+    EMIT(gSession->sigDataHighlight());
 }
 
 void Dataset::updateClusters()

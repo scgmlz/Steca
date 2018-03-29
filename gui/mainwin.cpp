@@ -63,15 +63,15 @@ MainWin::MainWin()
             triggers->corrFile.setToolTip(text.toLower());
             toggles->enableCorr.setChecked(gSession->corrset().isEnabled());
             updateActionEnabling();
-            emit gSession->sigDiffractogram();
-            emit gSession->sigImage(); });
+            EMIT(gSession->sigDiffractogram());
+            EMIT(gSession->sigImage()); });
     QObject::connect(gSession, &Session::sigPeaks, [this]() {
             updateActionEnabling();
-            emit gSession->sigDiffractogram();
+            EMIT(gSession->sigDiffractogram());
             runFits(); });
     QObject::connect(gSession, &Session::sigBaseline, [this]() {
             updateActionEnabling();
-            emit gSession->sigDiffractogram(); });
+            EMIT(gSession->sigDiffractogram()); });
 
     initLayout();
     readSettings();
@@ -240,5 +240,5 @@ void MainWin::runFits()
     int iRefl = gSession->peaks().selectedIndex();
     gSession->peakInfos()
         = algo::rawFits(gSession->activeClusters(), gSession->peaks().at(iRefl), &progress);
-    emit gSession->sigRawFits();
+    EMIT(gSession->sigRawFits());
 }

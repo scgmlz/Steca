@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "controls.h"
+#include "core/session.h" // defines EMIT
 #include "gui/base/convert.h"
 #include "gui/base/displays.h"
 #include "gui/capture_and_replay/cmdexception.h"
@@ -42,7 +43,7 @@ CTrigger::CTrigger(const QString& rawname, const QString& text, const QString& i
             if (!isEnabled())
                 txt += "\nThis trigger is currently inoperative.";
             setToolTip(txt); });
-    emit changed();
+    EMIT(changed());
 };
 
 CTrigger::CTrigger(
@@ -82,7 +83,7 @@ CToggle::CToggle(const QString& rawname, const QString& text, bool on, const QSt
             else
                 txt += "\nThis toggle is currently unchecked. Click to check.";
             setToolTip(txt); });
-    emit changed();
+    EMIT(changed());
 };
 
 CToggle::CToggle(const QString& name, const QString& text, bool on, const QString& iconFile,
@@ -183,7 +184,7 @@ void CSpinBox::reportChange()
         return;
     reportedValue_ = val;
     gConsole->log2(true, name()+" set "+QString::number(val));
-    emit valueReleased(val);
+    EMIT(valueReleased(val));
 }
 
 void CSpinBox::onCommand(const QStringList& args)
@@ -194,7 +195,7 @@ void CSpinBox::onCommand(const QStringList& args)
         throw CmdException("Missing argument to command 'set'");
     int val = TO_INT(args[1]);
     setValue(val);
-    emit valueReleased(val);
+    EMIT(valueReleased(val));
 }
 
 //! @class CDoubleSpinBox
@@ -227,7 +228,7 @@ void CDoubleSpinBox::reportChange()
         return;
     reportedValue_ = val;
     gConsole->log2(true, name()+" set "+QString::number(val));
-    emit valueReleased(val);
+    EMIT(valueReleased(val));
 }
 
 void CDoubleSpinBox::onCommand(const QStringList& args)
@@ -238,7 +239,7 @@ void CDoubleSpinBox::onCommand(const QStringList& args)
         throw CmdException("Missing argument to command 'set'");
     double val = TO_DOUBLE(args[1]);
     setValue(val);
-    emit valueReleased(val);
+    EMIT(valueReleased(val));
 }
 
 //! @class CCheckBox

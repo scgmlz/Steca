@@ -35,7 +35,7 @@ void Peak::invalidateGuesses()
 {
     peakFunction_->setGuessedPeak(qpair());
     peakFunction_->setGuessedFWHM(Q_QNAN);
-    emit gSession->sigPeaks();
+    EMIT(gSession->sigPeaks());
 }
 
 void Peak::setGuessPeak(const qpair& peak)
@@ -98,7 +98,7 @@ void Peaks::add(Peak* peak)
 {
     peaks_.push_back(peak);
     selected_ = count()-1;
-    emit gSession->sigPeaks();
+    EMIT(gSession->sigPeaks());
 }
 
 void Peaks::remove()
@@ -108,14 +108,14 @@ void Peaks::remove()
     peaks_.erase(peaks_.begin()+selected_);
     if (selected_>=count())
         selected_ = count()-1;
-    emit gSession->sigPeaks();
+    EMIT(gSession->sigPeaks());
 }
 
 void Peaks::select(int i)
 {
     ASSERT(i<count());
     selected_ = i;
-    emit gSession->sigPeaks();
+    EMIT(gSession->sigPeaks());
 }
 
 QStringList Peaks::names() const

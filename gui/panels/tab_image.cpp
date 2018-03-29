@@ -239,10 +239,10 @@ DataImageTab::DataImageTab()
             gammaRangeTotal_.setText(measurement->rgeGmaFull().to_s()+" deg");
             gammaRangeSlice_.setText(gSession->gammaSelection().range().to_s()+" deg");
             thetaRangeTotal_.setText(measurement->rgeTth().to_s()+" deg");
-            emit gSession->sigImage(); });
+            EMIT(gSession->sigImage()); });
     connect(gSession, &Session::sigTheta, [this]() {
             idxTheta_.setValue(gSession->thetaSelection().iSlice()+1);
-            emit gSession->sigImage(); });
+            EMIT(gSession->sigImage()); });
 
     // outbound connections and control widget setup
     connect(&idxTheta_, &CSpinBox::valueReleased, [](int val) {

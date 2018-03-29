@@ -28,7 +28,4 @@ private:
     QString msg_;
 };
 
-// raise an exception
-#define THROW(msg) throw CmdException(msg)
-
 #endif // CMDEXCEPTION_H

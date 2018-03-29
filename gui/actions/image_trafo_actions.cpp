@@ -52,12 +52,12 @@ void ImageTrafoActions::setImageRotate(const ImageTransform& rot)
     mirrorImage.setIcon(QIcon(mirrorIconFile));
     gSession->setImageTransformRotate(rot);
     // TODO gSession->imageCut().prevent_invalid_cuts()
-    emit gSession->sigDetector();
+    EMIT(gSession->sigDetector());
 }
 
 void ImageTrafoActions::setImageMirror(bool on)
 {
     mirrorImage.setChecked(on);
     gSession->setImageTransformMirror(on);
-    emit gSession->sigDetector();
+    EMIT(gSession->sigDetector());
 }

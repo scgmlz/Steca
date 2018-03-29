@@ -25,6 +25,9 @@
 #include "core/data/corrset.h"
 #include "core/data/dataset.h"
 #include "core/data/image_transform.h"
+#include <iostream>
+
+#define EMIT(sig) std::cerr<<"emitting "<<#sig<<"\n"; emit sig;
 
 extern class Session* gSession;
 

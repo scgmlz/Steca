@@ -59,7 +59,7 @@ void GammaSelection::recomputeCache()
     } else if (mode_ == Mode::minmax) {
         range_ = range_.intersect(fullRange_);
     }
-    emit gSession->sigGamma();
+    EMIT(gSession->sigGamma());
 }
 
 void GammaSelection::setModeTakeAll()

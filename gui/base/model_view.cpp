@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "model_view.h"
+#include "core/session.h" // defines EMIT
 #include "gui/base/convert.h"
 #include "gui/capture_and_replay/console.h"
 #include "gui/capture_and_replay/cmdexception.h"
@@ -22,8 +23,7 @@
 
 TableModel::TableModel(const QString& name)
     : CSettable(name)
-{
-}
+{}
 
 void TableModel::onCommand(const QStringList& args)
 {
@@ -36,7 +36,7 @@ void TableModel::onCommand(const QStringList& args)
 
 void TableModel::refreshModel()
 {
-    emit dataChanged(createIndex(0,0),createIndex(rowCount(),columnCount()-1));
+    EMIT(dataChanged(createIndex(0,0),createIndex(rowCount(),columnCount()-1)));
 }
 
 //! Redraws the entire table, and sets currentIndex to (0,0) [?] which may be unwanted
@@ -83,7 +83,7 @@ void CheckTableModel::onCommand(const QStringList& args)
 //! Refreshes the check box column.
 void CheckTableModel::onActivated()
 {
-    emit dataChanged(createIndex(0,1),createIndex(rowCount()-1,1));
+    EMIT(dataChanged(createIndex(0,1),createIndex(rowCount()-1,1)));
 }
 
 void CheckTableModel::onClicked(const QModelIndex& cell)

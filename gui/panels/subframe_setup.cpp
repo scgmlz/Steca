@@ -30,7 +30,7 @@ SubframeSetup::SubframeSetup()
     addTab(new ControlsInterpolation(), "Interpol");
 
     connect(this, &SubframeSetup::currentChanged, [](int index) {
-            emit gSession->sigDiffractogram(); });
+            EMIT(gSession->sigDiffractogram()); });
 
     connect(gSession, &Session::sigFiles, this, &SubframeSetup::updateTabsAvailability);
 

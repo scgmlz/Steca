@@ -25,19 +25,19 @@ Toggles::Toggles()
     connect(&enableCorr, AT, [](bool on) { gSession->corrset().tryEnable(on); });
 
     connect(&fixedIntenImage, AT, [](bool on) {
-        emit gSession->sigImage();
-        emit gSession->sigDiffractogram();
+        EMIT(gSession->sigImage());
+        EMIT(gSession->sigDiffractogram());
         });
     connect(&fixedIntenDgram, AT, [](bool on) {
-        emit gSession->sigImage();
-        emit gSession->sigDiffractogram();
+        EMIT(gSession->sigImage());
+        EMIT(gSession->sigDiffractogram());
         });
     connect(&combinedDgram, AT, [](bool on) {
-        emit gSession->sigImage();
-        emit gSession->sigDiffractogram();
+        EMIT(gSession->sigImage());
+        EMIT(gSession->sigDiffractogram());
         });
     connect(&showBackground, AT, [](bool on) {
-        emit gSession->sigDiffractogram();
+        EMIT(gSession->sigDiffractogram());
         });
 
     connect(&viewStatusbar, AT, [](bool on) { gGui->statusBar()->setVisible(on); });

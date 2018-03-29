@@ -66,19 +66,19 @@ void InterpolParams::fromJson(const JsonObj& obj)
 void InterpolParams::setEnabled(bool val)
 {
     enabled_ = val;
-    emit gSession->sigInterpol();
+    EMIT(gSession->sigInterpol());
 }
 
 void InterpolParams::setStepAlpha(double val)
 {
     stepAlpha_ = qMax(0., qMin(val, 90.));
-    emit gSession->sigInterpol();
+    EMIT(gSession->sigInterpol());
 }
 
 void InterpolParams::setStepBeta(double val)
 {
     stepBeta_ = qMax(0., qMin(val, 360.));
-    emit gSession->sigInterpol();
+    EMIT(gSession->sigInterpol());
 }
 
 void InterpolParams::setIdwRadius(double val)
@@ -86,23 +86,23 @@ void InterpolParams::setIdwRadius(double val)
     if (!qIsNaN(val))
         val = qMax(0., val);
     idwRadius_ = val;
-    emit gSession->sigInterpol();
+    EMIT(gSession->sigInterpol());
 }
 
 void InterpolParams::setAvgAlphaMax(double val)
 {
     avgAlphaMax_ = qMax(0., qMin(val, 90.));
-    emit gSession->sigInterpol();
+    EMIT(gSession->sigInterpol());
 }
 
 void InterpolParams::setAvgRadius(double val)
 {
     avgRadius_ = qMax(0., val);
-    emit gSession->sigInterpol();
+    EMIT(gSession->sigInterpol());
 }
 
 void InterpolParams::setThreshold(int val)
 {
     threshold_ = qMax(0, qMin(val, 1)); // TODO check
-    emit gSession->sigInterpol();
+    EMIT(gSession->sigInterpol());
 }
