@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/subframe_dfgram.cpp
-//! @brief     Implements class SubframeDiffractogram
+//! @brief     Implements class SubframeDfgram
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "subframe_diffractogram.h"
+#include "subframe_dfgram.h"
 #include "core/session.h"
 #include "gui/view/plot_dfgram.h"
 #include "gui/actions/toggles.h"
@@ -22,7 +22,7 @@
 //  ***********************************************************************************************
 //! @class Diffractogram (local scope)
 
-//! A diffractogram display, with associated controls, for use in SubframeDiffractogram.
+//! A diffractogram display, with associated controls, for use in SubframeDfgram.
 
 class Diffractogram : public QWidget {
 public:
@@ -112,9 +112,9 @@ void Diffractogram::onHighlight()
 }
 
 //  ***********************************************************************************************
-//! @class SubframeDiffractogram
+//! @class SubframeDfgram
 
-SubframeDiffractogram::SubframeDiffractogram()
+SubframeDfgram::SubframeDfgram()
 {
     setTabPosition(QTabWidget::North);
     addTab(new Diffractogram, "Diffractogram");

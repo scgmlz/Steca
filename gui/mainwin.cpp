@@ -91,7 +91,7 @@ MainWin::~MainWin()
     // whereas all the following only reduces the number of perfectly inconsequential leaks:
     delete menus_;
     delete mainframe_;
-    delete frameDiffractogram_;
+    delete frameDfgram_;
     delete frameSetup_;
     delete dockMetadata_;
     delete dockClusters_;
@@ -112,7 +112,7 @@ void MainWin::initLayout()
 
     splMain_.setChildrenCollapsible(false);
     splMain_.addWidget(&splTop_);
-    splMain_.addWidget(frameDiffractogram_ = new SubframeDiffractogram());
+    splMain_.addWidget(frameDfgram_ = new SubframeDfgram());
     splMain_.setStretchFactor(1, 1);
     setCentralWidget(&splMain_);
 

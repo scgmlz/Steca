@@ -62,7 +62,7 @@ private:
     void runFits();
 
     class Mainframe* mainframe_;
-    class SubframeDiffractogram* frameDiffractogram_;
+    class SubframeDfgram* frameDfgram_;
     class SubframeSetup* frameSetup_;
     QDockWidget* dockFiles_;
     QDockWidget* dockClusters_;
