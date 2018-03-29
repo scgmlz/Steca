@@ -26,18 +26,18 @@ Toggles::Toggles()
 
     connect(&fixedIntenImage, AT, [](bool on) {
         EMIT(gSession->sigImage());
-        EMIT(gSession->sigDiffractogram());
+        EMIT(gSession->sigDfgram());
         });
     connect(&fixedIntenDgram, AT, [](bool on) {
         EMIT(gSession->sigImage());
-        EMIT(gSession->sigDiffractogram());
+        EMIT(gSession->sigDfgram());
         });
     connect(&combinedDgram, AT, [](bool on) {
         EMIT(gSession->sigImage());
-        EMIT(gSession->sigDiffractogram());
+        EMIT(gSession->sigDfgram());
         });
     connect(&showBackground, AT, [](bool on) {
-        EMIT(gSession->sigDiffractogram());
+        EMIT(gSession->sigDfgram());
         });
 
     connect(&viewStatusbar, AT, [](bool on) { gGui->statusBar()->setVisible(on); });

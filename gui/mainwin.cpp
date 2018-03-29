@@ -63,15 +63,15 @@ MainWin::MainWin()
             triggers->corrFile.setToolTip(text.toLower());
             toggles->enableCorr.setChecked(gSession->corrset().isEnabled());
             updateActionEnabling();
-            EMIT(gSession->sigDiffractogram());
+            EMIT(gSession->sigDfgram());
             EMIT(gSession->sigImage()); });
     QObject::connect(gSession, &Session::sigPeaks, [this]() {
             updateActionEnabling();
-            EMIT(gSession->sigDiffractogram());
+            EMIT(gSession->sigDfgram());
             runFits(); });
     QObject::connect(gSession, &Session::sigBaseline, [this]() {
             updateActionEnabling();
-            EMIT(gSession->sigDiffractogram()); });
+            EMIT(gSession->sigDfgram()); });
 
     initLayout();
     readSettings();

@@ -68,7 +68,7 @@ sigDfgram        // diffractogram must be repainted
 < lambda(sigPeaks)
 < lambda(sigBaseline)
 < SubframeSetup::currentChanged
--> DiffractogramPlot::renderAll
+-> PlotDfgram::renderAll
 sigFiles         // list of loaded files has changed
 < Dataset::onFileChanged (emits sigFiles, sigClusters, sigActivated)
 -> Mainwin::updateActionEnabling
@@ -112,7 +112,7 @@ sigPeaks         // list of peaks or selected peak has changed
 -> RangeControl::onData
 -> PeakdataView::onData
 -> ControlsPeakfits::onPeaks
--> DiffractogramPlot::renderAll
+-> PlotDfgram::renderAll
 sigRawFits       // fit results have changed
 < MainWin::runFits < sigPeaks
 -> BigtableTab::render

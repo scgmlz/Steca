@@ -127,7 +127,7 @@ PlotDfgram::PlotDfgram(Diffractogram& diffractogram)
 
     // inbound connections:
     connect(gSession, &Session::sigPeaks, this, &PlotDfgram::renderAll);
-    connect(gSession, &Session::sigDiffractogram, this, &PlotDfgram::renderAll);
+    connect(gSession, &Session::sigDfgram, this, &PlotDfgram::renderAll);
 }
 
 void PlotDfgram::clearReflLayer()

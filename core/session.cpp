@@ -34,7 +34,7 @@ Session::Session()
     interpol().fromSettings();
 
     // Some signals imply other signals:
-    connect(this, &Session::sigGamma,         this, &Session::sigDiffractogram);
+    connect(this, &Session::sigGamma,         this, &Session::sigDfgram);
 
     connect(this, &Session::sigDataHighlight, this, &Session::sigImage);
     connect(this, &Session::sigDetector,      this, &Session::sigImage);
