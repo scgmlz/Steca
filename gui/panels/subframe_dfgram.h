@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef SUBFRAME_DIFFRACTOGRAM_H
-#define SUBFRAME_DIFFRACTOGRAM_H
+#ifndef SUBFRAME_DFGRAM_H
+#define SUBFRAME_DFGRAM_H
 
 #include <QTabWidget> // no need for CTabWidget, since there is only one tab
 
@@ -24,4 +24,4 @@ public:
     SubframeDiffractogram();
 };
 
-#endif // SUBFRAME_DIFFRACTOGRAM_H
+#endif // SUBFRAME_DFGRAM_H
