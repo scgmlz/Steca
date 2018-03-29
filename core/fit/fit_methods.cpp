@@ -31,11 +31,11 @@ void FitWrapper::fit(ParametricFunction& function, const Curve& curve)
     QVector<double> parValue(parCount), parMin(parCount), parMax(parCount), parError(parCount);
 
     for_i (parCount) {
-        const ParametricFunction::Parameter& par = function_->parameterAt(i);
+        const FitParameter& par = function_->parameterAt(i);
         ASSERT(qIsFinite(par.value())); // TODO if not so, return false ?
         parValue[i] = par.value();
-        parMin[i] = par.valueRange().min;
-        parMax[i] = par.valueRange().max;
+        parMin[i] = par.allowedMin();
+        parMax[i] = par.allowedMax();
     }
 
     fit_exec(

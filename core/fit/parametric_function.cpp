@@ -16,31 +16,42 @@
 #include "parametric_function.h"
 
 //  ***********************************************************************************************
-//! @class ParametricFunction::Parameter
+//! @class FitParameter
 
-ParametricFunction::Parameter::Parameter()
+FitParameter::FitParameter()
     : value_(0)
     , error_(0)
     , range_(Range::infinite())
 {}
 
-Range ParametricFunction::Parameter::valueRange() const
+double FitParameter::allowedMin() const
 {
-    return range_.isValid() ? range_ : Range(value_, value_);
+    return range_.isValid() ? range_.min : value_;
 }
 
-void ParametricFunction::Parameter::setValueRange(double min, double max)
+double FitParameter::allowedMax() const
+{
+    return range_.isValid() ? range_.max : value_;
+}
+
+void FitParameter::setAllowedRange(double min, double max)
 {
     range_.set(min, max);
 }
 
-void ParametricFunction::Parameter::setValue(double value, double error)
+void FitParameter::setValue(double value, double error)
 {
     value_ = value;
     error_ = error;
 }
 
-JsonObj ParametricFunction::Parameter::toJson() const
+void FitParameter::reset()
+{
+    value_ = range_.bound(0);
+    error_ = 0;
+}
+
+JsonObj FitParameter::toJson() const
 {
     JsonObj ret;
     ret.insert("value", double_to_json(value_));
@@ -48,15 +59,18 @@ JsonObj ParametricFunction::Parameter::toJson() const
     return ret;
 }
 
-void ParametricFunction::Parameter::fromJson(const JsonObj& obj)
+void FitParameter::fromJson(const JsonObj& obj)
 {
     value_ = obj.loadQreal("value");
     range_ = obj.loadRange("range");
 }
 
+//  ***********************************************************************************************
+//! @class ParametricFunction
+
 void ParametricFunction::setParameterCount(int count)
 {
-    parameters_.fill(Parameter(), count);
+    parameters_.fill(FitParameter(), count);
 }
 
 int ParametricFunction::parameterCount() const
@@ -64,7 +78,7 @@ int ParametricFunction::parameterCount() const
     return parameters_.count();
 }
 
-ParametricFunction::Parameter& ParametricFunction::parameterAt(int i)
+FitParameter& ParametricFunction::parameterAt(int i)
 {
     return parameters_[i];
 }
@@ -73,14 +87,14 @@ void ParametricFunction::reset()
 {
     for_i (parameters_.count()) {
         auto& p = parameters_[i];
-        p.setValue(p.valueRange().bound(0), 0);
+        p.reset();
     }
 }
 
 JsonObj ParametricFunction::toJson() const
 {
     QJsonArray params;
-    for (const Parameter& param : parameters_)
+    for (const FitParameter& param : parameters_)
         params.append(param.toJson());
     JsonObj ret;
     ret.insert("parameters", params);

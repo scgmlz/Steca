@@ -18,29 +18,34 @@
 #include "core/typ/json.h"
 #include "core/typ/range.h"
 
+//! Parameter value, error, and allowed range for ParametricFunction
+
+class FitParameter final {
+public:
+    FitParameter();
+
+    double value() const { return value_; }
+    double error() const { return error_; }
+
+    double allowedMin() const;
+    double allowedMax() const;
+    void setAllowedRange(double min, double max);
+
+    void setValue(double value, double error);
+    void reset();
+
+    JsonObj toJson() const;
+    void fromJson(const JsonObj&);
+
+private:
+    double value_, error_;
+    Range range_; //!< allowed range of values
+};
+
 //! Abstract function with parameters
 
 class ParametricFunction {
 public:
-    class Parameter final {
-    public:
-        Parameter();
-
-        double value() const { return value_; }
-        double error() const { return error_; }
-
-        Range valueRange() const; // allowed range of values
-        void setValueRange(double min, double max);
-
-        void setValue(double value, double error);
-
-        JsonObj toJson() const;
-        void fromJson(const JsonObj&);
-
-    private:
-        double value_, error_;
-        Range range_; //!< allowed range of values
-    };
 
     virtual ~ParametricFunction() {}
 
@@ -52,7 +57,7 @@ public:
 public:
     void setParameterCount(int);
     int parameterCount() const;
-    Parameter& parameterAt(int);
+    FitParameter& parameterAt(int);
 
     virtual void reset();
 
@@ -63,7 +68,7 @@ public:
 protected:
     double parValue(int parIndex, double const* parValues) const;
     void setParValue(int parIndex, double val);
-    QVector<Parameter> parameters_;
+    QVector<FitParameter> parameters_;
 };
 
 #endif // PARAMETRIC_FUNCTION_H

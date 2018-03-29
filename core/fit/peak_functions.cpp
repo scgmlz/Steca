@@ -144,12 +144,12 @@ Gaussian::Gaussian(double ampl, double xShift, double sigma)
     auto& parXShift = parameters_[parXSHIFT];
     auto& parSigma = parameters_[parSIGMA];
 
-    parAmpl.setValueRange(0, Q_INFINITY);
+    parAmpl.setAllowedRange(0, Q_INFINITY);
     parAmpl.setValue(ampl, 0);
 
     parXShift.setValue(xShift, 0);
 
-    parSigma.setValueRange(0, Q_INFINITY);
+    parSigma.setAllowedRange(0, Q_INFINITY);
     parSigma.setValue(sigma, 0);
 }
 
@@ -252,12 +252,12 @@ Lorentzian::Lorentzian(double ampl, double xShift, double gamma)
     auto& parXShift = parameters_[parXSHIFT];
     auto& parGamma = parameters_[parGAMMA];
 
-    parAmpl.setValueRange(0, Q_INFINITY);
+    parAmpl.setAllowedRange(0, Q_INFINITY);
     parAmpl.setValue(ampl, 0);
 
     parXShift.setValue(xShift, 0);
 
-    parGamma.setValueRange(0, Q_INFINITY);
+    parGamma.setAllowedRange(0, Q_INFINITY);
     parGamma.setValue(gamma, 0);
 }
 
@@ -359,15 +359,15 @@ PseudoVoigt1::PseudoVoigt1(double ampl, double xShift, double sigmaGamma, double
     auto& parSigmaGamma = parameters_[parSIGMAGAMMA];
     auto& parEta = parameters_[parETA];
 
-    parAmpl.setValueRange(0, Q_INFINITY);
+    parAmpl.setAllowedRange(0, Q_INFINITY);
     parAmpl.setValue(ampl, 0);
 
     parXShift.setValue(xShift, 0);
 
-    parSigmaGamma.setValueRange(0, Q_INFINITY);
+    parSigmaGamma.setAllowedRange(0, Q_INFINITY);
     parSigmaGamma.setValue(sigmaGamma, 0);
 
-    parEta.setValueRange(0, 1);
+    parEta.setAllowedRange(0, 1);
     parEta.setValue(eta, 0);
 }
 
@@ -484,18 +484,18 @@ PseudoVoigt2::PseudoVoigt2(double ampl, double mu, double hwhmG, double hwhmL, d
     auto& parHwhmL = parameters_[parGAMMA];
     auto& parEta = parameters_[parETA];
 
-    parAmpl.setValueRange(0, Q_INFINITY);
+    parAmpl.setAllowedRange(0, Q_INFINITY);
     parAmpl.setValue(ampl, 0);
 
     parMu.setValue(mu, 0);
 
-    parHwhmG.setValueRange(0, Q_INFINITY);
+    parHwhmG.setAllowedRange(0, Q_INFINITY);
     parHwhmG.setValue(hwhmG, 0);
 
-    parHwhmL.setValueRange(0, Q_INFINITY);
+    parHwhmL.setAllowedRange(0, Q_INFINITY);
     parHwhmL.setValue(hwhmL, 0);
 
-    parEta.setValueRange(0, 1);
+    parEta.setAllowedRange(0, 1);
     parEta.setValue(eta, 0);
 }
 
