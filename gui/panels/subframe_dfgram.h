@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/subframe_diffractogram.h
+//! @file      gui/panels/subframe_dfgram.h
 //! @brief     Defines class SubframeDiffractogram
 //!
 //! @homepage  https://github.com/scgmlz/Steca

@@ -20,7 +20,7 @@
 #include "gui/actions/image_trafo_actions.h"
 #include "gui/actions/toggles.h"
 #include "gui/actions/triggers.h"
-#include "gui/panels/subframe_diffractogram.h"
+#include "gui/panels/subframe_dfgram.h"
 #include "gui/panels/subframe_files.h"
 #include "gui/panels/mainframe.h"
 #include "gui/panels/subframe_clusters.h"
