@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/view/plot_dfgram.h
-//! @brief     Defines classes DiffractogramPlot and Diffractogram.
+//! @brief     Defines classes PlotDfgram and Diffractogram.
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -18,13 +18,13 @@
 #include "gui/mainwin.h" // for eFittingTab
 #include "gui/view/plot_overlay.h"
 
-//! Listens to mouse events to select subranges of a DiffractogramPlot.
+//! Listens to mouse events to select subranges of a PlotDfgram.
 
 //! Equips PlotOverlay with domain-specific colors and setter functions.
 
-class DiffractogramPlotOverlay : public PlotOverlay {
+class PlotDfgramOverlay : public PlotOverlay {
 public:
-    DiffractogramPlotOverlay(class DiffractogramPlot&);
+    PlotDfgramOverlay(class PlotDfgram&);
 
 private:
     void addRange(const Range&) final;
@@ -36,9 +36,9 @@ private:
 
 //! A plot frame that displays diffractogram, background and peak fits, and fit ranges.
 
-class DiffractogramPlot : public QCustomPlot {
+class PlotDfgram : public QCustomPlot {
 public:
-    DiffractogramPlot(class Diffractogram&);
+    PlotDfgram(class Diffractogram&);
 
     void plotEmpty();
     void renderAll();
@@ -57,7 +57,7 @@ private:
     QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *dgramBgFittedGraph2_, *guesses_,
         *fits_;
     QVector<QCPGraph*> reflGraph_;
-    DiffractogramPlotOverlay* overlay_;
+    PlotDfgramOverlay* overlay_;
 
     void calcDgram();
     void calcBackground();

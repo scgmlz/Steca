@@ -31,7 +31,7 @@ private:
     void onNormChanged();
     void onHighlight();
 
-    class DiffractogramPlot* plot_;
+    class PlotDfgram* plot_;
     CComboBox comboNormType_ {"normTyp", {"none", "monitor", "Δ monitor", "Δ time", "background"}};
     CRadioButton intenSum_ {"intenSum", "sum"};
     CRadioButton intenAvg_ {"intenAvg", "avg ×"};
@@ -43,7 +43,7 @@ private:
 Diffractogram::Diffractogram()
 {
     // initializations
-    plot_ = new DiffractogramPlot(*this);
+    plot_ = new PlotDfgram(*this);
     gGui->toggles->showBackground.setChecked(true);
     intenAvg_.setChecked(true);
     intenScale_.setDecimals(3);
