@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/fit/parametric_function.cpp
-//! @brief     Implements class Function
+//! @brief     Implements class ParametricFunction
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -16,31 +16,31 @@
 #include "parametric_function.h"
 
 //  ***********************************************************************************************
-//! @class Function::Parameter
+//! @class ParametricFunction::Parameter
 
-Function::Parameter::Parameter()
+ParametricFunction::Parameter::Parameter()
     : value_(0)
     , error_(0)
     , range_(Range::infinite())
 {}
 
-Range Function::Parameter::valueRange() const
+Range ParametricFunction::Parameter::valueRange() const
 {
     return range_.isValid() ? range_ : Range(value_, value_);
 }
 
-void Function::Parameter::setValueRange(double min, double max)
+void ParametricFunction::Parameter::setValueRange(double min, double max)
 {
     range_.set(min, max);
 }
 
-void Function::Parameter::setValue(double value, double error)
+void ParametricFunction::Parameter::setValue(double value, double error)
 {
     value_ = value;
     error_ = error;
 }
 
-JsonObj Function::Parameter::toJson() const
+JsonObj ParametricFunction::Parameter::toJson() const
 {
     JsonObj ret;
     ret.insert("value", double_to_json(value_));
@@ -48,28 +48,28 @@ JsonObj Function::Parameter::toJson() const
     return ret;
 }
 
-void Function::Parameter::fromJson(const JsonObj& obj)
+void ParametricFunction::Parameter::fromJson(const JsonObj& obj)
 {
     value_ = obj.loadQreal("value");
     range_ = obj.loadRange("range");
 }
 
-void Function::setParameterCount(int count)
+void ParametricFunction::setParameterCount(int count)
 {
     parameters_.fill(Parameter(), count);
 }
 
-int Function::parameterCount() const
+int ParametricFunction::parameterCount() const
 {
     return parameters_.count();
 }
 
-Function::Parameter& Function::parameterAt(int i)
+ParametricFunction::Parameter& ParametricFunction::parameterAt(int i)
 {
     return parameters_[i];
 }
 
-void Function::reset()
+void ParametricFunction::reset()
 {
     for_i (parameters_.count()) {
         auto& p = parameters_[i];
@@ -77,7 +77,7 @@ void Function::reset()
     }
 }
 
-JsonObj Function::toJson() const
+JsonObj ParametricFunction::toJson() const
 {
     QJsonArray params;
     for (const Parameter& param : parameters_)
@@ -87,7 +87,7 @@ JsonObj Function::toJson() const
     return ret;
 }
 
-void Function::fromJson(const JsonObj& obj)
+void ParametricFunction::fromJson(const JsonObj& obj)
 {
     QJsonArray params = obj.loadArr("parameters");
     int parCount = params.count();
@@ -96,12 +96,12 @@ void Function::fromJson(const JsonObj& obj)
         parameters_[i].fromJson(params.at(i).toObject());
 }
 
-double Function::parValue(int i, double const* parValues) const
+double ParametricFunction::parValue(int i, double const* parValues) const
 {
     return parValues ? parValues[i] : parameters_.at(i).value();
 }
 
-void Function::setValue(int i, double val)
+void ParametricFunction::setValue(int i, double val)
 {
     parameters_[i].setValue(val, 0);
 }

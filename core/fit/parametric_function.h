@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/fit/parametric_function.h
-//! @brief     Defines class Function
+//! @brief     Defines class ParametricFunction
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -20,7 +20,7 @@
 
 //! Abstract function with parameters
 
-class Function {
+class ParametricFunction {
 public:
     class Parameter final {
     public:
@@ -42,12 +42,12 @@ public:
         Range range_; //!< allowed range of values
     };
 
-    virtual ~Function() {}
+    virtual ~ParametricFunction() {}
 
-    // evaluate the function y = f(x), with given (parValues) or own parameters
+    //! evaluate the function y = f(x), with given (parValues) or own parameters
     virtual double y(double x, double const* parValues = nullptr) const = 0;
 
-    // partial derivative / parameter, with given (parValues) or own parameters
+    //! partial derivative / parameter, with given (parValues) or own parameters
     virtual double dy(double x, int parIndex, double const* parValues = nullptr) const = 0;
 
 public:

@@ -24,11 +24,11 @@
 
 class FitWrapper {
 public:
-    void fit(Function&, const Curve&);
+    void fit(ParametricFunction&, const Curve&);
 
 private:
     // these pointers are valid during fit() call
-    Function* function_;
+    ParametricFunction* function_;
     double const* xValues_;
 
     void fit_exec(double*, double const*, double const*, double*, int, double const*, int);

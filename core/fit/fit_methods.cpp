@@ -18,7 +18,7 @@
 #include "LM/levmar.h"
 #include <qmath.h>
 
-void FitWrapper::fit(Function& function, const Curve& curve)
+void FitWrapper::fit(ParametricFunction& function, const Curve& curve)
 {
     if (curve.isEmpty())
         return;
@@ -31,7 +31,7 @@ void FitWrapper::fit(Function& function, const Curve& curve)
     QVector<double> parValue(parCount), parMin(parCount), parMax(parCount), parError(parCount);
 
     for_i (parCount) {
-        const Function::Parameter& par = function_->parameterAt(i);
+        const ParametricFunction::Parameter& par = function_->parameterAt(i);
         ASSERT(qIsFinite(par.value())); // TODO if not so, return false ?
         parValue[i] = par.value();
         parMin[i] = par.valueRange().min;

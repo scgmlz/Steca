@@ -23,7 +23,7 @@
 
 //! A polynomial, for fitting the background of a diffractogram
 
-class Polynom : public Function {
+class Polynom : public ParametricFunction {
 public:
     Polynom(int degree = 0) { setDegree(degree); }
 
@@ -47,13 +47,12 @@ public:
 
 //! Abstract peak function
 
-class PeakFunction : public Function {
+class PeakFunction : public ParametricFunction {
 public:
     PeakFunction();
 
     void reset();
     void fit(const Curve& curve) { return fit(curve, range_); }
-    virtual void fit(const Curve&, const Range&);
     void fromJson(const JsonObj&);
     virtual void setRange(const Range& range) { range_ = range; }
     virtual void setGuessedPeak(const qpair& peak) { guessedPeak_ = peak; }
@@ -71,11 +70,14 @@ public:
     virtual bool isRaw() const { return false; } //!< overwritten in class Raw, obviously
 
 protected:
+    Curve prepareFit(const Curve&, const Range&);
+
     Range range_;
     qpair guessedPeak_;
     float guessedFWHM_;
 
-    Curve prepareFit(const Curve&, const Range&);
+private:
+    virtual void fit(const Curve&, const Range&);
 };
 
 
