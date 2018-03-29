@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/view/plot_dfgram.h
-//! @brief     Defines classes PlotDfgram and Diffractogram.
+//! @brief     Defines classes PlotDfgram and Dfgram.
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -38,7 +38,7 @@ private:
 
 class PlotDfgram : public QCustomPlot {
 public:
-    PlotDfgram(class Diffractogram&);
+    PlotDfgram(class Dfgram&);
 
     void plotEmpty();
     void renderAll();
@@ -52,7 +52,7 @@ private:
     void resizeEvent(QResizeEvent*);
     void onPeakData();
 
-    Diffractogram& diffractogram_;
+    Dfgram& diffractogram_;
 
     QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *dgramBgFittedGraph2_, *guesses_,
         *fits_;

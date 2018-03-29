@@ -20,13 +20,13 @@
 
 
 //  ***********************************************************************************************
-//! @class Diffractogram (local scope)
+//! @class Dfgram (local scope)
 
 //! A diffractogram display, with associated controls, for use in SubframeDfgram.
 
-class Diffractogram : public QWidget {
+class Dfgram : public QWidget {
 public:
-    Diffractogram();
+    Dfgram();
 private:
     void onNormChanged();
     void onHighlight();
@@ -40,7 +40,7 @@ private:
 };
 
 
-Diffractogram::Diffractogram()
+Dfgram::Dfgram()
 {
     // initializations
     plot_ = new PlotDfgram(*this);
@@ -49,8 +49,8 @@ Diffractogram::Diffractogram()
     intenScale_.setDecimals(3);
 
     // inbound connections
-    connect(gSession, &Session::sigDataHighlight, this, &Diffractogram::onHighlight);
-    connect(gSession, &Session::sigNorm, this, &Diffractogram::onNormChanged);
+    connect(gSession, &Session::sigDataHighlight, this, &Dfgram::onHighlight);
+    connect(gSession, &Session::sigNorm, this, &Dfgram::onNormChanged);
 
     // internal connections
     connect(&actZoom_, &QAction::toggled, this, [this](bool on) {
@@ -95,7 +95,7 @@ Diffractogram::Diffractogram()
     setLayout(box);
 }
 
-void Diffractogram::onNormChanged()
+void Dfgram::onNormChanged()
 {
     intenScale_.setValue(gSession->intenScale()); // TODO own signal
     if (gSession->intenScaledAvg())
@@ -105,7 +105,7 @@ void Diffractogram::onNormChanged()
     plot_->renderAll();
 }
 
-void Diffractogram::onHighlight()
+void Dfgram::onHighlight()
 {
     actZoom_.setChecked(false);
     plot_->renderAll();
@@ -117,5 +117,5 @@ void Diffractogram::onHighlight()
 SubframeDfgram::SubframeDfgram()
 {
     setTabPosition(QTabWidget::North);
-    addTab(new Diffractogram, "Diffractogram");
+    addTab(new Dfgram, "Diffractogram");
 }

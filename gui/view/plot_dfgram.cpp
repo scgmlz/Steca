@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/view/plot_dfgram.cpp
-//! @brief     Implements classes PlotDfgram and Diffractogram.
+//! @brief     Implements classes PlotDfgram and Dfgram.
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -72,7 +72,7 @@ bool PlotDfgramOverlay::subtractModeColor(QColor& color) const
 //  ***********************************************************************************************
 //! @class PlotDfgram
 
-PlotDfgram::PlotDfgram(Diffractogram& diffractogram)
+PlotDfgram::PlotDfgram(Dfgram& diffractogram)
     : diffractogram_(diffractogram)
     , overlay_(new PlotDfgramOverlay(*this))
 {
