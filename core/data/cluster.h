@@ -15,7 +15,7 @@
 #ifndef CLUSTER_H
 #define CLUSTER_H
 
-#include <QSharedPointer> // no auto rm
+#include <memory>
 
 //! A group of one or more Measurement|s.
 

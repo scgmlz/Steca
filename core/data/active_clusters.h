@@ -15,8 +15,7 @@
 #ifndef ACTIVE_CLUSTERS_H
 #define ACTIVE_CLUSTERS_H
 
-#include "core/data/cluster.h" // no auto rm
-#include <QSharedPointer> // required by some compilers
+#include "core/data/cluster.h"
 
 //! The list of activated Cluster|s, and cached averages
 

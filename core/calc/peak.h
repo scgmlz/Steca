@@ -17,7 +17,6 @@
 
 #include <memory>
 #include "core/fit/fit_fun.h"
-#include <QSharedPointer> // no auto rm
 
 //! Wraps a PeakFunction (pimpl idiom)
 
