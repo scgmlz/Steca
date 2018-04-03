@@ -37,16 +37,6 @@ QVector<const Measurement*> const Rawfile::measurements() const
     return ret;
 }
 
-const QFileInfo& Rawfile::fileInfo() const
-{
-    return fileInfo_;
-}
-
-QString Rawfile::fileName() const
-{
-    return fileInfo_.fileName();
-}
-
 Image* Rawfile::foldedImage() const
 {
     ASSERT(!measurements_.isEmpty());

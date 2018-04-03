@@ -30,11 +30,12 @@ public:
     void addDataset(const Metadata&, const size2d&, const QVector<float>&);
 
     QVector<const Measurement*> const measurements() const;
-    int count() const { return measurements_.count(); }
+    int numMeasurements() const { return measurements_.count(); }
     size2d imageSize() const { return imageSize_; }
 
-    const QFileInfo& fileInfo() const;
-    QString fileName() const;
+    const QFileInfo& fileInfo() const { return fileInfo_; }
+    QString fileName() const { return fileInfo_.fileName(); }
+
     Image* foldedImage() const;
 
 private:

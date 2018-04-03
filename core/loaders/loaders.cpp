@@ -87,7 +87,7 @@ namespace load {
 
 QSharedPointer<Rawfile> loadRawfile(const QString& filePath) {
     const QSharedPointer<Rawfile> ret(new Rawfile(load_low_level(filePath)));
-    if (!(ret->count() > 0)) THROW("File " % filePath % " contains no cluster");
+    if (!(ret->numMeasurements() > 0)) THROW("File " % filePath % " contains no cluster");
     return ret;
 }
 

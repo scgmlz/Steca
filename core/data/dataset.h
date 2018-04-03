@@ -31,7 +31,7 @@ public:
     Datafile& operator=(const Datafile&) = default;
     Datafile(const QSharedPointer<const Rawfile>& raw) : raw_(raw) {}
 
-    int count() const { return raw_->count(); }
+    int numMeasurements() const { return raw_->numMeasurements(); }
     QString name() const { return raw_->fileName(); }
     Qt::CheckState activated() const;
 

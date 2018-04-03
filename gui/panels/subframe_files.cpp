@@ -52,9 +52,9 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const
     else if (role==Qt::ToolTipRole && col>=2)
         return QString("File %1\ncontains %2 measurements.here numbered %3 to %4")
             .arg(file.name())
-            .arg(file.count())
+            .arg(file.numMeasurements())
             .arg(gSession->dataset().offset(file)+1)
-            .arg(gSession->dataset().offset(file)+file.count());
+            .arg(gSession->dataset().offset(file)+file.numMeasurements());
     else if (role==Qt::CheckStateRole && col==1)
         return file.activated();
     else if (role==Qt::BackgroundRole) {

@@ -187,7 +187,7 @@ void Dataset::onFileChanged()
     for (Datafile& file: files_) {
         file.index_ = idx++;
         file.offset_ = cnt;
-        cnt += file.count();
+        cnt += file.numMeasurements();
     }
     updateClusters();
     EMIT(gSession->sigFiles());
@@ -210,14 +210,14 @@ void Dataset::updateClusters()
     hasIncomplete_ = false;
     for (Datafile& file : files_) {
         file.clusters_.clear();
-        for (int i=0; i<file.count(); i+=binning_) {
-            if (i+binning_>file.count()) {
+        for (int i=0; i<file.numMeasurements(); i+=binning_) {
+            if (i+binning_>file.numMeasurements()) {
                 hasIncomplete_ = true;
                 if (dropIncomplete_)
                     break;
             }
             QVector<const Measurement*> group;
-            for (int ii=i; ii<file.count() && ii<i+binning_; ii++)
+            for (int ii=i; ii<file.numMeasurements() && ii<i+binning_; ii++)
                 group.append(file.raw_->measurements().at(ii));
             std::unique_ptr<Cluster> cluster {new Cluster(group, file, allClusters_.size(), i)};
             file.clusters_.push_back(cluster.get());
