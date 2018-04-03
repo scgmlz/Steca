@@ -20,18 +20,16 @@
 
 Sequence::Sequence(const QVector<const Measurement*>& measurements)
     : members_(measurements)
+    , metadata_(computeAvgeMetadata())
 {}
 
-//! Returns metadata, averaged over Sequence members. Result is cached.
-const Metadata* Sequence::avgeMetadata() const
+//! Returns metadata, averaged over Sequence members.
+Metadata Sequence::computeAvgeMetadata() const
 {
-    if (!md_.get()) {
-        std::vector<const Metadata*> vecMeta;
-        for (const Measurement* m : members_)
-            vecMeta.push_back(&m->metadata());
-        md_.reset(new Metadata { Metadata::computeAverage(vecMeta) });
-    }
-    return md_.get();
+    std::vector<const Metadata*> vecMeta;
+    for (const Measurement* m : members_)
+        vecMeta.push_back(&m->metadata());
+    return Metadata::computeAverage(vecMeta);
 }
 
 #define AVG_ONES(what_function)                 \

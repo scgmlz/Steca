@@ -43,7 +43,7 @@ public:
     Range rgeTth() const;
     Range rgeInten() const;
 
-    const Metadata* avgeMetadata() const;
+    const Metadata* avgeMetadata() const { return &metadata_; } // TODO rm *
     double avgMonitorCount() const;
     double avgDeltaMonitorCount() const;
     double avgDeltaTime() const;
@@ -55,10 +55,11 @@ public:
     Curve toCurve(double) const;
 
 private:
-    const QVector<const Measurement*> members_;
-    mutable std::unique_ptr<Metadata> md_; //!< averaged Metadata, cached, computed only once
+    const QVector<const Measurement*> members_; //!< points to Dataset:vec<Datafile>:vec<M'ments>
+    const Metadata metadata_; //!< averaged Metadata
 
     QVector<float> collectIntens(const Range&) const;
+    Metadata computeAvgeMetadata() const;
     Curve toCurve(double, const Range&) const;
     double normFactor() const;
 };
