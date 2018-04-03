@@ -137,8 +137,8 @@ void Dataset::addGivenFiles(const QStringList& filePaths)
     for (const QString& path: filePaths) {
         if (path.isEmpty() || hasFile(path))
             continue;
-        QSharedPointer<const Rawfile> rawfile = load::loadRawfile(path);
-        if (rawfile.isNull())
+        const Rawfile* rawfile = load::loadRawfile(path);
+        if (!rawfile)
             continue;
         gSession->setImageSize(rawfile->imageSize());
         files_.push_back(Datafile(rawfile));

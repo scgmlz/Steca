@@ -19,7 +19,6 @@
 #include "core/data/active_clusters.h"
 #include "core/typ/async.h"
 #include "core/typ/cache.h"
-#include <QSharedPointer> // no auto rm
 #include <memory>
 
 //! A Rawfile and associated information.
@@ -27,16 +26,17 @@
 class Datafile {
 public:
     Datafile() = delete;
+    Datafile& operator=(const Datafile&) = delete;
+    Datafile& operator=(Datafile&&) = default;
     Datafile(Datafile&&) = default;
-    Datafile& operator=(const Datafile&) = default;
-    Datafile(const QSharedPointer<const Rawfile>& raw) : raw_(raw) {}
+    Datafile(const Rawfile* raw) : raw_(raw) {}
 
     int numMeasurements() const { return raw_->numMeasurements(); }
     QString name() const { return raw_->fileName(); }
     Qt::CheckState activated() const;
 
     // TODO privatize
-    QSharedPointer<const Rawfile> raw_; //!< owned by this
+    std::unique_ptr<const Rawfile> raw_; //!< owned by this
     int index_; //!< index in files_
     int offset_;  //!< first index in total list of Measurement|s
     std::vector<Cluster*> clusters_; //!< back links to Cluster|s made from this

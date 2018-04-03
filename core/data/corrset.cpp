@@ -35,7 +35,7 @@ void Corrset::loadFile(const QString& filePath)
 {
     if (filePath.isEmpty())
         THROW("invalid call of Corrset::loadFile with empty filePath argument");
-    raw_.reset( load::loadRawfile(filePath).data() );
+    raw_.reset( load::loadRawfile(filePath) );
     if (!raw_.get())
         return;
     gSession->setImageSize(raw_->imageSize());
