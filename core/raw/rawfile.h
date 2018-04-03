@@ -15,7 +15,7 @@
 #ifndef RAWFILE_H
 #define RAWFILE_H
 
-#include "core/data/measurement.h"
+#include "core/raw/measurement.h"
 #include <QFileInfo>
 
 //! A file (loaded from a disk file) that contains a data sequence.
