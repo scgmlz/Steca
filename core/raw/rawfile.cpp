@@ -37,11 +37,11 @@ QVector<const Measurement*> const Rawfile::measurements() const
     return ret;
 }
 
-Image* Rawfile::summedImage() const
+Image Rawfile::summedImage() const
 {
     ASSERT(measurements_.size());
-    auto* ret = new Image(measurements_.front().imageSize());
+    Image ret(measurements_.front().imageSize());
     for (const Measurement& one : measurements_)
-        ret->addIntens(one.image());
+        ret.addIntens(one.image());
     return ret;
 }

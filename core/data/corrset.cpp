@@ -39,7 +39,7 @@ void Corrset::loadFile(const QString& filePath)
     if (!raw_.get())
         return;
     gSession->setImageSize(raw_->imageSize());
-    corrImage_.reset(raw_->summedImage());
+    corrImage_.reset(new Image{raw_->summedImage()});
     intensCorr_.clear(); // will be calculated lazily
     // all ok
     enabled_ = true;

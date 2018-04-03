@@ -69,11 +69,10 @@ class Array2D {
     }
 
 public:
-    // empty array
     Array2D() : size_(0, 0), ts_(nullptr) {}
-
     Array2D(const Array2D&) = delete;
     Array2D& operator=(const Array2D&) = delete;
+    Array2D(Array2D&&) = default;
 
     virtual ~Array2D() { free(); }
 
