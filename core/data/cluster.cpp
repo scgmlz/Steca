@@ -25,8 +25,10 @@ Sequence::Sequence(const QVector<const Measurement*>& measurements)
 //! Returns metadata, averaged over Sequence members. Result is cached.
 const Metadata* Sequence::avgeMetadata() const
 {
-    if (!md_.get())
-        compute_metadata();
+    if (!md_.get()) {
+        auto* m = new Metadata { compute_metadata() };
+        md_.reset(m);
+    }
     return md_.get();
 }
 
@@ -172,14 +174,12 @@ QVector<float> Sequence::collectIntens(const Range& rgeGma) const
 }
 
 //! Computes metadata cache md_.
-void Sequence::compute_metadata() const
+Metadata Sequence::compute_metadata() const
 {
-    auto* m = new Metadata;
-    md_.reset(m);
-
+    Metadata ret;
     const Metadata& firstMd = first()->metadata();
-    m->date = firstMd.date;
-    m->comment = firstMd.comment;
+    ret.date = firstMd.date;
+    ret.comment = firstMd.comment;
 
     // sums: delta mon. count and time,
     // takes the last ones (presumed the maximum) of mon. count and time,
@@ -187,60 +187,62 @@ void Sequence::compute_metadata() const
     for (const Measurement* one : members_) {
         const Metadata& d = one->metadata();
 
-        m->motorXT += d.motorXT;
-        m->motorYT += d.motorYT;
-        m->motorZT += d.motorZT;
+        ret.motorXT += d.motorXT;
+        ret.motorYT += d.motorYT;
+        ret.motorZT += d.motorZT;
 
-        m->motorOmg += d.motorOmg;
-        m->motorTth += d.motorTth;
-        m->motorPhi += d.motorPhi;
-        m->motorChi += d.motorChi;
+        ret.motorOmg += d.motorOmg;
+        ret.motorTth += d.motorTth;
+        ret.motorPhi += d.motorPhi;
+        ret.motorChi += d.motorChi;
 
-        m->motorPST += d.motorPST;
-        m->motorSST += d.motorSST;
-        m->motorOMGM += d.motorOMGM;
+        ret.motorPST += d.motorPST;
+        ret.motorSST += d.motorSST;
+        ret.motorOMGM += d.motorOMGM;
 
-        m->nmT += d.nmT;
-        m->nmTeload += d.nmTeload;
-        m->nmTepos += d.nmTepos;
-        m->nmTeext += d.nmTeext;
-        m->nmXe += d.nmXe;
-        m->nmYe += d.nmYe;
-        m->nmZe += d.nmZe;
+        ret.nmT += d.nmT;
+        ret.nmTeload += d.nmTeload;
+        ret.nmTepos += d.nmTepos;
+        ret.nmTeext += d.nmTeext;
+        ret.nmXe += d.nmXe;
+        ret.nmYe += d.nmYe;
+        ret.nmZe += d.nmZe;
 
-        m->deltaMonitorCount += d.deltaMonitorCount;
-        m->deltaTime += d.deltaTime;
+        ret.deltaMonitorCount += d.deltaMonitorCount;
+        ret.deltaTime += d.deltaTime;
 
-        if (m->monitorCount > d.monitorCount)
+        if (ret.monitorCount > d.monitorCount)
             qWarning() << "decreasing monitor count in combined cluster";
-        if (m->time > d.time)
+        if (ret.time > d.time)
             qWarning() << "decreasing time in combined cluster";
-        m->monitorCount = d.monitorCount;
-        m->time = d.time;
+        ret.monitorCount = d.monitorCount;
+        ret.time = d.time;
     }
 
     double fac = 1.0 / count();
 
-    m->motorXT *= fac;
-    m->motorYT *= fac;
-    m->motorZT *= fac;
+    ret.motorXT *= fac;
+    ret.motorYT *= fac;
+    ret.motorZT *= fac;
 
-    m->motorOmg *= fac;
-    m->motorTth *= fac;
-    m->motorPhi *= fac;
-    m->motorChi *= fac;
+    ret.motorOmg *= fac;
+    ret.motorTth *= fac;
+    ret.motorPhi *= fac;
+    ret.motorChi *= fac;
 
-    m->motorPST *= fac;
-    m->motorSST *= fac;
-    m->motorOMGM *= fac;
+    ret.motorPST *= fac;
+    ret.motorSST *= fac;
+    ret.motorOMGM *= fac;
 
-    m->nmT *= fac;
-    m->nmTeload *= fac;
-    m->nmTepos *= fac;
-    m->nmTeext *= fac;
-    m->nmXe *= fac;
-    m->nmYe *= fac;
-    m->nmZe *= fac;
+    ret.nmT *= fac;
+    ret.nmTeload *= fac;
+    ret.nmTepos *= fac;
+    ret.nmTeext *= fac;
+    ret.nmXe *= fac;
+    ret.nmYe *= fac;
+    ret.nmZe *= fac;
+
+    return ret;
 }
 
 //  ***********************************************************************************************
