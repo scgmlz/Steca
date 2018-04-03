@@ -39,6 +39,8 @@ public:
     static QVector<QVariant> attributeNaNs();
     static int size() { return attributeNaNs().count(); }
 
+    static Metadata computeAverage(const std::vector<const Metadata*>& vec);
+
     QString date, comment;
 
     deg motorXT, motorYT, motorZT, motorOmg, motorTth, motorPhi, motorChi, motorPST, motorSST,

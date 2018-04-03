@@ -14,6 +14,7 @@
 
 #include "metadata.h"
 #include "core/def/idiomatic_for.h"
+#include "core/def/debug.h"
 
 // metadata attributes
 
@@ -196,4 +197,75 @@ QVector<QVariant> Metadata::attributeNaNs()
         for_i (int(eAttr::NUM_ALL_ATTRIBUTES))
             row.append(Q_QNAN);
     return row;
+}
+
+//! Return average over list of metadata.
+Metadata Metadata::computeAverage(const std::vector<const Metadata*>& vec)
+{
+    Metadata ret;
+    const Metadata* firstMd = vec.front();
+    ret.date = firstMd->date;
+    ret.comment = firstMd->comment;
+
+    // sums: delta mon. count and time,
+    // takes the last ones (presumed the maximum) of mon. count and time,
+    // averages the rest
+    for (const Metadata* d : vec) {
+
+        ret.motorXT += d->motorXT;
+        ret.motorYT += d->motorYT;
+        ret.motorZT += d->motorZT;
+
+        ret.motorOmg += d->motorOmg;
+        ret.motorTth += d->motorTth;
+        ret.motorPhi += d->motorPhi;
+        ret.motorChi += d->motorChi;
+
+        ret.motorPST += d->motorPST;
+        ret.motorSST += d->motorSST;
+        ret.motorOMGM += d->motorOMGM;
+
+        ret.nmT += d->nmT;
+        ret.nmTeload += d->nmTeload;
+        ret.nmTepos += d->nmTepos;
+        ret.nmTeext += d->nmTeext;
+        ret.nmXe += d->nmXe;
+        ret.nmYe += d->nmYe;
+        ret.nmZe += d->nmZe;
+
+        ret.deltaMonitorCount += d->deltaMonitorCount;
+        ret.deltaTime += d->deltaTime;
+
+        if (ret.monitorCount > d->monitorCount)
+            qWarning() << "decreasing monitor count in combined cluster";
+        if (ret.time > d->time)
+            qWarning() << "decreasing time in combined cluster";
+        ret.monitorCount = d->monitorCount;
+        ret.time = d->time;
+    }
+
+    double fac = 1.0 / vec.size();
+
+    ret.motorXT *= fac;
+    ret.motorYT *= fac;
+    ret.motorZT *= fac;
+
+    ret.motorOmg *= fac;
+    ret.motorTth *= fac;
+    ret.motorPhi *= fac;
+    ret.motorChi *= fac;
+
+    ret.motorPST *= fac;
+    ret.motorSST *= fac;
+    ret.motorOMGM *= fac;
+
+    ret.nmT *= fac;
+    ret.nmTeload *= fac;
+    ret.nmTepos *= fac;
+    ret.nmTeext *= fac;
+    ret.nmXe *= fac;
+    ret.nmYe *= fac;
+    ret.nmZe *= fac;
+
+    return ret;
 }

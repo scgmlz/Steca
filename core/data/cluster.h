@@ -59,7 +59,6 @@ private:
     mutable std::unique_ptr<Metadata> md_; //!< averaged Metadata, cached, computed only once
 
     QVector<float> collectIntens(const Range&) const;
-    Metadata compute_metadata() const;
     Curve toCurve(double, const Range&) const;
     double normFactor() const;
 };
