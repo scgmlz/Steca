@@ -47,11 +47,11 @@ QString Rawfile::fileName() const
     return fileInfo_.fileName();
 }
 
-shp_Image Rawfile::foldedImage() const
+Image* Rawfile::foldedImage() const
 {
     ASSERT(!measurements_.isEmpty());
-    shp_Image ret(new Image(measurements_.first()->imageSize()));
+    auto* ret = new Image(measurements_.first()->imageSize());
     for (shp_Measurement one : measurements_)
-        ret->addIntens(*one->image());
+        ret->addIntens(one->image());
     return ret;
 }

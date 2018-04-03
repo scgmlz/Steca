@@ -35,7 +35,7 @@ public:
 
     const QFileInfo& fileInfo() const;
     QString fileName() const;
-    shp_Image foldedImage() const;
+    Image* foldedImage() const;
 
 private:
     QFileInfo fileInfo_;

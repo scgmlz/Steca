@@ -49,10 +49,10 @@ public:
     ImageTab();
 protected:
     virtual QPixmap pixmap() = 0;
-    QPixmap makePixmap(shp_Image);
+    QPixmap makePixmap(const Image&);
     QPixmap makeOverlayPixmap(const class Measurement&);
     QPixmap makeBlankPixmap();
-    QImage makeImage(shp_Image);
+    QImage makeImage(const Image&);
     ImageView imageView_;
     QHBoxLayout box_;
     QVBoxLayout controls_;

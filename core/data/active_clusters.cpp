@@ -70,12 +70,8 @@ const Range& ActiveClusters::rgeFixedInten(bool trans, bool cut) const
     if (!rgeFixedInten_.isValid()) {
         TakesLongTime __;
         for (const Cluster* cluster : clusters_)
-            for (const Measurement* one : cluster->members()) {
-                if (one->image()) {
-                    const shp_Image& image = one->image();
-                    rgeFixedInten_.extendBy(ImageLens(*image, trans, cut).rgeInten(false));
-                }
-            }
+            for (const Measurement* one : cluster->members())
+                rgeFixedInten_.extendBy(ImageLens(one->image(), trans, cut).rgeInten(false));
     }
     return rgeFixedInten_;
 }

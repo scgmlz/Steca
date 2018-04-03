@@ -168,7 +168,7 @@ void ImageTab::render()
     imageView_.setPixmap(pixmap());
 }
 
-QPixmap ImageTab::makePixmap(shp_Image image)
+QPixmap ImageTab::makePixmap(const Image& image)
 {
     QImage im = makeImage(image);
     return QPixmap::fromImage(im);
@@ -205,12 +205,9 @@ QPixmap ImageTab::makeBlankPixmap()
     return pixmap;
 }
 
-QImage ImageTab::makeImage(shp_Image image)
+QImage ImageTab::makeImage(const Image& image)
 {
-    if (!image)
-        return {};
-
-    ImageLens imageLens(*image, true, false);
+    ImageLens imageLens(image, true, false);
     const size2d size = imageLens.imgSize();
     if (size.isEmpty())
         return {};

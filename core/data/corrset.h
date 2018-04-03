@@ -17,6 +17,7 @@
 
 #include "core/data/rawfile.h"
 #include <QSharedPointer> // no auto rm
+#include <memory>
 
 //! A correction dataset, consisting of one RawFile and associated settings.
 
@@ -38,7 +39,7 @@ public:
     bool isEnabled() const { return enabled_; }
     bool isActive() const { return hasFile() && enabled_; }
     bool hasNANs() const { return hasNANs_; }
-    shp_Image image() const { return corrImage_; }
+    const Image& image() const { return *corrImage_; }
     const Image* intensCorr() const;
     QJsonObject toJson() const;
 
@@ -49,7 +50,7 @@ private:
     QSharedPointer<const Rawfile> raw_ {nullptr}; //!< owned by this
     bool enabled_ {true};
     mutable bool hasNANs_ {false};
-    shp_Image corrImage_;
+    std::unique_ptr<Image> corrImage_;
     mutable Image intensCorr_;
 };
 

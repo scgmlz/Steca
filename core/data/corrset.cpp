@@ -25,7 +25,7 @@ void Corrset::clear()
 void Corrset::removeFile()
 {
     raw_.clear();
-    corrImage_.clear();
+    // TODO empty image? was corrImage_.clear();
     intensCorr_.clear();
     gSession->updateImageSize();
     EMIT(gSession->sigCorr());
@@ -39,7 +39,7 @@ void Corrset::loadFile(const QString& filePath)
     if (rawfile.isNull())
         return;
     gSession->setImageSize(rawfile->imageSize());
-    corrImage_ = rawfile->foldedImage();
+    corrImage_.reset(rawfile->foldedImage());
     intensCorr_.clear(); // will be calculated lazily
     // all ok
     raw_ = rawfile;

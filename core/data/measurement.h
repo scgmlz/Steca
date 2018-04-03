@@ -48,15 +48,15 @@ public:
 
     Range rgeInten() const;
 
-    shp_Image image() const { return image_; }
+    const Image& image() const { return *image_; }
     size2d imageSize() const;
 
     void collectIntens(QVector<float>&, QVector<int>&, const Range&, deg minTth, deg deltaTth) const;
 
 private:
     const int position_; //! position in file_
-    std::unique_ptr<Metadata> md_; // TODO -> unique
-    shp_Image image_; // TODO -> unique
+    std::unique_ptr<Metadata> md_;
+    std::unique_ptr<Image> image_;
 };
 
 typedef QSharedPointer<const Measurement> shp_Measurement;

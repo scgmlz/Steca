@@ -52,6 +52,4 @@ private:
     Range rgeInten_;
 };
 
-typedef QSharedPointer<Image> shp_Image;
-
 #endif // IMAGE_H

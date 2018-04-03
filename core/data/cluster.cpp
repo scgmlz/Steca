@@ -254,8 +254,7 @@ Cluster::Cluster(
     , index_(index)
     , offset_(offset)
     , activated_(true)
-{
-}
+{}
 
 //! note: the caller must emit sigActivated
 void Cluster::setActivated(bool on)
