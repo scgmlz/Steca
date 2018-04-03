@@ -91,8 +91,4 @@ private:
     bool activated_ {true}; //!< checked in list, selected for use
 };
 
-typedef QSharedPointer<Cluster> shp_Cluster;
-
-Q_DECLARE_METATYPE(shp_Cluster)
-
 #endif // CLUSTER_H

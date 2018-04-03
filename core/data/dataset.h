@@ -20,6 +20,7 @@
 #include "core/typ/async.h"
 #include "core/typ/cache.h"
 #include <QSharedPointer> // no auto rm
+#include <memory>
 
 //! A RawFile and associated information.
 
@@ -84,8 +85,8 @@ public:
     void setFileActivation(int index, bool on);
 
     // Const methods:
-    int countFiles() const;
-    int countClusters() const;
+    int countFiles() const { return files_.size(); }
+    int countClusters() const { return allClusters_.size(); }
     const Datafile& fileAt(int i) const;
     const Cluster& clusterAt(int i) const;
     int offset(const Datafile& file) const { return file.offset_; }
@@ -100,7 +101,7 @@ public:
 
 private:
     std::vector<Datafile> files_; //!< loaded Datafile|s only live here
-    QVector<shp_Cluster> allClusters_; //!< all Cluster|s are owned by this
+    std::vector<std::unique_ptr<Cluster>> allClusters_; //!< all Cluster|s are owned by this
     int binning_ {1}; //!< bin so many Measurement|s into one cluster
     bool dropIncomplete_ {false}; //!< drop Cluster|s that have less than binning_ members.
     bool hasIncomplete_; //!< current binning does result in at least one incomplete cluster

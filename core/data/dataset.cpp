@@ -219,9 +219,9 @@ void Dataset::updateClusters()
             QVector<const Measurement*> group;
             for (int ii=i; ii<file.count() && ii<i+binning_; ii++)
                 group.append(file.raw_->measurements().at(ii));
-            shp_Cluster cluster(new Cluster(group, file, allClusters_.size(), i));
-            allClusters_.append(cluster);
-            file.clusters_.push_back(cluster.data());
+            std::unique_ptr<Cluster> cluster {new Cluster(group, file, allClusters_.size(), i)};
+            file.clusters_.push_back(cluster.get());
+            allClusters_.push_back(std::move(cluster));
         }
     }
     updateActiveClusters();
@@ -230,32 +230,20 @@ void Dataset::updateClusters()
 void Dataset::updateActiveClusters()
 {
     activeClusters_ = {};
-    for (const shp_Cluster& cluster : allClusters_) {
+    for (const auto& cluster : allClusters_) {
         if (cluster->isActivated())
-            activeClusters_.appendHere(cluster.data());
+            activeClusters_.appendHere(cluster.get());
     }
-}
-
-int Dataset::countFiles() const
-{
-    return files_.size();
-}
-
-int Dataset::countClusters() const
-{
-    return allClusters_.count();
 }
 
 const Datafile& Dataset::fileAt(int i) const
 {
-    ASSERT(countFiles());
     ASSERT(0<=i && i<countFiles());
     return files_[i];
 }
 
 const Cluster& Dataset::clusterAt(int i) const
 {
-    ASSERT(countClusters());
     ASSERT(0<=i && i<countClusters());
     return *allClusters_[i];
 }
