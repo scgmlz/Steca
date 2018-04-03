@@ -55,7 +55,7 @@ public:
     Curve toCurve(double) const;
 
 private:
-    QVector<const Measurement*> members_;
+    const QVector<const Measurement*> members_;
     mutable std::unique_ptr<Metadata> md_; //!< averaged Metadata, cached, computed only once
 
     QVector<float> collectIntens(const Range&) const;
