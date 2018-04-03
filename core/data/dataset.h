@@ -22,7 +22,7 @@
 #include <QSharedPointer> // no auto rm
 #include <memory>
 
-//! A RawFile and associated information.
+//! A Rawfile and associated information.
 
 class Datafile {
 public:

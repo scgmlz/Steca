@@ -16,10 +16,9 @@
 #define CORRSET_H
 
 #include "core/data/rawfile.h"
-#include <QSharedPointer> // no auto rm
 #include <memory>
 
-//! A correction dataset, consisting of one RawFile and associated settings.
+//! A correction dataset, consisting of one Rawfile and associated settings.
 
 //! Note that "correction", as used throughout Steca, rather means "calibration" or "normalization".
 
@@ -35,7 +34,7 @@ public:
 
     // Lookup methods
     const Rawfile& raw() const { return *raw_; }
-    bool hasFile() const { return !raw_.isNull(); }
+    bool hasFile() const { return raw_.get(); }
     bool isEnabled() const { return enabled_; }
     bool isActive() const { return hasFile() && enabled_; }
     bool hasNANs() const { return hasNANs_; }
@@ -47,7 +46,7 @@ private:
     void onCorr();
     void calcIntensCorr() const;
 
-    QSharedPointer<const Rawfile> raw_ {nullptr}; //!< owned by this
+    std::unique_ptr<const Rawfile> raw_; //!< owned by this
     bool enabled_ {true};
     mutable bool hasNANs_ {false};
     std::unique_ptr<Image> corrImage_;

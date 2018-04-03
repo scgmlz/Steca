@@ -24,7 +24,7 @@ void Corrset::clear()
 
 void Corrset::removeFile()
 {
-    raw_.clear();
+    raw_.release();
     // TODO empty image? was corrImage_.clear();
     intensCorr_.clear();
     gSession->updateImageSize();
@@ -35,14 +35,13 @@ void Corrset::loadFile(const QString& filePath)
 {
     if (filePath.isEmpty())
         THROW("invalid call of Corrset::loadFile with empty filePath argument");
-    QSharedPointer<Rawfile> rawfile = load::loadRawfile(filePath);
-    if (rawfile.isNull())
+    raw_.reset( load::loadRawfile(filePath).data() );
+    if (!raw_.get())
         return;
-    gSession->setImageSize(rawfile->imageSize());
-    corrImage_.reset(rawfile->foldedImage());
+    gSession->setImageSize(raw_->imageSize());
+    corrImage_.reset(raw_->foldedImage());
     intensCorr_.clear(); // will be calculated lazily
     // all ok
-    raw_ = rawfile;
     enabled_ = true;
     EMIT(gSession->sigCorr());
 }
