@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/data/image.cpp
+//! @file      core/raw/image.cpp
 //! @brief     Implements class Image
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/data/image.h"
+#include "core/raw/image.h"
 
 Image::Image(const size2d& size)
 {

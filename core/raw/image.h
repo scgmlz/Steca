@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/data/image.h
+//! @file      core/raw/image.h
 //! @brief     Defines class Image
 //!
 //! @homepage  https://github.com/scgmlz/Steca

@@ -15,7 +15,7 @@
 #ifndef TAB_IMAGE_H
 #define TAB_IMAGE_H
 
-#include "core/data/image.h"
+#include "core/raw/image.h"
 #include "gui/base/controls.h"
 #include <QPainter>
 
