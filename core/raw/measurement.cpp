@@ -53,9 +53,8 @@ size2d Measurement::imageSize() const
 
 //! Computes intens and counts.
 //! Called only by Sequence::collectIntens.
-void Measurement::collectIntens(
-    QVector<float>& intens, QVector<int>& counts, const Range& rgeGma,
-    deg minTth, deg deltaTth) const
+void Measurement::collectIntens(QVector<float>& intens, QVector<int>& counts,
+                                const Range& rgeGma, deg minTth, deg deltaTth) const
 {
     const shp_AngleMap& angleMap = gSession->angleMap(*this);
     ASSERT(!angleMap.isNull());
@@ -84,12 +83,10 @@ void Measurement::collectIntens(
             = gSession->corrset().isActive() ? gSession->corrset().intensCorr()->inten(ind) : 1;
         if (qIsNaN(corr))
             continue;
-
         inten *= corr;
 
-        deg tth = map.at(ind).tth;
-
         // bin index
+        deg tth = map.at(ind).tth;
         int ti = qFloor((tth - minTth) / deltaTth);
         ASSERT(ti <= count);
         ti = qMin(ti, count - 1); // it can overshoot due to floating point calculation

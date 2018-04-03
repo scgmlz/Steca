@@ -123,7 +123,7 @@ signals:
     void sigCorr();          //!< corr file has been loaded or unloaded or enabled or disabled
     void sigDataHighlight(); //!< highlighted File or/and Cluster has changed
     void sigDetector();      //!< detector geometry has changed
-    void sigDfgram(); //!< diffractogram must be repainted
+    void sigDfgram();        //!< diffractogram must be repainted
     void sigDoFits();        //!< fits must be redone
     void sigFiles();         //!< list of loaded files has changed
     void sigGamma();         //!< gamma selection has changed
