@@ -40,7 +40,7 @@ PeakInfo algo::rawFit(const Cluster& cluster, int iGamma, const Peak& peak)
     algo::calculateAlphaBeta(alpha, beta, rgeTth.center(), gammaSector.center(),
                              cluster.chi(), cluster.omg(), cluster.phi());
 
-    shp_Metadata metadata = cluster.avgeMetadata();
+    const Metadata* metadata = cluster.avgeMetadata();
 
     return rgeTth.contains(fitresult.x)
         ? PeakInfo(

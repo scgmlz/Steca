@@ -43,7 +43,7 @@ public:
     Range rgeTth() const;
     Range rgeInten() const;
 
-    shp_Metadata avgeMetadata() const;
+    const Metadata* avgeMetadata() const;
     double avgMonitorCount() const;
     double avgDeltaMonitorCount() const;
     double avgDeltaTime() const;
@@ -56,7 +56,7 @@ public:
 
 private:
     QVector<const Measurement*> members_;
-    shp_Metadata md_; //!< averaged Metadata, cached, computed only once
+    mutable std::unique_ptr<Metadata> md_; //!< averaged Metadata, cached, computed only once
 
     QVector<float> collectIntens(const Range&) const;
     void compute_metadata() const;

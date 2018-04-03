@@ -23,11 +23,11 @@ Sequence::Sequence(const QVector<const Measurement*>& measurements)
 {}
 
 //! Returns metadata, averaged over Sequence members. Result is cached.
-shp_Metadata Sequence::avgeMetadata() const
+const Metadata* Sequence::avgeMetadata() const
 {
-    if (md_.isNull())
+    if (!md_.get())
         compute_metadata();
-    return md_;
+    return md_.get();
 }
 
 #define AVG_ONES(what_function)                 \
@@ -174,11 +174,10 @@ QVector<float> Sequence::collectIntens(const Range& rgeGma) const
 //! Computes metadata cache md_.
 void Sequence::compute_metadata() const
 {
-    const_cast<Sequence*>(this)->md_ = shp_Metadata(new Metadata);
-    Metadata* m = const_cast<Metadata*>(md_.data());
+    auto* m = new Metadata;
+    md_.reset(m);
 
     const Metadata& firstMd = *(first()->metadata());
-
     m->date = firstMd.date;
     m->comment = firstMd.comment;
 

@@ -24,10 +24,10 @@ class PeakInfo final {
 public:
     PeakInfo();
     PeakInfo(
-        shp_Metadata,
+        const Metadata*,
         deg alpha, deg beta, Range, float, float /*error*/,
         deg, deg /*error*/, float, float /*error*/);
-    PeakInfo(shp_Metadata, deg alpha, deg beta, Range);
+    PeakInfo(const Metadata*, deg alpha, deg beta, Range);
     PeakInfo(
         deg alpha, deg beta, Range, float, float /*error*/, deg, deg /*error*/,
         float, float /*error*/);
@@ -62,7 +62,7 @@ public:
     QVector<QVariant> data() const;
 
 private:
-    shp_Metadata md_;
+    const Metadata* md_;
     deg alpha_, beta_;
     Range rgeGma_;
     float inten_, intenError_;

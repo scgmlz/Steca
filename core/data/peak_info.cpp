@@ -59,12 +59,11 @@ static void sortColumns(QVector<double>& xs, QVector<double>& ys, QVector<int>& 
 //! as -1 when output is written for these programs (polefigure!).
 
 PeakInfo::PeakInfo()
-    : PeakInfo(
-          shp_Metadata(), Q_QNAN, Q_QNAN, Range(), float(Q_QNAN), float(Q_QNAN),
-          deg(Q_QNAN), deg(Q_QNAN), Q_QNAN, Q_QNAN)
+    : PeakInfo(nullptr, Q_QNAN, Q_QNAN, Range(), float(Q_QNAN), float(Q_QNAN),
+               deg(Q_QNAN), deg(Q_QNAN), Q_QNAN, Q_QNAN)
 {}
 
-PeakInfo::PeakInfo(shp_Metadata md, deg alpha, deg beta, Range rgeGma, float inten,
+PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma, float inten,
                    float intenError, deg tth, deg tthError, float fwhm, float fwhmError)
     : md_(md)
     , alpha_(alpha)
@@ -78,14 +77,14 @@ PeakInfo::PeakInfo(shp_Metadata md, deg alpha, deg beta, Range rgeGma, float int
     , fwhmError_(fwhmError)
 {}
 
-PeakInfo::PeakInfo(shp_Metadata md, deg alpha, deg beta, Range rgeGma)
+PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma)
     : PeakInfo(md, alpha, beta, rgeGma, float(Q_QNAN), float(Q_QNAN),
                deg(Q_QNAN), deg(Q_QNAN), float(Q_QNAN), float(Q_QNAN))
 {}
 
 PeakInfo::PeakInfo(deg alpha, deg beta, Range rgeGma, float inten, float intenError, deg tth,
                    deg tthError, float fwhm, float fwhmError)
-    : PeakInfo(shp_Metadata(), alpha, beta, rgeGma, inten, intenError,
+    : PeakInfo(nullptr, alpha, beta, rgeGma, inten, intenError,
                tth, tthError, fwhm, fwhmError)
 {}
 

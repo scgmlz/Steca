@@ -28,8 +28,7 @@ void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
                 const Range& rgeGma, const QString& separator)
 {
     ASSERT(rgeGma.isValid());
-    const Metadata* md = cluster->avgeMetadata().data();
-    ASSERT(md);
+    const Metadata* md = cluster->avgeMetadata();
     stream << "Comment: " << md->comment << '\n';
     stream << "Date: " << md->date << '\n';
     stream << "Gamma range min: " << rgeGma.min << '\n';
