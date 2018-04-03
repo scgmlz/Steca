@@ -18,7 +18,7 @@
 Measurement::Measurement(
     const int position, const Metadata& md, const size2d& size, const QVector<float>& intens)
     : position_(position)
-    , md_(new Metadata(md))
+    , metadata_(md)
     , image_(new Image(size))
 {
     ASSERT(intens.count() == size.count());
@@ -99,12 +99,12 @@ void Measurement::collectIntens(
     }
 }
 
-deg Measurement::midTth() const { return md_->motorTth; }
+deg Measurement::midTth() const { return metadata_.motorTth; }
 
-double Measurement::monitorCount() const { return md_->monitorCount; }
-double Measurement::deltaMonitorCount() const { return md_->deltaMonitorCount; }
-double Measurement::deltaTime() const { return md_->deltaTime; }
+double Measurement::monitorCount() const { return metadata_.monitorCount; }
+double Measurement::deltaMonitorCount() const { return metadata_.deltaMonitorCount; }
+double Measurement::deltaTime() const { return metadata_.deltaTime; }
 
-deg Measurement::omg() const { return md_->motorOmg; }
-deg Measurement::phi() const { return md_->motorPhi; }
-deg Measurement::chi() const { return md_->motorChi; }
+deg Measurement::omg() const { return metadata_.motorOmg; }
+deg Measurement::phi() const { return metadata_.motorPhi; }
+deg Measurement::chi() const { return metadata_.motorChi; }

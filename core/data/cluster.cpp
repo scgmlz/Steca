@@ -177,7 +177,7 @@ void Sequence::compute_metadata() const
     auto* m = new Metadata;
     md_.reset(m);
 
-    const Metadata& firstMd = *(first()->metadata());
+    const Metadata& firstMd = first()->metadata();
     m->date = firstMd.date;
     m->comment = firstMd.comment;
 
@@ -185,38 +185,38 @@ void Sequence::compute_metadata() const
     // takes the last ones (presumed the maximum) of mon. count and time,
     // averages the rest
     for (const Measurement* one : members_) {
-        const Metadata* d = one->metadata();
+        const Metadata& d = one->metadata();
 
-        m->motorXT += d->motorXT;
-        m->motorYT += d->motorYT;
-        m->motorZT += d->motorZT;
+        m->motorXT += d.motorXT;
+        m->motorYT += d.motorYT;
+        m->motorZT += d.motorZT;
 
-        m->motorOmg += d->motorOmg;
-        m->motorTth += d->motorTth;
-        m->motorPhi += d->motorPhi;
-        m->motorChi += d->motorChi;
+        m->motorOmg += d.motorOmg;
+        m->motorTth += d.motorTth;
+        m->motorPhi += d.motorPhi;
+        m->motorChi += d.motorChi;
 
-        m->motorPST += d->motorPST;
-        m->motorSST += d->motorSST;
-        m->motorOMGM += d->motorOMGM;
+        m->motorPST += d.motorPST;
+        m->motorSST += d.motorSST;
+        m->motorOMGM += d.motorOMGM;
 
-        m->nmT += d->nmT;
-        m->nmTeload += d->nmTeload;
-        m->nmTepos += d->nmTepos;
-        m->nmTeext += d->nmTeext;
-        m->nmXe += d->nmXe;
-        m->nmYe += d->nmYe;
-        m->nmZe += d->nmZe;
+        m->nmT += d.nmT;
+        m->nmTeload += d.nmTeload;
+        m->nmTepos += d.nmTepos;
+        m->nmTeext += d.nmTeext;
+        m->nmXe += d.nmXe;
+        m->nmYe += d.nmYe;
+        m->nmZe += d.nmZe;
 
-        m->deltaMonitorCount += d->deltaMonitorCount;
-        m->deltaTime += d->deltaTime;
+        m->deltaMonitorCount += d.deltaMonitorCount;
+        m->deltaTime += d.deltaTime;
 
-        if (m->monitorCount > d->monitorCount)
+        if (m->monitorCount > d.monitorCount)
             qWarning() << "decreasing monitor count in combined cluster";
-        if (m->time > d->time)
+        if (m->time > d.time)
             qWarning() << "decreasing time in combined cluster";
-        m->monitorCount = d->monitorCount;
-        m->time = d->time;
+        m->monitorCount = d.monitorCount;
+        m->time = d.time;
     }
 
     double fac = 1.0 / count();

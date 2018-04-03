@@ -30,7 +30,7 @@ public:
     Measurement(const int position, const Metadata&, const size2d&, const QVector<float>&);
 
     int position() const { return position_; }
-    const Metadata* metadata() const { return md_.get(); }
+    const Metadata& metadata() const { return metadata_; }
 
     deg midTth() const;
 
@@ -51,11 +51,12 @@ public:
     const Image& image() const { return *image_; }
     size2d imageSize() const;
 
-    void collectIntens(QVector<float>&, QVector<int>&, const Range&, deg minTth, deg deltaTth) const;
+    void collectIntens(
+        QVector<float>&, QVector<int>&, const Range&, deg minTth, deg deltaTth) const;
 
 private:
     const int position_; //! position in file_
-    std::unique_ptr<Metadata> md_;
+    Metadata metadata_;
     std::unique_ptr<Image> image_;
 };
 
