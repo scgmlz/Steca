@@ -26,17 +26,17 @@
 class Datafile {
 public:
     Datafile() = delete;
-    Datafile& operator=(const Datafile&) = delete;
-    Datafile& operator=(Datafile&&) = default;
+    Datafile(const Datafile&) = delete;
     Datafile(Datafile&&) = default;
-    Datafile(const Rawfile* raw) : raw_(raw) {}
+    Datafile& operator=(Datafile&&) = default;
+    Datafile(Rawfile&& raw) : raw_(std::move(raw)) {}
 
-    int numMeasurements() const { return raw_->numMeasurements(); }
-    QString name() const { return raw_->fileName(); }
+    int numMeasurements() const { return raw_.numMeasurements(); }
+    QString name() const { return raw_.fileName(); }
     Qt::CheckState activated() const;
 
     // TODO privatize
-    std::unique_ptr<const Rawfile> raw_; //!< owned by this
+    Rawfile raw_; //!< owned by this
     int index_; //!< index in files_
     int offset_;  //!< first index in total list of Measurement|s
     std::vector<Cluster*> clusters_; //!< back links to Cluster|s made from this

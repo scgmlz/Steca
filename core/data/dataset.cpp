@@ -137,11 +137,9 @@ void Dataset::addGivenFiles(const QStringList& filePaths)
     for (const QString& path: filePaths) {
         if (path.isEmpty() || hasFile(path))
             continue;
-        const Rawfile* rawfile = load::loadRawfile(path);
-        if (!rawfile)
-            continue;
-        gSession->setImageSize(rawfile->imageSize());
-        files_.push_back(Datafile(rawfile));
+        Rawfile rawfile { load::loadRawfile(path) };
+        gSession->setImageSize(rawfile.imageSize());
+        files_.push_back(Datafile {std::move(rawfile)});
         onFileChanged();
     }
     if (countFiles())
@@ -218,7 +216,7 @@ void Dataset::updateClusters()
             }
             QVector<const Measurement*> group;
             for (int ii=i; ii<file.numMeasurements() && ii<i+binning_; ii++)
-                group.append(file.raw_->measurements().at(ii));
+                group.append(file.raw_.measurements().at(ii));
             std::unique_ptr<Cluster> cluster {new Cluster(group, file, allClusters_.size(), i)};
             file.clusters_.push_back(cluster.get());
             allClusters_.push_back(std::move(cluster));
@@ -253,7 +251,7 @@ QJsonObject Dataset::toJson() const
     QJsonObject ret;
     QJsonArray arr;
     for (const Datafile& file : files_)
-        arr.append(file.raw_->fileInfo().absoluteFilePath());
+        arr.append(file.raw_.fileInfo().absoluteFilePath());
     ret.insert("files", arr);
     ret.insert("binning", binning_);
     return ret;
@@ -273,7 +271,7 @@ bool Dataset::hasFile(const QString& fileName) const
 {
     QFileInfo fileInfo(fileName);
     for (const Datafile& file : files_)
-        if (fileInfo == file.raw_->fileInfo())
+        if (fileInfo == file.raw_.fileInfo())
             return true;
     return false;
 }
