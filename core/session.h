@@ -24,7 +24,7 @@
 #include "core/data/peak_info.h"
 #include "core/data/corrset.h"
 #include "core/data/dataset.h"
-#include "core/data/image_transform.h"
+#include "core/calc/image_transform.h"
 #include <QDebug>
 
 #define EMIT(sig) qDebug()<<"emitting "<<#sig; emit sig;

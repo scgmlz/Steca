@@ -15,7 +15,7 @@
 #ifndef IMAGE_TRAFO_ACTIONS_H
 #define IMAGE_TRAFO_ACTIONS_H
 
-#include "core/data/image_transform.h"
+#include "core/calc/image_transform.h"
 #include "gui/base/controls.h"
 
 //! Trigger and toggle to control image rotation and mirror.
