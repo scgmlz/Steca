@@ -68,7 +68,7 @@ PeakInfos algo::rawFits(const ActiveClusters& seq, const Peak& peak, Progress* p
         if (progress)
             progress->step();
         for_i (nGamma) {
-            const PeakInfo refInfo = rawFit(*cluster, i, peak);
+            const PeakInfo refInfo { rawFit(*cluster, i, peak) };
             if (!qIsNaN(refInfo.inten()))
                 ret.append(refInfo);
         }
