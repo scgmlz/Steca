@@ -15,6 +15,8 @@
 #ifndef GAMMA_SELECTION_H
 #define GAMMA_SELECTION_H
 
+#include <QObject>
+
 //! Supports different ways of setting a gamma range.
 
 class GammaSelection : public QObject {

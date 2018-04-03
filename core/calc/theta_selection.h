@@ -15,6 +15,7 @@
 #ifndef THETA_SELECTION_H
 #define THETA_SELECTION_H
 
+#include <QObject>
 
 //! Select a theta bin for overlay in scattering image.
 
