@@ -18,10 +18,11 @@
 #include "core/algo/coord_trafos.h"
 
 //! Fits peak to the given gamma sector and constructs a PeakInfo.
-PeakInfo algo::rawFit(const Cluster& cluster, const Peak& peak, const Range& gmaSector)
+PeakInfo algo::rawFit(const Cluster& cluster, int iGamma, const Peak& peak)
 {
+    const Range gammaSector = gSession->gammaSelection().slice2range(iGamma);
     // fit peak, and retrieve peak parameters:
-    Curve curve = cluster.toCurve(gmaSector);
+    Curve curve = cluster.toCurve(gammaSector);
     auto& baseline = gSession->baseline();
     const Polynom f = Polynom::fromFit(baseline.polynomDegree(), curve, baseline.ranges());
     curve.subtract([f](double x) {return f.y(x);});
@@ -36,16 +37,16 @@ PeakInfo algo::rawFit(const Cluster& cluster, const Peak& peak, const Range& gma
 
     // compute alpha, beta:
     deg alpha, beta;
-    algo::calculateAlphaBeta(alpha, beta, rgeTth.center(), gmaSector.center(),
+    algo::calculateAlphaBeta(alpha, beta, rgeTth.center(), gammaSector.center(),
                              cluster.chi(), cluster.omg(), cluster.phi());
 
     shp_Metadata metadata = cluster.avgeMetadata();
 
     return rgeTth.contains(fitresult.x)
         ? PeakInfo(
-              metadata, alpha, beta, gmaSector, float(fitresult.y), float(peakError.y),
+              metadata, alpha, beta, gammaSector, float(fitresult.y), float(peakError.y),
               deg(fitresult.x), deg(peakError.x), float(fwhm), float(fwhmError))
-        : PeakInfo(metadata, alpha, beta, gmaSector);
+        : PeakInfo(metadata, alpha, beta, gammaSector);
 }
 
 //! Gathers PeakInfos from Datasets.
@@ -67,8 +68,7 @@ PeakInfos algo::rawFits(const ActiveClusters& seq, const Peak& peak, Progress* p
         if (progress)
             progress->step();
         for_i (nGamma) {
-            const PeakInfo refInfo = rawFit(
-                *cluster, peak, gSession->gammaSelection().slice2range(i));
+            const PeakInfo refInfo = rawFit(*cluster, i, peak);
             if (!qIsNaN(refInfo.inten()))
                 ret.append(refInfo);
         }
