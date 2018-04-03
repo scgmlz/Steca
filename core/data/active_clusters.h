@@ -39,7 +39,6 @@ public:
     void invalidateAvgMutables() const;
     PeakInfos rawFits(const class Peak& peak, class Progress* progress) const;
 
-
 private:
     void computeAvgeCurve() const;
     double calcAvgMutable(double (Cluster::*avgFct)() const) const;

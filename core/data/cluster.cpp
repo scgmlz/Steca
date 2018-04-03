@@ -31,7 +31,7 @@ shp_Metadata Sequence::avgeMetadata() const
 }
 
 #define AVG_ONES(what_function)                 \
-    double avg = 0;                              \
+    double avg = 0;                             \
     for (const Measurement* one : members_)     \
         avg += one->what_function();            \
     avg /= count();                             \
