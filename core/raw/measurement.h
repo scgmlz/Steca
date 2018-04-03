@@ -16,7 +16,7 @@
 #define MEASUREMENT_H
 
 #include "core/raw/image.h"
-#include "core/data/metadata.h"
+#include "core/raw/metadata.h"
 #include <QSharedPointer> // no auto rm
 #include <memory>
 
