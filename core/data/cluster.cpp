@@ -185,8 +185,7 @@ void Sequence::compute_metadata() const
     // takes the last ones (presumed the maximum) of mon. count and time,
     // averages the rest
     for (const Measurement* one : members_) {
-        const Metadata* d = one->metadata().data();
-        ASSERT(d);
+        const Metadata* d = one->metadata();
 
         m->motorXT += d->motorXT;
         m->motorYT += d->motorYT;

@@ -18,6 +18,7 @@
 #include "core/data/image.h"
 #include "core/data/metadata.h"
 #include <QSharedPointer> // no auto rm
+#include <memory>
 
 //! A Measurement consts of an Image with associated Metadata
 
@@ -29,7 +30,7 @@ public:
     Measurement(const int position, const Metadata&, const size2d&, const QVector<float>&);
 
     int position() const { return position_; }
-    shp_Metadata metadata() const { return md_; }
+    const Metadata* metadata() const { return md_.get(); }
 
     deg midTth() const;
 
@@ -54,7 +55,7 @@ public:
 
 private:
     const int position_; //! position in file_
-    shp_Metadata md_; // TODO -> unique
+    std::unique_ptr<Metadata> md_; // TODO -> unique
     shp_Image image_; // TODO -> unique
 };
 
