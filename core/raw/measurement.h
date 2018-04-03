@@ -17,7 +17,6 @@
 
 #include "core/raw/image.h"
 #include "core/raw/metadata.h"
-#include <QSharedPointer> // no auto rm
 #include <memory>
 
 //! A Measurement consts of an Image with associated Metadata
@@ -27,6 +26,7 @@ class Measurement {
 public:
     Measurement() = delete;
     Measurement(const Measurement&) = delete;
+    Measurement(Measurement&&) = default;
     Measurement(const int position, const Metadata&, const size2d&, const QVector<float>&);
 
     int position() const { return position_; }
@@ -58,7 +58,5 @@ private:
     std::unique_ptr<Metadata> md_;
     std::unique_ptr<Image> image_;
 };
-
-typedef QSharedPointer<const Measurement> shp_Measurement;
 
 #endif // MEASUREMENT_H

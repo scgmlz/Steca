@@ -30,7 +30,7 @@ public:
     void addDataset(const Metadata&, const size2d&, const QVector<float>&);
 
     QVector<const Measurement*> const measurements() const;
-    int numMeasurements() const { return measurements_.count(); }
+    int numMeasurements() const { return measurements_.size(); }
     size2d imageSize() const { return imageSize_; }
 
     const QFileInfo& fileInfo() const { return fileInfo_; }
@@ -40,7 +40,7 @@ public:
 
 private:
     QFileInfo fileInfo_;
-    QVector<shp_Measurement> measurements_; // TODO EASY -> unique_ptr
+    std::vector<Measurement> measurements_;
     size2d imageSize_;
 };
 

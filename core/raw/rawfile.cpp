@@ -22,26 +22,26 @@ Rawfile::Rawfile(const QString& fileName)
 //! The loaders use this function to push cluster
 void Rawfile::addDataset(const Metadata& md, const size2d& sz, const QVector<float>& ivec)
 {
-    if (measurements_.isEmpty())
+    if (!measurements_.size())
         imageSize_ = sz;
     else if (sz != imageSize_)
         THROW("Inconsistent image size in " % fileName());
-    measurements_.append(shp_Measurement(new Measurement(measurements_.count(), md, sz, ivec)));
+    measurements_.push_back({(int)measurements_.size(), md, sz, ivec});
 }
 
 QVector<const Measurement*> const Rawfile::measurements() const
 {
     QVector<const Measurement*> ret;
-    for (const shp_Measurement& one: measurements_)
-        ret.append(one.data());
+    for (const Measurement& one: measurements_)
+        ret.append(&one);
     return ret;
 }
 
 Image* Rawfile::foldedImage() const
 {
-    ASSERT(!measurements_.isEmpty());
-    auto* ret = new Image(measurements_.first()->imageSize());
-    for (shp_Measurement one : measurements_)
-        ret->addIntens(one->image());
+    ASSERT(measurements_.size());
+    auto* ret = new Image(measurements_.front().imageSize());
+    for (const Measurement& one : measurements_)
+        ret->addIntens(one.image());
     return ret;
 }

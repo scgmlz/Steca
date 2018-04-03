@@ -164,7 +164,7 @@ ImageTab::ImageTab()
 
 void ImageTab::render()
 {
-    gSession->corrset().clearIntens(); // TODO move this to more appriate place
+    // ?? gSession->corrset().clearIntens(); // TODO move this to more appriate place
     imageView_.setPixmap(pixmap());
 }
 
@@ -298,5 +298,7 @@ CorrImageTab::CorrImageTab()
 
 QPixmap CorrImageTab::pixmap()
 {
+    if (!gSession->corrset().hasFile())
+        return makeBlankPixmap();
     return makePixmap(gSession->corrset().image());
 }
