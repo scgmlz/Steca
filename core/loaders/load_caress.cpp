@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/def/idiomatic_for.h"
-#include "core/data/rawfile.h"
+#include "core/raw/rawfile.h"
 #include <qmath.h>
 #include <sstream>
 

@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/data/rawfile.cpp
+//! @file      core/raw/rawfile.cpp
 //! @brief     Implements class Rawfile
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/data/rawfile.h"
+#include "core/raw/rawfile.h"
 #include <QStringBuilder> // for ".." % ..
 
 Rawfile::Rawfile(const QString& fileName)

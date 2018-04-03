@@ -16,7 +16,7 @@
 #define MAINWIN_H
 
 #include "core/calc/lens.h"
-#include "core/data/rawfile.h"
+#include "core/raw/rawfile.h"
 #include "core/def/settings.h"
 #include "gui/capture_and_replay/console.h"
 #include <QDir>

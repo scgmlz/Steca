@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/data/rawfile.h"
+#include "core/raw/rawfile.h"
 #include <QStringBuilder> // for ".." % ..
 
 namespace load {

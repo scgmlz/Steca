@@ -15,7 +15,7 @@
 #ifndef LOADERS_H
 #define LOADERS_H
 
-#include "core/data/rawfile.h"
+#include "core/raw/rawfile.h"
 
 //! Functions loadRawfile and loadComment, and their dependences.
 
