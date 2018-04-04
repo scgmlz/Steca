@@ -1,2 +1,4 @@
 - wrap get_data_unit in load_caress
-- revert from std::vector to QVector
+- QVector -> std::vector
+- rm "register" from Caress code
+- find out which examples are in which format
