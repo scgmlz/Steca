@@ -43,31 +43,6 @@ struct size2d {
 //! 2D (indexed by int i/j) array
 template <typename T>
 class Array2D {
-    private:
-    size2d size_;
-
-    typedef T* col_t;
-    col_t* ts_;
-
-    void alloc(const size2d& size) {
-        free();
-
-        if (!(size_ = size).isEmpty()) {
-            ts_ = static_cast<col_t*>(::calloc(size_.w, sizeof(col_t*)));
-            for (int i = 0; i < size_.w; ++i)
-                ts_[i] = static_cast<col_t>(::calloc(size_.h, sizeof(T)));
-        }
-    }
-
-    void free() {
-        if (ts_) {
-            for (int i = 0; i < size_.w; ++i)
-                ::free(ts_[i]);
-            ::free(ts_);
-            ts_ = nullptr;
-        }
-    }
-
 public:
     Array2D() : size_(0, 0), ts_(nullptr) {}
     Array2D(const Array2D&) = delete;
@@ -118,6 +93,31 @@ public:
     T& refAt(int i, int j) const {
         ASSERT(i < size_.w && j < size_.h);
         return ts_[i][j];
+    }
+
+private:
+    size2d size_;
+
+    typedef T* col_t;
+    col_t* ts_;
+
+// TODO get rid of C-style alloc/free
+    void alloc(const size2d& size) {
+        free();
+        if (!(size_ = size).isEmpty()) {
+            ts_ = static_cast<col_t*>(::calloc(size_.w, sizeof(col_t*)));
+            for (int i = 0; i < size_.w; ++i)
+                ts_[i] = static_cast<col_t>(::calloc(size_.h, sizeof(T)));
+        }
+    }
+
+    void free() {
+        if (ts_) {
+            for (int i = 0; i < size_.w; ++i)
+                ::free(ts_[i]);
+            ::free(ts_);
+            ts_ = nullptr;
+        }
     }
 };
 

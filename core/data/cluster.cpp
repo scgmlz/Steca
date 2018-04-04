@@ -158,7 +158,7 @@ QVector<float> Sequence::collectIntens(const Range& rgeGma) const
     deg minTth = tthRge.min, deltaTth = tthWdt / numBins;
 
     for (const Measurement* one : members_)
-        one->collectIntens(intens, counts, rgeGma, minTth, deltaTth);
+        Measurement::collectIntens(*one, intens, counts, rgeGma, minTth, deltaTth);
 
     // sum or average
     if (gSession->intenScaledAvg()) {
