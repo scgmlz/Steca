@@ -37,7 +37,7 @@ QVector<const Measurement*> const Rawfile::measurements() const
     return ret;
 }
 
-Image* Rawfile::foldedImage() const
+Image* Rawfile::summedImage() const
 {
     ASSERT(measurements_.size());
     auto* ret = new Image(measurements_.front().imageSize());

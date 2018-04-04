@@ -36,7 +36,7 @@ public:
     const QFileInfo& fileInfo() const { return fileInfo_; }
     QString fileName() const { return fileInfo_.fileName(); }
 
-    Image* foldedImage() const;
+    Image* summedImage() const;
 
 private:
     QFileInfo fileInfo_;
