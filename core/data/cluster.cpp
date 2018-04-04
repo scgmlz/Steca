@@ -91,15 +91,43 @@ Curve Sequence::toCurve(double _normFactor) const
 
 Curve Sequence::toCurve(double _normFactor, const Range& _rgeGma) const
 {
-    QVector<float> intens = collectIntens(_rgeGma);
-    int count = intens.count();
-    if (!count)
+    const Range tthRge = rgeTth();
+    const deg tthWdt = tthRge.width();
+
+    const ImageCut& cut = gSession->imageCut();
+    const int pixWidth = gSession->imageSize().w - cut.left() - cut.right();
+
+    int numBins;
+    if (count()>1) { // combined cluster
+        const Measurement* one = first();
+        deg delta = one->rgeTth().width() / pixWidth;
+        numBins = qCeil(tthWdt / delta);
+    } else {
+        numBins = pixWidth; // simply match the pixels
+    }
+    if (!numBins)
         return {};
+
+    QVector<float> intens(numBins, 0);
+    QVector<int> counts(numBins, 0);
+
+    deg minTth = tthRge.min, deltaTth = tthWdt / numBins;
+
+    for (const Measurement* one : members_)
+        algo::projectIntensity(*one, intens, counts, _rgeGma, minTth, deltaTth);
+
+    // sum or average
+    if (gSession->intenScaledAvg()) {
+        double scale = gSession->intenScale();
+        for_i (numBins) {
+            int cnt = counts.at(i);
+            if (cnt > 0)
+                intens[i] *= scale / cnt;
+        }
+    }
+
     Curve res;
-    Range _rgeTth = rgeTth();
-    deg minTth = _rgeTth.min;
-    deg deltaTth = _rgeTth.width() / count;
-    for_i (count)
+    for_i (numBins)
         res.append(minTth + deltaTth * i, double(intens.at(i) * _normFactor));
     return res;
 };
@@ -133,45 +161,6 @@ double Sequence::normFactor() const
     if (qIsNaN(ret))
         qWarning() << "Bad normalisation value";
     return ret;
-}
-
-//! Called only by toCurve(..).
-QVector<float> Sequence::collectIntens(const Range& rgeGma) const
-{
-    const Range tthRge = rgeTth();
-    const deg tthWdt = tthRge.width();
-
-    const ImageCut& cut = gSession->imageCut();
-    const int pixWidth = gSession->imageSize().w - cut.left() - cut.right();
-
-    int numBins;
-    if (1 < count()) { // combined cluster
-        const Measurement* one = first();
-        deg delta = one->rgeTth().width() / pixWidth;
-        numBins = qCeil(tthWdt / delta);
-    } else {
-        numBins = pixWidth; // simply match the pixels
-    }
-
-    QVector<float> intens(numBins, 0);
-    QVector<int> counts(numBins, 0);
-
-    deg minTth = tthRge.min, deltaTth = tthWdt / numBins;
-
-    for (const Measurement* one : members_)
-        algo::projectIntensity(*one, intens, counts, rgeGma, minTth, deltaTth);
-
-    // sum or average
-    if (gSession->intenScaledAvg()) {
-        double scale = gSession->intenScale();
-        for_i (numBins) {
-            int cnt = counts.at(i);
-            if (cnt > 0)
-                intens[i] *= scale / cnt;
-        }
-    }
-
-    return intens;
 }
 
 //  ***********************************************************************************************

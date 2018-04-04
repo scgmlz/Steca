@@ -56,7 +56,6 @@ private:
     const QVector<const Measurement*> members_; //!< points to Dataset:vec<Datafile>:vec<M'ments>
     const Metadata metadata_; //!< averaged Metadata
 
-    QVector<float> collectIntens(const Range&) const;
     Metadata computeAvgeMetadata() const;
     Curve toCurve(double, const Range&) const;
     double normFactor() const;
