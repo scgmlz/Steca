@@ -51,10 +51,6 @@ public:
     const Image& image() const { return *image_; }
     size2d imageSize() const;
 
-    static void collectIntens(
-        const Measurement& measurement, QVector<float>&, QVector<int>&,
-        const Range&, deg minTth, deg deltaTth);
-
 private:
     const int position_; //! position in file_
     Metadata metadata_;

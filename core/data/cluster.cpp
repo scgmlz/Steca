@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/session.h"
+#include "core/algo/project_intensity.h"
 #include <qmath.h>
 
 //  ***********************************************************************************************
@@ -158,7 +159,7 @@ QVector<float> Sequence::collectIntens(const Range& rgeGma) const
     deg minTth = tthRge.min, deltaTth = tthWdt / numBins;
 
     for (const Measurement* one : members_)
-        Measurement::collectIntens(*one, intens, counts, rgeGma, minTth, deltaTth);
+        algo::projectIntensity(*one, intens, counts, rgeGma, minTth, deltaTth);
 
     // sum or average
     if (gSession->intenScaledAvg()) {

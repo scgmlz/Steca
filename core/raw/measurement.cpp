@@ -51,52 +51,6 @@ size2d Measurement::imageSize() const
     return image_->size();
 }
 
-//! Computes intens and counts.
-//! Called only by Sequence::collectIntens.
-void Measurement::collectIntens(
-    const Measurement& measurement, QVector<float>& intens, QVector<int>& counts,
-    const Range& rgeGma, deg minTth, deg deltaTth)
-{
-    const shp_AngleMap& angleMap = gSession->angleMap(measurement);
-    ASSERT(!angleMap.isNull());
-    const AngleMap& map = *angleMap;
-
-    QVector<int> const* gmaIndexes = nullptr;
-    int gmaIndexMin = 0, gmaIndexMax = 0;
-    map.getGmaIndexes(rgeGma, gmaIndexes, gmaIndexMin, gmaIndexMax);
-
-    ASSERT(gmaIndexes);
-    ASSERT(gmaIndexMin <= gmaIndexMax);
-    ASSERT(gmaIndexMax <= gmaIndexes->count());
-
-    ASSERT(intens.count() == counts.count());
-    int count = intens.count();
-
-    ASSERT(0 < deltaTth);
-
-    for (int i = gmaIndexMin; i < gmaIndexMax; ++i) {
-        int ind = gmaIndexes->at(i);
-        float inten = measurement.image().inten(ind);
-        if (qIsNaN(inten))
-            continue;
-
-        float corr
-            = gSession->corrset().isActive() ? gSession->corrset().intensCorr()->inten(ind) : 1;
-        if (qIsNaN(corr))
-            continue;
-        inten *= corr;
-
-        // bin index
-        deg tth = map.at(ind).tth;
-        int ti = qFloor((tth - minTth) / deltaTth);
-        ASSERT(ti <= count);
-        ti = qMin(ti, count - 1); // it can overshoot due to floating point calculation
-
-        intens[ti] += inten;
-        counts[ti] += 1;
-    }
-}
-
 deg Measurement::midTth() const { return metadata_.motorTth; }
 
 double Measurement::monitorCount() const { return metadata_.monitorCount; }
