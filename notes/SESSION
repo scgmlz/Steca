@@ -1,0 +1,30 @@
+Data structur of class Session.
+Last update 4mar18.
+
+Session
+- Dataset                      dataset_
+  - vec<Datafile>                files_
+    - Rawfile                      raw_
+      - vec<Measurement>             measurements_
+        - Metadata                     metadata_
+        - UP<Image>                    image_
+          - Array2D<float>               intens_
+    - vec<Cluster*>                clusters_           # backlinks to allClusters_
+  - vec<UP<Cluster>>             allClusters_
+    [ Cluster<Sequence ]
+    - Datafile&                    file_
+    - vec<Measurement*>            members_
+    - Metadata                     metadata_
+  - HighlightedData              highlight_
+    - Cluster*                     current_            # backlink to allClusters_
+  - ActiveClusters               activeClusters_
+    - vec<Cluster*>                clusters            # backlinks to allClusters_
+- Corrset                      corrset_
+  - UP<Rawfile>                  raw_
+  - UP<Image>                    corrImage_
+- PeakInfos                    peakInfos_              # created by algo::rawFits < sigDoFits
+  < vec<PeakInfo>                *this
+    - Metadata*                    md_
+
+legend:
+UP = unique_ptr
