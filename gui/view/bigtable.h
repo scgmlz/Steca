@@ -17,7 +17,6 @@
 
 #include "core/typ/variant.h"
 #include "gui/base/model_view.h"
-#include <memory>
 
 //! Model for the BigtableView view.
 

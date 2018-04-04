@@ -15,8 +15,6 @@
 #ifndef CLUSTER_H
 #define CLUSTER_H
 
-#include <memory>
-
 //! A group of one or more Measurement|s.
 
 //! Base class of Cluster, and also used to hold _all_ loaded Measurements.
