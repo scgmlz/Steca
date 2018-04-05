@@ -58,8 +58,6 @@ private:
     const int position_; //! position in file_
     Metadata metadata_;
     std::unique_ptr<Image> image_;
-    mutable std::unique_ptr<AngleMap> map__;
-    mutable std::unique_ptr<ImageKey> key__;
 };
 
 #endif // MEASUREMENT_H

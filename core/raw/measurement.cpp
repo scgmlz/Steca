@@ -65,6 +65,8 @@ deg Measurement::chi() const { return metadata_.motorChi; }
 
 const AngleMap& Measurement::angleMap() const
 {
+    static std::unique_ptr<AngleMap> map__;
+    static std::unique_ptr<ImageKey> key__;
     auto* newKey = new ImageKey(midTth() );
     if (!map__ || !key__ || *newKey!=*key__) {
         map__.reset(new AngleMap(*newKey));
