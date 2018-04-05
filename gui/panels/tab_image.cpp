@@ -175,10 +175,10 @@ QPixmap ImageTab::makePixmap(const Image& image)
     return QPixmap::fromImage(im);
 }
 
-QPixmap ImageTab::makeOverlayPixmap(const Measurement& cluster)
+QPixmap ImageTab::makeOverlayPixmap(const Measurement& measurement)
 {
-    QImage im = makeImage(cluster.image());
-    const AngleMap& angleMap = gSession->angleMap(cluster);
+    QImage im = makeImage(measurement.image());
+    const AngleMap& angleMap = measurement.angleMap();
     const Range& rgeGma = gSession->gammaSelection().range();
     const Range& rgeTth = gSession->thetaSelection().range();
     const QSize& size = im.size();

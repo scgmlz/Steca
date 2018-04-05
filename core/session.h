@@ -25,7 +25,6 @@
 #include "core/data/corrset.h"
 #include "core/data/dataset.h"
 #include "core/calc/image_transform.h"
-#include "core/typ/cache.h"
 #include <QDebug>
 
 #define EMIT(sig) qDebug()<<"emitting "<<#sig; emit sig;
@@ -111,7 +110,6 @@ public:
 
     size2d imageSize() const;
     IJ midPix() const;
-    const AngleMap& angleMap(const Measurement&) const;
 
 signals:
     void sigActivated();     //!< selection of active clusters has changed
@@ -152,8 +150,6 @@ private:
     double intenScale_ {1};
     std::vector<bool> metaSelection_; //!< true if meta datum is to be displayed
     size2d imageSize_; //!< All images must have this same size
-    // deeply private:
-    mutable cache_lazy<ImageKey, AngleMap> angleMapCache_ {360};
 };
 
 #endif // SESSION_H

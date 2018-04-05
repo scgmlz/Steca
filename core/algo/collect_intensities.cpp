@@ -23,7 +23,7 @@ void projectIntensity(
     QVector<float>& intens, QVector<int>& counts,
     const Measurement& measurement, const Range& rgeGma, deg minTth, deg deltaTth)
 {
-    const AngleMap& map = gSession->angleMap(measurement);
+    const AngleMap map = measurement.angleMap();
 
     const QVector<int>* gmaIndexes = nullptr;
     int gmaIndexMin = 0, gmaIndexMax = 0;

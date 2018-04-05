@@ -29,17 +29,17 @@ Measurement::Measurement(
 
 Range Measurement::rgeGma() const
 {
-    return gSession->angleMap(*this).rgeGma();
+    return angleMap().rgeGma();
 }
 
 Range Measurement::rgeGmaFull() const
 {
-    return gSession->angleMap(*this).rgeGmaFull();
+    return angleMap().rgeGmaFull();
 }
 
 Range Measurement::rgeTth() const
 {
-    return gSession->angleMap(*this).rgeTth();
+    return angleMap().rgeTth();
 }
 
 Range Measurement::rgeInten() const
@@ -61,3 +61,8 @@ double Measurement::deltaTime() const { return metadata_.deltaTime; }
 deg Measurement::omg() const { return metadata_.motorOmg; }
 deg Measurement::phi() const { return metadata_.motorPhi; }
 deg Measurement::chi() const { return metadata_.motorChi; }
+
+AngleMap Measurement::angleMap() const
+{
+    return {ImageKey(gSession->geometry(), gSession->imageSize(), gSession->imageCut(), gSession->midPix(), midTth())};
+}

@@ -15,7 +15,6 @@
 #ifndef DATASET_H
 #define DATASET_H
 
-#include "core/data/angle_map.h"
 #include "core/data/active_clusters.h"
 #include "core/typ/async.h"
 #include <memory>

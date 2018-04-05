@@ -68,8 +68,6 @@ void Session::clear()
 
     normMode_ = eNorm::NONE;
 
-    angleMapCache_.clear();
-
     intenScaledAvg_ = true;
     intenScale_ = 1;
 }
@@ -171,15 +169,6 @@ IJ Session::midPix() const
     mid.j += off.j;
 
     return mid;
-}
-
-const AngleMap& Session::angleMap(const Measurement& one) const
-{
-    ImageKey key(geometry_, imageSize_, imageCut_, midPix(), one.midTth());
-    AngleMap* map = angleMapCache_.value(key);
-    if (!map)
-        map = angleMapCache_.insert(key, shp_AngleMap(new AngleMap(key)));
-    return *map;
 }
 
 // TODO: split into two functions (see usage in panel_diff..)
