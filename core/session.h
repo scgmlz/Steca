@@ -37,7 +37,6 @@ enum class eNorm {
     MONITOR,
     DELTA_MONITOR,
     DELTA_TIME,
-    BACKGROUND,
 };
 
 //! Companion of MainWin and MainWin, holds data and data-related settings.
@@ -113,8 +112,6 @@ public:
     size2d imageSize() const;
     IJ midPix() const;
     const AngleMap& angleMap(const Measurement&) const;
-    double calcAvgBackground(const Sequence&) const;
-    double calcAvgBackground() const;
 
 signals:
     void sigActivated();     //!< selection of active clusters has changed

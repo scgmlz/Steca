@@ -50,14 +50,12 @@ public:
 
     Curve toCurve() const;
     Curve toCurve(const Range&) const;
-    Curve toCurve(double) const;
 
 private:
     const QVector<const Measurement*> members_; //!< points to Dataset:vec<Datafile>:vec<M'ments>
     const Metadata metadata_; //!< averaged Metadata
 
     Metadata computeAvgeMetadata() const;
-    Curve toCurve(double, const Range&) const;
     double normFactor() const;
 };
 

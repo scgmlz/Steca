@@ -32,7 +32,7 @@ private:
     void onHighlight();
 
     class PlotDfgram* plot_;
-    CComboBox comboNormType_ {"normTyp", {"none", "monitor", "Δ monitor", "Δ time", "background"}};
+    CComboBox comboNormType_ {"normTyp", {"none", "monitor", "Δ monitor", "Δ time"}};
     CRadioButton intenSum_ {"intenSum", "sum"};
     CRadioButton intenAvg_ {"intenAvg", "avg ×"};
     CDoubleSpinBox intenScale_ {"intenScale", 6, 0.001};

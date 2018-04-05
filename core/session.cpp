@@ -195,22 +195,3 @@ void Session::setNormMode(eNorm normMode)
     normMode_ = normMode;
     EMIT(gSession->sigNorm());
 }
-
-// only used in background normalization
-// TODO move out from here
-double Session::calcAvgBackground(const Sequence& seq) const
-{
-    Curve gmaCurve = seq.toCurve(1.);
-    Polynom bgPolynom = Polynom::fromFit(baseline().polynomDegree(), gmaCurve, baseline().ranges());
-    return bgPolynom.avgY(seq.rgeTth());
-}
-
-// TODO move out from here
-double Session::calcAvgBackground() const
-{
-    TakesLongTime __;
-    double bg = 0;
-    for (const Cluster* cluster : activeClusters().clusters())
-        bg += calcAvgBackground(*cluster);
-    return bg / activeClusters().size();
-}

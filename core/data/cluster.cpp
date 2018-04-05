@@ -80,17 +80,7 @@ Curve Sequence::toCurve() const
 
 Curve Sequence::toCurve(const Range& _rgeGma) const
 {
-    return toCurve(normFactor(), _rgeGma);
-};
-
-Curve Sequence::toCurve(double _normFactor) const
-{
-    return toCurve(_normFactor, rgeGma());
-};
-
-Curve Sequence::toCurve(double _normFactor, const Range& _rgeGma) const
-{
-    return algo::collectIntensities(members_, _normFactor, _rgeGma, rgeTth());
+    return algo::collectIntensities(members_, normFactor(), _rgeGma, rgeTth());
 };
 
 double Sequence::normFactor() const
@@ -109,10 +99,6 @@ double Sequence::normFactor() const
     case eNorm::DELTA_TIME:
         num = gSession->activeClusters().avgDeltaTime();
         den = avgDeltaTime();
-        break;
-    case eNorm::BACKGROUND:
-        num = gSession->calcAvgBackground();
-        den = gSession->calcAvgBackground(*this);
         break;
     case eNorm::NONE:
         break;
