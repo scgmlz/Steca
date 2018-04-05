@@ -217,7 +217,7 @@ void Dataset::updateClusters()
             QVector<const Measurement*> group;
             for (int ii=i; ii<file.numMeasurements() && ii<i+binning_; ii++)
                 group.append(file.raw_.measurements().at(ii));
-            std::unique_ptr<Cluster> cluster {new Cluster(group, file, allClusters_.size(), i)};
+            std::unique_ptr<Cluster> cluster(new Cluster(group, file, allClusters_.size(), i));
             file.clusters_.push_back(cluster.get());
             allClusters_.push_back(std::move(cluster));
         }
