@@ -85,9 +85,9 @@ public:
 
     void clear() { trim(0); }
 
-    virtual shp insert(const Key&, shp p) = 0;
+    virtual T* insert(const Key&, shp p) = 0;
     virtual shp take(const Key&) = 0;
-    virtual shp value(const Key&) = 0;
+    virtual T* value(const Key&) = 0;
 };
 
 // if full, takes a hit, trims a lot
@@ -138,7 +138,7 @@ public:
 
     void trim(int n) { _trim(n); }
 
-    shp insert(const Key& key, shp p) {
+    T* insert(const Key& key, shp p) {
         ASSERT(!super::mapKey_.contains(key));
         if (rollOver_)
             trim(0);
@@ -146,20 +146,20 @@ public:
             trim(super::maxItems_ / 2);
         mru_t mru = nextMru();
         super::mapKey_.insert(key, shp_mru_t(p, mru));
-        return p;
+        return p.data();
     }
 
     shp take(const Key& key) { return super::mapKey_.take(key).p; }
 
-    shp value(const Key& key) {
+    T* value(const Key& key) {
         auto it = super::mapKey_.find(key);
         if (super::mapKey_.end() == it)
-            return shp();
+            return nullptr;
         if (rollOver_)
             return insert(key, take(key));
         if ((it->mru + 1) != nextMru_) // not mru, update
             it->mru = nextMru();
-        return it->p;
+        return it->p.data();
     }
 };
 
