@@ -12,6 +12,7 @@
 //
 //  ***********************************************************************************************
 
+#include "measurement.h"
 #include "core/session.h"
 #include "core/def/idiomatic_for.h"
 #include <qmath.h>
@@ -62,7 +63,14 @@ deg Measurement::omg() const { return metadata_.motorOmg; }
 deg Measurement::phi() const { return metadata_.motorPhi; }
 deg Measurement::chi() const { return metadata_.motorChi; }
 
-AngleMap Measurement::angleMap() const
+const AngleMap& Measurement::angleMap() const
 {
-    return {ImageKey(gSession->geometry(), gSession->imageSize(), gSession->imageCut(), gSession->midPix(), midTth())};
+    auto* newKey = new ImageKey(gSession->geometry(), gSession->imageSize(),
+                                gSession->imageCut(), gSession->midPix(), midTth() );
+    if (!map__ || !key__ || *newKey!=*key__) {
+        map__.reset(new AngleMap(*newKey));
+        key__.reset(newKey);
+    } else
+        delete newKey;
+    return *map__;
 }

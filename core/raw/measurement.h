@@ -52,12 +52,14 @@ public:
     const Image& image() const { return *image_; }
     size2d imageSize() const;
 
-    AngleMap angleMap() const;
+    const AngleMap& angleMap() const;
 
 private:
     const int position_; //! position in file_
     Metadata metadata_;
     std::unique_ptr<Image> image_;
+    mutable std::unique_ptr<AngleMap> map__;
+    mutable std::unique_ptr<ImageKey> key__;
 };
 
 #endif // MEASUREMENT_H

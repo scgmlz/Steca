@@ -15,6 +15,7 @@
 #include "collect_intensities.h"
 #include "core/session.h"
 #include "core/def/idiomatic_for.h"
+#include "core/data/angle_map.h"
 #include <qmath.h>
 
 namespace {
@@ -23,7 +24,7 @@ void projectIntensity(
     QVector<float>& intens, QVector<int>& counts,
     const Measurement& measurement, const Range& rgeGma, deg minTth, deg deltaTth)
 {
-    const AngleMap map = measurement.angleMap();
+    const AngleMap& map = measurement.angleMap();
 
     const QVector<int>* gmaIndexes = nullptr;
     int gmaIndexMin = 0, gmaIndexMax = 0;
