@@ -20,15 +20,16 @@
 
 class Range;
 class Measurement;
+class Curve;
 
 //! @namespace algo
 //! Core algorithms.
 
 namespace algo {
 
-void projectIntensity(
-    QVector<float>& intens, QVector<int>& counts,
-    const Measurement& measurement, const Range& rgeGma, deg minTth, deg deltaTth);
+Curve collectIntensities(
+    const QVector<const Measurement*>& _members,
+    double _normFactor, const Range& _rgeGma, const Range& _rgeTth);
 
 } // namespace algo
 

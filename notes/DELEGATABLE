@@ -1,4 +1,4 @@
 - wrap get_data_unit in load_caress
-- QVector -> std::vector
+- QVector -> std::vector (start with count->size, first->front, ..)
 - rm "register" from Caress code
 - find out which examples are in which format

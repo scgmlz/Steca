@@ -91,46 +91,7 @@ Curve Sequence::toCurve(double _normFactor) const
 
 Curve Sequence::toCurve(double _normFactor, const Range& _rgeGma) const
 {
-    const Range tthRge = rgeTth();
-    const deg tthWdt = tthRge.width();
-
-    const ImageCut& cut = gSession->imageCut();
-    const int pixWidth = gSession->imageSize().w - cut.left() - cut.right();
-
-    int numBins;
-    if (count()>1) { // combined cluster
-        const Measurement* one = first();
-        deg delta = one->rgeTth().width() / pixWidth;
-        numBins = qCeil(tthWdt / delta);
-    } else {
-        numBins = pixWidth; // simply match the pixels
-    }
-    if (!numBins)
-        return {};
-
-    QVector<float> intens(numBins, 0);
-    QVector<int> counts(numBins, 0);
-
-    deg minTth = tthRge.min, deltaTth = tthWdt / numBins;
-
-    for (const Measurement* one : members_)
-        // increment intens and counts
-        algo::projectIntensity(intens, counts, *one, _rgeGma, minTth, deltaTth);
-
-    // sum or average
-    if (gSession->intenScaledAvg()) {
-        double scale = gSession->intenScale();
-        for_i (numBins) {
-            int cnt = counts.at(i);
-            if (cnt > 0)
-                intens[i] *= scale / cnt;
-        }
-    }
-
-    Curve res;
-    for_i (numBins)
-        res.append(minTth + deltaTth * i, double(intens.at(i) * _normFactor));
-    return res;
+    return algo::collectIntensities(members_, _normFactor, _rgeGma, rgeTth());
 };
 
 double Sequence::normFactor() const

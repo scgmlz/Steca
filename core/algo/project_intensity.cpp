@@ -16,14 +16,13 @@
 #include "core/session.h"
 #include <qmath.h>
 
+namespace {
 //! Increments intens and counts.
-void algo::projectIntensity(
+void projectIntensity(
     QVector<float>& intens, QVector<int>& counts,
     const Measurement& measurement, const Range& rgeGma, deg minTth, deg deltaTth)
 {
-    const shp_AngleMap& angleMap = gSession->angleMap(measurement);
-    ASSERT(!angleMap.isNull());
-    const AngleMap& map = *angleMap;
+    const AngleMap& map = *gSession->angleMap(measurement);
 
     const QVector<int>* gmaIndexes = nullptr;
     int gmaIndexMin = 0, gmaIndexMax = 0;
@@ -36,7 +35,7 @@ void algo::projectIntensity(
     ASSERT(intens.count() == counts.count());
     int count = intens.count();
 
-    ASSERT(0 < deltaTth);
+    ASSERT(deltaTth > 0);
 
     for (int i = gmaIndexMin; i < gmaIndexMax; ++i) {
         int ind = gmaIndexes->at(i);
@@ -59,4 +58,49 @@ void algo::projectIntensity(
         intens[ti] += inten;
         counts[ti] += 1;
     }
+}
+
+} // namespace
+
+Curve algo::collectIntensities(
+    const QVector<const Measurement*>& _members,
+    double _normFactor, const Range& _rgeGma, const Range& _rgeTth)
+{
+    const ImageCut& cut = gSession->imageCut();
+    const int pixWidth = gSession->imageSize().w - cut.left() - cut.right();
+
+    int numBins;
+    if (_members.size()>1) { // combined cluster
+        deg delta = _members.first()->rgeTth().width() / pixWidth;
+        numBins = qCeil(_rgeTth.width() / delta);
+    } else {
+        numBins = pixWidth; // simply match the pixels
+    }
+    if (!numBins)
+        return {};
+
+    QVector<float> intens(numBins, 0);
+    QVector<int> counts(numBins, 0);
+
+    deg minTth = _rgeTth.min;
+    deg deltaTth = _rgeTth.width() / numBins;
+
+    for (const Measurement* one : _members)
+        // increment intens and counts
+        projectIntensity(intens, counts, *one, _rgeGma, minTth, deltaTth);
+
+    // sum or average
+    if (gSession->intenScaledAvg()) {
+        double scale = gSession->intenScale();
+        for_i (numBins) {
+            int cnt = counts.at(i);
+            if (cnt > 0)
+                intens[i] *= scale / cnt;
+        }
+    }
+
+    Curve ret;
+    for_i (numBins)
+        ret.append(minTth + deltaTth * i, double(intens.at(i) * _normFactor));
+    return ret;
 }
