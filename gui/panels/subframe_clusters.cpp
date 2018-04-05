@@ -14,6 +14,7 @@
 
 #include "gui/panels/subframe_clusters.h"
 #include "core/session.h"
+#include "core/def/idiomatic_for.h"
 #include "gui/base/model_view.h"
 
 //  ***********************************************************************************************

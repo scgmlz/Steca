@@ -14,6 +14,7 @@
 
 #include "tab_image.h"
 #include "core/session.h"
+#include "core/def/idiomatic_for.h"
 #include "gui/cfg/colors.h"
 #include "gui/actions/toggles.h"
 #include "gui/mainwin.h"

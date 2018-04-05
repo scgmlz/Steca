@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/session.h"
+#include "core/def/idiomatic_for.h"
 
 Peak::Peak(const QString& functionName) : peakFunction_(nullptr)
 {

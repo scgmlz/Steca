@@ -14,6 +14,7 @@
 
 #include "tab_bigtable.h"
 #include "core/session.h"
+#include "core/def/idiomatic_for.h"
 #include "gui/actions/triggers.h"
 #include "gui/view/bigtable.h"
 #include "gui/mainwin.h"

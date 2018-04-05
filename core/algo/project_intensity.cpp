@@ -14,6 +14,7 @@
 
 #include "project_intensity.h"
 #include "core/session.h"
+#include "core/def/idiomatic_for.h"
 #include <qmath.h>
 
 namespace {
