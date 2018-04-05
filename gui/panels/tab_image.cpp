@@ -177,12 +177,12 @@ QPixmap ImageTab::makePixmap(const Image& image)
 QPixmap ImageTab::makeOverlayPixmap(const Measurement& cluster)
 {
     QImage im = makeImage(cluster.image());
-    shp_AngleMap angleMap = gSession->angleMap(cluster);
+    const AngleMap& angleMap = *gSession->angleMap(cluster);
     const Range& rgeGma = gSession->gammaSelection().range();
     const Range& rgeTth = gSession->thetaSelection().range();
     const QSize& size = im.size();
     for_ij (size.width(), size.height()) {
-        const ScatterDirection& a = angleMap->at(i, j);
+        const ScatterDirection& a = angleMap.at(i, j);
         QColor color = im.pixel(i, j);
         if (rgeGma.contains(a.gma)) {
             if (rgeTth.contains(a.tth))
