@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/session.h"
+#include "core/algo/collect_intensities.h"
 
 ThetaSelection::ThetaSelection()
 {}
@@ -41,7 +42,7 @@ void ThetaSelection::onData()
         return;
     }
     fullRange_ = cluster->rgeTth();
-    numSlices_ = cluster->toCurve().count();
+    numSlices_ = algo::numTthBins(cluster->members(), fullRange_);
     recomputeCache();
 }
 

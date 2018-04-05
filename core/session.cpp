@@ -196,6 +196,8 @@ void Session::setNormMode(eNorm normMode)
     EMIT(gSession->sigNorm());
 }
 
+// only used in background normalization
+// TODO move out from here
 double Session::calcAvgBackground(const Sequence& seq) const
 {
     Curve gmaCurve = seq.toCurve(1.);
@@ -203,6 +205,7 @@ double Session::calcAvgBackground(const Sequence& seq) const
     return bgPolynom.avgY(seq.rgeTth());
 }
 
+// TODO move out from here
 double Session::calcAvgBackground() const
 {
     TakesLongTime __;

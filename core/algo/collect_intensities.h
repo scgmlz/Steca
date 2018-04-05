@@ -27,9 +27,10 @@ class Curve;
 
 namespace algo {
 
-Curve collectIntensities(
-    const QVector<const Measurement*>& _members,
-    double _normFactor, const Range& _rgeGma, const Range& _rgeTth);
+int numTthBins(const QVector<const Measurement*>& _members, const Range& _rgeTth);
+
+Curve collectIntensities(const QVector<const Measurement*>& _members,
+                         double _normFactor, const Range& _rgeGma, const Range& _rgeTth);
 
 } // namespace algo
 

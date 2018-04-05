@@ -80,8 +80,7 @@ Curve Sequence::toCurve() const
 
 Curve Sequence::toCurve(const Range& _rgeGma) const
 {
-    double _normFactor = normFactor();
-    return toCurve(_normFactor, _rgeGma);
+    return toCurve(normFactor(), _rgeGma);
 };
 
 Curve Sequence::toCurve(double _normFactor) const

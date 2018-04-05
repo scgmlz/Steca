@@ -63,23 +63,21 @@ void projectIntensity(
 
 } // namespace
 
+int algo::numTthBins(const QVector<const Measurement*>& _members, const Range& _rgeTth)
+{
+    const ImageCut& cut = gSession->imageCut();
+    int ret = gSession->imageSize().w - cut.left() - cut.right(); // number of horizontal pixels
+    if (_members.size()>1) // for combined cluster, increase ret
+        ret = ret * _rgeTth.width() / _members.first()->rgeTth().width();
+    ASSERT(ret);
+    return ret;
+}
+
 Curve algo::collectIntensities(
     const QVector<const Measurement*>& _members,
     double _normFactor, const Range& _rgeGma, const Range& _rgeTth)
 {
-    const ImageCut& cut = gSession->imageCut();
-    const int pixWidth = gSession->imageSize().w - cut.left() - cut.right();
-
-    int numBins;
-    if (_members.size()>1) { // combined cluster
-        deg delta = _members.first()->rgeTth().width() / pixWidth;
-        numBins = qCeil(_rgeTth.width() / delta);
-    } else {
-        numBins = pixWidth; // simply match the pixels
-    }
-    if (!numBins)
-        return {};
-
+    int numBins = numTthBins(_members, _rgeTth);
     QVector<float> intens(numBins, 0);
     QVector<int> counts(numBins, 0);
 
