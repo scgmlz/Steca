@@ -15,6 +15,7 @@
 #include "measurement.h"
 #include "core/session.h"
 #include "core/def/idiomatic_for.h"
+#include "core/typ/cached.h"
 #include <qmath.h>
 
 Measurement::Measurement(
@@ -65,13 +66,7 @@ deg Measurement::chi() const { return metadata_.motorChi; }
 
 const AngleMap& Measurement::angleMap() const
 {
-    static std::unique_ptr<AngleMap> map__;
-    static std::unique_ptr<ImageKey> key__;
-    auto* newKey = new ImageKey(midTth());
-    if (!map__ || !key__ || *newKey!=*key__) {
-        map__.reset(new AngleMap(*newKey));
-        key__.reset(newKey);
-    } else
-        delete newKey;
-    return *map__;
+    static Cached<ImageKey,AngleMap> cache__;
+    auto* key = new ImageKey(midTth());
+    return cache__.update(key, [key](){return new AngleMap(*key);});
 }
