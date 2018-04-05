@@ -27,8 +27,8 @@ class Measurement;
 namespace algo {
 
 void projectIntensity(
-    const Measurement& measurement, QVector<float>& intens, QVector<int>& counts,
-    const Range& rgeGma, deg minTth, deg deltaTth);
+    QVector<float>& intens, QVector<int>& counts,
+    const Measurement& measurement, const Range& rgeGma, deg minTth, deg deltaTth);
 
 } // namespace algo
 

@@ -114,7 +114,8 @@ Curve Sequence::toCurve(double _normFactor, const Range& _rgeGma) const
     deg minTth = tthRge.min, deltaTth = tthWdt / numBins;
 
     for (const Measurement* one : members_)
-        algo::projectIntensity(*one, intens, counts, _rgeGma, minTth, deltaTth);
+        // increment intens and counts
+        algo::projectIntensity(intens, counts, *one, _rgeGma, minTth, deltaTth);
 
     // sum or average
     if (gSession->intenScaledAvg()) {
@@ -134,7 +135,7 @@ Curve Sequence::toCurve(double _normFactor, const Range& _rgeGma) const
 
 double Sequence::normFactor() const
 {
-    double num = 1, den = 1;
+    double num = 1, den = 1; // numerator, denominator
 
     switch (gSession->normMode()) {
     case eNorm::MONITOR:

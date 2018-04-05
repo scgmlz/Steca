@@ -16,17 +16,16 @@
 #include "core/session.h"
 #include <qmath.h>
 
-//! Computes intens and counts.
-//! Called only by Sequence::collectIntens.
+//! Increments intens and counts.
 void algo::projectIntensity(
-    const Measurement& measurement, QVector<float>& intens, QVector<int>& counts,
-    const Range& rgeGma, deg minTth, deg deltaTth)
+    QVector<float>& intens, QVector<int>& counts,
+    const Measurement& measurement, const Range& rgeGma, deg minTth, deg deltaTth)
 {
     const shp_AngleMap& angleMap = gSession->angleMap(measurement);
     ASSERT(!angleMap.isNull());
     const AngleMap& map = *angleMap;
 
-    QVector<int> const* gmaIndexes = nullptr;
+    const QVector<int>* gmaIndexes = nullptr;
     int gmaIndexMin = 0, gmaIndexMax = 0;
     map.getGmaIndexes(rgeGma, gmaIndexes, gmaIndexMin, gmaIndexMax);
 
