@@ -65,8 +65,7 @@ deg Measurement::chi() const { return metadata_.motorChi; }
 
 const AngleMap& Measurement::angleMap() const
 {
-    auto* newKey = new ImageKey(gSession->geometry(), gSession->imageSize(),
-                                gSession->imageCut(), gSession->midPix(), midTth() );
+    auto* newKey = new ImageKey(midTth() );
     if (!map__ || !key__ || *newKey!=*key__) {
         map__.reset(new AngleMap(*newKey));
         key__.reset(newKey);

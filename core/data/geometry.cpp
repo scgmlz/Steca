@@ -220,11 +220,13 @@ ScatterDirection::ScatterDirection(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
 //  ***********************************************************************************************
 //! @class ImageKey
 
-ImageKey::ImageKey(const Geometry& geometry_, const size2d& size_, const ImageCut& cut_,
-                   const IJ& midPix_, deg midTth_)
-    : geometry(geometry_), size(size_), cut(cut_), midPix(midPix_), midTth(midTth_)
-{
-}
+ImageKey::ImageKey(deg midTth_)
+    : geometry(gSession->geometry())
+    , size(gSession->imageSize())
+    , cut(gSession->imageCut())
+    , midPix(gSession->midPix())
+    , midTth(midTth_)
+{}
 
 int ImageKey::compare(const ImageKey& that) const
 {

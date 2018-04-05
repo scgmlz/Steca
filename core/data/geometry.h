@@ -99,7 +99,7 @@ public:
 //! Needed for caching such coordinate maps.
 class ImageKey {
 public:
-    ImageKey(const Geometry&, const size2d&, const ImageCut&, const IJ& midPix, deg midTth);
+    ImageKey(deg midTth);
 
     COMPARABLE(const ImageKey&);
     bool operator<(const ImageKey& that) const { return compare(that) < 0; }
