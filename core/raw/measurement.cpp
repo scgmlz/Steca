@@ -28,17 +28,17 @@ Measurement::Measurement(
 
 Range Measurement::rgeGma() const
 {
-    return gSession->angleMap(*this)->rgeGma();
+    return gSession->angleMap(*this).rgeGma();
 }
 
 Range Measurement::rgeGmaFull() const
 {
-    return gSession->angleMap(*this)->rgeGmaFull();
+    return gSession->angleMap(*this).rgeGmaFull();
 }
 
 Range Measurement::rgeTth() const
 {
-    return gSession->angleMap(*this)->rgeTth();
+    return gSession->angleMap(*this).rgeTth();
 }
 
 Range Measurement::rgeInten() const

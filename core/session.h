@@ -111,7 +111,7 @@ public:
 
     size2d imageSize() const;
     IJ midPix() const;
-    shp_AngleMap angleMap(const Measurement&) const;
+    const AngleMap& angleMap(const Measurement&) const;
     double calcAvgBackground(const Sequence&) const;
     double calcAvgBackground() const;
 

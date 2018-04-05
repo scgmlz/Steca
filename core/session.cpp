@@ -173,13 +173,13 @@ IJ Session::midPix() const
     return mid;
 }
 
-shp_AngleMap Session::angleMap(const Measurement& one) const
+const AngleMap& Session::angleMap(const Measurement& one) const
 {
     ImageKey key(geometry_, imageSize_, imageCut_, midPix(), one.midTth());
     shp_AngleMap map = angleMapCache_.value(key);
     if (map.isNull())
         map = angleMapCache_.insert(key, shp_AngleMap(new AngleMap(key)));
-    return map;
+    return *map;
 }
 
 // TODO: split into two functions (see usage in panel_diff..)
