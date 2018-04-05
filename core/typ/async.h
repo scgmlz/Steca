@@ -15,7 +15,6 @@
 #ifndef ASYNC_H
 #define ASYNC_H
 
-
 //! As long as an instance of this class exists, we see the 'waiting' cursor.
 
 class TakesLongTime final {

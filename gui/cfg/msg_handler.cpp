@@ -41,12 +41,14 @@ void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString
             ; // std::cerr << "QBUG " << msg.toStdString() << "\n" << std::flush;
         } else {
             std::cerr << "WARN " << msg.toStdString() << "\n" << std::flush;
+            qApp->restoreOverrideCursor();
             QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
             gConsole->log("#WARNING: " + msg);
         }
         break;
     case QtFatalMsg:
         std::cerr << "BUG! " << msg.toStdString() << context(ctx) << "\n" << std::flush;
+        qApp->restoreOverrideCursor();
         QMessageBox::critical(QApplication::activeWindow(), qAppName(),
                               "Sorry, you encountered a fatal bug.\n"
                               "The application will terminate.\n"
