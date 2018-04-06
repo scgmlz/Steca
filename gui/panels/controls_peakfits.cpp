@@ -62,6 +62,10 @@ QVariant PeaksModel::data(const QModelIndex& index, int role) const
         case COL_TYPE:
             return peak.functionName();
         case COL_RANGE:
+            if (!peak.range().isValid())
+                return "undefined";
+            else if (peak.range().isEmpty())
+                return "empty";
             return peak.range().to_s();
         default:
             return {};
@@ -142,6 +146,8 @@ RangeControl::RangeControl()
     hb->addWidget(new QLabel("deg"));
     hb->addStretch();
     setLayout(hb);
+
+    onData();
 }
 
 void RangeControl::onData()
