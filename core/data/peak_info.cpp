@@ -108,7 +108,8 @@ QVector<VariantComparator*> PeakInfo::dataCmps()
     if (cmps.isEmpty()) {
         cmps = QVector<VariantComparator*>{ cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
                         cmp_real, cmp_real, cmp_real, cmp_real, cmp_real };
-        cmps.append(Metadata::attributeCmps());
+        for (auto* cmp: Metadata::attributeCmps())
+            cmps.append(cmp);
     }
     return cmps;
 }
