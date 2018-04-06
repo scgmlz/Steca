@@ -25,8 +25,8 @@ public:
     AngleMap() = delete;
     AngleMap(const ImageKey&);
 
-    const ScatterDirection& at(int i) const { return arrAngles_.at(i); }
-    const ScatterDirection& at(int i, int j) const { return arrAngles_.at(i, j); }
+    const ScatterDirection& dirAt1(int i) const { return arrAngles_.at(i); }
+    const ScatterDirection& dirAt2(int i, int j) const { return arrAngles_.at(i, j); }
 
     Range rgeTth() const { return rgeTth_; }
     Range rgeGma() const { return rgeGma_; }

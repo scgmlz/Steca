@@ -183,7 +183,7 @@ QPixmap ImageTab::makeOverlayPixmap(const Measurement& measurement)
     const Range& rgeTth = gSession->thetaSelection().range();
     const QSize& size = im.size();
     for_ij (size.width(), size.height()) {
-        const ScatterDirection& a = angleMap.at(i, j);
+        const ScatterDirection& a = angleMap.dirAt2(i, j);
         QColor color = im.pixel(i, j);
         if (rgeGma.contains(a.gma)) {
             if (rgeTth.contains(a.tth))

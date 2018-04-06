@@ -24,11 +24,11 @@ void projectIntensity(
     QVector<float>& intens, QVector<int>& counts,
     const Measurement& measurement, const Range& rgeGma, deg minTth, deg deltaTth)
 {
-    const AngleMap& map = measurement.angleMap();
+    const AngleMap& angleMap = measurement.angleMap();
 
     const QVector<int>* gmaIndexes = nullptr;
     int gmaIndexMin = 0, gmaIndexMax = 0;
-    map.getGmaIndexes(rgeGma, gmaIndexes, gmaIndexMin, gmaIndexMax);
+    angleMap.getGmaIndexes(rgeGma, gmaIndexes, gmaIndexMin, gmaIndexMax);
 
     ASSERT(gmaIndexes);
     ASSERT(gmaIndexMin <= gmaIndexMax);
@@ -52,7 +52,7 @@ void projectIntensity(
         inten *= corr;
 
         // bin index
-        deg tth = map.at(ind).tth;
+        deg tth = angleMap.dirAt1(ind).tth;
         int ti = qFloor((tth - minTth) / deltaTth);
         ASSERT(ti <= count);
         ti = qMin(ti, count - 1); // it can overshoot due to floating point calculation
