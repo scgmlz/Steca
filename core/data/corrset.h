@@ -23,7 +23,7 @@
 
 //! Note that "correction", as used throughout Steca, rather means "calibration" or "normalization".
 
-class Corrset final {
+class Corrset {
 public:
     // Modifying methods:
     void clear();

@@ -38,10 +38,22 @@ Qt::CheckState Datafile::activated() const
 //  ***********************************************************************************************
 //! @class HighlightedData
 
+void HighlightedData::clear()
+{
+    current_ = nullptr;
+    EMIT(gSession->sigDataHighlight());
+}
+
+//! temporarily clear, don't emit signal
+void HighlightedData::unset()
+{
+    current_ = nullptr;
+}
+
 void HighlightedData::setFile(int i)
 {
     if (i<0)
-        return unset();
+        return clear();
     ASSERT(i<gSession->dataset().countFiles());
     setCluster(gSession->dataset().fileAt(i).clusters_[0]->index());
     ASSERT(i==current_->file().index_);
@@ -50,7 +62,7 @@ void HighlightedData::setFile(int i)
 void HighlightedData::setCluster(int i)
 {
     if (i<0)
-        return unset();
+        return clear();
     ASSERT(i<gSession->dataset().countClusters());
     current_ = &gSession->dataset().clusterAt(i);
     EMIT(gSession->sigDataHighlight());
@@ -59,14 +71,8 @@ void HighlightedData::setCluster(int i)
 void HighlightedData::reset()
 {
     if (!gSession->dataset().countClusters())
-        return unset();
+        return clear();
     setCluster(0);
-}
-
-void HighlightedData::unset()
-{
-    current_ = nullptr;
-    EMIT(gSession->sigDataHighlight());
 }
 
 void HighlightedData::setMeasurement(int val)
@@ -103,11 +109,13 @@ const Measurement* HighlightedData::measurement() const
 
 void Dataset::clear()
 {
-    highlight().unset();
+    qDebug() << "Dataset::clear";
+    highlight().clear();
     files_.clear();
     onFileChanged();
     gSession->updateImageSize();
     gSession->imageCut().clear();
+    qDebug() << "Dataset::clear/";
 }
 
 void Dataset::removeFile()
@@ -127,7 +135,8 @@ void Dataset::removeFile()
             highlight().setFile(i-1);
         else
             qFatal("bug: impossible case in Dataset::removeFile");
-    }
+    } else
+        highlight().clear(); // TODO or directly emit signal ?
 }
 
 void Dataset::addGivenFiles(const QStringList& filePaths)

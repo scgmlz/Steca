@@ -45,10 +45,11 @@ public:
 
 class HighlightedData {
 public:
+    void clear();
+    void unset();
     void setFile(int);
     void setCluster(int);
     void reset();
-    void unset();
     void setMeasurement(int val);
 
     const Cluster* cluster() const { return current_; }

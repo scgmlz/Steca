@@ -25,7 +25,6 @@ PeakInfo algo::rawFit(const Cluster& cluster, int iGamma, const Peak& peak)
     const Range& fitrange = peakFunction->range();
     const Metadata* metadata = cluster.avgeMetadata();
     const Range gammaSector = gSession->gammaSelection().slice2range(iGamma);
-    // compute alpha, beta:
     deg alpha, beta;
     // TODO (MATH) use fitted tth center, not center of given fit range
     algo::calculateAlphaBeta(alpha, beta, fitrange.center(), gammaSector.center(),
@@ -72,7 +71,7 @@ PeakInfos algo::rawFits(const ActiveClusters& seq, const Peak& peak, Progress* p
         if (progress)
             progress->step();
         for_i (nGamma) {
-            const PeakInfo refInfo { rawFit(*cluster, i, peak) };
+            const PeakInfo refInfo = rawFit(*cluster, i, peak);
             if (!qIsNaN(refInfo.inten()))
                 ret.append(refInfo);
         }
