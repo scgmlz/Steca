@@ -16,7 +16,6 @@
 #include "core/def/comparators.h"
 #include "core/def/settings.h"
 #include "core/def/idiomatic_for.h"
-#include <qmath.h>
 #include <iostream> // for debugging
 
 #define RET_COMPARE_COMPARABLE(o)            \
@@ -239,29 +238,3 @@ int ImageKey::compare(const ImageKey& that) const
 }
 
 EQ_NE_OPERATOR(ImageKey)
-
-void ImageKey::computeAngles(Array2D<ScatterDirection>& ret) const
-{
-    // detector coordinates: d_x, ... (d_z = const)
-    // beam coordinates: b_x, ..; b_y = d_y
-    ret.resize(size);
-    const double t = midTth.toRad();
-    const double c = cos(t);
-    const double s = sin(t);
-    const double d_z = geometry.detectorDistance();
-    const double b_x1 = d_z * s;
-    const double b_z1 = d_z * c;
-    for_int (i, size.w) {
-        const double d_x = (i - midPix.i) * geometry.pixSize();
-        const double b_x = b_x1 + d_x * c;
-        const double b_z = b_z1 - d_x * s;
-        const double b_x2 = b_x * b_x;
-        for_int (j, size.h) {
-            const double b_y = (midPix.j - j) * geometry.pixSize(); // == d_y
-            const double b_r = sqrt(b_x2 + b_y * b_y);
-            const rad gma = atan2(b_y, b_x);
-            const rad tth = atan2(b_r, b_z);
-            ret.setAt(i, j, ScatterDirection(tth.toDeg(), gma.toDeg()));
-        }
-    }
-}

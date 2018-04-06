@@ -102,9 +102,7 @@ public:
     ImageKey(deg midTth);
 
     COMPARABLE(const ImageKey&);
-    bool operator<(const ImageKey& that) const { return compare(that) < 0; }
-
-    void computeAngles(Array2D<ScatterDirection>&) const;
+//    bool operator<(const ImageKey& that) const { return compare(that) < 0; }
 
     const Geometry geometry;
     const size2d size;

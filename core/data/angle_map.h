@@ -35,7 +35,6 @@ public:
     void getGmaIndexes(const Range&, QVector<int> const*&, int&, int&) const;
 
 private:
-    ImageKey key_;
     Array2D<ScatterDirection> arrAngles_;
     Range rgeTth_;
     Range rgeGma_, rgeGmaFull_;
