@@ -21,33 +21,36 @@
 //! Fits peak to the given gamma sector and constructs a PeakInfo.
 PeakInfo algo::rawFit(const Cluster& cluster, int iGamma, const Peak& peak)
 {
+    std::unique_ptr<PeakFunction> peakFunction( FunctionRegistry::clone(peak.peakFunction()) );
+    const Range& fitrange = peakFunction->range();
+    const Metadata* metadata = cluster.avgeMetadata();
     const Range gammaSector = gSession->gammaSelection().slice2range(iGamma);
-    // fit peak, and retrieve peak parameters:
-    Curve curve = cluster.toCurve(gammaSector);
+    // compute alpha, beta:
+    deg alpha, beta;
+    // TODO (MATH) use fitted tth center, not center of given fit range
+    algo::calculateAlphaBeta(alpha, beta, fitrange.center(), gammaSector.center(),
+                             cluster.chi(), cluster.omg(), cluster.phi());
+    if (fitrange.isEmpty())
+        return {metadata, alpha, beta, gammaSector};
+
     auto& baseline = gSession->baseline();
+
+    // Diffractogram minus fitted background:
+    Curve curve = cluster.toCurve(gammaSector);
     const Polynom f = Polynom::fromFit(baseline.polynomDegree(), curve, baseline.ranges());
     curve.subtract([f](double x) {return f.y(x);});
 
-    std::unique_ptr<PeakFunction> peakFunction( FunctionRegistry::clone(peak.peakFunction()) );
+    // Fit the peak:
     peakFunction->fit(curve);
-    const Range& rgeTth = peakFunction->range();
     qpair fitresult = peakFunction->fittedPeak();
+    if (!fitrange.contains(fitresult.x))
+        return {metadata, alpha, beta, gammaSector};
+
     float fwhm = peakFunction->fittedFWHM();
     qpair peakError = peakFunction->peakError();
     float fwhmError = peakFunction->fwhmError();
-
-    // compute alpha, beta:
-    deg alpha, beta;
-    algo::calculateAlphaBeta(alpha, beta, rgeTth.center(), gammaSector.center(),
-                             cluster.chi(), cluster.omg(), cluster.phi());
-
-    const Metadata* metadata = cluster.avgeMetadata();
-
-    return rgeTth.contains(fitresult.x)
-        ? PeakInfo(
-              metadata, alpha, beta, gammaSector, float(fitresult.y), float(peakError.y),
-              deg(fitresult.x), deg(peakError.x), float(fwhm), float(fwhmError))
-        : PeakInfo(metadata, alpha, beta, gammaSector);
+    return {metadata, alpha, beta, gammaSector, float(fitresult.y), float(peakError.y),
+            deg(fitresult.x), deg(peakError.x), float(fwhm), float(fwhmError)};
 }
 
 //! Gathers PeakInfos from Datasets.
