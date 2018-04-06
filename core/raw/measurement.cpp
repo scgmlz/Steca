@@ -66,7 +66,7 @@ deg Measurement::chi() const { return metadata_.motorChi; }
 
 const AngleMap& Measurement::angleMap() const
 {
-    static Cached<ImageKey,AngleMap> cache__;
+    static Cached<ImageKey,AngleMap> cache__; // one cache across all instances of Measurement
     auto* key = new ImageKey(midTth());
     return cache__.update(key, [key](){return new AngleMap(*key);});
 }
