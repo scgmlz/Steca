@@ -95,33 +95,33 @@ PeakInfo::PeakInfo(deg alpha, deg beta)
 
 QStringList PeakInfo::dataTags(bool out)
 {
-    QStringList tags;
+    QStringList ret;
     for_i (int(eReflAttr::NUM_REFL_ATTR))
-        tags.append(reflStringTag(i, out));
-    tags.append(Metadata::attributeTags(out));
-    return tags;
+        ret.append(reflStringTag(i, out));
+    ret.append(Metadata::attributeTags(out));
+    return ret;
 }
 
 QVector<VariantComparator*> PeakInfo::dataCmps()
 {
-    static QVector<VariantComparator*> cmps;
-    if (cmps.isEmpty()) {
-        cmps = QVector<VariantComparator*>{ cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
+    static QVector<VariantComparator*> ret;
+    if (ret.isEmpty()) {
+        ret = QVector<VariantComparator*>{ cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
                         cmp_real, cmp_real, cmp_real, cmp_real, cmp_real };
         for (auto* cmp: Metadata::attributeCmps())
-            cmps.append(cmp);
+            ret.append(cmp);
     }
-    return cmps;
+    return ret;
 }
 
 QVector<QVariant> PeakInfo::data() const
 {
-    QVector<QVariant> row{ QVariant(alpha()),      QVariant(beta()),     QVariant(rgeGma().min),
+    QVector<QVariant> ret{ QVariant(alpha()),      QVariant(beta()),     QVariant(rgeGma().min),
                     QVariant(rgeGma().max), QVariant(inten()),    QVariant(intenError()),
                     QVariant(tth()),        QVariant(tthError()), QVariant(fwhm()),
                     QVariant(fwhmError()) };
-    row.append(md_ ? md_->attributeValues() : Metadata::attributeNaNs());
-    return row;
+    ret.append(md_ ? md_->attributeValues() : Metadata::attributeNaNs());
+    return ret;
 }
 
 QString const PeakInfo::reflStringTag(int attr, bool out)
