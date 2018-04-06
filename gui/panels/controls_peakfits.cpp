@@ -276,7 +276,9 @@ ParamsView::ParamsView()
     addWidget(widgets_[0] = new RawParamsView());
     addWidget(widgets_[1] = new FitParamsView());
     widgets_[0]->show();
-    connect(gSession, &Session::sigDoFits, this, &ParamsView::onData);
+    connect(gSession, &Session::sigPeaks, this, &ParamsView::onData);
+    connect(gSession, &Session::sigRawFits, this, &ParamsView::onData);
+    onData();
 }
 
 void ParamsView::onData()
