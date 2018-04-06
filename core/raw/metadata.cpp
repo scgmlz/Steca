@@ -192,11 +192,7 @@ QVector<QVariant> Metadata::attributeValues() const
 
 QVector<QVariant> Metadata::attributeNaNs()
 {
-    static QVector<QVariant> row;
-    if (row.isEmpty())
-        for_i (int(eAttr::NUM_ALL_ATTRIBUTES))
-            row.append(Q_QNAN);
-    return row;
+    return QVector<QVariant>(int(eAttr::NUM_ALL_ATTRIBUTES), Q_QNAN);
 }
 
 //! Return average over list of metadata.
