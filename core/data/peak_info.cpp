@@ -48,7 +48,6 @@ static void sortColumns(QVector<double>& xs, QVector<double>& ys, QVector<int>& 
     ys = r;
 }
 
-
 } // namespace
 
 

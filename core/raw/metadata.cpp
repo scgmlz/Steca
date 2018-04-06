@@ -86,7 +86,7 @@ const QString& Metadata::attributeTag(int i, bool out)
     return attributeTags(out).at(i);
 }
 
-QStringList Metadata::attributeTags(bool out)
+const QStringList& Metadata::attributeTags(bool out)
 {
     static const QStringList tags = {
         "X",   "Y",   "Z",    "ω",      "mid 2θ", "φ",     "χ",       "PST",
@@ -103,7 +103,7 @@ QStringList Metadata::attributeTags(bool out)
     return out ? outTags : tags;
 }
 
-QVector<VariantComparator*> Metadata::attributeCmps()
+const QVector<VariantComparator*>& Metadata::attributeCmps()
 {
     static QVector<VariantComparator*> const cmps = {
         cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,

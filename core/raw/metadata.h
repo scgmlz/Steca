@@ -25,29 +25,22 @@ class Metadata {
 public:
     Metadata();
 
-    // attribute list - will be dynamic
     static int numAttributes(bool onlyNum);
-
     static const QString& attributeTag(int, bool out);
-    static QStringList attributeTags(bool out);
-    static QVector<VariantComparator*> attributeCmps();
+    static const QStringList& attributeTags(bool out);
+    static const QVector<VariantComparator*>& attributeCmps();
+    static QVector<QVariant> attributeNaNs();
+    static int size() { return attributeNaNs().count(); }
+    static Metadata computeAverage(const std::vector<const Metadata*>& vec);
 
     QString attributeStrValue(int) const;
     QVariant attributeValue(int) const;
     QVector<QVariant> attributeValues() const;
 
-    static QVector<QVariant> attributeNaNs();
-    static int size() { return attributeNaNs().count(); }
-
-    static Metadata computeAverage(const std::vector<const Metadata*>& vec);
-
     QString date, comment;
-
     deg motorXT, motorYT, motorZT, motorOmg, motorTth, motorPhi, motorChi, motorPST, motorSST,
         motorOMGM;
-
-    // new metadata
-    double nmT, nmTeload, nmTepos, nmTeext, nmXe, nmYe, nmZe;
+    double nmT, nmTeload, nmTepos, nmTeext, nmXe, nmYe, nmZe; // nm = new metadata
     double monitorCount, deltaMonitorCount;
     double time, deltaTime;
 };
