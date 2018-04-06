@@ -1,3 +1,4 @@
+- update Qt on Travis, Appveyor, and our vagrant (Juan)
 - replace comparator macros
 - wrap get_data_unit in load_caress
 - QVector -> std::vector (start with count->size, first->front, ..)
