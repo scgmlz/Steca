@@ -26,9 +26,11 @@ set(test_link_libs
     core
     gui
     # for test010_io, progress bar:
+    Qt5::Core
     Qt5::Gui
     Qt5::Widgets
     )
+#qt5_use_modules(${test_name} Widgets Core Gui)
 
 # We glob test sources, though this is often considered evil.
 # Just touch CMakeLists.txt each time a test is added or withdrawn.
