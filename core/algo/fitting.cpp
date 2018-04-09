@@ -21,9 +21,11 @@
 //! Fits peak to the given gamma sector and constructs a PeakInfo.
 PeakInfo algo::rawFit(const Cluster& cluster, int iGamma, const Peak& peak)
 {
+    ASSERT(iGamma>=0 && iGamma<gSession->gammaSelection().numSlices());
     std::unique_ptr<PeakFunction> peakFunction( FunctionRegistry::clone(peak.peakFunction()) );
     const Range& fitrange = peakFunction->range();
     const Metadata* metadata = cluster.avgeMetadata();
+    ASSERT(iGamma>=0 && iGamma<gSession->gammaSelection().numSlices());
     const Range gammaSector = gSession->gammaSelection().slice2range(iGamma);
     deg alpha, beta;
     // TODO (MATH) use fitted tth center, not center of given fit range

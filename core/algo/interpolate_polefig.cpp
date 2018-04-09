@@ -273,7 +273,6 @@ PeakInfos algo::interpolateInfos(const PeakInfos& infos, Progress* progress)
         progress->setTotal(numAlphas * numBetas); // REVIEW + 1?
 
     for_int (i, numAlphas + 1) { // REVIEW why + 1
-        qDebug() << "interpolate i=" << i;
         deg const alpha = i * stepAlpha;
         for_int (j, numBetas) {
             deg const beta = j * stepBeta;
@@ -302,7 +301,7 @@ PeakInfos algo::interpolateInfos(const PeakInfos& infos, Progress* progress)
                     itf_t avg(0, 0, 0);
 
                     int iEnd = itfs.count();
-                    int iBegin = qMin(qRound(itfs.count() * (1. - threshold)), iEnd - 1);
+                    int iBegin = qMax(0, qMin(qRound(itfs.count() * (1. - threshold)), iEnd - 1));
                     ASSERT(iBegin < iEnd);
                     int n = iEnd - iBegin;
 
