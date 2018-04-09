@@ -26,11 +26,9 @@ set(test_link_libs
     core
     gui
     # for test010_io, progress bar:
-    Qt5::Core
     Qt5::Gui
     Qt5::Widgets
     )
-#qt5_use_modules(${test_name} Widgets Core Gui)
 
 # We glob test sources, though this is often considered evil.
 # Just touch CMakeLists.txt each time a test is added or withdrawn.
@@ -43,4 +41,5 @@ foreach(test_src ${test_sources})
     string(REGEX REPLACE ".*/" "" test_name "${test_src}")
     string(REGEX REPLACE "\\.cpp$" "" test_name "${test_name}")
     cxx_test(${test_name} "${test_link_libs}")
+    qt5_use_modules(${test_name} Widgets Core Gui)
 endforeach(test_src)
