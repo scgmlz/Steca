@@ -60,6 +60,7 @@ MainWin::MainWin()
     QObject::connect(gSession, &Session::sigBaseline, this, &MainWin::updateAbilities);
 
     QObject::connect(gSession, &Session::sigDoFits, this, &MainWin::runFits);
+    QObject::connect(gSession, &Session::sigInterpol, this, &MainWin::runFits);
 
     initLayout();
     readSettings();
@@ -229,8 +230,9 @@ void MainWin::runFits()
         return;
     }
     Progress progress(1, &gGui->progressBar);
-    int iRefl = gSession->peaks().selectedIndex();
-    gSession->peakInfos()
-        = algo::rawFits(gSession->activeClusters(), gSession->peaks().at(iRefl), &progress);
-    EMIT(gSession->sigRawFits());
+    if (Peak* peak = gSession->peaks().selectedPeak()) {
+        gSession->peakInfos()
+            = algo::rawFits(gSession->activeClusters(), *peak, &progress);
+        EMIT(gSession->sigRawFits());
+    }
 }

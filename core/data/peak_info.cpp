@@ -203,8 +203,9 @@ void PeakInfos::get4(const int idxX, const int idxY,
 
     using eReflAttr = PeakInfo::eReflAttr;
     eReflAttr ye = (eReflAttr) idxY;
-    int iRefl = gSession->peaks().selectedIndex();
-    if (!gSession->peaks().at(iRefl).isRaw()
+    Peak* peak = gSession->peaks().selectedPeak();
+    if (peak
+        && !peak->isRaw()
         && (ye==eReflAttr::INTEN || ye==eReflAttr::TTH || ye==eReflAttr::FWHM)) {
         ysLow.resize(count());
         ysHig.resize(count());
