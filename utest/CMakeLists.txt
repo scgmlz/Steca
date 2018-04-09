@@ -40,5 +40,6 @@ foreach(test_src ${test_sources})
     # remove directory path and suffix, to retain just the name of the test
     string(REGEX REPLACE ".*/" "" test_name "${test_src}")
     string(REGEX REPLACE "\\.cpp$" "" test_name "${test_name}")
-    cxx_test(${test_name} "${test_link_libs}")
+    cxx_test(${test_name} "")
+    target_link_libraries(${test_name} "${test_link_libs}")
 endforeach(test_src)
