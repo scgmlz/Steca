@@ -56,12 +56,13 @@ public:
     void select(int i);
 
     const Peak& at(int i) const { return *peaks_.at(i); }
-    Peak& at(int i) { return *peaks_.at(i); } // used only once
+    Peak& at(int i) { return *peaks_.at(i); }
 
     int count() const { return peaks_.size(); }
     QStringList names() const;
     QJsonArray toJson() const;
-    Peak* selectedPeak() { return count() ? peaks_[selected_] : nullptr; };
+    Peak* selectedPeak() {
+        return 0<=selected_ && selected_<count() ? peaks_[selected_] : nullptr; };
     int selectedIndex() { return selected_; };
 
 private:
