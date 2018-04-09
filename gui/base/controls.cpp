@@ -19,7 +19,7 @@
 #include "gui/capture_and_replay/cmdexception.h"
 #include "gui/capture_and_replay/console.h"
 #include <QApplication> // for qApp for new Action
-#include <QtGlobal> // to define Q_OS_WIN
+#include <QtGlobal> // defines qOverload
 #include <iostream> // debug
 
 //  ***********************************************************************************************
