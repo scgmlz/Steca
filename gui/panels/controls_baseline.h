@@ -1,16 +1,16 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/controls_baseline.h
-//! @brief     Defines class SubframeSetup
+//! @brief     Defines class ControlsBaseline
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef CONTROLS_BASELINE_H
 #define CONTROLS_BASELINE_H
@@ -23,8 +23,12 @@ class ControlsBaseline : public QWidget {
 public:
     ControlsBaseline();
 private:
+    QVBoxLayout box_;
+    QHBoxLayout hb_;
     CSpinBox spinDegree_ {"degree", 4, false, 0, 4,
             "Degree of the polynomial used to fit the baseline"};
+    void hideEvent(QHideEvent*) final;
+    void showEvent(QShowEvent*) final;
 };
 
 #endif // CONTROLS_BASELINE_H

@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,7 +10,7 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef DISPLAYS_H
 #define DISPLAYS_H
@@ -31,6 +31,7 @@ public:
 //! Read-only QLineEdit for number display.
 class XLineDisplay : public QLineEdit {
 public:
+    XLineDisplay();
     XLineDisplay(int ndigits, bool withDot);
 };
 

@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,29 +10,30 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef REALPAIR_H
 #define REALPAIR_H
 
 #include "core/def/comparable.h"
+#include "core/typ/json.h"
 
 //! 2D point, reals
 class qpair {
     public:
 
-    qreal x, y;
+    double x, y;
 
     qpair() { invalidate(); }
-    qpair(qreal x_, qreal y_) : x(x_), y(y_) {}
+    qpair(double x_, double y_) : x(x_), y(y_) {}
 
     COMPARABLE(const qpair&);
 
-    void invalidate(); // x,y <- NAN
+    void invalidate(); // x,y <- Q_QNAN
     bool isValid() const { return !qIsNaN(x) && !qIsNaN(y); }
 
-    QJsonObject to_json() const;
-    void from_json(const class JsonObj&) THROWS;
+    QJsonObject toJson() const;
+    void fromJson(const class JsonObj&);
 };
 
 #endif // REALPAIR_H

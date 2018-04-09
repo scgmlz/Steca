@@ -24,6 +24,6 @@ TEST(IJ, Compare) {
 
 TEST(IJ, Json) {
     IJ ij(-1, 2), ij1;
-    ij1.from_json(ij.to_json());
+    ij1.fromJson(ij.toJson());
     EXPECT_EQ(ij, ij1);
 }

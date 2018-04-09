@@ -1,4 +1,4 @@
-export QTDIR=/opt/qt54
+export QTDIR=/opt/qt510
 export PATH=$QTDIR/bin:$PATH
 
 git submodule update --init --recursive

@@ -1,8 +1,0 @@
-gma  angle gamma
-idw  inverse distance weighing
-itf  {intensity, tth, fwhm}
-pc   constant pointer
-rc   constant reference, defined in def_macros.h
-shp  shared pointer prefix
-str  string
-tth  angle 2 theta

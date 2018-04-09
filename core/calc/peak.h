@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,15 +10,13 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef PEAK_H
 #define PEAK_H
 
 #include <memory>
 #include "core/fit/fit_fun.h"
-#include "core/typ/types.h" // for fwhm_t
-#include <QSharedPointer> // no auto rm
 
 //! Wraps a PeakFunction (pimpl idiom)
 
@@ -27,20 +25,20 @@ public:
     Peak() = delete;
     Peak(const QString& functionName = "Raw");
 
-    static Peak* from_json(const JsonObj&) THROWS;
+    static Peak* fromJson(const JsonObj&);
 
     void setPeakFunction(const QString&);
     void setRange(const Range&);
     void invalidateGuesses();
     void setGuessPeak(const qpair& peak);
-    void setGuessFWHM(fwhm_t fwhm);
+    void setGuessFWHM(float fwhm);
     void fit(const Curve&);
 
     const PeakFunction& peakFunction() const;
     QString functionName() const { return peakFunction_->name(); }
     bool isRaw() const { return peakFunction_->isRaw(); }
     const Range& range() const { return peakFunction_->range(); }
-    JsonObj to_json() const;
+    JsonObj toJson() const;
 
 private:
     std::unique_ptr<PeakFunction> peakFunction_; //!< pimpl (pointer to implementation)
@@ -52,18 +50,19 @@ private:
 class Peaks {
 public:
     void clear();
+    void fromJson(const QJsonArray& arr);
     void add(const QString&);
-    void add(const QJsonObject& obj);
     void remove();
     void select(int i);
 
     const Peak& at(int i) const { return *peaks_.at(i); }
-    Peak& at(int i) { return *peaks_.at(i); } // used only once
+    Peak& at(int i) { return *peaks_.at(i); }
 
     int count() const { return peaks_.size(); }
     QStringList names() const;
     QJsonArray toJson() const;
-    Peak* selectedPeak() { return count() ? peaks_[selected_] : nullptr; };
+    Peak* selectedPeak() {
+        return 0<=selected_ && selected_<count() ? peaks_[selected_] : nullptr; };
     int selectedIndex() { return selected_; };
 
 private:

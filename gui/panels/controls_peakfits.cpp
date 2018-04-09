@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,25 +10,24 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #include "controls_peakfits.h"
 #include "core/session.h"
 #include "gui/base/displays.h"
 #include "gui/base/model_view.h"
 #include "gui/mainwin.h"
-#include "gui/actions/toggles.h"
+#include "gui/state.h"
 #include "gui/actions/triggers.h"
 #include <QStackedWidget>
 
 namespace {
-qreal safeReal(qreal val) { return qIsFinite(val) ? val : 0.0; }
-QString safeRealText(qreal val) { return qIsFinite(val) ? QString::number(val) : ""; }
+double safeReal(double val) { return qIsFinite(val) ? val : 0.0; }
+QString safeRealText(double val) { return qIsFinite(val) ? QString::number(val) : ""; }
 } // local methods
 
-// ************************************************************************** //
-//  local class PeaksModel, used in PeaksView
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class PeaksModel, used in PeaksView (local scope)
 
 //! Model for PeaksView.
 
@@ -46,7 +45,8 @@ public:
     enum { COL_ID = 1, COL_TYPE, COL_RANGE, NUM_COLUMNS };
 };
 
-QVariant PeaksModel::data(const QModelIndex& index, int role) const {
+QVariant PeaksModel::data(const QModelIndex& index, int role) const
+{
     int row = index.row();
     if (row < 0 || rowCount() <= row)
         return {};
@@ -62,6 +62,10 @@ QVariant PeaksModel::data(const QModelIndex& index, int role) const {
         case COL_TYPE:
             return peak.functionName();
         case COL_RANGE:
+            if (!peak.range().isValid())
+                return "undefined";
+            else if (peak.range().isEmpty())
+                return "empty";
             return peak.range().to_s();
         default:
             return {};
@@ -83,9 +87,8 @@ QVariant PeaksModel::data(const QModelIndex& index, int role) const {
 }
 
 
-// ************************************************************************** //
-//  local class PeaksView
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class PeaksView (local scope)
 
 //! List view of user-defined Bragg peaks.
 
@@ -101,13 +104,11 @@ PeaksView::PeaksView()
     : TableView(new PeaksModel())
 {
     connect(gSession, &Session::sigPeaks, this, &PeaksView::onData);
-    connect(gSession, &Session::sigPeakHighlight, this, &PeaksView::onHighlight);
     connect(this, &TableView::clicked, model_, &TableModel::onClicked);
 }
 
-// ************************************************************************** //
-//  local class RangeControl
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class RangeControl (local scope)
 
 //! A horizontal row with labels and spin boxes to view and change one peak fit range.
 
@@ -116,35 +117,41 @@ public:
     RangeControl();
     void onData();
 private:
-    CDoubleSpinBox spinRangeMin_{"peakRangeMin", 6, 0., 89.9};
-    CDoubleSpinBox spinRangeMax_{"peakRangeMax", 6, 0., 90.};
+    CDoubleSpinBox spinRangeMin_ {"peakRangeMin", 6, 0., 89.9};
+    CDoubleSpinBox spinRangeMax_ {"peakRangeMax", 6, 0., 90.};
 };
 
-RangeControl::RangeControl() {
-    auto hb = new QHBoxLayout();
-    setLayout(hb);
+RangeControl::RangeControl()
+{
+    spinRangeMin_.setSingleStep(.1);
+    spinRangeMax_.setSingleStep(.1);
 
+    // inbound connections
+    connect(gSession, &Session::sigPeaks, this, &RangeControl::onData);
+
+    // outbound connections
+    connect(&spinRangeMin_, &CDoubleSpinBox::valueReleased, [this](double val) {
+            double antival = qMax(spinRangeMax_.value(), val);
+            gSession->peaks().selectedPeak()->setRange(Range(val, antival)); });
+    connect(&spinRangeMax_, &CDoubleSpinBox::valueReleased, [this](double val) {
+            double antival = qMin(spinRangeMin_.value(), val);
+            gSession->peaks().selectedPeak()->setRange(Range(antival, val)); });
+
+    // layout
+    auto hb = new QHBoxLayout();
     hb->addWidget(new QLabel("range"));
     hb->addWidget(&spinRangeMin_);
-    spinRangeMin_.setSingleStep(.1);
-    connect(&spinRangeMin_, _SLOT_(QDoubleSpinBox, valueChanged, double),  [this](double val) {
-            qreal antival = qMax(spinRangeMax_.value(), val);
-            gSession->peaks().selectedPeak()->setRange(Range(val, antival)); });
-
     hb->addWidget(new QLabel(".."));
     hb->addWidget(&spinRangeMax_);
-    spinRangeMax_.setSingleStep(.1);
-    connect(&spinRangeMax_, _SLOT_(QDoubleSpinBox, valueChanged, double),  [this](double val) {
-            qreal antival = qMin(spinRangeMin_.value(), val);
-            gSession->peaks().selectedPeak()->setRange(Range(antival, val)); });
     hb->addWidget(new QLabel("deg"));
     hb->addStretch();
+    setLayout(hb);
 
-    connect(gSession, &Session::sigPeaks, this, &RangeControl::onData);
-    connect(gSession, &Session::sigPeakHighlight, this, &RangeControl::onData);
+    onData();
 }
 
-void RangeControl::onData() {
+void RangeControl::onData()
+{
     Peak* peak = gSession->peaks().selectedPeak();
     setEnabled(peak);
     if (!peak)
@@ -155,26 +162,29 @@ void RangeControl::onData() {
 }
 
 
-// ************************************************************************** //
-//  local class PeakdataView and its dependences
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class ParamsView and its dependences (local scope)
 
-//! Virtual base class for RawPeakdataView and FitPeakdataView.
+//! Virtual base class for RawParamsView and FitParamsView.
 
-class AnyPeakdataView : public QWidget {
+class AnyParamsView : public QWidget {
 public:
-    AnyPeakdataView();
+    AnyParamsView();
     virtual void updatePeakFun(const PeakFunction&);
 protected:
+    QGridLayout grid_;
     XLineDisplay readFitPeakX_ {6, true};
     XLineDisplay readFitPeakY_ {6, true};
     XLineDisplay readFitFWHM_ {6, true};
 };
 
-AnyPeakdataView::AnyPeakdataView() {
+AnyParamsView::AnyParamsView()
+{
+    setLayout(&grid_);
 }
 
-void AnyPeakdataView::updatePeakFun(const PeakFunction& peakFun) {
+void AnyParamsView::updatePeakFun(const PeakFunction& peakFun)
+{
     const qpair& fittedPeak = peakFun.fittedPeak();
     readFitPeakX_.setText(safeRealText(fittedPeak.x));
     readFitPeakY_.setText(safeRealText(fittedPeak.y));
@@ -183,35 +193,34 @@ void AnyPeakdataView::updatePeakFun(const PeakFunction& peakFun) {
 
 //! Displays outcome of raw data analysis.
 
-class RawPeakdataView : public AnyPeakdataView {
+class RawParamsView : public AnyParamsView {
 public:
-    RawPeakdataView();
+    RawParamsView();
 };
 
-RawPeakdataView::RawPeakdataView() {
-    QGridLayout* lay = new QGridLayout();
-    lay->addWidget(new QLabel(""), 1, 1);
+RawParamsView::RawParamsView()
+{
+    grid_.addWidget(new QLabel(""), 0, 0);
 
-    lay->addWidget(new QLabel("centre"), 2, 0);
-    lay->addWidget(&readFitPeakX_, 2, 2);
-    lay->addWidget(new QLabel("deg"), 2, 3);
+    grid_.addWidget(new QLabel("centre"), 1, 0);
+    grid_.addWidget(&readFitPeakX_, 1, 2);
+    grid_.addWidget(new QLabel("deg"), 1, 3);
 
-    lay->addWidget(new QLabel("fwhm"), 3, 0);
-    lay->addWidget(&readFitFWHM_, 3, 2);
-    lay->addWidget(new QLabel("deg"), 3, 3);
+    grid_.addWidget(new QLabel("fwhm"), 2, 0);
+    grid_.addWidget(&readFitFWHM_, 2, 2);
+    grid_.addWidget(new QLabel("deg"), 2, 3);
 
-    lay->addWidget(new QLabel("intens"), 4, 0);
-    lay->addWidget(&readFitPeakY_, 4, 2);
+    grid_.addWidget(new QLabel("intens"), 3, 0);
+    grid_.addWidget(&readFitPeakY_, 3, 2);
 
-    lay->setColumnStretch(4, 1);
-    setLayout(lay);
+    grid_.setColumnStretch(4, 1);
 }
 
 //! Displays outcome of peak fit.
 
-class FitPeakdataView : public AnyPeakdataView {
+class FitParamsView : public AnyParamsView {
 public:
-    FitPeakdataView();
+    FitParamsView();
     virtual void updatePeakFun(const PeakFunction&);
 private:
     XLineDisplay spinGuessPeakX_ {6, true};
@@ -219,31 +228,31 @@ private:
     XLineDisplay spinGuessFWHM_ {6, true};
 };
 
-FitPeakdataView::FitPeakdataView() {
-    QGridLayout* lay = new QGridLayout();
-    lay->addWidget(new QLabel("guess"), 1, 1);
-    lay->addWidget(new QLabel("fitted"), 1, 2);
+FitParamsView::FitParamsView()
+{
+    grid_.addWidget(new QLabel("guess"), 0, 1);
+    grid_.addWidget(new QLabel("fitted"), 0, 2);
 
-    lay->addWidget(new QLabel("centre"), 2, 0);
-    lay->addWidget(&spinGuessPeakX_, 2, 1);
-    lay->addWidget(&readFitPeakX_, 2, 2);
-    lay->addWidget(new QLabel("deg"), 2, 3);
+    grid_.addWidget(new QLabel("centre"), 1, 0);
+    grid_.addWidget(&spinGuessPeakX_, 1, 1);
+    grid_.addWidget(&readFitPeakX_, 1, 2);
+    grid_.addWidget(new QLabel("deg"), 1, 3);
 
-    lay->addWidget(new QLabel("fwhm"), 3, 0);
-    lay->addWidget(&spinGuessFWHM_, 3, 1);
-    lay->addWidget(&readFitFWHM_, 3, 2);
-    lay->addWidget(new QLabel("deg"), 3, 3);
+    grid_.addWidget(new QLabel("fwhm"), 2, 0);
+    grid_.addWidget(&spinGuessFWHM_, 2, 1);
+    grid_.addWidget(&readFitFWHM_, 2, 2);
+    grid_.addWidget(new QLabel("deg"), 2, 3);
 
-    lay->addWidget(new QLabel("intens"), 4, 0);
-    lay->addWidget(&spinGuessPeakY_, 4, 1);
-    lay->addWidget(&readFitPeakY_, 4, 2);
+    grid_.addWidget(new QLabel("intens"), 3, 0);
+    grid_.addWidget(&spinGuessPeakY_, 3, 1);
+    grid_.addWidget(&readFitPeakY_, 3, 2);
 
-    lay->setColumnStretch(4, 1);
-    setLayout(lay);
+    grid_.setColumnStretch(4, 1);
 }
 
-void FitPeakdataView::updatePeakFun(const PeakFunction& peakFun) {
-    AnyPeakdataView::updatePeakFun(peakFun);
+void FitParamsView::updatePeakFun(const PeakFunction& peakFun)
+{
+    AnyParamsView::updatePeakFun(peakFun);
 
     const qpair& guessedPeak = peakFun.guessedPeak();
     spinGuessPeakX_.setText(safeRealText(guessedPeak.x));
@@ -254,88 +263,88 @@ void FitPeakdataView::updatePeakFun(const PeakFunction& peakFun) {
 
 //! Displays result of either raw data analysis or peak fit.
 
-class PeakdataView : public QStackedWidget {
+class ParamsView : public QStackedWidget {
 public:
-    PeakdataView();
-    void onData();
-    void updatePeakFun(const PeakFunction&);
+    ParamsView();
 private:
-    AnyPeakdataView* widgets_[2];
+    void onData();
+    AnyParamsView* widgets_[2];
 };
 
-PeakdataView::PeakdataView() {
-    addWidget(widgets_[0] = new RawPeakdataView());
-    addWidget(widgets_[1] = new FitPeakdataView());
-    widgets_[0]->show(); // setCurrentIndex(0);
-    connect(gSession, &Session::sigPeaks, this, &PeakdataView::onData);
-    connect(gSession, &Session::sigPeakHighlight, this, &PeakdataView::onData);
+ParamsView::ParamsView()
+{
+    addWidget(widgets_[0] = new RawParamsView());
+    addWidget(widgets_[1] = new FitParamsView());
+    widgets_[0]->show();
+    connect(gSession, &Session::sigPeaks, this, &ParamsView::onData);
+    connect(gSession, &Session::sigRawFits, this, &ParamsView::onData);
+    onData();
 }
 
-void PeakdataView::onData() {
+void ParamsView::onData()
+{
     Peak* peak = gSession->peaks().selectedPeak();
     setEnabled(peak);
     if (!peak)
         return;
-    updatePeakFun(peak->peakFunction());
-}
-
-void PeakdataView::updatePeakFun(const PeakFunction& peakFun) {
+    const PeakFunction& peakFun = peak->peakFunction();
     int i = peakFun.isRaw() ? 0 : 1;
     widgets_[i]->updatePeakFun(peakFun);
     setCurrentIndex(i);
 }
 
 
-// ************************************************************************** //
-//  class ControlsPeakfits
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class ControlsPeakfits
 
 ControlsPeakfits::ControlsPeakfits()
-    : comboReflType_("reflTyp", FunctionRegistry::instance()->keys()) {
+    : comboReflType_ {"reflTyp", FunctionRegistry::instance()->keys()}
+{
+    // inbound connection
+    connect(gSession, &Session::sigPeaks, this, &ControlsPeakfits::onPeaks);
 
-    auto* box = new QVBoxLayout();
-    setLayout(box);
-
-    QBoxLayout* hb = new QHBoxLayout();
-    box->addLayout(hb);
-    hb->addStretch();
-
-    hb->addWidget(new XIconButton(&gGui->triggers->addPeak));
+    // outbound connections
     connect(&gGui->triggers->addPeak, &QAction::triggered, [this]() {
             gSession->peaks().add(comboReflType_.currentText()); });
-
-    hb->addWidget(new XIconButton(&gGui->triggers->removePeak));
-    connect(&gGui->triggers->removePeak, &QAction::triggered, [this]() {
+    connect(&gGui->triggers->removePeak, &QAction::triggered, []() {
             gSession->peaks().remove(); });
-
-    box->addWidget(new PeaksView());
-
-    hb = new QHBoxLayout();
-    box->addLayout(hb);
-
-    hb->addWidget(&comboReflType_);
-    connect(&comboReflType_, _SLOT_(QComboBox, currentIndexChanged, const QString&),
-            [this](const QString& peakFunctionName) {
+    connect(&comboReflType_, qOverload<const QString&>(&QComboBox::currentIndexChanged),
+            [](const QString& peakFunctionName) {
                 if (gSession->peaks().selectedPeak()) { // TODO rm this if
                     gSession->peaks().selectedPeak()->setPeakFunction(peakFunctionName);
-                    emit gSession->sigPeaks();
+                    EMIT(gSession->sigPeaks());
                 } });
 
-    hb->addStretch();
+    // layout
+    topControls_.addStretch();
+    topControls_.addWidget(new XIconButton(&gGui->triggers->addPeak));
+    topControls_.addWidget(new XIconButton(&gGui->triggers->removePeak));
 
-    QBoxLayout* vb = new QVBoxLayout();
-    box->addLayout(vb);
+    auto* box = new QVBoxLayout;
+    box->addLayout(&topControls_);
+    box->addWidget(new PeaksView);
+    box->addWidget(&comboReflType_);
+    box->addWidget(new RangeControl);
+    box->addWidget(new ParamsView);
+    box->addStretch(1000);
 
-    vb->addWidget(rangeControl_ = new RangeControl);
-    vb->addWidget(peakdataView_ = new PeakdataView);
-
+    setLayout(box);
     update();
-
-    connect(gSession, &Session::sigPeaks, this, &ControlsPeakfits::onPeaks);
 }
 
-void ControlsPeakfits::onPeaks() {
+void ControlsPeakfits::onPeaks()
+{
     Peak* peak = gSession->peaks().selectedPeak();
     if (peak)
         comboReflType_.setCurrentText(peak->functionName());
 };
+
+void ControlsPeakfits::hideEvent(QHideEvent*)
+{
+    gGui->state->editingPeakfits = false;
+}
+
+void ControlsPeakfits::showEvent(QShowEvent*)
+{
+    gGui->state->editingPeakfits = true;
+}

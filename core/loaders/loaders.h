@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,23 +10,22 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef LOADERS_H
 #define LOADERS_H
 
-#include "core/data/rawfile.h"
-
+#include "core/raw/rawfile.h"
 
 //! Functions loadRawfile and loadComment, and their dependences.
 
 namespace load {
 
 //! load a file; file type will be sensed
-QSharedPointer<Rawfile> loadRawfile(const QString& filePath) THROWS;
+Rawfile loadRawfile(const QString& filePath);
 
 QString loadComment(const QFileInfo& info);
 
-} // namespace io
+} // namespace load
 
 #endif // LOADERS_H

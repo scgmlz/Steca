@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,14 +10,16 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
-#include "core/fit/fit_methods.h"
+#include "fit_methods.h"
+#include "core/def/debug.h"
 #include "core/def/idiomatic_for.h"
 #include "LM/levmar.h"
 #include <qmath.h>
 
-void FitWrapper::fit(Function& function, const Curve& curve) {
+void FitWrapper::fit(ParametricFunction& function, const Curve& curve)
+{
     if (curve.isEmpty())
         return;
 
@@ -26,14 +28,14 @@ void FitWrapper::fit(Function& function, const Curve& curve) {
 
     // prepare data in a debug::ensured format
     int parCount = function_->parameterCount();
-    vec<qreal> parValue(parCount), parMin(parCount), parMax(parCount), parError(parCount);
+    QVector<double> parValue(parCount), parMin(parCount), parMax(parCount), parError(parCount);
 
     for_i (parCount) {
-        const Function::Parameter& par = function_->parameterAt(i);
+        const FitParameter& par = function_->parameterAt(i);
         ASSERT(qIsFinite(par.value())); // TODO if not so, return false ?
         parValue[i] = par.value();
-        parMin[i] = par.valueRange().min;
-        parMax[i] = par.valueRange().max;
+        parMin[i] = par.allowedMin();
+        parMax[i] = par.allowedMax();
     }
 
     fit_exec(
@@ -45,17 +47,19 @@ void FitWrapper::fit(Function& function, const Curve& curve) {
         function_->parameterAt(i).setValue(parValue[i], parError[i]);
 }
 
-template <typename T> T* remove_const(T const* t) {
+template <typename T>
+T* remove_const(T const* t)
+{
     return const_cast<T*>(t);
 }
 
 void FitWrapper::fit_exec(
-    qreal* params, // IO initial parameter estimates -> estimated solution
-    qreal const* paramsLimitMin, // I
-    qreal const* paramsLimitMax, // I
-    qreal* paramsError, // O
+    double* params, // IO initial parameter estimates -> estimated solution
+    double const* paramsLimitMin, // I
+    double const* paramsLimitMax, // I
+    double* paramsError, // O
     int paramsCount, // I
-    qreal const* yValues, // I
+    double const* yValues, // I
     int dataPointsCount) // I
 {
     DelegateCalculationDbl function(this, &FitWrapper::callbackY);
@@ -68,7 +72,7 @@ void FitWrapper::fit_exec(
     double info[LM_INFO_SZ];
 
     // output covariance matrix
-    vec<qreal> covar(paramsCount * paramsCount);
+    QVector<double> covar(paramsCount * paramsCount);
 
     int const maxIterations = 1000;
 
@@ -81,15 +85,18 @@ void FitWrapper::fit_exec(
         paramsError[i] = sqrt(covar[i * paramsCount + i]); // the diagonal
 }
 
-void FitWrapper::callbackY(qreal* parValues, qreal* yValues, int /*parCount*/, int xLength, void*) {
+void FitWrapper::callbackY(
+    double* parValues, double* yValues, int /*parCount*/, int xLength, void*)
+{
     for_i (xLength)
         yValues[i] = function_->y(xValues_[i], parValues);
 }
 
 void FitWrapper::callbackJacobianLM(
-    qreal* parValues, qreal* jacobian, int parameterLength, int xLength, void*) {
+    double* parValues, double* jacobian, int parCount, int xLength, void*)
+{
     for_int (ix, xLength) {
-        for_int (ip, parameterLength) {
+        for_int (ip, parCount) {
             *jacobian++ = function_->dy(xValues_[ix], ip, parValues);
         }
     }

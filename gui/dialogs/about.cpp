@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,18 +10,17 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #include "gui/dialogs/about.h"
 #include "manifest.h"
-#include "gui/cfg/settings.h"
 #include "gui/mainwin.h"
 #include <QApplication>
 #include <QDate>
 
-AboutBox::AboutBox() : QDialog(gGui, Qt::Dialog) {
-    Settings s("config");
-
+AboutBox::AboutBox()
+    : QDialog(gGui, Qt::Dialog)
+{
     setWindowTitle(QString("About %1").arg(qApp->applicationName()));
 
     // vertical layout

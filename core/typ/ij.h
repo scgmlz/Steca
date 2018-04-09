@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,13 +10,13 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef IJ_H
 #define IJ_H
 
 #include "core/def/comparable.h"
-#include "core/def/macros.h"
+#include <QtGlobal>
 #include <QJsonObject>
 
 //! A pair of integers, for use as image coordinates
@@ -29,8 +29,8 @@ public:
 
     COMPARABLE(const IJ&)
 
-    QJsonObject to_json() const;
-    void from_json(const class JsonObj&) THROWS;
+    QJsonObject toJson() const;
+    void fromJson(const class JsonObj&);
 };
 
 #endif // IJ_H

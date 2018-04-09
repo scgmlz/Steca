@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,15 +10,15 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef SUBFRAME_FILES_H
 #define SUBFRAME_FILES_H
 
-#include "gui/base/layout.h"
+#include <QDockWidget>
 
 //! Part of the main window that controls the data and correction files.
-class SubframeFiles : public DockWidget {
+class SubframeFiles : public QDockWidget {
 public:
     SubframeFiles();
 };

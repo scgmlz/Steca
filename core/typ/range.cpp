@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -12,30 +12,49 @@
 //
 //  Unit tests in test006_range (good coverage since this is somewhat involved)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
+#include "range.h"
+#include "core/def/debug.h"
 #include "core/def/comparators.h"
 #include "core/def/idiomatic_for.h"
 #include "core/typ/json.h"
-#include "core/typ/range.h"
 
-// ************************************************************************** //
-//  class Range
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class Range
 
-Range::Range() {
+Range::Range()
+{
     invalidate();
 }
 
-Range::Range(qreal min, qreal max) {
+Range::Range(double min, double max)
+{
     set(min, max);
 }
 
-Range Range::infinite() {
-    return Range(-INF, +INF);
+Range::Range(const QVector<double>& vec)
+{
+    if (!vec.count()) {
+        invalidate();
+        return;
+    }
+    double min = vec[0];
+    double max = vec[0];
+    for (int i=1; i<vec.count(); ++i) {
+        if (vec[i]<min) min = vec[i];
+        if (vec[i]>max) max = vec[i];
+    }
+    set(min, max);
 }
 
-int Range::compare(const Range& that) const {
+Range Range::infinite()
+{
+    return Range(-Q_INFINITY, +Q_INFINITY);
+}
+
+int Range::compare(const Range& that) const
+{
     ASSERT(isValid() && that.isValid());
     RET_COMPARE_VALUE(min)
     RET_COMPARE_VALUE(max)
@@ -44,27 +63,33 @@ int Range::compare(const Range& that) const {
 
 VALID_EQ_NE_OPERATOR(Range)
 
-void Range::invalidate() {
-    set(NAN, NAN);
+void Range::invalidate()
+{
+    set(Q_QNAN, Q_QNAN);
 }
 
-bool Range::isValid() const {
+bool Range::isValid() const
+{
     return !qIsNaN(min) && !qIsNaN(max);
 }
 
-bool Range::isEmpty() const {
+bool Range::isEmpty() const
+{
     return !isValid() || min >= max;
 }
 
-qreal Range::width() const {
-    return isValid() ? max - min : NAN;
+double Range::width() const
+{
+    return isValid() ? max - min : Q_QNAN;
 }
 
-qreal Range::center() const {
-    return isValid() ? (min + max) / 2 : NAN;
+double Range::center() const
+{
+    return isValid() ? (min + max) / 2 : Q_QNAN;
 }
 
-Range Range::slice(int i, int n) const {
+Range Range::slice(int i, int n) const
+{
     ASSERT(isValid());
     ASSERT(n>=1);
     ASSERT(i>=0 && i<n);
@@ -72,86 +97,98 @@ Range Range::slice(int i, int n) const {
     return Range(min+i*delta, min+(i+1)*delta);
 }
 
-void Range::set(qreal min_, qreal max_) {
+void Range::set(double min_, double max_) {
     min = min_;
     max = max_;
     ASSERT(!isValid() || min <= max);
 }
 
-void Range::safeSet(qreal v1, qreal v2) {
+void Range::safeSet(double v1, double v2)
+{
     if (v1 > v2)
         qSwap(v1, v2);
     set(v1, v2);
 }
 
-Range Range::safeFrom(qreal v1, qreal v2) {
+Range Range::safeFrom(double v1, double v2)
+{
     Range range;
     range.safeSet(v1, v2);
     return range;
 }
 
-void Range::extendBy(qreal val) {
+void Range::extendBy(double val)
+{
     min = qIsNaN(min) ? val : qMin(min, val);
     max = qIsNaN(max) ? val : qMax(max, val);
 }
 
-void Range::extendBy(const Range& that) {
+void Range::extendBy(const Range& that)
+{
     extendBy(that.min);
     extendBy(that.max);
 }
 
-bool Range::contains(qreal val) const {
+bool Range::contains(double val) const
+{
     return min <= val && val <= max;
 }
 
-bool Range::contains(const Range& that) const {
+bool Range::contains(const Range& that) const
+{
     return min <= that.min && that.max <= max;
 }
 
-bool Range::intersects(const Range& that) const {
+bool Range::intersects(const Range& that) const
+{
     return min <= that.max && that.min <= max;
 }
 
-Range Range::intersect(const Range& that) const {
+Range Range::intersect(const Range& that) const
+{
     if (!isValid() || !that.isValid())
         return Range();
 
-    const qreal min_ = qMax(min, that.min), max_ = qMin(max, that.max);
+    const double min_ = qMax(min, that.min), max_ = qMin(max, that.max);
     if (min_ <= max_)
         return Range(min_, max_);
 
     // disjoint
-    const qreal val = that.min < min ? min : max;
+    const double val = that.min < min ? min : max;
     return Range(val, val); // empty, isValid()
 }
 
-qreal Range::bound(qreal value) const {
+double Range::bound(double value) const
+{
     if (isValid() && !qIsNaN(value))
         return qBound(min, value, max);
-    return NAN;
+    return Q_QNAN;
 }
 
-QJsonObject Range::to_json() const {
-    return { { "min", qreal_to_json(min) }, { "max", qreal_to_json(max) } };
+QJsonObject Range::toJson() const
+{
+    return { { "min", double_to_json(min) }, { "max", double_to_json(max) } };
 }
 
-void Range::from_json(const JsonObj& obj) THROWS {
+void Range::fromJson(const JsonObj& obj)
+{
     min = obj.loadQreal("min");
     max = obj.loadQreal("max");
 }
 
-QString Range::to_s(int precision, int digitsAfter) const {
+QString Range::to_s(int precision, int digitsAfter) const
+{
     return QString("%1 .. %2")
         .arg(min, precision, 'f', digitsAfter)
         .arg(max, precision, 'f', digitsAfter);
 }
 
-// ************************************************************************** //
-//  class Ranges
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class Ranges
 
-bool Ranges::add(const Range& range) {
-    vec<Range> newRanges;
+bool Ranges::add(const Range& range)
+{
+    QVector<Range> newRanges;
     Range addRange = range;
     for (const Range& r : ranges_) {
         if (r.contains(range))
@@ -169,8 +206,9 @@ bool Ranges::add(const Range& range) {
     return true;
 }
 
-bool Ranges::remove(const Range& removeRange) {
-    vec<Range> newRanges;
+bool Ranges::remove(const Range& removeRange)
+{
+    QVector<Range> newRanges;
     bool changed = false;
 
     for (const Range& r : ranges_) {
@@ -190,7 +228,8 @@ bool Ranges::remove(const Range& removeRange) {
     return changed;
 }
 
-static bool lessThan(const Range& r1, const Range& r2) {
+static bool lessThan(const Range& r1, const Range& r2)
+{
     if (r1.min < r2.min)
         return true;
     if (r1.min > r2.min)
@@ -198,21 +237,24 @@ static bool lessThan(const Range& r1, const Range& r2) {
     return r1.max < r2.max;
 }
 
-void Ranges::sort() {
+void Ranges::sort()
+{
     std::sort(ranges_.begin(), ranges_.end(), lessThan);
 }
 
-QJsonArray Ranges::to_json() const {
+QJsonArray Ranges::toJson() const
+{
     QJsonArray arr;
     for (const Range& range : ranges_)
-        arr.append(range.to_json());
+        arr.append(range.toJson());
     return arr;
 }
 
-void Ranges::from_json(const QJsonArray& arr) THROWS {
+void Ranges::fromJson(const QJsonArray& arr)
+{
     for_i (arr.count()) {
         Range range;
-        range.from_json(arr.at(i).toObject());
+        range.fromJson(arr.at(i).toObject());
         ranges_.append(range);
     }
 }

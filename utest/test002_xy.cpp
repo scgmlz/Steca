@@ -37,6 +37,6 @@ TEST(qpair, Validity) {
 
 TEST(qpair, Json) {
     qpair qpair(-1, 2), qpair1;
-    qpair1.from_json(qpair.to_json());
+    qpair1.fromJson(qpair.toJson());
     EXPECT_EQ(qpair, qpair1);
 }

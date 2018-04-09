@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,29 +10,26 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #include "peak_functions.h"
 #include <QtMath>
 
 namespace { // file scope
 
-// ************************************************************************** //
-//  class Raw
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class Raw
 
 //! Peak analysis without fitting
 
 class Raw : public PeakFunction {
 public:
-    qreal y(qreal x, qreal const* parValues = nullptr) const;
-    qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const;
 
     qpair fittedPeak() const;
-    fwhm_t fittedFWHM() const;
+    float fittedFWHM() const;
 
     qpair peakError() const;
-    fwhm_t fwhmError() const;
+    float fwhmError() const;
 
     void setRange(const Range&);
     void fit(const Curve&, const Range&);
@@ -41,15 +38,18 @@ public:
     bool isRaw() const final { return true; }
 
 private:
+    double y(double x, double const* parValues = nullptr) const final;
+    double dy(double x, int parIndex, double const* parValues = nullptr) const final;
     Curve fittedCurve_; // saved from fitting
     void prepareY();
 
     mutable int x_count_;
-    mutable qreal dx_;
-    mutable qreal sum_y_;
+    mutable double dx_;
+    mutable double sum_y_;
 };
 
-qreal Raw::y(qreal x, qreal const* /*parValues*/) const {
+double Raw::y(double x, double const* /*parValues*/) const
+{
     if (!x_count_ || !range_.contains(x))
         return 0;
 
@@ -57,42 +57,51 @@ qreal Raw::y(qreal x, qreal const* /*parValues*/) const {
     return fittedCurve_.y(i);
 }
 
-qreal Raw::dy(qreal, int, qreal const*) const {
+double Raw::dy(double, int, double const*) const
+{
     return 0; // fake
 }
 
-qpair Raw::fittedPeak() const {
-    if (qIsNaN(sum_y_) && fittedCurve_.count()) ;
+qpair Raw::fittedPeak() const
+{
+    if (qIsNaN(sum_y_))
+        fittedCurve_.count();
     return qpair(range_.center(), sum_y_);
 }
 
-fwhm_t Raw::fittedFWHM() const {
-    return fwhm_t(range_.width()); // kind-of
+float Raw::fittedFWHM() const
+{
+    return float(range_.width()); // kind-of
 }
 
-qpair Raw::peakError() const {
+qpair Raw::peakError() const
+{
     return qpair(0, 0);
 }
 
-fwhm_t Raw::fwhmError() const {
+float Raw::fwhmError() const
+{
     return 0;
 }
 
-void Raw::setRange(const Range& range) {
+void Raw::setRange(const Range& range)
+{
     PeakFunction::setRange(range);
     prepareY();
 }
 
-void Raw::fit(const Curve& curve, const Range& range) {
+void Raw::fit(const Curve& curve, const Range& range)
+{
     fittedCurve_ = prepareFit(curve, range); // do no more than this
     prepareY();
 }
 
-void Raw::prepareY() {
+void Raw::prepareY()
+{
     if (range_.isEmpty() || fittedCurve_.isEmpty()) {
         x_count_ = 0;
         dx_ = 0;
-        sum_y_ = NAN;
+        sum_y_ = Q_QNAN;
     } else {
         x_count_ = fittedCurve_.count();
         dx_ = range_.width() / x_count_;
@@ -101,9 +110,8 @@ void Raw::prepareY() {
 }
 
 
-// ************************************************************************** //
-//  class Gaussian
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class Gaussian
 
 //! to fit peak with a Gaussian
 
@@ -111,57 +119,60 @@ class Gaussian : public PeakFunction {
 public:
     enum { parAMPL, parXSHIFT, parSIGMA };
 
-    Gaussian(qreal ampl = 1, qreal xShift = 0, qreal sigma = 1);
-
-    qreal y(qreal x, qreal const* parValues = nullptr) const;
-    qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const;
+    Gaussian(double ampl = 1, double xShift = 0, double sigma = 1);
 
     void setGuessedPeak(const qpair&);
-    void setGuessedFWHM(fwhm_t);
+    void setGuessedFWHM(float);
 
     qpair fittedPeak() const;
-    fwhm_t fittedFWHM() const;
+    float fittedFWHM() const;
 
     qpair peakError() const;
-    fwhm_t fwhmError() const;
+    float fwhmError() const;
 
     QString name() const final { return "Gaussian"; }
+
+    double y(double x, double const* parValues = nullptr) const final;
+    double dy(double x, int parIndex, double const* parValues = nullptr) const final;
 };
 
-Gaussian::Gaussian(qreal ampl, qreal xShift, qreal sigma) {
+Gaussian::Gaussian(double ampl, double xShift, double sigma)
+{
     setParameterCount(3);
 
     auto& parAmpl = parameters_[parAMPL];
     auto& parXShift = parameters_[parXSHIFT];
     auto& parSigma = parameters_[parSIGMA];
 
-    parAmpl.setValueRange(0, INF);
+    parAmpl.setAllowedRange(0, Q_INFINITY);
     parAmpl.setValue(ampl, 0);
 
     parXShift.setValue(xShift, 0);
 
-    parSigma.setValueRange(0, INF);
+    parSigma.setAllowedRange(0, Q_INFINITY);
     parSigma.setValue(sigma, 0);
 }
 
-qreal Gaussian::y(qreal x, qreal const* parValues) const {
-    qreal ampl = parValue(parAMPL, parValues);
-    qreal xShift = parValue(parXSHIFT, parValues);
-    qreal sigma = parValue(parSIGMA, parValues);
+double Gaussian::y(double x, double const* parValues) const
+{
+    double ampl = parValue(parAMPL, parValues);
+    double xShift = parValue(parXSHIFT, parValues);
+    double sigma = parValue(parSIGMA, parValues);
 
-    qreal arg = (x - xShift) / sigma;
-    qreal exa = exp(-0.5 * arg * arg);
+    double arg = (x - xShift) / sigma;
+    double exa = exp(-0.5 * arg * arg);
 
     return ampl * exa;
 }
 
-qreal Gaussian::dy(qreal x, int parIndex, qreal const* parValues) const {
-    qreal ampl = parValue(parAMPL, parValues);
-    qreal xShift = parValue(parXSHIFT, parValues);
-    qreal sigma = parValue(parSIGMA, parValues);
+double Gaussian::dy(double x, int parIndex, double const* parValues) const
+{
+    double ampl = parValue(parAMPL, parValues);
+    double xShift = parValue(parXSHIFT, parValues);
+    double sigma = parValue(parSIGMA, parValues);
 
-    qreal arg = (x - xShift) / sigma;
-    qreal exa = exp(-0.5 * arg * arg);
+    double arg = (x - xShift) / sigma;
+    double exa = exp(-0.5 * arg * arg);
 
     switch (parIndex) {
     case parAMPL: return exa;
@@ -171,39 +182,44 @@ qreal Gaussian::dy(qreal x, int parIndex, qreal const* parValues) const {
     qFatal("impossible case");
 }
 
-void Gaussian::setGuessedPeak(const qpair& qpair) {
+void Gaussian::setGuessedPeak(const qpair& qpair)
+{
     PeakFunction::setGuessedPeak(qpair);
-    setValue(parXSHIFT, qpair.x);
-    setValue(parAMPL, qpair.y);
+    setParValue(parXSHIFT, qpair.x);
+    setParValue(parAMPL, qpair.y);
 }
 
-void Gaussian::setGuessedFWHM(fwhm_t fwhm) {
+void Gaussian::setGuessedFWHM(float fwhm)
+{
     PeakFunction::setGuessedFWHM(fwhm);
     // sigma = FWHM * 1/4 * (SQRT(2)/SQRT(ln(2))) = FWHM * 0.424661
-    setValue(parSIGMA, fwhm * 0.424661);
+    setParValue(parSIGMA, fwhm * 0.424661);
 }
 
-qpair Gaussian::fittedPeak() const {
+qpair Gaussian::fittedPeak() const
+{
     return qpair(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
 }
 
-fwhm_t Gaussian::fittedFWHM() const {
-    return fwhm_t(parameters_.at(parSIGMA).value() / 0.424661);
+float Gaussian::fittedFWHM() const
+{
+    return float(parameters_.at(parSIGMA).value() / 0.424661);
 }
 
-qpair Gaussian::peakError() const {
+qpair Gaussian::peakError() const
+{
     return qpair(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
 }
 
-fwhm_t Gaussian::fwhmError() const {
+float Gaussian::fwhmError() const
+{
     // TODO REVIEW
-    return fwhm_t(parameters_.at(parSIGMA).error());
+    return float(parameters_.at(parSIGMA).error());
 }
 
 
-// ************************************************************************** //
-//  class Lorentzian
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class Lorentzian
 
 //! to fit peak with a Lorentzian
 
@@ -211,56 +227,58 @@ class Lorentzian : public PeakFunction {
 public:
     enum { parAMPL, parXSHIFT, parGAMMA };
 
-    Lorentzian(qreal ampl = 1, qreal xShift = 0, qreal gamma = 1);
+    Lorentzian(double ampl = 1, double xShift = 0, double gamma = 1);
 
-    qreal y(qreal x, qreal const* parValues = nullptr) const;
-    qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const;
+    double y(double x, double const* parValues = nullptr) const final;
+    double dy(double x, int parIndex, double const* parValues = nullptr) const final;
 
     void setGuessedPeak(const qpair&);
-    void setGuessedFWHM(fwhm_t);
+    void setGuessedFWHM(float);
 
     qpair fittedPeak() const;
-    fwhm_t fittedFWHM() const;
+    float fittedFWHM() const;
 
     qpair peakError() const;
-    fwhm_t fwhmError() const;
+    float fwhmError() const;
 
     QString name() const final { return "Lorentzian"; }
 };
 
-Lorentzian::Lorentzian(qreal ampl, qreal xShift, qreal gamma) {
+Lorentzian::Lorentzian(double ampl, double xShift, double gamma)
+{
     setParameterCount(3);
 
     auto& parAmpl = parameters_[parAMPL];
     auto& parXShift = parameters_[parXSHIFT];
     auto& parGamma = parameters_[parGAMMA];
 
-    parAmpl.setValueRange(0, INF);
+    parAmpl.setAllowedRange(0, Q_INFINITY);
     parAmpl.setValue(ampl, 0);
 
     parXShift.setValue(xShift, 0);
 
-    parGamma.setValueRange(0, INF);
+    parGamma.setAllowedRange(0, Q_INFINITY);
     parGamma.setValue(gamma, 0);
 }
 
-qreal Lorentzian::y(qreal x, qreal const* parValues) const {
-    qreal ampl = parValue(parAMPL, parValues);
-    qreal xShift = parValue(parXSHIFT, parValues);
-    qreal gamma = parValue(parGAMMA, parValues);
+double Lorentzian::y(double x, double const* parValues) const {
+    double ampl = parValue(parAMPL, parValues);
+    double xShift = parValue(parXSHIFT, parValues);
+    double gamma = parValue(parGAMMA, parValues);
 
-    qreal arg = (x - xShift) / gamma;
+    double arg = (x - xShift) / gamma;
     return ampl / (1 + arg * arg);
 }
 
-qreal Lorentzian::dy(qreal x, int parIndex, qreal const* parValues) const {
-    qreal ampl = parValue(parAMPL, parValues);
-    qreal xShift = parValue(parXSHIFT, parValues);
-    qreal gamma = parValue(parGAMMA, parValues);
+double Lorentzian::dy(double x, int parIndex, double const* parValues) const
+{
+    double ampl = parValue(parAMPL, parValues);
+    double xShift = parValue(parXSHIFT, parValues);
+    double gamma = parValue(parGAMMA, parValues);
 
-    qreal arg1 = (x - xShift) / gamma;
-    qreal arg2 = arg1 * arg1;
-    qreal arg3 = (1 + arg2) * (1 + arg2);
+    double arg1 = (x - xShift) / gamma;
+    double arg2 = arg1 * arg1;
+    double arg3 = (1 + arg2) * (1 + arg2);
 
     switch (parIndex) {
     case parAMPL: return 1 / (1 + arg2);
@@ -270,38 +288,43 @@ qreal Lorentzian::dy(qreal x, int parIndex, qreal const* parValues) const {
     qFatal("impossible case");
 }
 
-void Lorentzian::setGuessedPeak(const qpair& qpair) {
+void Lorentzian::setGuessedPeak(const qpair& qpair)
+{
     PeakFunction::setGuessedPeak(qpair);
-    setValue(parXSHIFT, qpair.x);
-    setValue(parAMPL, qpair.y);
+    setParValue(parXSHIFT, qpair.x);
+    setParValue(parAMPL, qpair.y);
 }
 
-void Lorentzian::setGuessedFWHM(fwhm_t fwhm) {
+void Lorentzian::setGuessedFWHM(float fwhm)
+{
     PeakFunction::setGuessedFWHM(fwhm);
     // gamma = HWHM = FWHM / 2
-    setValue(parGAMMA, fwhm / 2);
+    setParValue(parGAMMA, fwhm / 2);
 }
 
-qpair Lorentzian::fittedPeak() const {
+qpair Lorentzian::fittedPeak() const
+{
     return qpair(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
 }
 
-fwhm_t Lorentzian::fittedFWHM() const {
-    return fwhm_t(parameters_.at(parGAMMA).value() * 2);
+float Lorentzian::fittedFWHM() const
+{
+    return float(parameters_.at(parGAMMA).value() * 2);
 }
 
-qpair Lorentzian::peakError() const {
+qpair Lorentzian::peakError() const
+{
     return qpair(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
 }
 
-fwhm_t Lorentzian::fwhmError() const {
-    return fwhm_t(parameters_.at(parGAMMA).error());
+float Lorentzian::fwhmError() const
+{
+    return float(parameters_.at(parGAMMA).error());
 }
 
 
-// ************************************************************************** //
-//  class PseudoVoigt1
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class PseudoVoigt1
 
 
 //! to fit peak with a sum of Gaussian and Lorentzian with shared width parameter
@@ -310,24 +333,25 @@ class PseudoVoigt1 : public PeakFunction {
 public:
     enum { parAMPL, parXSHIFT, parSIGMAGAMMA, parETA };
 
-    PseudoVoigt1(qreal ampl = 1, qreal xShift = 0, qreal sigmaGamma = 1, qreal eta = 0.1);
+    PseudoVoigt1(double ampl = 1, double xShift = 0, double sigmaGamma = 1, double eta = 0.1);
 
-    qreal y(qreal x, qreal const* parValues = nullptr) const;
-    qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const;
+    double y(double x, double const* parValues = nullptr) const final;
+    double dy(double x, int parIndex, double const* parValues = nullptr) const final;
 
     void setGuessedPeak(const qpair&);
-    void setGuessedFWHM(fwhm_t);
+    void setGuessedFWHM(float);
 
     qpair fittedPeak() const;
-    fwhm_t fittedFWHM() const;
+    float fittedFWHM() const;
 
     qpair peakError() const;
-    fwhm_t fwhmError() const;
+    float fwhmError() const;
 
     QString name() const final { return "PseudoVoigt1"; }
 };
 
-PseudoVoigt1::PseudoVoigt1(qreal ampl, qreal xShift, qreal sigmaGamma, qreal eta) {
+PseudoVoigt1::PseudoVoigt1(double ampl, double xShift, double sigmaGamma, double eta)
+{
     setParameterCount(4);
 
     auto& parAmpl = parameters_[parAMPL];
@@ -335,42 +359,44 @@ PseudoVoigt1::PseudoVoigt1(qreal ampl, qreal xShift, qreal sigmaGamma, qreal eta
     auto& parSigmaGamma = parameters_[parSIGMAGAMMA];
     auto& parEta = parameters_[parETA];
 
-    parAmpl.setValueRange(0, INF);
+    parAmpl.setAllowedRange(0, Q_INFINITY);
     parAmpl.setValue(ampl, 0);
 
     parXShift.setValue(xShift, 0);
 
-    parSigmaGamma.setValueRange(0, INF);
+    parSigmaGamma.setAllowedRange(0, Q_INFINITY);
     parSigmaGamma.setValue(sigmaGamma, 0);
 
-    parEta.setValueRange(0, 1);
+    parEta.setAllowedRange(0, 1);
     parEta.setValue(eta, 0);
 }
 
-qreal PseudoVoigt1::y(qreal x, qreal const* parValues) const {
-    qreal ampl = parValue(parAMPL, parValues);
-    qreal xShift = parValue(parXSHIFT, parValues);
-    qreal sigmaGamma = parValue(parSIGMAGAMMA, parValues);
-    qreal eta = parValue(parETA, parValues);
+double PseudoVoigt1::y(double x, double const* parValues) const
+{
+    double ampl = parValue(parAMPL, parValues);
+    double xShift = parValue(parXSHIFT, parValues);
+    double sigmaGamma = parValue(parSIGMAGAMMA, parValues);
+    double eta = parValue(parETA, parValues);
 
-    qreal arg = (x - xShift) / sigmaGamma;
-    qreal arg2 = arg * arg;
-    qreal gaussian = ampl * exp(-arg2 * log(2.0));
-    qreal lorentz = ampl / (1 + arg2);
+    double arg = (x - xShift) / sigmaGamma;
+    double arg2 = arg * arg;
+    double gaussian = ampl * exp(-arg2 * log(2.0));
+    double lorentz = ampl / (1 + arg2);
 
     return (1 - eta) * gaussian + eta * lorentz;
 }
 
-qreal PseudoVoigt1::dy(qreal x, int parIndex, qreal const* parValues) const {
-    qreal ampl = parValue(parAMPL, parValues);
-    qreal xShift = parValue(parXSHIFT, parValues);
-    qreal sigmaGamma = parValue(parSIGMAGAMMA, parValues);
-    qreal eta = parValue(parETA, parValues);
+double PseudoVoigt1::dy(double x, int parIndex, double const* parValues) const
+{
+    double ampl = parValue(parAMPL, parValues);
+    double xShift = parValue(parXSHIFT, parValues);
+    double sigmaGamma = parValue(parSIGMAGAMMA, parValues);
+    double eta = parValue(parETA, parValues);
 
-    qreal arg1 = (x - xShift) / sigmaGamma;
-    qreal arg2 = arg1 * arg1;
-    qreal arg3 = exp(-arg2 * log(2.0));
-    qreal arg4 = 1 + arg2;
+    double arg1 = (x - xShift) / sigmaGamma;
+    double arg2 = arg1 * arg1;
+    double arg3 = exp(-arg2 * log(2.0));
+    double arg4 = 1 + arg2;
 
     switch (parIndex) {
     case parAMPL: return eta / arg4 + (1 - eta) * arg3;
@@ -387,37 +413,42 @@ qreal PseudoVoigt1::dy(qreal x, int parIndex, qreal const* parValues) const {
     qFatal("impossible case");
 }
 
-void PseudoVoigt1::setGuessedPeak(const qpair& qpair) {
+void PseudoVoigt1::setGuessedPeak(const qpair& qpair)
+{
     PeakFunction::setGuessedPeak(qpair);
-    setValue(parXSHIFT, qpair.x);
-    setValue(parAMPL, qpair.y);
+    setParValue(parXSHIFT, qpair.x);
+    setParValue(parAMPL, qpair.y);
 }
 
-void PseudoVoigt1::setGuessedFWHM(fwhm_t fwhm) {
+void PseudoVoigt1::setGuessedFWHM(float fwhm)
+{
     PeakFunction::setGuessedFWHM(fwhm);
-    setValue(parSIGMAGAMMA, fwhm / 2);
+    setParValue(parSIGMAGAMMA, fwhm / 2);
 }
 
-qpair PseudoVoigt1::fittedPeak() const {
+qpair PseudoVoigt1::fittedPeak() const
+{
     return qpair(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
 }
 
-fwhm_t PseudoVoigt1::fittedFWHM() const {
-    return fwhm_t(parameters_.at(parSIGMAGAMMA).value() * 2);
+float PseudoVoigt1::fittedFWHM() const
+{
+    return float(parameters_.at(parSIGMAGAMMA).value() * 2);
 }
 
-qpair PseudoVoigt1::peakError() const {
+qpair PseudoVoigt1::peakError() const
+{
     return qpair(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
 }
 
-fwhm_t PseudoVoigt1::fwhmError() const {
-    return fwhm_t(parameters_.at(parSIGMAGAMMA).error());
+float PseudoVoigt1::fwhmError() const
+{
+    return float(parameters_.at(parSIGMAGAMMA).error());
 }
 
 
-// ************************************************************************** //
-//  class PseudoVoigt2
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class PseudoVoigt2
 
 //! to fit peak with a sum of Gaussian and Lorentzian with independent width parameters
 
@@ -426,24 +457,25 @@ public:
     enum { parAMPL, parXSHIFT, parSIGMA, parGAMMA, parETA };
 
     PseudoVoigt2(
-        qreal ampl = 1, qreal xShift = 0, qreal sigma = 1, qreal gamma = 1, qreal eta = 0.1);
+        double ampl = 1, double xShift = 0, double sigma = 1, double gamma = 1, double eta = 0.1);
 
-    qreal y(qreal x, qreal const* parValues = nullptr) const;
-    qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const;
+    double y(double x, double const* parValues = nullptr) const final;
+    double dy(double x, int parIndex, double const* parValues = nullptr) const final;
 
     void setGuessedPeak(const qpair&);
-    void setGuessedFWHM(fwhm_t);
+    void setGuessedFWHM(float);
 
     qpair fittedPeak() const;
-    fwhm_t fittedFWHM() const;
+    float fittedFWHM() const;
 
     qpair peakError() const;
-    fwhm_t fwhmError() const;
+    float fwhmError() const;
 
     QString name() const final { return "PseudoVoigt2"; }
 };
 
-PseudoVoigt2::PseudoVoigt2(qreal ampl, qreal mu, qreal hwhmG, qreal hwhmL, qreal eta) {
+PseudoVoigt2::PseudoVoigt2(double ampl, double mu, double hwhmG, double hwhmL, double eta)
+{
     setParameterCount(5);
 
     auto& parAmpl = parameters_[parAMPL];
@@ -452,53 +484,54 @@ PseudoVoigt2::PseudoVoigt2(qreal ampl, qreal mu, qreal hwhmG, qreal hwhmL, qreal
     auto& parHwhmL = parameters_[parGAMMA];
     auto& parEta = parameters_[parETA];
 
-    parAmpl.setValueRange(0, INF);
+    parAmpl.setAllowedRange(0, Q_INFINITY);
     parAmpl.setValue(ampl, 0);
 
     parMu.setValue(mu, 0);
 
-    parHwhmG.setValueRange(0, INF);
+    parHwhmG.setAllowedRange(0, Q_INFINITY);
     parHwhmG.setValue(hwhmG, 0);
 
-    parHwhmL.setValueRange(0, INF);
+    parHwhmL.setAllowedRange(0, Q_INFINITY);
     parHwhmL.setValue(hwhmL, 0);
 
-    parEta.setValueRange(0, 1);
+    parEta.setAllowedRange(0, 1);
     parEta.setValue(eta, 0);
 }
 
-qreal PseudoVoigt2::y(qreal x, qreal const* parValues) const {
-    qreal ampl = parValue(parAMPL, parValues);
-    qreal xShift = parValue(parXSHIFT, parValues);
-    qreal sigma = parValue(parSIGMA, parValues);
-    qreal gamma = parValue(parGAMMA, parValues);
-    qreal eta = parValue(parETA, parValues);
+double PseudoVoigt2::y(double x, double const* parValues) const {
+    double ampl = parValue(parAMPL, parValues);
+    double xShift = parValue(parXSHIFT, parValues);
+    double sigma = parValue(parSIGMA, parValues);
+    double gamma = parValue(parGAMMA, parValues);
+    double eta = parValue(parETA, parValues);
 
-    qreal argG = (x - xShift) / sigma;
-    qreal argG2 = argG * argG;
-    qreal gaussian = ampl * exp(-argG2 * log(2.0));
+    double argG = (x - xShift) / sigma;
+    double argG2 = argG * argG;
+    double gaussian = ampl * exp(-argG2 * log(2.0));
 
-    qreal argL = (x - xShift) / gamma;
-    qreal argL2 = argL * argL;
-    qreal lorentz = ampl / (1 + argL2);
+    double argL = (x - xShift) / gamma;
+    double argL2 = argL * argL;
+    double lorentz = ampl / (1 + argL2);
 
     return (1 - eta) * gaussian + eta * lorentz;
 }
 
-qreal PseudoVoigt2::dy(qreal x, int parIndex, qreal const* parValues) const {
-    qreal ampl = parValue(parAMPL, parValues);
-    qreal xShift = parValue(parXSHIFT, parValues);
-    qreal sigma = parValue(parSIGMA, parValues);
-    qreal gamma = parValue(parGAMMA, parValues);
-    qreal eta = parValue(parETA, parValues);
+double PseudoVoigt2::dy(double x, int parIndex, double const* parValues) const
+{
+    double ampl = parValue(parAMPL, parValues);
+    double xShift = parValue(parXSHIFT, parValues);
+    double sigma = parValue(parSIGMA, parValues);
+    double gamma = parValue(parGAMMA, parValues);
+    double eta = parValue(parETA, parValues);
 
-    qreal argG1 = (x - xShift) / sigma;
-    qreal argG2 = argG1 * argG1;
-    qreal argG3 = exp(-argG2 * log(2.0));
+    double argG1 = (x - xShift) / sigma;
+    double argG2 = argG1 * argG1;
+    double argG3 = exp(-argG2 * log(2.0));
 
-    qreal argL1 = (x - xShift) / gamma;
-    qreal argL2 = argL1 * argL1;
-    qreal argL3 = 1 + argL2;
+    double argL1 = (x - xShift) / gamma;
+    double argL2 = argL1 * argL1;
+    double argL3 = 1 + argL2;
 
     switch (parIndex) {
     case parAMPL: return eta / argL3 + (1 - eta) * argG3;
@@ -516,46 +549,53 @@ qreal PseudoVoigt2::dy(qreal x, int parIndex, qreal const* parValues) const {
     qFatal("impossible case");
 }
 
-void PseudoVoigt2::setGuessedPeak(const qpair& qpair) {
+void PseudoVoigt2::setGuessedPeak(const qpair& qpair)
+{
     PeakFunction::setGuessedPeak(qpair);
-    setValue(parXSHIFT, qpair.x);
-    setValue(parAMPL, qpair.y);
+    setParValue(parXSHIFT, qpair.x);
+    setParValue(parAMPL, qpair.y);
 }
 
-void PseudoVoigt2::setGuessedFWHM(fwhm_t fwhm) {
+void PseudoVoigt2::setGuessedFWHM(float fwhm)
+{
     PeakFunction::setGuessedFWHM(fwhm);
-    setValue(parSIGMA, fwhm * 0.424661);
-    setValue(parGAMMA, fwhm / 2);
+    setParValue(parSIGMA, fwhm * 0.424661);
+    setParValue(parGAMMA, fwhm / 2);
 }
 
-qpair PseudoVoigt2::fittedPeak() const {
+qpair PseudoVoigt2::fittedPeak() const
+{
     return qpair(parameters_.at(parXSHIFT).value(), parameters_.at(parAMPL).value());
 }
 
-fwhm_t PseudoVoigt2::fittedFWHM() const {
-    qreal eta = parameters_.at(parETA).value();
-    return fwhm_t(
+float PseudoVoigt2::fittedFWHM() const
+{
+    double eta = parameters_.at(parETA).value();
+    return float(
         ((1 - eta) * parameters_.at(parSIGMA).value() / 0.424661
          + eta * parameters_.at(parGAMMA).value() * 2)
         / 2);
 }
 
-qpair PseudoVoigt2::peakError() const {
+qpair PseudoVoigt2::peakError() const
+{
     return qpair(parameters_.at(parXSHIFT).error(), parameters_.at(parAMPL).error());
 }
 
-fwhm_t PseudoVoigt2::fwhmError() const {
+float PseudoVoigt2::fwhmError() const
+{
     // REVIEW
-    return fwhm_t(parameters_.at(parSIGMA).error() + parameters_.at(parGAMMA).error());
+    return float(parameters_.at(parSIGMA).error() + parameters_.at(parGAMMA).error());
 }
 
 } // local methods
 
-// ************************************************************************** //
+//  ***********************************************************************************************
 //!  Register peak functions
-// ************************************************************************** //
+//  ***********************************************************************************************
 
-void register_peak_functions() {
+void register_peak_functions()
+{
     auto G = FunctionRegistry::instance();
     G->register_fct([]()->PeakFunction*{return new Raw();});
     G->register_fct([]()->PeakFunction*{return new Gaussian();});

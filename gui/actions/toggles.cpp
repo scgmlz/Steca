@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,49 +10,45 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #include "toggles.h"
 #include "core/session.h"
 #include "gui/mainwin.h"
-#include "gui/dialogs/about.h"
 #include <QDockWidget>
 #include <QStatusBar>
 
-Toggles::Toggles() {
-
+Toggles::Toggles()
+{
 #define AT &QAction::toggled
 
-    QObject::connect(&enableCorr, AT, [](bool on) {
-            gSession->corrset().tryEnable(on); });
-    QObject::connect(&mirrorImage, AT, [](bool on) { gGui->setImageMirror(on); });
+    connect(&enableCorr, AT, [](bool on) { gSession->corrset().tryEnable(on); });
 
-    // TODO rm state variables
-    QObject::connect(&fixedIntenImage, AT, [](bool on) {
-        gGui->isFixedIntenImageScale_ = on;
-        emit gSession->sigImage();
-        emit gSession->sigDiffractogram();
+    connect(&fixedIntenImage, AT, [](bool on) {
+        EMIT(gSession->sigImage());
+        EMIT(gSession->sigDfgram());
         });
-    QObject::connect(&fixedIntenDgram, AT, [](bool on) {
-        gGui->isFixedIntenDgramScale_ = on;
-        emit gSession->sigImage();
-        emit gSession->sigDiffractogram();
+    connect(&fixedIntenDgram, AT, [](bool on) {
+        EMIT(gSession->sigImage());
+        EMIT(gSession->sigDfgram());
         });
-    QObject::connect(&combinedDgram, AT, [](bool on) {
-        gGui->isCombinedDgram_ = on;
-        emit gSession->sigImage();
-        emit gSession->sigDiffractogram();
+    connect(&combinedDgram, AT, [](bool on) {
+        EMIT(gSession->sigImage());
+        EMIT(gSession->sigDfgram());
+        });
+    connect(&showBackground, AT, [](bool on) {
+        EMIT(gSession->sigDfgram());
         });
 
-    QObject::connect(&viewStatusbar, AT, [](bool on) { gGui->statusBar()->setVisible(on); });
+    connect(&viewStatusbar, AT, [](bool on) { gGui->statusBar()->setVisible(on); });
 #ifndef Q_OS_OSX
-    QObject::connect(&fullScreen, AT, [](bool on) {
+    connect(&fullScreen, AT, [](bool on) {
             if (on)
                 gGui->showFullScreen();
             else
                 gGui->showNormal(); });
 #endif
-    QObject::connect(&viewFiles, AT, [](bool on) { gGui->dockFiles_->setVisible(on); });
-    QObject::connect(&viewClusters, AT, [](bool on) { gGui->dockClusters_->setVisible(on); });
-    QObject::connect(&viewMetadata, AT, [](bool on) { gGui->dockMetadata_->setVisible(on); });
+    connect(&viewFiles, AT, [](bool on) { gGui->dockFiles_->setVisible(on); });
+    connect(&viewClusters, AT, [](bool on) { gGui->dockClusters_->setVisible(on); });
+    connect(&viewMetadata, AT, [](bool on) { gGui->dockMetadata_->setVisible(on); });
 }

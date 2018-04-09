@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,29 +10,27 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
-#include "enhance_widgets.h"
 #include "gui/capture_and_replay/console.h"
+#include "gui/capture_and_replay/cmdexception.h"
+#include <QDebug>
 
-// ************************************************************************** //
-//  class CSettable
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class CSettable
 
 CSettable::CSettable(const QString& name)
-    : INamed(name)
+    : name_ {gConsole->learn(name, this)}
 {
-    gConsole->learn(name, this);
 }
 
 CSettable::~CSettable()
 {
-    gConsole->forget(name());
+    gConsole->forget(name_);
 }
 
-// ************************************************************************** //
-//  class CModal
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class CModal
 
 CModal::CModal(const QString& name)
 {
@@ -45,9 +43,8 @@ CModal::~CModal()
     gConsole->call("@pop");
 }
 
-// ************************************************************************** //
-//  class CModelessDialog
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class CModelessDialog
 
 CModelessDialog::CModelessDialog(QWidget* parent, const QString& name)
     : QDialog(parent)
@@ -56,6 +53,14 @@ CModelessDialog::CModelessDialog(QWidget* parent, const QString& name)
     setModal(false);
 }
 
-void CModelessDialog::onCommand(const QStringList&)
+void CModelessDialog::closeEvent(QCloseEvent* event)
 {
+    deleteLater();
+}
+
+void CModelessDialog::onCommand(const QStringList& args)
+{
+    if (args[0]!="close")
+        throw CmdException("Unexpected command");
+    close();
 }

@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,12 +10,12 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef THETA_SELECTION_H
 #define THETA_SELECTION_H
 
-#include "core/typ/range.h"
+#include <QObject>
 
 //! Select a theta bin for overlay in scattering image.
 
@@ -23,6 +23,7 @@ class ThetaSelection : public QObject {
 public:
     ThetaSelection();
 
+    void fromJson(const JsonObj& obj);
     void onData();
     void recomputeCache();
 
@@ -31,6 +32,7 @@ public:
     const Range& range() const { return range_; }
     int iSlice() const { return iSlice_; }
     bool isActive() const { return numSlices_; }
+    QJsonObject toJson() const;
 
 private:
     Range fullRange_;

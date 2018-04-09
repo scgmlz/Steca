@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,36 +10,43 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #include "triggers.h"
 #include "../manifest.h"
 #include "core/session.h"
 #include "gui/mainwin.h"
-#include "gui/dialogs/output_diagrams.h"
-#include "gui/dialogs/output_diffractograms.h"
-#include "gui/dialogs/output_polefigures.h"
 #include "gui/dialogs/about.h"
+#include "gui/dialogs/check_update.h"
+#include "gui/dialogs/export_dfgram.h"
+#include "gui/dialogs/export_bigtable.h"
+#include "gui/dialogs/export_diagram.h"
+#include "gui/dialogs/export_polefig.h"
+#include "gui/dialogs/popup_bigtable.h"
+#include "gui/dialogs/popup_diagram.h"
+#include "gui/dialogs/popup_polefig.h"
 #include <QDesktopServices>
 
-Triggers::Triggers() {
-
+Triggers::Triggers()
+{
 #define AT &QAction::triggered
-    QObject::connect(&about, AT, [](){ AboutBox().exec(); });
-    QObject::connect(&addFiles, AT, []() { gGui->addFiles(); });
-    QObject::connect(&checkUpdate, AT, []() { gGui->checkUpdate(); });
-    QObject::connect(&clearBackground, AT, []() { gSession->baseline().setRanges({}); });
-    QObject::connect(&clearSession, AT, []() { gSession->clear(); });
-    QObject::connect(&corrFile, AT, []() { gGui->loadCorrFile(); });
-    QObject::connect(&loadSession, AT, []() { gGui->loadSession(); });
-    QObject::connect(&online, AT, []() { QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
-    QObject::connect(&outputDiagrams, AT, [](){ DiagramsFrame().exec(); });
-    QObject::connect(&outputDiffractograms, AT, [](){ DiffractogramsFrame().exec(); });
-    QObject::connect(&outputPolefigures, AT, []() { PoleFiguresFrame().exec(); });
-    QObject::connect(&quit, AT, []() { gGui->close(); });
-    QObject::connect(&removeFile, AT, []() { gSession->dataset().removeFile(); });
-    QObject::connect(&rotateImage, AT, []() { gGui->setImageRotate(
-                gSession->imageTransform().nextRotate()); });
-    QObject::connect(&saveSession, AT, []() { gGui->saveSession(); });
-    QObject::connect(&viewReset, AT, []() { gGui->viewReset(); });
+    connect(&about, AT, [](){ AboutBox().exec(); });
+    connect(&addFiles, AT, []() { gGui->addFiles(); });
+    connect(&checkUpdate, AT, []() { CheckUpdate _(gGui); });
+    connect(&clearBackground, AT, []() { gSession->baseline().setRanges({}); });
+    connect(&clearSession, AT, []() { gSession->clear(); });
+    connect(&corrFile, AT, []() { gGui->loadCorrFile(); });
+    connect(&exportDfgram, AT, [](){ ExportDfgram().exec(); });
+    connect(&exportPolefig, AT, [](){ ExportPolefig().exec(); });
+    connect(&exportBigtable, AT, [](){ ExportBigtable().exec(); });
+    connect(&exportDiagram, AT, [](){ ExportDiagram().exec(); });
+    connect(&loadSession, AT, []() { gGui->loadSession(); });
+    connect(&online, AT, []() { QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
+    connect(&quit, AT, []() { gGui->close(); });
+    connect(&removeFile, AT, []() { gSession->dataset().removeFile(); });
+    connect(&saveSession, AT, []() { gGui->saveSession(); });
+    connect(&spawnDiagram, AT, [](){ new PopupDiagram(); });
+    connect(&spawnTable, AT, [](){ new PopupBigtable(); });
+    connect(&spawnPolefig, AT, [](){ new PopupPolefig(); });
+    connect(&viewReset, AT, []() { gGui->viewReset(); });
 }

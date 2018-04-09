@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -12,13 +12,14 @@
 //
 //  Unit tests in test002_qpair
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
+#include "realpair.h"
+#include "core/def/debug.h"
 #include "core/def/comparators.h"
-#include "core/typ/json.h"
-#include "core/typ/realpair.h"
 
-int qpair::compare(const qpair& that) const {
+int qpair::compare(const qpair& that) const
+{
     ASSERT(isValid() && that.isValid());
     RET_COMPARE_VALUE(x)
     RET_COMPARE_VALUE(y)
@@ -27,15 +28,18 @@ int qpair::compare(const qpair& that) const {
 
 VALID_EQ_NE_OPERATOR(qpair)
 
-void qpair::invalidate() {
-    x = y = NAN;
+void qpair::invalidate()
+{
+    x = y = Q_QNAN;
 }
 
-QJsonObject qpair::to_json() const {
-    return { { "x", qreal_to_json(x) }, { "y", qreal_to_json(y) } };
+QJsonObject qpair::toJson() const
+{
+    return { { "x", double_to_json(x) }, { "y", double_to_json(y) } };
 }
 
-void qpair::from_json(const JsonObj& obj) THROWS {
+void qpair::fromJson(const JsonObj& obj)
+{
     x = obj.loadQreal("x");
     y = obj.loadQreal("y");
 }

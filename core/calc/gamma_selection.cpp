@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,88 +10,68 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
-#include "gamma_selection.h"
 #include "core/session.h"
 
-GammaSelection::GammaSelection()
+QJsonObject GammaSelection::toJson() const
 {
+    return {
+        { "number of slices", QJsonValue(numSlices_) },
+        { "current slice index", QJsonValue(iSlice_) },
+    };
+}
+
+void GammaSelection::fromJson(const JsonObj& obj)
+{
+    setNumSlices(obj.loadInt("number of slices"));
+    selectSlice(obj.loadInt("current slice index"));
 }
 
 //! Resets fullRange_ according to loaded data.
 void GammaSelection::onData()
 {
     const Cluster* cluster = gSession->dataset().highlight().cluster();
-    if (!cluster) {
-        fullRange_.invalidate();
-        return;
-    }
+    qDebug() << "GammaSelection on Data: " << cluster;
+    if (!cluster)
+        return fullRange_.invalidate();
     fullRange_ = cluster->rgeGma();
-     recomputeCache();
+    recomputeCache();
 }
 
 //! Recomputes range_ and iSlice_.
 void GammaSelection::recomputeCache()
 {
-    if (!fullRange_.isValid()) {
+    if (!fullRange_.isValid())
         range_.invalidate();
-        numSlices_ = 0;
-        return;
-    }
-    if        (mode_ == Mode::all) {
+    else if (numSlices_==0)
         range_ = fullRange_;
-    } else if (mode_ == Mode::slicing) {
-        iSlice_ = qMin(qMax(iSlice_, 0), numSlices_-1);
-        if (numSlices_)
-            range_ = fullRange_.slice(iSlice_, numSlices_);
-    } else if (mode_ == Mode::minmax) {
-        range_ = range_.intersect(fullRange_);
-    }
-    emit gSession->sigGamma();
-}
-
-void GammaSelection::setModeTakeAll()
-{
-    mode_ = Mode::all;
-    iSlice_ = 0;
-    recomputeCache();
-}
-
-void GammaSelection::setModeSlicing()
-{
-    mode_ = Mode::slicing;
-    recomputeCache();
-}
-
-void GammaSelection::setModeMinMax()
-{
-    mode_ = Mode::all;
-    iSlice_ = 0;
-    recomputeCache();
+    else
+        range_ = slice2range(iSlice_);
+    EMIT(gSession->sigGamma());
 }
 
 void GammaSelection::setNumSlices(int n)
 {
-    if (n<=0) {
-        setModeTakeAll();
-    } else {
-        setModeSlicing();
-        numSlices_ = qMax(n, 1);
-        selectSlice(iSlice_);
-    }
+    numSlices_ = qMax(0, n);
+    selectSlice(iSlice_);
 }
 
 void GammaSelection::selectSlice(int i)
 {
-    setModeSlicing();
-    iSlice_ = i;
+    iSlice_ = qMin(qMax(i, 0), numSlices_-1);
     recomputeCache();
 }
 
 void GammaSelection::setRange(const Range& r)
 {
-    setModeMinMax();
     range_ = r;
     recomputeCache();
+}
+
+Range GammaSelection::slice2range(int i) const
+{
+    if (!numSlices_)
+        return {};
+    return fullRange_.slice(i, numSlices_);
 }

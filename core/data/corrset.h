@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,44 +10,47 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef CORRSET_H
 #define CORRSET_H
 
-#include "core/data/rawfile.h"
-#include <QSharedPointer> // no auto rm
+#include "core/raw/rawfile.h"
+#include "core/raw/image.h"
+#include <memory>
 
-//! A correction dataset, consisting of one RawFile and associated settings.
+//! A correction dataset, consisting of one Rawfile and associated settings.
 
 //! Note that "correction", as used throughout Steca, rather means "calibration" or "normalization".
 
-class Corrset final {
+class Corrset {
 public:
     // Modifying methods:
     void clear();
+    void fromJson(const JsonObj& obj);
     void removeFile();
-    void loadFile(const QString& filePath) THROWS;
+    void loadFile(const QString& filePath);
     void tryEnable(bool on);
     void clearIntens() { intensCorr_.clear(); } // lazy
 
     // Lookup methods
     const Rawfile& raw() const { return *raw_; }
-    bool hasFile() const { return !raw_.isNull(); }
+    bool hasFile() const { return raw_.get(); }
     bool isEnabled() const { return enabled_; }
     bool isActive() const { return hasFile() && enabled_; }
     bool hasNANs() const { return hasNANs_; }
-    shp_Image image() const { return corrImage_; }
+    const Image& image() const { return *corrImage_; }
     const Image* intensCorr() const;
+    QJsonObject toJson() const;
 
 private:
     void onCorr();
     void calcIntensCorr() const;
 
-    QSharedPointer<const Rawfile> raw_ {nullptr}; //!< owned by this
+    std::unique_ptr<const Rawfile> raw_; //!< owned by this
     bool enabled_ {true};
     mutable bool hasNANs_ {false};
-    shp_Image corrImage_;
+    std::unique_ptr<Image> corrImage_;
     mutable Image intensCorr_;
 };
 

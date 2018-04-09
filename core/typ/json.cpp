@@ -1,27 +1,28 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
 //! @file      core/typ/json.cpp
-//! @brief     Implements function qreal_to_json and class JsonObj
+//! @brief     Implements function double_to_json and class JsonObj
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #include "core/typ/ij.h"
 #include "core/typ/json.h"
 #include "core/typ/range.h"
 #include <QStringList> // needed under Travis
 
-// ************************************************************************** //
-//  To support Json output
-// ************************************************************************** //
+//  ***********************************************************************************************
+//  To support Json output (at global scope)
+//  ***********************************************************************************************
 
-QJsonValue qreal_to_json(const qreal num) {
+QJsonValue double_to_json(const double num)
+{
     if (qIsNaN(num))
         return "nan";
     else if (qIsInf(num))
@@ -30,16 +31,16 @@ QJsonValue qreal_to_json(const qreal num) {
         return num;
 }
 
-
-// ************************************************************************** //
+//  ***********************************************************************************************
 //  To read Json input
-// ************************************************************************** //
+//  ***********************************************************************************************
 
-JsonObj::JsonObj() {}
+JsonObj::JsonObj(const QJsonObject& obj)
+    : QJsonObject(obj)
+{}
 
-JsonObj::JsonObj(const QJsonObject& obj) : super(obj) {}
-
-JsonObj JsonObj::loadObj(const QString& key, bool defEmpty) const THROWS {
+JsonObj JsonObj::loadObj(const QString& key, bool defEmpty) const
+{
     const QJsonValue& val = value(key);
     switch (val.type()) {
     case QJsonValue::Object:
@@ -52,7 +53,8 @@ JsonObj JsonObj::loadObj(const QString& key, bool defEmpty) const THROWS {
     }
 }
 
-QJsonArray JsonObj::loadArr(const QString& key, bool defEmpty) const THROWS {
+QJsonArray JsonObj::loadArr(const QString& key, bool defEmpty) const
+{
     const QJsonValue& val = value(key);
     switch (val.type()) {
     case QJsonValue::Array:
@@ -65,7 +67,8 @@ QJsonArray JsonObj::loadArr(const QString& key, bool defEmpty) const THROWS {
     }
 }
 
-int JsonObj::loadInt(const QString& key) const THROWS {
+int JsonObj::loadInt(const QString& key) const
+{
     const QJsonValue& val = value(key);
     switch (val.type()) {
     case QJsonValue::Double: return qRound(val.toDouble());
@@ -73,66 +76,76 @@ int JsonObj::loadInt(const QString& key) const THROWS {
     }
 }
 
-int JsonObj::loadInt(const QString& key, int def) const THROWS{
+int JsonObj::loadInt(const QString& key, int def) const
+{
     return value(key).isUndefined() ? def : loadInt(key);
 }
 
-int JsonObj::loadUint(const QString& key) const THROWS {
+int JsonObj::loadUint(const QString& key) const
+{
     int num = loadInt(key);
     if (num < 0)
         THROW(key + ": bad number format");
     return num;
 }
 
-int JsonObj::loadUint(const QString& key, int def) const THROWS{
+int JsonObj::loadUint(const QString& key, int def) const
+{
     return value(key).isUndefined() ? def : loadUint(key);
 }
 
-int JsonObj::loadPint(const QString& key) const {
+int JsonObj::loadPint(const QString& key) const
+{
     int num = loadUint(key);
     if (!(num > 0)) THROW("expecting positive number");
     return num;
 }
 
-int JsonObj::loadPint(const QString& key, int def) const {
+int JsonObj::loadPint(const QString& key, int def) const
+{
     return value(key).isUndefined() ? def : loadPint(key);
 }
 
-qreal JsonObj::loadQreal(const QString& key) const THROWS {
+double JsonObj::loadQreal(const QString& key) const
+{
     const QJsonValue& val = value(key);
 
     switch (val.type()) {
     case QJsonValue::Undefined:
-        return NAN; // not present means not a number
+        return Q_QNAN; // not present means not a number
     case QJsonValue::String: { // infinities stored as strings
         const QString& s = val.toString();
         if (s == "+inf")
-            return +INF;
+            return +Q_INFINITY;
         if (s == "-inf")
-            return -INF;
+            return -Q_INFINITY;
         if (s == "nan")
-            return NAN;
+            return Q_QNAN;
         THROW(key + ": bad number format");
     }
     default: return val.toDouble();
     }
 }
 
-qreal JsonObj::loadQreal(const QString& key, qreal def) const THROWS{
+double JsonObj::loadQreal(const QString& key, double def) const
+{
     return value(key).isUndefined() ? def : loadQreal(key);
 }
 
-qreal JsonObj::loadPreal(const QString& key) const {
-    qreal num = loadQreal(key);
+double JsonObj::loadPreal(const QString& key) const
+{
+    double num = loadQreal(key);
     if (!(num > 0)) THROW("expecting positive number");
     return num;
 }
 
-qreal JsonObj::loadPreal(const QString& key, qreal def) const {
+double JsonObj::loadPreal(const QString& key, double def) const
+{
     return value(key).isUndefined() ? def : loadPreal(key);
 }
 
-bool JsonObj::loadBool(const QString& key) const THROWS {
+bool JsonObj::loadBool(const QString& key) const
+{
     const QJsonValue& val = value(key);
     switch (val.type()) {
     case QJsonValue::Bool: return val.toBool();
@@ -140,11 +153,13 @@ bool JsonObj::loadBool(const QString& key) const THROWS {
     }
 }
 
-bool JsonObj::loadBool(const QString& key, bool def) const THROWS{
+bool JsonObj::loadBool(const QString& key, bool def) const
+{
     return value(key).isUndefined() ? def : loadBool(key);
 }
 
-QString JsonObj::loadString(const QString& key) const THROWS {
+QString JsonObj::loadString(const QString& key) const
+{
     const QJsonValue& val = value(key);
     switch (val.type()) {
     case QJsonValue::String: return val.toString();
@@ -152,18 +167,21 @@ QString JsonObj::loadString(const QString& key) const THROWS {
     }
 }
 
-QString JsonObj::loadString(const QString& key, const QString& def) const THROWS{
+QString JsonObj::loadString(const QString& key, const QString& def) const
+{
     return value(key).isUndefined() ? def : loadString(key);
 }
 
-Range JsonObj::loadRange(const QString& key) const THROWS {
+Range JsonObj::loadRange(const QString& key) const
+{
     Range range;
-    range.from_json(loadObj(key));
+    range.fromJson(loadObj(key));
     return range;
 }
 
-IJ JsonObj::loadIJ(const QString& key) const THROWS {
+IJ JsonObj::loadIJ(const QString& key) const
+{
     IJ ij;
-    ij.from_json(loadObj(key));
+    ij.fromJson(loadObj(key));
     return ij;
 }

@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,7 +10,7 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
@@ -23,24 +23,29 @@
 //! Detector geometry.
 class Geometry {
 public:
-    static qreal const DEF_DETECTOR_DISTANCE;
-    static qreal const DEF_DETECTOR_PIXEL_SIZE;
+    static double const DEF_DETECTOR_DISTANCE;
+    static double const DEF_DETECTOR_PIXEL_SIZE;
 
     Geometry();
     COMPARABLE(const Geometry&);
 
-    void setDetectorDistance(qreal);
-    void setPixSize(qreal);
+    void fromSettings();
+    void fromJson(const JsonObj& obj);
+
+    void setDetectorDistance(double);
+    void setPixSize(double);
     void setOffset(const IJ& midPixOffset);
 
-    qreal detectorDistance() const { return detectorDistance_; }
-    qreal pixSize() const { return pixSize_; }
+    double detectorDistance() const { return detectorDistance_; }
+    double pixSize() const { return pixSize_; }
     IJ& midPixOffset() { return midPixOffset_; }
     const IJ& midPixOffset() const { return midPixOffset_; }
+    void toSettings() const;
+    QJsonObject toJson() const;
 
 private:
-    qreal detectorDistance_; // the distance from the sample to the detector
-    qreal pixSize_; // size of the detector pixel
+    double detectorDistance_; // the distance from the sample to the detector
+    double pixSize_; // size of the detector pixel
     IJ midPixOffset_;
 };
 
@@ -53,6 +58,7 @@ public:
     COMPARABLE(const ImageCut&);
 
     void clear();
+    void fromJson(const JsonObj& obj);
     void setLeft(int);
     void setRight(int);
     void setTop(int);
@@ -66,6 +72,8 @@ public:
     int linked() const { return linked_; }
 
     size2d marginSize() const;
+    QJsonObject toJson() const;
+
 private:
     void confine(int& m1, int& m2, int maxTogether);
     void setAll(int);
@@ -91,18 +99,16 @@ public:
 //! Needed for caching such coordinate maps.
 class ImageKey {
 public:
-    ImageKey(const Geometry&, const size2d&, const ImageCut&, const IJ& midPix, deg midTth);
+    ImageKey(deg midTth);
 
     COMPARABLE(const ImageKey&);
-    bool operator<(const ImageKey& that) const { return compare(that) < 0; }
+//    bool operator<(const ImageKey& that) const { return compare(that) < 0; }
 
-    void computeAngles(Array2D<ScatterDirection>&) const;
-
-    Geometry geometry;
-    size2d size;
-    ImageCut cut;
-    IJ midPix;
-    deg midTth;
+    const Geometry geometry;
+    const size2d size;
+    const ImageCut cut;
+    const IJ midPix;
+    const deg midTth;
 };
 
 #endif // GEOMETRY_H

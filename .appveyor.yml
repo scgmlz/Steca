@@ -1,4 +1,6 @@
-image: Visual Studio 2015
+image:
+- Visual Studio 2015
+- Visual Studio 2017
 
 platform:
 - x64
@@ -12,12 +14,12 @@ environment:
   global:
     BUILD_CONF: $(configuration)
   matrix:
-  - QTDIR: C:\Qt\5.7\msvc2015
-    PATH: C:\Qt\5.7\msvc2015\bin;%PATH%
+  - QTDIR: C:\Qt\5.10.1\msvc2015
+    PATH: C:\Qt\5.10.1\msvc2015\bin;%PATH%
     CMAKE_GENERATOR: "Visual Studio 14 2015"
-  - QTDIR: C:\Qt\5.7\msvc2015_64
-    PATH: C:\Qt\5.7\msvc2015_64\bin;%PATH%
-    CMAKE_GENERATOR: "Visual Studio 14 2015 Win64"
+  - QTDIR: C:\Qt\5.10.1\msvc2017_64
+    PATH: C:\Qt\5.10.1\msvc2017_64\bin;%PATH%
+    CMAKE_GENERATOR: "Visual Studio 15 2017 Win64"
 
 build_script:
 - git submodule update --init --recursive

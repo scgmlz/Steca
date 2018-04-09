@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,16 +10,16 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef SUBFRAME_SETUP_H
 #define SUBFRAME_SETUP_H
 
 #include "gui/base/controls.h"
 
-//! Part of the main window that contains geometry, background, and image controls.
+//! Subframe of the main window, with tabs to control geometry, fits, &c
 
-class SubframeSetup : public QTabWidget {
+class SubframeSetup : public CTabWidget {
 public:
     SubframeSetup();
 private:

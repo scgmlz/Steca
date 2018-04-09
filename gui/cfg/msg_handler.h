@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,12 +10,10 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef MSG_HANDLER_H
 #define MSG_HANDLER_H
-
-#include <QString>
 
 void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString& msg);
 

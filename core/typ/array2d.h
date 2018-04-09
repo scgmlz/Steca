@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,13 +10,13 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef ARRAY2D_H
 #define ARRAY2D_H
 
 #include "core/def/comparable.h"
-#include "core/def/numbers.h"
+#include "core/def/debug.h"
 
 //! Geometry of a rectangle
 struct size2d {
@@ -41,38 +41,13 @@ struct size2d {
 };
 
 //! 2D (indexed by int i/j) array
-template <typename T> class Array2D {
-    private:
-    size2d size_;
-
-    typedef T* col_t;
-    col_t* ts_;
-
-    void alloc(const size2d& size) {
-        free();
-
-        if (!(size_ = size).isEmpty()) {
-            ts_ = static_cast<col_t*>(::calloc(size_.w, sizeof(col_t*)));
-            for (int i = 0; i < size_.w; ++i)
-                ts_[i] = static_cast<col_t>(::calloc(size_.h, sizeof(T)));
-        }
-    }
-
-    void free() {
-        if (ts_) {
-            for (int i = 0; i < size_.w; ++i)
-                ::free(ts_[i]);
-            ::free(ts_);
-            ts_ = nullptr;
-        }
-    }
-
+template <typename T>
+class Array2D {
 public:
-    // empty array
     Array2D() : size_(0, 0), ts_(nullptr) {}
-
     Array2D(const Array2D&) = delete;
     Array2D& operator=(const Array2D&) = delete;
+    Array2D(Array2D&&) = default;
 
     virtual ~Array2D() { free(); }
 
@@ -118,6 +93,31 @@ public:
     T& refAt(int i, int j) const {
         ASSERT(i < size_.w && j < size_.h);
         return ts_[i][j];
+    }
+
+private:
+    size2d size_;
+
+    typedef T* col_t;
+    col_t* ts_;
+
+// TODO get rid of C-style alloc/free
+    void alloc(const size2d& size) {
+        free();
+        if (!(size_ = size).isEmpty()) {
+            ts_ = static_cast<col_t*>(::calloc(size_.w, sizeof(col_t*)));
+            for (int i = 0; i < size_.w; ++i)
+                ts_[i] = static_cast<col_t>(::calloc(size_.h, sizeof(T)));
+        }
+    }
+
+    void free() {
+        if (ts_) {
+            for (int i = 0; i < size_.w; ++i)
+                ::free(ts_[i]);
+            ::free(ts_);
+            ts_ = nullptr;
+        }
     }
 };
 

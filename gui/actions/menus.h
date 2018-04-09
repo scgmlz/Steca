@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,7 +10,7 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef MENUS_H
 #define MENUS_H
@@ -25,7 +25,7 @@ public:
     Menus(QMenuBar*);
     QMenu* dgram_;
     QMenu* image_;
-    QMenu* output_;
+    QMenu* export_;
 private:
     QMenuBar* mbar_;
     QAction* separator() const;

@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,24 +10,21 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef VARIANT_H
 #define VARIANT_H
 
-#include "core/typ/vec.h"
+#include <QVariant>
 
 bool isNumeric(const QVariant&);
 
 // The usual comparators: <0, 0, >0
-typedef int cmpFun(const QVariant&, const QVariant&);
-typedef vec<cmpFun*> cmp_vec;
+typedef int VariantComparator(const QVariant&, const QVariant&);
 
 int cmp_int(const QVariant&, const QVariant&);
 int cmp_str(const QVariant&, const QVariant&);
 int cmp_real(const QVariant&, const QVariant&);
 int cmp_date(const QVariant&, const QVariant&);
-
-typedef vec<QVariant> row_t;
 
 #endif // VARIANT_H

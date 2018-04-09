@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,17 +10,17 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #include "core/def/idiomatic_for.h"
-#include "core/data/rawfile.h"
+#include "core/raw/rawfile.h"
 #include "3rdparty/Mar/MarReader.h"
 
 namespace load {
 
 // Code taken from the original STeCa, only slightly modified.
 
-Rawfile loadMar(const QString& filePath) THROWS {
+Rawfile loadMar(const QString& filePath) {
     typedef short WORD;
 
     Rawfile ret(filePath);
@@ -196,10 +196,10 @@ Rawfile loadMar(const QString& filePath) THROWS {
     }
 
     size2d size(pixSizeX, pixSizeY);
-    inten_vec convertedIntens(pixelSize);
+    QVector<float> convertedIntens(pixelSize);
 
     for_i (pixelSize)
-        convertedIntens[i] = inten_t(i4_image[i]);
+        convertedIntens[i] = float(i4_image[i]);
 
     Metadata md;
 

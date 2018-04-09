@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,10 +10,10 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #include "core/def/idiomatic_for.h"
-#include "core/data/rawfile.h"
+#include "core/raw/rawfile.h"
 #include <qmath.h>
 #include <sstream>
 
@@ -22,7 +22,7 @@
 
 namespace load {
 
-Rawfile loadCaress(const QString& filePath) THROWS {
+Rawfile loadCaress(const QString& filePath) {
     Rawfile ret(filePath);
 
     if(open_data_file(filePath.toLocal8Bit().data(), nullptr))
@@ -163,7 +163,7 @@ Rawfile loadCaress(const QString& filePath) THROWS {
                 int detRel = qRound(sqrt(imageSize));
                 if (!(imageSize > 0 && imageSize == detRel * detRel)) THROW("bad image size");
 
-                inten_vec convertedIntens(imageSize);
+                QVector<float> convertedIntens(imageSize);
                 for_i (imageSize)
                     convertedIntens[i] = intens[i];
 

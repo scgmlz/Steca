@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,18 +10,17 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #include "controls_baseline.h"
 #include "core/session.h"
 #include "gui/base/model_view.h"
 #include "gui/mainwin.h"
-#include "gui/actions/toggles.h"
+#include "gui/state.h"
 #include "gui/actions/triggers.h"
 
-// ************************************************************************** //
-//  local class BaseRangesModel, used in BaseRangesView
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class BaseRangesModel, used in BaseRangesView (local scope)
 
 //! Model for BaseRangesView.
 
@@ -39,7 +38,8 @@ public:
     enum { COL_RANGE = 1, NUM_COLUMNS };
 };
 
-QVariant BaseRangesModel::data(const QModelIndex& index, int role) const {
+QVariant BaseRangesModel::data(const QModelIndex& index, int role) const
+{
     int row = index.row();
     if (row < 0 || rowCount() <= row)
         return {};
@@ -69,9 +69,8 @@ QVariant BaseRangesModel::data(const QModelIndex& index, int role) const {
     }
 }
 
-// ************************************************************************** //
-//  local class BaseRangesView
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class BaseRangesView (local scope)
 
 //! List view of user-defined Bragg peaks.
 
@@ -89,27 +88,34 @@ BaseRangesView::BaseRangesView()
     connect(gSession, &Session::sigBaseline, this, &BaseRangesView::onData);
 }
 
-// ************************************************************************** //
-//  class ControlsBaseline
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class ControlsBaseline
 
-ControlsBaseline::ControlsBaseline() {
-    auto* box = new QVBoxLayout();
-    setLayout(box);
+ControlsBaseline::ControlsBaseline()
+{
+    hb_.addWidget(new QLabel("Pol. degree:"));
+    hb_.addWidget(&spinDegree_);
+    hb_.addStretch(1);
+    hb_.addWidget(new XIconButton(&gGui->triggers->clearBackground));
+    box_.addLayout(&hb_);
 
-    QBoxLayout* hb = new QHBoxLayout();
-    box->addLayout(hb);
-    hb->addWidget(new QLabel("Pol. degree:"));
-    hb->addWidget(&spinDegree_);
-    hb->addStretch(1);
-    hb->addWidget(new XIconButton(&gGui->triggers->clearBackground));
+    box_.addWidget(new BaseRangesView());
+    box_.addStretch(1);
+    setLayout(&box_);
 
-    box->addWidget(new BaseRangesView());
-    box->addStretch(1);
-
-    connect(&spinDegree_, _SLOT_(QSpinBox, valueChanged, int), [](int degree_) {
+    connect(&spinDegree_, &CSpinBox::valueReleased, [](int degree_) {
             gSession->baseline().setPolynomDegree(degree_); });
 
     connect(gSession, &Session::sigBaseline, [this]() {
             spinDegree_.setValue(gSession->baseline().polynomDegree()); });
+}
+
+void ControlsBaseline::hideEvent(QHideEvent*)
+{
+    gGui->state->editingBaseline = false;
+}
+
+void ControlsBaseline::showEvent(QShowEvent*)
+{
+    gGui->state->editingBaseline = true;
 }

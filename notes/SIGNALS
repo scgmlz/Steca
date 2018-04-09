@@ -1,0 +1,125 @@
+sigActivated     // selection of active clusters has changed
+< Dataset::activateCluster
+< Dataset::setFileActivation
+< Dataset::onFileChanged (emits sigFiles, sigClusters, sigActivated)
+< Dataset::onClusteringChanged (emits sigClusters, sigActivated, sigDataHighlight)
+-> sigDoFits
+-> ActiveClustersView::CheckTableView::onActivated
+-> FilesView::CheckTableView::onActivated
+sigBaseline      // baseline settings have changed
+< Baseline::setRanges
+< Baseline::addRange
+< Baseline::removeRange
+< Baseline::setPolynomDegree
+-> sigDoFits
+-> Mainwin::updateAbilities, sigDfgram
+-> BaseRangesView::onData
+-> ControlsBaseline::spinDegree_.setValue
+sigBigtableCols  // column selection in bigtable has changed
+< ColumnSelector::cb[i].toggled < USER_ACTION
+-> BigtableView::updateShownColumns
+sigClusters      // list of clusters has changed
+< Dataset::onFileChanged (emits sigFiles, sigClusters, sigActivated)
+  < clear, remove, addGivenFile < ... < USER_ACTION
+< Dataset::onClusteringChanged (emits sigClusters, sigActivated, sigDataHighlight)
+  < setBinning, setDropIncomplete < ... < USER_ACTION
+-> ActiveClustersControls::fromCore
+-> GammaControls::fromCore
+-> ActiveClustersView::TableView::onData
+-> MetadataView::TableView::onData
+sigCorr          // corr file has been loaded or unloaded or enabled or disabled
+< Corrset::removeFile
+< Corrset::loadFile
+< Corrset::tryEnable
+-> <diverse actions>, Mainwin::updateAbilities, sigDfgram, sigImage
+-> MainFrame::setTabEnabled
+-> SubframeFiles::corrFileView::setText
+sigDataHighlight // highlighted File or/and Cluster has changed
+< HighlightedData::setCluster
+< HighlightedData::unset
+< HighlightedData::setMeasurement
+< Dataset::onClusteringChanged (emits sigClusters, sigActivated, sigDataHighlight)
+-> sigImage
+-> ActiveClustersView::TableView::onHighlight
+-> Dfgram::onHighlight
+-> FilesView::TableView::onHighlight
+-> MetadataView::TableView::onData
+-> IdxMeas::fromCore
+sigDetector      // detector geometry has changed
+< Geometry::setDetectorDistance
+< Geometry::setPixSize
+< Geometry::setOffset
+< ImageCut::setLeft, ...
+< ImageCut::setLinked
+< ImageCut::setAll
+< ImageTrafoActions::setImageRotate
+< ImageTrafoActions::setImageMirror
+< GeometryControls::beamOffsetI/J_.valueReleased
+-> sigImage
+-> sigDoFits
+-> GeometryControls::fromCore
+-> CutControls::fromCore
+sigDfgram        // diffractogram must be repainted
+< Mainwin.toggles.fixedIntenImage.toggled
+< Mainwin.toggles.fixedIntenDgram.toggled
+< Mainwin.toggles.combinedDgram.toggled
+< Mainwin.toggles.showBackground.toggled
+< lambda(sigCorr)
+< lambda(sigDoFits)
+< lambda(sigBaseline)
+< SubframeSetup::currentChanged
+-> PlotDfgram::renderAll
+sigDoFits       // fit results have changed
+< lambda(sigActivated, sigBaseline, sigDetector, sigGamma, sigPeaks)
+sigFiles         // list of loaded files has changed
+< Dataset::onFileChanged (emits sigFiles, sigClusters, sigActivated)
+-> Mainwin::updateAbilities
+-> FilesView::TableView::onData
+sigGamma         // gamma selection has changed
+< GammaSelection::recomputeCache
+-> sigDfgram
+-> sigDoFits
+-> DataImageTab::<diverse actions>, sigImage
+sigImage         // image must be repainted
+< Mainwin.toggles.fixedIntenImage.toggled
+< Mainwin.toggles.fixedIntenDgram.toggled
+< Mainwin.toggles.combinedDgram.toggled
+< lambda(sigCorr)
+< lambda(sigGamma)
+< lambda(sigTheta)
+< GammaControls::fromCore() # marked as redundant with emission from idxSlice
+-> ImageTab::render
+sigInterpol      // interpolation parameters have changed
+< InterpolParams::setEnabled
+< InterpolParams::setStepAlpha
+< etc
+-> ControlsInterpolation::fromCore
+sigMetaSelection // meta data selected for display have changed
+< Session::setMetaSelected
+-> ActiveClustersView::onMetaSelection
+-> MetadataView::TableView::onHighligght
+sigNorm          // normalization has changed
+< Session::setIntenScaleAvg
+< Session::setNormMode
+-> sigImage
+-> Dfgram::onNormChanged
+sigPeaks         // list of peaks or selected peak has changed
+< Peak::invalidateGuesses
+< Peaks::add
+< Peaks::remove
+< Peaks::select
+< ControlsPeakfits.comboReflType_.currentIndexChanged
+-> Mainwin::updateAbilities, sigDfgram, Mainwin::runFits
+-> PeaksView::onData
+-> RangeControl::onData
+-> PeakdataView::onData
+-> ControlsPeakfits::onPeaks
+-> PlotDfgram::renderAll
+sigRawFits       // fit results have changed
+< MainWin::runFits < sigDoFits
+-> BigtableTab::render
+-> DiagramTab::render
+-> PolefigTab::render
+sigTheta         // theta selection has changed
+< ThetaSelection::recomputeCache
+-> DataImageTab::idxTheta_.setValue, sigImage

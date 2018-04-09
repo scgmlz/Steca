@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,14 +10,13 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef LENS_H
 #define LENS_H
 
+#include "core/typ/array2d.h"
 #include "core/typ/curve.h"
-#include "core/data/geometry.h"
-#include "core/typ/types.h"
 
 class Image;
 
@@ -28,7 +27,7 @@ public:
     ImageLens(const Image&, bool trans, bool cut);
 
     size2d imgSize() const;
-    inten_t imageInten(int i, int j) const;
+    float imageInten(int i, int j) const;
     const Range& rgeInten(bool fixed) const;
 
 private:

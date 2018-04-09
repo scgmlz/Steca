@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,29 +10,26 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #include "console.h"
-#include "core/def/debug.h"
-#include "core/typ/exception.h"
-#include <QApplication> // tmp
+#include "cmdexception.h"
 #include <QDateTime>
-#include <QDir> // tmp
+#include <QDebug>
 #include <QFile>
 #include <QSocketNotifier>
 
 Console* gConsole; //!< global
 
-// ************************************************************************** //
-//  class CommandRegistry
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class CommandRegistry
 
 //! Holds console (= terminal = command-line) commands to be defined and executed by class Console.
 class CommandRegistry {
 public:
     CommandRegistry() = delete;
     CommandRegistry(const QString& _name) : name_(_name) {}
-    void learn(QString, CSettable*);
+    QString learn(const QString&, CSettable*);
     void forget(const QString&);
     CSettable* find(const QString& name);
     void dump(QTextStream&);
@@ -43,28 +40,32 @@ private:
     std::map<const QString, int> numberedEntries_;
 };
 
-void CommandRegistry::learn(QString name, CSettable* widget)
+QString CommandRegistry::learn(const QString& name, CSettable* widget)
 {
-    if (name.contains("#")) {
+    QString ret = name;
+    if (ret.contains("#")) {
         auto numberedEntry = numberedEntries_.find(name);
         int idxEntry = 1;
         if (numberedEntry==numberedEntries_.end())
             numberedEntries_[name] = idxEntry;
         else
             idxEntry = ++(numberedEntry->second);
-        name.replace("#", QString::number(idxEntry));
+        ret.replace("#", QString::number(idxEntry));
     }
-    // qDebug() << "registry " << name_ << " learns " << name;
-    if (widgets_.find(name)!=widgets_.end())
-        qFatal(("Duplicate command '"+name+"'").toLatin1()); // TODO RESTORE qFatal
-    widgets_[name] = widget;
+    //qDebug() << "registry " << name_ << " learns " << ret;
+    if (widgets_.find(ret)!=widgets_.end())
+        qFatal("Duplicate widget registry entry '%s'", ret.toLatin1().constData());
+    widgets_[ret] = widget;
+    return ret;
 }
 
 void CommandRegistry::forget(const QString& name)
 {
+    //qDebug() << "registry " << name_ << " forgets " << name;
     auto it = widgets_.find(name);
     if (it==widgets_.end())
-        qFatal(("Cannot deregister command '"+name+"'").toLatin1());
+        qFatal("Cannot deregister, there is no entry '%s' in the widget registry",
+                name.toLatin1().constData());
     widgets_.erase(it);
 }
 
@@ -83,14 +84,14 @@ void CommandRegistry::dump(QTextStream& stream)
         stream << " " << it.first << "\n";
 }
 
-// ************************************************************************** //
-//  class Console
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class Console
 
 Console::Console()
 {
+    gConsole = this;
     notifier_ = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read, this);
-    connect(notifier_, SIGNAL(activated(int)), this, SLOT(readLine()));
+    connect(notifier_, &QSocketNotifier::activated, [this](int) { readLine(); });
 
     // start registry
     registryStack_.push(new CommandRegistry("main"));
@@ -106,6 +107,11 @@ Console::Console()
 Console::~Console()
 {
     log("# Steca session ended");
+    delete log_.device();
+    while (!registryStack_.empty()) {
+        delete registryStack_.top();
+        registryStack_.pop();
+    }
 }
 
 void Console::readLine()
@@ -191,6 +197,7 @@ Console::Result Console::exec(QString line)
                 qterr << "cannot pop: registry stack is empty\n";
                 return Result::err;
             }
+            delete registryStack_.top();
             registryStack_.pop();
         } else if (cmd=="file") {
             if (list.size()<2) {
@@ -220,15 +227,15 @@ Console::Result Console::exec(QString line)
     try {
         f->onCommand(args); // execute command
         return Result::ok;
-    } catch (Exception &ex) {
+    } catch (CmdException &ex) {
         qterr << "Command '" << line << "' failed:\n" << ex.msg() << "\n";
     }
     return Result::err;
 }
 
-void Console::learn(const QString& name, CSettable* widget)
+QString Console::learn(const QString& name, CSettable* widget)
 {
-    registry().learn(name, widget);
+    return registry().learn(name, widget);
 }
 
 void Console::forget(const QString& name)

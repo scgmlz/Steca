@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,57 +10,53 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef JSON_H
 #define JSON_H
 
-#include "core/def/numbers.h"
+#include <QtGlobal>
 #include <QJsonObject>
 
-QJsonValue qreal_to_json(const qreal num);
+QJsonValue double_to_json(const double num);
 
 class Range;
 class IJ;
 
 //! Extends QJsonObject by read-out methods; used to load a session from a .ste file
 class JsonObj : public QJsonObject {
-private:
-    using super = QJsonObject;
 public:
-    JsonObj();
+    JsonObj() {}
     JsonObj(const QJsonObject&);
 
-    const super& sup() const { return *this; }
+    JsonObj loadObj(const QString& key, bool defEmpty = false) const;
 
-    JsonObj loadObj(const QString& key, bool defEmpty = false) const THROWS;
+    QJsonArray loadArr(const QString& key, bool defEmpty = false) const;
 
-    QJsonArray loadArr(const QString& key, bool defEmpty = false) const THROWS;
+    int loadInt(const QString& key) const;
+    int loadInt(const QString& key, int def) const;
 
-    int loadInt(const QString& key) const THROWS;
-    int loadInt(const QString& key, int def) const THROWS;
+    int loadUint(const QString& key) const;
+    int loadUint(const QString& key, int def) const;
 
-    int loadUint(const QString& key) const THROWS;
-    int loadUint(const QString& key, int def) const THROWS;
+    int loadPint(const QString& key) const;
+    int loadPint(const QString& key, int def) const;
 
-    int loadPint(const QString& key) const THROWS;
-    int loadPint(const QString& key, int def) const THROWS;
+    double loadQreal(const QString& key) const;
+    double loadQreal(const QString& key, double def) const;
 
-    qreal loadQreal(const QString& key) const THROWS;
-    qreal loadQreal(const QString& key, qreal def) const THROWS;
+    double loadPreal(const QString& key) const;
+    double loadPreal(const QString& key, double def) const;
 
-    qreal loadPreal(const QString& key) const THROWS;
-    qreal loadPreal(const QString& key, qreal def) const THROWS;
+    bool loadBool(const QString& key) const;
+    bool loadBool(const QString& key, bool def) const;
 
-    bool loadBool(const QString& key) const THROWS;
-    bool loadBool(const QString& key, bool def) const THROWS;
+    QString loadString(const QString& key) const;
+    QString loadString(const QString& key, const QString& def) const;
 
-    QString loadString(const QString& key) const THROWS;
-    QString loadString(const QString& key, const QString& def) const THROWS;
+    Range loadRange(const QString& key) const;
 
-    Range loadRange(const QString& key) const THROWS;
-
-    IJ loadIJ(const QString& key) const THROWS;
+    IJ loadIJ(const QString& key) const;
 };
 
 #endif // JSON_H

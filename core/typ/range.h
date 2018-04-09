@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,15 +10,16 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef RANGE_H
 #define RANGE_H
 
+#include <QtGlobal>
 #include "core/def/comparable.h"
 #include "core/typ/exception.h"
-#include "core/typ/vec.h"
 #include <QJsonArray>
+#include <QVector>
 
 class JsonObj;
 
@@ -26,7 +27,8 @@ class JsonObj;
 class Range {
 public:
     Range(); //!< invalid (NaN)
-    Range(qreal min, qreal max); //!< normal
+    Range(double min, double max);
+    Range(const QVector<double>&);
 
     static Range infinite(); //!< factory: -inf .. +inf
 
@@ -36,29 +38,29 @@ public:
     bool isValid() const; //!< is not NaN
     bool isEmpty() const; //!< is invalid or empty
 
-    qreal width() const;
-    qreal center() const;
+    double width() const;
+    double center() const;
     Range slice(int i, int n) const;
 
-    qreal min, max; // this is the range
+    double min, max; // this is the range
 
-    void set(qreal min, qreal max); //!< must be: min <= max
-    void safeSet(qreal, qreal); //!< will be set in the right order min/max
+    void set(double min, double max); //!< must be: min <= max
+    void safeSet(double, double); //!< will be set in the right order min/max
 
-    static Range safeFrom(qreal, qreal); //!< safe factory
+    static Range safeFrom(double, double); //!< safe factory
 
-    void extendBy(qreal); //!< extend to include the number
+    void extendBy(double); //!< extend to include the number
     void extendBy(const Range&); //!< extend to include the range
 
-    bool contains(qreal) const;
+    bool contains(double) const;
     bool contains(const Range&) const;
     bool intersects(const Range&) const;
     Range intersect(const Range&) const;
 
-    qreal bound(qreal) const; //!< limit the number to the interval, as qBound would
+    double bound(double) const; //!< limit the number to the interval, as qBound would
 
-    QJsonObject to_json() const;
-    void from_json(const JsonObj&) THROWS;
+    QJsonObject toJson() const;
+    void fromJson(const JsonObj&);
 
     QString to_s(int precision=5, int digitsAfter=2) const;
 };
@@ -77,12 +79,12 @@ public:
     bool add(const Range&); //!< collapses overlapping ranges; returns true if *this changed
     bool remove(const Range&); //!< removes (cuts out) a range; returns whether there was a change
 
-    QJsonArray to_json() const;
-    void from_json(const QJsonArray&) THROWS;
+    QJsonArray toJson() const;
+    void fromJson(const QJsonArray&);
 
 private:
     void sort();
-    vec<Range> ranges_;
+    QVector<Range> ranges_;
 };
 
 #endif // RANGE_H

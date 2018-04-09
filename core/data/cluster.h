@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,13 +10,10 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef CLUSTER_H
 #define CLUSTER_H
-
-#include "core/data/measurement.h"
-#include <QSharedPointer> // no auto rm
 
 //! A group of one or more Measurement|s.
 
@@ -44,27 +41,22 @@ public:
     Range rgeTth() const;
     Range rgeInten() const;
 
-    shp_Metadata avgeMetadata() const;
-    qreal avgMonitorCount() const;
-    qreal avgDeltaMonitorCount() const;
-    qreal avgDeltaTime() const;
+    const Metadata* avgeMetadata() const { return &metadata_; } // TODO rm *
+    double avgMonitorCount() const;
+    double avgDeltaMonitorCount() const;
+    double avgDeltaTime() const;
 
     size2d imageSize() const;
-    void calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const;
 
     Curve toCurve() const;
     Curve toCurve(const Range&) const;
-    Curve toCurve(qreal) const;
-    Curve toCurve(qreal, const Range&) const;
-    qreal normFactor() const;
-    qreal normFactor(eNorm norm) const;
 
 private:
-    QVector<const Measurement*> members_;
-    shp_Metadata md_; //!< averaged Metadata, cached, computed only once
+    const QVector<const Measurement*> members_; //!< points to Dataset:vec<Datafile>:vec<M'ments>
+    const Metadata metadata_; //!< averaged Metadata
 
-    inten_vec collectIntens(const Range&) const;
-    void compute_metadata() const;
+    Metadata computeAvgeMetadata() const;
+    double normFactor() const;
 };
 
 
@@ -85,6 +77,7 @@ public:
     int totalOffset() const;
     bool isIncomplete() const;
     bool isActivated() const { return activated_; }
+    PeakInfo rawFit(const class Peak& peak, const Range& gmaSector) const;
 
 private:
     const class Datafile& file_;
@@ -92,9 +85,5 @@ private:
     const int offset_; //!< index of first Measurement in file_
     bool activated_ {true}; //!< checked in list, selected for use
 };
-
-typedef QSharedPointer<Cluster> shp_Cluster;
-
-Q_DECLARE_METATYPE(shp_Cluster)
 
 #endif // CLUSTER_H

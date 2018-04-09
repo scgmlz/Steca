@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,10 +10,11 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #include "menus.h"
 #include "gui/mainwin.h"
+#include "gui/actions/image_trafo_actions.h"
 #include "gui/actions/triggers.h"
 #include "gui/actions/toggles.h"
 
@@ -47,13 +48,21 @@ Menus::Menus(QMenuBar* mbar)
                 &triggers->quit,
         });
 
+    export_ = actionsToMenu(
+        "&Export",
+        {       &triggers->exportDfgram,
+                &triggers->exportBigtable,
+                &triggers->exportDiagram,
+                &triggers->exportPolefig,
+        });
+
     image_ = actionsToMenu(
         "&Image",
-        {   &triggers->rotateImage,
-                &toggles->mirrorImage,
+        {   &gGui->imageTrafoActions->rotateImage,
+                &gGui->imageTrafoActions->mirrorImage,
                 &toggles->fixedIntenImage,
                 &toggles->linkCuts,
-                &toggles->showOverlay,
+                &toggles->crosshair,
                 &toggles->showBins,
         });
 
@@ -70,13 +79,6 @@ Menus::Menus(QMenuBar* mbar)
                 &toggles->fixedIntenDgram,
         });
 
-    output_ = actionsToMenu(
-        "&Output",
-        {   &triggers->outputPolefigures,
-                &triggers->outputDiagrams,
-                &triggers->outputDiffractograms,
-        });
-
     actionsToMenu(
         "&View",
         {   &toggles->viewFiles,
@@ -87,6 +89,10 @@ Menus::Menus(QMenuBar* mbar)
                 &toggles->fullScreen,
 #endif
                 &toggles->viewStatusbar,
+                separator(),
+                &triggers->spawnTable,
+                &triggers->spawnDiagram,
+                &triggers->spawnPolefig,
                 separator(),
                 &triggers->viewReset,
         });
@@ -99,13 +105,15 @@ Menus::Menus(QMenuBar* mbar)
         });
 }
 
-QAction* Menus::separator() const {
+QAction* Menus::separator() const
+{
     QAction* ret = new QAction(mbar_);
     ret->setSeparator(true);
     return ret;
 };
 
-QMenu* Menus::actionsToMenu(const char* menuName, QList<QAction*> actions) {
+QMenu* Menus::actionsToMenu(const char* menuName, QList<QAction*> actions)
+{
     QMenu* menu = mbar_->addMenu(menuName);
     menu->addActions(actions);
     QString prefix = QString("%1: ").arg(menu->title().remove('&'));

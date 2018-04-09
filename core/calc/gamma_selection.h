@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,39 +10,36 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef GAMMA_SELECTION_H
 #define GAMMA_SELECTION_H
 
-#include "core/typ/range.h"
+#include <QObject>
 
 //! Supports different ways of setting a gamma range.
 
 class GammaSelection : public QObject {
 public:
-    GammaSelection();
+    GammaSelection() {}
 
+    void fromJson(const JsonObj& obj);
     void onData();
-
-    void setModeTakeAll();
-    void setModeSlicing();
-    void setModeMinMax();
 
     void setNumSlices(int);
     void selectSlice(int);
     void setRange(const Range&);
 
     const Range& range() const { return range_; }
-    qreal min() const { return range_.min; }
-    qreal max() const { return range_.max; }
+    Range slice2range(int) const;
+    double min() const { return range_.min; }
+    double max() const { return range_.max; }
     int numSlices() const { return numSlices_; }
     int idxSlice() const { return iSlice_; }
-    bool isModeMinMax() const { return mode_==Mode::minmax; }
+    QJsonObject toJson() const;
 
 private:
     void recomputeCache();
-    enum class Mode { all, slicing, minmax } mode_ {Mode::slicing};
     Range fullRange_;
     Range range_;
     int numSlices_ {1};

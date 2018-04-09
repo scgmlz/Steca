@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,13 +10,14 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #include "core/def/comparators.h"
 #include "core/typ/variant.h"
 #include <QDate>
 
-bool isNumeric(const QVariant& v) {
+bool isNumeric(const QVariant& v)
+{
     QMetaType::Type type = QMetaType::Type(v.type());
 
     switch (type) {
@@ -45,7 +46,8 @@ IMPL_CMP(cmp_int, toInt)
 IMPL_CMP(cmp_str, toString)
 IMPL_CMP(cmp_date, toDate)
 
-int cmp_real(const QVariant& v1, const QVariant& v2) {
+int cmp_real(const QVariant& v1, const QVariant& v2)
+{
     double val1 = v1.toDouble(), val2 = v2.toDouble();
     if (qIsNaN(val1)) {
         return qIsNaN(val2) ? 0 : +1;

@@ -50,14 +50,14 @@ TEST(Range, IsEmpty) {
     EXPECT_TRUE(!r.isEmpty());
     r.min = 2;
     EXPECT_TRUE(r.isEmpty());
-    r.max = NAN;
+    r.max = Q_QNAN;
     EXPECT_TRUE(r.isEmpty());
 }
 
 TEST(Range, Width) {
     EXPECT_TRUE(qIsNaN(Range().width()));
     EXPECT_EQ(0, Range(0,0).width());
-    EXPECT_TRUE(qIsInf(Range(0, INF).width()));
+    EXPECT_TRUE(qIsInf(Range(0, Q_INFINITY).width()));
     EXPECT_TRUE(qIsInf(Range::infinite().width()));
 
     Range r(0,0);
@@ -66,15 +66,15 @@ TEST(Range, Width) {
     EXPECT_TRUE(!r.isEmpty());
     r.min = 2;
     EXPECT_TRUE(r.isEmpty());
-    r.max = NAN;
+    r.max = Q_QNAN;
     EXPECT_TRUE(r.isEmpty());
 }
 
 TEST(Range, Center) {
     EXPECT_TRUE(qIsNaN(Range().center()));
     EXPECT_EQ(0, Range(0,0).center());
-    EXPECT_TRUE(qIsNaN(Range(0, NAN).center()));
-    EXPECT_TRUE(qIsInf(Range(0, INF).center()));
+    EXPECT_TRUE(qIsNaN(Range(0, Q_QNAN).center()));
+    EXPECT_TRUE(qIsInf(Range(0, Q_INFINITY).center()));
     EXPECT_TRUE(qIsNaN(Range::infinite().center()));
 }
 
@@ -87,7 +87,7 @@ TEST(Range, Safe) {
     RANGE_EQ(r, Range(3, 4));
     r.safeSet(4, 3);
     RANGE_EQ(r, Range(3, 4));
-    r.safeSet(+INF, -INF);
+    r.safeSet(+Q_INFINITY, -Q_INFINITY);
     RANGE_EQ(r, Range::infinite());
 }
 
@@ -112,8 +112,8 @@ TEST(Range, Contains) {
 
     EXPECT_TRUE(!r.contains(Range()));
     EXPECT_TRUE(!r.contains(Range::infinite()));
-    EXPECT_TRUE(!r.contains(NAN));
-    EXPECT_TRUE(!r.contains(INF));
+    EXPECT_TRUE(!r.contains(Q_QNAN));
+    EXPECT_TRUE(!r.contains(Q_INFINITY));
 
     EXPECT_TRUE(r.contains(r));
 
@@ -172,22 +172,22 @@ TEST(Range, Bound) {
     auto r = Range(-1, +1);
 
     EXPECT_TRUE(qIsNaN(Range().bound(0)));
-    EXPECT_TRUE(qIsNaN(Range().bound(INF)));
-    EXPECT_TRUE(qIsNaN(Range().bound(NAN)));
+    EXPECT_TRUE(qIsNaN(Range().bound(Q_INFINITY)));
+    EXPECT_TRUE(qIsNaN(Range().bound(Q_QNAN)));
     EXPECT_EQ(0, Range::infinite().bound(0));
-    EXPECT_TRUE(qIsInf(Range::infinite().bound(INF)));
-    EXPECT_TRUE(qIsNaN(Range::infinite().bound(NAN)));
+    EXPECT_TRUE(qIsInf(Range::infinite().bound(Q_INFINITY)));
+    EXPECT_TRUE(qIsNaN(Range::infinite().bound(Q_QNAN)));
 
     EXPECT_EQ(0, r.bound(0));
     EXPECT_EQ(-1, r.bound(-10));
-    EXPECT_EQ(-1, r.bound(-INF));
+    EXPECT_EQ(-1, r.bound(-Q_INFINITY));
     EXPECT_EQ(+1, r.bound(+10));
-    EXPECT_EQ(+1, r.bound(+INF));
+    EXPECT_EQ(+1, r.bound(+Q_INFINITY));
 }
 
 TEST(Range, Json) {
     Range r(-1, 2), r1;
-    r1.from_json(r.to_json());
+    r1.fromJson(r.toJson());
     EXPECT_EQ(r, r1);
 }
 
@@ -256,6 +256,6 @@ TEST(Ranges, Json) {
     rs.add(Range(-3, -2));
     rs.add(Range::infinite());
 
-    rs1.from_json(rs.to_json());
+    rs1.fromJson(rs.toJson());
     EXPECT_TRUE(RANGES_EQ(rs, rs1));
 }

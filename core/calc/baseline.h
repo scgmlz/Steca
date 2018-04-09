@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,14 +10,12 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef BASELINE_H
 #define BASELINE_H
 
 #include "core/typ/range.h"
-#include "core/typ/types.h" // for fwhm_t
-#include <QSharedPointer> // no auto rm
 
 //! Settings needed for fitting the baseline.
 
@@ -31,7 +29,6 @@ public:
     void setPolynomDegree(int);
 
     QJsonObject toJson() const;
-
     const Ranges& ranges() const { return ranges_; }
     int polynomDegree() const { return polynomDegree_; }
 

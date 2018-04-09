@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,12 +10,12 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include "core/def/macros.h"
+#include <QtGlobal>
 
 struct vec3r;
 
@@ -31,25 +31,25 @@ struct vec3f {
     bool operator==(const vec3f&) const;
 };
 
-//! 3D vector with base type qreal.
+//! 3D vector with base type double.
 struct vec3r {
     typedef const vec3r& rc;
 
-    qreal _0, _1, _2;
+    double _0, _1, _2;
 
-    vec3r(qreal, qreal, qreal);
+    vec3r(double, double, double);
     vec3r(const vec3f&);
 
     bool operator==(const vec3r&) const;
 };
 
-//! Rotation matrix in 3D, with base type qreal.
+//! Rotation matrix in 3D, with base type double.
 struct mat3r {
     typedef const mat3r& rc;
 
-    qreal _00, _01, _02, _10, _11, _12, _20, _21, _22;
+    double _00, _01, _02, _10, _11, _12, _20, _21, _22;
 
-    mat3r(qreal, qreal, qreal, qreal, qreal, qreal, qreal, qreal, qreal);
+    mat3r(double, double, double, double, double, double, double, double, double);
 
     bool operator==(const mat3r&) const;
 
@@ -60,9 +60,9 @@ struct mat3r {
     vec3r operator*(const vec3r&) const;
 
     // factories
-    static mat3r rotationCWx(qreal angle);
-    static mat3r rotationCWz(qreal angle);
-    static mat3r rotationCCWz(qreal angle);
+    static mat3r rotationCWx(double angle);
+    static mat3r rotationCWz(double angle);
+    static mat3r rotationCCWz(double angle);
 };
 
 #endif // MATRIX_H

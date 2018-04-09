@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,17 +10,17 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #include "core/def/idiomatic_for.h"
-#include "core/data/rawfile.h"
+#include "core/raw/rawfile.h"
 #include <QDataStream>
 #include <QDir>
 
 namespace load {
 
 // implemented below
-static void loadTiff(Rawfile*, const QString&, deg, qreal, qreal) THROWS;
+static void loadTiff(Rawfile*, const QString&, deg, double, double);
 
 // The dat file looks like so:
 /*
@@ -39,14 +39,14 @@ Aus-Weimin-00008.tif -55
 Aus-Weimin-00009.tif -50
 */
 
-Rawfile loadTiffDat(const QString& filePath) THROWS {
+Rawfile loadTiffDat(const QString& filePath) {
     Rawfile ret(filePath);
 
     QFile f(filePath);
-    if (!(f.open(QFile::ReadOnly))) THROW("cannot open file");
+    if (!(f.open(QFile::ReadOnly)))
+        THROW("cannot open file");
 
-    QFileInfo info(filePath);
-    QDir dir = info.dir();
+    QDir dir = QFileInfo(filePath).dir();
 
     QByteArray line;
     while (!(line = f.readLine()).isEmpty()) {
@@ -71,13 +71,13 @@ Rawfile loadTiffDat(const QString& filePath) THROWS {
         deg phi = lst.at(1).toDouble(&ok);
         if (!(ok)) THROW("bad phi value");
 
-        qreal monitor = 0;
+        double monitor = 0;
         if (cnt > 2) {
             monitor = lst.at(2).toDouble(&ok);
             if (!(ok)) THROW("bad monitor value");
         }
 
-        qreal expTime = 0;
+        double expTime = 0;
         if (cnt > 3) {
             expTime = lst.at(3).toDouble(&ok);
             if (!(ok)) THROW("bad expTime value");
@@ -95,7 +95,7 @@ Rawfile loadTiffDat(const QString& filePath) THROWS {
 }
 
 static void loadTiff(
-    Rawfile* file, const QString& filePath, deg phi, qreal monitor, qreal expTime) THROWS
+    Rawfile* file, const QString& filePath, deg phi, double monitor, double expTime)
 {
     Metadata md;
     md.motorPhi = phi;
@@ -216,7 +216,7 @@ static void loadTiff(
     size2d size(imageWidth, imageHeight);
 
     int count = imageWidth * imageHeight;
-    inten_vec intens(count);
+    QVector<float> intens(count);
 
     if (!((bitsPerSample / 8) * count == stripByteCounts)) THROW("bad format");
 

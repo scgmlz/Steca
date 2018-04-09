@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,39 +10,46 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
-#include "core/typ/curve.h"
+#include "curve.h"
+#include "core/def/debug.h"
 #include "core/def/idiomatic_for.h"
 
-void Curve::clear() {
+void Curve::clear()
+{
     xs_.clear();
     ys_.clear();
     rgeX_.invalidate();
     rgeY_.invalidate();
 }
 
-bool Curve::isEmpty() const {
+bool Curve::isEmpty() const
+{
     return xs_.isEmpty();
 }
 
-int Curve::count() const {
+int Curve::count() const
+{
     ASSERT(xs_.count() == ys_.count());
     return xs_.count();
 }
 
-bool Curve::isOrdered() const {
+bool Curve::isOrdered() const
+{
     return std::is_sorted(xs_.cbegin(), xs_.cend());
 }
 
-void Curve::append(qreal x, qreal y) {
+void Curve::append(double x, double y)
+{
     xs_.append(x);
     ys_.append(y);
     rgeX_.extendBy(x);
     rgeY_.extendBy(y);
 }
 
-Curve Curve::intersect(const Range& range) const {
+Curve Curve::intersect(const Range& range) const
+{
     if (range.isEmpty())
         return {};
     ASSERT(isOrdered());
@@ -62,7 +69,8 @@ Curve Curve::intersect(const Range& range) const {
 
 //! it works because both curve points and ranges are ordered and ranges are non-overlapping
 
-Curve Curve::intersect(const Ranges& ranges) const {
+Curve Curve::intersect(const Ranges& ranges) const
+{
     Curve ret;
     ASSERT(isOrdered());
     int xi = 0, cnt = count();
@@ -79,19 +87,20 @@ Curve Curve::intersect(const Ranges& ranges) const {
 }
 
 //! Subtracts a background that is given as a funtion y(x).
-void Curve::subtract(const std::function<qreal(qreal)>& func)
+void Curve::subtract(const std::function<double(double)>& func)
 {
     for_i (count())
         ys_[i] -= func(xs_.at(i));
 }
 
-int Curve::maqpairindex() const {
+int Curve::maqpairindex() const
+{
     if (isEmpty())
         return 0;
-    qreal yMax = ys_.first();
+    double yMax = ys_.first();
     int ret = 0;
     for_i (count()) {
-        const qreal y = ys_.at(i);
+        const double y = ys_.at(i);
         if (y > yMax) {
             yMax = y;
             ret = i;
@@ -100,8 +109,9 @@ int Curve::maqpairindex() const {
     return ret;
 }
 
-qreal Curve::sumY() const {
-    qreal ret = 0;
+double Curve::sumY() const
+{
+    double ret = 0;
     for_i (count())
         ret += ys_.at(i);
     return ret;

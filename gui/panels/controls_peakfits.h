@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,7 +10,7 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef CONTROLS_PEAKFITS_H
 #define CONTROLS_PEAKFITS_H
@@ -24,11 +24,10 @@ public:
     ControlsPeakfits();
 private:
     void onPeaks();
-
-    class PeaksView* peaksView_;
-    class RangeControl* rangeControl_;
-    class PeakdataView* peakdataView_;
+    QHBoxLayout topControls_;
     CComboBox comboReflType_;
+    void hideEvent(QHideEvent*) final;
+    void showEvent(QShowEvent*) final;
 };
 
 #endif // CONTROLS_PEAKFITS_H

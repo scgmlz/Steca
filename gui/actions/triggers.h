@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,20 +10,19 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef TRIGGERS_H
 #define TRIGGERS_H
 
 #include "gui/base/controls.h"
-#include <QApplication>
 
 //! Collection of trigger actions, for use as member of MainWin.
 
-class Triggers {
+class Triggers : private QObject {
 public:
     Triggers();
-    CTrigger about {"about", "About " + qApp->applicationName()};
+    CTrigger about {"about", "About Steca"};
     CTrigger addFiles {"addFiles", "Add files...", ":/icon/add", Qt::CTRL | Qt::Key_O};
     CTrigger addPeak {"addPeak", "Add peak", ":/icon/add"};
     CTrigger checkUpdate {"checkUpdate", "Check for update"};
@@ -32,17 +31,19 @@ public:
     CTrigger clearSession {"clearSession", "Clear session"};
     CTrigger corrFile {"corrFile", "Add correction file", ":/icon/add",
             Qt::SHIFT | Qt::CTRL | Qt::Key_O};
+    CTrigger exportDfgram {"exportDfgram", "Export diffractogram(s)...", ":/icon/filesave" };
+    CTrigger exportPolefig {"exportPolefig", "Export pole figure...", ":/icon/filesave" };
+    CTrigger exportBigtable {"exportBigtable", "Export fit result table...", ":/icon/filesave" };
+    CTrigger exportDiagram {"exportDiagram", "Export diagram...", ":/icon/filesave" };
+    CTrigger spawnTable {"spawnTable", "Spawn table...", ":/icon/window" };
+    CTrigger spawnDiagram {"spawnDiagram", "Spawn diagram...", ":/icon/window" };
+    CTrigger spawnPolefig {"spawnPolefig", "Spawn pole figure...", ":/icon/window" };
     CTrigger loadSession {"loadSession", "Load session..."};
     CTrigger online  {"online", "Open docs in external browser"};
-    CTrigger outputDiagrams {"outputDiagrams", "Diagrams..."};
-    CTrigger outputDiffractograms {"exportDiffractograms", "Export diffractograms...",
-            ":/icon/filesave" };
-    CTrigger outputPolefigures {"outputPolefigures", "Pole figures..."};
     CTrigger quit {"quit", "Quit", "", QKeySequence::Quit};
     CTrigger removeFile {"removeFile", "Remove highlighted file", ":/icon/rem",
             QKeySequence::Delete};
     CTrigger removePeak {"removePeak", "Remove peak", ":/icon/rem"};
-    CTrigger rotateImage {"rotateImage", "Rotate", ":/icon/rotate0", Qt::CTRL | Qt::Key_R};
     CTrigger saveSession {"saveSession", "Save session..."};
     CTrigger viewReset {"viewReset", "Reset"};
 };

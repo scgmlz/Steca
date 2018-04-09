@@ -1,21 +1,20 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
 //! @file      gui/capture_and_replay/console.h
-//! @brief     Declares class Console
+//! @brief     Defines class Console
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include "core/typ/singleton.h"
 #include "gui/capture_and_replay/enhance_widgets.h"
 #include <stack>
 #include <QTextStream>
@@ -23,13 +22,13 @@
 extern class Console* gConsole; //!< global
 
 //! Reads commands from stdin, and emits signal transmitLine
-class Console : public QObject, public ISingleton<Console>
+class Console : public QObject
 {
     Q_OBJECT
 public:
     Console();
     ~Console();
-    void learn(const QString& name, CSettable*);
+    QString learn(const QString& name, CSettable*);
     void forget(const QString& name);
     void readFile(const QString& fName);
     void call(const QString&);

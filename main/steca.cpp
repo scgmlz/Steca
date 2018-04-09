@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,7 +10,7 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 //! \mainpage Steca: the stress and texture calculator
 //!
@@ -20,8 +20,8 @@
 //!           https://github.com/scgmlz/Steca
 
 #include "../manifest.h"
+#include "core/session.h"
 #include "gui/cfg/msg_handler.h"
-#include "gui/capture_and_replay/console.h"
 #include "gui/mainwin.h"
 
 #define OPTPARSE_IMPLEMENTATION
@@ -30,7 +30,6 @@
 
 #include <iostream>
 #include <QApplication>
-#include <QDir>
 #include <QLoggingCategory>
 #include <QStyleFactory>
 
@@ -86,7 +85,10 @@ int main(int argc, char* argv[]) {
     QLoggingCategory::setFilterRules("*.debug=true\nqt.*.debug=false");
     qInstallMessageHandler(messageHandler);
 
-    MainWin::instance()->show();
+    Session session;
+    Console console;
+    MainWin mainwin;
+    mainwin.show();
     if (nonoptArgs.size())
         gConsole->call("@file " + nonoptArgs[0]);
 

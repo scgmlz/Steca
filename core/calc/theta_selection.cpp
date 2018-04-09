@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,13 +10,26 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
-#include "theta_selection.h"
 #include "core/session.h"
+#include "core/algo/collect_intensities.h"
 
 ThetaSelection::ThetaSelection()
+{}
+
+QJsonObject ThetaSelection::toJson() const
 {
+    return {
+        { "number of slices", QJsonValue(numSlices_) },
+        { "current slice index", QJsonValue(iSlice_) },
+    };
+}
+
+void ThetaSelection::fromJson(const JsonObj& obj)
+{
+    numSlices_ = obj.loadInt("number of slices");
+    selectSlice(obj.loadInt("current slice index"));
 }
 
 //! Resets fullRange_ and numSlices_ according to loaded data.
@@ -29,7 +42,7 @@ void ThetaSelection::onData()
         return;
     }
     fullRange_ = cluster->rgeTth();
-    numSlices_ = cluster->toCurve().count();
+    numSlices_ = algo::numTthBins(cluster->members(), fullRange_);
     recomputeCache();
 }
 
@@ -39,7 +52,7 @@ void ThetaSelection::recomputeCache()
         return;
     iSlice_ = qMin(qMax(iSlice_, 0), numSlices_-1);
     range_ = fullRange_.slice(iSlice_, numSlices_);
-    emit gSession->sigTheta();
+    EMIT(gSession->sigTheta());
 }
 
 void ThetaSelection::selectSlice(int i)

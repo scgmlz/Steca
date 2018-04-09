@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,24 +10,21 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #include "gui/panels/subframe_clusters.h"
 #include "core/session.h"
-#include "gui/base/controls.h"
+#include "core/def/idiomatic_for.h"
 #include "gui/base/model_view.h"
-#include "gui/capture_and_replay/console.h"
-#include "gui/mainwin.h"
 
-// ************************************************************************** //
-//  local class ExperimentModel
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class ActiveClustersModel (local scope)
 
-//! The model for ExperimentView.
+//! The model for ActiveClustersView.
 
-class ExperimentModel : public CheckTableModel { // < QAbstractTableModel < QAbstractItemModel
+class ActiveClustersModel : public CheckTableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
-    ExperimentModel() : CheckTableModel("measurement") {}
+    ActiveClustersModel() : CheckTableModel("measurement") {}
     void onMetaSelection();
     void activateCluster(bool, int, bool);
     int metaCount() const { return metaInfoNums_.count(); }
@@ -48,21 +45,23 @@ private:
     // The are needed to detect changes of state, which in turn helps us to
     // update display items only if they have changed. Whether this is really
     // useful is to be determined. The cache for the activation state is gone.
-    vec<int> metaInfoNums_; //!< indices of metadata items selected for display
+    QVector<int> metaInfoNums_; //!< indices of metadata items selected for display
 };
 
-void ExperimentModel::onMetaSelection() {
+void ActiveClustersModel::onMetaSelection()
+{
     beginResetModel(); // needed because columnCount may have shrinked
     metaInfoNums_.clear();
     for_i (Metadata::size())
         if (gSession->metaSelected(i))
             metaInfoNums_.append(i);
-    emit dataChanged(createIndex(0,COL_ATTRS), createIndex(rowCount(),columnCount()));
-    emit headerDataChanged(Qt::Horizontal, COL_ATTRS, columnCount());
+    EMIT(dataChanged(createIndex(0,COL_ATTRS), createIndex(rowCount(),columnCount())));
+    EMIT(headerDataChanged(Qt::Horizontal, COL_ATTRS, columnCount()));
     endResetModel();
 }
 
-QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
+QVariant ActiveClustersModel::data(const QModelIndex& index, int role) const
+{
     int row = index.row();
     if (row < 0 || row >= rowCount())
         return {};
@@ -123,7 +122,8 @@ QVariant ExperimentModel::data(const QModelIndex& index, int role) const {
     }
 }
 
-QVariant ExperimentModel::headerData(int col, Qt::Orientation ori, int role) const {
+QVariant ActiveClustersModel::headerData(int col, Qt::Orientation ori, int role) const
+{
     if (ori!=Qt::Horizontal)
         return {};
     if (role != Qt::DisplayRole)
@@ -136,44 +136,47 @@ QVariant ExperimentModel::headerData(int col, Qt::Orientation ori, int role) con
 }
 
 
-// ************************************************************************** //
-//  local class ExperimentView
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class ActiveClustersView (local scope)
 
 //! Main item in SubframeMeasurement: View and control of measurements list.
 
-class ExperimentView : public CheckTableView { // < QTreeView < QAbstractItemView
+class ActiveClustersView : public CheckTableView { // < QTreeView < QAbstractItemView
 public:
-    ExperimentView();
-
+    ActiveClustersView();
 private:
     void currentChanged(const QModelIndex& current, const QModelIndex&) override final {
         gotoCurrent(current); }
     void onMetaSelection();
     int sizeHintForColumn(int) const override final;
-    ExperimentModel* model() { return static_cast<ExperimentModel*>(model_); }
+    ActiveClustersModel* model() { return static_cast<ActiveClustersModel*>(model_); }
 };
 
-ExperimentView::ExperimentView()
-    : CheckTableView(new ExperimentModel())
+ActiveClustersView::ActiveClustersView()
+    : CheckTableView(new ActiveClustersModel())
 {
     setSelectionMode(QAbstractItemView::NoSelection);
 
+    // inbound connections:
     connect(gSession, &Session::sigClusters, this, &TableView::onData);
     connect(gSession, &Session::sigDataHighlight, this, &TableView::onHighlight);
     connect(gSession, &Session::sigActivated, this, &CheckTableView::onActivated);
-    connect(gSession, &Session::sigMetaSelection, this, &ExperimentView::onMetaSelection);
-    connect(this, &ExperimentView::clicked, model(), &CheckTableModel::onClicked);
+    connect(gSession, &Session::sigMetaSelection, this, &ActiveClustersView::onMetaSelection);
+
+    // internal connection:
+    connect(this, &ActiveClustersView::clicked, model(), &CheckTableModel::onClicked);
 }
 
-void ExperimentView::onMetaSelection() {
+void ActiveClustersView::onMetaSelection()
+{
     model()->onMetaSelection();
     setHeaderHidden(model()->metaCount()==0);
 }
 
-int ExperimentView::sizeHintForColumn(int col) const {
+int ActiveClustersView::sizeHintForColumn(int col) const
+{
     switch (col) {
-    case ExperimentModel::COL_CHECK: {
+    case ActiveClustersModel::COL_CHECK: {
         return 2*mWidth();
     } default:
         return 3*mWidth();
@@ -181,10 +184,13 @@ int ExperimentView::sizeHintForColumn(int col) const {
 }
 
 
-// ************************************************************************** //
-//  class SubframeClusters
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class SubframeClusters
 
-SubframeClusters::SubframeClusters() : DockWidget("Measurements", "dock-cluster") {
-    box_.addWidget(new ExperimentView()); // list of Cluster|s
+SubframeClusters::SubframeClusters()
+{
+    setFeatures(DockWidgetMovable);
+    setWindowTitle("Measurements");
+    setObjectName("dock-measurements");
+    setWidget(new ActiveClustersView()); // list of Cluster|s
 }

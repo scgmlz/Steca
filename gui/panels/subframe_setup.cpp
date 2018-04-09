@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,34 +10,32 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #include "subframe_setup.h"
 #include "core/session.h"
 #include "gui/panels/controls_baseline.h"
 #include "gui/panels/controls_detector.h"
+#include "gui/panels/controls_interpolation.h"
 #include "gui/panels/controls_peakfits.h"
-#include "gui/mainwin.h"
 
-SubframeSetup::SubframeSetup() {
+SubframeSetup::SubframeSetup()
+    : CTabWidget {"setup"}
+{
     setTabPosition(QTabWidget::North);
 
     addTab(new ControlsDetector(), "Detector");
     addTab(new ControlsBaseline(), "Baseline");
     addTab(new ControlsPeakfits(), "Peakfits");
-
-    connect(this, &SubframeSetup::currentChanged, [this](int index) {
-            gGui->baselineEditable = (index==1);
-            gGui->peaksEditable    = (index==2);
-            emit gSession->sigDiffractogram();
-        });
+    addTab(new ControlsInterpolation(), "Interpol");
 
     connect(gSession, &Session::sigFiles, this, &SubframeSetup::updateTabsAvailability);
 
     updateTabsAvailability();
 }
 
-void SubframeSetup::updateTabsAvailability() {
+void SubframeSetup::updateTabsAvailability()
+{
     if (gSession->dataset().countFiles()) {
         setTabEnabled(1, true);
         setTabEnabled(2, true);

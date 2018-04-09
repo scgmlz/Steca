@@ -1,7 +1,7 @@
 // test functions from unnamed namespaces in gui/output
 
 #include "gtest/gtest.h"
-#include "gui/dialogs/output_diffractograms.cpp"
+#include "gui/dialogs/export_dfgram.cpp"
 
 TEST(AnonymousOutput, NumberedName) {
     ASSERT_DEATH(numberedName("bla",1,1), "");

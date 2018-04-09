@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,13 +10,13 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #include "core/session.h"
+#include "core/def/idiomatic_for.h"
 
-// ************************************************************************** //
-//   class ImageLens
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class ImageLens
 
 ImageLens::ImageLens(const Image& image, bool trans, bool cut)
     : trans_(trans)
@@ -24,7 +24,8 @@ ImageLens::ImageLens(const Image& image, bool trans, bool cut)
     , image_(image)
 {}
 
-size2d ImageLens::imgSize() const {
+size2d ImageLens::imgSize() const
+{
     size2d ret = image_.size();
     if (trans_ && gSession->imageTransform().isTransposed())
         ret = ret.transposed();
@@ -33,7 +34,8 @@ size2d ImageLens::imgSize() const {
     return ret;
 }
 
-void ImageLens::doTrans(int& x, int& y) const {
+void ImageLens::doTrans(int& x, int& y) const
+{
     size2d s = imgSize();
     int w = s.w;
     int h = s.h;
@@ -63,30 +65,33 @@ void ImageLens::doTrans(int& x, int& y) const {
     }
 }
 
-void ImageLens::doCut(int& i, int& j) const {
+void ImageLens::doCut(int& i, int& j) const
+{
     i += gSession->imageCut().left();
     j += gSession->imageCut().top();
 }
 
 
-inten_t ImageLens::imageInten(int i, int j) const {
+float ImageLens::imageInten(int i, int j) const
+{
     if (trans_)
         doTrans(i, j);
     if (cut_)
         doCut(i, j);
-    inten_t inten = image_.inten(i, j);
-    if (gSession->intensCorr())
-        inten *= gSession->intensCorr()->inten(i, j);
+    float inten = image_.inten(i, j);
+    if (auto* corr = gSession->corrset().intensCorr())
+        inten *= corr->inten(i, j);
     return inten;
 }
 
-const Range& ImageLens::rgeInten(bool fixed) const {
+const Range& ImageLens::rgeInten(bool fixed) const
+{
     if (fixed)
-        return gSession->experiment().rgeFixedInten(trans_, cut_);
+        return gSession->activeClusters().rgeFixedInten(trans_, cut_);
     if (!rgeInten_.isValid()) {
         size2d sz = imgSize();
         for_ij (sz.w, sz.h)
-            rgeInten_.extendBy(qreal(imageInten(i, j)));
+            rgeInten_.extendBy(double(imageInten(i, j)));
     }
     return rgeInten_;
 }

@@ -1,0 +1,7 @@
+- update Qt on Travis, Appveyor, and our vagrant (Juan)
+- replace comparator macros
+- wrap get_data_unit in load_caress
+- QVector -> std::vector (start with count->size, first->front, ..)
+- rm "register" from Caress code
+- find out which examples are in which format
+- table: reverse order (ascending/descending)
