@@ -18,8 +18,10 @@
 #include "core/algo/coord_trafos.h"
 #include "core/def/idiomatic_for.h"
 
+namespace {
+
 //! Fits peak to the given gamma sector and constructs a PeakInfo.
-PeakInfo algo::rawFit(const Cluster& cluster, int iGamma, const Peak& peak)
+PeakInfo rawFit(const Cluster& cluster, int iGamma, const Peak& peak)
 {
     ASSERT(iGamma>=0 && iGamma<gSession->gammaSelection().numSlices());
     std::unique_ptr<PeakFunction> peakFunction( FunctionRegistry::clone(peak.peakFunction()) );
@@ -54,6 +56,8 @@ PeakInfo algo::rawFit(const Cluster& cluster, int iGamma, const Peak& peak)
             deg(fitresult.x), deg(peakError.x), float(fwhm), float(fwhmError)};
 }
 
+} // namespace
+
 //! Gathers PeakInfos from Datasets.
 
 //! Either uses the whole gamma range of the cluster (if gammaSector is invalid),
@@ -62,33 +66,27 @@ PeakInfo algo::rawFit(const Cluster& cluster, int iGamma, const Peak& peak)
 //!  the returned infos won't be on the grid.
 //! TODO? gammaStep separately?
 
-void algo::rawFits(Progress& progress)
+void algo::rawFits(class QProgressBar* progressBar)
 {
     if (!gSession->peaks().count()) {
-        gSession->peakInfos() = {};
+        gSession->setDirectPeakInfos({});
         return;
     }
     Peak* peak = gSession->peaks().selectedPeak();
     if (!peak)
         qFatal("BUG: no peak selected");
 
-    PeakInfos ret;
+    PeakInfos tmp;
     const ActiveClusters& seq = gSession->activeClusters();
-    progress.setTotal(seq.size());
+    Progress progress(progressBar, "peak fitting", seq.size());
     int nGamma = qMax(1, gSession->gammaSelection().numSlices());
     for (const Cluster* cluster : seq.clusters()) {
         progress.step();
         for_i (nGamma) {
             const PeakInfo refInfo = rawFit(*cluster, i, *peak);
             if (!qIsNaN(refInfo.inten()))
-                ret.append(refInfo);
+                tmp.append(refInfo);
         }
     }
-
-    bool interpol = gSession->interpol().enabled();
-    if (interpol)
-        ret = interpolateInfos(ret, &progress);
-
-    gSession->peakInfos() = ret;
-    EMIT(gSession->sigRawFits());
+    gSession->setDirectPeakInfos(std::move(tmp));
 }

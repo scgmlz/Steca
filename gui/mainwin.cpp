@@ -14,6 +14,7 @@
 
 #include "mainwin.h"
 #include "core/algo/fitting.h"
+#include "core/algo/interpolate_polefig.h"
 #include "core/session.h"
 #include "gui/state.h"
 #include "gui/actions/menus.h"
@@ -60,7 +61,7 @@ MainWin::MainWin()
     QObject::connect(gSession, &Session::sigBaseline, this, &MainWin::updateAbilities);
 
     QObject::connect(gSession, &Session::sigDoFits, this, &MainWin::runFits);
-    QObject::connect(gSession, &Session::sigInterpol, this, &MainWin::runFits);
+    QObject::connect(gSession, &Session::sigInterpol, this, &MainWin::runInterpolation);
 
     initLayout();
     readSettings();
@@ -225,6 +226,13 @@ void MainWin::loadCorrFile()
 
 void MainWin::runFits()
 {
-    Progress progress(1, &gGui->progressBar);
-    algo::rawFits(progress);
+    algo::rawFits(&gGui->progressBar);
+    algo::interpolateInfos(&gGui->progressBar);
+    EMIT(gSession->sigRawFits());
+}
+
+void MainWin::runInterpolation()
+{
+    algo::interpolateInfos(&gGui->progressBar);
+    EMIT(gSession->sigRawFits());
 }

@@ -148,7 +148,7 @@ void ExportDfgram::saveAll(bool oneFile)
             QMessageBox::Yes)
             return;
     }
-    Progress progress(expt.size(), &fileField_->progressBar);
+    Progress progress(&fileField_->progressBar, "save diffractograms", expt.size());
     int picNum = 0;
     int fileNum = 0;
     int nSlices = gSession->gammaSelection().numSlices();

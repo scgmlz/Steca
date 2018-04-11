@@ -15,12 +15,11 @@
 #ifndef INTERPOLATE_POLEFIG_H
 #define INTERPOLATE_POLEFIG_H
 
-#include "core/data/peak_info.h"
-#include "core/typ/async.h"
+class QProgressBar;
 
 namespace algo {
 
-PeakInfos interpolateInfos(const PeakInfos&, Progress*);
+void interpolateInfos(QProgressBar*);
 
 } // namespace algo
 

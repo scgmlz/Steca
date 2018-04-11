@@ -60,6 +60,7 @@ private:
     void loadCorrFile();
 
     void runFits();
+    void runInterpolation();
 
     class Mainframe* mainframe_;
     class SubframeDfgram* frameDfgram_;

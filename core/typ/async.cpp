@@ -13,53 +13,46 @@
 //  ***********************************************************************************************
 
 #include "core/typ/async.h"
+#include "core/def/debug.h"
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QApplication>
 
 TakesLongTime::TakesLongTime()
 {
     qApp->setOverrideCursor(Qt::WaitCursor);
+    qDebug() << "Long time task began";
 }
 
 TakesLongTime::~TakesLongTime()
 {
+    qDebug() << "Long time task ended";
     qApp->restoreOverrideCursor();
 }
 
-Progress::Progress(int mulTotal, QProgressBar* bar)
-    : total_(0)
-    , mulTotal_(mulTotal)
+Progress::Progress(QProgressBar* bar, const QString& taskName, int totalSteps)
+    : bar_(bar)
+    , taskName_(taskName)
+    , total_(totalSteps)
     , i_(0)
-    , bar_(bar)
 {
-    setTotal(1);
     if (bar_) {
         bar_->setRange(0, total_);
         bar_->setValue(0);
         bar_->show();
     }
+    qDebug() << "Task with progress bar [" << taskName_ << "] began";
 }
 
 Progress::~Progress()
 {
+    qDebug() << "Task with progress bar [" << taskName_ << "] ended";
     if (bar_)
         bar_->hide();
 }
 
-void Progress::setTotal(int total)
-{
-    total_ = total * mulTotal_;
-}
-
-void Progress::setProgress(int i)
-{
-    if (bar_) {
-        bar_->setRange(0, total_);
-        bar_->setValue((i_ = qBound(0, i, total_)));
-    }
-}
-
 void Progress::step()
 {
-    setProgress(i_ + 1);
+    i_ = qMin(i_+1, total_);
+    if (bar_)
+        bar_->setValue(i_);
 }

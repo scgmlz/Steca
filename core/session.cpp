@@ -59,6 +59,14 @@ Session::~Session()
     interpol().toSettings();
 }
 
+const PeakInfos& Session::peakInfos() const
+{
+    if (interpol().enabled())
+        return interpolatedPeakInfos_;
+    else
+        return directPeakInfos_;
+}
+
 void Session::clear()
 {
     dataset_.clear();
