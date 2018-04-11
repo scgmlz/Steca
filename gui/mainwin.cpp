@@ -225,14 +225,6 @@ void MainWin::loadCorrFile()
 
 void MainWin::runFits()
 {
-    if (!gSession->peaks().count()) {
-        gSession->peakInfos() = {};
-        return;
-    }
     Progress progress(1, &gGui->progressBar);
-    if (Peak* peak = gSession->peaks().selectedPeak()) {
-        gSession->peakInfos()
-            = algo::rawFits(gSession->activeClusters(), *peak, &progress);
-        EMIT(gSession->sigRawFits());
-    }
+    algo::rawFits(progress);
 }

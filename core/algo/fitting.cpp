@@ -62,17 +62,24 @@ PeakInfo algo::rawFit(const Cluster& cluster, int iGamma, const Peak& peak)
 //!  the returned infos won't be on the grid.
 //! TODO? gammaStep separately?
 
-PeakInfos algo::rawFits(const ActiveClusters& seq, const Peak& peak, Progress* progress)
+void algo::rawFits(Progress& progress)
 {
+    if (!gSession->peaks().count()) {
+        gSession->peakInfos() = {};
+        return;
+    }
+    Peak* peak = gSession->peaks().selectedPeak();
+    if (!peak)
+        qFatal("BUG: no peak selected");
+
     PeakInfos ret;
-    if (progress)
-        progress->setTotal(seq.size());
+    const ActiveClusters& seq = gSession->activeClusters();
+    progress.setTotal(seq.size());
     int nGamma = qMax(1, gSession->gammaSelection().numSlices());
     for (const Cluster* cluster : seq.clusters()) {
-        if (progress)
-            progress->step();
+        progress.step();
         for_i (nGamma) {
-            const PeakInfo refInfo = rawFit(*cluster, i, peak);
+            const PeakInfo refInfo = rawFit(*cluster, i, *peak);
             if (!qIsNaN(refInfo.inten()))
                 ret.append(refInfo);
         }
@@ -80,7 +87,8 @@ PeakInfos algo::rawFits(const ActiveClusters& seq, const Peak& peak, Progress* p
 
     bool interpol = gSession->interpol().enabled();
     if (interpol)
-        ret = interpolateInfos(ret, progress);
+        ret = interpolateInfos(ret, &progress);
 
-    return ret;
+    gSession->peakInfos() = ret;
+    EMIT(gSession->sigRawFits());
 }

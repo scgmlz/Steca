@@ -28,7 +28,7 @@ class Progress;
 namespace algo {
 
 PeakInfo rawFit(const Cluster&, int iGamma, const Peak&);
-PeakInfos rawFits(const ActiveClusters&, const Peak&, Progress*);
+void rawFits(Progress&);
 
 } // namespace algo
 
