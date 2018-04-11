@@ -226,7 +226,7 @@ void MainWin::loadCorrFile()
 void MainWin::runFits()
 {
     if (!gSession->peaks().count()) {
-        gSession->peakInfos().invalidate();
+        gSession->peakInfos() = {};
         return;
     }
     Progress progress(1, &gGui->progressBar);

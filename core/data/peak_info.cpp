@@ -149,7 +149,7 @@ QString const PeakInfo::reflStringTag(int attr, bool out)
 void PeakInfos::append(const PeakInfo& info)
 {
     QVector<PeakInfo>::append(info);
-    invalidate();
+    clearCache();
 }
 
 float PeakInfos::averageInten() const
@@ -179,7 +179,7 @@ const Range& PeakInfos::rgeInten() const
     return rgeInten_;
 }
 
-void PeakInfos::invalidate()
+void PeakInfos::clearCache()
 {
     avgInten_ = float(Q_QNAN);
     rgeInten_.invalidate();

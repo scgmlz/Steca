@@ -65,9 +65,8 @@ PeakInfo algo::rawFit(const Cluster& cluster, int iGamma, const Peak& peak)
 PeakInfos algo::rawFits(const ActiveClusters& seq, const Peak& peak, Progress* progress)
 {
     PeakInfos ret;
-    bool interpol = gSession->interpol().enabled();
     if (progress)
-        progress->setTotal((interpol ? 2 : 1)*seq.size());
+        progress->setTotal(seq.size());
     int nGamma = qMax(1, gSession->gammaSelection().numSlices());
     for (const Cluster* cluster : seq.clusters()) {
         if (progress)
@@ -79,6 +78,7 @@ PeakInfos algo::rawFits(const ActiveClusters& seq, const Peak& peak, Progress* p
         }
     }
 
+    bool interpol = gSession->interpol().enabled();
     if (interpol)
         ret = interpolateInfos(ret, progress);
 
