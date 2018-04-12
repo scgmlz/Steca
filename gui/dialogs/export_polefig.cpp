@@ -14,6 +14,7 @@
 
 #include "export_polefig.h"
 #include "core/session.h"
+#include "core/def/idiomatic_for.h"
 #include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/mainwin.h"
 #include <QGroupBox>
@@ -22,6 +23,41 @@
 namespace {
 
 // TODO move file saving code to Core
+void writePeakInfoInterpolated(QTextStream& stream)
+{
+    const PeakInfos& peakInfos = gSession->interpolatedPeakInfos();
+    const int LINE_LEN = 9;
+    for (int j = 0, jEnd = peakInfos.count(); j < jEnd; j += LINE_LEN) {
+        int max = j + LINE_LEN;
+        for (int i = j; i < max; i++) {
+            double val = peakInfos.at(i).inten();
+            if (qIsNaN(val))
+                stream << " -1  ";
+            else
+                stream << val << " ";
+        }
+        stream << '\n';
+    }
+}
+
+void writePeakInfoOriginalGrid(QTextStream& stream)
+{
+    const PeakInfos& peakInfos = gSession->directPeakInfos();
+    for_i (peakInfos.count()) {
+        double val = peakInfos.at(i).inten();
+        stream << double(peakInfos.at(i).alpha()) << " "
+               << double(peakInfos.at(i).beta()) << " "
+               << val << '\n';
+    }
+}
+
+void writePeakInfo(QTextStream& stream, bool interpolated, const QString& separator)
+{
+    if (interpolated)
+        writePeakInfoInterpolated(stream);
+    else
+        writePeakInfoOriginalGrid(stream);
+}
 
 } // namespace
 
@@ -33,9 +69,16 @@ ExportPolefig::ExportPolefig()
     : CModal("polefig")
     , QDialog(gGui)
 {
-    rbAll_.setChecked(true);
+    if (false && gSession->peaks().count()>1) { // TODO restore once peak fits are cached
+        rbAll_.setChecked(true);
+    } else {
+        rbCurrent_.setChecked(true);
+        rbAllSequential_.setEnabled(false);
+        rbAll_.setEnabled(false);
+    }
     bool interpolated = gSession->interpol().enabled();
     rbOriginalGrid_.setChecked(!interpolated);
+    rbInterpolated_.setEnabled(interpolated);
     rbInterpolated_.setChecked(interpolated);
 
     fileField_ = new ExportfileDialogfield(this, true, [this]()->void{save();});
@@ -67,132 +110,93 @@ ExportPolefig::ExportPolefig()
     setLayout(vbox);
 }
 
+bool ExportPolefig::interpolated() {
+    ASSERT(rbInterpolated_.isChecked() != rbOriginalGrid_.isChecked());
+    return rbInterpolated_.isChecked();
+}
+
 void ExportPolefig::save()
 {
+    if      (rbCurrent_.isChecked())
+        saveCurrent();
+/*    else if (rbAllSequential_.isChecked())
+        saveAll(false);
+    else if (rbAll_.isChecked())
+        saveAll(true);
+*/
+    else
+        qFatal("bug: invalid case in ExportPolefig::save");
     close();
 }
 
+void ExportPolefig::saveCurrent()
+{
+    QFile* file = fileField_->file();
+    if (!file)
+        return;
+    QTextStream stream(file);
+    const Cluster* cluster = gSession->dataset().highlight().cluster();
+    ASSERT(cluster);
+    const Curve& curve = cluster->toCurve();
+    if (curve.isEmpty())
+        qFatal("curve is empty");
+    writePeakInfo(stream, interpolated(), fileField_->separator());
+}
+
+// TODO: adapt from ExportDfgram, and activate it once peak fits are cached
 /*
-void PoleFiguresFrame::savePoleFigureOutput()
+void ExportPolefig::saveAll(bool oneFile)
 {
-    int reflCount = gSession->peaks().count();
-    ASSERT(reflCount); // user should not get here if no peak is defined
-    QString path = tabSave_->path(false);
+    const ActiveClusters& expt = gSession->activeClusters();
+    // In one-file mode, start output stream; in multi-file mode, only do prepations.
+    QString path = fileField_->path(true, !oneFile);
     if (path.isEmpty())
-        THROW("cannot save pole figure: file path is empty");
-    if (tabSave_->onlySelectedRefl()) {
-        writePoleFigureOutputFiles(path, getReflIndex());
         return;
-    }
-    // all peaks
-    for_i (reflCount) // TODO collect output into one message
-        writePoleFigureOutputFiles(path, i);
-}
-
-static QString const OUT_FILE_TAG(".refl%1");
-static int const MAX_LINE_LENGTH_POL(9);
-
-void PoleFiguresFrame::writePoleFigureOutputFiles(const QString& filePath, int index)
-{
-    PeakInfos reflInfo;
-    if (getInterpolated())
-        reflInfo = interpPoints_.at(index);
-    else
-        reflInfo = calcPoints_.at(index);
-    bool withFit = !gSession->peaks().at(index).isRaw();
-    QString path = QString(filePath + OUT_FILE_TAG).arg(index + 1);
-    bool check = false;
-    int numSavedFiles = 0;
-
-    if (tabSave_->outputInten()) {
-        QVector<double> output;
-        for_i (reflInfo.count())
-            output.append(reflInfo.at(i).inten());
-        const QString intenFilePath = path + ".inten";
-        writeListFile(intenFilePath, reflInfo, output);
-        writePoleFile(intenFilePath, reflInfo, output);
-        writeErrorMask(intenFilePath, reflInfo, output);
-        check = true;
-        numSavedFiles += 3;
-    }
-
-    if (tabSave_->outputTth() && withFit) {
-        QVector<double> output;
-        for_i (reflInfo.count())
-            output.append(reflInfo.at(i).tth());
-        const QString tthFilePath = filePath + ".tth";
-        writeListFile(tthFilePath, reflInfo, output);
-        writePoleFile(tthFilePath, reflInfo, output);
-        check = true;
-        numSavedFiles += 2;
-    }
-
-    if (tabSave_->outputFWHM() && withFit) {
-        QVector<double> output;
-        for_i (reflInfo.count())
-            output.append(reflInfo.at(i).fwhm());
-        const QString fwhmFilePath = filePath + ".fwhm";
-        writeListFile(fwhmFilePath, reflInfo, output);
-        writePoleFile(fwhmFilePath, reflInfo, output);
-        check = true;
-        numSavedFiles += 2;
-    }
-
-    if (numSavedFiles > 0)
-        qWarning() << "something went wrong, yet " << numSavedFiles << " files have been saved";
-    else
-        qWarning() << "no files saved";
-}
-
-void PoleFiguresFrame::writeErrorMask(
-    const QString& filePath, PeakInfos reflInfo, const QVector<double>& output)
-{
-    QFile* file = file_dialog::openFileConfirmOverwrite("file", this, filePath);
-    if (!file)
-        return;
-    QTextStream stream(file);
-
-    for (int j = 0, jEnd = reflInfo.count(); j < jEnd; j += 9) {
-        int max = j + MAX_LINE_LENGTH_POL;
-        for (int i = j; i < max; i++) {
-            if (qIsNaN(output.at(i)))
-                stream << "0 ";
-            else
-                stream << "1 ";
+    QTextStream* stream = nullptr;
+    if (oneFile) {
+        QFile* file = file_dialog::openFileConfirmOverwrite("file", this, path);
+        if (!file)
+            return;
+        stream = new QTextStream(file);
+    } else {
+        // check whether any of the numbered files already exists
+        QStringList existingFiles;
+        for_i (expt.size()) {
+            QString currPath = numberedName(path, i, expt.size()+1);
+            if (QFile(currPath).exists())
+                existingFiles << QFileInfo(currPath).fileName();
         }
-        stream << '\n';
+        if (existingFiles.size() &&
+            QMessageBox::question(this, existingFiles.size()>1 ? "Files exist" : "File exists",
+                                  "Overwrite files " + existingFiles.join(", ") + " ?") !=
+            QMessageBox::Yes)
+            return;
     }
-}
-
-void PoleFiguresFrame::writePoleFile(
-    const QString& filePath, PeakInfos reflInfo, const QVector<double>& output)
-{
-    QFile* file = file_dialog::openFileConfirmOverwrite("file", this, filePath);
-    if (!file)
-        return;
-    QTextStream stream(file);
-
-    for (int j = 0, jEnd = reflInfo.count(); j < jEnd; j += 9) {
-        int max = j + MAX_LINE_LENGTH_POL;
-        for (int i = j; i < max; i++) {
-            if (qIsNaN(output.at(i)))
-                stream << " -1  ";
-            else
-                stream << output.at(i) << " ";
+    Progress progress(&fileField_->progressBar, "save diffractograms", expt.size());
+    int picNum = 0;
+    int fileNum = 0;
+    int nSlices = gSession->gammaSelection().numSlices();
+    for (const Cluster* cluster : expt.clusters()) {
+        ++picNum;
+        progress.step();
+        for (int i=0; i<qMax(1,nSlices); ++i) {
+            if (!oneFile) {
+                QFile* file = new QFile(numberedName(path, ++fileNum, expt.size()+1));
+                if (!file->open(QIODevice::WriteOnly | QIODevice::Text))
+                    THROW("Cannot open file for writing: " + path);
+                delete stream;
+                stream = new QTextStream(file);
+            }
+            ASSERT(stream);
+            const Range gmaStripe = gSession->gammaSelection().slice2range(i);
+            const Curve& curve = cluster->toCurve(gmaStripe);
+            ASSERT(!curve.isEmpty());
+            *stream << "Picture Nr: " << picNum << '\n';
+            if (nSlices > 1)
+                *stream << "Gamma slice Nr: " << i+1 << '\n';
+            writeCurve(*stream, curve, cluster, gmaStripe, fileField_->separator());
         }
-        stream << '\n';
     }
-}
-
-void PoleFiguresFrame::writeListFile(
-    const QString& filePath, PeakInfos reflInfo, const QVector<double>& output)
-{
-    QFile* file = file_dialog::openFileConfirmOverwrite("file", this, filePath);
-    QTextStream stream(file);
-
-    for_i (reflInfo.count()) {
-        stream << double(reflInfo.at(i).alpha()) << " " << double(reflInfo.at(i).beta()) << " "
-               << output.at(i) << '\n';
-    }
+    delete stream;
 }
 */

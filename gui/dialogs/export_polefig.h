@@ -28,10 +28,13 @@ private:
     CRadioButton rbCurrent_       {"rbCurrent",       "Current peak only"};
     CRadioButton rbAllSequential_ {"rbAllSequential", "All peaks to numbered files"};
     CRadioButton rbAll_           {"rbAll",           "All peaks to one file"};
-    CRadioButton rbOriginalGrid_  {"rbOriginalGrid",  "Original χ-φ grid"};
+    CRadioButton rbOriginalGrid_  {"rbOriginalGrid",  "Original α-β grid"};
     CRadioButton rbInterpolated_  {"rbInterpolated",  "Interpolated α-β grid"};
 
+    bool interpolated();
     void save();
+    void saveCurrent();
+    void saveAll(bool oneFile);
 };
 
 #endif // EXPORT_POLEFIG_H

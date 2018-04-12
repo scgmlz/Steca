@@ -96,7 +96,7 @@ ExportDfgram::ExportDfgram()
 
 void ExportDfgram::save()
 {
-    if (rbCurrent_.isChecked())
+    if      (rbCurrent_.isChecked())
         saveCurrent();
     else if (rbAllSequential_.isChecked())
         saveAll(false);
