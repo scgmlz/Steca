@@ -17,15 +17,16 @@
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QApplication>
 
-TakesLongTime::TakesLongTime()
+TakesLongTime::TakesLongTime(const QString& taskName)
+    : taskName_(taskName)
 {
     qApp->setOverrideCursor(Qt::WaitCursor);
-    qDebug() << "Long time task began";
+    qDebug() << "Long time task began: " << taskName_;
 }
 
 TakesLongTime::~TakesLongTime()
 {
-    qDebug() << "Long time task ended";
+    qDebug() << "Long time task ended: " << taskName_;
     qApp->restoreOverrideCursor();
 }
 

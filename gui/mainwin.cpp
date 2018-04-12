@@ -173,7 +173,7 @@ void MainWin::loadSession()
         return;
     }
     try {
-        TakesLongTime __;
+        TakesLongTime __("loadSession");
         gSession->sessionFromJson(file.readAll());
     } catch(Exception& ex) {
         qWarning() << "Could not load session from file " << fileName << ":\n"
@@ -207,7 +207,7 @@ void MainWin::addFiles()
     repaint();
     if (fileNames.isEmpty())
         return;
-    TakesLongTime __;
+    TakesLongTime __("addFiles");
     gSession->dataset().addGivenFiles(fileNames);
 }
 

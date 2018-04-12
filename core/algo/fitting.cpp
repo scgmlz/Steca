@@ -76,6 +76,7 @@ void algo::rawFits(class QProgressBar* progressBar)
     if (!peak)
         qFatal("BUG: no peak selected");
 
+    qDebug() << "rawFits began";
     PeakInfos tmp;
     const ActiveClusters& seq = gSession->activeClusters();
     Progress progress(progressBar, "peak fitting", seq.size());
@@ -89,4 +90,5 @@ void algo::rawFits(class QProgressBar* progressBar)
         }
     }
     gSession->setDirectPeakInfos(std::move(tmp));
+    qDebug() << "rawFits ended";
 }
