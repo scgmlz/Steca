@@ -42,7 +42,7 @@ Triggers::Triggers()
     connect(&exportDiagram, AT, [](){ ExportDiagram().exec(); });
     connect(&loadSession, AT, []() { gGui->loadSession(); });
     connect(&online, AT, []() { QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
-    connect(&quit, AT, []() { qDebug() << "GOING TO QUIT: " << gGui; gGui->close(); });
+    connect(&quit, AT, []() { gGui->deleteLater(); });
     connect(&removeFile, AT, []() { gSession->dataset().removeFile(); });
     connect(&saveSession, AT, []() { gGui->saveSession(); });
     connect(&spawnDiagram, AT, [](){ new PopupDiagram(); });

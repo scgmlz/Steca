@@ -63,6 +63,7 @@ MainWin::MainWin()
     QObject::connect(gSession, &Session::sigDoFits, this, &MainWin::runFits);
     QObject::connect(gSession, &Session::sigInterpol, this, &MainWin::runInterpolation);
 
+    setAttribute(Qt::WA_DeleteOnClose, true);
     initLayout();
     readSettings();
     updateAbilities();
