@@ -13,9 +13,11 @@
 //  ***********************************************************************************************
 
 #include "export_polefig.h"
+#include "core/session.h"
 #include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/mainwin.h"
 #include <QGroupBox>
+#include <QButtonGroup>
 
 namespace {
 
@@ -32,6 +34,9 @@ ExportPolefig::ExportPolefig()
     , QDialog(gGui)
 {
     rbAll_.setChecked(true);
+    bool interpolated = gSession->interpol().enabled();
+    rbOriginalGrid_.setChecked(!interpolated);
+    rbInterpolated_.setChecked(interpolated);
 
     fileField_ = new ExportfileDialogfield(this, true, [this]()->void{save();});
 
@@ -40,16 +45,24 @@ ExportPolefig::ExportPolefig()
     setWindowTitle("Export pole figure data");
 
     // layout
-    auto* saveWhatLayout = new QVBoxLayout;
-    saveWhatLayout->addWidget(&rbCurrent_);
-    saveWhatLayout->addWidget(&rbAllSequential_);
-    saveWhatLayout->addWidget(&rbAll_);
+    auto* savePeaksLayout = new QVBoxLayout;
+    savePeaksLayout->addWidget(&rbCurrent_);
+    savePeaksLayout->addWidget(&rbAllSequential_);
+    savePeaksLayout->addWidget(&rbAll_);
 
-    auto* saveWhat = new QGroupBox {"Save what"};
-    saveWhat->setLayout(saveWhatLayout);
+    auto* savePeaks = new QGroupBox {"Save which peaks"};
+    savePeaks->setLayout(savePeaksLayout);
+
+    auto* saveGridLayout = new QVBoxLayout;
+    saveGridLayout->addWidget(&rbOriginalGrid_);
+    saveGridLayout->addWidget(&rbInterpolated_);
+
+    auto* saveGrid = new QGroupBox {"Save which grid"};
+    saveGrid->setLayout(saveGridLayout);
 
     auto* vbox = new QVBoxLayout();
-    vbox->addWidget(saveWhat);
+    vbox->addWidget(savePeaks);
+    vbox->addWidget(saveGrid);
     vbox->addLayout(fileField_);
     setLayout(vbox);
 }
