@@ -18,7 +18,7 @@
 #include "gui/mainwin.h"
 #include "gui/view/plot_diagram.h"
 #include "gui/state.h"
-#include <QtGlobal> // defines QOverload
+#define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 
 //  ***********************************************************************************************
 //! @class DiagramTab
@@ -29,9 +29,9 @@ DiagramTab::DiagramTab()
     plot_ = new PlotDiagram; // the main subframe
 
     // internal connections
-    connect(gGui->state->diagramX, QOverload<int>::of(&QComboBox::currentIndexChanged), [this]() {
+    connect(gGui->state->diagramX, _SLOT_(QComboBox,currentIndexChanged,int), [this]() {
             render(); });
-    connect(gGui->state->diagramY, QOverload<int>::of(&QComboBox::currentIndexChanged), [this]() {
+    connect(gGui->state->diagramY, _SLOT_(QComboBox,currentIndexChanged,int), [this]() {
             render(); });
 
     // inbound connection

@@ -19,7 +19,7 @@
 #include "gui/mainwin.h"
 #include "gui/state.h"
 #include "gui/actions/triggers.h"
-#include <QtGlobal> // defines QOverload
+#define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 #include <QStackedWidget>
 
 namespace {
@@ -309,7 +309,7 @@ ControlsPeakfits::ControlsPeakfits()
             gSession->peaks().add(comboReflType_.currentText()); });
     connect(&gGui->triggers->removePeak, &QAction::triggered, []() {
             gSession->peaks().remove(); });
-    connect(&comboReflType_, QOverload<const QString&>::of(&QComboBox::currentIndexChanged),
+    connect(&comboReflType_, _SLOT_(QComboBox,currentIndexChanged,const QString&),
             [](const QString& peakFunctionName) {
                 if (gSession->peaks().selectedPeak()) { // TODO rm this if
                     gSession->peaks().selectedPeak()->setPeakFunction(peakFunctionName);
