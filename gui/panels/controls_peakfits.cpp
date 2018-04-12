@@ -19,6 +19,7 @@
 #include "gui/mainwin.h"
 #include "gui/state.h"
 #include "gui/actions/triggers.h"
+#include <QtGlobal> // defines QOverload
 #include <QStackedWidget>
 
 namespace {

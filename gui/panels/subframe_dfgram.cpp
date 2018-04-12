@@ -17,7 +17,7 @@
 #include "gui/view/plot_dfgram.h"
 #include "gui/actions/toggles.h"
 #include "gui/actions/triggers.h"
-
+#include <QtGlobal> // defines QOverload
 
 //  ***********************************************************************************************
 //! @class Dfgram (local scope)

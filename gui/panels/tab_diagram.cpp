@@ -18,6 +18,7 @@
 #include "gui/mainwin.h"
 #include "gui/view/plot_diagram.h"
 #include "gui/state.h"
+#include <QtGlobal> // defines QOverload
 
 //  ***********************************************************************************************
 //! @class DiagramTab
