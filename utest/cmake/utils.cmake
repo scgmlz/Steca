@@ -1,5 +1,5 @@
-# Defines functions and macros useful for building Tests 
- 
+# Defines functions and macros useful for building Tests
+
 # patched from googletest/cmake/internal_utils
 
 # Note:
@@ -210,7 +210,7 @@ endfunction()
 # cxx_test(name libs srcs...)
 #
 # creates a named test target that depends on the given libs.
-# The source file name is constructed from he given target name.
+# The source file name is constructed from the given target name.
 # Btw: "${ARGN} holds the list of arguments past the last expected argument."
 function(cxx_test name libs)
   cxx_test_with_flags("${name}" "${cxx_default}" "${libs}" "./${name}.cpp" ${ARGN})

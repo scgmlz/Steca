@@ -15,6 +15,8 @@
 #ifndef ASYNC_H
 #define ASYNC_H
 
+#include <QString>
+
 //! As long as an instance of this class exists, we see the 'waiting' cursor.
 
 class TakesLongTime final {
@@ -25,17 +27,18 @@ public:
 
 //! Manages the progress bar.
 
-class Progress final {
+class Progress {
 public:
-    Progress(int mulTotal, class QProgressBar*);
+    Progress() = delete;
+    Progress(Progress&) = delete;
+    Progress(class QProgressBar*, const QString& taskName, int totalSteps);
     ~Progress();
 
-    void setTotal(int);
-    void setProgress(int);
     void step();
 
 private:
-    int total_, mulTotal_, i_;
+    const QString taskName_;
+    int total_, i_;
     QProgressBar* bar_;
 };
 

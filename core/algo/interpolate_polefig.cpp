@@ -15,6 +15,9 @@
 #include "interpolate_polefig.h"
 #include "core/session.h"
 #include "core/def/idiomatic_for.h"
+#include "core/data/peak_info.h"
+#include "core/typ/async.h"
+
 #include <qmath.h>
 
 //  ***********************************************************************************************
@@ -242,10 +245,13 @@ itf_t interpolateValues(deg searchRadius, const PeakInfos& infos, deg alpha, deg
 //  ***********************************************************************************************
 
 //! Interpolates infos to equidistant grid in alpha and beta.
-PeakInfos algo::interpolateInfos(const PeakInfos& infos, Progress* progress)
+void algo::interpolateInfos(QProgressBar* progressBar)
 {
-    if (!gSession->interpol().enabled())
-        THROW("bug: call to interpolateInfos though interpolation is disabled");
+    if (!gSession->interpol().enabled()) {
+        gSession->setInterpolatedPeakInfos({});
+        return;
+    }
+
     double stepAlpha   = gSession->interpol().stepAlpha();
     double stepBeta    = gSession->interpol().stepBeta();
     double idwRadius   = gSession->interpol().idwRadius();
@@ -265,23 +271,22 @@ PeakInfos algo::interpolateInfos(const PeakInfos& infos, Progress* progress)
     int numAlphas = qRound(90. / stepAlpha);
     int numBetas = qRound(360. / stepBeta);
 
-    PeakInfos ret; // Output data.
+    PeakInfos tmp; // Output data.
+    const PeakInfos& infos = gSession->directPeakInfos();
 
-    ret.reserve(numAlphas * numBetas);
+    tmp.reserve(numAlphas * numBetas);
 
-    if (progress)
-        progress->setTotal(numAlphas * numBetas); // REVIEW + 1?
+    Progress progress(progressBar, "interpolation", numAlphas * numBetas); // TODO check number + 1?
 
-    for_int (i, numAlphas + 1) { // REVIEW why + 1
+    for_int (i, numAlphas + 1) { // TODO why + 1 ?
         deg const alpha = i * stepAlpha;
         for_int (j, numBetas) {
             deg const beta = j * stepBeta;
 
-            if (progress)
-                progress->step();
+            progress.step();
 
             if (infos.isEmpty()) {
-                ret.append(PeakInfo(alpha, beta));
+                tmp.append(PeakInfo(alpha, beta));
                 continue;
             }
 
@@ -308,7 +313,7 @@ PeakInfos algo::interpolateInfos(const PeakInfos& infos, Progress* progress)
                     for (int i = iBegin; i < iEnd; ++i)
                         avg += itfs.at(i);
 
-                    ret.append(PeakInfo(
+                    tmp.append(PeakInfo(
                         alpha, beta, infos.first().rgeGma(), avg.inten / n, float(Q_QNAN),
                         avg.tth / n, deg(Q_QNAN), avg.fwhm / n, float(Q_QNAN)));
                     continue;
@@ -316,18 +321,18 @@ PeakInfos algo::interpolateInfos(const PeakInfos& infos, Progress* progress)
 
                 if (qIsNaN(idwRadius)) {
                     // Don't fall back to idw, just add an unmeasured info.
-                    ret.append(PeakInfo(alpha, beta));
+                    tmp.append(PeakInfo(alpha, beta));
                     continue;
                 }
             }
 
             // Use idw, if alpha > avgAlphaMax OR averaging failed (too small avgRadius?).
             itf_t itf = interpolateValues(idwRadius, infos, alpha, beta);
-            ret.append(PeakInfo(
+            tmp.append(PeakInfo(
                 alpha, beta, infos.first().rgeGma(), itf.inten, float(Q_QNAN), itf.tth, deg(Q_QNAN),
                 itf.fwhm, float(Q_QNAN)));
         }
     }
 
-    return ret;
+    gSession->setInterpolatedPeakInfos(std::move(tmp));
 }

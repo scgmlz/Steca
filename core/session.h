@@ -80,8 +80,9 @@ public:
     InterpolParams& interpol() { return interpolParams_; }
     const InterpolParams& interpol() const { return interpolParams_; }
 
-    PeakInfos& peakInfos() { return peakInfos_; }
-    const PeakInfos& peakInfos() const { return peakInfos_; }
+    const PeakInfos& directPeakInfos() const { return directPeakInfos_; }
+    const PeakInfos& interpolatedPeakInfos() const { return interpolatedPeakInfos_; }
+    const PeakInfos& peakInfos() const;
 
     void setNormMode(eNorm);
     eNorm normMode() const { return normMode_; }
@@ -89,6 +90,11 @@ public:
     // modifying methods:
     void clear();
     void sessionFromJson(const QByteArray&);
+
+    void setDirectPeakInfos(PeakInfos&& val) {
+        directPeakInfos_ = std::move(val); }
+    void setInterpolatedPeakInfos(PeakInfos&& val) {
+        interpolatedPeakInfos_ = std::move(val); }
 
     void setMetaSelected(int, bool);
 
@@ -144,7 +150,8 @@ private:
     GammaSelection gammaSelection_;
     ThetaSelection thetaSelection_;
     InterpolParams interpolParams_;
-    PeakInfos peakInfos_;
+    PeakInfos directPeakInfos_;
+    PeakInfos interpolatedPeakInfos_;
     eNorm normMode_ {eNorm::NONE};
     // others
     bool intenScaledAvg_ {true}; // if not, summed

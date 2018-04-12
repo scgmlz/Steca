@@ -17,7 +17,7 @@
 #include "gui/view/plot_dfgram.h"
 #include "gui/actions/toggles.h"
 #include "gui/actions/triggers.h"
-
+#define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 
 //  ***********************************************************************************************
 //! @class Dfgram (local scope)
@@ -60,7 +60,7 @@ Dfgram::Dfgram()
     });
 
     // outbound connections
-    connect(&comboNormType_, qOverload<int>(&QComboBox::currentIndexChanged), [](int index) {
+    connect(&comboNormType_, _SLOT_(QComboBox,currentIndexChanged,int), [](int index) {
             gSession->setNormMode(eNorm(index)); });
     connect(&intenAvg_, &QRadioButton::toggled, [this](bool on) {
         intenScale_.setEnabled(on);

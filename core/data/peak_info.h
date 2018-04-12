@@ -77,8 +77,7 @@ private:
 
 class PeakInfos : public QVector<PeakInfo> {
 public:
-    PeakInfos() { invalidate(); }
-    void invalidate();
+    PeakInfos() { clearCache(); }
     void append(const PeakInfo&);
     float averageInten() const;
     const Range& rgeInten() const;
@@ -86,6 +85,7 @@ public:
               QVector<double>& xs, QVector<double>& ys,
               QVector<double>& ysLow, QVector<double>& ysHig) const;
 private:
+    void clearCache();
     mutable float avgInten_;
     mutable Range rgeInten_;
 };

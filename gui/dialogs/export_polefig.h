@@ -25,11 +25,16 @@ public:
 
 private:
     class ExportfileDialogfield* fileField_;
-    CRadioButton rbCurrent_       {"rbCurrent",       "Current diffractogram"};
-    CRadioButton rbAllSequential_ {"rbAllSequential", "All diffractograms to numbered files"};
-    CRadioButton rbAll_           {"rbAll",           "All diffractograms to one file"};
+    CRadioButton rbCurrent_       {"rbCurrent",       "Current peak only"};
+    CRadioButton rbAllSequential_ {"rbAllSequential", "All peaks to numbered files"};
+    CRadioButton rbAll_           {"rbAll",           "All peaks to one file"};
+    CRadioButton rbOriginalGrid_  {"rbOriginalGrid",  "Original α-β grid"};
+    CRadioButton rbInterpolated_  {"rbInterpolated",  "Interpolated α-β grid"};
 
+    bool interpolated();
     void save();
+    void saveCurrent();
+    void saveAll(bool oneFile);
 };
 
 #endif // EXPORT_POLEFIG_H

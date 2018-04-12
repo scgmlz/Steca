@@ -15,20 +15,14 @@
 #ifndef FITTING_H
 #define FITTING_H
 
-#include "core/data/peak_info.h"
-
-class ActiveClusters;
-class Cluster;
-class Peak;
-class Progress;
+class QProgressBar;
 
 //! @namespace algo
 //! Core algorithms.
 
 namespace algo {
 
-PeakInfo rawFit(const Cluster&, int iGamma, const Peak&);
-PeakInfos rawFits(const ActiveClusters&, const Peak&, Progress*);
+void rawFits(QProgressBar*);
 
 } // namespace algo
 
