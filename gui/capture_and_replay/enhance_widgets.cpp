@@ -61,6 +61,6 @@ void CModelessDialog::closeEvent(QCloseEvent* event)
 void CModelessDialog::onCommand(const QStringList& args)
 {
     if (args[0]!="close")
-        throw CmdException("Unexpected command");
+        throw CmdException("Unexpected command in ModelessDialog "+name());
     close();
 }

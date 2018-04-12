@@ -56,7 +56,7 @@ CTrigger::CTrigger(
 void CTrigger::onCommand(const QStringList& args)
 {
     if (args[0]!="trigger")
-        throw CmdException("Unexpected command");
+        throw CmdException("Unexpected trigger command");
     trigger();
 }
 
@@ -96,7 +96,7 @@ CToggle::CToggle(const QString& name, const QString& text, bool on, const QStrin
 void CToggle::onCommand(const QStringList& args)
 {
     if (args[0]!="switch")
-        throw CmdException("Unexpected command");
+        throw CmdException("Unexpected toggle command");
     if      (args.size()<2)
         throw CmdException("Missing argument to command 'switch'");
     else if (args[1]=="on")
@@ -190,7 +190,7 @@ void CSpinBox::reportChange()
 void CSpinBox::onCommand(const QStringList& args)
 {
     if (args[0]!="set")
-        throw CmdException("Unexpected command");
+        throw CmdException("Unexpected spinbox command");
     if      (args.size()<2)
         throw CmdException("Missing argument to command 'set'");
     int val = TO_INT(args[1]);
@@ -234,7 +234,7 @@ void CDoubleSpinBox::reportChange()
 void CDoubleSpinBox::onCommand(const QStringList& args)
 {
     if (args[0]!="set")
-        throw CmdException("Unexpected command");
+        throw CmdException("Unexpected doublespinbox command");
     if      (args.size()<2)
         throw CmdException("Missing argument to command 'set'");
     double val = TO_DOUBLE(args[1]);
@@ -267,7 +267,7 @@ CCheckBox::CCheckBox(const QString& name, const QString& text)
 void CCheckBox::onCommand(const QStringList& args)
 {
     if (args[0]!="set")
-        throw CmdException("Unexpected command");
+        throw CmdException("Unexpected checkbox command");
     if      (args.size()<2)
         throw CmdException("Missing argument to command 'set'");
     setChecked(TO_INT(args[1]));
@@ -286,7 +286,7 @@ CRadioButton::CRadioButton(const QString& _name, const QString& text)
 void CRadioButton::onCommand(const QStringList& args)
 {
     if (args[0]!="switch")
-        throw CmdException("Unexpected command");
+        throw CmdException("Unexpected radiobutton command");
     if      (args.size()<2)
         throw CmdException("Missing argument to command 'switch'");
     else if (args[1]=="on")
@@ -310,7 +310,7 @@ CComboBox::CComboBox(const QString& _name, const QStringList& items)
 void CComboBox::onCommand(const QStringList& args)
 {
     if (args[0]!="choose")
-        throw CmdException("Unexpected command");
+        throw CmdException("Unexpected combobox command");
     if (args.size()<2)
         throw CmdException("Missing argument to command 'choose'");
     setCurrentIndex(TO_INT(args[1]));
@@ -330,7 +330,7 @@ CTabWidget::CTabWidget(const QString& _name)
 void CTabWidget::onCommand(const QStringList& args)
 {
     if (args[0]!="choose")
-        throw CmdException("Unexpected command");
+        throw CmdException("Unexpected tabwidget command");
     if (args.size()<2)
         throw CmdException("Missing argument to command 'choose'");
     int val = TO_INT(args[1]);
@@ -376,5 +376,5 @@ void CFileDialog::onCommand(const QStringList& args)
         QString tmp = '"' + list.join("\" \"") + '"';
         selectFile(tmp);
     } else
-        throw CmdException("Unexpected command");
+        throw CmdException("Unexpected filedialog command");
 }

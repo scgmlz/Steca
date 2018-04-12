@@ -28,7 +28,7 @@ TableModel::TableModel(const QString& name)
 void TableModel::onCommand(const QStringList& args)
 {
     if (args[0]!="highlight")
-        throw CmdException("Unexpected command");
+        throw CmdException("Unexpected command in TableModel "+name());
     if      (args.size()<2)
         throw CmdException("Missing argument to command 'highlight'");
     setHighlight(TO_INT(args[1]));
@@ -77,7 +77,7 @@ void CheckTableModel::onCommand(const QStringList& args)
             throw CmdException("Missing argument to command 'deactivate'");
         activateAndLog(false, TO_INT(args[1]), false);
     } else
-        throw CmdException("Unexpected command");
+        TableModel::onCommand(args);
 }
 
 //! Refreshes the check box column.
