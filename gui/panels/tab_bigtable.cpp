@@ -82,7 +82,7 @@ ColumnSelector::ColumnSelector()
         connect(cb, &QCheckBox::toggled, [this, i](bool on) {
                 gGui->state->bigtableShowCol[i] = on;
                 updateRadiobuttons();
-                EMIT(gSession->sigBigtableCols());
+                EMITS("ColumnSelector "<<i,gSession->sigBigtableCols());
             });
     }
 

@@ -34,20 +34,20 @@ Session::Session()
     interpol().fromSettings();
 
     // Some signals imply other signals:
-    connect(this, &Session::sigActivated,     [this]() {EMIT(sigDfgram());} );
-    connect(this, &Session::sigBaseline,      [this]() {EMIT(sigDfgram());} );
-    connect(this, &Session::sigCorr,          [this]() {EMIT(sigDfgram());} );
-    connect(this, &Session::sigDetector,      [this]() {EMIT(sigDfgram());} );
-    connect(this, &Session::sigGamma,         [this]() {EMIT(sigDfgram());} );
-    connect(this, &Session::sigNorm,          [this]() {EMIT(sigDfgram());} );
-    connect(this, &Session::sigPeaks,         [this]() {EMIT(sigDfgram());} );
+    connect(this, &Session::sigActivated,     [this]() {EMITS("sigActivated", sigDfgram());} );
+    connect(this, &Session::sigBaseline,      [this]() {EMITS("sigBaseline", sigDfgram());} );
+    connect(this, &Session::sigCorr,          [this]() {EMITS("sigCorr", sigDfgram());} );
+    connect(this, &Session::sigDetector,      [this]() {EMITS("sigDetector", sigDfgram());} );
+    connect(this, &Session::sigGamma,         [this]() {EMITS("sigGamma", sigDfgram());} );
+    connect(this, &Session::sigNorm,          [this]() {EMITS("sigNorm", sigDfgram());} );
+    connect(this, &Session::sigPeaks,         [this]() {EMITS("sigPeaks", sigDfgram());} );
 
-    connect(this, &Session::sigCorr,          [this]() {EMIT(sigImage());} );
-    connect(this, &Session::sigDataHighlight, [this]() {EMIT(sigImage());} );
-    connect(this, &Session::sigDetector,      [this]() {EMIT(sigImage());} );
-    connect(this, &Session::sigNorm,          [this]() {EMIT(sigImage());} );
+    connect(this, &Session::sigCorr,          [this]() {EMITS("sigCorr", sigImage());} );
+    connect(this, &Session::sigDataHighlight, [this]() {EMITS("sigDataHighlight", sigImage());} );
+    connect(this, &Session::sigDetector,      [this]() {EMITS("sigDetector", sigImage());} );
+    connect(this, &Session::sigNorm,          [this]() {EMITS("sigNorm", sigImage());} );
 
-    connect(this, &Session::sigDfgram,        [this]() {EMIT(sigDoFits());} );
+    connect(this, &Session::sigDfgram,        [this]() {EMITS("sigDfgram", sigDoFits());} );
 
     connect(this, &Session::sigDataHighlight, &gammaSelection_, &GammaSelection::onData);
     connect(this, &Session::sigDataHighlight, &thetaSelection_, &ThetaSelection::onData);
@@ -134,7 +134,7 @@ QByteArray Session::serializeSession() const
 void Session::setMetaSelected(int i, bool on)
 {
     metaSelection_[i] = on;
-    EMIT(gSession->sigMetaSelection());
+    EMITS("Session::setMetaSelected", gSession->sigMetaSelection());
 }
 
 void Session::updateImageSize()
@@ -184,11 +184,11 @@ void Session::setIntenScaleAvg(bool avg, double scale)
 {
     intenScaledAvg_ = avg;
     intenScale_ = scale;
-    EMIT(gSession->sigNorm());
+    EMITS("Session::setIntenScaleAvg", gSession->sigNorm());
 }
 
 void Session::setNormMode(eNorm normMode)
 {
     normMode_ = normMode;
-    EMIT(gSession->sigNorm());
+    EMITS("Session::setNormMode", gSession->sigNorm());
 }

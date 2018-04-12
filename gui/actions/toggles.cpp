@@ -25,19 +25,19 @@ Toggles::Toggles()
     connect(&enableCorr, AT, [](bool on) { gSession->corrset().tryEnable(on); });
 
     connect(&fixedIntenImage, AT, [](bool on) {
-        EMIT(gSession->sigImage());
-        EMIT(gSession->sigDfgram());
+            EMITS("Toggle::fixedIntenImage", gSession->sigImage());
+            EMITS("Toggle::fixedIntenImage", gSession->sigDfgram());
         });
     connect(&fixedIntenDgram, AT, [](bool on) {
-        EMIT(gSession->sigImage());
-        EMIT(gSession->sigDfgram());
+            EMITS("Toggles::fixedIntenDgram", gSession->sigImage());
+            EMITS("Toggles::fixedIntenDgram", gSession->sigDfgram());
         });
     connect(&combinedDgram, AT, [](bool on) {
-        EMIT(gSession->sigImage());
-        EMIT(gSession->sigDfgram());
+            EMITS("Toggles::combinedDgram", gSession->sigImage());
+            EMITS("Toggles::combinedDgram", gSession->sigDfgram());
         });
     connect(&showBackground, AT, [](bool on) {
-        EMIT(gSession->sigDfgram());
+            EMITS("Toggles::showBackground", gSession->sigDfgram());
         });
 
     connect(&viewStatusbar, AT, [](bool on) { gGui->statusBar()->setVisible(on); });

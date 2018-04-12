@@ -228,11 +228,11 @@ void MainWin::runFits()
 {
     algo::rawFits(&gGui->progressBar);
     algo::interpolateInfos(&gGui->progressBar);
-    EMIT(gSession->sigRawFits());
+    EMITS("MainWin::runFits", gSession->sigRawFits());
 }
 
 void MainWin::runInterpolation()
 {
     algo::interpolateInfos(&gGui->progressBar);
-    EMIT(gSession->sigRawFits());
+    EMITS("MainWin::runInterpolation", gSession->sigRawFits());
 }

@@ -52,7 +52,7 @@ void ThetaSelection::recomputeCache()
         return;
     iSlice_ = qMin(qMax(iSlice_, 0), numSlices_-1);
     range_ = fullRange_.slice(iSlice_, numSlices_);
-    EMIT(gSession->sigTheta());
+    EMITS("ThetaSelection::recomputeCache", gSession->sigTheta());
 }
 
 void ThetaSelection::selectSlice(int i)

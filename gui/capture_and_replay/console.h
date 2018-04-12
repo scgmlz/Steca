@@ -18,6 +18,7 @@
 #include "gui/capture_and_replay/enhance_widgets.h"
 #include <stack>
 #include <QTextStream>
+#include <QDateTime>
 
 extern class Console* gConsole; //!< global
 
@@ -38,6 +39,7 @@ public:
     void log2(bool, const QString&);
 private:
     class CommandRegistry& registry() { return *registryStack_.top(); }
+    QDateTime startTime_;
     QTextStream log_;
     enum class Caller { gui, cli, stack, sys } caller_ { Caller::gui };
     enum class Result : int { ok, err, suspend };

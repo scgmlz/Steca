@@ -28,7 +28,7 @@
 #include "core/calc/image_transform.h"
 #include <QDebug>
 
-#define EMIT(sig) qDebug()<<"emitting "<<#sig; emit sig;
+#define EMITS(src,sig) qDebug()<<src<<" emits "<<#sig; emit sig;
 
 extern class Session* gSession;
 

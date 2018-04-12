@@ -313,7 +313,7 @@ ControlsPeakfits::ControlsPeakfits()
             [](const QString& peakFunctionName) {
                 if (gSession->peaks().selectedPeak()) { // TODO rm this if
                     gSession->peaks().selectedPeak()->setPeakFunction(peakFunctionName);
-                    EMIT(gSession->sigPeaks());
+                    EMITS("ControlsPeakfits", gSession->sigPeaks());
                 } });
 
     // layout

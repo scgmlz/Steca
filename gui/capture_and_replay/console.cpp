@@ -14,7 +14,6 @@
 
 #include "console.h"
 #include "cmdexception.h"
-#include <QDateTime>
 #include <QDebug>
 #include <QFile>
 #include <QSocketNotifier>
@@ -101,7 +100,8 @@ Console::Console()
     if (!file->open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
         qFatal("cannot open log file");
     log_.setDevice(file);
-    log("# Steca session started");
+    startTime_ = QDateTime::currentDateTime();
+    log("# Steca started at " + startTime_.toString("yyyy-MM-dd HH:mm::ss.zzz"));
 }
 
 Console::~Console()
@@ -253,7 +253,7 @@ void Console::log2(bool hadFocus, const QString& line)
 
 void Console::log(const QString& line)
 {
-    log_ << "[" << QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm::ss.zzz")
+    log_ << "[" << QString::number(startTime_.msecsTo(QDateTime::currentDateTime())) << "ms"
          << " " << registry().name() << "]";
     if (caller_==Caller::gui)
         ;

@@ -36,7 +36,8 @@ void TableModel::onCommand(const QStringList& args)
 
 void TableModel::refreshModel()
 {
-    EMIT(dataChanged(createIndex(0,0),createIndex(rowCount(),columnCount()-1)));
+    EMITS("TableModel::refreshModel",\
+          dataChanged(createIndex(0,0),createIndex(rowCount(),columnCount()-1)));
 }
 
 //! Redraws the entire table, and sets currentIndex to (0,0) [?] which may be unwanted
@@ -83,7 +84,8 @@ void CheckTableModel::onCommand(const QStringList& args)
 //! Refreshes the check box column.
 void CheckTableModel::onActivated()
 {
-    EMIT(dataChanged(createIndex(0,1),createIndex(rowCount()-1,1)));
+    EMITS("CheckTableModel::onActivated", \
+          dataChanged(createIndex(0,1),createIndex(rowCount()-1,1)));
 }
 
 void CheckTableModel::onClicked(const QModelIndex& cell)

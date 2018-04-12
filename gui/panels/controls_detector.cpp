@@ -56,9 +56,11 @@ GeometryControls::GeometryControls()
     connect(&detPixelSize_, &CDoubleSpinBox::valueReleased, [](double val) {
             gSession->geometry().setPixSize(val); });
     connect(&beamOffsetI_, &CSpinBox::valueReleased, [](int val) {
-            gSession->geometry().midPixOffset().i = val; EMIT(gSession->sigDetector()); });
+            gSession->geometry().midPixOffset().i = val;
+            EMITS("GeometryControls", gSession->sigDetector()); });
     connect(&beamOffsetJ_, &CSpinBox::valueReleased, [](int val) {
-            gSession->geometry().midPixOffset().j = val; EMIT(gSession->sigDetector()); });
+            gSession->geometry().midPixOffset().j = val;
+            EMITS("GeometryControls", gSession->sigDetector()); });
 
     // layout
     mmGrid_.addWidget(new QLabel("det. distance"), 0, 0);
@@ -244,7 +246,7 @@ GammaControls::GammaControls()
 void GammaControls::fromCore()
 {
     numSlices_.setValue(gSession->gammaSelection().numSlices());
-    EMIT(gSession->sigImage()); // TODO redundant with emission from idxSlice
+    EMITS("GammaControls", gSession->sigImage()); // TODO redundant with emission from idxSlice
 }
 
 //  ***********************************************************************************************

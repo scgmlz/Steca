@@ -48,7 +48,7 @@ void GammaSelection::recomputeCache()
         range_ = fullRange_;
     else
         range_ = slice2range(iSlice_);
-    EMIT(gSession->sigGamma());
+    EMITS("GammaSelection::recomputeCache", gSession->sigGamma());
 }
 
 void GammaSelection::setNumSlices(int n)
