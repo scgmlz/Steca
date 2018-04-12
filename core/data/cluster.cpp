@@ -34,12 +34,10 @@ Metadata Sequence::computeAvgeMetadata() const
 }
 
 #define AVG_ONES(what_function)                 \
-    qDebug() << "avge_ones " << #what_function;        \
     double avg = 0;                             \
     for (const Measurement* one : members_)     \
         avg += one->what_function();            \
     avg /= count();                             \
-    qDebug() << "avge_ones -> done: " << avg;        \
     return avg;
 
 deg Sequence::omg() const { AVG_ONES(omg) }
@@ -50,11 +48,9 @@ deg Sequence::chi() const { AVG_ONES(chi) }
 
 // combined range of combined cluster
 #define RGE_COMBINE(combineOp, what)            \
-    qDebug() << "rge_combine " << #what;        \
     Range rge;                                  \
     for (const Measurement* one : members_)     \
         rge.combineOp(one->what);               \
-    qDebug() << "rge_combine -> done:" << rge.to_s();   \
     return rge;
 
 Range Sequence::rgeGma() const { RGE_COMBINE(extendBy, rgeGma()) }
@@ -84,7 +80,6 @@ Curve Sequence::toCurve() const
 
 Curve Sequence::toCurve(const Range& _rgeGma) const
 {
-    qDebug() << "toCurve";
     return algo::collectIntensities(members_, normFactor(), _rgeGma, rgeTth());
 };
 
