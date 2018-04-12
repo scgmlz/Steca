@@ -32,7 +32,7 @@ void GammaSelection::fromJson(const JsonObj& obj)
 void GammaSelection::onData()
 {
     const Cluster* cluster = gSession->dataset().highlight().cluster();
-    qDebug() << "GammaSelection on Data: " << cluster;
+    qDebug() << "GammaSelection onData, highlighted cluster = " << cluster;
     if (!cluster)
         return fullRange_.invalidate();
     fullRange_ = cluster->rgeGma();
