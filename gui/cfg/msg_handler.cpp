@@ -28,7 +28,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString
     switch (type) {
     case QtDebugMsg:
         std::cerr << ".... " << msg.toStdString() << "\n" << std::flush;
-        gConsole->log("#DEBUG: " + msg);
+        gConsole->log("## " + msg);
         break;
 // unavailable before Qt5.5 (ISSUE #36)
 //    case QtInfoMsg:
