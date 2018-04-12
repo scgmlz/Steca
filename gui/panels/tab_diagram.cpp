@@ -28,9 +28,9 @@ DiagramTab::DiagramTab()
     plot_ = new PlotDiagram; // the main subframe
 
     // internal connections
-    connect(gGui->state->diagramX, qOverload<int>(&QComboBox::currentIndexChanged), [this]() {
+    connect(gGui->state->diagramX, QOverload<int>::of(&QComboBox::currentIndexChanged), [this]() {
             render(); });
-    connect(gGui->state->diagramY, qOverload<int>(&QComboBox::currentIndexChanged), [this]() {
+    connect(gGui->state->diagramY, QOverload<int>::of(&QComboBox::currentIndexChanged), [this]() {
             render(); });
 
     // inbound connection

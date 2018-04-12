@@ -166,7 +166,7 @@ CSpinBox::CSpinBox(const QString& _name, int ndigits, bool withDot, int min, int
         setToolTip(tooltip);
     reportedValue_ = value();
     connect(this, &QSpinBox::editingFinished, this, &CSpinBox::reportChange);
-    connect(this, qOverload<int>(&QSpinBox::valueChanged), [this](int val)->void {
+    connect(this, QOverload<int>::of(&QSpinBox::valueChanged), [this](int val)->void {
             if(!hasFocus())
                 gConsole->log2(false, name()+" set "+QString::number(val)); });
 }
@@ -210,7 +210,7 @@ CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, double min, do
     setMaximum(max);
     reportedValue_ = value();
     connect(this, &QDoubleSpinBox::editingFinished, this, &CDoubleSpinBox::reportChange);
-    connect(this, qOverload<double>(&QDoubleSpinBox::valueChanged), [this](double val)->void {
+    connect(this, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [this](double val)->void {
             if(!hasFocus())
                 gConsole->log2(false, name()+" set "+QString::number(val)); });
 }
@@ -254,7 +254,7 @@ CCheckBox::CCheckBox(const QString& _name, QAction* action)
     connect(action, &QAction::toggled, [this](bool on) { setChecked(on); });
     setToolTip(action->toolTip());
     setChecked(action->isChecked());
-    connect(this, qOverload<int>(&QCheckBox::stateChanged), [this](int val)->void {
+    connect(this, QOverload<int>::of(&QCheckBox::stateChanged), [this](int val)->void {
             gConsole->log2(hasFocus(), name()+" set "+QString::number(val)); });
 }
 
@@ -303,7 +303,7 @@ CComboBox::CComboBox(const QString& _name, const QStringList& items)
     : CSettable(_name)
 {
     addItems(items);
-    connect(this, qOverload<int>(&QComboBox::currentIndexChanged), [this](int val)->void {
+    connect(this, QOverload<int>::of(&QComboBox::currentIndexChanged), [this](int val)->void {
             gConsole->log2(hasFocus(), name()+" choose "+QString::number(val)); });
 }
 

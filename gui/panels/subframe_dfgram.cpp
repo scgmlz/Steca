@@ -60,7 +60,7 @@ Dfgram::Dfgram()
     });
 
     // outbound connections
-    connect(&comboNormType_, qOverload<int>(&QComboBox::currentIndexChanged), [](int index) {
+    connect(&comboNormType_, QOverload<int>::of(&QComboBox::currentIndexChanged), [](int index) {
             gSession->setNormMode(eNorm(index)); });
     connect(&intenAvg_, &QRadioButton::toggled, [this](bool on) {
         intenScale_.setEnabled(on);
