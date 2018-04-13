@@ -227,6 +227,12 @@ void MainWin::loadCorrFile()
 
 void MainWin::runFits()
 {
+    if (!gSession->peaks().count()) {
+        gSession->setDirectPeakInfos({});
+        gSession->setInterpolatedPeakInfos({});
+        return;
+    }
+    algo::projectIntensities(&gGui->progressBar);
     algo::rawFits(&gGui->progressBar);
     algo::interpolateInfos(&gGui->progressBar);
     EMITS("MainWin::runFits", gSession->sigRawFits());

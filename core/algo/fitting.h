@@ -22,6 +22,7 @@ class QProgressBar;
 
 namespace algo {
 
+void projectIntensities(QProgressBar*);
 void rawFits(QProgressBar*);
 
 } // namespace algo

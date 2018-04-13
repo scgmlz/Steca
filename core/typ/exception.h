@@ -17,6 +17,7 @@
 
 #include <QException>
 #include <QString> // no auto rm
+#include <iostream>
 
 //! The sole exception type used in this software.
 class Exception : public QException {
@@ -28,7 +29,7 @@ private:
     QString msg_;
 };
 
-// raise an exception
-#define THROW(msg) throw Exception(msg)
+// raise an exception // TODO catch Exception and print msg; then remove output here
+#define THROW(msg) { std::cerr << QString(msg).toStdString() << "\n"; throw Exception(msg); }
 
 #endif // EXCEPTION_H

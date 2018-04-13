@@ -140,3 +140,20 @@ bool Cluster::isIncomplete() const
 {
     return count()<gSession->dataset().binning();
 }
+
+void Cluster::setCurve(int i, Curve&& c) const
+{
+    if (i<0 || i>curves_.size())
+        THROW("BUG: Cluster::setCurve called with invalid i");
+    if (i<curves_.size())
+        curves_[i] = std::move(c);
+    else
+        curves_.push_back(std::move(c));
+}
+
+const Curve& Cluster::curve(int i) const
+{
+    if (i<0 || i>=curves_.size())
+        THROW("BUG: Cluster::curve called with invalid i");
+    return curves_[i];
+}

@@ -20,14 +20,18 @@
 
 namespace {
 
+void projectIntensity(const Cluster& cluster, int iGamma)
+{
+    const Range gammaSector = gSession->gammaSelection().slice2range(iGamma);
+    cluster.setCurve(iGamma, cluster.toCurve(gammaSector));
+}
+
 //! Fits peak to the given gamma sector and constructs a PeakInfo.
 PeakInfo rawFit(const Cluster& cluster, int iGamma, const Peak& peak)
 {
-    ASSERT(iGamma>=0 && iGamma<gSession->gammaSelection().numSlices());
     std::unique_ptr<PeakFunction> peakFunction( FunctionRegistry::clone(peak.peakFunction()) );
     const Range& fitrange = peakFunction->range();
     const Metadata* metadata = cluster.avgeMetadata();
-    ASSERT(iGamma>=0 && iGamma<gSession->gammaSelection().numSlices());
     const Range gammaSector = gSession->gammaSelection().slice2range(iGamma);
     deg alpha, beta;
     // TODO (MATH) use fitted tth center, not center of given fit range
@@ -39,7 +43,7 @@ PeakInfo rawFit(const Cluster& cluster, int iGamma, const Peak& peak)
     auto& baseline = gSession->baseline();
 
     // Diffractogram minus fitted background:
-    Curve curve = cluster.toCurve(gammaSector);
+    Curve curve = cluster.curve(iGamma);
     const Polynom f = Polynom::fromFit(baseline.polynomDegree(), curve, baseline.ranges());
     curve.subtract([f](double x) {return f.y(x);});
 
@@ -58,6 +62,20 @@ PeakInfo rawFit(const Cluster& cluster, int iGamma, const Peak& peak)
 
 } // namespace
 
+
+void algo::projectIntensities(class QProgressBar* progressBar)
+{
+    const ActiveClusters& seq = gSession->activeClusters();
+    Progress progress(progressBar, "project intensities", seq.size());
+    int nGamma = qMax(1, gSession->gammaSelection().numSlices());
+    for (const Cluster* cluster : seq.clusters()) {
+        progress.step();
+        for_i (nGamma) {
+            projectIntensity(*cluster, i);
+        }
+    }
+}
+
 //! Gathers PeakInfos from Datasets.
 
 //! Either uses the whole gamma range of the cluster (if gammaSector is invalid),
@@ -68,15 +86,12 @@ PeakInfo rawFit(const Cluster& cluster, int iGamma, const Peak& peak)
 
 void algo::rawFits(class QProgressBar* progressBar)
 {
-    if (!gSession->peaks().count()) {
-        gSession->setDirectPeakInfos({});
-        return;
-    }
+    if (!gSession->peaks().count())
+        THROW("BUG: rawFits must not be called unless peak is defined");
     Peak* peak = gSession->peaks().selectedPeak();
     if (!peak)
         qFatal("BUG: no peak selected");
 
-    qDebug() << "rawFits began";
     PeakInfos tmp;
     const ActiveClusters& seq = gSession->activeClusters();
     Progress progress(progressBar, "peak fitting", seq.size());
@@ -90,5 +105,4 @@ void algo::rawFits(class QProgressBar* progressBar)
         }
     }
     gSession->setDirectPeakInfos(std::move(tmp));
-    qDebug() << "rawFits ended";
 }
