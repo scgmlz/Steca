@@ -78,10 +78,10 @@ float ImageLens::imageInten(int i, int j) const
         doTrans(i, j);
     if (cut_)
         doCut(i, j);
-    float inten = image_.inten(i, j);
+    float ret = image_.inten2d(i, j);
     if (auto* corr = gSession->corrset().intensCorr())
-        inten *= corr->inten(i, j);
-    return inten;
+        ret *= corr->inten2d(i, j);
+    return ret;
 }
 
 const Range& ImageLens::rgeInten(bool fixed) const

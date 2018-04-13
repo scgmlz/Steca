@@ -76,13 +76,13 @@ void Corrset::calcIntensCorr() const
 
     double sum = 0;
     for_ij (w, h)
-        sum += corrImage_->inten(i + di, j + dj);
+        sum += corrImage_->inten2d(i + di, j + dj);
     double avg = sum / (w * h);
 
     intensCorr_.fill(1, corrImage_->size());
 
     for_ij (w, h) {
-        const float inten = corrImage_->inten(i + di, j + dj);
+        const float inten = corrImage_->inten2d(i + di, j + dj);
         double fact;
         if (inten > 0) {
             fact = avg / inten;
@@ -90,7 +90,7 @@ void Corrset::calcIntensCorr() const
             fact = Q_QNAN;
             hasNANs_ = true;
         }
-        intensCorr_.setInten(i + di, j + dj, float(fact));
+        intensCorr_.setInten2d(i + di, j + dj, float(fact));
     }
 }
 

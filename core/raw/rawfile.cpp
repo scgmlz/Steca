@@ -42,6 +42,6 @@ Image Rawfile::summedImage() const
     ASSERT(measurements_.size());
     Image ret(measurements_.front().imageSize());
     for (const Measurement& one : measurements_)
-        ret.addIntens(one.image());
+        ret.addImage(one.image());
     return ret;
 }

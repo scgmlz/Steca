@@ -26,7 +26,7 @@ Measurement::Measurement(
 {
     ASSERT(intens.count() == size.count());
     for_i (intens.count())
-        image_->setInten(i, intens.at(i));
+        image_->setInten1d(i, intens.at(i));
 }
 
 Range Measurement::rgeGma() const

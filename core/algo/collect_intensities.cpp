@@ -42,12 +42,12 @@ void projectIntensity(
     // TODO: MOST TIME IS SPENT HERE => OPTIMIZE !
     for (int i = gmaIndexMin; i < gmaIndexMax; ++i) {
         int ind = gmaIndexes->at(i);
-        float inten = measurement.image().inten(ind);
+        float inten = measurement.image().inten1d(ind);
         if (qIsNaN(inten))
             continue;
 
         float corr
-            = gSession->corrset().isActive() ? gSession->corrset().intensCorr()->inten(ind) : 1;
+            = gSession->corrset().isActive() ? gSession->corrset().intensCorr()->inten1d(ind) : 1;
         if (qIsNaN(corr))
             continue;
         inten *= corr;

@@ -19,18 +19,20 @@ Image::Image(const size2d& size)
     fill(0, size);
 }
 
-Image::Image(const Array2D<float>& that) : Image(that.size())
+// TODO: reimplement this less indirectly
+Image::Image(const Array2D<float>& that)
+    : Image(that.size())
 {
-    addIntens(that);
+    addImage(that);
 }
 
-void Image::addIntens(const Image& that)
+void Image::addImage(const Image& that)
 {
     if (!(size() == that.size())) THROW("inconsistent image size");
     for (int i = 0; i < size().w; ++i)
         for (int j = 0; j < size().h; ++j) {
-            float inten = that.inten(i, j);
+            float inten = that.inten2d(i, j);
             rgeInten_.extendBy(inten);
-            addInten(i, j, inten);
+            addInten2d(i, j, inten);
         }
 }
