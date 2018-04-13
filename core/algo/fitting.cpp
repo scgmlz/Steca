@@ -20,12 +20,6 @@
 
 namespace {
 
-void projectIntensity(const Cluster& cluster, int iGamma)
-{
-    const Range gammaSector = gSession->gammaSelection().slice2range(iGamma);
-    cluster.setCurve(iGamma, cluster.toCurve(gammaSector));
-}
-
 //! Fits peak to the given gamma sector and constructs a PeakInfo.
 PeakInfo rawFit(const Cluster& cluster, int iGamma, const Peak& peak)
 {
@@ -71,7 +65,8 @@ void algo::projectIntensities(class QProgressBar* progressBar)
     for (const Cluster* cluster : seq.clusters()) {
         progress.step();
         for_i (nGamma) {
-            projectIntensity(*cluster, i);
+            const Range gammaSector = gSession->gammaSelection().slice2range(i);
+            cluster->setCurve(i, cluster->toCurve(gammaSector));
         }
     }
 }

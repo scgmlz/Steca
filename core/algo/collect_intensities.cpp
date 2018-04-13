@@ -39,6 +39,7 @@ void projectIntensity(
 
     ASSERT(deltaTth > 0);
 
+    // TODO: MOST TIME IS SPENT HERE => OPTIMIZE !
     for (int i = gmaIndexMin; i < gmaIndexMax; ++i) {
         int ind = gmaIndexes->at(i);
         float inten = measurement.image().inten(ind);
