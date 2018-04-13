@@ -48,6 +48,7 @@ static int upperBound(const QVector<deg>& vec, deg x, int i1, int i2)
 
 AngleMap::AngleMap(const ImageKey& key)
 {
+    qDebug() << "AngleMap: core computation";
     const size2d& size = key.size;
     // compute angles:
     //    detector center is at vec{d} = (d_x, 0, )
@@ -72,6 +73,7 @@ AngleMap::AngleMap(const ImageKey& key)
             arrAngles_.setAt(i, j, ScatterDirection(tth.toDeg(), gma.toDeg()));
         }
     }
+    qDebug() << "AngleMap: core computation done";
 
     const ImageCut& cut = key.cut;
     ASSERT(size.w > cut.left() + cut.right());
@@ -80,6 +82,7 @@ AngleMap::AngleMap(const ImageKey& key)
         (size.w - cut.left() - cut.right()) * (size.h - cut.top() - cut.bottom());
     ASSERT(countWithoutCut > 0);
 
+    qDebug() << "AngleMap: compute ranges";
     // compute ranges rgeTth_, rgeGma_, rgeGmaFull_, and arrays gmas_, gmaIndexes_:
     rgeTth_.invalidate();
     rgeGma_.invalidate();
@@ -100,7 +103,11 @@ AngleMap::AngleMap(const ImageKey& key)
                 rgeGma_.extendBy(dir.gma); // gma range at mid tth
         }
     }
+    qDebug() << "AngleMap: found gamma range " << rgeGma_.to_s();
+    qDebug() << "AngleMap: found full range " << rgeGmaFull_.to_s();
+    qDebug() << "AngleMap: found theta range " << rgeTth_.to_s();
 
+    qDebug() << "AngleMap: compute indices";
     // compute indices of sorted gmas_:
     QVector<int> is(countWithoutCut);
     for_i (is.count())
@@ -117,6 +124,7 @@ AngleMap::AngleMap(const ImageKey& key)
     for_i (countWithoutCut)
         uv[i] = gmaIndexes_.at(is.at(i));
     gmaIndexes_ = uv;
+    qDebug() << "AngleMap: compute indices done";
 }
 
 void AngleMap::getGmaIndexes(
