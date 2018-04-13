@@ -50,8 +50,8 @@ AngleMap::AngleMap(const ImageKey& key)
 {
     const size2d& size = key.size;
     // compute angles:
-    //    detector coordinates: d_x, ... (d_z = const)
-    //    beam coordinates: b_x, ..; b_y = d_y
+    //    detector center is at vec{d} = (d_x, 0, )
+    //    detector pixel (i,j) is at vec{b}
     arrAngles_.resize(size);
     const double t = key.midTth.toRad();
     const double c = cos(t);
