@@ -15,7 +15,7 @@
 #ifndef MAINFRAME_H
 #define MAINFRAME_H
 
-#include "gui/base/controls.h"
+#include "qcr/widgets/controls.h"
 
 //! Part of the main window that shows a detector image, with associated controls.
 

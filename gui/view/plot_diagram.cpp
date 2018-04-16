@@ -18,7 +18,7 @@
 #include "core/session.h"
 #include "gui/mainwin.h"
 #include "gui/state.h"
-#include "gui/base/controls.h"
+#include "qcr/widgets/controls.h"
 
 //  ***********************************************************************************************
 //! @class PlotDiagram

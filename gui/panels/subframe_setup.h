@@ -15,7 +15,7 @@
 #ifndef SUBFRAME_SETUP_H
 #define SUBFRAME_SETUP_H
 
-#include "gui/base/controls.h"
+#include "qcr/widgets/controls.h"
 
 //! Subframe of the main window, with tabs to control geometry, fits, &c
 

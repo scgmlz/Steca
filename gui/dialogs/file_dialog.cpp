@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/loaders/loaders.h"
-#include "gui/base/controls.h"
+#include "qcr/widgets/controls.h"
 #include <QFileSystemModel>
 #include <QMessageBox>
 #include <QSortFilterProxyModel>

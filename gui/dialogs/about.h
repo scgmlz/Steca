@@ -15,7 +15,7 @@
 #ifndef ABOUT_H
 #define ABOUT_H
 
-#include "gui/base/controls.h"
+#include "qcr/widgets/controls.h"
 #include <QDialogButtonBox>
 
 //! Modal dialog that informs about the software
