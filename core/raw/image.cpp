@@ -13,20 +13,24 @@
 //  ***********************************************************************************************
 
 #include "core/raw/image.h"
-
-Image::Image(const size2d& size)
-{
-    fill(0, size);
-}
+#include "core/def/idiomatic_for.h"
 
 Image::Image(const size2d& size, float val)
 {
     fill(val, size);
 }
 
+Image::Image(const size2d& size, const QVector<float>& intens)
+{
+    ASSERT(intens.count() == size.count());
+    intens_.fill(0., size);
+    for_i (intens.count())
+        setInten1d(i, intens.at(i));
+}
+
 // TODO: reimplement this less indirectly
 Image::Image(const Array2D<float>& that)
-    : Image(that.size())
+    : Image(that.size(), 0.)
 {
     addImage(that);
 }
