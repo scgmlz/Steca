@@ -16,7 +16,7 @@
 #define CONTROLS_H
 
 #include <QtGlobal>
-#include "gui/capture_and_replay/enhance_widgets.h"
+#include "qcr/engine/enhance_widgets.h"
 #include <QAction>
 #include <QCheckBox>
 #include <QComboBox>

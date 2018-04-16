@@ -15,7 +15,7 @@
 #ifndef EXPORT_BIGTABLE_H
 #define EXPORT_BIGTABLE_H
 
-#include "gui/capture_and_replay/enhance_widgets.h"
+#include "qcr/engine/enhance_widgets.h"
 
 //! The modal dialog for saving the main table (fit results and metadata).
 

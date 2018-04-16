@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/capture_and_replay/enhance_widgets.h
+//! @file      qcr/engine/enhance_widgets.h
 //! @brief     Defines functions that return new Qt objects
 //!
 //! @homepage  https://github.com/scgmlz/Steca
