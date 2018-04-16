@@ -39,6 +39,8 @@ void projectIntensity(
 
     ASSERT(deltaTth > 0);
 
+    auto* normalizer = gSession->corrset().normalizer();
+
     // TODO: MOST TIME IS SPENT HERE => OPTIMIZE !
     for (int i = gmaIndexMin; i < gmaIndexMax; ++i) {
         int ind = gmaIndexes->at(i);
@@ -46,11 +48,12 @@ void projectIntensity(
         if (qIsNaN(inten))
             continue;
 
-        float corr
-            = gSession->corrset().isActive() ? gSession->corrset().normalizer()->inten1d(ind) : 1;
-        if (qIsNaN(corr))
-            continue;
-        inten *= corr;
+        if (normalizer) {
+            float corr = normalizer->inten1d(ind);
+            if (qIsNaN(corr))
+                continue;
+            inten *= corr;
+        }
 
         // bin index
         deg tth = angleMap.dirAt1(ind).tth;
