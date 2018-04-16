@@ -15,7 +15,7 @@
 #ifndef TOGGLES_H
 #define TOGGLES_H
 
-#include "gui/base/controls.h"
+#include "qcr/widgets/controls.h"
 
 //! Collection of toggle actions, for use as member of MainWin.
 

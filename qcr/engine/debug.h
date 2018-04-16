@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/def/debug.h
+//! @file      qcr/engine/debug.h
 //! @brief     Defines preprocessor macros and functions for debugging
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -25,5 +25,7 @@
 #define WT(what) TR(#what ":" << what)
 
 #define ASSERT(cond) if (!(cond)) qFatal("assertion failed: " #cond)
+
+#define EMITS(src,sig) qDebug()<<src<<" emits "<<#sig; emit sig;
 
 #endif // DEBUG_H

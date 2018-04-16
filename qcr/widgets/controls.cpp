@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/base/controls.cpp
+//! @file      qcr/widgets/controls.cpp
 //! @brief     Implements functions that return new Qt objects
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -13,14 +13,15 @@
 //  ***********************************************************************************************
 
 #include "controls.h"
-#include "core/session.h" // defines EMIT
-#include "gui/base/convert.h"
-#include "gui/base/displays.h"
-#include "gui/capture_and_replay/cmdexception.h"
-#include "gui/capture_and_replay/console.h"
+#include "qcr/engine/debug.h"
+#include "qcr/engine/cmdexception.h"
+#include "qcr/engine/console.h"
+#include "qcr/widgets/convert.h"
+#include "qcr/widgets/displays.h"
 #include <QApplication> // for qApp for new Action
-#define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 #include <iostream> // debug
+
+#define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 
 //  ***********************************************************************************************
 //  QAction overloads CTrigger and CToggle
@@ -43,7 +44,7 @@ CTrigger::CTrigger(const QString& rawname, const QString& text, const QString& i
             if (!isEnabled())
                 txt += "\nThis trigger is currently inoperative.";
             setToolTip(txt); });
-    EMIT(changed());
+    EMITS(("Trigger "+name()),changed());
 };
 
 CTrigger::CTrigger(
@@ -56,7 +57,7 @@ CTrigger::CTrigger(
 void CTrigger::onCommand(const QStringList& args)
 {
     if (args[0]!="trigger")
-        throw CmdException("Unexpected command");
+        throw CmdException("Unexpected trigger command");
     trigger();
 }
 
@@ -83,7 +84,7 @@ CToggle::CToggle(const QString& rawname, const QString& text, bool on, const QSt
             else
                 txt += "\nThis toggle is currently unchecked. Click to check.";
             setToolTip(txt); });
-    EMIT(changed());
+    EMITS(("Toggle "+name()),changed());
 };
 
 CToggle::CToggle(const QString& name, const QString& text, bool on, const QString& iconFile,
@@ -96,7 +97,7 @@ CToggle::CToggle(const QString& name, const QString& text, bool on, const QStrin
 void CToggle::onCommand(const QStringList& args)
 {
     if (args[0]!="switch")
-        throw CmdException("Unexpected command");
+        throw CmdException("Unexpected toggle command");
     if      (args.size()<2)
         throw CmdException("Missing argument to command 'switch'");
     else if (args[1]=="on")
@@ -184,18 +185,18 @@ void CSpinBox::reportChange()
         return;
     reportedValue_ = val;
     gConsole->log2(true, name()+" set "+QString::number(val));
-    EMIT(valueReleased(val));
+    EMITS("CSpinBox::reportChange", valueReleased(val));
 }
 
 void CSpinBox::onCommand(const QStringList& args)
 {
     if (args[0]!="set")
-        throw CmdException("Unexpected command");
+        throw CmdException("Unexpected spinbox command");
     if      (args.size()<2)
         throw CmdException("Missing argument to command 'set'");
     int val = TO_INT(args[1]);
     setValue(val);
-    EMIT(valueReleased(val));
+    EMITS("CSpinBox::onCommand", valueReleased(val));
 }
 
 //! @class CDoubleSpinBox
@@ -228,18 +229,18 @@ void CDoubleSpinBox::reportChange()
         return;
     reportedValue_ = val;
     gConsole->log2(true, name()+" set "+QString::number(val));
-    EMIT(valueReleased(val));
+    EMITS("CDoubleSpinBox::reportChange", valueReleased(val));
 }
 
 void CDoubleSpinBox::onCommand(const QStringList& args)
 {
     if (args[0]!="set")
-        throw CmdException("Unexpected command");
+        throw CmdException("Unexpected doublespinbox command");
     if      (args.size()<2)
         throw CmdException("Missing argument to command 'set'");
     double val = TO_DOUBLE(args[1]);
     setValue(val);
-    EMIT(valueReleased(val));
+    EMITS("CDoubleSpinBox::onCommand", valueReleased(val));
 }
 
 //! @class CCheckBox
@@ -267,7 +268,7 @@ CCheckBox::CCheckBox(const QString& name, const QString& text)
 void CCheckBox::onCommand(const QStringList& args)
 {
     if (args[0]!="set")
-        throw CmdException("Unexpected command");
+        throw CmdException("Unexpected checkbox command");
     if      (args.size()<2)
         throw CmdException("Missing argument to command 'set'");
     setChecked(TO_INT(args[1]));
@@ -286,7 +287,7 @@ CRadioButton::CRadioButton(const QString& _name, const QString& text)
 void CRadioButton::onCommand(const QStringList& args)
 {
     if (args[0]!="switch")
-        throw CmdException("Unexpected command");
+        throw CmdException("Unexpected radiobutton command");
     if      (args.size()<2)
         throw CmdException("Missing argument to command 'switch'");
     else if (args[1]=="on")
@@ -310,7 +311,7 @@ CComboBox::CComboBox(const QString& _name, const QStringList& items)
 void CComboBox::onCommand(const QStringList& args)
 {
     if (args[0]!="choose")
-        throw CmdException("Unexpected command");
+        throw CmdException("Unexpected combobox command");
     if (args.size()<2)
         throw CmdException("Missing argument to command 'choose'");
     setCurrentIndex(TO_INT(args[1]));
@@ -330,7 +331,7 @@ CTabWidget::CTabWidget(const QString& _name)
 void CTabWidget::onCommand(const QStringList& args)
 {
     if (args[0]!="choose")
-        throw CmdException("Unexpected command");
+        throw CmdException("Unexpected tabwidget command");
     if (args.size()<2)
         throw CmdException("Missing argument to command 'choose'");
     int val = TO_INT(args[1]);
@@ -376,5 +377,5 @@ void CFileDialog::onCommand(const QStringList& args)
         QString tmp = '"' + list.join("\" \"") + '"';
         selectFile(tmp);
     } else
-        throw CmdException("Unexpected command");
+        throw CmdException("Unexpected filedialog command");
 }

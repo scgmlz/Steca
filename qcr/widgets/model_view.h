@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/base/model_view.h
+//! @file      qcr/widgets/model_view.h
 //! @brief     Defines classes TableModel and TableView
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -15,7 +15,7 @@
 #ifndef MODEL_VIEW_H
 #define MODEL_VIEW_H
 
-#include "gui/capture_and_replay/enhance_widgets.h"
+#include "qcr/engine/enhance_widgets.h"
 #include <QTreeView>
 
 //! Pure virtual base class of all models of rectangular table form
@@ -24,7 +24,7 @@ class TableModel : public QAbstractTableModel, public CSettable {
 public:
     TableModel() = delete;
     TableModel(const QString& name);
-    void onCommand(const QStringList&);
+    virtual void onCommand(const QStringList&);
     void refreshModel(); // within rectangle plus one row
     void resetModel(); // complete reset, including cursor position
     virtual void onClicked(const QModelIndex& cell);
@@ -44,9 +44,9 @@ public:
 class CheckTableModel : public TableModel {
 public:
     CheckTableModel(const QString& name);
-    void onCommand(const QStringList&);
+    void onCommand(const QStringList&) override;
     void onActivated();
-    void onClicked(const QModelIndex& cell) final;
+    void onClicked(const QModelIndex& cell) override;
     virtual bool activated(int row) const = 0;
     virtual void setActivated(int row, bool on) = 0;
 private:

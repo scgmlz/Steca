@@ -251,6 +251,7 @@ void algo::interpolateInfos(QProgressBar* progressBar)
         gSession->setInterpolatedPeakInfos({});
         return;
     }
+    qDebug() << "interpolation began";
 
     double stepAlpha   = gSession->interpol().stepAlpha();
     double stepBeta    = gSession->interpol().stepBeta();
@@ -335,4 +336,5 @@ void algo::interpolateInfos(QProgressBar* progressBar)
     }
 
     gSession->setInterpolatedPeakInfos(std::move(tmp));
+    qDebug() << "interpolation ended";
 }

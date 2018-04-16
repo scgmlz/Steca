@@ -68,7 +68,7 @@ const Range& ActiveClusters::rgeGma() const
 const Range& ActiveClusters::rgeFixedInten(bool trans, bool cut) const
 {
     if (!rgeFixedInten_.isValid()) {
-        TakesLongTime __;
+        TakesLongTime __("rgeFixedInten");
         for (const Cluster* cluster : clusters_)
             for (const Measurement* one : cluster->members())
                 rgeFixedInten_.extendBy(ImageLens(one->image(), trans, cut).rgeInten(false));
@@ -79,7 +79,7 @@ const Range& ActiveClusters::rgeFixedInten(bool trans, bool cut) const
 Curve ActiveClusters::avgCurve() const
 {
     if (avgCurve_.isEmpty()) {
-        TakesLongTime __;
+        TakesLongTime __("avgeCurve");
         computeAvgeCurve();
     }
     return avgCurve_;

@@ -16,7 +16,7 @@
 #define IMAGE_TRAFO_ACTIONS_H
 
 #include "core/calc/image_transform.h"
-#include "gui/base/controls.h"
+#include "qcr/widgets/controls.h"
 
 //! Trigger and toggle to control image rotation and mirror.
 

@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/base/convert.h
-//! @brief     Defines functions TO_INT, TO_DOUBLE
+//! @file      qcr/engine/msg_handler.h
+//! @brief     Defines messageHandler.
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,12 +12,9 @@
 //
 //  ***********************************************************************************************
 
-#ifndef CONVERT_H
-#define CONVERT_H
+#ifndef MSG_HANDLER_H
+#define MSG_HANDLER_H
 
-#include <QtGlobal>
+void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString& msg);
 
-int TO_INT(const QString&);
-double TO_DOUBLE(const QString&);
-
-#endif // CONVERT_H
+#endif // MSG_HANDLER_H

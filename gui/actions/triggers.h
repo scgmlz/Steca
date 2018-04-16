@@ -15,7 +15,7 @@
 #ifndef TRIGGERS_H
 #define TRIGGERS_H
 
-#include "gui/base/controls.h"
+#include "qcr/widgets/controls.h"
 
 //! Collection of trigger actions, for use as member of MainWin.
 

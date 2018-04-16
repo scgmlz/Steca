@@ -41,7 +41,7 @@ Qt::CheckState Datafile::activated() const
 void HighlightedData::clear()
 {
     current_ = nullptr;
-    EMIT(gSession->sigDataHighlight());
+    EMITS("HighlightedData::clear", gSession->sigDataHighlight());
 }
 
 //! temporarily clear, don't emit signal
@@ -65,7 +65,7 @@ void HighlightedData::setCluster(int i)
         return clear();
     ASSERT(i<gSession->dataset().countClusters());
     current_ = &gSession->dataset().clusterAt(i);
-    EMIT(gSession->sigDataHighlight());
+    EMITS("HighlightedData::setCluster", gSession->sigDataHighlight());
 }
 
 void HighlightedData::reset()
@@ -78,7 +78,7 @@ void HighlightedData::reset()
 void HighlightedData::setMeasurement(int val)
 {
     measurement_ = current_ ? qMin( val, current_->count()-1 ) : 0;
-    EMIT(gSession->sigDataHighlight());
+    EMITS("HighlightedData::setMeasurement", gSession->sigDataHighlight());
 }
 
 const Datafile* HighlightedData::file() const
@@ -175,7 +175,7 @@ void Dataset::activateCluster(int index, bool on)
 {
     allClusters_.at(index)->setActivated(on);
     updateActiveClusters();
-    EMIT(gSession->sigActivated());
+    EMITS("Dataset::activateCluster", gSession->sigActivated());
 }
 
 void Dataset::setFileActivation(int index, bool on)
@@ -184,7 +184,7 @@ void Dataset::setFileActivation(int index, bool on)
     for (Cluster* cluster : fil.clusters_)
         cluster->setActivated(on);
     updateActiveClusters();
-    EMIT(gSession->sigActivated());
+    EMITS("Dataset::setFileActivation", gSession->sigActivated());
 }
 
 void Dataset::onFileChanged()
@@ -197,18 +197,18 @@ void Dataset::onFileChanged()
         cnt += file.numMeasurements();
     }
     updateClusters();
-    EMIT(gSession->sigFiles());
-    EMIT(gSession->sigClusters());
-    EMIT(gSession->sigActivated());
+    EMITS("Dataset::onFileChanged", gSession->sigFiles());
+    EMITS("Dataset::onFileChanged", gSession->sigClusters());
+    EMITS("Dataset::onFileChanged", gSession->sigActivated());
 }
 
 void Dataset::onClusteringChanged()
 {
     updateClusters();
     highlight().reset();
-    EMIT(gSession->sigClusters());
-    EMIT(gSession->sigActivated());
-    EMIT(gSession->sigDataHighlight());
+    EMITS("Dataset::onClusteringChanged", gSession->sigClusters());
+    EMITS("Dataset::onClusteringChanged", gSession->sigActivated());
+    EMITS("Dataset::onClusteringChanged", gSession->sigDataHighlight());
 }
 
 void Dataset::updateClusters()

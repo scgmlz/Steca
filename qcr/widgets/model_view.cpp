@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/base/model_view.cpp
+//! @file      qcr/widgets/model_view.cpp
 //! @brief     Implements class TableView
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -13,10 +13,10 @@
 //  ***********************************************************************************************
 
 #include "model_view.h"
-#include "core/session.h" // defines EMIT
-#include "gui/base/convert.h"
-#include "gui/capture_and_replay/console.h"
-#include "gui/capture_and_replay/cmdexception.h"
+#include "qcr/engine/console.h"
+#include "qcr/engine/cmdexception.h"
+#include "qcr/engine/debug.h"
+#include "qcr/widgets/convert.h"
 
 //  ***********************************************************************************************
 //! @class TableModel
@@ -28,7 +28,7 @@ TableModel::TableModel(const QString& name)
 void TableModel::onCommand(const QStringList& args)
 {
     if (args[0]!="highlight")
-        throw CmdException("Unexpected command");
+        throw CmdException("Unexpected command in TableModel "+name());
     if      (args.size()<2)
         throw CmdException("Missing argument to command 'highlight'");
     setHighlight(TO_INT(args[1]));
@@ -36,7 +36,8 @@ void TableModel::onCommand(const QStringList& args)
 
 void TableModel::refreshModel()
 {
-    EMIT(dataChanged(createIndex(0,0),createIndex(rowCount(),columnCount()-1)));
+    EMITS("TableModel::refreshModel",\
+          dataChanged(createIndex(0,0),createIndex(rowCount(),columnCount()-1)));
 }
 
 //! Redraws the entire table, and sets currentIndex to (0,0) [?] which may be unwanted
@@ -77,13 +78,14 @@ void CheckTableModel::onCommand(const QStringList& args)
             throw CmdException("Missing argument to command 'deactivate'");
         activateAndLog(false, TO_INT(args[1]), false);
     } else
-        throw CmdException("Unexpected command");
+        TableModel::onCommand(args);
 }
 
 //! Refreshes the check box column.
 void CheckTableModel::onActivated()
 {
-    EMIT(dataChanged(createIndex(0,1),createIndex(rowCount()-1,1)));
+    EMITS("CheckTableModel::onActivated", \
+          dataChanged(createIndex(0,1),createIndex(rowCount()-1,1)));
 }
 
 void CheckTableModel::onClicked(const QModelIndex& cell)

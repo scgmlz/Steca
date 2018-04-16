@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/cfg/msg_handler.cpp
+//! @file      qcr/engine/msg_handler.cpp
 //! @brief     Implements messageHandler.
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "gui/capture_and_replay/console.h"
+#include "qcr/engine/console.h"
 #include <iostream>
 #include <QMessageBox>
 #include <QApplication>
@@ -28,7 +28,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString
     switch (type) {
     case QtDebugMsg:
         std::cerr << ".... " << msg.toStdString() << "\n" << std::flush;
-        gConsole->log("#DEBUG: " + msg);
+        gConsole->log("## " + msg);
         break;
 // unavailable before Qt5.5 (ISSUE #36)
 //    case QtInfoMsg:

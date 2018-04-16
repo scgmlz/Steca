@@ -32,18 +32,18 @@ public:
 
     void fill(float val, const size2d& size) { intens_.fill(val, size); }
 
-    float inten(int i) const { return intens_.at(i); }
+    float inten1d(int i) const { return intens_.at(i); }
 
-    float inten(int i, int j) const { return intens_.at(i, j); }
+    float inten2d(int i, int j) const { return intens_.at(i, j); }
 
-    void setInten(int i, float val) { intens_.setAt(i, val); }
+    void setInten1d(int i, float val) { intens_.setAt(i, val); }
 
-    void setInten(int i, int j, float val) { intens_.setAt(i, j, val); }
+    void setInten2d(int i, int j, float val) { intens_.setAt(i, j, val); }
 
-    void addInten(int i, int j, float val) { intens_.refAt(i, j) += val; }
+    void addInten2d(int i, int j, float val) { intens_.refAt(i, j) += val; }
 
     // Sum all intensities with new ones.
-    void addIntens(const Image&);
+    void addImage(const Image&);
 
     const Range& rgeInten() const { return rgeInten_; }
 

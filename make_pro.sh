@@ -26,7 +26,7 @@ function files {
   find $where -type f -name \*.$ext -exec echo ' ' {} \\ \;
 }
 
-MODULES='3rdparty lib io core gui main'
+MODULES='3rdparty qcr core gui main'
 echo -e '\nHEADERS += \\' >> $PRO
 for m in $MODULES ; do files $m h >> $PRO ; done
 

@@ -15,7 +15,7 @@
 #ifndef CONTROLS_PEAKFITS_H
 #define CONTROLS_PEAKFITS_H
 
-#include "gui/base/controls.h"
+#include "qcr/widgets/controls.h"
 
 //! A widget with controls to view and change the detector geometry.
 

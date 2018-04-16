@@ -21,7 +21,7 @@
 
 #include "../manifest.h"
 #include "core/session.h"
-#include "gui/cfg/msg_handler.h"
+#include "qcr/engine/msg_handler.h"
 #include "gui/mainwin.h"
 
 #define OPTPARSE_IMPLEMENTATION
@@ -87,10 +87,9 @@ int main(int argc, char* argv[]) {
 
     Session session;
     Console console;
-    MainWin mainwin;
-    mainwin.show();
+    auto* mainwin = new MainWin; // must be pointer, because it can be deleted by 'quit' trigger
+    mainwin->show();
     if (nonoptArgs.size())
         gConsole->call("@file " + nonoptArgs[0]);
-
-    return app.exec();
+    app.exec();
 }

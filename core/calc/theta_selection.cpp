@@ -36,6 +36,7 @@ void ThetaSelection::fromJson(const JsonObj& obj)
 void ThetaSelection::onData()
 {
     const Cluster* cluster = gSession->dataset().highlight().cluster();
+    qDebug() << "ThetaSelection onData, highlighted cluster = " << cluster;
     if (!cluster) {
         fullRange_.invalidate();
         numSlices_ = 0;
@@ -52,7 +53,7 @@ void ThetaSelection::recomputeCache()
         return;
     iSlice_ = qMin(qMax(iSlice_, 0), numSlices_-1);
     range_ = fullRange_.slice(iSlice_, numSlices_);
-    EMIT(gSession->sigTheta());
+    EMITS("ThetaSelection::recomputeCache", gSession->sigTheta());
 }
 
 void ThetaSelection::selectSlice(int i)

@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/cfg/colors.h
-//! @brief     Defines color maps in namespace colormap
+//! @file      qcr/widgets/convert.h
+//! @brief     Defines functions TO_INT, TO_DOUBLE
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,15 +12,12 @@
 //
 //  ***********************************************************************************************
 
-#ifndef COLORS_H
-#define COLORS_H
+#ifndef CONVERT_H
+#define CONVERT_H
 
-#include <QColor>
+#include <QtGlobal>
 
-//! Color maps for use in detector image and pole figure.
-namespace colormap {
-QRgb intenImage(float inten, float maxInten, bool curved);
-QColor intenGraph(float inten, float maxInten);
-}
+int TO_INT(const QString&);
+double TO_DOUBLE(const QString&);
 
-#endif // COLORS_H
+#endif // CONVERT_H

@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/base/controls.h
+//! @file      qcr/widgets/controls.h
 //! @brief     Defines functions that return new Qt objects
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -16,7 +16,7 @@
 #define CONTROLS_H
 
 #include <QtGlobal>
-#include "gui/capture_and_replay/enhance_widgets.h"
+#include "qcr/engine/enhance_widgets.h"
 #include <QAction>
 #include <QCheckBox>
 #include <QComboBox>

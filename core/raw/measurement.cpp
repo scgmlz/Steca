@@ -26,7 +26,7 @@ Measurement::Measurement(
 {
     ASSERT(intens.count() == size.count());
     for_i (intens.count())
-        image_->setInten(i, intens.at(i));
+        image_->setInten1d(i, intens.at(i));
 }
 
 Range Measurement::rgeGma() const
@@ -68,5 +68,6 @@ const AngleMap& Measurement::angleMap() const
 {
     static Cached<ImageKey,AngleMap> cache__; // one cache across all instances of Measurement
     auto* key = new ImageKey(midTth());
-    return cache__.update(key, [key](){return new AngleMap(*key);});
+    return cache__.update(key, [key](){
+            qDebug() << "recompute angle map"; return new AngleMap(*key);});
 }

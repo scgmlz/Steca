@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/base/convert.cpp
+//! @file      qcr/widgets/convert.cpp
 //! @brief     Implements functions TO_INT, TO_DOUBLE
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "convert.h"
-#include "gui/capture_and_replay/cmdexception.h"
+#include "qcr/engine/cmdexception.h"
 
 int TO_INT(const QString& s)
 {

@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/cfg/msg_handler.h
-//! @brief     Defines messageHandler.
+//! @file      qcr/engine/cmdexception.h
+//! @brief     Defines class CmdException
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,9 +12,20 @@
 //
 //  ***********************************************************************************************
 
-#ifndef MSG_HANDLER_H
-#define MSG_HANDLER_H
+#ifndef CMDEXCEPTION_H
+#define CMDEXCEPTION_H
 
-void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString& msg);
+#include <QException>
+#include <QString> // no auto rm
 
-#endif // MSG_HANDLER_H
+//! The sole exception type used in this software.
+class CmdException : public QException {
+public:
+    CmdException() = delete;
+    CmdException(const QString& msg) noexcept : msg_(msg) {}
+    const QString& msg() const noexcept { return msg_; }
+private:
+    QString msg_;
+};
+
+#endif // CMDEXCEPTION_H

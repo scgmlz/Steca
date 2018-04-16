@@ -15,7 +15,7 @@
 #ifndef CONTROLS_BASELINE_H
 #define CONTROLS_BASELINE_H
 
-#include "gui/base/controls.h"
+#include "qcr/widgets/controls.h"
 
 //! A widget with controls to change the baseline fitting.
 

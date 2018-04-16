@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/capture_and_replay/enhance_widgets.cpp
+//! @file      qcr/engine/enhance_widgets.cpp
 //! @brief     Implements functions that return new Qt objects
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#include "gui/capture_and_replay/console.h"
-#include "gui/capture_and_replay/cmdexception.h"
+#include "qcr/engine/console.h"
+#include "qcr/engine/cmdexception.h"
 #include <QDebug>
 
 //  ***********************************************************************************************
@@ -61,6 +61,6 @@ void CModelessDialog::closeEvent(QCloseEvent* event)
 void CModelessDialog::onCommand(const QStringList& args)
 {
     if (args[0]!="close")
-        throw CmdException("Unexpected command");
+        throw CmdException("Unexpected command in ModelessDialog "+name());
     close();
 }

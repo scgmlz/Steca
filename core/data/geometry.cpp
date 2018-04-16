@@ -73,19 +73,19 @@ QJsonObject Geometry::toJson() const
 void Geometry::setDetectorDistance(double detectorDistance)
 {
     detectorDistance_ = qMin(qMax(detectorDistance, 10.), 9999.);
-    EMIT(gSession->sigDetector());
+    EMITS("Geometry::setDetectorDistance", gSession->sigDetector());
 }
 
 void Geometry::setPixSize(double pixSize)
 {
     pixSize_ = qMin(qMax(pixSize, .1), 9.9);
-    EMIT(gSession->sigDetector());
+    EMITS(" Geometry::setPixSize", gSession->sigDetector());
 }
 
 void Geometry::setOffset(const IJ& midPixOffset)
 {
     midPixOffset_ = midPixOffset;
-    EMIT(gSession->sigDetector());
+    EMITS("Geometry::setOffset", gSession->sigDetector());
 }
 
 int Geometry::compare(const Geometry& that) const
@@ -143,7 +143,7 @@ void ImageCut::setLeft(int val)
         setAll(val);
     } else {
         confine(left_=val, right_, gSession->imageSize().w);
-        EMIT(gSession->sigDetector());
+        EMITS("ImageCut::setLeft", gSession->sigDetector());
         // TODO check consequence of rotation implied by imageSize()
     }
 }
@@ -154,7 +154,7 @@ void ImageCut::setRight(int val)
         setAll(val);
     } else {
         confine(right_=val, left_, gSession->imageSize().w);
-        EMIT(gSession->sigDetector());
+        EMITS("ImageCut::setRight", gSession->sigDetector());
     }
 }
 
@@ -164,7 +164,7 @@ void ImageCut::setTop(int val)
         setAll(val);
     } else {
         confine(top_=val, bottom_, gSession->imageSize().h);
-        EMIT(gSession->sigDetector());
+        EMITS("ImageCut::setTop", gSession->sigDetector());
     }
 }
 
@@ -174,21 +174,21 @@ void ImageCut::setBottom(int val)
         setAll(val);
     } else {
         confine(bottom_=val, top_, gSession->imageSize().h);
-        EMIT(gSession->sigDetector());
+        EMITS("", gSession->sigDetector());
     }
 }
 
 void ImageCut::setLinked(bool val)
 {
     linked_ = val;
-    EMIT(gSession->sigDetector());
+    EMITS("ImageCut::setLinked", gSession->sigDetector());
 }
 
 void ImageCut::setAll(int val)
 {
     left_ = right_ = qMax(qMin(val, (gSession->imageSize().w-1)/2), 0);
     top_ = bottom_ = qMax(qMin(val, (gSession->imageSize().h-1)/2), 0);
-    EMIT(gSession->sigDetector());
+    EMITS("ImageCut::setAll", gSession->sigDetector());
 }
 
 int ImageCut::compare(const ImageCut& that) const

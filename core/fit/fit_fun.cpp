@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "fit_fun.h"
-#include "core/def/debug.h"
+#include "qcr/engine/debug.h"
 #include "core/def/idiomatic_for.h"
 #include "core/fit/fit_methods.h"
 

@@ -29,25 +29,25 @@ void Baseline::clear()
 void Baseline::setRanges(const Ranges& rr)
 {
     ranges_ = rr;
-    EMIT(gSession->sigBaseline());
+    EMITS("Baseline::setRanges", gSession->sigBaseline());
 }
 
 void Baseline::addRange(const Range& r)
 {
     ranges_.add(r);
-    EMIT(gSession->sigBaseline());
+    EMITS("Baseline::addRange", gSession->sigBaseline());
 }
 
 void Baseline::removeRange(const Range& r)
 {
     ranges_.remove(r);
-    EMIT(gSession->sigBaseline());
+    EMITS("Baseline::removeRange", gSession->sigBaseline());
 }
 
 void Baseline::setPolynomDegree(int degree)
 {
     polynomDegree_ = degree;
-    EMIT(gSession->sigBaseline());
+    EMITS("Baseline::setPolynomDegree", gSession->sigBaseline());
 }
 
 QJsonObject Baseline::toJson() const

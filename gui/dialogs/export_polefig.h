@@ -15,7 +15,7 @@
 #ifndef EXPORT_POLEFIG_H
 #define EXPORT_POLEFIG_H
 
-#include "gui/base/controls.h"
+#include "qcr/widgets/controls.h"
 
 //! The modal dialog for saving the main polefig (fit results and metadata).
 

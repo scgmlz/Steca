@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/capture_and_replay/console.h
+//! @file      qcr/engine/console.h
 //! @brief     Defines class Console
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -15,9 +15,10 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include "gui/capture_and_replay/enhance_widgets.h"
+#include "qcr/engine/enhance_widgets.h"
 #include <stack>
 #include <QTextStream>
+#include <QDateTime>
 
 extern class Console* gConsole; //!< global
 
@@ -38,6 +39,7 @@ public:
     void log2(bool, const QString&);
 private:
     class CommandRegistry& registry() { return *registryStack_.top(); }
+    QDateTime startTime_;
     QTextStream log_;
     enum class Caller { gui, cli, stack, sys } caller_ { Caller::gui };
     enum class Result : int { ok, err, suspend };

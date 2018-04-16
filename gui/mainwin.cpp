@@ -63,6 +63,7 @@ MainWin::MainWin()
     QObject::connect(gSession, &Session::sigDoFits, this, &MainWin::runFits);
     QObject::connect(gSession, &Session::sigInterpol, this, &MainWin::runInterpolation);
 
+    setAttribute(Qt::WA_DeleteOnClose, true);
     initLayout();
     readSettings();
     updateAbilities();
@@ -173,7 +174,7 @@ void MainWin::loadSession()
         return;
     }
     try {
-        TakesLongTime __;
+        TakesLongTime __("loadSession");
         gSession->sessionFromJson(file.readAll());
     } catch(Exception& ex) {
         qWarning() << "Could not load session from file " << fileName << ":\n"
@@ -207,7 +208,7 @@ void MainWin::addFiles()
     repaint();
     if (fileNames.isEmpty())
         return;
-    TakesLongTime __;
+    TakesLongTime __("addFiles");
     gSession->dataset().addGivenFiles(fileNames);
 }
 
@@ -226,13 +227,19 @@ void MainWin::loadCorrFile()
 
 void MainWin::runFits()
 {
+    if (!gSession->peaks().count()) {
+        gSession->setDirectPeakInfos({});
+        gSession->setInterpolatedPeakInfos({});
+        return;
+    }
+    algo::projectIntensities(&gGui->progressBar);
     algo::rawFits(&gGui->progressBar);
     algo::interpolateInfos(&gGui->progressBar);
-    EMIT(gSession->sigRawFits());
+    EMITS("MainWin::runFits", gSession->sigRawFits());
 }
 
 void MainWin::runInterpolation()
 {
     algo::interpolateInfos(&gGui->progressBar);
-    EMIT(gSession->sigRawFits());
+    EMITS("MainWin::runInterpolation", gSession->sigRawFits());
 }

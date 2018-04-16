@@ -15,7 +15,7 @@
 #include "state.h"
 #include "core/data/peak_info.h"
 #include "core/def/idiomatic_for.h"
-#include "gui/base/controls.h"
+#include "qcr/widgets/controls.h"
 #include <QDebug>
 
 GuiState::GuiState()
