@@ -47,7 +47,7 @@ void projectIntensity(
             continue;
 
         float corr
-            = gSession->corrset().isActive() ? gSession->corrset().intensCorr()->inten1d(ind) : 1;
+            = gSession->corrset().isActive() ? gSession->corrset().normalizer()->inten1d(ind) : 1;
         if (qIsNaN(corr))
             continue;
         inten *= corr;
