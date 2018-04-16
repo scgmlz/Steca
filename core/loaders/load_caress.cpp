@@ -203,7 +203,7 @@ Rawfile loadCaress(const QString& filePath) {
                 md.deltaTime = deltaTime;
                 md.time = tempTime;
 
-                ret.addDataset(std::move(md), size, convertedIntens);
+                ret.addDataset(std::move(md), size, std::move(convertedIntens));
 
                 delete[] intens;
                 intens = NULL;

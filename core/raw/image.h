@@ -23,7 +23,7 @@ class Image {
 public:
     Image() = delete;
     Image(const size2d&, float val);
-    Image(const size2d& size, const QVector<float>& intens);
+    Image(const size2d& size, QVector<float>&& intens);
     Image(Image&) = delete;
     Image(Image&&) = default;
 
