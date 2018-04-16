@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "gui/base/displays.h"
+#include "displays.h"
 #include <QIcon>
 
 void widgetUtils::setWidth(QWidget* w, int ndigits, bool withDot)

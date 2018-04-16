@@ -13,12 +13,10 @@
 //  ***********************************************************************************************
 
 #include "model_view.h"
-#include "core/def/debug.h"
-#include "qcr/widgets/convert.h"
 #include "qcr/engine/console.h"
 #include "qcr/engine/cmdexception.h"
-
-#define EMITS(src,sig) qDebug()<<src<<" emits "<<#sig; emit sig;
+#include "qcr/engine/debug.h"
+#include "qcr/widgets/convert.h"
 
 //  ***********************************************************************************************
 //! @class TableModel

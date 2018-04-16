@@ -13,15 +13,14 @@
 //  ***********************************************************************************************
 
 #include "controls.h"
-#include "core/def/debug.h"
-#include "gui/base/convert.h"
-#include "gui/base/displays.h"
+#include "qcr/engine/debug.h"
 #include "qcr/engine/cmdexception.h"
 #include "qcr/engine/console.h"
+#include "qcr/widgets/convert.h"
+#include "qcr/widgets/displays.h"
 #include <QApplication> // for qApp for new Action
 #include <iostream> // debug
 
-#define EMITS(src,sig) qDebug()<<src<<" emits "<<#sig; emit sig;
 #define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 
 //  ***********************************************************************************************

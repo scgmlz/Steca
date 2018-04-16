@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "curve.h"
-#include "core/def/debug.h"
+#include "qcr/engine/debug.h"
 #include "core/def/idiomatic_for.h"
 
 void Curve::clear()

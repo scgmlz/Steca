@@ -15,7 +15,7 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include "gui/capture_and_replay/enhance_widgets.h"
+#include "qcr/engine/enhance_widgets.h"
 #include <stack>
 #include <QTextStream>
 #include <QDateTime>

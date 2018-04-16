@@ -9,9 +9,7 @@ file (GLOB_RECURSE files *.h *.cpp)
 add_library (${lib} ${files})
 
 target_link_libraries (${lib}
-  Qt5::Gui
-  Qt5::Widgets
+  core
   Qt5::Network
   steca_QCP
-  core
 )

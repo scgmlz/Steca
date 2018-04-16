@@ -16,7 +16,7 @@
 #define ARRAY2D_H
 
 #include "core/def/comparable.h"
-#include "core/def/debug.h"
+#include "qcr/engine/debug.h"
 
 //! Geometry of a rectangle
 struct size2d {
