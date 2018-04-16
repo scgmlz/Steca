@@ -16,7 +16,7 @@
 #include "core/def/debug.h"
 #include "gui/base/convert.h"
 #include "gui/base/displays.h"
-#include "gui/capture_and_replay/cmdexception.h"
+#include "qcr/engine/cmdexception.h"
 #include "gui/capture_and_replay/console.h"
 #include <QApplication> // for qApp for new Action
 #include <iostream> // debug

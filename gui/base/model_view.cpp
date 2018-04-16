@@ -16,7 +16,7 @@
 #include "core/def/debug.h"
 #include "gui/base/convert.h"
 #include "gui/capture_and_replay/console.h"
-#include "gui/capture_and_replay/cmdexception.h"
+#include "qcr/engine/cmdexception.h"
 
 #define EMITS(src,sig) qDebug()<<src<<" emits "<<#sig; emit sig;
 

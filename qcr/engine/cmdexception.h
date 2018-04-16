@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/capture_and_replay/cmdexception.h
+//! @file      qcr/engine/cmdexception.h
 //! @brief     Defines class CmdException
 //!
 //! @homepage  https://github.com/scgmlz/Steca

@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "convert.h"
-#include "gui/capture_and_replay/cmdexception.h"
+#include "qcr/engine/cmdexception.h"
 
 int TO_INT(const QString& s)
 {

@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "gui/capture_and_replay/console.h"
-#include "gui/capture_and_replay/cmdexception.h"
+#include "qcr/engine/cmdexception.h"
 #include <QDebug>
 
 //  ***********************************************************************************************
