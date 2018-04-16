@@ -14,9 +14,23 @@
 
 #include "plot_polefig.h"
 #include "core/session.h"
-#include "gui/cfg/colors.h"
 #include "gui/mainwin.h"
 #include "gui/state.h"
+
+namespace {
+
+//! Color map for polefigure: shades of blue.
+QColor intenGraph(float inten, float maxInten) {
+    if (!qIsFinite(inten) || qIsNaN(maxInten) || maxInten <= 0)
+        return { qRgb(0x00, 0x00, 0x00) };
+
+    inten /= maxInten;
+
+    return { qRgb(0, 0, int(0xff * (1 - inten / 3))) };
+}
+
+} //namespace
+
 
 PlotPolefig::PlotPolefig()
     : flat_(false)
@@ -129,7 +143,7 @@ when interpolation fails.
             circle(pp, .5);
         } else {
             inten /= rgeMax;
-            QColor color = colormap::intenGraph(inten, 1);
+            QColor color = intenGraph(inten, 1);
             p_->setPen(color);
             p_->setBrush(color);
             circle(pp, inten * r_ / 60); // TODO scale to max inten

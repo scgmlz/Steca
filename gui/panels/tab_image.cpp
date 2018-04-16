@@ -15,10 +15,38 @@
 #include "tab_image.h"
 #include "core/session.h"
 #include "core/def/idiomatic_for.h"
-#include "gui/cfg/colors.h"
 #include "gui/actions/toggles.h"
 #include "gui/mainwin.h"
 #include <qmath.h>
+
+namespace {
+
+//! Color map for raw diffraction image: black-red-gold.
+QRgb intenImage(float inten, float maxInten, bool curved) {
+    if (qIsNaN(inten))
+        return qRgb(0x00, 0xff, 0xff);
+    if (qIsInf(inten))
+        return qRgb(0xff, 0xff, 0xff);
+
+    if (qIsNaN(maxInten) || maxInten <= 0)
+        return qRgb(0x00, 0x00, 0x00);
+
+    inten /= maxInten;
+
+    if (curved && inten > 0)
+        inten = qPow(inten, .6f);
+
+    float const low = .25f, mid = .5f, high = .75f;
+    if (inten < low)
+        return qRgb(int(0xff * inten * 4), 0, 0);
+    if (inten < mid)
+        return qRgb(0xff, int(0xff * (inten - low) * 4), 0);
+    if (inten < high)
+        return qRgb(int(0xff - (0xff * (inten - mid) * 4)), 0xff, int(0xff * (inten - mid) * 4));
+    return qRgb(int(0xff * (inten - high) * 4), 0xff, 0xff);
+}
+
+} // namespace
 
 //  ***********************************************************************************************
 //! @class ImageView
@@ -220,7 +248,7 @@ QImage ImageTab::makeImage(const Image& image)
     float maxInten = float(rgeInten.max);
 
     for_ij (size.w, size.h)
-        ret.setPixel(i, j, colormap::intenImage(imageLens.imageInten(i, j), maxInten, !fixedScale));
+        ret.setPixel(i, j, intenImage(imageLens.imageInten(i, j), maxInten, !fixedScale));
     return ret;
 }
 
