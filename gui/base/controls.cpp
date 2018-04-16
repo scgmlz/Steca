@@ -13,14 +13,16 @@
 //  ***********************************************************************************************
 
 #include "controls.h"
-#include "core/session.h" // defines EMIT
+#include "core/def/debug.h"
 #include "gui/base/convert.h"
 #include "gui/base/displays.h"
 #include "gui/capture_and_replay/cmdexception.h"
 #include "gui/capture_and_replay/console.h"
 #include <QApplication> // for qApp for new Action
-#define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 #include <iostream> // debug
+
+#define EMITS(src,sig) qDebug()<<src<<" emits "<<#sig; emit sig;
+#define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 
 //  ***********************************************************************************************
 //  QAction overloads CTrigger and CToggle
