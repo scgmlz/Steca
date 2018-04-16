@@ -28,13 +28,6 @@ Image::Image(const size2d& size, const QVector<float>& intens)
         setInten1d(i, intens.at(i));
 }
 
-// TODO: reimplement this less indirectly
-Image::Image(const Array2D<float>& that)
-    : Image(that.size(), 0.)
-{
-    addImage(that);
-}
-
 void Image::addImage(const Image& that)
 {
     if (!(size() == that.size())) THROW("inconsistent image size");
