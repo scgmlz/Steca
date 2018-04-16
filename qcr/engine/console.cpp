@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/capture_and_replay/console.cpp
+//! @file      qcr/engine/console.cpp
 //! @brief     Implements class Console
 //!
 //! @homepage  https://github.com/scgmlz/Steca
