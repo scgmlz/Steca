@@ -21,7 +21,7 @@
 //! Holds a detector image, and provides read and write access
 class Image {
 public:
-    Image() {}
+    Image() = delete;
     Image(const size2d&);
     Image(const size2d&, float val);
     Image(const Array2D<float>&);
