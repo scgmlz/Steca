@@ -50,7 +50,7 @@ void projectIntensity(
 
         if (normalizer) {
             float corr = normalizer->inten1d(ind);
-            if (qIsNaN(corr))
+            if (qIsNaN(corr)) // TODO: correct handling of corr=0
                 continue;
             inten *= corr;
         }

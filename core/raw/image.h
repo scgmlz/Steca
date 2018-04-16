@@ -23,6 +23,7 @@ class Image {
 public:
     Image() {}
     Image(const size2d&);
+    Image(const size2d&, float val);
     Image(const Array2D<float>&);
     Image(Image&) = delete;
     Image(Image&&) = default;

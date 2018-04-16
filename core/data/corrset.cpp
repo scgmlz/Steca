@@ -27,7 +27,7 @@ void Corrset::removeFile()
 {
     raw_.release();
     // TODO empty image? was corrImage_.clear();
-    normalizer_.clear();
+    normalizer_.release();
     gSession->updateImageSize();
     EMITS("Corrset::removeFile", gSession->sigCorr());
 }
@@ -41,7 +41,7 @@ void Corrset::loadFile(const QString& filePath)
         return;
     gSession->setImageSize(raw_->imageSize());
     corrImage_.reset(new Image{raw_->summedImage()});
-    normalizer_.clear(); // will be calculated lazily
+    normalizer_.release(); // will be calculated when needed
     // all ok
     enabled_ = true;
     EMITS("Corrset::loadFile", gSession->sigCorr());
@@ -59,9 +59,9 @@ const Image* Corrset::normalizer() const
 {
     if (!hasFile() || !enabled_)
         return nullptr;
-    if (normalizer_.isEmpty())
+    if (!normalizer_.get())
         calcNormalizer();
-    return &normalizer_;
+    return normalizer_.get();
 }
 
 void Corrset::calcNormalizer() const
@@ -80,7 +80,7 @@ void Corrset::calcNormalizer() const
         sum += corrImage_->inten2d(i + di, j + dj);
     double avg = sum / (w * h);
 
-    normalizer_.fill(1, corrImage_->size());
+    normalizer_.reset(new Image(corrImage_->size(), 1.));
 
     for_ij (w, h) {
         const float inten = corrImage_->inten2d(i + di, j + dj);
@@ -91,7 +91,7 @@ void Corrset::calcNormalizer() const
             fact = Q_QNAN;
             hasNANs_ = true;
         }
-        normalizer_.setInten2d(i + di, j + dj, float(fact));
+        normalizer_->setInten2d(i + di, j + dj, float(fact));
     }
 }
 

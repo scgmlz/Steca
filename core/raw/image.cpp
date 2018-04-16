@@ -19,6 +19,11 @@ Image::Image(const size2d& size)
     fill(0, size);
 }
 
+Image::Image(const size2d& size, float val)
+{
+    fill(val, size);
+}
+
 // TODO: reimplement this less indirectly
 Image::Image(const Array2D<float>& that)
     : Image(that.size())

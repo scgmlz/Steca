@@ -31,13 +31,12 @@ public:
     void removeFile();
     void loadFile(const QString& filePath);
     void tryEnable(bool on);
-    void clearIntens() { normalizer_.clear(); } // lazy
+    void clearIntens() { normalizer_.release(); }
 
     // Lookup methods
     const Rawfile& raw() const { return *raw_; }
     bool hasFile() const { return raw_.get(); }
     bool isEnabled() const { return enabled_; }
-    bool isActive() const { return hasFile() && enabled_; }
     bool hasNANs() const { return hasNANs_; }
     const Image& image() const { return *corrImage_; }
     const Image* normalizer() const;
@@ -51,7 +50,7 @@ private:
     bool enabled_ {true};
     mutable bool hasNANs_ {false};
     std::unique_ptr<Image> corrImage_;
-    mutable Image normalizer_;
+    mutable std::unique_ptr<Image> normalizer_;
 };
 
 #endif // CORRSET_H
