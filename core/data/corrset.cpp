@@ -27,7 +27,7 @@ void Corrset::removeFile()
 {
     raw_.release();
     // TODO empty image? was corrImage_.clear();
-    intensCorr_.clear();
+    normalizer_.release();
     gSession->updateImageSize();
     EMITS("Corrset::removeFile", gSession->sigCorr());
 }
@@ -41,7 +41,7 @@ void Corrset::loadFile(const QString& filePath)
         return;
     gSession->setImageSize(raw_->imageSize());
     corrImage_.reset(new Image{raw_->summedImage()});
-    intensCorr_.clear(); // will be calculated lazily
+    normalizer_.release(); // will be calculated when needed
     // all ok
     enabled_ = true;
     EMITS("Corrset::loadFile", gSession->sigCorr());
@@ -55,16 +55,16 @@ void Corrset::tryEnable(bool on)
     EMITS("Corrset::tryEnable", gSession->sigCorr());
 }
 
-const Image* Corrset::intensCorr() const
+const Image* Corrset::normalizer() const
 {
     if (!hasFile() || !enabled_)
         return nullptr;
-    if (intensCorr_.isEmpty())
-        calcIntensCorr();
-    return &intensCorr_;
+    if (!normalizer_.get())
+        calcNormalizer();
+    return normalizer_.get();
 }
 
-void Corrset::calcIntensCorr() const
+void Corrset::calcNormalizer() const
 {
     hasNANs_ = false;
 
@@ -72,14 +72,15 @@ void Corrset::calcIntensCorr() const
     size2d size = corrImage_->size() - gSession->imageCut().marginSize();
     ASSERT(!size.isEmpty());
 
-    int w = size.w, h = size.h, di = gSession->imageCut().left(), dj = gSession->imageCut().top();
+    int w = size.w, h = size.h;
+    int di = gSession->imageCut().left(), dj = gSession->imageCut().top();
 
     double sum = 0;
     for_ij (w, h)
         sum += corrImage_->inten2d(i + di, j + dj);
     double avg = sum / (w * h);
 
-    intensCorr_.fill(1, corrImage_->size());
+    normalizer_.reset(new Image(corrImage_->size(), 1.));
 
     for_ij (w, h) {
         const float inten = corrImage_->inten2d(i + di, j + dj);
@@ -90,7 +91,7 @@ void Corrset::calcIntensCorr() const
             fact = Q_QNAN;
             hasNANs_ = true;
         }
-        intensCorr_.setInten2d(i + di, j + dj, float(fact));
+        normalizer_->setInten2d(i + di, j + dj, float(fact));
     }
 }
 

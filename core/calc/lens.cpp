@@ -79,7 +79,7 @@ float ImageLens::imageInten(int i, int j) const
     if (cut_)
         doCut(i, j);
     float ret = image_.inten2d(i, j);
-    if (auto* corr = gSession->corrset().intensCorr())
+    if (auto* corr = gSession->corrset().normalizer())
         ret *= corr->inten2d(i, j);
     return ret;
 }

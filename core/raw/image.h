@@ -21,8 +21,11 @@
 //! Holds a detector image, and provides read and write access
 class Image {
 public:
-    Image(const size2d& = size2d(0, 0));
-    Image(const Array2D<float>&);
+    Image() = delete;
+    Image(const size2d&, float val);
+    Image(const size2d& size, const QVector<float>& intens);
+    Image(Image&) = delete;
+    Image(Image&&) = default;
 
     const size2d& size() const { return intens_.size(); }
 

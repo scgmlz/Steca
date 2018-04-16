@@ -26,12 +26,10 @@ public:
     void fromJson(const JsonObj& obj);
     void onData();
     void recomputeCache();
-
     void selectSlice(int);
 
     const Range& range() const { return range_; }
     int iSlice() const { return iSlice_; }
-    bool isActive() const { return numSlices_; }
     QJsonObject toJson() const;
 
 private:

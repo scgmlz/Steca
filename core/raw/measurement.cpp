@@ -22,11 +22,8 @@ Measurement::Measurement(
     const int position, const Metadata& md, const size2d& size, const QVector<float>& intens)
     : position_(position)
     , metadata_(md)
-    , image_(new Image(size))
+    , image_(new Image(size, intens))
 {
-    ASSERT(intens.count() == size.count());
-    for_i (intens.count())
-        image_->setInten1d(i, intens.at(i));
 }
 
 Range Measurement::rgeGma() const

@@ -31,27 +31,26 @@ public:
     void removeFile();
     void loadFile(const QString& filePath);
     void tryEnable(bool on);
-    void clearIntens() { intensCorr_.clear(); } // lazy
+    void clearIntens() { normalizer_.release(); }
 
     // Lookup methods
     const Rawfile& raw() const { return *raw_; }
     bool hasFile() const { return raw_.get(); }
     bool isEnabled() const { return enabled_; }
-    bool isActive() const { return hasFile() && enabled_; }
     bool hasNANs() const { return hasNANs_; }
     const Image& image() const { return *corrImage_; }
-    const Image* intensCorr() const;
+    const Image* normalizer() const;
     QJsonObject toJson() const;
 
 private:
     void onCorr();
-    void calcIntensCorr() const;
+    void calcNormalizer() const;
 
     std::unique_ptr<const Rawfile> raw_; //!< owned by this
     bool enabled_ {true};
     mutable bool hasNANs_ {false};
     std::unique_ptr<Image> corrImage_;
-    mutable Image intensCorr_;
+    mutable std::unique_ptr<Image> normalizer_;
 };
 
 #endif // CORRSET_H
