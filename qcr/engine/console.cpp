@@ -253,8 +253,12 @@ void Console::log2(bool hadFocus, const QString& line)
 
 void Console::log(const QString& line)
 {
-    log_ << "[" << QString::number(startTime_.msecsTo(QDateTime::currentDateTime())) << "ms"
+    static auto lastTime = startTime_;
+    auto currTime = QDateTime::currentDateTime();
+    log_ << "[" << QString::number(startTime_.msecsTo(currTime)).rightJustified(6) << "ms"
+         << " (+"  << QString::number(lastTime.msecsTo(currTime)).rightJustified(4) << ")"
          << " " << registry().name() << "]";
+    lastTime = currTime;
     if (caller_==Caller::gui)
         ;
     else if (caller_==Caller::stack)
