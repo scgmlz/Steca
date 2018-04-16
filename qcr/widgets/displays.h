@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/base/displays.h
+//! @file      qcr/widgets/displays.h
 //! @brief     Defines specializations of Qt display widgets (XIcon,...), and widgetUtils
 //!
 //! @homepage  https://github.com/scgmlz/Steca

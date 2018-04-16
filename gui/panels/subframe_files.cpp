@@ -14,7 +14,7 @@
 
 #include "gui/panels/subframe_files.h"
 #include "core/session.h"
-#include "gui/base/displays.h"
+#include "qcr/widgets/displays.h"
 #include "gui/base/model_view.h"
 #include "gui/mainwin.h"
 #include "gui/actions/toggles.h"
