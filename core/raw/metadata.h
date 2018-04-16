@@ -24,6 +24,8 @@
 class Metadata {
 public:
     Metadata();
+    Metadata(const Metadata&) = delete;
+    Metadata(Metadata&&) = default;
 
     static int numAttributes(bool onlyNum);
     static const QString& attributeTag(int, bool out);

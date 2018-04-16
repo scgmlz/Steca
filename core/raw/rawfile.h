@@ -28,7 +28,7 @@ public:
     Rawfile& operator=(Rawfile&&) = default;
     Rawfile(const QString& fileName);
 
-    void addDataset(const Metadata&, const size2d&, const QVector<float>&);
+    void addDataset(Metadata&&, const size2d&, const QVector<float>&);
 
     QVector<const Measurement*> const measurements() const;
     int numMeasurements() const { return measurements_.size(); }

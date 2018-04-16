@@ -246,7 +246,7 @@ static void loadTiff(
 
     check();
 
-    file->addDataset(md, size, intens);
+    file->addDataset(std::move(md), size, intens);
 }
 
 } // namespace load

@@ -28,7 +28,7 @@ public:
     Measurement() = delete;
     Measurement(const Measurement&) = delete;
     Measurement(Measurement&&) = default;
-    Measurement(const int position, const Metadata&, const size2d&, const QVector<float>&);
+    Measurement(const int position, Metadata&&, const size2d&, const QVector<float>&);
 
     int position() const { return position_; }
     const Metadata& metadata() const { return metadata_; }

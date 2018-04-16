@@ -214,7 +214,7 @@ Rawfile loadMar(const QString& filePath) {
 
     // REVIEW ?? pictureOverflow
 
-    ret.addDataset(md, size2d(pixSizeX, pixSizeY), convertedIntens);
+    ret.addDataset(std::move(md), size2d(pixSizeX, pixSizeY), convertedIntens);
 
     delete[] i2_image;
     delete[] i4_image;

@@ -19,9 +19,9 @@
 #include <qmath.h>
 
 Measurement::Measurement(
-    const int position, const Metadata& md, const size2d& size, const QVector<float>& intens)
+    const int position, Metadata&& md, const size2d& size, const QVector<float>& intens)
     : position_(position)
-    , metadata_(md)
+    , metadata_(std::move(md))
     , image_(new Image(size, intens))
 {
 }
