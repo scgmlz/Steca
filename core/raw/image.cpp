@@ -20,7 +20,7 @@ Image::Image(const size2d& size, float val)
     fill(val, size);
 }
 
-Image::Image(const size2d& size, const QVector<float>& intens)
+Image::Image(const size2d& size, QVector<float>&& intens)
 {
     ASSERT(intens.count() == size.count());
     intens_.fill(0., size);

@@ -20,13 +20,13 @@ Rawfile::Rawfile(const QString& fileName)
 {}
 
 //! The loaders use this function to push cluster
-void Rawfile::addDataset(const Metadata& md, const size2d& sz, const QVector<float>& ivec)
+void Rawfile::addDataset(Metadata&& md, const size2d& sz, QVector<float>&& ivec)
 {
     if (!measurements_.size())
         imageSize_ = sz;
     else if (sz != imageSize_)
         THROW("Inconsistent image size in " % fileName());
-    measurements_.push_back({(int)measurements_.size(), md, sz, ivec});
+    measurements_.push_back({(int)measurements_.size(), std::move(md), sz, std::move(ivec)});
 }
 
 QVector<const Measurement*> const Rawfile::measurements() const
