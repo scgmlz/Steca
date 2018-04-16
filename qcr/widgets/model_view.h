@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/base/model_view.h
+//! @file      qcr/widgets/model_view.h
 //! @brief     Defines classes TableModel and TableView
 //!
 //! @homepage  https://github.com/scgmlz/Steca

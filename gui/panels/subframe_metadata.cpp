@@ -14,7 +14,7 @@
 
 #include "core/session.h"
 #include "gui/panels/subframe_metadata.h"
-#include "gui/base/model_view.h"
+#include "qcr/widgets/model_view.h"
 
 //  ***********************************************************************************************
 //! @class MetabigtableModel (local scope)
