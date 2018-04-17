@@ -58,20 +58,6 @@ PeakInfo rawFit(const Cluster& cluster, int iGamma, const Peak& peak)
 } // namespace
 
 
-void algo::projectIntensities(class QProgressBar* progressBar)
-{
-    const ActiveClusters& seq = gSession->activeClusters();
-    Progress progress(progressBar, "project intensities", seq.size());
-    int nGamma = qMax(1, gSession->gammaSelection().numSlices());
-    for (const Cluster* cluster : seq.clusters()) {
-        progress.step();
-        for_i (nGamma) {
-            const Range gammaSector = gSession->gammaSelection().slice2range(i);
-            cluster->setCurve(i, cluster->toCurve(gammaSector));
-        }
-    }
-}
-
 //! Gathers PeakInfos from Datasets.
 
 //! Either uses the whole gamma range of the cluster (if gammaSector is invalid),

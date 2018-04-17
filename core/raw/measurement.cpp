@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "measurement.h"
+#include "core/raw/angle_map.h"
 #include "core/typ/cached.h"
 
 Measurement::Measurement(

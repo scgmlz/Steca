@@ -13,9 +13,10 @@
 //  ***********************************************************************************************
 
 #include "export_dfgram.h"
+#include "core/algo/collect_intensities.h"
+#include "core/def/idiomatic_for.h"
 #include "core/typ/async.h"
 #include "core/session.h"
-#include "core/def/idiomatic_for.h"
 #include "gui/dialogs/file_dialog.h"
 #include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/mainwin.h"
@@ -116,7 +117,7 @@ void ExportDfgram::saveCurrent()
     QTextStream stream(file);
     const Cluster* cluster = gSession->dataset().highlight().cluster();
     ASSERT(cluster);
-    const Curve& curve = cluster->toCurve();
+    const Curve& curve = algo::projectCluster(*cluster, cluster->rgeGma());
     if (curve.isEmpty())
         qFatal("curve is empty");
     writeCurve(stream, curve, cluster, cluster->rgeGma(), fileField_->separator());
@@ -166,7 +167,7 @@ void ExportDfgram::saveAll(bool oneFile)
             }
             ASSERT(stream);
             const Range gmaStripe = gSession->gammaSelection().slice2range(i);
-            const Curve& curve = cluster->toCurve(gmaStripe);
+            const Curve& curve = algo::projectCluster(*cluster, gmaStripe);
             ASSERT(!curve.isEmpty());
             *stream << "Picture Nr: " << picNum << '\n';
             if (nSlices > 1)

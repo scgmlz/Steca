@@ -20,7 +20,7 @@
 #include "core/calc/gamma_selection.h"
 #include "core/calc/theta_selection.h"
 #include "core/calc/peak.h"
-#include "core/data/geometry.h"
+#include "core/raw/geometry.h"
 #include "core/data/peak_info.h"
 #include "core/data/corrset.h"
 #include "core/data/dataset.h"

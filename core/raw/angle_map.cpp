@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/data/angle_map.cpp
+//! @file      core/raw/angle_map.cpp
 //! @brief     Implements classes ScatterDirection, AngleMap
 //!
 //! @homepage  https://github.com/scgmlz/Steca

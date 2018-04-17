@@ -15,12 +15,13 @@
 #include "collect_intensities.h"
 #include "core/session.h"
 #include "core/def/idiomatic_for.h"
-#include "core/data/angle_map.h"
+#include "core/raw/angle_map.h"
+#include "core/typ/async.h"
 #include <qmath.h>
 
 namespace {
 //! Increments intens and counts.
-void projectIntensity(
+void projectMeasurement(
     QVector<float>& intens, QVector<int>& counts,
     const Measurement& measurement, const Range& rgeGma, deg minTth, deg deltaTth)
 {
@@ -78,20 +79,22 @@ int algo::numTthBins(const QVector<const Measurement*>& _members, const Range& _
     return ret;
 }
 
-Curve algo::collectIntensities(
-    const QVector<const Measurement*>& _members,
-    double _normFactor, const Range& _rgeGma, const Range& _rgeTth)
+Curve algo::projectCluster(const Sequence& cluster, const Range& rgeGma)
 {
-    int numBins = numTthBins(_members, _rgeTth);
+    const QVector<const Measurement*>& members = cluster.members();
+    double normFactor = cluster.normFactor();
+    const Range& rgeTth = cluster.rgeTth();
+
+    int numBins = numTthBins(members, rgeTth);
     QVector<float> intens(numBins, 0);
     QVector<int> counts(numBins, 0);
 
-    deg minTth = _rgeTth.min;
-    deg deltaTth = _rgeTth.width() / numBins;
+    deg minTth = rgeTth.min;
+    deg deltaTth = rgeTth.width() / numBins;
 
-    for (const Measurement* one : _members)
+    for (const Measurement* one : members)
         // increment intens and counts
-        projectIntensity(intens, counts, *one, _rgeGma, minTth, deltaTth);
+        projectMeasurement(intens, counts, *one, rgeGma, minTth, deltaTth);
 
     // sum or average
     if (gSession->intenScaledAvg()) {
@@ -105,6 +108,20 @@ Curve algo::collectIntensities(
 
     Curve ret;
     for_i (numBins)
-        ret.append(minTth + deltaTth * i, double(intens.at(i) * _normFactor));
+        ret.append(minTth + deltaTth * i, double(intens.at(i) * normFactor));
     return ret;
+}
+
+void algo::projectActiveClusters(class QProgressBar* progressBar)
+{
+    const ActiveClusters& seq = gSession->activeClusters();
+    Progress progress(progressBar, "project intensities", seq.size());
+    int nGamma = qMax(1, gSession->gammaSelection().numSlices());
+    for (const Cluster* cluster : seq.clusters()) {
+        progress.step();
+        for_i (nGamma) {
+            const Range gammaSector = gSession->gammaSelection().slice2range(i);
+            cluster->setCurve(i, projectCluster(*cluster, gammaSector));
+        }
+    }
 }

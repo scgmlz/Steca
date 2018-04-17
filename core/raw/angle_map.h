@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/data/angle_map.h
+//! @file      core/raw/angle_map.h
 //! @brief     Defines classes ScatterDirection, AngleMap
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -15,7 +15,7 @@
 #ifndef ANGLE_MAP_H
 #define ANGLE_MAP_H
 
-#include "core/data/geometry.h"
+#include "core/raw/geometry.h"
 #include <QSharedPointer> // no auto rm
 
 //! Holds (gamma, 2theta) for all pixels in a detector image, and caches sorted gamma values.

@@ -43,6 +43,7 @@ public:
     Range rgeGmaFull() const;
     Range rgeTth() const;
     Range rgeInten() const;
+    double normFactor() const;
 
     const Metadata* avgeMetadata() const { return &metadata_; } // TODO rm *
     double avgMonitorCount() const;
@@ -51,15 +52,11 @@ public:
 
     size2d imageSize() const;
 
-    Curve toCurve() const;
-    Curve toCurve(const Range&) const;
-
 private:
     const QVector<const Measurement*> members_; //!< points to Dataset:vec<Datafile>:vec<M'ments>
     const Metadata metadata_; //!< averaged Metadata
 
     Metadata computeAvgeMetadata() const;
-    double normFactor() const;
 };
 
 

@@ -14,7 +14,6 @@
 
 #include "cluster.h"
 #include "core/session.h"
-#include "core/algo/collect_intensities.h"
 #include <cmath>
 
 //  ***********************************************************************************************
@@ -73,16 +72,6 @@ size2d Sequence::imageSize() const
     // all images have the same size; simply take the first one
     return first()->imageSize();
 }
-
-Curve Sequence::toCurve() const
-{
-    return toCurve(rgeGma());
-};
-
-Curve Sequence::toCurve(const Range& _rgeGma) const
-{
-    return algo::collectIntensities(members_, normFactor(), _rgeGma, rgeTth());
-};
 
 double Sequence::normFactor() const
 {
