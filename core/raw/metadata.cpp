@@ -86,30 +86,34 @@ const QString& Metadata::attributeTag(int i, bool out)
     return attributeTags(out).at(i);
 }
 
-const QStringList& Metadata::attributeTags(bool out)
-{
-    static const QStringList tags = {
+namespace {
+
+    const QStringList tags = {
         "X",   "Y",   "Z",    "ω",      "mid 2θ", "φ",     "χ",       "PST",
         "SST", "ΩM",  "T",    "teload", "tepos",  "teext", "xe",      "ye",
         "ze",  "mon", "Δmon", "t",      "Δt",     "date",  "comment",
     };
 
-    static const QStringList outTags = {
+    const QStringList outTags = {
         "X",   "Y",      "Z",         "omega",  "mid2theta", "phi",   "chi",     "PST",
         "SST", "OmegaM", "T",         "teload", "tepos",     "teext", "xe",      "ye",
         "ze",  "mon",    "delta_mon", "t",      "delta_t",   "date",  "comment",
     };
 
-    return out ? outTags : tags;
-}
-
-const QVector<VariantComparator*>& Metadata::attributeCmps()
-{
     static QVector<VariantComparator*> const cmps = {
         cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
         cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
         cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_date, cmp_str,
     };
+}
+
+const QStringList& Metadata::attributeTags(bool out)
+{
+    return out ? outTags : tags;
+}
+
+const QVector<VariantComparator*>& Metadata::attributeCmps()
+{
     return cmps;
 }
 
