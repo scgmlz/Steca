@@ -15,7 +15,7 @@
 #include "collect_intensities.h"
 #include "core/session.h"
 #include "core/def/idiomatic_for.h"
-#include "core/data/angle_map.h"
+#include "core/typ/angle_map.h"
 #include <qmath.h>
 
 namespace {

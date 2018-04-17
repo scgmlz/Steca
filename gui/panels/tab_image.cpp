@@ -16,7 +16,7 @@
 #include "core/session.h"
 #include "core/calc/lens.h"
 #include "core/def/idiomatic_for.h"
-#include "core/data/angle_map.h"
+#include "core/typ/angle_map.h"
 #include "gui/actions/toggles.h"
 #include "gui/mainwin.h"
 #include <qmath.h>
