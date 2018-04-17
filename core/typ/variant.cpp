@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
+#include "variant.h"
 #include "core/def/comparators.h"
-#include "core/typ/variant.h"
 #include <QDate>
 
 bool isNumeric(const QVariant& v)

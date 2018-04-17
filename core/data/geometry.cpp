@@ -15,7 +15,6 @@
 #include "core/session.h"
 #include "core/def/comparators.h"
 #include "core/def/settings.h"
-#include "core/def/idiomatic_for.h"
 #include <iostream> // for debugging
 
 #define RET_COMPARE_COMPARABLE(o)            \

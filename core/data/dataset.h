@@ -16,7 +16,7 @@
 #define DATASET_H
 
 #include "core/data/active_clusters.h"
-#include "core/typ/async.h"
+#include "core/data/cluster.h"
 #include <memory>
 
 //! A Rawfile and associated information.

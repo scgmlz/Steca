@@ -22,6 +22,7 @@
 #include "../manifest.h"
 #include "core/session.h"
 #include "qcr/engine/msg_handler.h"
+#include "qcr/engine/console.h"
 #include "gui/mainwin.h"
 
 #define OPTPARSE_IMPLEMENTATION

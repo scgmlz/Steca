@@ -12,7 +12,10 @@
 //
 //  ***********************************************************************************************
 
-#include "core/session.h"
+#include "active_clusters.h"
+#include "core/typ/async.h"
+#include "core/calc/lens.h"
+#include "core/data/cluster.h"
 
 ActiveClusters::ActiveClusters()
 {

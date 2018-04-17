@@ -15,6 +15,9 @@
 #ifndef FILE_DIALOG_H
 #define FILE_DIALOG_H
 
+#include <QDir>
+#include <QFile>
+
 //! Functions for opening files.
 
 namespace file_dialog {

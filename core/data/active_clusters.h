@@ -15,7 +15,11 @@
 #ifndef ACTIVE_CLUSTERS_H
 #define ACTIVE_CLUSTERS_H
 
-#include "core/data/cluster.h"
+#include "core/typ/curve.h"
+
+struct size2d;
+class Cluster;
+class PeakInfos;
 
 //! The list of activated Cluster|s, and cached averages
 

@@ -17,8 +17,7 @@
 #include "core/def/idiomatic_for.h"
 #include "core/data/peak_info.h"
 #include "core/typ/async.h"
-
-#include <qmath.h>
+#include <cmath>
 
 //  ***********************************************************************************************
 //  local methods
