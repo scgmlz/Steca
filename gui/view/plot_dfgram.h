@@ -15,6 +15,7 @@
 #ifndef PLOT_DFGRAM_H
 #define PLOT_DFGRAM_H
 
+#include "core/typ/curve.h"
 #include "gui/mainwin.h" // for eFittingTab
 #include "gui/view/plot_overlay.h"
 

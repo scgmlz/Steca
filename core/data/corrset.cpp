@@ -68,7 +68,7 @@ void Corrset::calcNormalizer() const
 {
     hasNANs_ = false;
 
-    ASSERT(corrImage_);
+    ASSERT(corrImage_.get());
     size2d size = corrImage_->size() - gSession->imageCut().marginSize();
     ASSERT(!size.isEmpty());
 

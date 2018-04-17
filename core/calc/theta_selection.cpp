@@ -14,6 +14,7 @@
 
 #include "core/session.h"
 #include "core/algo/collect_intensities.h"
+#include "core/data/cluster.h"
 
 ThetaSelection::ThetaSelection()
 {}

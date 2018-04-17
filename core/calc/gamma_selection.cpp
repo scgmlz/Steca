@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/session.h"
+#include "core/data/cluster.h"
 
 QJsonObject GammaSelection::toJson() const
 {

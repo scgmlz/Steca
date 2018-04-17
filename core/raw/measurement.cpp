@@ -13,10 +13,7 @@
 //  ***********************************************************************************************
 
 #include "measurement.h"
-#include "core/session.h"
-#include "core/def/idiomatic_for.h"
 #include "core/typ/cached.h"
-#include <qmath.h>
 
 Measurement::Measurement(
     const int position, Metadata&& md, const size2d& size, QVector<float>&& intens)

@@ -13,7 +13,9 @@
 //  ***********************************************************************************************
 
 #include "peak_functions.h"
-#include <QtMath>
+#include "core/fit/fit_fun.h"
+
+#include <qmath.h>
 
 namespace { // file scope
 

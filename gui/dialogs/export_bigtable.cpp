@@ -13,12 +13,11 @@
 //  ***********************************************************************************************
 
 #include "export_bigtable.h"
-#include "core/session.h"
-#include "gui/dialogs/file_dialog.h"
 #include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/mainwin.h"
 #include "gui/state.h"
 #include "gui/view/bigtable.h"
+#include <QTextStream>
 
 //  ***********************************************************************************************
 //! @class ExportBigtable

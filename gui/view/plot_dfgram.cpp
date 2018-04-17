@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "plot_dfgram.h"
+#include "qcr/engine/console.h"
 #include "core/session.h"
 #include "core/def/idiomatic_for.h"
 #include "gui/state.h"

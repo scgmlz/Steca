@@ -15,10 +15,6 @@
 #ifndef MAINWIN_H
 #define MAINWIN_H
 
-#include "core/calc/lens.h"
-#include "core/raw/rawfile.h"
-#include "core/def/settings.h"
-#include "qcr/engine/console.h"
 #include <QDir>
 #include <QMainWindow>
 #include <QProgressBar>

@@ -13,9 +13,11 @@
 //  ***********************************************************************************************
 
 #include "mainwin.h"
+#include "core/typ/async.h"
 #include "core/algo/fitting.h"
 #include "core/algo/interpolate_polefig.h"
 #include "core/session.h"
+#include "core/def/settings.h"
 #include "gui/state.h"
 #include "gui/actions/menus.h"
 #include "gui/actions/image_trafo_actions.h"

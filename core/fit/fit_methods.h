@@ -16,7 +16,6 @@
 #define FIT_METHODS_H
 
 #include "core/fit/parametric_function.h"
-#include "core/typ/curve.h"
 
 //! Wraps Levenberg-Marquardt fit function from 3rd-party library.
 
@@ -24,7 +23,7 @@
 
 class FitWrapper {
 public:
-    void fit(ParametricFunction&, const Curve&);
+    void fit(ParametricFunction&, const class Curve&);
 
 private:
     // these pointers are valid during fit() call
