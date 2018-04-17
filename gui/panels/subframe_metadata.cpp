@@ -59,7 +59,7 @@ QVariant MetabigtableModel::data(const QModelIndex& index, int role) const
             const Cluster* highlight = gSession->dataset().highlight().cluster();
             if (!highlight)
                 return "-";
-            return highlight->avgeMetadata()->attributeStrValue(row);
+            return highlight->avgMetadata()->attributeStrValue(row);
         }
         break;
     }

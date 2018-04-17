@@ -43,7 +43,7 @@ public:
     PeakInfos rawFits(const class Peak& peak, class Progress* progress) const;
 
 private:
-    void computeAvgeCurve() const;
+    void computeAvgCurve() const;
     double calcAvgMutable(double (Cluster::*avgFct)() const) const;
 
     std::vector<const Cluster*> clusters_;

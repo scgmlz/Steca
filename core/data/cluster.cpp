@@ -21,11 +21,11 @@
 
 Sequence::Sequence(const QVector<const Measurement*>& measurements)
     : members_(measurements)
-    , metadata_(computeAvgeMetadata())
+    , metadata_(computeAvgMetadata())
 {}
 
 //! Returns metadata, averaged over Sequence members.
-Metadata Sequence::computeAvgeMetadata() const
+Metadata Sequence::computeAvgMetadata() const
 {
     std::vector<const Metadata*> vecMeta;
     for (const Measurement* m : members_)
