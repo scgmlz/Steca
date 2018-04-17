@@ -14,6 +14,7 @@
 
 #include "export_polefig.h"
 #include "core/session.h"
+#include "core/algo/collect_intensities.h"
 #include "core/def/idiomatic_for.h"
 #include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/mainwin.h"
@@ -137,7 +138,7 @@ void ExportPolefig::saveCurrent()
     QTextStream stream(file);
     const Cluster* cluster = gSession->dataset().highlight().cluster();
     ASSERT(cluster);
-    const Curve& curve = cluster->toCurve();
+    const Curve& curve = algo::projectCluster(*cluster, cluster->rgeGma());
     if (curve.isEmpty())
         qFatal("curve is empty");
     writePeakInfo(stream, interpolated(), fileField_->separator());

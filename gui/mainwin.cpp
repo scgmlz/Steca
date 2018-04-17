@@ -14,6 +14,7 @@
 
 #include "mainwin.h"
 #include "core/typ/async.h"
+#include "core/algo/collect_intensities.h"
 #include "core/algo/fitting.h"
 #include "core/algo/interpolate_polefig.h"
 #include "core/session.h"
@@ -234,7 +235,7 @@ void MainWin::runFits()
         gSession->setInterpolatedPeakInfos({});
         return;
     }
-    algo::projectIntensities(&gGui->progressBar);
+    algo::projectActiveClusters(&gGui->progressBar);
     algo::rawFits(&gGui->progressBar);
     algo::interpolateInfos(&gGui->progressBar);
     EMITS("MainWin::runFits", gSession->sigRawFits());

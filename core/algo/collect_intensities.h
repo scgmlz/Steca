@@ -18,19 +18,20 @@
 #include "core/typ/angles.h"
 #include <QVector>
 
-class Range;
-class Measurement;
+class QProgressBar;
 class Curve;
+class Measurement;
+class Range;
+class Sequence;
 
 //! @namespace algo
 //! Core algorithms.
 
 namespace algo {
 
-int numTthBins(const QVector<const Measurement*>& _members, const Range& _rgeTth);
-
-Curve collectIntensities(const QVector<const Measurement*>& _members,
-                         double _normFactor, const Range& _rgeGma, const Range& _rgeTth);
+int numTthBins(const QVector<const Measurement*>&, const Range&);
+Curve projectCluster(const Sequence&, const Range&);
+void projectActiveClusters(QProgressBar*);
 
 } // namespace algo
 

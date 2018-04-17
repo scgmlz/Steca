@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "active_clusters.h"
+#include "core/algo/collect_intensities.h"
 #include "core/typ/async.h"
 #include "core/calc/lens.h"
 #include "core/data/cluster.h"
@@ -103,7 +104,8 @@ void ActiveClusters::computeAvgeCurve() const
     for (Cluster const* cluster : clusters_)
         for (const Measurement* one: cluster->members())
             group.append(one);
-    avgCurve_ = Sequence(group).toCurve();
+    const Sequence seq(group);
+    avgCurve_ = algo::projectCluster(seq, seq.rgeGma());
 }
 
 double ActiveClusters::calcAvgMutable(double (Cluster::*avgFct)() const) const

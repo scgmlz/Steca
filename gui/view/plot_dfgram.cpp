@@ -14,6 +14,7 @@
 
 #include "plot_dfgram.h"
 #include "qcr/engine/console.h"
+#include "core/algo/collect_intensities.h"
 #include "core/session.h"
 #include "core/def/idiomatic_for.h"
 #include "gui/state.h"
@@ -267,8 +268,8 @@ void PlotDfgram::calcDgram()
     if (gGui->toggles->combinedDgram.isChecked())
         dgram_ = gSession->activeClusters().avgCurve();
     else
-        dgram_ = gSession->dataset().highlight().cluster()->toCurve(
-            gSession->gammaSelection().range());
+        dgram_ = algo::projectCluster(*gSession->dataset().highlight().cluster(),
+                                      gSession->gammaSelection().range());
 }
 
 void PlotDfgram::calcBackground()
