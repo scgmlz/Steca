@@ -14,7 +14,6 @@
 
 #include "fitting.h"
 #include "core/session.h"
-#include "core/algo/interpolate_polefig.h"
 #include "core/algo/coord_trafos.h"
 #include "core/def/idiomatic_for.h"
 
