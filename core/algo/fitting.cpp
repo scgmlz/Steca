@@ -14,6 +14,8 @@
 
 #include "fitting.h"
 #include "core/session.h"
+#include "core/typ/async.h"
+#include "core/data/cluster.h"
 #include "core/algo/coord_trafos.h"
 #include "core/def/idiomatic_for.h"
 

@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "export_dfgram.h"
+#include "core/typ/async.h"
 #include "core/session.h"
 #include "core/def/idiomatic_for.h"
 #include "gui/dialogs/file_dialog.h"

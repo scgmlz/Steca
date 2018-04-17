@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "mainwin.h"
+#include "core/typ/async.h"
 #include "core/algo/fitting.h"
 #include "core/algo/interpolate_polefig.h"
 #include "core/session.h"
