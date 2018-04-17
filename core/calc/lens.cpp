@@ -12,6 +12,7 @@
 //
 //  ***********************************************************************************************
 
+#include "lens.h"
 #include "core/session.h"
 #include "core/def/idiomatic_for.h"
 

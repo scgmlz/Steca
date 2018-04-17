@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/session.h"
+#include "core/calc/lens.h"
 
 ActiveClusters::ActiveClusters()
 {
