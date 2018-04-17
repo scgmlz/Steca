@@ -15,7 +15,7 @@
 #include "cluster.h"
 #include "core/session.h"
 #include "core/algo/collect_intensities.h"
-#include <qmath.h>
+#include <cmath>
 
 //  ***********************************************************************************************
 //! @class Sequence

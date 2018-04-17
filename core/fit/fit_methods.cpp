@@ -16,7 +16,7 @@
 #include "qcr/engine/debug.h"
 #include "core/def/idiomatic_for.h"
 #include "LM/levmar.h"
-#include <qmath.h>
+#include <cmath>
 
 void FitWrapper::fit(ParametricFunction& function, const Curve& curve)
 {
