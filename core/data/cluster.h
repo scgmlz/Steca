@@ -45,7 +45,7 @@ public:
     Range rgeInten() const;
     double normFactor() const;
 
-    const Metadata* avgeMetadata() const { return &metadata_; } // TODO rm *
+    const Metadata* avgMetadata() const { return &metadata_; } // TODO rm *
     double avgMonitorCount() const;
     double avgDeltaMonitorCount() const;
     double avgDeltaTime() const;
@@ -56,7 +56,7 @@ private:
     const QVector<const Measurement*> members_; //!< points to Dataset:vec<Datafile>:vec<M'ments>
     const Metadata metadata_; //!< averaged Metadata
 
-    Metadata computeAvgeMetadata() const;
+    Metadata computeAvgMetadata() const;
 };
 
 

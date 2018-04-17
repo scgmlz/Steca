@@ -26,7 +26,7 @@ PeakInfo rawFit(const Cluster& cluster, int iGamma, const Peak& peak)
 {
     std::unique_ptr<PeakFunction> peakFunction( FunctionRegistry::clone(peak.peakFunction()) );
     const Range& fitrange = peakFunction->range();
-    const Metadata* metadata = cluster.avgeMetadata();
+    const Metadata* metadata = cluster.avgMetadata();
     const Range gammaSector = gSession->gammaSelection().slice2range(iGamma);
     deg alpha, beta;
     // TODO (MATH) use fitted tth center, not center of given fit range

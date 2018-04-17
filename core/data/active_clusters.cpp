@@ -83,8 +83,8 @@ const Range& ActiveClusters::rgeFixedInten(bool trans, bool cut) const
 Curve ActiveClusters::avgCurve() const
 {
     if (avgCurve_.isEmpty()) {
-        TakesLongTime __("avgeCurve");
-        computeAvgeCurve();
+        TakesLongTime __("avgCurve");
+        computeAvgCurve();
     }
     return avgCurve_;
 }
@@ -97,8 +97,8 @@ void ActiveClusters::invalidateAvgMutables() const
     avgCurve_.clear();
 }
 
-//! Computed cached avgeCurve_.
-void ActiveClusters::computeAvgeCurve() const
+//! Computed cached avgCurve_.
+void ActiveClusters::computeAvgCurve() const
 {
     QVector<const Measurement*> group;
     for (Cluster const* cluster : clusters_)
