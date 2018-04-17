@@ -15,6 +15,7 @@
 #include "fit_methods.h"
 #include "qcr/engine/debug.h"
 #include "core/def/idiomatic_for.h"
+#include "core/typ/curve.h"
 #include "LM/levmar.h"
 #include <cmath>
 
