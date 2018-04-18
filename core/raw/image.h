@@ -54,7 +54,7 @@ private:
     std::vector<float> intens_;
     Range rangeInten_; // TODO: update Intensity Range when single pixel gets changed
 
-    int pointToIndex(int x, int y) const { return x * size_.h + y; }
+    int pointToIndex(int x, int y) const { return y * size_.w + x; }
 };
 
 #endif // IMAGE_H
