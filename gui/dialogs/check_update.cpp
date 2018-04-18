@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "check_update.h"
-#include "../manifest.h"
+#include "manifest.h"
 #include <QApplication>
 #include <QMessageBox>
 #include <QNetworkReply>
