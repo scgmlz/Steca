@@ -3,7 +3,6 @@ get_filename_component(lib ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 include_directories (
   ${CMAKE_HOME_DIRECTORY}
   ${CMAKE_HOME_DIRECTORY}/3rdparty/LevMar
-  ${CMAKE_HOME_DIRECTORY}/3rdparty/doctest
 )
 
 file (GLOB_RECURSE files *.h *.cpp)
