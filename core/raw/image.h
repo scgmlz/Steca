@@ -27,32 +27,34 @@ public:
     Image(Image&) = delete;
     Image(Image&&) = default;
 
-    const size2d& size() const { return intens_.size(); }
+    const size2d& size() const { return size_; }
 
-    void clear() { intens_.clear(); }
+    void clear();
 
-    bool isEmpty() const { return intens_.isEmpty(); }
+    bool isEmpty() const { return intens_.empty(); }
 
-    void fill(float val, const size2d& size) { intens_.fill(val, size); }
+    void fill(float val, const size2d& size);
 
     float inten1d(int i) const { return intens_.at(i); }
 
-    float inten2d(int i, int j) const { return intens_.at(i, j); }
+    float inten2d(int x, int y) const {
+        return inten1d(pointToIndex(x, y)); }
 
-    void setInten1d(int i, float val) { intens_.setAt(i, val); }
+    void setInten1d(int i, float val) { intens_[i] = val; }
 
-    void setInten2d(int i, int j, float val) { intens_.setAt(i, j, val); }
-
-    void addInten2d(int i, int j, float val) { intens_.refAt(i, j) += val; }
+    void setInten2d(int x, int y, float val) { setInten1d(pointToIndex(x, y), val); }
 
     // Sum all intensities with new ones.
     void addImage(const Image&);
 
-    const Range& rgeInten() const { return rgeInten_; }
+    const Range& rgeInten() const { return rangeInten_; }
 
 private:
-    Array2D<float> intens_;
-    Range rgeInten_;
+    size2d size_;
+    std::vector<float> intens_;
+    Range rangeInten_; // TODO: update Intensity Range when single pixel gets changed
+
+    int pointToIndex(int x, int y) const { return y * size_.w + x; }
 };
 
 #endif // IMAGE_H
