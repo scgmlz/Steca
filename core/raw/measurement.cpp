@@ -17,7 +17,7 @@
 #include "core/typ/cached.h"
 
 Measurement::Measurement(
-    const int position, Metadata&& md, const size2d& size, QVector<float>&& intens)
+    const int position, Metadata&& md, const size2d& size, std::vector<float>&& intens)
     : position_(position)
     , metadata_(std::move(md))
     , image_(new Image(size, std::move(intens)))

@@ -216,13 +216,13 @@ static void loadTiff(
     size2d size(imageWidth, imageHeight);
 
     int count = imageWidth * imageHeight;
-    QVector<float> intens(count);
+    std::vector<float> intens(count);
 
     if (!((bitsPerSample / 8) * count == stripByteCounts)) THROW("bad format");
 
     seek(stripOffsets);
 
-    for_i (intens.count())
+    for_i (intens.size())
         switch (sampleFormat) {
         case 1: {
             qint32 sample;

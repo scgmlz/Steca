@@ -163,7 +163,7 @@ Rawfile loadCaress(const QString& filePath) {
                 int detRel = qRound(sqrt(imageSize));
                 if (!(imageSize > 0 && imageSize == detRel * detRel)) THROW("bad image size");
 
-                QVector<float> convertedIntens(imageSize);
+                std::vector<float> convertedIntens(imageSize);
                 for_i (imageSize)
                     convertedIntens[i] = intens[i];
 

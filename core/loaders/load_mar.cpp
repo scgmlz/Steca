@@ -196,7 +196,7 @@ Rawfile loadMar(const QString& filePath) {
     }
 
     size2d size(pixSizeX, pixSizeY);
-    QVector<float> convertedIntens(pixelSize);
+    std::vector<float> convertedIntens(pixelSize);
 
     for_i (pixelSize)
         convertedIntens[i] = float(i4_image[i]);

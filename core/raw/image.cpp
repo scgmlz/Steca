@@ -21,17 +21,15 @@ Image::Image(const size2d& size, float val)
       rangeInten_(val, val)
 { }
 
-Image::Image(const size2d& size, QVector<float>&& intens)
+Image::Image(const size2d& size, std::vector<float>&& intens)
     : size_(size)
+    , intens_(std::move(intens))
 {
-    ASSERT(intens.count() == size.count());
+   ASSERT(intens_.size() == size.count());
 
-    intens_ = std::vector<float>(size.count());
-    rangeInten_.set(intens[0], intens[0]);
-
-    for_i(intens_.size()) { // doing it this way, so only on loop ovr intens is needed.
-        intens_[i] = intens[i];
-        rangeInten_.extendBy(intens[i]);
+    rangeInten_.set(intens_[0], intens_[0]);
+    for_i(intens_.size()) {
+        rangeInten_.extendBy(intens_[i]);
     }
 }
 
