@@ -145,7 +145,9 @@ void Console::readFile(const QString& fName)
         }
         commandLifo_.push_back(line);
     }
+    fromFile_ = fName;
     commandsFromStack();
+    fromFile_ = "";
 }
 
 void Console::commandsFromStack()
@@ -260,15 +262,14 @@ void Console::log(const QString& line)
          << " " << registry().name() << "]";
     lastTime = currTime;
     if (caller_==Caller::gui)
-        ;
+        log_ << line << "\n";
     else if (caller_==Caller::stack)
-        log_ << "#< ";
+        log_ << line << " #< " << fromFile_ << "\n";
     else if (caller_==Caller::cli)
-        log_ << "#: ";
+        log_ << "#: " << line << "\n";
     else if (caller_==Caller::sys)
-        log_ << "#! ";
+        log_ << "#! " << line << "\n";
     else
         qFatal("invalid case");
-    log_ << line << "\n";
     log_.flush();
 }
