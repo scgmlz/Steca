@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "triggers.h"
-#include "../manifest.h"
+#include "manifest.h"
 #include "core/session.h"
 #include "gui/mainwin.h"
 #include "gui/dialogs/about.h"

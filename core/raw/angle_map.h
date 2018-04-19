@@ -42,6 +42,4 @@ private:
     QVector<int> gmaIndexes_;
 };
 
-typedef QSharedPointer<AngleMap> shp_AngleMap;
-
 #endif // ANGLE_MAP_H
