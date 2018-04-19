@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "core/typ/array2d.h"
+#include "core/typ/size2d.h"
 
 TEST(Array2d, Size2d) {
     size2d sz;

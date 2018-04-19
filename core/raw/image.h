@@ -15,7 +15,7 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
-#include "core/typ/array2d.h"
+#include "core/typ/size2d.h"
 #include "core/typ/range.h"
 
 //! Holds a detector image, and provides read and write access
