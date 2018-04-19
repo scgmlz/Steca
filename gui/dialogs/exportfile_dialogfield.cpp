@@ -30,8 +30,8 @@ ExportfileDialogfield::ExportfileDialogfield(
 
     static QDir defaultDir = QDir::homePath();
 
-    dir_ = new QLineEdit(defaultDir.absolutePath());
-    file_ = new QLineEdit();
+    dir_ = new CLineEdit("dir", defaultDir.absolutePath());
+    file_ = new CLineEdit("file");
     auto* rbDat = new CRadioButton("fmtDat", DAT_EXT);
     auto* rbCsv = new CRadioButton("fmtCsv", CSV_EXT);
     auto* actBrowse = new CTrigger("selectDir", "Browse...");
@@ -44,8 +44,7 @@ ExportfileDialogfield::ExportfileDialogfield(
 
     // internal connections
     connect(actBrowse, &QAction::triggered, [this, parent]() {
-        file_dialog::queryDirectory(parent, "Select folder", defaultDir);
-        dir_->setText(defaultDir.absolutePath()); });
+            dir_->setText(file_dialog::queryDirectory(parent, "Select folder", dir_->text())); });
     connect(rbDat, &QRadioButton::clicked, []() { saveFmt = DAT_EXT; });
     connect(rbCsv, &QRadioButton::clicked, []() { saveFmt = CSV_EXT; });
 

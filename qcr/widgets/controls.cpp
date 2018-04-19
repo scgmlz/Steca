@@ -191,7 +191,7 @@ void CSpinBox::reportChange()
 void CSpinBox::onCommand(const QStringList& args)
 {
     if (args[0]!="set")
-        throw CmdException("Unexpected spinbox command");
+        throw CmdException("Unexpected SpinBox command");
     if      (args.size()<2)
         throw CmdException("Missing argument to command 'set'");
     int val = TO_INT(args[1]);
@@ -235,7 +235,7 @@ void CDoubleSpinBox::reportChange()
 void CDoubleSpinBox::onCommand(const QStringList& args)
 {
     if (args[0]!="set")
-        throw CmdException("Unexpected doublespinbox command");
+        throw CmdException("Unexpected DoubleSpinBox command");
     if      (args.size()<2)
         throw CmdException("Missing argument to command 'set'");
     double val = TO_DOUBLE(args[1]);
@@ -268,7 +268,7 @@ CCheckBox::CCheckBox(const QString& name, const QString& text)
 void CCheckBox::onCommand(const QStringList& args)
 {
     if (args[0]!="set")
-        throw CmdException("Unexpected checkbox command");
+        throw CmdException("Unexpected CheckBox command");
     if      (args.size()<2)
         throw CmdException("Missing argument to command 'set'");
     setChecked(TO_INT(args[1]));
@@ -287,7 +287,7 @@ CRadioButton::CRadioButton(const QString& _name, const QString& text)
 void CRadioButton::onCommand(const QStringList& args)
 {
     if (args[0]!="switch")
-        throw CmdException("Unexpected radiobutton command");
+        throw CmdException("Unexpected RadioButton command");
     if      (args.size()<2)
         throw CmdException("Missing argument to command 'switch'");
     else if (args[1]=="on")
@@ -311,10 +311,37 @@ CComboBox::CComboBox(const QString& _name, const QStringList& items)
 void CComboBox::onCommand(const QStringList& args)
 {
     if (args[0]!="choose")
-        throw CmdException("Unexpected combobox command");
+        throw CmdException("Unexpected ComboBox command");
     if (args.size()<2)
         throw CmdException("Missing argument to command 'choose'");
     setCurrentIndex(TO_INT(args[1]));
+}
+
+//! @class CLineEdit
+
+CLineEdit::CLineEdit(const QString& _name, const QString& val)
+    : CSettable(_name)
+{
+    // For unknown reason, hasFocus() is not always false when setText is called programmatically;
+    // therefore we must use another criterion to distinuish user actions from other calls.
+    // The following works, but has the drawback that a user action is logged not only as such,
+    // but also in a second line as if there were an indirect call.
+    connect(this, _SLOT_(QLineEdit,textEdited,const QString&),
+            [this](const QString& val)->void {
+                gConsole->log2(true, name()+" settext "+val); });
+    connect(this, _SLOT_(QLineEdit,textChanged,const QString&),
+            [this](const QString& val)->void {
+                gConsole->log2(false, name()+" settext "+val); });
+    setText(val);
+}
+
+void CLineEdit::onCommand(const QStringList& args)
+{
+    if (args[0]!="settext")
+        throw CmdException("Unexpected LineEdit command");
+    if (args.size()<2)
+        throw CmdException("Missing argument to command 'settext'");
+    setText(args[1]); // TODO handle text that contains blanks
 }
 
 //! @class CTabWidget
@@ -336,7 +363,7 @@ void CTabWidget::onCommand(const QStringList& args)
         throw CmdException("Missing argument to command 'choose'");
     int val = TO_INT(args[1]);
     if (!isTabEnabled(val))
-        throw CmdException("CHosen tab is not enabled");
+        throw CmdException("Chosen tab is not enabled");
     setCurrentIndex(val);
 }
 
