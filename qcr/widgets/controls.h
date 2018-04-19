@@ -127,6 +127,13 @@ public:
     void onCommand(const QStringList&) override;
 };
 
+//! Named QLineEdit that can be set by console command (but use XLineEdit for pure display).
+class CLineEdit : public QLineEdit, private CSettable {
+public:
+    CLineEdit(const QString& name, const QString& val = "");
+    void onCommand(const QStringList&) override;
+};
+
 //! Named QTabWidget that can be set by console command.
 class CTabWidget : public QTabWidget, private CSettable {
 public:

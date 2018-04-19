@@ -30,8 +30,8 @@ ExportfileDialogfield::ExportfileDialogfield(
 
     static QDir defaultDir = QDir::homePath();
 
-    dir_ = new QLineEdit(defaultDir.absolutePath());
-    file_ = new QLineEdit();
+    dir_ = new CLineEdit("dir", defaultDir.absolutePath());
+    file_ = new CLineEdit("file");
     auto* rbDat = new CRadioButton("fmtDat", DAT_EXT);
     auto* rbCsv = new CRadioButton("fmtCsv", CSV_EXT);
     auto* actBrowse = new CTrigger("selectDir", "Browse...");
