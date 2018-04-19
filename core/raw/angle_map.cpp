@@ -47,39 +47,39 @@ static int upperBound(const QVector<deg>& vec, deg x, int i1, int i2)
 
 
 AngleMap::AngleMap(const ImageKey& key)
+    : size_(key.size)
+    , arrAngles_(key.size.count())
 {
     qDebug() << "AngleMap: core computation";
-    const size2d& size = key.size;
     // compute angles:
     //    detector center is at vec{d} = (d_x, 0, )
     //    detector pixel (i,j) is at vec{b}
-    arrAngles_.resize(size);
     const double t = key.midTth.toRad();
     const double c = cos(t);
     const double s = sin(t);
     const double d_z = key.geometry.detectorDistance();
     const double b_x1 = d_z * s;
     const double b_z1 = d_z * c;
-    for_int (i, size.w) {
+    for_int (i, size_.w) {
         const double d_x = (i - key.midPix.i) * key.geometry.pixSize();
         const double b_x = b_x1 + d_x * c;
         const double b_z = b_z1 - d_x * s;
         const double b_x2 = b_x * b_x;
-        for_int (j, size.h) {
+        for_int (j, size_.h) {
             const double b_y = (key.midPix.j - j) * key.geometry.pixSize(); // == d_y
             const double b_r = sqrt(b_x2 + b_y * b_y);
             const rad gma = atan2(b_y, b_x);
             const rad tth = atan2(b_r, b_z);
-            arrAngles_.setAt(i, j, ScatterDirection(tth.toDeg(), gma.toDeg()));
+            arrAngles_[pointToIndex(i, j)] = ScatterDirection(tth.toDeg(), gma.toDeg());
         }
     }
     qDebug() << "AngleMap: core computation done";
 
     const ImageCut& cut = key.cut;
-    ASSERT(size.w > cut.left() + cut.right());
-    ASSERT(size.h > cut.top() + cut.bottom());
+    ASSERT(size_.w > cut.left() + cut.right());
+    ASSERT(size_.h > cut.top() + cut.bottom());
     const int countWithoutCut =
-        (size.w - cut.left() - cut.right()) * (size.h - cut.top() - cut.bottom());
+        (size_.w - cut.left() - cut.right()) * (size_.h - cut.top() - cut.bottom());
     ASSERT(countWithoutCut > 0);
 
     qDebug() << "AngleMap: compute ranges";
@@ -90,11 +90,11 @@ AngleMap::AngleMap(const ImageKey& key)
     gmas_.resize(countWithoutCut);
     gmaIndexes_.resize(countWithoutCut);
     int gi = 0;
-    for (int i = cut.left(), iEnd = size.w - cut.right(); i < iEnd; ++i) {
-        for (int j = cut.top(), jEnd = size.h - cut.bottom(); j < jEnd; ++j) {
-            const ScatterDirection& dir = arrAngles_.at(i, j);
+    for (int i = cut.left(), iEnd = size_.w - cut.right(); i < iEnd; ++i) {
+        for (int j = cut.top(), jEnd = size_.h - cut.bottom(); j < jEnd; ++j) {
+            const ScatterDirection& dir = arrAngles_[pointToIndex(i, j)];
             gmas_[gi] = dir.gma;
-            gmaIndexes_[gi] = i + j * size.w;
+            gmaIndexes_[gi] = i + j * size_.w;
             ++gi;
             rgeTth_.extendBy(dir.tth);
             rgeGmaFull_.extendBy(dir.gma);

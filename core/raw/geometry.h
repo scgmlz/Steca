@@ -16,7 +16,7 @@
 #define GEOMETRY_H
 
 #include "core/typ/angles.h"
-#include "core/typ/array2d.h"
+#include "core/typ/size2d.h"
 #include "core/typ/ij.h"
 #include "core/typ/range.h"
 
