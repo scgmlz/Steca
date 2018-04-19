@@ -212,7 +212,11 @@ void MainWin::addFiles()
     if (fileNames.isEmpty())
         return;
     TakesLongTime __("addFiles");
-    gSession->dataset().addGivenFiles(fileNames);
+    try {
+        gSession->dataset().addGivenFiles(fileNames);
+    } catch (Exception e) {
+        qWarning() << e.msg();
+    }
 }
 
 void MainWin::loadCorrFile()
@@ -224,7 +228,11 @@ void MainWin::loadCorrFile()
             this, "Set correction file", dataDir_, dataFormats);
         if (fileName.isEmpty())
             return;
-        gSession->corrset().loadFile(fileName);
+        try {
+            gSession->corrset().loadFile(fileName);
+        } catch (Exception e) {
+            qWarning() << e.msg();
+        }
     }
 }
 
