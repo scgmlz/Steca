@@ -25,8 +25,8 @@ public:
     AngleMap() = delete;
     AngleMap(const ImageKey&);
 
-    const ScatterDirection& dirAt1(int i) const { return arrAngles_.at(i); }
-    const ScatterDirection& dirAt2(int i, int j) const { return arrAngles_.at(i, j); }
+    const ScatterDirection& dirAt1(int i) const { return arrAngles_[i]; }
+    const ScatterDirection& dirAt2(int ix, int iy) const { return dirAt1(pointToIndex(ix, iy)); }
 
     Range rgeTth() const { return rgeTth_; }
     Range rgeGma() const { return rgeGma_; }
@@ -35,11 +35,15 @@ public:
     void getGmaIndexes(const Range&, QVector<int> const*&, int&, int&) const;
 
 private:
-    Array2D<ScatterDirection> arrAngles_;
+    size2d size_;
+    std::vector<ScatterDirection> arrAngles_;
+
     Range rgeTth_;
     Range rgeGma_, rgeGmaFull_;
     QVector<deg> gmas_; //!< sorted gamma values
     QVector<int> gmaIndexes_;
+
+    int pointToIndex(int ix, int iy) const { return iy * size_.w + ix; }
 };
 
 #endif // ANGLE_MAP_H
