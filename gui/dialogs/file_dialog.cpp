@@ -168,8 +168,9 @@ QString queryExportFileName(
 
 //! Runs dialog that prompts for a directory. Returns absolute directory path. May change dir.
 // TODO return value VS dir ???
-QString queryDirectory(QWidget* parent, const QString& caption, QDir& dir)
+QString queryDirectory(QWidget* parent, const QString& caption, const QString& dirname)
 {
+    QDir dir(dirname);
     FileDialog dlg(parent, caption, dir);
     dlg.setFileMode(QFileDialog::Directory);
     dlg.setAcceptMode(QFileDialog::AcceptSave);

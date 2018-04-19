@@ -44,8 +44,7 @@ ExportfileDialogfield::ExportfileDialogfield(
 
     // internal connections
     connect(actBrowse, &QAction::triggered, [this, parent]() {
-        file_dialog::queryDirectory(parent, "Select folder", defaultDir);
-        dir_->setText(defaultDir.absolutePath()); });
+            dir_->setText(file_dialog::queryDirectory(parent, "Select folder", dir_->text())); });
     connect(rbDat, &QRadioButton::clicked, []() { saveFmt = DAT_EXT; });
     connect(rbCsv, &QRadioButton::clicked, []() { saveFmt = CSV_EXT; });
 
