@@ -37,12 +37,11 @@ public:
 
     float inten1d(int i) const { return intens_.at(i); }
 
-    float inten2d(int x, int y) const {
-        return inten1d(pointToIndex(x, y)); }
+    float inten2d(int ix, int iy) const { return inten1d(pointToIndex(ix, iy)); }
 
     void setInten1d(int i, float val) { intens_[i] = val; }
 
-    void setInten2d(int x, int y, float val) { setInten1d(pointToIndex(x, y), val); }
+    void setInten2d(int ix, int iy, float val) { setInten1d(pointToIndex(ix, iy), val); }
 
     // Sum all intensities with new ones.
     void addImage(const Image&);
@@ -54,7 +53,7 @@ private:
     std::vector<float> intens_;
     Range rangeInten_; // TODO: update Intensity Range when single pixel gets changed
 
-    int pointToIndex(int x, int y) const { return y * size_.w + x; }
+    int pointToIndex(int ix, int iy) const { return iy * size_.w + ix; }
 };
 
 #endif // IMAGE_H
