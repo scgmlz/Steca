@@ -107,6 +107,8 @@ Console::Console()
 Console::~Console()
 {
     log("# Steca session ended");
+    log("# duration: " + QString::number(startTime_.msecsTo(QDateTime::currentDateTime())) + "ms");
+    log("# computing time: " + QString::number(computingTime_) + "ms");
     delete log_.device();
     while (!registryStack_.empty()) {
         delete registryStack_.top();
@@ -257,10 +259,15 @@ void Console::log(const QString& line)
 {
     static auto lastTime = startTime_;
     auto currTime = QDateTime::currentDateTime();
-    log_ << "[" << QString::number(startTime_.msecsTo(currTime)).rightJustified(6) << "ms"
-         << " (+"  << QString::number(lastTime.msecsTo(currTime)).rightJustified(4) << ")"
-         << " " << registry().name() << "]";
+    int tDiff = lastTime.msecsTo(currTime);
     lastTime = currTime;
+    log_ << "[";
+    if (caller_!=Caller::gui) {
+        log_ << QString::number(tDiff).rightJustified(5) << "ms";
+        computingTime_ += tDiff;
+    } else
+        log_ << "       ";
+    log_ << " " << registry().name() << "]";
     if (caller_==Caller::gui)
         log_ << line << "\n";
     else if (caller_==Caller::stack)

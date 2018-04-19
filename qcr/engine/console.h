@@ -40,6 +40,7 @@ public:
 private:
     class CommandRegistry& registry() { return *registryStack_.top(); }
     QDateTime startTime_;
+    int computingTime_ {0};
     QTextStream log_;
     enum class Caller { gui, cli, stack, sys } caller_ { Caller::gui };
     enum class Result : int { ok, err, suspend };
