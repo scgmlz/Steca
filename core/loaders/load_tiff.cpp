@@ -206,19 +206,30 @@ static void loadTiff(
         }
     }
 
-    if (!(imageWidth > 0 && imageHeight > 0 && stripOffsets > 0 && stripByteCounts > 0
-          && imageHeight <= rowsPerStrip))
-        THROW("bad format");
+    if (imageWidth<=0)
+        THROW("cannot read TIFF: unexpected imageWidth");
+    if (imageHeight<=0)
+        THROW("cannot read TIFF: unexpected imageHeight");
+    if (stripOffsets<=0)
+        THROW("cannot read TIFF: unexpected stripOffsets");
+    if (stripByteCounts<=0)
+        THROW("cannot read TIFF: unexpected stripByteCounts");
+    if (imageHeight < rowsPerStrip)
+        THROW("cannot read TIFF: imageHeight >= rowsPerStrip");
 
-    if (!((1 == sampleFormat || 2 == sampleFormat || 3 == sampleFormat) && 32 == bitsPerSample))
-        THROW("unhandled format");
+    if (!(1 == sampleFormat || 2 == sampleFormat || 3 == sampleFormat))
+        THROW("cannot read TIFF: unexpected sampleFormat");
+    if (bitsPerSample!=32)
+        THROW("cannot read TIFF: bitsPerSample!=32");
+
 
     size2d size(imageWidth, imageHeight);
 
     int count = imageWidth * imageHeight;
     std::vector<float> intens(count);
 
-    if (!((bitsPerSample / 8) * count == stripByteCounts)) THROW("bad format");
+    if (!((bitsPerSample / 8) * count == stripByteCounts))
+        THROW("cannot read TIFF: unexpected bitsPerSample");
 
     seek(stripOffsets);
 
