@@ -29,7 +29,7 @@ PopupPolefig::PopupPolefig()
     auto* layout = new QVBoxLayout;
     layout->addWidget(plot);
     layout->setStretch(0,1000);
-    // TODO add info about used parameters
+    // TODO (issue#76) add info about used parameters
     setLayout(layout);
 
     plot->refresh();
