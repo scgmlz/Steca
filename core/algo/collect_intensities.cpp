@@ -22,21 +22,21 @@
 namespace {
 //! Increments intens and counts.
 void projectMeasurement(
-    QVector<float>& intens, QVector<int>& counts,
+    std::vector<float>& intens, std::vector<int>& counts,
     const Measurement& measurement, const Range& rgeGma, deg minTth, deg deltaTth)
 {
     const AngleMap& angleMap = measurement.angleMap();
 
-    const QVector<int>* gmaIndexes = nullptr;
+    const std::vector<int>* gmaIndexes = nullptr;
     int gmaIndexMin = 0, gmaIndexMax = 0;
     angleMap.getGmaIndexes(rgeGma, gmaIndexes, gmaIndexMin, gmaIndexMax);
 
     ASSERT(gmaIndexes);
     ASSERT(gmaIndexMin <= gmaIndexMax);
-    ASSERT(gmaIndexMax <= gmaIndexes->count());
+    ASSERT(gmaIndexMax <= gmaIndexes->size());
 
-    ASSERT(intens.count() == counts.count());
-    int count = intens.count();
+    ASSERT(intens.size() == counts.size());
+    int count = intens.size();
 
     ASSERT(deltaTth > 0);
 
@@ -69,25 +69,25 @@ void projectMeasurement(
 
 } // namespace
 
-int algo::numTthBins(const QVector<const Measurement*>& _members, const Range& _rgeTth)
+int algo::numTthBins(const std::vector<const Measurement*>& _members, const Range& _rgeTth)
 {
     const ImageCut& cut = gSession->imageCut();
     int ret = gSession->imageSize().w - cut.left() - cut.right(); // number of horizontal pixels
     if (_members.size()>1) // for combined cluster, increase ret
-        ret = ret * _rgeTth.width() / _members.first()->rgeTth().width();
+        ret = ret * _rgeTth.width() / _members.front()->rgeTth().width();
     ASSERT(ret);
     return ret;
 }
 
 Curve algo::projectCluster(const Sequence& cluster, const Range& rgeGma)
 {
-    const QVector<const Measurement*>& members = cluster.members();
+    const std::vector<const Measurement*>& members = cluster.members();
     double normFactor = cluster.normFactor();
     const Range& rgeTth = cluster.rgeTth();
 
     int numBins = numTthBins(members, rgeTth);
-    QVector<float> intens(numBins, 0);
-    QVector<int> counts(numBins, 0);
+    std::vector<float> intens(numBins, 0);
+    std::vector<int> counts(numBins, 0);
 
     deg minTth = rgeTth.min;
     deg deltaTth = rgeTth.width() / numBins;

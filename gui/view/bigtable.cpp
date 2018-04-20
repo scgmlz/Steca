@@ -34,8 +34,8 @@ BigtableModel::BigtableModel()
     gGui->state->bigtableModel = this;
     headers_ = PeakInfo::dataTags(false);
     comparators_ = PeakInfo::dataCmps();
-    ASSERT(comparators_.count() == headers_.count());
-    numCols_ = headers_.count();
+    ASSERT(comparators_.size() == headers_.count());
+    numCols_ = headers_.size();
     colIndexMap_.resize(numCols_);
     for_i (numCols_)
         colIndexMap_[i] = i;
@@ -46,7 +46,7 @@ void BigtableModel::refresh()
     beginResetModel();
     rows_.clear();
     for (const PeakInfo& r : gSession->peakInfos())
-        rows_.append(XRow(rows_.count() + 1, r.data()));
+        rows_.push_back(XRow(rows_.size() + 1, r.data()));
     sortData();
     endResetModel();
 }
@@ -61,8 +61,8 @@ QVariant BigtableModel::data(const QModelIndex& index, int role) const
     switch (role) {
     case Qt::DisplayRole: {
         if (0 == indexCol)
-            return rows_.at(indexRow).n;
-        const QVariant var = rows_.at(indexRow).row.at(indexCol-1);
+            return rows_[indexRow].n;
+        const QVariant var = rows_[indexRow].row.at(indexCol-1);
         if (isNumeric(var) && qIsNaN(var.toDouble()))
             return {}; // show blank field instead of NAN
         return var;
@@ -70,7 +70,7 @@ QVariant BigtableModel::data(const QModelIndex& index, int role) const
     case Qt::TextAlignmentRole: {
         if (0 == indexCol)
             return Qt::AlignRight;
-        const QVariant& var = rows_.at(indexRow).row.at(indexCol-1);
+        const QVariant& var = rows_[indexRow].row.at(indexCol-1);
         if (isNumeric(var))
             return Qt::AlignRight;
         return Qt::AlignLeft;
@@ -93,25 +93,25 @@ QVariant BigtableModel::headerData(int section, Qt::Orientation, int role) const
 //! Called upon QHeaderView::sectionMoved.
 void BigtableModel::onColumnMove(int from, int to)
 {
-    ASSERT(from < colIndexMap_.count() && to < colIndexMap_.count());
+    ASSERT(from < colIndexMap_.size() && to < colIndexMap_.size());
     qSwap(colIndexMap_[from], colIndexMap_[to]);
 }
 
 void BigtableModel::setSortColumn(int col)
 {
-    sortColumn_ = col < 0 ? col : colIndexMap_.at(col);
+    sortColumn_ = col < 0 ? col : colIndexMap_[col];
 }
 
-const QVector<QVariant>& BigtableModel::row(int index) const
+const std::vector<QVariant>& BigtableModel::row(int index) const
 {
-    return rows_.at(index).row;
+    return rows_[index].row;
 }
 
 void BigtableModel::sortData()
 {
-    auto _cmpRows = [this](int col, const QVector<QVariant>& r1, const QVector<QVariant>& r2) {
-        col = colIndexMap_.at(col);
-        return comparators_.at(col)(r1.at(col), r2.at(col));
+    auto _cmpRows = [this](int col, const std::vector<QVariant>& r1, const std::vector<QVariant>& r2) {
+        col = colIndexMap_[col];
+        return comparators_[col](r1[col], r2[col]);
     };
 
     // sort by sortColumn first, then left-to-right
@@ -153,16 +153,16 @@ QStringList BigtableModel::getHeaders() const
     const QStringList& headers = PeakInfo::dataTags(true);
     for_i (headers.count())
         if (gGui->state->bigtableShowCol[i])
-            ret.append(headers.at(i));
+            ret.append(headers[i]);
     return ret;
 }
 
-QVector<QVector<const QVariant*>> BigtableModel::getData() const
+std::vector<std::vector<const QVariant*>> BigtableModel::getData() const
 {
-    QVector<QVector<const QVariant*>> ret(rowCount());
+    std::vector<std::vector<const QVariant*>> ret(rowCount());
     for_ij (rowCount(), columnCount()-1)
         if (gGui->state->bigtableShowCol[j])
-            ret[i].append(&(rows_[i].row.at(j)));
+            ret[i].push_back(&(rows_[i].row[j]));
     return ret;
 }
 

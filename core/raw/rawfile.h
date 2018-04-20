@@ -30,7 +30,7 @@ public:
 
     void addDataset(Metadata&&, const size2d&, std::vector<float> &&);
 
-    QVector<const Measurement*> const measurements() const;
+    std::vector<const Measurement*> const measurements() const;
     int numMeasurements() const { return measurements_.size(); }
     size2d imageSize() const { return imageSize_; }
 

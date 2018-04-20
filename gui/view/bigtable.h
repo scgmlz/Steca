@@ -34,29 +34,29 @@ public:
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const;
     int columnCount() const final { return numCols_ + 1; }
-    int rowCount() const final { return rows_.count(); }
-    const QVector<QVariant>& row(int) const;
+    int rowCount() const final { return rows_.size(); }
+    const std::vector<QVariant>& row(int) const;
     QStringList getHeaders() const;
-    QVector<QVector<const QVariant*>> getData() const;
+    std::vector<std::vector<const QVariant*>> getData() const;
     int highlighted() const final { return 0; } // unused
 
 private:
     QStringList headers_;
-    QVector<int> colIndexMap_;
-    QVector<VariantComparator*> comparators_;
+    std::vector<int> colIndexMap_;
+    std::vector<VariantComparator*> comparators_;
 
     // TODO: Treat the row number column as any other column, so that it can also be exported.
-    // Then replace XRow by QVector<QVariant>.
+    // Then replace XRow by std::vector<QVariant>.
     struct XRow {
         XRow() {} // see https://bugreports.qt.io/browse/QTBUG-67357
-        XRow(int n_, const QVector<QVariant>& row_) : n(n_), row(row_) {}
+        XRow(int n_, const std::vector<QVariant>& row_) : n(n_), row(row_) {}
         int n; // number of row = contents of first columns
-        QVector<QVariant> row;
+        std::vector<QVariant> row;
     };
 
     int numCols_;
     int sortColumn_ {-1};
-    QVector<XRow> rows_;
+    std::vector<XRow> rows_;
 };
 
 //! A data table view, for use in the 'Points' tab of an output Frame.

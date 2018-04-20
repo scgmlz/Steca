@@ -42,7 +42,7 @@ void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
                << md->attributeValue(i).toDouble() << '\n';
 
     stream << "Tth" << separator << "Intensity" << '\n';
-    for_i (curve.xs().count())
+    for_i (curve.xs().size())
         stream << curve.x(i) << separator << curve.y(i) << '\n';
 
     stream.flush(); // not sure whether we need this

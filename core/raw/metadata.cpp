@@ -100,7 +100,7 @@ namespace {
         "ze",  "mon",    "delta_mon", "t",      "delta_t",   "date",  "comment",
     };
 
-    static QVector<VariantComparator*> const cmps = {
+    static std::vector<VariantComparator*> const cmps = {
         cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
         cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
         cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_date, cmp_str,
@@ -112,7 +112,7 @@ const QStringList& Metadata::attributeTags(bool out)
     return out ? outTags : tags;
 }
 
-const QVector<VariantComparator*>& Metadata::attributeCmps()
+const std::vector<VariantComparator*>& Metadata::attributeCmps()
 {
     return cmps;
 }
@@ -186,17 +186,17 @@ QVariant Metadata::attributeValue(int i) const
     }
 }
 
-QVector<QVariant> Metadata::attributeValues() const
+std::vector<QVariant> Metadata::attributeValues() const
 {
-    QVector<QVariant> attrs;
+    std::vector<QVariant> attrs;
     for_i (int(eAttr::NUM_ALL_ATTRIBUTES))
-        attrs.append(attributeValue(i));
+        attrs.push_back(attributeValue(i));
     return attrs;
 }
 
-QVector<QVariant> Metadata::attributeNaNs()
+std::vector<QVariant> Metadata::attributeNaNs()
 {
-    return QVector<QVariant>(int(eAttr::NUM_ALL_ATTRIBUTES), Q_QNAN);
+    return std::vector<QVariant>(int(eAttr::NUM_ALL_ATTRIBUTES), Q_QNAN);
 }
 
 //! Return average over list of metadata.

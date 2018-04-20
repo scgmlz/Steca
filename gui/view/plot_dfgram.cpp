@@ -238,23 +238,28 @@ void PlotDfgram::renderAll()
     yAxis->setVisible(true);
 
     if (gGui->toggles->showBackground.isChecked())
-        bgGraph_->setData(bg_.xs(), bg_.ys());
+        bgGraph_->setData(QVector<double>::fromStdVector(bg_.xs()),
+                          QVector<double>::fromStdVector(bg_.ys()));
     else
         bgGraph_->clearData();
 
-    dgramGraph_->setData(dgram_.xs(), dgram_.ys());
-    dgramBgFittedGraph_->setData(dgramBgFitted_.xs(), dgramBgFitted_.ys());
-    dgramBgFittedGraph2_->setData(dgramBgFitted_.xs(), dgramBgFitted_.ys());
+    dgramGraph_->setData(QVector<double>::fromStdVector(dgram_.xs()),
+                         QVector<double>::fromStdVector(dgram_.ys()));
+    dgramBgFittedGraph_->setData(QVector<double>::fromStdVector(dgramBgFitted_.xs()),
+                                 QVector<double>::fromStdVector(dgramBgFitted_.ys()));
+    dgramBgFittedGraph2_->setData(QVector<double>::fromStdVector(dgramBgFitted_.xs()),
+                                  QVector<double>::fromStdVector(dgramBgFitted_.ys()));
 
     clearReflLayer();
     setCurrentLayer("refl");
 
-    for_i (refls_.count()) {
+    for_i (refls_.size()) {
         const Curve& r = refls_.at(i);
         QCPGraph* graph = addGraph();
-        reflGraph_.append(graph);
+        reflGraph_.push_back(graph);
         graph->setPen(QPen(Qt::green, i == currReflIndex_ ? 2 : 1));
-        graph->setData(r.xs(), r.ys());
+        graph->setData(QVector<double>::fromStdVector(r.xs()),
+                       QVector<double>::fromStdVector(r.ys()));
     }
 
     replot();
@@ -309,7 +314,7 @@ void PlotDfgram::calcPeaks()
             if (rge.contains(x))
                 c.append(x, fun.y(x));
         }
-        refls_.append(c);
+        refls_.push_back(c);
     }
 }
 

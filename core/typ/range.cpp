@@ -33,15 +33,15 @@ Range::Range(double min, double max)
     set(min, max);
 }
 
-Range::Range(const QVector<double>& vec)
+Range::Range(const std::vector<double>& vec)
 {
-    if (!vec.count()) {
+    if (!vec.size()) {
         invalidate();
         return;
     }
     double min = vec[0];
     double max = vec[0];
-    for (int i=1; i<vec.count(); ++i) {
+    for (int i=1; i<vec.size(); ++i) {
         if (vec[i]<min) min = vec[i];
         if (vec[i]>max) max = vec[i];
     }
@@ -191,7 +191,7 @@ QString Range::to_s(int precision, int digitsAfter) const
 
 bool Ranges::add(const Range& range)
 {
-    QVector<Range> newRanges;
+    std::vector<Range> newRanges;
     Range addRange = range;
     for (const Range& r : ranges_) {
         if (r.contains(range))
@@ -200,10 +200,10 @@ bool Ranges::add(const Range& range)
             if (range.intersects(r))
                 addRange.extendBy(r);
             else
-                newRanges.append(r);
+                newRanges.push_back(r);
         }
     }
-    newRanges.append(addRange);
+    newRanges.push_back(addRange);
     ranges_ = newRanges;
     sort();
     return true;
@@ -211,18 +211,18 @@ bool Ranges::add(const Range& range)
 
 bool Ranges::remove(const Range& removeRange)
 {
-    QVector<Range> newRanges;
+    std::vector<Range> newRanges;
     bool changed = false;
 
     for (const Range& r : ranges_) {
         if (!r.intersect(removeRange).isEmpty()) {
             changed = true;
             if (r.min < removeRange.min)
-                newRanges.append(Range(r.min, removeRange.min));
+                newRanges.push_back(Range(r.min, removeRange.min));
             if (r.max > removeRange.max)
-                newRanges.append(Range(removeRange.max, r.max));
+                newRanges.push_back(Range(removeRange.max, r.max));
         } else {
-            newRanges.append(r);
+            newRanges.push_back(r);
         }
     }
 
@@ -258,6 +258,6 @@ void Ranges::fromJson(const QJsonArray& arr)
     for_i (arr.count()) {
         Range range;
         range.fromJson(arr.at(i).toObject());
-        ranges_.append(range);
+        ranges_.push_back(range);
     }
 }

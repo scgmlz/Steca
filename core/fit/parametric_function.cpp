@@ -70,12 +70,13 @@ void FitParameter::fromJson(const JsonObj& obj)
 
 void ParametricFunction::setParameterCount(int count)
 {
-    parameters_.fill(FitParameter(), count);
+    parameters_.resize(count);
+    std::fill(parameters_.begin(), parameters_.end(), FitParameter());
 }
 
 int ParametricFunction::parameterCount() const
 {
-    return parameters_.count();
+    return parameters_.size();
 }
 
 FitParameter& ParametricFunction::parameterAt(int i)
@@ -85,7 +86,7 @@ FitParameter& ParametricFunction::parameterAt(int i)
 
 void ParametricFunction::reset()
 {
-    for_i (parameters_.count()) {
+    for_i (parameters_.size()) {
         auto& p = parameters_[i];
         p.reset();
     }

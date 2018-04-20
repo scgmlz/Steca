@@ -43,8 +43,8 @@ void itf_t::operator+=(const itf_t& that)
     fwhm += that.fwhm;
 }
 
-typedef QVector<itf_t> itfs_t;
-typedef QVector<PeakInfo const*> info_vec;
+typedef std::vector<itf_t> itfs_t;
+typedef std::vector<PeakInfo const*> info_vec;
 
 // Calculates the difference of two angles. Parameters should be in [0, 360].
 deg calculateDeltaBeta(deg beta1, deg beta2)
@@ -81,7 +81,7 @@ enum class eQuadrant {
 
 static int NUM_QUADRANTS = 4;
 
-typedef QVector<eQuadrant> Quadrants;
+typedef std::vector<eQuadrant> Quadrants;
 
 Quadrants allQuadrants()
 {
@@ -126,21 +126,26 @@ void searchPoints(deg alpha, deg beta, deg radius, const PeakInfos& infos, itfs_
     // REVIEW Use value trees to improve performance.
     for (const PeakInfo& info : infos) {
         if (inRadius(info.alpha(), info.beta(), alpha, beta, radius))
-            itfs.append(itf_t(info.inten(), info.tth(), info.fwhm()));
+            itfs.push_back(itf_t(info.inten(), info.tth(), info.fwhm()));
     }
 }
 
 // Searches closest PeakInfos to given alpha and beta in quadrants.
 void searchInQuadrants(
     const Quadrants& quadrants, deg alpha, deg beta, deg searchRadius, const PeakInfos& infos,
-    info_vec& foundInfos, QVector<double>& distances)
+    info_vec& foundInfos, std::vector<double>& distances)
 {
-    ASSERT(quadrants.count() <= NUM_QUADRANTS);
+    ASSERT(quadrants.size() <= NUM_QUADRANTS);
     // Take only peak infos with beta within +/- BETA_LIMIT degrees into
     // account. Original STeCa used something like +/- 1.5*36 degrees.
     double const BETA_LIMIT = 30;
-    distances.fill(std::numeric_limits<double>::max(), quadrants.count());
-    foundInfos.fill(nullptr, quadrants.count());
+
+    // Resize and fill distances and foundInfos vectors with default values:
+    distances.resize(quadrants.size());
+    std::fill(distances.begin(), distances.end(), std::numeric_limits<double>::max());
+    foundInfos.resize(quadrants.size());
+    std::fill(foundInfos.begin(), foundInfos.end(), nullptr);
+
     // Find infos closest to given alpha and beta in each quadrant.
     for (const PeakInfo& info : infos) {
         // REVIEW We could do better with value trees than looping over all infos.
@@ -150,7 +155,7 @@ void searchInQuadrants(
         deg deltaAlpha = info.alpha() - alpha;
         // "Distance" between grid point and current info.
         deg d = angle(alpha, info.alpha(), deltaBeta);
-        for_i (quadrants.count()) {
+        for_i (quadrants.size()) {
             if (inQuadrant(quadrants.at(i), deltaAlpha, deltaBeta)) {
                 if (d >= distances.at(i))
                     continue;
@@ -162,14 +167,14 @@ void searchInQuadrants(
     }
 }
 
-itf_t inverseDistanceWeighing(const QVector<double>& distances, const info_vec& infos)
+itf_t inverseDistanceWeighing(const std::vector<double>& distances, const info_vec& infos)
 {
     int N = NUM_QUADRANTS;
     // Generally, only distances.count() == values.count() > 0 is needed for this
     // algorithm. However, in this context we expect exactly the following:
-    if (!(distances.count() == N)) qFatal("distances size should be 4");
-    if (!(infos.count() == N)) qFatal("infos size should be 4");
-    QVector<double> inverseDistances(N);
+    if (!(distances.size() == N)) qFatal("distances size should be 4");
+    if (!(infos.size() == N)) qFatal("infos size should be 4");
+    std::vector<double> inverseDistances(N);
     double inverseDistanceSum = 0;
     for_i (NUM_QUADRANTS) {
         if (distances.at(i) == .0) {
@@ -201,7 +206,7 @@ itf_t inverseDistanceWeighing(const QVector<double>& distances, const info_vec& 
 itf_t interpolateValues(deg searchRadius, const PeakInfos& infos, deg alpha, deg beta)
 {
     info_vec interpolationInfos;
-    QVector<double> distances;
+    std::vector<double> distances;
     searchInQuadrants(
         allQuadrants(), alpha, beta, searchRadius, infos, interpolationInfos, distances);
     // Check that infos were found in all quadrants.
@@ -219,14 +224,14 @@ itf_t interpolateValues(deg searchRadius, const PeakInfos& infos, deg alpha, deg
             : -alpha;
         double newBeta = beta < 180 ? beta + 180 : beta - 180;
         info_vec renewedSearch;
-        QVector<double> newDistance;
+        std::vector<double> newDistance;
         searchInQuadrants(
             { newQ }, newAlpha, newBeta, searchRadius, infos, renewedSearch, newDistance);
-        ASSERT(renewedSearch.count() == 1);
-        ASSERT(newDistance.count() == 1);
-        if (renewedSearch.first()) {
-            interpolationInfos[i] = renewedSearch.first();
-            distances[i] = newDistance.first();
+        ASSERT(renewedSearch.size() == 1);
+        ASSERT(newDistance.size() == 1);
+        if (renewedSearch.front()) {
+            interpolationInfos[i] = renewedSearch.front();
+            distances[i] = newDistance.front();
             ++numQuadrantsOk;
         }
     }
@@ -285,7 +290,7 @@ void algo::interpolateInfos(QProgressBar* progressBar)
 
             progress.step();
 
-            if (infos.isEmpty()) {
+            if (infos.empty()) {
                 tmp.append(PeakInfo(alpha, beta));
                 continue;
             }
@@ -296,7 +301,7 @@ void algo::interpolateInfos(QProgressBar* progressBar)
                 itfs_t itfs;
                 searchPoints(alpha, beta, avgRadius, infos, itfs);
 
-                if (!itfs.isEmpty()) {
+                if (!itfs.empty()) {
                     // If treshold < 1, we'll only use a fraction of largest
                     // peak parameter values.
                     std::sort(itfs.begin(), itfs.end(), [](const itf_t& i1, const itf_t& i2) {
@@ -305,8 +310,8 @@ void algo::interpolateInfos(QProgressBar* progressBar)
 
                     itf_t avg(0, 0, 0);
 
-                    int iEnd = itfs.count();
-                    int iBegin = qMax(0, qMin(qRound(itfs.count() * (1. - threshold)), iEnd - 1));
+                    int iEnd = itfs.size();
+                    int iBegin = qMax(0, qMin(qRound(itfs.size() * (1. - threshold)), iEnd - 1));
                     ASSERT(iBegin < iEnd);
                     int n = iEnd - iBegin;
 
@@ -314,7 +319,7 @@ void algo::interpolateInfos(QProgressBar* progressBar)
                         avg += itfs.at(i);
 
                     tmp.append(PeakInfo(
-                        alpha, beta, infos.first().rgeGma(), avg.inten / n, float(Q_QNAN),
+                        alpha, beta, infos.front().rgeGma(), avg.inten / n, float(Q_QNAN),
                         avg.tth / n, deg(Q_QNAN), avg.fwhm / n, float(Q_QNAN)));
                     continue;
                 }
@@ -329,7 +334,7 @@ void algo::interpolateInfos(QProgressBar* progressBar)
             // Use idw, if alpha > avgAlphaMax OR averaging failed (too small avgRadius?).
             itf_t itf = interpolateValues(idwRadius, infos, alpha, beta);
             tmp.append(PeakInfo(
-                alpha, beta, infos.first().rgeGma(), itf.inten, float(Q_QNAN), itf.tth, deg(Q_QNAN),
+                alpha, beta, infos.front().rgeGma(), itf.inten, float(Q_QNAN), itf.tth, deg(Q_QNAN),
                 itf.fwhm, float(Q_QNAN)));
         }
     }

@@ -28,7 +28,7 @@ void writePeakInfoInterpolated(QTextStream& stream)
 {
     const PeakInfos& peakInfos = gSession->interpolatedPeakInfos();
     const int LINE_LEN = 9;
-    for (int j = 0, jEnd = peakInfos.count(); j < jEnd; j += LINE_LEN) {
+    for (int j = 0, jEnd = peakInfos.size(); j < jEnd; j += LINE_LEN) {
         int max = j + LINE_LEN;
         for (int i = j; i < max; i++) {
             double val = peakInfos.at(i).inten();
@@ -44,7 +44,7 @@ void writePeakInfoInterpolated(QTextStream& stream)
 void writePeakInfoOriginalGrid(QTextStream& stream)
 {
     const PeakInfos& peakInfos = gSession->directPeakInfos();
-    for_i (peakInfos.count()) {
+    for_i (peakInfos.size()) {
         double val = peakInfos.at(i).inten();
         stream << double(peakInfos.at(i).alpha()) << " "
                << double(peakInfos.at(i).beta()) << " "

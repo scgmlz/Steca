@@ -19,7 +19,7 @@
 //  ***********************************************************************************************
 //! @class Sequence
 
-Sequence::Sequence(const QVector<const Measurement*>& measurements)
+Sequence::Sequence(const std::vector<const Measurement*>& measurements)
     : members_(measurements)
     , metadata_(computeAvgMetadata())
 {}
@@ -104,7 +104,7 @@ double Sequence::normFactor() const
 //! @class Cluster
 
 Cluster::Cluster(
-    const QVector<const Measurement*>& measurements,
+    const std::vector<const Measurement*>& measurements,
     const class Datafile& file, const int index, const int offset)
     : Sequence(measurements)
     , file_(file)

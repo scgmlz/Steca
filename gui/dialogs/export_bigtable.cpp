@@ -46,7 +46,7 @@ void ExportBigtable::save()
 
     // get data
     QStringList headers {gGui->state->bigtableModel->getHeaders()};
-    QVector<QVector<const QVariant*>> data {gGui->state->bigtableModel->getData()};
+    std::vector<std::vector<const QVariant*>> data {gGui->state->bigtableModel->getData()};
 
     // write header
     for (const QString& header: headers)
@@ -54,7 +54,7 @@ void ExportBigtable::save()
     stream << '\n';
 
     // write data table
-    for (const QVector<const QVariant*>& row: data) {
+    for (const std::vector<const QVariant*>& row: data) {
         for (const QVariant* var: row) {
             if (isNumeric(*var))
                 stream << var->toDouble();

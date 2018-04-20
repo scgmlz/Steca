@@ -32,7 +32,7 @@ public:
     Range rgeGma() const { return rgeGma_; }
     Range rgeGmaFull() const { return rgeGmaFull_; }
 
-    void getGmaIndexes(const Range&, QVector<int> const*&, int&, int&) const;
+    void getGmaIndexes(const Range&, std::vector<int> const*&, int&, int&) const;
 
 private:
     size2d size_;
@@ -40,8 +40,8 @@ private:
 
     Range rgeTth_;
     Range rgeGma_, rgeGmaFull_;
-    QVector<deg> gmas_; //!< sorted gamma values
-    QVector<int> gmaIndexes_;
+    std::vector<deg> gmas_; //!< sorted gamma values
+    std::vector<int> gmaIndexes_;
 
     int pointToIndex(int ix, int iy) const { return iy * size_.w + ix; }
 };

@@ -17,7 +17,6 @@
 
 #include "core/typ/angles.h"
 #include "core/typ/variant.h"
-#include <QVector>
 
 //! The meta data associated with one Measurement.
 
@@ -30,14 +29,14 @@ public:
     static int numAttributes(bool onlyNum);
     static const QString& attributeTag(int, bool out);
     static const QStringList& attributeTags(bool out);
-    static const QVector<VariantComparator*>& attributeCmps();
-    static QVector<QVariant> attributeNaNs();
-    static int size() { return attributeNaNs().count(); }
+    static const std::vector<VariantComparator*>& attributeCmps();
+    static std::vector<QVariant> attributeNaNs();
+    static int size() { return attributeNaNs().size(); }
     static Metadata computeAverage(const std::vector<const Metadata*>& vec);
 
     QString attributeStrValue(int) const;
     QVariant attributeValue(int) const;
-    QVector<QVariant> attributeValues() const;
+    std::vector<QVariant> attributeValues() const;
 
     QString date, comment;
     deg motorXT, motorYT, motorZT, motorOmg, motorTth, motorPhi, motorChi, motorPST, motorSST,

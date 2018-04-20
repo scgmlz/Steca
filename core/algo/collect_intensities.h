@@ -16,7 +16,6 @@
 #define PROJECT_INTENSITY_H
 
 #include "core/typ/angles.h"
-#include <QVector>
 
 class QProgressBar;
 class Curve;
@@ -29,7 +28,7 @@ class Sequence;
 
 namespace algo {
 
-int numTthBins(const QVector<const Measurement*>&, const Range&);
+int numTthBins(const std::vector<const Measurement*>&, const Range&);
 Curve projectCluster(const Sequence&, const Range&);
 void projectActiveClusters(QProgressBar*);
 

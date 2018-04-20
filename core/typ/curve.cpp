@@ -26,13 +26,13 @@ void Curve::clear()
 
 bool Curve::isEmpty() const
 {
-    return xs_.isEmpty();
+    return xs_.empty();
 }
 
 int Curve::count() const
 {
-    ASSERT(xs_.count() == ys_.count());
-    return xs_.count();
+    ASSERT(xs_.size() == ys_.size());
+    return xs_.size();
 }
 
 bool Curve::isOrdered() const
@@ -42,8 +42,8 @@ bool Curve::isOrdered() const
 
 void Curve::append(double x, double y)
 {
-    xs_.append(x);
-    ys_.append(y);
+    xs_.push_back(x);
+    ys_.push_back(y);
     rgeX_.extendBy(x);
     rgeY_.extendBy(y);
 }
@@ -56,10 +56,10 @@ Curve Curve::intersect(const Range& range) const
     Curve ret;
     int xi = 0;
     const int cnt = count();
-    while (xi < cnt && xs_.at(xi) < range.min)
+    while (xi < cnt && xs_[xi] < range.min)
         ++xi;
-    while (xi < cnt && xs_.at(xi) <= range.max) {
-        ret.append(xs_.at(xi), ys_.at(xi));
+    while (xi < cnt && xs_[xi] <= range.max) {
+        ret.append(xs_[xi], ys_[xi]);
         ++xi;
     }
     return ret;
@@ -76,10 +76,10 @@ Curve Curve::intersect(const Ranges& ranges) const
     int xi = 0, cnt = count();
     for_i (ranges.count()) {
         const Range& range = ranges.at(i);
-        while (xi < cnt && xs_.at(xi) < range.min)
+        while (xi < cnt && xs_[xi] < range.min)
             ++xi;
-        while (xi < cnt && xs_.at(xi) <= range.max) {
-            ret.append(xs_.at(xi), ys_.at(xi));
+        while (xi < cnt && xs_[xi] <= range.max) {
+            ret.append(xs_[xi], ys_[xi]);
             ++xi;
         }
     }
@@ -97,7 +97,7 @@ int Curve::maqpairindex() const
 {
     if (isEmpty())
         return 0;
-    double yMax = ys_.first();
+    double yMax = ys_.front();
     int ret = 0;
     for_i (count()) {
         const double y = ys_.at(i);

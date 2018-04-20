@@ -29,11 +29,11 @@ void Rawfile::addDataset(Metadata&& md, const size2d& sz, std::vector<float>&& i
     measurements_.push_back({(int)measurements_.size(), std::move(md), sz, std::move(ivec)});
 }
 
-QVector<const Measurement*> const Rawfile::measurements() const
+std::vector<const Measurement*> const Rawfile::measurements() const
 {
-    QVector<const Measurement*> ret;
+    std::vector<const Measurement*> ret;
     for (const Measurement& one: measurements_)
-        ret.append(&one);
+        ret.push_back(&one);
     return ret;
 }
 
