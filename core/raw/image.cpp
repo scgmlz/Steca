@@ -56,7 +56,8 @@ void Image::fill(float val, const size2d& size)
 
 void Image::addImage(const Image& that)
 {
-    if (!(size() == that.size())) THROW("inconsistent image size");
+    if (!(size() == that.size()))
+        THROW("inconsistent image size");
 
     rangeInten_.extendBy(that.rgeInten());
     for_i(intens_.size()) {
