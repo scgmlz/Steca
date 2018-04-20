@@ -33,10 +33,12 @@ public:
     QString name() const { return raw_.fileName(); }
     Qt::CheckState activated() const;
 
-    // TODO privatize
+    int offset_;  //!< first index in total list of Measurement|s
+private:
+    friend class Dataset;
+    friend class HighlightedData;
     Rawfile raw_; //!< owned by this
     int index_; //!< index in files_
-    int offset_;  //!< first index in total list of Measurement|s
     std::vector<Cluster*> clusters_; //!< back links to Cluster|s made from this
 };
 
@@ -45,6 +47,8 @@ public:
 
 class HighlightedData {
 public:
+    HighlightedData() = default;
+    HighlightedData(const HighlightedData&) = delete;
     void clear();
     void unset();
     void setFile(int);
@@ -69,6 +73,9 @@ private:
 
 class Dataset {
 public:
+    Dataset() = default;
+    Dataset(const Dataset&) = delete;
+
     // Accessor methods
     HighlightedData& highlight() { return highlight_; }
     const HighlightedData& highlight() const { return highlight_; }
