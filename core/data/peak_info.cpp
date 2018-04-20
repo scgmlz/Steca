@@ -147,9 +147,9 @@ QString const PeakInfo::reflStringTag(int attr, bool out)
 //  ***********************************************************************************************
 //! @class PeakInfos
 
-void PeakInfos::append(const PeakInfo& info)
+void PeakInfos::append(PeakInfo&& info)
 {
-    std::vector<PeakInfo>::push_back(info);
+    peaks_.push_back(std::move(info));
     clearCache();
 }
 
@@ -158,7 +158,7 @@ float PeakInfos::averageInten() const
     if (qIsNaN(avgInten_)) {
         avgInten_ = 0;
         int cnt = 0;
-        for (auto& info : *this) {
+        for (auto& info : peaks_) {
             double inten = info.inten();
             if (qIsFinite(inten)) {
                 avgInten_ += inten;
@@ -174,8 +174,8 @@ float PeakInfos::averageInten() const
 const Range& PeakInfos::rgeInten() const
 {
     if (!rgeInten_.isValid()) {
-        for_i (size())
-            rgeInten_.extendBy(at(i).inten());
+        for(auto& info: peaks_)
+            rgeInten_.extendBy(info.inten());
     }
     return rgeInten_;
 }
@@ -190,11 +190,12 @@ void PeakInfos::get4(const int idxX, const int idxY,
                      std::vector<double>& xs, std::vector<double>& ys,
                      std::vector<double>& ysLow, std::vector<double>& ysHig) const
 {
-    xs.resize(size());
-    ys.resize(size());
+    int n = peaks_.size();
+    xs.resize(n);
+    ys.resize(n);
 
-    for_i (size()) {
-        const std::vector<QVariant> row = at(i).data();
+    for_i (n) {
+        const std::vector<QVariant> row = peaks_.at(i).data();
         xs[i] = row.at(idxX).toDouble();
         ys[i] = row.at(idxY).toDouble();
     }
@@ -208,10 +209,10 @@ void PeakInfos::get4(const int idxX, const int idxY,
     if (peak
         && !peak->isRaw()
         && (ye==eReflAttr::INTEN || ye==eReflAttr::TTH || ye==eReflAttr::FWHM)) {
-        ysLow.resize(size());
-        ysHig.resize(size());
-        for_i (size()) {
-            const std::vector<QVariant> row = at(is.at(i)).data();
+        ysLow.resize(n);
+        ysHig.resize(n);
+        for_i (n) {
+            const std::vector<QVariant> row = peaks_.at(is.at(i)).data();
             double sigma = row.at(idxY+1).toDouble(); // SIGMA_X has tag position of X plus 1
             double y = ys.at(i);
             ysLow[i] = y - sigma;

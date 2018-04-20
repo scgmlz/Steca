@@ -81,9 +81,9 @@ void algo::rawFits(class QProgressBar* progressBar)
     for (const Cluster* cluster : seq.clusters()) {
         progress.step();
         for_i (nGamma) {
-            const PeakInfo refInfo = rawFit(*cluster, i, *peak);
+            PeakInfo refInfo = rawFit(*cluster, i, *peak);
             if (!qIsNaN(refInfo.inten()))
-                tmp.append(refInfo);
+                tmp.append(std::move(refInfo));
         }
     }
     gSession->setDirectPeakInfos(std::move(tmp));
