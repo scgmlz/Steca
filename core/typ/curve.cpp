@@ -56,10 +56,10 @@ Curve Curve::intersect(const Range& range) const
     Curve ret;
     int xi = 0;
     const int cnt = count();
-    while (xi < cnt && xs_[xi] < range.min)
+    while (xi < cnt && xs_.at(xi) < range.min)
         ++xi;
-    while (xi < cnt && xs_[xi] <= range.max) {
-        ret.append(xs_[xi], ys_[xi]);
+    while (xi < cnt && xs_.at(xi) <= range.max) {
+        ret.append(xs_.at(xi), ys_.at(xi));
         ++xi;
     }
     return ret;
@@ -76,10 +76,10 @@ Curve Curve::intersect(const Ranges& ranges) const
     int xi = 0, cnt = count();
     for_i (ranges.count()) {
         const Range& range = ranges.at(i);
-        while (xi < cnt && xs_[xi] < range.min)
+        while (xi < cnt && xs_.at(xi) < range.min)
             ++xi;
-        while (xi < cnt && xs_[xi] <= range.max) {
-            ret.append(xs_[xi], ys_[xi]);
+        while (xi < cnt && xs_.at(xi) <= range.max) {
+            ret.append(xs_.at(xi), ys_.at(xi));
             ++xi;
         }
     }

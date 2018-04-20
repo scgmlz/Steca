@@ -61,8 +61,8 @@ QVariant BigtableModel::data(const QModelIndex& index, int role) const
     switch (role) {
     case Qt::DisplayRole: {
         if (0 == indexCol)
-            return rows_[indexRow].n;
-        const QVariant var = rows_[indexRow].row.at(indexCol-1);
+            return rows_.at(indexRow).n;
+        const QVariant var = rows_.at(indexRow).row.at(indexCol-1);
         if (isNumeric(var) && qIsNaN(var.toDouble()))
             return {}; // show blank field instead of NAN
         return var;
@@ -70,7 +70,7 @@ QVariant BigtableModel::data(const QModelIndex& index, int role) const
     case Qt::TextAlignmentRole: {
         if (0 == indexCol)
             return Qt::AlignRight;
-        const QVariant& var = rows_[indexRow].row.at(indexCol-1);
+        const QVariant& var = rows_.at(indexRow).row.at(indexCol-1);
         if (isNumeric(var))
             return Qt::AlignRight;
         return Qt::AlignLeft;
@@ -99,19 +99,19 @@ void BigtableModel::onColumnMove(int from, int to)
 
 void BigtableModel::setSortColumn(int col)
 {
-    sortColumn_ = col < 0 ? col : colIndexMap_[col];
+    sortColumn_ = col < 0 ? col : colIndexMap_.at(col);
 }
 
 const std::vector<QVariant>& BigtableModel::row(int index) const
 {
-    return rows_[index].row;
+    return rows_.at(index).row;
 }
 
 void BigtableModel::sortData()
 {
     auto _cmpRows = [this](int col, const std::vector<QVariant>& r1, const std::vector<QVariant>& r2) {
-        col = colIndexMap_[col];
-        return comparators_[col](r1[col], r2[col]);
+        col = colIndexMap_.at(col);
+        return comparators_.at(col)(r1.at(col), r2.at(col));
     };
 
     // sort by sortColumn first, then left-to-right
@@ -152,8 +152,8 @@ QStringList BigtableModel::getHeaders() const
     QStringList ret;
     const QStringList& headers = PeakInfo::dataTags(true);
     for_i (headers.count())
-        if (gGui->state->bigtableShowCol[i])
-            ret.append(headers[i]);
+        if (gGui->state->bigtableShowCol.at(i))
+            ret.append(headers.at(i));
     return ret;
 }
 
@@ -161,8 +161,8 @@ std::vector<std::vector<const QVariant*>> BigtableModel::getData() const
 {
     std::vector<std::vector<const QVariant*>> ret(rowCount());
     for_ij (rowCount(), columnCount()-1)
-        if (gGui->state->bigtableShowCol[j])
-            ret[i].push_back(&(rows_[i].row[j]));
+        if (gGui->state->bigtableShowCol.at(j))
+            ret.at(i).push_back(&(rows_.at(i).row.at(j)));
     return ret;
 }
 
