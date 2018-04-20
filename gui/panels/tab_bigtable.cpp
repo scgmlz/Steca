@@ -31,7 +31,7 @@ class ColumnSelector : public QWidget {
 public:
     ColumnSelector();
 private:
-    QVector<CCheckBox*> showCols_;
+    std::vector<CCheckBox*> showCols_;
     CRadioButton rbHidden_ {"rbHidden", ""};
     CRadioButton rbAll_ {"rbAll", "all"};
     CRadioButton rbNone_ {"rbNone", "none"};
@@ -57,7 +57,7 @@ ColumnSelector::ColumnSelector()
     box->addWidget(&rbFWHM_);
     box->addSpacing(8);
     showCols_.resize(headers.count());
-    for_i (showCols_.count()) {
+    for_i (showCols_.size()) {
         showCols_[i] = new CCheckBox("cb"+QString::number(i), headers[i]);
         box->addWidget(showCols_[i]);
     }
@@ -77,7 +77,7 @@ ColumnSelector::ColumnSelector()
             setAll(false);
             showCols_.at(int(eReflAttr::FWHM))->setChecked(true); });
 
-    for_i (showCols_.count()) {
+    for_i (showCols_.size()) {
         QCheckBox* cb = showCols_.at(i);
         connect(cb, &QCheckBox::toggled, [this, i](bool on) {
                 gGui->state->bigtableShowCol[i] = on;
@@ -100,7 +100,7 @@ void ColumnSelector::updateRadiobuttons()
     bool isAll = true, isNone = true, isOther = false;
     int nInten = 0, nTth = 0, nFwhm = 0;
 
-    for_i (showCols_.count()) {
+    for_i (showCols_.size()) {
         if (!showCols_.at(i)->isChecked()) {
             isAll = false;
             continue;

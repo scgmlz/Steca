@@ -68,7 +68,7 @@ public:
 protected:
     double parValue(int parIndex, double const* parValues) const;
     void setParValue(int parIndex, double val);
-    QVector<FitParameter> parameters_;
+    std::vector<FitParameter> parameters_;
 };
 
 #endif // PARAMETRIC_FUNCTION_H

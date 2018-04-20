@@ -32,5 +32,6 @@ GuiState::GuiState()
     diagramX->addItems(tags);
     diagramY->addItems(tags);
 
-    bigtableShowCol.fill(true, PeakInfo::dataTags(false).count());
+    bigtableShowCol.resize(PeakInfo::dataTags(false).count());
+    std::fill(bigtableShowCol.begin(), bigtableShowCol.end(), true);
 }

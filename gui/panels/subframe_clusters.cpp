@@ -27,7 +27,7 @@ public:
     ActiveClustersModel() : CheckTableModel("measurement") {}
     void onMetaSelection();
     void activateCluster(bool, int, bool);
-    int metaCount() const { return metaInfoNums_.count(); }
+    int metaCount() const { return metaInfoNums_.size(); }
     int rowCount() const final { return gSession->dataset().countClusters(); }
     int highlighted() const final { return gSession->dataset().highlight().clusterIndex(); }
     void setHighlight(int row) final { gSession->dataset().highlight().setCluster(row); }
@@ -45,7 +45,7 @@ private:
     // The are needed to detect changes of state, which in turn helps us to
     // update display items only if they have changed. Whether this is really
     // useful is to be determined. The cache for the activation state is gone.
-    QVector<int> metaInfoNums_; //!< indices of metadata items selected for display
+    std::vector<int> metaInfoNums_; //!< indices of metadata items selected for display
 };
 
 void ActiveClustersModel::onMetaSelection()
@@ -54,7 +54,7 @@ void ActiveClustersModel::onMetaSelection()
     metaInfoNums_.clear();
     for_i (Metadata::size())
         if (gSession->metaSelected(i))
-            metaInfoNums_.append(i);
+            metaInfoNums_.push_back(i);
     EMITS("ActiveClustersModel::onMetaSelection", dataChanged(createIndex(0,COL_ATTRS), createIndex(rowCount(),columnCount())));
     EMITS("ActiveClustersModel::onMetaSelection", headerDataChanged(Qt::Horizontal, COL_ATTRS, columnCount()));
     endResetModel();

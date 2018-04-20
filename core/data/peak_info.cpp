@@ -18,11 +18,11 @@
 namespace {
 
 // sorts xs and ys the same way, by (x,y)
-static void sortColumns(QVector<double>& xs, QVector<double>& ys, QVector<int>& is)
+static void sortColumns(std::vector<double>& xs, std::vector<double>& ys, std::vector<int>& is)
 {
-    ASSERT(xs.count() == ys.count());
+    ASSERT(xs.size() == ys.size());
 
-    int count = xs.count();
+    int count = xs.size();
 
     is.resize(count);
     for_i (count)
@@ -37,7 +37,7 @@ static void sortColumns(QVector<double>& xs, QVector<double>& ys, QVector<int>& 
         return ys.at(i1) < ys.at(i2);
     });
 
-    QVector<double> r(count);
+    std::vector<double> r(count);
 
     for_i (count)
         r[i] = xs.at(is.at(i));
@@ -102,25 +102,26 @@ QStringList PeakInfo::dataTags(bool out)
     return ret;
 }
 
-QVector<VariantComparator*> PeakInfo::dataCmps()
+std::vector<VariantComparator*> PeakInfo::dataCmps()
 {
-    static QVector<VariantComparator*> ret;
-    if (ret.isEmpty()) {
-        ret = QVector<VariantComparator*>{ cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
+    static std::vector<VariantComparator*> ret;
+    if (ret.empty()) {
+        ret = std::vector<VariantComparator*>{ cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
                         cmp_real, cmp_real, cmp_real, cmp_real, cmp_real };
         for (auto* cmp: Metadata::attributeCmps())
-            ret.append(cmp);
+            ret.push_back(cmp);
     }
     return ret;
 }
 
-QVector<QVariant> PeakInfo::data() const
+std::vector<QVariant> PeakInfo::data() const
 {
-    QVector<QVariant> ret{ QVariant(alpha()),      QVariant(beta()),     QVariant(rgeGma().min),
+    std::vector<QVariant> ret{ QVariant(alpha()),      QVariant(beta()),     QVariant(rgeGma().min),
                     QVariant(rgeGma().max), QVariant(inten()),    QVariant(intenError()),
                     QVariant(tth()),        QVariant(tthError()), QVariant(fwhm()),
                     QVariant(fwhmError()) };
-    ret.append(md_ ? md_->attributeValues() : Metadata::attributeNaNs());
+    auto values_to_append = md_ ? md_->attributeValues() : Metadata::attributeNaNs();
+    ret.insert(ret.end(), values_to_append.begin(), values_to_append.end());
     return ret;
 }
 
@@ -148,7 +149,7 @@ QString const PeakInfo::reflStringTag(int attr, bool out)
 
 void PeakInfos::append(const PeakInfo& info)
 {
-    QVector<PeakInfo>::append(info);
+    std::vector<PeakInfo>::push_back(info);
     clearCache();
 }
 
@@ -173,7 +174,7 @@ float PeakInfos::averageInten() const
 const Range& PeakInfos::rgeInten() const
 {
     if (!rgeInten_.isValid()) {
-        for_i (count())
+        for_i (size())
             rgeInten_.extendBy(at(i).inten());
     }
     return rgeInten_;
@@ -186,19 +187,19 @@ void PeakInfos::clearCache()
 }
 
 void PeakInfos::get4(const int idxX, const int idxY,
-                     QVector<double>& xs, QVector<double>& ys,
-                     QVector<double>& ysLow, QVector<double>& ysHig) const
+                     std::vector<double>& xs, std::vector<double>& ys,
+                     std::vector<double>& ysLow, std::vector<double>& ysHig) const
 {
-    xs.resize(count());
-    ys.resize(count());
+    xs.resize(size());
+    ys.resize(size());
 
-    for_i (count()) {
-        const QVector<QVariant> row = at(i).data();
+    for_i (size()) {
+        const std::vector<QVariant> row = at(i).data();
         xs[i] = row.at(idxX).toDouble();
         ys[i] = row.at(idxY).toDouble();
     }
 
-    QVector<int> is;
+    std::vector<int> is;
     sortColumns(xs, ys, is);
 
     using eReflAttr = PeakInfo::eReflAttr;
@@ -207,10 +208,10 @@ void PeakInfos::get4(const int idxX, const int idxY,
     if (peak
         && !peak->isRaw()
         && (ye==eReflAttr::INTEN || ye==eReflAttr::TTH || ye==eReflAttr::FWHM)) {
-        ysLow.resize(count());
-        ysHig.resize(count());
-        for_i (count()) {
-            const QVector<QVariant> row = at(is.at(i)).data();
+        ysLow.resize(size());
+        ysHig.resize(size());
+        for_i (size()) {
+            const std::vector<QVariant> row = at(is.at(i)).data();
             double sigma = row.at(idxY+1).toDouble(); // SIGMA_X has tag position of X plus 1
             double y = ys.at(i);
             ysLow[i] = y - sigma;

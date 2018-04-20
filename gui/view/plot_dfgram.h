@@ -55,7 +55,7 @@ private:
 
     QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *dgramBgFittedGraph2_, *guesses_,
         *fits_;
-    QVector<QCPGraph*> reflGraph_;
+    std::vector<QCPGraph*> reflGraph_;
     PlotDfgramOverlay* overlay_;
 
     void calcDgram();

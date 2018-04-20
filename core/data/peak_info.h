@@ -47,7 +47,7 @@ public:
     };
 
     static QStringList dataTags(bool out);
-    static QVector<VariantComparator*> dataCmps();
+    static std::vector<VariantComparator*> dataCmps();
 
     deg alpha() const { return alpha_; }
     deg beta() const { return beta_; }
@@ -58,7 +58,7 @@ public:
     deg tthError() const { return tthError_; }
     float fwhm() const { return fwhm_; }
     float fwhmError() const { return fwhmError_; }
-    QVector<QVariant> data() const;
+    std::vector<QVariant> data() const;
 
 private:
     const Metadata* md_;
@@ -74,15 +74,15 @@ private:
 
 //! A list of PeakInfo's
 
-class PeakInfos : public QVector<PeakInfo> {
+class PeakInfos : public std::vector<PeakInfo> {
 public:
     PeakInfos() { clearCache(); }
     void append(const PeakInfo&);
     float averageInten() const;
     const Range& rgeInten() const;
     void get4(const int idxX, const int idxY,
-              QVector<double>& xs, QVector<double>& ys,
-              QVector<double>& ysLow, QVector<double>& ysHig) const;
+              std::vector<double>& xs, std::vector<double>& ys,
+              std::vector<double>& ysLow, std::vector<double>& ysHig) const;
 private:
     void clearCache();
     mutable float avgInten_;

@@ -9,7 +9,7 @@ const double e=1e-15;
 
 TEST(Bounds, LowerBound) {
     for (int n = 2; n<12; ++n) {
-        QVector<deg> v(n);
+        std::vector<deg> v(n);
         for (int i=0; i<n; ++i)
             v[i] = i;
         EXPECT_EQ(0, lowerBound(v, Q_QNAN, 0, n));
@@ -30,7 +30,7 @@ TEST(Bounds, LowerBound) {
 
 TEST(Bounds, LowerBoundArg3) {
     const int n = 8;
-    QVector<deg> v(n);
+    std::vector<deg> v(n);
     for (int i=0; i<n; ++i)
         v[i] = i;
     EXPECT_EQ(3, lowerBound(v, Q_QNAN, 3, n));
@@ -50,7 +50,7 @@ TEST(Bounds, LowerBoundArg3) {
 
 TEST(Bounds, LowerBoundArg4) {
     const int n = 8;
-    QVector<deg> v(n);
+    std::vector<deg> v(n);
     for (int i=0; i<n; ++i)
         v[i] = i;
     EXPECT_EQ(0, lowerBound(v, Q_QNAN, 0, 4));
@@ -70,7 +70,7 @@ TEST(Bounds, LowerBoundArg4) {
 
 TEST(Bounds, UpperBound) {
     for (int n = 2; n<12; ++n) {
-        QVector<deg> v(n);
+        std::vector<deg> v(n);
         for (int i=0; i<n; ++i)
             v[i] = i;
         EXPECT_EQ(1, upperBound(v, -1e99, 0, n));
