@@ -14,7 +14,7 @@
 
 #include "cluster.h"
 #include "core/session.h"
-#include <cmath>
+#include <qmath.h>
 
 //  ***********************************************************************************************
 //! @class Sequence

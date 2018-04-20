@@ -14,7 +14,7 @@
 
 #include "angle_map.h"
 #include "core/def/idiomatic_for.h"
-#include <cmath>
+#include <qmath.h>
 #include <iostream> // for debugging
 
 namespace {

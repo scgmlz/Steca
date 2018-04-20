@@ -14,7 +14,7 @@
 
 #include "coord_trafos.h"
 #include "core/typ/matrix.h"
-#include <cmath>
+#include <qmath.h>
 
 //! Calculates the polefigure coordinates alpha and beta with regards to
 //! sample orientation and diffraction angles.
