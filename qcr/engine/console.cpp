@@ -262,11 +262,12 @@ void Console::log(const QString& line)
     int tDiff = lastTime.msecsTo(currTime);
     lastTime = currTime;
     log_ << "[";
-    if (caller_!=Caller::gui) {
+    if (caller_==Caller::gui && line[0]!='#') {
+        log_ << "       "; // direct user action: we don't care how long the user was idle
+    } else {
         log_ << QString::number(tDiff).rightJustified(5) << "ms";
         computingTime_ += tDiff;
-    } else
-        log_ << "       ";
+    }
     log_ << " " << registry().name() << "]";
     if (caller_==Caller::gui)
         log_ << line << "\n";
