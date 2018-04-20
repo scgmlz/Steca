@@ -45,7 +45,7 @@ void ImageTrafoActions::setImageRotate(const ImageTransform& rot)
         mirrorIconFile = ":/icon/mirrorVert";
         break;
     default:
-        qFatal("bug: impossible rotation");
+        qFatal("impossible rotation");
     }
 
     rotateImage.setIcon(QIcon(rotateIconFile));

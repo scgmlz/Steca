@@ -35,7 +35,7 @@ void Corrset::removeFile()
 void Corrset::loadFile(const QString& filePath)
 {
     if (filePath.isEmpty())
-        THROW("invalid call of Corrset::loadFile with empty filePath argument");
+        qFatal("Corrset::loadFile called with empty filePath argument");
     raw_.reset(new Rawfile(load::loadRawfile(filePath)));
     if (!raw_.get())
         return;

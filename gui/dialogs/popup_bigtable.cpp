@@ -26,6 +26,7 @@ PopupBigtable::PopupBigtable()
     auto* layout = new QVBoxLayout;
     layout->addWidget(bigtableView);
     layout->setStretch(0,1000);
+    // TODO (issue#76) add info about used parameters
     setLayout(layout);
 
     bigtableView->refresh();

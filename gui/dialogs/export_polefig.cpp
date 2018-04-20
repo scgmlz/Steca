@@ -126,7 +126,7 @@ void ExportPolefig::save()
         saveAll(true);
 */
     else
-        qFatal("bug: invalid case in ExportPolefig::save");
+        qFatal("invalid case in ExportPolefig::save");
     close();
 }
 

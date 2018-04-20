@@ -21,30 +21,32 @@
 //! Mix-in for control widgets that can be changed by a console command.
 class CSettable {
 public:
-    CSettable() = delete;
-    CSettable(CSettable&) = delete;
-    CSettable(const QString& name);
-    ~CSettable();
     virtual void onCommand(const QStringList&) = 0;
     const QString& name() const { return name_; }
+protected:
+    CSettable() = delete;
+    CSettable(const CSettable&) = delete;
+    CSettable(const QString& name);
+    ~CSettable();
 private:
     const QString name_;
 };
 
 //! Mix-in for modal dialogs.
-class CModal { // TODO try private
-public:
+class CModal {
+protected:
     CModal() = delete;
-    CModal(CModal&) = delete;
+    CModal(const CModal&) = delete;
     CModal(const QString& name);
     ~CModal();
 };
 
 //! A modeless dialog with support for capture&replay.
-class CModelessDialog : public QDialog, public CSettable {
+class CModelessDialog : protected QDialog, protected CSettable {
 public:
-    CModelessDialog(QWidget* parent, const QString& name);
     virtual void onCommand(const QStringList&);
+protected:
+    CModelessDialog(QWidget* parent, const QString& name);
 private:
     void closeEvent(QCloseEvent*);
 };

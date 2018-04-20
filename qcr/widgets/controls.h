@@ -31,7 +31,6 @@
 //! A trigger, for use in buttons or menu entries, that can also be activated by console command.
 class CTrigger : public QAction, private CSettable {
 public:
-    CTrigger() = delete;
     CTrigger(const QString& name, const QString& text, const QString& iconFile="");
     CTrigger(const QString& name, const QString& text, const QString& iconFile,
              const QKeySequence& shortcut);
@@ -43,7 +42,6 @@ private:
 //! A Toggle, for use in buttons or menu entries, that can also be switched by console command.
 class CToggle : public QAction, private CSettable {
 public:
-    CToggle() = delete;
     CToggle(const QString& name, const QString& text, bool on, const QString& iconFile="");
     CToggle(const QString& name, const QString& text, bool on, const QString& iconFile,
             const QKeySequence& shortcut);

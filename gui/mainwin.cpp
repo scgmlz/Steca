@@ -221,6 +221,7 @@ void MainWin::addFiles()
 
 void MainWin::loadCorrFile()
 {
+    // TODO catch THROW's
     if (gSession->corrset().hasFile()) {
         gSession->corrset().removeFile();
     } else {

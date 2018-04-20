@@ -145,7 +145,8 @@ void Session::updateImageSize()
 
 void Session::setImageSize(const size2d& size)
 {
-    if (!(!size.isEmpty())) THROW("image is empty or has ill defined size");
+    if (size.isEmpty())
+        THROW("image is empty or has ill defined size");
     if (imageSize_.isEmpty())
         imageSize_ = size; // the first one
     else if (imageSize_ != size)
