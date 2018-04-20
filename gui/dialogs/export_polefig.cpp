@@ -27,17 +27,17 @@ namespace {
 void writePeakInfoInterpolated(QTextStream& stream)
 {
     const PeakInfos& peakInfos = gSession->interpolatedPeakInfos();
-    const int LINE_LEN = 9;
-    for (int j = 0, jEnd = peakInfos.count(); j < jEnd; j += LINE_LEN) {
-        int max = j + LINE_LEN;
-        for (int i = j; i < max; i++) {
-            double val = peakInfos.at(i).inten();
-            if (qIsNaN(val))
-                stream << " -1  ";
-            else
-                stream << val << " ";
-        }
-        stream << '\n';
+    for (int i = 0, col=0; i<peakInfos.count(); i++) {
+        double val = peakInfos.at(i).inten();
+        if (qIsNaN(val))
+            stream << " -1";
+        else
+            stream << val;
+        if (++col==9) {
+            stream  << '\n';
+            col = 0;
+        } else
+            stream << " ";
     }
 }
 
