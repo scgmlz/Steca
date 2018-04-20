@@ -35,7 +35,7 @@ public:
 
     void fill(float val, const size2d& size);
 
-    float inten1d(int i) const { return intens_.at(i); }
+    float inten1d(int i) const { return intens_[i]; }
 
     float inten2d(int ix, int iy) const { return inten1d(pointToIndex(ix, iy)); }
 
