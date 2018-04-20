@@ -100,10 +100,10 @@ void ActiveClusters::invalidateAvgMutables() const
 //! Computed cached avgCurve_.
 void ActiveClusters::computeAvgCurve() const
 {
-    QVector<const Measurement*> group;
+    std::vector<const Measurement*> group;
     for (Cluster const* cluster : clusters_)
         for (const Measurement* one: cluster->members())
-            group.append(one);
+            group.push_back(one);
     const Sequence seq(group);
     avgCurve_ = algo::projectCluster(seq, seq.rgeGma());
 }

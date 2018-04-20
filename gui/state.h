@@ -15,7 +15,7 @@
 #ifndef STATE_H
 #define STATE_H
 
-#include <QVector>
+#include <vector>
 
 //! Collection of GUI state variables and controls.
 
@@ -29,7 +29,7 @@ public:
     class CComboBox* diagramX;
     class CComboBox* diagramY;
 
-    QVector<bool> bigtableShowCol;
+    std::vector<bool> bigtableShowCol;
     const class BigtableModel* bigtableModel;
 };
 

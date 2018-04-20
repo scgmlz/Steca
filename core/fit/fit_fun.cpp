@@ -36,7 +36,7 @@ static double pow_n(double x, int n)
 double Polynom::y(double x, double const* parValues) const
 {
     double val = 0, xPow = 1;
-    for_i (parameters_.count()) {
+    for_i (parameters_.size()) {
         val += parValue(i, parValues) * xPow;
         xPow *= x;
     }
@@ -58,7 +58,7 @@ double Polynom::avgY(const Range& rgeX, double const* parValues) const
         return y(rgeX.min, parValues);
 
     double minY = 0, maqpair = 0, minPow = 1, maxPow = 1;
-    for_i (parameters_.count()) {
+    for_i (parameters_.size()) {
         double facY = parValue(i, parValues) / (i + 1);
         minY += facY * (minPow *= rgeX.min);
         maqpair += facY * (maxPow *= rgeX.max);

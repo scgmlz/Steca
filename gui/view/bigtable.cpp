@@ -34,8 +34,8 @@ BigtableModel::BigtableModel()
     gGui->state->bigtableModel = this;
     headers_ = PeakInfo::dataTags(false);
     comparators_ = PeakInfo::dataCmps();
-    ASSERT(comparators_.count() == headers_.count());
-    numCols_ = headers_.count();
+    ASSERT(comparators_.size() == headers_.count());
+    numCols_ = headers_.size();
     colIndexMap_.resize(numCols_);
     for_i (numCols_)
         colIndexMap_[i] = i;
@@ -46,7 +46,7 @@ void BigtableModel::refresh()
     beginResetModel();
     rows_.clear();
     for (const PeakInfo& r : gSession->peakInfos())
-        rows_.append(XRow(rows_.count() + 1, r.data()));
+        rows_.push_back(XRow(rows_.size() + 1, r.data()));
     sortData();
     endResetModel();
 }
@@ -93,7 +93,7 @@ QVariant BigtableModel::headerData(int section, Qt::Orientation, int role) const
 //! Called upon QHeaderView::sectionMoved.
 void BigtableModel::onColumnMove(int from, int to)
 {
-    ASSERT(from < colIndexMap_.count() && to < colIndexMap_.count());
+    ASSERT(from < colIndexMap_.size() && to < colIndexMap_.size());
     qSwap(colIndexMap_[from], colIndexMap_[to]);
 }
 
@@ -102,14 +102,14 @@ void BigtableModel::setSortColumn(int col)
     sortColumn_ = col < 0 ? col : colIndexMap_.at(col);
 }
 
-const QVector<QVariant>& BigtableModel::row(int index) const
+const std::vector<QVariant>& BigtableModel::row(int index) const
 {
     return rows_.at(index).row;
 }
 
 void BigtableModel::sortData()
 {
-    auto _cmpRows = [this](int col, const QVector<QVariant>& r1, const QVector<QVariant>& r2) {
+    auto _cmpRows = [this](int col, const std::vector<QVariant>& r1, const std::vector<QVariant>& r2) {
         col = colIndexMap_.at(col);
         return comparators_.at(col)(r1.at(col), r2.at(col));
     };
@@ -152,17 +152,17 @@ QStringList BigtableModel::getHeaders() const
     QStringList ret;
     const QStringList& headers = PeakInfo::dataTags(true);
     for_i (headers.count())
-        if (gGui->state->bigtableShowCol[i])
+        if (gGui->state->bigtableShowCol.at(i))
             ret.append(headers.at(i));
     return ret;
 }
 
-QVector<QVector<const QVariant*>> BigtableModel::getData() const
+std::vector<std::vector<const QVariant*>> BigtableModel::getData() const
 {
-    QVector<QVector<const QVariant*>> ret(rowCount());
+    std::vector<std::vector<const QVariant*>> ret(rowCount());
     for_ij (rowCount(), columnCount()-1)
-        if (gGui->state->bigtableShowCol[j])
-            ret[i].append(&(rows_[i].row.at(j)));
+        if (gGui->state->bigtableShowCol.at(j))
+            ret.at(i).push_back(&(rows_.at(i).row.at(j)));
     return ret;
 }
 

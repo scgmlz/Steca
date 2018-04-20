@@ -43,10 +43,10 @@ void PlotDiagram::refresh()
     const int xi = int(gGui->state->diagramX->currentIndex());
     const int yi = int(gGui->state->diagramY->currentIndex());
 
-    QVector<double> xs, ys, ysLow, ysHig;
+    std::vector<double> xs, ys, ysLow, ysHig;
     gSession->peakInfos().get4(xi, yi, xs, ys, ysLow, ysHig);
 
-    if (!xs.count())
+    if (!xs.size())
         return erase();
 
     Range rgeX(xs);
@@ -59,9 +59,9 @@ void PlotDiagram::refresh()
     xAxis->setVisible(true);
     yAxis->setVisible(true);
 
-    graph_->addData(xs, ys);
-    graphUp_->addData(xs, ysHig);
-    graphLo_->addData(xs, ysLow);
+    graph_->addData(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ys));
+    graphUp_->addData(QVector<double>::fromStdVector(xs),QVector<double>::fromStdVector( ysHig));
+    graphLo_->addData(QVector<double>::fromStdVector(xs),QVector<double>::fromStdVector( ysLow));
 
     replot();
 }

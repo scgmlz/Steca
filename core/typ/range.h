@@ -19,7 +19,6 @@
 #include "core/def/comparable.h"
 #include "core/typ/exception.h"
 #include <QJsonArray>
-#include <QVector>
 
 class JsonObj;
 
@@ -28,7 +27,7 @@ class Range {
 public:
     Range(); //!< invalid (NaN)
     Range(double min, double max);
-    Range(const QVector<double>&);
+    Range(const std::vector<double>&);
 
     static Range infinite(); //!< factory: -inf .. +inf
 
@@ -71,10 +70,10 @@ public:
     Ranges() {}
 
     void clear() { ranges_.clear(); }
-    bool isEmpty() const { return ranges_.isEmpty(); }
-    int count() const { return ranges_.count(); }
+    bool isEmpty() const { return ranges_.empty(); }
+    int count() const { return ranges_.size(); }
 
-    const Range& at(int i) const { return ranges_.at(i); }
+    const Range& at(int i) const { return ranges_[i]; }
 
     bool add(const Range&); //!< collapses overlapping ranges; returns true if *this changed
     bool remove(const Range&); //!< removes (cuts out) a range; returns whether there was a change
@@ -84,7 +83,7 @@ public:
 
 private:
     void sort();
-    QVector<Range> ranges_;
+    std::vector<Range> ranges_;
 };
 
 #endif // RANGE_H

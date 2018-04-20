@@ -28,12 +28,12 @@ class Sequence {
 public:
     Sequence() = delete;
     Sequence(const Sequence&) = delete;
-    Sequence(const QVector<const Measurement*>& measurements);
+    Sequence(const std::vector<const Measurement*>& measurements);
 
     const int count() const { return members_.size(); }
-    const Measurement* first() const { return members_.first(); }
+    const Measurement* first() const { return members_.front(); }
     const Measurement* at(int i) const { return members_.at(i); }
-    const QVector<const Measurement*>& members() const { return members_; }
+    const std::vector<const Measurement*>& members() const { return members_; }
 
     deg omg() const;
     deg phi() const;
@@ -53,7 +53,7 @@ public:
     size2d imageSize() const;
 
 private:
-    const QVector<const Measurement*> members_; //!< points to Dataset:vec<Datafile>:vec<M'ments>
+    const std::vector<const Measurement*> members_; //!< points to Dataset:vec<Datafile>:vec<M'ments>
     const Metadata metadata_; //!< averaged Metadata
 
     Metadata computeAvgMetadata() const;
@@ -66,7 +66,7 @@ class Cluster : public Sequence {
 public:
     Cluster() = delete;
     Cluster(const Cluster&) = delete;
-    Cluster(const QVector<const Measurement*>& measurements,
+    Cluster(const std::vector<const Measurement*>& measurements,
             const class Datafile& file, const int index, const int offset);
 
     void setActivated(bool on);

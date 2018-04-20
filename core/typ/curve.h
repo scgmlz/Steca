@@ -31,8 +31,8 @@ public:
     void append(double x, double y);
 
     // access to underlying data vectors
-    const QVector<double>& xs() const { return xs_; }
-    const QVector<double>& ys() const { return ys_; }
+    const std::vector<double>& xs() const { return xs_; }
+    const std::vector<double>& ys() const { return ys_; }
 
     double x(int i) const { return xs_.at(i); }
     double y(int i) const { return ys_.at(i); }
@@ -50,10 +50,10 @@ public:
     double sumY() const;
 
 private:
-    QVector<double> xs_, ys_;
+    std::vector<double> xs_, ys_;
     Range rgeX_, rgeY_;
 };
 
-typedef QVector<Curve> curve_vec;
+typedef std::vector<Curve> curve_vec;
 
 #endif // CURVE_H

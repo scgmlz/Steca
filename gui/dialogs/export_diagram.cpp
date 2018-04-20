@@ -47,18 +47,18 @@ void ExportDiagram::save()
     // get data
     const int xi = int(gGui->state->diagramX->currentIndex());
     const int yi = int(gGui->state->diagramY->currentIndex());
-    QVector<double> xs, ys, ysLow, ysHig;
+    std::vector<double> xs, ys, ysLow, ysHig;
     gSession->peakInfos().get4(xi, yi, xs, ys, ysLow, ysHig);
-    if (!xs.count()) {
+    if (!xs.size()) {
         qWarning() << "no data available";
         return;
     }
 
     // write data table
-    for_i (xs.count()) {
-        stream << xs.at(i) << separator << ys.at(i);
-        if (ysLow.count())
-            stream << separator << ysLow.at(i) << separator << ysHig.at(i);
+    for_i (xs.size()) {
+        stream << xs[i] << separator << ys[i];
+        if (ysLow.size())
+            stream << separator << ysLow[i] << separator << ysHig[i];
         stream << '\n';
     }
 
