@@ -27,8 +27,9 @@ namespace {
 void writePeakInfoInterpolated(QTextStream& stream)
 {
     const PeakInfos& peakInfos = gSession->interpolatedPeakInfos();
-    for (int i = 0, col=0; i<peakInfos.size(); i++) {
-        double val = peakInfos.at(i).inten();
+    int col = 0;
+    for (auto& info : peakInfos.peaks()) {
+        double val = info.inten();
         if (qIsNaN(val))
             stream << " -1";
         else
@@ -44,10 +45,10 @@ void writePeakInfoInterpolated(QTextStream& stream)
 void writePeakInfoOriginalGrid(QTextStream& stream)
 {
     const PeakInfos& peakInfos = gSession->directPeakInfos();
-    for_i (peakInfos.size()) {
-        double val = peakInfos.at(i).inten();
-        stream << double(peakInfos.at(i).alpha()) << " "
-               << double(peakInfos.at(i).beta()) << " "
+    for (auto& info : peakInfos.peaks()) {
+        double val = info.inten();
+        stream << double(info.alpha()) << " "
+               << double(info.beta()) << " "
                << val << '\n';
     }
 }

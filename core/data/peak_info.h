@@ -29,7 +29,7 @@ public:
     PeakInfo(deg alpha, deg beta, Range, float, float /*error*/, deg, deg /*error*/,
              float, float /*error*/);
     PeakInfo(deg alpha, deg beta);
-// TODO after PR#78    PeakInfo(const PeakInfo&) = delete;
+//    PeakInfo(const PeakInfo&) = default;
 //    PeakInfo(PeakInfo&&) = default;
 
     enum class eReflAttr {
@@ -74,17 +74,23 @@ private:
 
 //! A list of PeakInfo's
 
-class PeakInfos : public std::vector<PeakInfo> {
+class PeakInfos {
 public:
     PeakInfos() { clearCache(); }
-    void append(const PeakInfo&);
+    PeakInfos(const PeakInfos&) = delete;
+
+    void append(PeakInfo&&);
+
+    const std::vector<PeakInfo>& peaks() const { return peaks_; }
     float averageInten() const;
     const Range& rgeInten() const;
     void get4(const int idxX, const int idxY,
               std::vector<double>& xs, std::vector<double>& ys,
               std::vector<double>& ysLow, std::vector<double>& ysHig) const;
+
 private:
     void clearCache();
+    std::vector<PeakInfo> peaks_;
     mutable float avgInten_;
     mutable Range rgeInten_;
 };

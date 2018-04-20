@@ -131,7 +131,7 @@ The 'flat_' flag is controlled by the check box that is in the corner of the pol
 NaNs (intensities) do not occur in computed points, only in interpolated points,
 when interpolation fails.
     */
-    for (const PeakInfo& r : rs_) {
+    for (const PeakInfo& r : rs_.peaks()) {
         double inten = r.inten();
         if (!qIsFinite(inten)) // nan comes from interpolation
             continue;
