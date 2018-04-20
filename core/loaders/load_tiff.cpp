@@ -17,83 +17,9 @@
 #include <QDataStream>
 #include <QDir>
 
-namespace load {
+namespace {
 
-// implemented below
-static void loadTiff(Rawfile*, const QString&, deg, double, double);
-
-// The dat file looks like so:
-/*
-; comments
-
-; file name, phi, monitor, Exposuretime
-
-Aus-Weimin-00001.tif -90
-Aus-Weimin-00002.tif -85
-Aus-Weimin-00003.tif -80
-Aus-Weimin-00004.tif -75
-Aus-Weimin-00005.tif -70
-Aus-Weimin-00006.tif -65
-Aus-Weimin-00007.tif -60
-Aus-Weimin-00008.tif -55
-Aus-Weimin-00009.tif -50
-*/
-
-Rawfile loadTiffDat(const QString& filePath) {
-    Rawfile ret(filePath);
-
-    QFile f(filePath);
-    if (!(f.open(QFile::ReadOnly)))
-        THROW("cannot open file");
-
-    QDir dir = QFileInfo(filePath).dir();
-
-    QByteArray line;
-    while (!(line = f.readLine()).isEmpty()) {
-        QString s = line;
-
-        // cut off comment
-        int commentPos = s.indexOf(';');
-        if (commentPos >= 0)
-            s = s.left(commentPos);
-
-        // split to parts
-        if ((s = s.simplified()).isEmpty())
-            continue;
-
-        const QStringList lst = s.split(' ');
-        const int cnt = lst.count();
-        if (!(2 <= cnt && cnt <= 4)) THROW("bad metadata format");
-
-        // file, phi, monitor, expTime
-        bool ok;
-        QString tiffFileName = lst.at(0);
-        deg phi = lst.at(1).toDouble(&ok);
-        if (!(ok)) THROW("bad phi value");
-
-        double monitor = 0;
-        if (cnt > 2) {
-            monitor = lst.at(2).toDouble(&ok);
-            if (!(ok)) THROW("bad monitor value");
-        }
-
-        double expTime = 0;
-        if (cnt > 3) {
-            expTime = lst.at(3).toDouble(&ok);
-            if (!(ok)) THROW("bad expTime value");
-        }
-
-        try {
-            // load one dataseq
-            loadTiff(&ret, dir.filePath(tiffFileName), phi, monitor, expTime);
-        } catch (Exception& e) {
-            THROW(tiffFileName + ": " + e.msg());
-        }
-    }
-
-    return ret;
-}
-
+//! Reads one TIFF file.
 static void loadTiff(
     Rawfile* file, const QString& filePath, deg phi, double monitor, double expTime)
 {
@@ -258,6 +184,84 @@ static void loadTiff(
     check();
 
     file->addDataset(std::move(md), size, std::move(intens));
+}
+
+} // namespace
+
+
+namespace load {
+
+//! Reads a .dat file, which is a digest that contains a list of TIFF files plus a few parameters.
+
+//! The dat file looks like so:
+//!
+//! ; comments
+//!
+//! ; file name, phi, monitor, Exposuretime  [the last two parameters are optional]
+//!
+//! Aus-Weimin-00001.tif -90
+//! Aus-Weimin-00002.tif -85
+//! Aus-Weimin-00003.tif -80
+//! Aus-Weimin-00004.tif -75
+//! Aus-Weimin-00005.tif -70
+//! Aus-Weimin-00006.tif -65
+//! Aus-Weimin-00007.tif -60
+//! Aus-Weimin-00008.tif -55
+//! Aus-Weimin-00009.tif -50
+
+Rawfile loadTiffDat(const QString& filePath) {
+    Rawfile ret(filePath);
+
+    QFile f(filePath);
+    if (!(f.open(QFile::ReadOnly)))
+        THROW("cannot open file");
+
+    QDir dir = QFileInfo(filePath).dir();
+
+    QByteArray line;
+    while (!(line = f.readLine()).isEmpty()) {
+        QString s = line;
+
+        // cut off comment
+        int commentPos = s.indexOf(';');
+        if (commentPos >= 0)
+            s = s.left(commentPos);
+
+        // split to parts
+        if ((s = s.simplified()).isEmpty())
+            continue;
+
+        const QStringList lst = s.split(' ');
+        const int cnt = lst.count();
+        if (!(2 <= cnt && cnt <= 4)) THROW("bad metadata format");
+
+        // file, phi, monitor, expTime
+        bool ok;
+        QString tiffFileName = lst.at(0);
+        deg phi = lst.at(1).toDouble(&ok);
+        if (!(ok)) THROW("bad phi value");
+
+        double monitor = 0;
+        if (cnt > 2) {
+            monitor = lst.at(2).toDouble(&ok);
+            if (!(ok)) THROW("bad monitor value");
+        }
+
+        double expTime = 0;
+        if (cnt > 3) {
+            expTime = lst.at(3).toDouble(&ok);
+            if (!(ok)) THROW("bad expTime value");
+        }
+
+        try {
+            // load one dataseq
+            loadTiff(&ret, dir.filePath(tiffFileName), phi, monitor, expTime);
+        } catch (Exception& e) {
+            THROW(tiffFileName + ": " + e.msg());
+        }
+    }
+
+    return ret;
 }
 
 } // namespace load
