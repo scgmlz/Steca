@@ -31,15 +31,15 @@ void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
                 const Range& rgeGma, const QString& separator)
 {
     ASSERT(rgeGma.isValid());
-    const Metadata* md = cluster->avgMetadata();
-    stream << "Comment: " << md->comment << '\n';
-    stream << "Date: " << md->date << '\n';
+    const Metadata& md = cluster->avgMetadata();
+    stream << "Comment: " << md.comment << '\n';
+    stream << "Date: " << md.date << '\n';
     stream << "Gamma range min: " << rgeGma.min << '\n';
     stream << "Gamma range max: " << rgeGma.max << '\n';
 
     for_i (Metadata::numAttributes(true))
         stream << Metadata::attributeTag(i, true) << ": "
-               << md->attributeValue(i).toDouble() << '\n';
+               << md.attributeValue(i).toDouble() << '\n';
 
     stream << "Tth" << separator << "Intensity" << '\n';
     for_i (curve.xs().size())

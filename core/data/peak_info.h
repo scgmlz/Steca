@@ -23,15 +23,14 @@
 class PeakInfo final {
 public:
     PeakInfo();
-    PeakInfo(
-        const Metadata*,
-        deg alpha, deg beta, Range, float, float /*error*/,
-        deg, deg /*error*/, float, float /*error*/);
+    PeakInfo(const Metadata*, deg alpha, deg beta, Range, float, float /*error*/,
+             deg, deg /*error*/, float, float /*error*/);
     PeakInfo(const Metadata*, deg alpha, deg beta, Range);
-    PeakInfo(
-        deg alpha, deg beta, Range, float, float /*error*/, deg, deg /*error*/,
-        float, float /*error*/);
+    PeakInfo(deg alpha, deg beta, Range, float, float /*error*/, deg, deg /*error*/,
+             float, float /*error*/);
     PeakInfo(deg alpha, deg beta);
+// TODO after PR#78    PeakInfo(const PeakInfo&) = delete;
+//    PeakInfo(PeakInfo&&) = default;
 
     enum class eReflAttr {
         ALPHA,

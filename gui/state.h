@@ -22,6 +22,7 @@
 class GuiState {
 public:
     GuiState();
+    GuiState(const GuiState&) = delete;
     bool editingBaseline {false};
     bool editingPeakfits {false};
 
