@@ -23,7 +23,7 @@
 class ExportfileDialogfield : public QVBoxLayout {
 public:
     ExportfileDialogfield() = delete;
-    ExportfileDialogfield(ExportfileDialogfield&) = delete;
+    ExportfileDialogfield(const ExportfileDialogfield&) = delete;
     ExportfileDialogfield(QWidget* parent, bool withTypes, std::function<void(void)> onSave);
 
     QString path(bool withSuffix, bool withNumber=false);

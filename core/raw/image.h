@@ -24,7 +24,7 @@ public:
     Image() = delete;
     Image(const size2d&, float val);
     Image(const size2d& size, std::vector<float>&& intens);
-    Image(Image&) = delete;
+    Image(const Image&) = delete;
     Image(Image&&) = default;
 
     const size2d& size() const { return size_; }

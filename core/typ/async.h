@@ -32,7 +32,7 @@ private:
 class Progress {
 public:
     Progress() = delete;
-    Progress(Progress&) = delete;
+    Progress(const Progress&) = delete;
     Progress(class QProgressBar*, const QString& taskName, int totalSteps);
     ~Progress();
 
