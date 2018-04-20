@@ -45,7 +45,7 @@ public:
     Range rgeInten() const;
     double normFactor() const;
 
-    const Metadata* avgMetadata() const { return &metadata_; } // TODO rm *
+    const Metadata& avgMetadata() const { return metadata_; }
     double avgMonitorCount() const;
     double avgDeltaMonitorCount() const;
     double avgDeltaTime() const;

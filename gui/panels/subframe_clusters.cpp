@@ -75,7 +75,7 @@ QVariant ActiveClustersModel::data(const QModelIndex& index, int role) const
                 ret += "-" + QString::number(cluster.totalOffset()+cluster.count());
             return ret;
         } else if (col>=COL_ATTRS && col < COL_ATTRS+metaCount()) {
-            return cluster.avgMetadata()->attributeStrValue(metaInfoNums_.at(col-COL_ATTRS));
+            return cluster.avgMetadata().attributeStrValue(metaInfoNums_.at(col-COL_ATTRS));
         } else
             return {};
     }
