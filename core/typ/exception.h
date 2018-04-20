@@ -19,7 +19,11 @@
 #include <QString> // no auto rm
 #include <iostream>
 
-//! The sole exception type used in this software.
+//! The sole exception type to be used in core and gui.
+
+//! Throw this if the exception is to be catched, and the program can recover.
+//! For fatal bugs do not throw this, but use qFatal().
+
 class Exception : public QException {
 public:
     Exception() = delete;
@@ -29,7 +33,8 @@ private:
     QString msg_;
 };
 
-// raise an exception // TODO catch Exception and print msg; then remove output here
+// The sole way to throw an Exception.
+// TODO reconsider whether output is needed here, and whether to prefer std::cerr over qDebug
 #define THROW(msg) { std::cerr << QString(msg).toStdString() << "\n"; throw Exception(msg); }
 
 #endif // EXCEPTION_H

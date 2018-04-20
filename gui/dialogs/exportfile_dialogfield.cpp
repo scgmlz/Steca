@@ -119,5 +119,5 @@ QString ExportfileDialogfield::separator() const
     else if (saveFmt==CSV_EXT)
         return CSV_SEP;
     else
-        THROW("bug: invalid format");
+        qFatal("invalid case in ExportfileDialogfield::separator");
 }

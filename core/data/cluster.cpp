@@ -134,7 +134,7 @@ bool Cluster::isIncomplete() const
 void Cluster::setCurve(int i, Curve&& c) const
 {
     if (i<0 || i>curves_.size())
-        THROW("BUG: Cluster::setCurve called with invalid i");
+        qFatal("Cluster::setCurve called with invalid i");
     if (i<curves_.size())
         curves_[i] = std::move(c);
     else
@@ -144,6 +144,6 @@ void Cluster::setCurve(int i, Curve&& c) const
 const Curve& Cluster::curve(int i) const
 {
     if (i<0 || i>=curves_.size())
-        THROW("BUG: Cluster::curve called with invalid i");
+        qFatal("Cluster::curve called with invalid i");
     return curves_[i];
 }

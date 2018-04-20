@@ -98,15 +98,20 @@ ExportDfgram::ExportDfgram()
 
 void ExportDfgram::save()
 {
-    if      (rbCurrent_.isChecked())
-        saveCurrent();
-    else if (rbAllSequential_.isChecked())
-        saveAll(false);
-    else if (rbAll_.isChecked())
-        saveAll(true);
-    else
-        qFatal("bug: invalid case in ExportDfgram::save");
-    close();
+    try {
+        if      (rbCurrent_.isChecked())
+            saveCurrent();
+        else if (rbAllSequential_.isChecked())
+            saveAll(false);
+        else if (rbAll_.isChecked())
+            saveAll(true);
+        else
+            qFatal("invalid case in ExportDfgram::save");
+        close();
+    } catch(Exception& ex) {
+        qWarning() << "Could not save:\n" << ex.msg() << "\n";
+        gSession->clear();
+    }
 }
 
 void ExportDfgram::saveCurrent()

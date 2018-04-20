@@ -69,10 +69,10 @@ PeakInfo rawFit(const Cluster& cluster, int iGamma, const Peak& peak)
 void algo::rawFits(class QProgressBar* progressBar)
 {
     if (!gSession->peaks().count())
-        THROW("BUG: rawFits must not be called unless peak is defined");
+        qFatal("algo::rawFits called before peak is defined");
     Peak* peak = gSession->peaks().selectedPeak();
     if (!peak)
-        qFatal("BUG: no peak selected");
+        qFatal("algo::rawFits called while no peak is selected");
 
     PeakInfos tmp;
     const ActiveClusters& seq = gSession->activeClusters();

@@ -135,7 +135,7 @@ void Dataset::removeFile()
         else if (i>0)
             highlight().setFile(i-1);
         else
-            qFatal("bug: impossible case in Dataset::removeFile");
+            qFatal("impossible case in Dataset::removeFile");
     } else
         highlight().clear(); // TODO or directly emit signal ?
 }

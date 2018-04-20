@@ -27,7 +27,7 @@ class Curve;
 class Sequence {
 public:
     Sequence() = delete;
-    Sequence(Sequence&) = delete;
+    Sequence(const Sequence&) = delete;
     Sequence(const std::vector<const Measurement*>& measurements);
 
     const int count() const { return members_.size(); }
@@ -65,7 +65,7 @@ private:
 class Cluster : public Sequence {
 public:
     Cluster() = delete;
-    Cluster(Cluster&) = delete;
+    Cluster(const Cluster&) = delete;
     Cluster(const std::vector<const Measurement*>& measurements,
             const class Datafile& file, const int index, const int offset);
 

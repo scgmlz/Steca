@@ -23,7 +23,7 @@
 class BigtableModel : public TableModel {
 public:
     BigtableModel();
-    BigtableModel(BigtableModel&) = delete;
+    BigtableModel(const BigtableModel&) = delete;
 
     void refresh();
     void onColumnMove(int from, int to);
@@ -64,7 +64,7 @@ private:
 class BigtableView : public TableView {
 public:
     BigtableView();
-    BigtableView(BigtableView&) = delete;
+    BigtableView(const BigtableView&) = delete;
 
     void refresh();
 

@@ -40,6 +40,7 @@ std::vector<const Measurement*> const Rawfile::measurements() const
 Image Rawfile::summedImage() const
 {
     ASSERT(measurements_.size());
+    // TODO start from the first given image, not from a zero image
     Image ret(measurements_.front().imageSize(), 0.);
     for (const Measurement& one : measurements_)
         ret.addImage(one.image());
