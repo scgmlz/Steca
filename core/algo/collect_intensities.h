@@ -16,6 +16,7 @@
 #define PROJECT_INTENSITY_H
 
 #include "core/typ/angles.h"
+#include <vector> // no auto rm
 
 class QProgressBar;
 class Curve;

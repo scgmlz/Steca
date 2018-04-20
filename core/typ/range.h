@@ -15,10 +15,11 @@
 #ifndef RANGE_H
 #define RANGE_H
 
-#include <QtGlobal>
 #include "core/def/comparable.h"
 #include "core/typ/exception.h"
+#include <QtGlobal>
 #include <QJsonArray>
+#include <vector> // no auto rm
 
 class JsonObj;
 
