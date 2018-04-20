@@ -147,9 +147,8 @@ void Console::readFile(const QString& fName)
         }
         commandLifo_.push_back(line);
     }
-    fromFile_ = fName;
     commandsFromStack();
-    fromFile_ = "";
+    log("# @file " + fName + " executed");
 }
 
 void Console::commandsFromStack()
@@ -168,7 +167,6 @@ void Console::commandsFromStack()
         } else if (ret==Result::suspend)
             return;
     }
-    log("# Command stack executed");
 }
 
 //! Commands issued by the system (and not by the user nor a command file) should pass here
@@ -272,7 +270,7 @@ void Console::log(const QString& line)
     if (caller_==Caller::gui)
         log_ << line << "\n";
     else if (caller_==Caller::stack)
-        log_ << line << " #< " << fromFile_ << "\n";
+        log_ << line << " #< @file\n";
     else if (caller_==Caller::cli)
         log_ << "#: " << line << "\n";
     else if (caller_==Caller::sys)

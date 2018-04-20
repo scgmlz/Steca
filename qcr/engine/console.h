@@ -48,7 +48,6 @@ private:
     class QSocketNotifier *notifier_;
     std::stack<class CommandRegistry*> registryStack_;
     std::deque<QString> commandLifo_;
-    QString fromFile_;
 private slots:
     void readLine();
 };
