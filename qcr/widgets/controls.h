@@ -106,7 +106,6 @@ private:
 //! Named QCheckBox that can be set by console command.
 class CCheckBox : public QCheckBox, private CSettable {
 public:
-    CCheckBox(const QString& name, QAction*);
     CCheckBox(const QString& name, const QString& text);
     void onCommand(const QStringList&) override;
 };

@@ -245,20 +245,6 @@ void CDoubleSpinBox::onCommand(const QStringList& args)
 
 //! @class CCheckBox
 
-CCheckBox::CCheckBox(const QString& _name, QAction* action)
-    : QCheckBox(action ? action->text().toLower() : "")
-    , CSettable(_name)
-{
-    if (!action)
-        return;
-    connect(this, &QCheckBox::toggled, [action](bool on) { action->setChecked(on); });
-    connect(action, &QAction::toggled, [this](bool on) { setChecked(on); });
-    setToolTip(action->toolTip());
-    setChecked(action->isChecked());
-    connect(this, _SLOT_(QCheckBox,stateChanged,int), [this](int val)->void {
-            gConsole->log2(hasFocus(), name()+" set "+QString::number(val)); });
-}
-
 CCheckBox::CCheckBox(const QString& _name, const QString& text)
     : QCheckBox(text)
     , CSettable(_name)
