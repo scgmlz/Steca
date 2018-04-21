@@ -259,10 +259,12 @@ CCheckBox::CCheckBox(const QString& _name, QAction* action)
             gConsole->log2(hasFocus(), name()+" set "+QString::number(val)); });
 }
 
-CCheckBox::CCheckBox(const QString& name, const QString& text)
-    : CCheckBox(name, {})
+CCheckBox::CCheckBox(const QString& _name, const QString& text)
+    : QCheckBox(text)
+    , CSettable(_name)
 {
-    setText(text);
+    connect(this, _SLOT_(QCheckBox,stateChanged,int), [this](int val)->void {
+            gConsole->log2(hasFocus(), name()+" set "+QString::number(val)); });
 }
 
 void CCheckBox::onCommand(const QStringList& args)
