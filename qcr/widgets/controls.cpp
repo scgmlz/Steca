@@ -24,15 +24,21 @@
 #define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 
 //  ***********************************************************************************************
-//  QAction overloads QcrTrigger and QcrToggle
+//  QcrAction, QcrTrigger and QcrToggle
 //  ***********************************************************************************************
+
+//! @class QcrAction
+
+QcrAction::QcrAction(const QString& rawname, const QString& text)
+    : QAction(text, qApp)
+    , CSettable(rawname)
+    , tooltip_(text.toLower())
+{}
 
 //! @class QcrTrigger
 
 QcrTrigger::QcrTrigger(const QString& rawname, const QString& text, const QString& iconFile)
-    : QAction(text, qApp)
-    , CSettable(rawname)
-    , tooltip_(text.toLower())
+    : QcrAction(rawname, text)
 {
     //QAction::setObjectName(name());
     if (iconFile!="")
@@ -64,9 +70,7 @@ void QcrTrigger::onCommand(const QStringList& args)
 //! @class QcrToggle
 
 QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on, const QString& iconFile)
-    : QAction(text, qApp)
-    , CSettable(rawname)
-    , tooltip_(text.toLower())
+    : QcrAction(rawname, text)
 {
     //QAction::setObjectName(CSettable::name());
     if (iconFile!="")
@@ -111,13 +115,13 @@ void QcrToggle::onCommand(const QStringList& args)
 //  ***********************************************************************************************
 //! @classes with no console connection
 
-XTextButton::XTextButton(QAction* action)
+XTextButton::XTextButton(QcrAction* action)
 {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonTextOnly);
 }
 
-XIconButton::XIconButton(QAction* action)
+XIconButton::XIconButton(QcrAction* action)
 {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonIconOnly);
@@ -138,8 +142,8 @@ XIconButton::XIconButton(QAction* action)
 //! https://forum.qt.io/topic/89011. Here, we explicitly deal with editingFinished and
 //! mouse release events.
 
-QcrSpinBox::QcrSpinBox(const QString& _name, int ndigits, bool withDot, int min, int max,
-                   const QString& tooltip)
+QcrSpinBox::QcrSpinBox(
+    const QString& _name, int ndigits, bool withDot, int min, int max, const QString& tooltip)
     : CSettable(_name)
 {
     widgetUtils::setWidth(this, 2+ndigits, withDot);

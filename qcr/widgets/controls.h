@@ -28,38 +28,41 @@
 #include <QSpinBox>
 #include <QToolButton>
 
-//! A trigger, for use in buttons or menu entries, that can also be activated by console command.
-class QcrTrigger : public QAction, private CSettable {
+class QcrAction : public QAction, protected CSettable {
 public:
-    QcrTrigger(const QString& name, const QString& text, const QString& iconFile="");
-    QcrTrigger(const QString& name, const QString& text, const QString& iconFile,
-             const QKeySequence& shortcut);
-    void onCommand(const QStringList&) override;
-private:
+    QcrAction(const QString& rawname, const QString& text);
+protected:
     QString tooltip_;
 };
 
+//! A trigger, for use in buttons or menu entries, that can also be activated by console command.
+class QcrTrigger : public QcrAction {
+public:
+    QcrTrigger(const QString& name, const QString& text, const QString& iconFile="");
+    QcrTrigger(const QString& name, const QString& text, const QString& iconFile,
+               const QKeySequence& shortcut);
+    void onCommand(const QStringList&) override;
+};
+
 //! A Toggle, for use in buttons or menu entries, that can also be switched by console command.
-class QcrToggle : public QAction, private CSettable {
+class QcrToggle : public QcrAction {
 public:
     QcrToggle(const QString& name, const QString& text, bool on, const QString& iconFile="");
     QcrToggle(const QString& name, const QString& text, bool on, const QString& iconFile,
-            const QKeySequence& shortcut);
+              const QKeySequence& shortcut);
     void onCommand(const QStringList&) override;
-private:
-    QString tooltip_;
 };
 
 //! QToolButton with text display and associated QAction.
 class XTextButton : public QToolButton {
 public:
-    XTextButton(QAction*);
+    XTextButton(QcrAction*);
 };
 
 //! QToolButton with icon and associated QAction.
 class XIconButton : public QToolButton {
 public:
-    XIconButton(QAction*);
+    XIconButton(QcrAction*);
 };
 
 //! Named QSpinBox that can be set by console command.
@@ -67,7 +70,7 @@ class QcrSpinBox : public QSpinBox, private CSettable {
     Q_OBJECT
 public:
     QcrSpinBox(const QString& name, int ndigits, bool withDot, int min = INT_MIN, int max = INT_MAX,
-             const QString& tooltip="");
+               const QString& tooltip="");
     void onCommand(const QStringList&) override;
 signals:
     void valueReleased(int); //! Improving over valueChanged, do not signal intermediate states
@@ -130,7 +133,7 @@ public:
 class QcrFileDialog : public QFileDialog, private CModal, CSettable {
 public:
     QcrFileDialog(QWidget *parent = Q_NULLPTR, const QString &caption = QString(),
-                const QString &directory = QString(), const QString &filter = QString());
+                  const QString &directory = QString(), const QString &filter = QString());
     ~QcrFileDialog();
     int exec() override;
     void onCommand(const QStringList&) override;
