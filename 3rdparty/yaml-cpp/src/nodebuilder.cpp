@@ -2,10 +2,10 @@
 #include <cassert>
 
 #include "nodebuilder.h"
-#include "yaml-cpp/node/detail/node.h"
-#include "yaml-cpp/node/impl.h"
-#include "yaml-cpp/node/node.h"
-#include "yaml-cpp/node/type.h"
+#include "../include/yaml-cpp/node/detail/node.h"
+#include "../include/yaml-cpp/node/impl.h"
+#include "../include/yaml-cpp/node/node.h"
+#include "../include/yaml-cpp/node/type.h"
 
 namespace YAML {
 struct Mark;

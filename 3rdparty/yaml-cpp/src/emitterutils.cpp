@@ -7,9 +7,9 @@
 #include "regex_yaml.h"
 #include "regeximpl.h"
 #include "stringsource.h"
-#include "yaml-cpp/binary.h"  // IWYU pragma: keep
-#include "yaml-cpp/ostream_wrapper.h"
-#include "yaml-cpp/null.h"
+#include "../include/yaml-cpp/binary.h"  // IWYU pragma: keep
+#include "../include/yaml-cpp/ostream_wrapper.h"
+#include "../include/yaml-cpp/null.h"
 
 namespace YAML {
 namespace Utils {

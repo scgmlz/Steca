@@ -1,4 +1,4 @@
-#include "yaml-cpp/binary.h"
+#include "../include/yaml-cpp/binary.h"
 
 namespace YAML {
 static const char encoding[] =

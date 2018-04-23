@@ -1,4 +1,4 @@
-#include "yaml-cpp/node/node.h"
+#include "../include/yaml-cpp/node/node.h"
 #include "nodebuilder.h"
 #include "nodeevents.h"
 

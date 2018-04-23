@@ -1,4 +1,4 @@
-#include "yaml-cpp/exceptions.h"
+#include "../include/yaml-cpp/exceptions.h"
 
 // This is here for compatibility with older versions of Visual Studio
 // which don't support noexcept

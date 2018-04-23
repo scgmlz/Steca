@@ -13,11 +13,11 @@
 #include <utility>
 #include <vector>
 
-#include "yaml-cpp/dll.h"
-#include "yaml-cpp/node/detail/node_iterator.h"
-#include "yaml-cpp/node/iterator.h"
-#include "yaml-cpp/node/ptr.h"
-#include "yaml-cpp/node/type.h"
+#include "../../dll.h"
+#include "../../node/detail/node_iterator.h"
+#include "../../node/iterator.h"
+#include "../../node/ptr.h"
+#include "../../node/type.h"
 
 namespace YAML {
 namespace detail {
