@@ -64,8 +64,8 @@ Dfgram::Dfgram()
             gSession->setNormMode(eNorm(index)); });
     connect(&intenAvg_, &QRadioButton::toggled, [this](bool on) {
         intenScale_.setEnabled(on);
-        intenScale_.setValue(gSession->intenScale());
-        gSession->setIntenScaleAvg(on, intenScale_.value());
+        intenScale_.programaticallySetValue(gSession->intenScale());
+        gSession->setIntenScaleAvg(on, intenScale_.getValue());
     });
     connect(&intenScale_, &QcrDoubleSpinBox::valueReleased, [](double val) {
         if (val > 0)
@@ -97,7 +97,7 @@ Dfgram::Dfgram()
 
 void Dfgram::onNormChanged()
 {
-    intenScale_.setValue(gSession->intenScale()); // TODO own signal
+    intenScale_.programaticallySetValue(gSession->intenScale()); // TODO own signal
     if (gSession->intenScaledAvg())
         intenAvg_.setChecked(true);
     else

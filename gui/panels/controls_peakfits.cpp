@@ -132,10 +132,10 @@ RangeControl::RangeControl()
 
     // outbound connections
     connect(&spinRangeMin_, &QcrDoubleSpinBox::valueReleased, [this](double val) {
-            double antival = qMax(spinRangeMax_.value(), val);
+            double antival = qMax(spinRangeMax_.getValue(), val);
             gSession->peaks().selectedPeak()->setRange(Range(val, antival)); });
     connect(&spinRangeMax_, &QcrDoubleSpinBox::valueReleased, [this](double val) {
-            double antival = qMin(spinRangeMin_.value(), val);
+            double antival = qMin(spinRangeMin_.getValue(), val);
             gSession->peaks().selectedPeak()->setRange(Range(antival, val)); });
 
     // layout
@@ -158,8 +158,8 @@ void RangeControl::onData()
     if (!peak)
         return;
     Range range = peak->range();
-    spinRangeMin_.setValue(safeReal(range.min));
-    spinRangeMax_.setValue(safeReal(range.max));
+    spinRangeMin_.programaticallySetValue(safeReal(range.min));
+    spinRangeMax_.programaticallySetValue(safeReal(range.max));
 }
 
 

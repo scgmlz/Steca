@@ -3,7 +3,7 @@
 //  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/engine/enhance_widgets.cpp
-//! @brief     Implements functions that return new Qt objects
+//! @brief     Implements classes CSettable, CModal, CModelessDialog
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)

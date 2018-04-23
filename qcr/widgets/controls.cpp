@@ -144,7 +144,7 @@ QcrIconButton::QcrIconButton(QcrAction* action)
 
 QcrSpinBox::QcrSpinBox(
     const QString& _name, int ndigits, bool withDot, int min, int max, const QString& tooltip)
-    : CSettable(_name)
+    : QcrControl<int>(_name)
 {
     widgetUtils::setWidth(this, 2+ndigits, withDot);
     setMinimum(min);
@@ -188,7 +188,7 @@ void QcrSpinBox::onCommand(const QStringList& args)
 //! @class QcrDoubleSpinBox
 
 QcrDoubleSpinBox::QcrDoubleSpinBox(const QString& _name, int ndigits, double min, double max)
-    : CSettable(_name)
+    : QcrControl<double>(_name)
 {
     widgetUtils::setWidth(this, 2+ndigits, true);
     if (min>max)

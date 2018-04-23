@@ -66,32 +66,40 @@ public:
 };
 
 //! Named integer-valued spin box that can be set by console command.
-class QcrSpinBox : public QSpinBox, private CSettable {
+class QcrSpinBox : public QSpinBox, public QcrControl<int> {
     Q_OBJECT
 public:
     QcrSpinBox(const QString& name, int ndigits, bool withDot, int min = INT_MIN, int max = INT_MAX,
                const QString& tooltip="");
     void onCommand(const QStringList&) override;
+    int getValue() const final { return value(); }
 signals:
     void valueReleased(int); //! Improving over valueChanged, do not signal intermediate states
 private:
     void mouseReleaseEvent(QMouseEvent *event) override;
     void reportChange();
     int reportedValue_;
+    void doSetValue(int val) final { setValue(val); }
+    int value() const { return QSpinBox::value(); }
+    void setValue(int val) { QSpinBox::setValue(val); }
 };
 
 //! Named double-valued spin box that can be set by console command.
-class QcrDoubleSpinBox : public QDoubleSpinBox, private CSettable {
+class QcrDoubleSpinBox : public QDoubleSpinBox, public QcrControl<double> {
     Q_OBJECT
 public:
     QcrDoubleSpinBox(const QString& name, int ndigits, double min = LLONG_MIN, double max = LLONG_MAX);
     void onCommand(const QStringList&) override;
+    double getValue() const final { return value(); }
 signals:
     void valueReleased(double); //! Improving over valueChanged, do not signal intermediate states
 private:
     void mouseReleaseEvent(QMouseEvent *event) override;
     void reportChange();
     double reportedValue_;
+    void doSetValue(double val) final { setValue(val); }
+    double value() const { return QDoubleSpinBox::value(); }
+    void setValue(double val) { QDoubleSpinBox::setValue(val); }
 };
 
 //! Named check box that can be set by console command.
