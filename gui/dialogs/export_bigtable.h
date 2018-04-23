@@ -15,11 +15,11 @@
 #ifndef EXPORT_BIGTABLE_H
 #define EXPORT_BIGTABLE_H
 
-#include "qcr/engine/enhance_widgets.h"
+#include "qcr/widgets/controls.h"
 
 //! The modal dialog for saving the main table (fit results and metadata).
 
-class ExportBigtable : private CModal, public QDialog {
+class ExportBigtable : public QcrDialog {
 public:
     ExportBigtable();
 private:

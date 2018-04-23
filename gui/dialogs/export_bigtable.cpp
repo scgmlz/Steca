@@ -23,8 +23,7 @@
 //! @class ExportBigtable
 
 ExportBigtable::ExportBigtable()
-    : CModal("xbig")
-    , QDialog(gGui)
+    : QcrDialog(gGui, "Export fit results table")
 {
     fileField_ = new ExportfileDialogfield(this, true, [this]()->void{save();});
 

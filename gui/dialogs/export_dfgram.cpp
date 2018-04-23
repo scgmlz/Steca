@@ -71,8 +71,7 @@ QString numberedName(const QString& templatedName, int num, int maxNum) {
 //! @class ExportDfgram
 
 ExportDfgram::ExportDfgram()
-    : CModal("xdfg")
-    , QDialog(gGui)
+    : QcrDialog(gGui, "Export diffractogram")
 {
     rbAll_.programaticallySetValue(true);
 
