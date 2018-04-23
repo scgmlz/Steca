@@ -15,6 +15,7 @@
 #include "measurement.h"
 #include "core/raw/angle_map.h"
 #include "core/typ/cached.h"
+#include "qcr/engine/debug.h"
 
 Measurement::Measurement(
     const int position, Metadata&& md, const size2d& size, std::vector<float>&& intens)

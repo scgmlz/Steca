@@ -15,6 +15,7 @@
 #include "core/session.h"
 #include "core/loaders/loaders.h"
 #include "core/def/idiomatic_for.h"
+#include "qcr/engine/debug.h"
 
 void Corrset::clear()
 {

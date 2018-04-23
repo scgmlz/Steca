@@ -20,6 +20,7 @@
 #include "gui/dialogs/file_dialog.h"
 #include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/mainwin.h"
+#include "qcr/engine/debug.h"
 #include <qmath.h>
 #include <QGroupBox>
 #include <QMessageBox>

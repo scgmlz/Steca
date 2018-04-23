@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/session.h"
+#include "qcr/engine/debug.h"
 
 void Baseline::fromJson(const JsonObj obj)
 {

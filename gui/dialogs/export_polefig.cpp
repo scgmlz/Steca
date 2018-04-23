@@ -18,6 +18,7 @@
 #include "core/def/idiomatic_for.h"
 #include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/mainwin.h"
+#include "qcr/engine/debug.h"
 #include <QGroupBox>
 #include <QButtonGroup>
 

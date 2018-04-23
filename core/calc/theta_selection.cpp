@@ -15,6 +15,7 @@
 #include "core/session.h"
 #include "core/algo/collect_intensities.h"
 #include "core/data/cluster.h"
+#include "qcr/engine/debug.h"
 
 ThetaSelection::ThetaSelection()
 {}

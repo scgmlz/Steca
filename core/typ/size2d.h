@@ -16,7 +16,7 @@
 #define SIZE2D_H
 
 #include "core/def/comparable.h"
-#include "qcr/engine/debug.h"
+#include <QtGlobal> // qMax
 
 //! Geometry of a rectangle
 struct size2d {

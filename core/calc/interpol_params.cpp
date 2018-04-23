@@ -14,6 +14,7 @@
 
 #include "core/session.h"
 #include "core/def/settings.h"
+#include "qcr/engine/debug.h"
 
 void InterpolParams::fromSettings()
 {

@@ -17,6 +17,7 @@
 #include "gui/actions/image_trafo_actions.h"
 #include "gui/actions/toggles.h"
 #include "gui/mainwin.h"
+#include "qcr/engine/debug.h"
 #include <QThread> // for sleep for debugging
 
 //  ***********************************************************************************************
