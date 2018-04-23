@@ -17,6 +17,7 @@
 
 namespace load {
 Rawfile loadCaress(const QString& filePath);
+Rawfile loadYaml(const QString& filePath);
 Rawfile loadMar(const QString& filePath);
 Rawfile loadTiffDat(const QString& filePath);
 QString loadCaressComment(const QString& filePath);
@@ -35,6 +36,12 @@ static QByteArray peek(int pos, int maxLen, const QFileInfo& info) {
 // Caress file format
 bool couldBeCaress(const QFileInfo& info) {
     static QByteArray const header("\020\012DEFCMD DAT");
+    return header == peek(0, header.size(), info);
+}
+
+// Yaml file format
+bool couldBeYaml(const QFileInfo& info) {
+    static QByteArray const header("instrument:"); // this will do for now.
     return header == peek(0, header.size(), info);
 }
 
@@ -73,6 +80,8 @@ Rawfile load_low_level(const QString& filePath) {
 
     if (couldBeCaress(info))
         return load::loadCaress(filePath);
+    else if (couldBeYaml(info))
+        return load::loadYaml(filePath);
     else if (couldBeMar(info))
         return load::loadMar(filePath);
     else if (couldBeTiffDat(info))
