@@ -159,10 +159,17 @@ private:
 };
 
 //! Named tab widget that can be set by console command.
-class QcrTabWidget : public QTabWidget, private CSettable {
+class QcrTabWidget : public QTabWidget, public QcrControl<int> {
 public:
     QcrTabWidget(const QString& name);
     void onCommand(const QStringList&) override;
+    int getValue() const final { return currentIndex(); }
+private:
+    void doSetValue(int val) final { setCurrentIndex(val); }
+    // hide some member functions of QTabWidget:
+    int currentIndex() const { return QTabWidget::currentIndex(); }
+    void setCurrentIndex(int val) { QTabWidget::setCurrentIndex(val); }
+    void setCurrentWidget(QWidget*) = delete;
 };
 
 //! File dialog, for modal use, with console commands to select files and to close the dialog.

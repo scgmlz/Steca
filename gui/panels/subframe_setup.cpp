@@ -42,6 +42,6 @@ void SubframeSetup::updateTabsAvailability()
     } else {
         setTabEnabled(1, false);
         setTabEnabled(2, false);
-        setCurrentIndex(0);
+        programaticallySetValue(0);
     }
 }

@@ -321,7 +321,7 @@ void QcrLineEdit::onCommand(const QStringList& args)
 //! @class QcrTabWidget
 
 QcrTabWidget::QcrTabWidget(const QString& _name)
-    : CSettable(_name)
+    : QcrControl<int>(_name)
 {
     connect(this->tabBar(), &QTabBar::tabBarClicked, [this](int val) {
             gConsole->log2(true, name()+" choose "+QString::number(val)); });
