@@ -27,12 +27,13 @@ TableModel::TableModel(const QString& name)
 
 void TableModel::onCommand(const QString& arg)
 {
-    QStringList args = arg.split(' ');
-    if (args[0]!="highlight")
-        throw QcrException("Unexpected command in TableModel "+name());
-    if      (args.size()<2)
+    QString cmd, cmdarg;
+    strOp::splitOnce(arg, cmd, cmdarg);
+    if (cmd!="highlight")
+        throw QcrException("Unexpected command '"+cmd+"' in TableModel "+name());
+    if (cmdarg=="")
         throw QcrException("Missing argument to command 'highlight'");
-    setHighlight(strOp::to_i(args[1]));
+    setHighlight(strOp::to_i(cmdarg));
 }
 
 void TableModel::refreshModel()
@@ -61,12 +62,12 @@ void TableModel::onClicked(const QModelIndex& cell)
     gConsole->log(name() + " highlight " + QString::number(row));
 }
 
+
 //  ***********************************************************************************************
 //! @class CheckTableModel
 
 CheckTableModel::CheckTableModel(const QString& _name) : TableModel(_name)
-{
-}
+{}
 
 void CheckTableModel::onCommand(const QString& arg)
 {
@@ -105,7 +106,6 @@ void CheckTableModel::activateAndLog(bool primaryCall, int row, bool on)
     gConsole->log2(primaryCall,
                    name() + ( on ? " activate " : " deactivate ") + QString::number(row));
 }
-
 
 
 //  ***********************************************************************************************
@@ -181,6 +181,7 @@ void TableView::onData()
     model_->resetModel();
     updateScroll();
 }
+
 
 //  ***********************************************************************************************
 //! @class CheckTableView

@@ -486,7 +486,7 @@
 [   99ms main]## interpolation ended
 [    0ms main]## Task with progress bar [ "interpolation" ] ended
 [    0ms main]## MainWin::runInterpolation  emits  gSession->sigRawFits()
-[        main]doInterpol 2
+[        main]doInterpol on
 [        main]viewsTab 4
 [    0ms main]#: viewsTab 4
 [        main]exportPolefig

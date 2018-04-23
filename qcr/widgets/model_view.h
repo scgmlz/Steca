@@ -24,6 +24,7 @@ class TableModel : public QAbstractTableModel, public CSettable {
 public:
     TableModel() = delete;
     TableModel(const QString& name);
+
     virtual void onCommand(const QString&);
     void refreshModel(); // within rectangle plus one row
     void resetModel(); // complete reset, including cursor position
@@ -44,6 +45,7 @@ public:
 class CheckTableModel : public TableModel {
 public:
     CheckTableModel(const QString& name);
+
     void onCommand(const QString&) override;
     void onActivated();
     void onClicked(const QModelIndex& cell) override;
@@ -63,6 +65,7 @@ class TableView : public QTreeView {
 public:
     TableView() = delete;
     TableView(TableModel*);
+
     void onData();
     void onHighlight();
 protected:
