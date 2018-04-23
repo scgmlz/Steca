@@ -143,11 +143,11 @@ void ImageView::paintEvent(QPaintEvent*)
 //! @class IdxMeas
 
 IdxMeas::IdxMeas()
-    : CSpinBox {"idxMeas", 4, false, 1, INT_MAX,
+    : QcrSpinBox {"idxMeas", 4, false, 1, INT_MAX,
         "Number of measurement within the current group of measurements"}
 {
     connect(gSession, &Session::sigDataHighlight, this, &IdxMeas::fromCore);
-    connect(this, &CSpinBox::valueReleased, [](int val) {
+    connect(this, &QcrSpinBox::valueReleased, [](int val) {
             gSession->dataset().highlight().setMeasurement(val-1); });
     fromCore();
 }
@@ -273,9 +273,9 @@ DataImageTab::DataImageTab()
             EMITS("DataImageTab",gSession->sigImage()); });
 
     // outbound connections and control widget setup
-    connect(&idxTheta_, &CSpinBox::valueReleased, [](int val) {
+    connect(&idxTheta_, &QcrSpinBox::valueReleased, [](int val) {
             gSession->thetaSelection().selectSlice(val-1); });
-    connect(&idxSlice_, &CSpinBox::valueReleased, [](int val) {
+    connect(&idxSlice_, &QcrSpinBox::valueReleased, [](int val) {
             gSession->gammaSelection().selectSlice(val-1); });
 
     // layout

@@ -25,7 +25,7 @@ public:
 private:
     QVBoxLayout box_;
     QHBoxLayout hb_;
-    CSpinBox spinDegree_ {"degree", 4, false, 0, 4,
+    QcrSpinBox spinDegree_ {"degree", 4, false, 0, 4,
             "Degree of the polynomial used to fit the baseline"};
     void hideEvent(QHideEvent*) final;
     void showEvent(QShowEvent*) final;

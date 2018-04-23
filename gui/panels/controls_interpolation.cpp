@@ -23,17 +23,17 @@ ControlsInterpolation::ControlsInterpolation()
     // outbound connections
     connect(&doInterpol_, &QCheckBox::toggled, [](bool on) {
             gSession->interpol().setEnabled(on); });
-    connect(&stepAlpha_, &CDoubleSpinBox::valueReleased, [](double val) {
+    connect(&stepAlpha_, &QcrDoubleSpinBox::valueReleased, [](double val) {
             gSession->interpol().setStepAlpha(val); });
-    connect(&avgAlphaMax_, &CDoubleSpinBox::valueReleased, [](double val) {
+    connect(&avgAlphaMax_, &QcrDoubleSpinBox::valueReleased, [](double val) {
             gSession->interpol().setAvgAlphaMax(val); });
-    connect(&stepBeta_, &CDoubleSpinBox::valueReleased, [](double val) {
+    connect(&stepBeta_, &QcrDoubleSpinBox::valueReleased, [](double val) {
             gSession->interpol().setStepBeta(val); });
-    connect(&avgRadius_, &CDoubleSpinBox::valueReleased, [](double val) {
+    connect(&avgRadius_, &QcrDoubleSpinBox::valueReleased, [](double val) {
             gSession->interpol().setAvgRadius(val); });
-    connect(&idwRadius_, &CDoubleSpinBox::valueReleased, [](double val) {
+    connect(&idwRadius_, &QcrDoubleSpinBox::valueReleased, [](double val) {
             gSession->interpol().setIdwRadius(val); });
-    connect(&threshold_, &CSpinBox::valueReleased, [](int val) {
+    connect(&threshold_, &QcrSpinBox::valueReleased, [](int val) {
             gSession->interpol().setThreshold(val); });
 
     // layout

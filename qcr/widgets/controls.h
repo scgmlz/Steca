@@ -29,10 +29,10 @@
 #include <QToolButton>
 
 //! A trigger, for use in buttons or menu entries, that can also be activated by console command.
-class CTrigger : public QAction, private CSettable {
+class QcrTrigger : public QAction, private CSettable {
 public:
-    CTrigger(const QString& name, const QString& text, const QString& iconFile="");
-    CTrigger(const QString& name, const QString& text, const QString& iconFile,
+    QcrTrigger(const QString& name, const QString& text, const QString& iconFile="");
+    QcrTrigger(const QString& name, const QString& text, const QString& iconFile,
              const QKeySequence& shortcut);
     void onCommand(const QStringList&) override;
 private:
@@ -40,10 +40,10 @@ private:
 };
 
 //! A Toggle, for use in buttons or menu entries, that can also be switched by console command.
-class CToggle : public QAction, private CSettable {
+class QcrToggle : public QAction, private CSettable {
 public:
-    CToggle(const QString& name, const QString& text, bool on, const QString& iconFile="");
-    CToggle(const QString& name, const QString& text, bool on, const QString& iconFile,
+    QcrToggle(const QString& name, const QString& text, bool on, const QString& iconFile="");
+    QcrToggle(const QString& name, const QString& text, bool on, const QString& iconFile,
             const QKeySequence& shortcut);
     void onCommand(const QStringList&) override;
 private:
@@ -63,22 +63,22 @@ public:
 };
 
 //! QToolButton with text display and owned QAction.
-class CTextButton : public QToolButton {
+class QcrTextButton : public QToolButton {
 public:
-    CTextButton(QAction*);
+    QcrTextButton(QAction*);
 };
 
 //! QToolButton with icon and owned QAction.
-class CIconButton : public QToolButton {
+class QcrIconButton : public QToolButton {
 public:
-    CIconButton(QAction*);
+    QcrIconButton(QAction*);
 };
 
 //! Named QSpinBox that can be set by console command.
-class CSpinBox : public QSpinBox, private CSettable {
+class QcrSpinBox : public QSpinBox, private CSettable {
     Q_OBJECT
 public:
-    CSpinBox(const QString& name, int ndigits, bool withDot, int min = INT_MIN, int max = INT_MAX,
+    QcrSpinBox(const QString& name, int ndigits, bool withDot, int min = INT_MIN, int max = INT_MAX,
              const QString& tooltip="");
     void onCommand(const QStringList&) override;
 signals:
@@ -90,10 +90,10 @@ private:
 };
 
 //! Named QDoubleSpinBox that can be set by console command.
-class CDoubleSpinBox : public QDoubleSpinBox, private CSettable {
+class QcrDoubleSpinBox : public QDoubleSpinBox, private CSettable {
     Q_OBJECT
 public:
-    CDoubleSpinBox(const QString& name, int ndigits, double min = LLONG_MIN, double max = LLONG_MAX);
+    QcrDoubleSpinBox(const QString& name, int ndigits, double min = LLONG_MIN, double max = LLONG_MAX);
     void onCommand(const QStringList&) override;
 signals:
     void valueReleased(double); //! Improving over valueChanged, do not signal intermediate states
@@ -104,46 +104,46 @@ private:
 };
 
 //! Named QCheckBox that can be set by console command.
-class CCheckBox : public QCheckBox, private CSettable {
+class QcrCheckBox : public QCheckBox, private CSettable {
 public:
-    CCheckBox(const QString& name, const QString& text);
+    QcrCheckBox(const QString& name, const QString& text);
     void onCommand(const QStringList&) override;
 };
 
 //! Named QRadioButton that can be set by console command.
-class CRadioButton : public QRadioButton, private CSettable {
+class QcrRadioButton : public QRadioButton, private CSettable {
 public:
-    CRadioButton(const QString& name, const QString& text);
+    QcrRadioButton(const QString& name, const QString& text);
     void onCommand(const QStringList&) override;
 };
 
 //! Named QComboBox that can be set by console command.
-class CComboBox : public QComboBox, private CSettable {
+class QcrComboBox : public QComboBox, private CSettable {
 public:
-    CComboBox(const QString& name, const QStringList& items = {});
+    QcrComboBox(const QString& name, const QStringList& items = {});
     void onCommand(const QStringList&) override;
 };
 
 //! Named QLineEdit that can be set by console command (but use XLineEdit for pure display).
-class CLineEdit : public QLineEdit, private CSettable {
+class QcrLineEdit : public QLineEdit, private CSettable {
 public:
-    CLineEdit(const QString& name, const QString& val = "");
+    QcrLineEdit(const QString& name, const QString& val = "");
     void onCommand(const QStringList&) override;
 };
 
 //! Named QTabWidget that can be set by console command.
-class CTabWidget : public QTabWidget, private CSettable {
+class QcrTabWidget : public QTabWidget, private CSettable {
 public:
-    CTabWidget(const QString& name);
+    QcrTabWidget(const QString& name);
     void onCommand(const QStringList&) override;
 };
 
 //! QFileDialog, for modal use, with console commands to select files and to close the dialog.
-class CFileDialog : public QFileDialog, private CModal, CSettable {
+class QcrFileDialog : public QFileDialog, private CModal, CSettable {
 public:
-    CFileDialog(QWidget *parent = Q_NULLPTR, const QString &caption = QString(),
+    QcrFileDialog(QWidget *parent = Q_NULLPTR, const QString &caption = QString(),
                 const QString &directory = QString(), const QString &filter = QString());
-    ~CFileDialog();
+    ~QcrFileDialog();
     int exec() override;
     void onCommand(const QStringList&) override;
 };

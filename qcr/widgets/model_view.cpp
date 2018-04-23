@@ -28,9 +28,9 @@ TableModel::TableModel(const QString& name)
 void TableModel::onCommand(const QStringList& args)
 {
     if (args[0]!="highlight")
-        throw QCRException("Unexpected command in TableModel "+name());
+        throw QcrException("Unexpected command in TableModel "+name());
     if      (args.size()<2)
-        throw QCRException("Missing argument to command 'highlight'");
+        throw QcrException("Missing argument to command 'highlight'");
     setHighlight(TO_INT(args[1]));
 }
 
@@ -71,11 +71,11 @@ void CheckTableModel::onCommand(const QStringList& args)
 {
     if        (args[0]=="activate") {
         if (args.size()<2)
-            throw QCRException("Missing argument to command 'activate'");
+            throw QcrException("Missing argument to command 'activate'");
         activateAndLog(false, TO_INT(args[1]), true);
     } else if (args[0]=="deactivate") {
         if (args.size()<2)
-            throw QCRException("Missing argument to command 'deactivate'");
+            throw QcrException("Missing argument to command 'deactivate'");
         activateAndLog(false, TO_INT(args[1]), false);
     } else
         TableModel::onCommand(args);

@@ -23,8 +23,8 @@
 class ImageTrafoActions : private QObject {
 public:
     ImageTrafoActions();
-    CTrigger rotateImage {"rotateImage", "Rotate", ":/icon/rotate0", Qt::CTRL | Qt::Key_R};
-    CToggle mirrorImage {"mirrorImage", "Mirror", false, ":/icon/mirrorHorz"};
+    QcrTrigger rotateImage {"rotateImage", "Rotate", ":/icon/rotate0", Qt::CTRL | Qt::Key_R};
+    QcrToggle mirrorImage {"mirrorImage", "Mirror", false, ":/icon/mirrorHorz"};
     void setImageRotate(const ImageTransform&);
 private:
     void setImageMirror(bool on);

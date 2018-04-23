@@ -118,8 +118,8 @@ public:
     RangeControl();
     void onData();
 private:
-    CDoubleSpinBox spinRangeMin_ {"peakRangeMin", 6, 0., 89.9};
-    CDoubleSpinBox spinRangeMax_ {"peakRangeMax", 6, 0., 90.};
+    QcrDoubleSpinBox spinRangeMin_ {"peakRangeMin", 6, 0., 89.9};
+    QcrDoubleSpinBox spinRangeMax_ {"peakRangeMax", 6, 0., 90.};
 };
 
 RangeControl::RangeControl()
@@ -131,10 +131,10 @@ RangeControl::RangeControl()
     connect(gSession, &Session::sigPeaks, this, &RangeControl::onData);
 
     // outbound connections
-    connect(&spinRangeMin_, &CDoubleSpinBox::valueReleased, [this](double val) {
+    connect(&spinRangeMin_, &QcrDoubleSpinBox::valueReleased, [this](double val) {
             double antival = qMax(spinRangeMax_.value(), val);
             gSession->peaks().selectedPeak()->setRange(Range(val, antival)); });
-    connect(&spinRangeMax_, &CDoubleSpinBox::valueReleased, [this](double val) {
+    connect(&spinRangeMax_, &QcrDoubleSpinBox::valueReleased, [this](double val) {
             double antival = qMin(spinRangeMin_.value(), val);
             gSession->peaks().selectedPeak()->setRange(Range(antival, val)); });
 

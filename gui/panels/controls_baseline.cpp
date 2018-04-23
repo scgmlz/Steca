@@ -103,7 +103,7 @@ ControlsBaseline::ControlsBaseline()
     box_.addStretch(1);
     setLayout(&box_);
 
-    connect(&spinDegree_, &CSpinBox::valueReleased, [](int degree_) {
+    connect(&spinDegree_, &QcrSpinBox::valueReleased, [](int degree_) {
             gSession->baseline().setPolynomDegree(degree_); });
 
     connect(gSession, &Session::sigBaseline, [this]() {

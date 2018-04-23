@@ -35,7 +35,7 @@ private:
 
 //! A spin box that governs which measurement out of the highlighted group shall be shown.
 
-class IdxMeas : public CSpinBox {
+class IdxMeas : public QcrSpinBox {
 public:
     IdxMeas();
 private:
@@ -77,8 +77,8 @@ private:
     QGridLayout boxRanges_;
     QPixmap pixmap() final;
     IdxMeas idxMeas_;
-    CSpinBox idxSlice_{"idxSlice", 4, false, 1, INT_MAX, "Number of γ slice to be shown" };
-    CSpinBox idxTheta_ {"idxTheta", 4, false, 1, INT_MAX, "Number of 2θ bin to be shown" };
+    QcrSpinBox idxSlice_{"idxSlice", 4, false, 1, INT_MAX, "Number of γ slice to be shown" };
+    QcrSpinBox idxTheta_ {"idxTheta", 4, false, 1, INT_MAX, "Number of 2θ bin to be shown" };
     QLabel gammaRangeTotal_;
     QLabel gammaRangeSlice_;
     QLabel thetaRangeTotal_;

@@ -3,7 +3,7 @@
 //  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/engine/qcrexception.h
-//! @brief     Defines class QCRException
+//! @brief     Defines class QcrException
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,20 +12,20 @@
 //
 //  ***********************************************************************************************
 
-#ifndef QCREXCEPTION_H
-#define QCREXCEPTION_H
+#ifndef QcrEXCEPTION_H
+#define QcrEXCEPTION_H
 
 #include <QException>
 #include <QString> // no auto rm
 
 //! The sole exception type used in this software.
-class QCRException : public QException {
+class QcrException : public QException {
 public:
-    QCRException() = delete;
-    QCRException(const QString& msg) noexcept : msg_(msg) {}
+    QcrException() = delete;
+    QcrException(const QString& msg) noexcept : msg_(msg) {}
     const QString& msg() const noexcept { return msg_; }
 private:
     QString msg_;
 };
 
-#endif // QCREXCEPTION_H
+#endif // QcrEXCEPTION_H

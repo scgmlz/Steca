@@ -72,7 +72,7 @@ QVariant OpenFileProxyModel::data(const QModelIndex& idx, int role) const
 namespace {
 
 //! Base class for all Steca file dialogs. Manages default directory.
-class FileDialog : public CFileDialog {
+class FileDialog : public QcrFileDialog {
 public:
     FileDialog(QWidget*, const QString&, QDir&, const QString& filter = QString());
     QStringList getFiles();
@@ -82,7 +82,7 @@ private:
 };
 
 FileDialog::FileDialog(QWidget* parent, const QString& caption, QDir& dir, const QString &filter)
-    : CFileDialog(parent, caption, dir.absolutePath(), filter)
+    : QcrFileDialog(parent, caption, dir.absolutePath(), filter)
     , dir_(dir)
 {
     setOption(QFileDialog::DontUseNativeDialog);

@@ -229,7 +229,7 @@ Console::Result Console::exec(QString line)
     try {
         f->onCommand(args); // execute command
         return Result::ok;
-    } catch (QCRException &ex) {
+    } catch (QcrException &ex) {
         qterr << "Command '" << line << "' failed:\n" << ex.msg() << "\n";
     }
     return Result::err;

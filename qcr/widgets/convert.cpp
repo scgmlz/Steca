@@ -21,7 +21,7 @@ int TO_INT(const QString& s)
     bool ok;
     ret = s.toInt(&ok);
     if (!ok)
-        throw QCRException("Expected an integer number, found string '" + s + "'");
+        throw QcrException("Expected an integer number, found string '" + s + "'");
     return ret;
 }
 
@@ -31,6 +31,6 @@ double TO_DOUBLE(const QString& s)
     bool ok;
     ret = s.toDouble(&ok);
     if (!ok)
-        throw QCRException("Expected a floating-point number, found string '" + s + "'");
+        throw QcrException("Expected a floating-point number, found string '" + s + "'");
     return ret;
 }

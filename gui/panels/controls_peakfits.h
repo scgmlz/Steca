@@ -25,7 +25,7 @@ public:
 private:
     void onPeaks();
     QHBoxLayout topControls_;
-    CComboBox comboReflType_;
+    QcrComboBox comboReflType_;
     void hideEvent(QHideEvent*) final;
     void showEvent(QShowEvent*) final;
 };

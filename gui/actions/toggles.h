@@ -22,21 +22,21 @@
 class Toggles : private QObject {
 public:
     Toggles();
-    CToggle combinedDgram {"dfg.all", "All measurements", false, ":/icon/all"};
-    CToggle crosshair {"crosshair", "Show crosshair", false, ":/icon/crop"};
-    CToggle enableCorr {"enableCorr", "Enable correction file", false, ":/icon/useCorrection"};
-    CToggle fixedIntenDgram {"dfg.fixInt", "Fixed intensity scale", false, ":/icon/scale"};
-    CToggle fixedIntenImage {"img.fixInt", "Global intensity scale", false, ":/icon/scale"};
-    CToggle linkCuts {"linkCuts", "Link cuts", false, ":/icon/link"};
-    CToggle showBackground {"showBackground", "Show fitted background", false,
+    QcrToggle combinedDgram {"dfg.all", "All measurements", false, ":/icon/all"};
+    QcrToggle crosshair {"crosshair", "Show crosshair", false, ":/icon/crop"};
+    QcrToggle enableCorr {"enableCorr", "Enable correction file", false, ":/icon/useCorrection"};
+    QcrToggle fixedIntenDgram {"dfg.fixInt", "Fixed intensity scale", false, ":/icon/scale"};
+    QcrToggle fixedIntenImage {"img.fixInt", "Global intensity scale", false, ":/icon/scale"};
+    QcrToggle linkCuts {"linkCuts", "Link cuts", false, ":/icon/link"};
+    QcrToggle showBackground {"showBackground", "Show fitted background", false,
             ":/icon/showBackground"};
-    CToggle showBins {"showBins", "Show bins", false, ":/icon/angle"};
-    CToggle viewClusters {"viewMeasurements", "Measurements", true, "", Qt::Key_F9};
-    CToggle viewFiles {"viewFiles", "Files", true, "", Qt::Key_F8};
-    CToggle viewMetadata {"viewMetadata", "Metadata", true, "", Qt::Key_F10};
-    CToggle viewStatusbar {"viewStatusbar", "Statusbar", true, "", Qt::Key_F12};
+    QcrToggle showBins {"showBins", "Show bins", false, ":/icon/angle"};
+    QcrToggle viewClusters {"viewMeasurements", "Measurements", true, "", Qt::Key_F9};
+    QcrToggle viewFiles {"viewFiles", "Files", true, "", Qt::Key_F8};
+    QcrToggle viewMetadata {"viewMetadata", "Metadata", true, "", Qt::Key_F10};
+    QcrToggle viewStatusbar {"viewStatusbar", "Statusbar", true, "", Qt::Key_F12};
 #ifndef Q_OS_OSX
-    CToggle fullScreen {"toggle_fullScreen", "FullScreen", false, "", Qt::Key_F11};
+    QcrToggle fullScreen {"toggle_fullScreen", "FullScreen", false, "", Qt::Key_F11};
 #endif
 };
 

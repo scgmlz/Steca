@@ -19,7 +19,7 @@
 
 //! Subframe of the main window, with tabs to control geometry, fits, &c
 
-class SubframeSetup : public CTabWidget {
+class SubframeSetup : public QcrTabWidget {
 public:
     SubframeSetup();
 private:
