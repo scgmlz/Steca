@@ -16,7 +16,6 @@
 #define SIZE2D_H
 
 #include "core/def/comparable.h"
-#include <QtGlobal> // qMax
 
 //! Geometry of a rectangle
 struct size2d {
@@ -31,11 +30,7 @@ struct size2d {
 
     COMPARABLE(const size2d&)
 
-    friend size2d operator-(const size2d& s1, const size2d& s2) {
-        int w = s1.w - s2.w;
-        int h = s1.h - s2.h;
-        return size2d(qMax(w, 0), qMax(h, 0));
-    }
+    friend size2d operator-(const size2d& s1, const size2d& s2);
 
     size2d transposed() const { return size2d(h, w); }
 };
