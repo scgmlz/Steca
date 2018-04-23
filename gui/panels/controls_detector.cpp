@@ -92,10 +92,10 @@ GeometryControls::GeometryControls()
 void GeometryControls::fromCore()
 {
     const Geometry& g = gSession->geometry();
-    detDistance_.setValue(g.detectorDistance());
-    detPixelSize_.setValue(g.pixSize());
-    beamOffsetI_.setValue(g.midPixOffset().i);
-    beamOffsetJ_.setValue(g.midPixOffset().j);
+    detDistance_.programaticallySetValue(g.detectorDistance());
+    detPixelSize_.programaticallySetValue(g.pixSize());
+    beamOffsetI_.programaticallySetValue(g.midPixOffset().i);
+    beamOffsetJ_.programaticallySetValue(g.midPixOffset().j);
 }
 
 //  ***********************************************************************************************
@@ -151,11 +151,11 @@ CutControls::CutControls()
 void CutControls::fromCore()
 {
     const ImageCut& cut = gSession->imageCut();
-    gGui->toggles->linkCuts.setChecked(cut.linked());
-    cutLeft_.setValue(cut.left());
-    cutTop_.setValue(cut.top());
-    cutRight_.setValue(cut.right());
-    cutBottom_.setValue(cut.bottom());
+    gGui->toggles->linkCuts.programaticallySetValue(cut.linked());
+    cutLeft_.programaticallySetValue(cut.left());
+    cutTop_.programaticallySetValue(cut.top());
+    cutRight_.programaticallySetValue(cut.right());
+    cutBottom_.programaticallySetValue(cut.bottom());
 }
 
 //  ***********************************************************************************************
@@ -204,7 +204,7 @@ ActiveClustersControls::ActiveClustersControls()
 
 void ActiveClustersControls::fromCore()
 {
-    combineMeasurements_.setValue(gSession->dataset().binning());
+    combineMeasurements_.programaticallySetValue(gSession->dataset().binning());
     dropIncompleteAction_.setEnabled(gSession->dataset().hasIncomplete());
 }
 
@@ -245,7 +245,7 @@ GammaControls::GammaControls()
 
 void GammaControls::fromCore()
 {
-    numSlices_.setValue(gSession->gammaSelection().numSlices());
+    numSlices_.programaticallySetValue(gSession->gammaSelection().numSlices());
     EMITS("GammaControls", gSession->sigImage()); // TODO redundant with emission from idxSlice
 }
 

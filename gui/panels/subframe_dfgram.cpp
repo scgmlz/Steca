@@ -44,8 +44,8 @@ Dfgram::Dfgram()
 {
     // initializations
     plot_ = new PlotDfgram(*this);
-    gGui->toggles->showBackground.setChecked(true);
-    intenAvg_.setChecked(true);
+    gGui->toggles->showBackground.programaticallySetValue(true);
+    intenAvg_.programaticallySetValue(true);
     intenScale_.setDecimals(3);
 
     // inbound connections
@@ -64,8 +64,8 @@ Dfgram::Dfgram()
             gSession->setNormMode(eNorm(index)); });
     connect(&intenAvg_, &QRadioButton::toggled, [this](bool on) {
         intenScale_.setEnabled(on);
-        intenScale_.setValue(gSession->intenScale());
-        gSession->setIntenScaleAvg(on, intenScale_.value());
+        intenScale_.programaticallySetValue(gSession->intenScale());
+        gSession->setIntenScaleAvg(on, intenScale_.getValue());
     });
     connect(&intenScale_, &QcrDoubleSpinBox::valueReleased, [](double val) {
         if (val > 0)
@@ -97,17 +97,17 @@ Dfgram::Dfgram()
 
 void Dfgram::onNormChanged()
 {
-    intenScale_.setValue(gSession->intenScale()); // TODO own signal
+    intenScale_.programaticallySetValue(gSession->intenScale()); // TODO own signal
     if (gSession->intenScaledAvg())
-        intenAvg_.setChecked(true);
+        intenAvg_.programaticallySetValue(true);
     else
-        intenSum_.setChecked(true);
+        intenSum_.programaticallySetValue(true);
     plot_->renderAll();
 }
 
 void Dfgram::onHighlight()
 {
-    actZoom_.setChecked(false);
+    actZoom_.programaticallySetValue(false);
     plot_->renderAll();
 }
 

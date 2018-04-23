@@ -120,7 +120,7 @@ void MainWin::updateAbilities()
     bool hasPeak = gSession->peaks().count();
     bool hasBase = gSession->baseline().ranges().count();
     triggers->corrFile.setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
-    toggles->enableCorr.setChecked(gSession->corrset().isEnabled());
+    toggles->enableCorr.programaticallySetValue(gSession->corrset().isEnabled());
     QString text = QString(hasCorr ? "Remove" : "Add") + " correction file";
     triggers->corrFile.setText(text);
     triggers->corrFile.setToolTip(text.toLower());
@@ -157,12 +157,12 @@ void MainWin::viewReset()
 {
     restoreState(initialState_);
 #ifndef Q_OS_OSX
-    toggles->fullScreen.setChecked(false);
+    toggles->fullScreen.programaticallySetValue(false);
 #endif
-    toggles->viewStatusbar.setChecked(true);
-    toggles->viewClusters.setChecked(true);
-    toggles->viewFiles.setChecked(true);
-    toggles->viewMetadata.setChecked(true);
+    toggles->viewStatusbar.programaticallySetValue(true);
+    toggles->viewClusters.programaticallySetValue(true);
+    toggles->viewFiles.programaticallySetValue(true);
+    toggles->viewMetadata.programaticallySetValue(true);
 }
 
 void MainWin::loadSession()

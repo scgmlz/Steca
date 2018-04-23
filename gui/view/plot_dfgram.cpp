@@ -224,7 +224,7 @@ void PlotDfgram::renderAll()
 
     const Range& tthRange = dgram_.rgeX();
     Range intenRange;
-    if (gGui->toggles->fixedIntenDgram.isChecked()) {
+    if (gGui->toggles->fixedIntenDgram.getValue()) {
         intenRange = gSession->dataset().highlight().cluster()->rgeInten();
     } else {
         intenRange = dgramBgFitted_.rgeY();
@@ -237,7 +237,7 @@ void PlotDfgram::renderAll()
     xAxis->setVisible(true);
     yAxis->setVisible(true);
 
-    if (gGui->toggles->showBackground.isChecked())
+    if (gGui->toggles->showBackground.getValue())
         bgGraph_->setData(QVector<double>::fromStdVector(bg_.xs()),
                           QVector<double>::fromStdVector(bg_.ys()));
     else
@@ -270,7 +270,7 @@ void PlotDfgram::calcDgram()
     dgram_.clear();
     if (!gSession->hasData())
         return;
-    if (gGui->toggles->combinedDgram.isChecked())
+    if (gGui->toggles->combinedDgram.getValue())
         dgram_ = gSession->activeClusters().avgCurve();
     else
         dgram_ = algo::projectCluster(*gSession->dataset().highlight().cluster(),

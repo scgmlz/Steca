@@ -103,7 +103,7 @@ void ImageView::paintEvent(QPaintEvent*)
     p.drawPixmap(rect.left(), rect.top(), scaled_);
 
     // crosshair overlay
-    if (gGui->toggles->crosshair.isChecked()) {
+    if (gGui->toggles->crosshair.getValue()) {
         p.setPen(Qt::lightGray);
 
         // cut
@@ -157,7 +157,7 @@ void IdxMeas::fromCore()
     auto& hl = gSession->dataset().highlight();
     if (!hl.cluster()) {
         setEnabled(false);
-        setValue(1);
+        programaticallySetValue(1);
         return;
     }
     setEnabled( gSession->dataset().binning() > 1);
@@ -165,7 +165,7 @@ void IdxMeas::fromCore()
     setMaximum(max);
     if ( hl.measurementIndex()+1>max )
         hl.setMeasurement(max-1);
-    setValue(hl.measurementIndex()+1);
+    programaticallySetValue(hl.measurementIndex()+1);
 }
 
 //  ***********************************************************************************************
@@ -245,7 +245,7 @@ QImage ImageTab::makeImage(const Image& image)
 
     QImage ret(QSize(size.w, size.h), QImage::Format_RGB32);
 
-    bool fixedScale = gGui->toggles->fixedIntenImage.isChecked();
+    bool fixedScale = gGui->toggles->fixedIntenImage.getValue();
     const Range rgeInten = imageLens.rgeInten(fixedScale);
     float maxInten = float(rgeInten.max);
 
@@ -262,14 +262,14 @@ DataImageTab::DataImageTab()
 {
     // inbound connection
     connect(gSession, &Session::sigGamma, [this]() {
-            idxSlice_.setValue(gSession->gammaSelection().idxSlice()+1);
+            idxSlice_.programaticallySetValue(gSession->gammaSelection().idxSlice()+1);
             const Measurement* measurement = gSession->dataset().highlight().measurement();
             gammaRangeTotal_.setText(measurement->rgeGmaFull().to_s()+" deg");
             gammaRangeSlice_.setText(gSession->gammaSelection().range().to_s()+" deg");
             thetaRangeTotal_.setText(measurement->rgeTth().to_s()+" deg");
             EMITS("DataImageTab",gSession->sigImage()); });
     connect(gSession, &Session::sigTheta, [this]() {
-            idxTheta_.setValue(gSession->thetaSelection().iSlice()+1);
+            idxTheta_.programaticallySetValue(gSession->thetaSelection().iSlice()+1);
             EMITS("DataImageTab",gSession->sigImage()); });
 
     // outbound connections and control widget setup
@@ -314,7 +314,7 @@ QPixmap DataImageTab::pixmap()
     const Measurement* measurement = gSession->dataset().highlight().measurement();
     if (!measurement)
         return makeBlankPixmap();
-    if (gGui->toggles->showBins.isChecked())
+    if (gGui->toggles->showBins.getValue())
         return makeOverlayPixmap(*measurement);
     return makePixmap(measurement->image());
 }

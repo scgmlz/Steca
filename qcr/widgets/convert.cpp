@@ -15,6 +15,17 @@
 #include "convert.h"
 #include "qcr/engine/qcrexception.h"
 
+bool TO_BOOL(const QString& s)
+{
+    int ret;
+    if (s=="on")
+        return true;
+    else if (s=="off")
+        return false;
+    else
+        throw QcrException("Expected 'on' or 'off', found string '" + s + "'");
+}
+
 int TO_INT(const QString& s)
 {
     int ret;

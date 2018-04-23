@@ -57,7 +57,7 @@ void ImageTrafoActions::setImageRotate(const ImageTransform& rot)
 
 void ImageTrafoActions::setImageMirror(bool on)
 {
-    mirrorImage.setChecked(on);
+    mirrorImage.programaticallySetValue(on);
     gSession->setImageTransformMirror(on);
     EMITS("ImageTrafoActions::setImageMirror", gSession->sigDetector());
 }

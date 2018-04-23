@@ -107,7 +107,7 @@ ControlsBaseline::ControlsBaseline()
             gSession->baseline().setPolynomDegree(degree_); });
 
     connect(gSession, &Session::sigBaseline, [this]() {
-            spinDegree_.setValue(gSession->baseline().polynomDegree()); });
+            spinDegree_.programaticallySetValue(gSession->baseline().polynomDegree()); });
 }
 
 void ControlsBaseline::hideEvent(QHideEvent*)

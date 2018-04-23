@@ -62,13 +62,13 @@ ControlsInterpolation::ControlsInterpolation()
 
 void ControlsInterpolation::fromCore()
 {
-    doInterpol_ .setChecked(gSession->interpol().enabled());
-    stepAlpha_  .setValue  (gSession->interpol().stepAlpha());
-    stepBeta_   .setValue  (gSession->interpol().stepBeta());
-    idwRadius_  .setValue  (gSession->interpol().idwRadius());
-    avgAlphaMax_.setValue  (gSession->interpol().avgAlphaMax());
-    avgRadius_  .setValue  (gSession->interpol().avgRadius());
-    threshold_  .setValue  (gSession->interpol().threshold());
+    doInterpol_ .programaticallySetValue(gSession->interpol().enabled());
+    stepAlpha_  .programaticallySetValue(gSession->interpol().stepAlpha());
+    stepBeta_   .programaticallySetValue(gSession->interpol().stepBeta());
+    idwRadius_  .programaticallySetValue(gSession->interpol().idwRadius());
+    avgAlphaMax_.programaticallySetValue(gSession->interpol().avgAlphaMax());
+    avgRadius_  .programaticallySetValue(gSession->interpol().avgRadius());
+    threshold_  .programaticallySetValue(gSession->interpol().threshold());
 
     bool on = gSession->interpol().enabled();
     stepAlpha_  .setEnabled(on);
