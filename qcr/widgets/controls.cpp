@@ -16,7 +16,7 @@
 #include "qcr/engine/debug.h"
 #include "qcr/engine/qcrexception.h"
 #include "qcr/engine/console.h"
-#include "qcr/widgets/convert.h"
+#include "qcr/engine/string_ops.h"
 #include "qcr/widgets/displays.h"
 #include <QApplication> // for qApp for new Action
 #include <iostream> // debug
@@ -101,7 +101,7 @@ QcrToggle::QcrToggle(const QString& name, const QString& text, bool on, const QS
 
 void QcrToggle::onCommand(const QString& arg)
 {
-    programaticallySetValue(TO_BOOL(arg));
+    programaticallySetValue(strOp::to_b(arg));
 }
 
 //  ***********************************************************************************************
@@ -168,7 +168,7 @@ void QcrSpinBox::reportChange()
 
 void QcrSpinBox::onCommand(const QString& arg)
 {
-    int val = TO_INT(arg);
+    int val = strOp::to_i(arg);
     programaticallySetValue(val);
     EMITS("QcrSpinBox::onCommand", valueReleased(val));
 }
@@ -208,7 +208,7 @@ void QcrDoubleSpinBox::reportChange()
 
 void QcrDoubleSpinBox::onCommand(const QString& arg)
 {
-    double val = TO_DOUBLE(arg);
+    double val = strOp::to_d(arg);
     programaticallySetValue(val);
     EMITS("QcrDoubleSpinBox::onCommand", valueReleased(val));
 }
@@ -225,7 +225,7 @@ QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text)
 
 void QcrCheckBox::onCommand(const QString& arg)
 {
-    programaticallySetValue(TO_INT(arg));
+    programaticallySetValue(strOp::to_i(arg));
 }
 
 //! @class QcrRadioButton
@@ -240,7 +240,7 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text)
 
 void QcrRadioButton::onCommand(const QString& arg)
 {
-    programaticallySetValue(TO_BOOL(arg));
+    programaticallySetValue(strOp::to_b(arg));
 }
 
 //! @class QcrComboBox
@@ -255,7 +255,7 @@ QcrComboBox::QcrComboBox(const QString& _name, const QStringList& items)
 
 void QcrComboBox::onCommand(const QString& arg)
 {
-    programaticallySetValue(TO_INT(arg));
+    programaticallySetValue(strOp::to_i(arg));
 }
 
 //! @class QcrLineEdit
@@ -294,7 +294,7 @@ QcrTabWidget::QcrTabWidget(const QString& _name)
 
 void QcrTabWidget::onCommand(const QString& arg)
 {
-    int val = TO_INT(arg);
+    int val = strOp::to_i(arg);
     if (!isTabEnabled(val))
         throw QcrException("Chosen tab is not enabled");
     setCurrentIndex(val);

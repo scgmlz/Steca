@@ -14,6 +14,7 @@
 
 #include "console.h"
 #include "qcr/engine/qcrexception.h"
+#include "qcr/engine/string_ops.h"
 #include <QDebug>
 #include <QFile>
 #include <QSocketNotifier>
@@ -183,14 +184,7 @@ Console::Result Console::exec(QString line)
     if (line[0]=='#')
         return Result::ok; // comment => nothing to do
     QString cmd, arg;
-    int isplit = line.indexOf(' ');
-    if (isplit!=-1) {
-        cmd = line.left(isplit);
-        arg = line.mid(isplit+1);
-    } else {
-        cmd = line;
-        arg = "";
-    }
+    strOp::splitOnce(line, cmd, arg);
     if (cmd[0]=='@') {
         log(line);
         if (cmd=="@ls") {

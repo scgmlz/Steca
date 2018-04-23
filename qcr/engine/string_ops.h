@@ -2,8 +2,8 @@
 //
 //  libqcr: capture and replay Qt widget actions
 //
-//! @file      qcr/widgets/convert.h
-//! @brief     Defines functions TO_INT, TO_DOUBLE
+//! @file      qcr/engine/string_ops.h
+//! @brief     Defines namespace strOp with various string operations
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -17,8 +17,16 @@
 
 #include <QtGlobal>
 
-bool TO_BOOL(const QString&);
-int TO_INT(const QString&);
-double TO_DOUBLE(const QString&);
+//! String operations
+
+namespace strOp {
+
+bool to_b(const QString&);
+int to_i(const QString&);
+double to_d(const QString&);
+
+void splitOnce(const QString&, QString&, QString&);
+
+} // namespace strOp
 
 #endif // CONVERT_H

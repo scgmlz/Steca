@@ -16,7 +16,7 @@
 #include "qcr/engine/console.h"
 #include "qcr/engine/qcrexception.h"
 #include "qcr/engine/debug.h"
-#include "qcr/widgets/convert.h"
+#include "qcr/engine/string_ops.h"
 
 //  ***********************************************************************************************
 //! @class TableModel
@@ -32,7 +32,7 @@ void TableModel::onCommand(const QString& arg)
         throw QcrException("Unexpected command in TableModel "+name());
     if      (args.size()<2)
         throw QcrException("Missing argument to command 'highlight'");
-    setHighlight(TO_INT(args[1]));
+    setHighlight(strOp::to_i(args[1]));
 }
 
 void TableModel::refreshModel()
@@ -74,11 +74,11 @@ void CheckTableModel::onCommand(const QString& arg)
     if        (args[0]=="activate") {
         if (args.size()<2)
             throw QcrException("Missing argument to command 'activate'");
-        activateAndLog(false, TO_INT(args[1]), true);
+        activateAndLog(false, strOp::to_i(args[1]), true);
     } else if (args[0]=="deactivate") {
         if (args.size()<2)
             throw QcrException("Missing argument to command 'deactivate'");
-        activateAndLog(false, TO_INT(args[1]), false);
+        activateAndLog(false, strOp::to_i(args[1]), false);
     } else
         TableModel::onCommand(arg);
 }

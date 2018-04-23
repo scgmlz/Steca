@@ -2,8 +2,8 @@
 //
 //  libqcr: capture and replay Qt widget actions
 //
-//! @file      qcr/widgets/convert.cpp
-//! @brief     Implements functions TO_INT, TO_DOUBLE
+//! @file      qcr/engine/string_ops.cpp
+//! @brief     Implements namespace strOp with various string operations
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,10 +12,10 @@
 //
 //  ***********************************************************************************************
 
-#include "convert.h"
+#include "string_ops.h"
 #include "qcr/engine/qcrexception.h"
 
-bool TO_BOOL(const QString& s)
+bool strOp::to_b(const QString& s)
 {
     int ret;
     if (s=="on")
@@ -26,7 +26,7 @@ bool TO_BOOL(const QString& s)
         throw QcrException("Expected 'on' or 'off', found string '" + s + "'");
 }
 
-int TO_INT(const QString& s)
+int strOp::to_i(const QString& s)
 {
     if (s=="")
         throw QcrException("Expected an integer number, found empty string");
@@ -38,7 +38,7 @@ int TO_INT(const QString& s)
     return ret;
 }
 
-double TO_DOUBLE(const QString& s)
+double strOp::to_d(const QString& s)
 {
     if (s=="")
         throw QcrException("Expected a floating-point number, found empty string");
@@ -48,4 +48,16 @@ double TO_DOUBLE(const QString& s)
     if (!ok)
         throw QcrException("Expected a floating-point number, found string '" + s + "'");
     return ret;
+}
+
+void strOp::splitOnce(const QString& in, QString& part0, QString& part1)
+{
+    int j = in.indexOf(' ');
+    if (j!=-1) {
+        part0 = in.left(j);
+        part1 = in.mid(j+1);
+    } else {
+        part0 = in;
+        part1 = "";
+    }
 }
