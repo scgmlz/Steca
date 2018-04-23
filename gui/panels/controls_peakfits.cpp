@@ -318,8 +318,8 @@ ControlsPeakfits::ControlsPeakfits()
 
     // layout
     topControls_.addStretch();
-    topControls_.addWidget(new XIconButton(&gGui->triggers->addPeak));
-    topControls_.addWidget(new XIconButton(&gGui->triggers->removePeak));
+    topControls_.addWidget(new QcrIconButton(&gGui->triggers->addPeak));
+    topControls_.addWidget(new QcrIconButton(&gGui->triggers->removePeak));
 
     auto* box = new QVBoxLayout;
     box->addLayout(&topControls_);

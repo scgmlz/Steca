@@ -115,13 +115,13 @@ void QcrToggle::onCommand(const QStringList& args)
 //  ***********************************************************************************************
 //! @classes with no console connection
 
-XTextButton::XTextButton(QcrAction* action)
+QcrTextButton::QcrTextButton(QcrAction* action)
 {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonTextOnly);
 }
 
-XIconButton::XIconButton(QcrAction* action)
+QcrIconButton::QcrIconButton(QcrAction* action)
 {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonIconOnly);

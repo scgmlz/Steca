@@ -59,8 +59,8 @@ protected:
     QHBoxLayout box1_;
 private:
     void render();
-    XIconButton btnScale_;
-    XIconButton btnOverlay_;
+    QcrIconButton btnScale_;
+    QcrIconButton btnOverlay_;
 };
 
 //! A tab for a data image and associated controls.
@@ -83,7 +83,7 @@ private:
     QLabel gammaRangeSlice_;
     QLabel thetaRangeTotal_;
     QLabel thetaRangeBin_;
-    XIconButton btnShowBins_;
+    QcrIconButton btnShowBins_;
 };
 
 //! A tab for the correction image and associated controls.

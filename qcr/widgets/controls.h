@@ -54,15 +54,15 @@ public:
 };
 
 //! QToolButton with text display and associated QAction.
-class XTextButton : public QToolButton {
+class QcrTextButton : public QToolButton {
 public:
-    XTextButton(QcrAction*);
+    QcrTextButton(QcrAction*);
 };
 
 //! QToolButton with icon and associated QAction.
-class XIconButton : public QToolButton {
+class QcrIconButton : public QToolButton {
 public:
-    XIconButton(QcrAction*);
+    QcrIconButton(QcrAction*);
 };
 
 //! Named QSpinBox that can be set by console command.

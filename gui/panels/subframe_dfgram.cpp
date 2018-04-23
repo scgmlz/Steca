@@ -81,13 +81,13 @@ Dfgram::Dfgram()
     hb->addWidget(&intenAvg_);
     hb->addWidget(&intenScale_);
     hb->addStretch(); // ---
-    hb->addWidget(new XIconButton {&actZoom_});
+    hb->addWidget(new QcrIconButton {&actZoom_});
     hb->addStretch(); // ---
-    hb->addWidget(new XIconButton {&gGui->toggles->combinedDgram});
-    hb->addWidget(new XIconButton {&gGui->toggles->fixedIntenDgram});
-    hb->addWidget(new XIconButton {&gGui->toggles->showBackground});
+    hb->addWidget(new QcrIconButton {&gGui->toggles->combinedDgram});
+    hb->addWidget(new QcrIconButton {&gGui->toggles->fixedIntenDgram});
+    hb->addWidget(new QcrIconButton {&gGui->toggles->showBackground});
     hb->addStretch(); // ---
-    hb->addWidget(new XIconButton {&gGui->triggers->exportDfgram});
+    hb->addWidget(new QcrIconButton {&gGui->triggers->exportDfgram});
 
     auto* box = new QVBoxLayout;
     box->addWidget(plot_);

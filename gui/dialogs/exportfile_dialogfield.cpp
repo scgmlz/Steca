@@ -52,7 +52,7 @@ ExportfileDialogfield::ExportfileDialogfield(
     auto* destinationGrid = new QGridLayout;
     destinationGrid->addWidget(new QLabel("Save to folder:"), 0, 0, Qt::AlignRight);
     destinationGrid->addWidget(dir_,                          0, 1);
-    destinationGrid->addWidget(new XTextButton(&actBrowse_),    0, 2);
+    destinationGrid->addWidget(new QcrTextButton(&actBrowse_),    0, 2);
     destinationGrid->addWidget(new QLabel("File name:"),      1, 0, Qt::AlignRight);
     destinationGrid->addWidget(file_,                         1, 1);
 
@@ -75,8 +75,8 @@ ExportfileDialogfield::ExportfileDialogfield(
     bottom->addWidget(&progressBar);
     bottom->setStretchFactor(&progressBar, 333);
     bottom->addStretch(1);
-    bottom->addWidget(new XTextButton(&actCancel_));
-    bottom->addWidget(new XTextButton(&actSave_));
+    bottom->addWidget(new QcrTextButton(&actCancel_));
+    bottom->addWidget(new QcrTextButton(&actSave_));
 
     addLayout(setup);
     addLayout(bottom);

@@ -96,7 +96,7 @@ ControlsBaseline::ControlsBaseline()
     hb_.addWidget(new QLabel("Pol. degree:"));
     hb_.addWidget(&spinDegree_);
     hb_.addStretch(1);
-    hb_.addWidget(new XIconButton(&gGui->triggers->clearBackground));
+    hb_.addWidget(new QcrIconButton(&gGui->triggers->clearBackground));
     box_.addLayout(&hb_);
 
     box_.addWidget(new BaseRangesView());

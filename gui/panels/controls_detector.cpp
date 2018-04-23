@@ -71,9 +71,9 @@ GeometryControls::GeometryControls()
     mmGrid_.addWidget(new QLabel("mm"), 1, 2);
 
     trafoLayout_.addWidget(new QLabel("image rotate"));
-    trafoLayout_.addWidget(new XIconButton(&gGui->imageTrafoActions->rotateImage));
+    trafoLayout_.addWidget(new QcrIconButton(&gGui->imageTrafoActions->rotateImage));
     trafoLayout_.addWidget(new QLabel("mirror"));
-    trafoLayout_.addWidget(new XIconButton(&gGui->imageTrafoActions->mirrorImage));
+    trafoLayout_.addWidget(new QcrIconButton(&gGui->imageTrafoActions->mirrorImage));
     trafoLayout_.addStretch(1);
 
     offsetLayout_.addWidget(new QLabel("offset X"));
@@ -110,7 +110,7 @@ private:
     void fromCore();
 
     QGridLayout layout_;
-    XIconButton link_ {&gGui->toggles->linkCuts};
+    QcrIconButton link_ {&gGui->toggles->linkCuts};
     QcrSpinBox cutLeft_ {"cutLeft", 3, false, 0};
     QcrSpinBox cutTop_ {"cutTop", 3, false, 0};
     QcrSpinBox cutRight_ {"cutRight", 3, false, 0};
@@ -175,7 +175,7 @@ private:
     QcrToggle dropIncompleteAction_ {"dropIncomplete",
             "Drop measurement groups that do not have the full number of members",
             false, ":/icon/dropIncomplete" };
-    XIconButton dropIncompleteButton_ { &dropIncompleteAction_ };
+    QcrIconButton dropIncompleteButton_ { &dropIncompleteAction_ };
 };
 
 ActiveClustersControls::ActiveClustersControls()

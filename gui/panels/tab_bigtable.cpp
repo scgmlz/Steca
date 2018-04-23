@@ -147,8 +147,8 @@ BigtableTab::BigtableTab()
 
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);
-    buttonBox->addWidget(new XIconButton {&gGui->triggers->spawnTable});
-    buttonBox->addWidget(new XIconButton {&gGui->triggers->exportBigtable});
+    buttonBox->addWidget(new QcrIconButton {&gGui->triggers->spawnTable});
+    buttonBox->addWidget(new QcrIconButton {&gGui->triggers->exportBigtable});
 
     auto* sideBox = new QVBoxLayout;
     sideBox->addWidget(colSelBox);
