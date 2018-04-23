@@ -151,7 +151,7 @@ CutControls::CutControls()
 void CutControls::fromCore()
 {
     const ImageCut& cut = gSession->imageCut();
-    gGui->toggles->linkCuts.setChecked(cut.linked());
+    gGui->toggles->linkCuts.programaticallySetValue(cut.linked());
     cutLeft_.programaticallySetValue(cut.left());
     cutTop_.programaticallySetValue(cut.top());
     cutRight_.programaticallySetValue(cut.right());

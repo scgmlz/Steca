@@ -28,15 +28,15 @@
 #include <QSpinBox>
 #include <QToolButton>
 
-class QcrAction : public QAction, protected CSettable {
+class QcrAction : public QAction {
 public:
-    QcrAction(const QString& rawname, const QString& text);
+    QcrAction(const QString& text);
 protected:
     QString tooltip_;
 };
 
 //! Trigger, for use in buttons or menu entries, that can also be activated by console command.
-class QcrTrigger : public QcrAction {
+class QcrTrigger : public QcrAction, protected CSettable {
 public:
     QcrTrigger(const QString& name, const QString& text, const QString& iconFile="");
     QcrTrigger(const QString& name, const QString& text, const QString& iconFile,
@@ -45,12 +45,18 @@ public:
 };
 
 //! Toggle, for use in buttons or menu entries, that can also be switched by console command.
-class QcrToggle : public QcrAction {
+class QcrToggle : public QcrAction, public QcrControl<bool> {
 public:
     QcrToggle(const QString& name, const QString& text, bool on, const QString& iconFile="");
     QcrToggle(const QString& name, const QString& text, bool on, const QString& iconFile,
               const QKeySequence& shortcut);
     void onCommand(const QStringList&) override;
+    bool getValue() const final { return isChecked(); }
+private:
+    void doSetValue(bool val) final { setChecked(val); }
+    // hide some member functions of QAction:
+    bool isChecked() const { return QAction::isChecked(); }
+    void setChecked(bool val) { QAction::setChecked(val); }
 };
 
 //! Button with text display and associated action.

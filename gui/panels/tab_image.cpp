@@ -103,7 +103,7 @@ void ImageView::paintEvent(QPaintEvent*)
     p.drawPixmap(rect.left(), rect.top(), scaled_);
 
     // crosshair overlay
-    if (gGui->toggles->crosshair.isChecked()) {
+    if (gGui->toggles->crosshair.getValue()) {
         p.setPen(Qt::lightGray);
 
         // cut
@@ -245,7 +245,7 @@ QImage ImageTab::makeImage(const Image& image)
 
     QImage ret(QSize(size.w, size.h), QImage::Format_RGB32);
 
-    bool fixedScale = gGui->toggles->fixedIntenImage.isChecked();
+    bool fixedScale = gGui->toggles->fixedIntenImage.getValue();
     const Range rgeInten = imageLens.rgeInten(fixedScale);
     float maxInten = float(rgeInten.max);
 
@@ -314,7 +314,7 @@ QPixmap DataImageTab::pixmap()
     const Measurement* measurement = gSession->dataset().highlight().measurement();
     if (!measurement)
         return makeBlankPixmap();
-    if (gGui->toggles->showBins.isChecked())
+    if (gGui->toggles->showBins.getValue())
         return makeOverlayPixmap(*measurement);
     return makePixmap(measurement->image());
 }

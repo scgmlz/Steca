@@ -44,7 +44,7 @@ Dfgram::Dfgram()
 {
     // initializations
     plot_ = new PlotDfgram(*this);
-    gGui->toggles->showBackground.setChecked(true);
+    gGui->toggles->showBackground.programaticallySetValue(true);
     intenAvg_.programaticallySetValue(true);
     intenScale_.setDecimals(3);
 
@@ -107,7 +107,7 @@ void Dfgram::onNormChanged()
 
 void Dfgram::onHighlight()
 {
-    actZoom_.setChecked(false);
+    actZoom_.programaticallySetValue(false);
     plot_->renderAll();
 }
 

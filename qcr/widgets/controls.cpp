@@ -29,16 +29,16 @@
 
 //! @class QcrAction
 
-QcrAction::QcrAction(const QString& rawname, const QString& text)
+QcrAction::QcrAction(const QString& text)
     : QAction(text, qApp)
-    , CSettable(rawname)
     , tooltip_(text.toLower())
 {}
 
 //! @class QcrTrigger
 
 QcrTrigger::QcrTrigger(const QString& rawname, const QString& text, const QString& iconFile)
-    : QcrAction(rawname, text)
+    : QcrAction(text)
+    , CSettable(rawname)
 {
     //QAction::setObjectName(name());
     if (iconFile!="")
@@ -70,13 +70,14 @@ void QcrTrigger::onCommand(const QStringList& args)
 //! @class QcrToggle
 
 QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on, const QString& iconFile)
-    : QcrAction(rawname, text)
+    : QcrAction(text)
+    , QcrControl<bool>(rawname)
 {
     //QAction::setObjectName(CSettable::name());
     if (iconFile!="")
         setIcon(QIcon(iconFile));
     setCheckable(true);
-    setChecked(on);
+    programaticallySetValue(on);
     connect(this, &QAction::toggled, [this](bool val)->void {
             gConsole->log(name()+" switch "+(val ? "on" : "off")); });
     connect(this, &QAction::changed, [this]()->void {
@@ -102,14 +103,9 @@ void QcrToggle::onCommand(const QStringList& args)
 {
     if (args[0]!="switch")
         throw QcrException("Unexpected toggle command");
-    if      (args.size()<2)
+    if (args.size()<2)
         throw QcrException("Missing argument to command 'switch'");
-    else if (args[1]=="on")
-        setChecked(true);
-    else if (args[1]=="off")
-        setChecked(false);
-    else
-        throw QcrException("Invalid argument to command 'switch'");
+    programaticallySetValue(TO_BOOL(args[1]));
 }
 
 //  ***********************************************************************************************
@@ -262,14 +258,9 @@ void QcrRadioButton::onCommand(const QStringList& args)
 {
     if (args[0]!="switch")
         throw QcrException("Unexpected RadioButton command");
-    if      (args.size()<2)
+    if (args.size()<2)
         throw QcrException("Missing argument to command 'switch'");
-    else if (args[1]=="on")
-        programaticallySetValue(true);
-    else if (args[1]=="off")
-        programaticallySetValue(false);
-    else
-        throw QcrException("Invalid argument to command 'switch'");
+    programaticallySetValue(TO_BOOL(args[1]));
 }
 
 //! @class QcrComboBox

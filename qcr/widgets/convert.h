@@ -17,6 +17,7 @@
 
 #include <QtGlobal>
 
+bool TO_BOOL(const QString&);
 int TO_INT(const QString&);
 double TO_DOUBLE(const QString&);
 
