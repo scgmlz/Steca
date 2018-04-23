@@ -40,8 +40,8 @@ void PlotDiagram::refresh()
     graphUp_->clearData();
     graphLo_->clearData();
 
-    const int xi = int(gGui->state->diagramX->currentIndex());
-    const int yi = int(gGui->state->diagramY->currentIndex());
+    const int xi = int(gGui->state->diagramX->getValue());
+    const int yi = int(gGui->state->diagramY->getValue());
 
     std::vector<double> xs, ys, ysLow, ysHig;
     gSession->peakInfos().get4(xi, yi, xs, ys, ysLow, ysHig);

@@ -130,11 +130,19 @@ private:
     void setChecked(bool val) { QRadioButton::setChecked(val); }
 };
 
-//! Named combo box that can be set by console command.
-class QcrComboBox : public QComboBox, private CSettable {
+//! Named non-editable combo box that can be set by console command.
+class QcrComboBox : public QComboBox, public QcrControl<int> {
 public:
     QcrComboBox(const QString& name, const QStringList& items = {});
     void onCommand(const QStringList&) override;
+    int getValue() const final { return currentIndex(); }
+    void setEditable() = delete; // stay with default: editable=false
+    void setCurrentText(const QString &) = delete;
+private:
+    void doSetValue(int val) final { setCurrentIndex(val); }
+    // hide some member functions of QComboBox:
+    int currentIndex() const { return QComboBox::currentIndex(); }
+    void setCurrentIndex(int val) { QComboBox::setCurrentIndex(val); }
 };
 
 //! Named line edit that can be set by console command (but use XLineEdit for pure display).

@@ -275,7 +275,7 @@ void QcrRadioButton::onCommand(const QStringList& args)
 //! @class QcrComboBox
 
 QcrComboBox::QcrComboBox(const QString& _name, const QStringList& items)
-    : CSettable(_name)
+    : QcrControl<int>(_name)
 {
     addItems(items);
     connect(this, _SLOT_(QComboBox,currentIndexChanged,int), [this](int val)->void {

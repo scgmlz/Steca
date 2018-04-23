@@ -336,8 +336,6 @@ ControlsPeakfits::ControlsPeakfits()
 void ControlsPeakfits::onPeaks()
 {
     Peak* peak = gSession->peaks().selectedPeak();
-    if (peak)
-        comboReflType_.setCurrentText(peak->functionName());
 };
 
 void ControlsPeakfits::hideEvent(QHideEvent*)
