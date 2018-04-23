@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "console.h"
-#include "cmdexception.h"
+#include "qcr/engine/qcrexception.h"
 #include <QDebug>
 #include <QFile>
 #include <QSocketNotifier>

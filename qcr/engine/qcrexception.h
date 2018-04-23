@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      qcr/engine/cmdexception.h
+//! @file      qcr/engine/qcrexception.h
 //! @brief     Defines class QCRException
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef CMDEXCEPTION_H
-#define CMDEXCEPTION_H
+#ifndef QCREXCEPTION_H
+#define QCREXCEPTION_H
 
 #include <QException>
 #include <QString> // no auto rm
@@ -28,4 +28,4 @@ private:
     QString msg_;
 };
 
-#endif // CMDEXCEPTION_H
+#endif // QCREXCEPTION_H
