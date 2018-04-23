@@ -54,9 +54,9 @@ protected:
         reportedValue_ = getValue();
         doLog(true, "initialization: "+name()+" "+strOp::to_s(reportedValue_));
     }
-    void onChangedValue(T val) {
+    void onChangedValue(bool hasFocus, T val) {
         if (val!=reportedValue_) {
-            doLog(softwareCalling_, name()+" "+strOp::to_s(val));
+            doLog(softwareCalling_||!hasFocus, name()+" "+strOp::to_s(val));
             reportedValue_ = val;
         }
     }

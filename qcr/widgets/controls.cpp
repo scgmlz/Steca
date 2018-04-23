@@ -79,7 +79,7 @@ QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on, const
         setIcon(QIcon(iconFile));
     setCheckable(true);
     programaticallySetValue(on);
-    connect(this, &QAction::toggled, this, [this](bool val){onChangedValue(val);});
+    connect(this, &QAction::toggled, this, [this](bool val){onChangedValue(true, val);});
     connect(this, &QAction::changed, [this]()->void {
             QString txt = tooltip_;
             if (!isEnabled())
@@ -143,7 +143,7 @@ QcrSpinBox::QcrSpinBox(
     connect(this, &QSpinBox::editingFinished, this, &QcrSpinBox::reportChange);
     connect(this, _SLOT_(QSpinBox,valueChanged,int), [this](int val)->void {
             if(!hasFocus())
-                onChangedValue(val); });
+                onChangedValue(hasFocus(), val); });
 }
 
 void QcrSpinBox::mouseReleaseEvent(QMouseEvent *event)
@@ -158,7 +158,7 @@ void QcrSpinBox::reportChange()
     if (val == reportedValue_)
         return;
     reportedValue_ = val;
-    onChangedValue(val);
+    onChangedValue(hasFocus(), val);
     EMITS("QcrSpinBox::reportChange", valueReleased(val));
 }
 
@@ -184,7 +184,7 @@ QcrDoubleSpinBox::QcrDoubleSpinBox(const QString& _name, int ndigits, double min
     connect(this, &QDoubleSpinBox::editingFinished, this, &QcrDoubleSpinBox::reportChange);
     connect(this, _SLOT_(QDoubleSpinBox,valueChanged,double), [this](double val)->void {
             if(!hasFocus())
-                onChangedValue(val); });
+                onChangedValue(hasFocus(), val); });
 }
 
 void QcrDoubleSpinBox::mouseReleaseEvent(QMouseEvent *event)
@@ -199,7 +199,7 @@ void QcrDoubleSpinBox::reportChange()
     if (val == reportedValue_)
         return;
     reportedValue_ = val;
-    onChangedValue(val);
+    onChangedValue(hasFocus(), val);
     EMITS("QcrDoubleSpinBox::reportChange", valueReleased(val));
 }
 
@@ -218,7 +218,7 @@ QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text)
 {
     init();
     connect(this, _SLOT_(QCheckBox,stateChanged,int), [this](int val)->void {
-            onChangedValue(val); });
+            onChangedValue(hasFocus(), val); });
 }
 
 //! @class QcrRadioButton
@@ -229,7 +229,7 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text)
 {
     init();
     connect(this, &QRadioButton::toggled, [this](bool val)->void {
-            onChangedValue(val); });
+            onChangedValue(hasFocus(), val); });
 }
 
 //! @class QcrComboBox
@@ -240,7 +240,7 @@ QcrComboBox::QcrComboBox(const QString& _name, const QStringList& items)
     init();
     addItems(items);
     connect(this, _SLOT_(QComboBox,currentIndexChanged,int), [this](int val)->void {
-            onChangedValue(val); });
+            onChangedValue(hasFocus(), val); });
 }
 
 //! @class QcrLineEdit
@@ -255,10 +255,10 @@ QcrLineEdit::QcrLineEdit(const QString& _name, const QString& val)
     // but also in a second line as if there were an indirect call.
     connect(this, _SLOT_(QLineEdit,textEdited,const QString&),
             [this](const QString& val)->void {
-                onChangedValue(val); });
+                onChangedValue(hasFocus(), val); });
     connect(this, _SLOT_(QLineEdit,textChanged,const QString&),
             [this](const QString& val)->void {
-                onChangedValue(val); });
+                onChangedValue(hasFocus(), val); });
     programaticallySetValue(val);
 }
 
@@ -271,11 +271,11 @@ QcrTabWidget::QcrTabWidget(const QString& _name)
     connect(this->tabBar(), &QTabBar::tabBarClicked, [this](int val) {
             if (!isTabEnabled(val))
                 throw QcrException("Chosen tab is not enabled");
-            onChangedValue(val); });
+            onChangedValue(hasFocus(), val); });
     connect(this, &QTabWidget::currentChanged, [this](int val) {
             if (!isTabEnabled(val))
                 throw QcrException("Chosen tab is not enabled");
-            onChangedValue(val); });
+            onChangedValue(hasFocus(), val); });
 }
 
 //! @class QcrFileDialog
