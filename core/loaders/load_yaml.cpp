@@ -114,11 +114,119 @@ void readExperiment(const YAML::Node& node, Rawfile& rawfile)
 
 void readSample(const YAML::Node& node, Metadata& metadata)
 {
+    metadata.comment = QString::fromStdString(node["description"]["name"].as<std::string>());
+    metadata.motorXT = node["position"]["xt"]["value"].as<double>(NAN);//double
+    metadata.motorYT = node["position"]["yt"]["value"].as<double>(NAN);
+    metadata.motorZT = node["position"]["zt"]["value"].as<double>(NAN);
+    metadata.motorOmg = node["orientation"]["omgs"]["value"].as<double>(NAN);
+    metadata.motorTth = node["orientation"]["tths"]["value"].as<double>(NAN);
+    metadata.motorPhi = node["orientation"]["phis"]["value"].as<double>(NAN);
+    metadata.motorChi = node["orientation"]["chis"]["value"].as<double>(NAN);
+
+    /*
+
+    sample:
+        description:
+            name: Nickelbasislegierung / Ni-20Cr-10Co-8Mo
+        temperature: {}
+        orientation:
+            tths:
+                value: "45.00"
+                offset_coder: "3319.25"
+                precision: "0.03"
+            omgs:
+                value: "22.50"
+                offset_coder: "0.00"
+                precision: "0.01"
+            chis:
+                value: "90.07"
+                offset_coder: "0.00"
+                precision: "0.10"
+            phis:
+                value: 0
+                offset_coder: 0
+                precision: 0
+        position:
+            xt:
+                value: "-0.18"
+                offset_coder: "0.00"
+                precision: "0.01"
+            zt:
+                offset_coder: "0.00"
+                precision: "0.05"
+                value: "8.93"
+            yt:
+                offset_coder: "-10242.9"
+                precision: "0.01"
+                value: "-0.10"
+    */
     // TODO: readSample(const YAML::Node& node, const Metadata& metadata)
 }
 
 void readSetup(const YAML::Node& node, Metadata& metadata)
 {
+    metadata.motorPST = NAN; // node["orientation"]["xt"]["value"].as<double>(NAN);
+    metadata.motorSST = NAN; // node["orientation"]["xt"]["value"].as<double>(NAN);
+    metadata.motorOMGM = node["monochromator"]["omgm"]["value"].as<double>(NAN);
+    // type = double:
+    metadata.nmT;
+    metadata.nmTeload;
+    metadata.nmTepos;
+    metadata.nmTeext;
+    metadata.nmXe;
+    metadata.nmYe;
+    metadata.nmZe; // nm = new metadata
+
+    /*
+    setup:
+        collimator_1: "15'"
+        slit_m:
+            horizontal_clearance:
+                value: 0
+                offset_coder: 0
+                precision: 0
+            vertical_clearance:
+                value: 0
+                offset_coder: 0
+                precision: 0
+        monochromator:
+            crystal: Ge
+            omgm:
+                value: "41.21"
+                offset_coder: "0.00"
+                precision: "0.01"
+            tthm:
+                value: "70.50"
+                offset_coder: 0
+                precision: 0
+            angle: 0
+            incident_wavelength: "1.75"
+        slit_e:
+            clearance:
+                value: 0
+                offset_coder: 0
+                precision: 0
+        slit_p:
+            horizontal_clearance:
+                value: 0
+                offset_coder: 0
+                precision: 0
+            horizontal_translation:
+                value: 0
+                offset_coder: 0
+                precision: 0
+            vertical_clearance:
+                value: 0
+                offset_coder: 0
+                precision: 0
+            vertical_translation:
+                value: 0
+                offset_coder: 0
+                precision: 0
+        collimator_2:
+            fhwm: 5
+    */
+
     // TODO: readSetup(const YAML::Node& node, const Metadata& metadata)
 }
 
@@ -231,27 +339,8 @@ void readMeasurement(const YAML::Node& node, Rawfile& rawfile)
     auto metadata = Metadata();
 
     // type = string:
-    metadata.date;
-    metadata.comment;
+    metadata.date = QString::fromStdString(node["history"]["started"].as<std::string>());
     // type = deg:
-    metadata.motorXT;
-    metadata.motorYT;
-    metadata.motorZT;
-    metadata.motorOmg;
-    metadata.motorTth;
-    metadata.motorPhi;
-    metadata.motorChi;
-    metadata.motorPST;
-    metadata.motorSST;
-    metadata.motorOMGM;
-    // type = double:
-    metadata.nmT;
-    metadata.nmTeload;
-    metadata.nmTepos;
-    metadata.nmTeext;
-    metadata.nmXe;
-    metadata.nmYe;
-    metadata.nmZe; // nm = new metadata
 
     metadata.monitorCount;
     metadata.deltaMonitorCount;
@@ -271,87 +360,7 @@ measurement:
         started: "2017-09-29 05:33:22"
         stopped: "2017-09-29 05:38:23"
         scan: "110ss_Reflection_chis=,90,time=,300,highestForce=,0.0,Force=,15599.75,highestEps=,0.0,Eps=,7.24507045746, - timescan(1, t=300)"
-    sample:
-        description:
-            name: Nickelbasislegierung / Ni-20Cr-10Co-8Mo
-        temperature: {}
-        orientation:
-            tths:
-                value: "45.00"
-                offset_coder: "3319.25"
-                precision: "0.03"
-            omgs:
-                value: "22.50"
-                offset_coder: "0.00"
-                precision: "0.01"
-            chis:
-                value: "90.07"
-                offset_coder: "0.00"
-                precision: "0.10"
-            phis:
-                value: 0
-                offset_coder: 0
-                precision: 0
-        position:
-            xt:
-                value: "-0.18"
-                offset_coder: "0.00"
-                precision: "0.01"
-            zt:
-                offset_coder: "0.00"
-                precision: "0.05"
-                value: "8.93"
-            yt:
-                offset_coder: "-10242.9"
-                precision: "0.01"
-                value: "-0.10"
-    setup:
-        collimator_1: "15'"
-        slit_m:
-            horizontal_clearance:
-                value: 0
-                offset_coder: 0
-                precision: 0
-            vertical_clearance:
-                value: 0
-                offset_coder: 0
-                precision: 0
-        monochromator:
-            crystal: Ge
-            omgm:
-                value: "41.21"
-                offset_coder: "0.00"
-                precision: "0.01"
-            tthm:
-                value: "70.50"
-                offset_coder: 0
-                precision: 0
-            angle: 0
-            incident_wavelength: "1.75"
-        slit_e:
-            clearance:
-                value: 0
-                offset_coder: 0
-                precision: 0
-        slit_p:
-            horizontal_clearance:
-                value: 0
-                offset_coder: 0
-                precision: 0
-            horizontal_translation:
-                value: 0
-                offset_coder: 0
-                precision: 0
-            vertical_clearance:
-                value: 0
-                offset_coder: 0
-                precision: 0
-            vertical_translation:
-                value: 0
-                offset_coder: 0
-                precision: 0
-        collimator_2:
-            fhwm: 5
+    <... COLLAPSED ...>
     scan:
     -   scan_parameters: {}
         time: 300.0
