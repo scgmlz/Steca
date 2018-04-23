@@ -9,7 +9,7 @@
 
 #include <memory>
 #include <vector>
-#include "yaml-cpp/noncopyable.h"
+#include "../include/yaml-cpp/noncopyable.h"
 
 namespace YAML {
 class SettingChangeBase;

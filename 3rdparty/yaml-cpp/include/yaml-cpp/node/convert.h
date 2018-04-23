@@ -14,12 +14,12 @@
 #include <sstream>
 #include <vector>
 
-#include "yaml-cpp/binary.h"
-#include "yaml-cpp/node/impl.h"
-#include "yaml-cpp/node/iterator.h"
-#include "yaml-cpp/node/node.h"
-#include "yaml-cpp/node/type.h"
-#include "yaml-cpp/null.h"
+#include "../binary.h"
+#include "../node/impl.h"
+#include "../node/iterator.h"
+#include "../node/node.h"
+#include "../node/type.h"
+#include "../null.h"
 
 namespace YAML {
 class Binary;

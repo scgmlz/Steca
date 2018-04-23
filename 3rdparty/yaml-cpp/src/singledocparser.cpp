@@ -7,11 +7,11 @@
 #include "singledocparser.h"
 #include "tag.h"
 #include "token.h"
-#include "yaml-cpp/emitterstyle.h"
-#include "yaml-cpp/eventhandler.h"
-#include "yaml-cpp/exceptions.h"  // IWYU pragma: keep
-#include "yaml-cpp/mark.h"
-#include "yaml-cpp/null.h"
+#include "../include/yaml-cpp/emitterstyle.h"
+#include "../include/yaml-cpp/eventhandler.h"
+#include "../include/yaml-cpp/exceptions.h"  // IWYU pragma: keep
+#include "../include/yaml-cpp/mark.h"
+#include "../include/yaml-cpp/null.h"
 
 namespace YAML {
 SingleDocParser::SingleDocParser(Scanner& scanner, const Directives& directives)

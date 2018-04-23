@@ -18,15 +18,16 @@
 #include <sstream>
 
 ; // preserve inclusion order
+//#include<yaml.h>
 #include "3rdparty/yaml-cpp/include/yaml-cpp/yaml.h" // inclusion order is critical ?
 
 namespace  {
-void readInstrument(const YAML::Node& node, const Rawfile& rawfile);
-void readFormat(const YAML::Node& node, const Rawfile& rawfile);
-void readExperiment(const YAML::Node& node, const Rawfile& rawfile);
-void readMeasurement(const YAML::Node& node, const Rawfile& rawfile);
+void readInstrument(const YAML::Node& node, Rawfile& rawfile);
+void readFormat(const YAML::Node& node, Rawfile& rawfile);
+void readExperiment(const YAML::Node& node, Rawfile& rawfile);
+void readMeasurement(const YAML::Node& node, Rawfile& rawfile);
 
-typedef std::function<void (const YAML::Node& node, const Rawfile& rawfile)> ParserFunction;
+typedef std::function<void (const YAML::Node& node, Rawfile& rawfile)> ParserFunction;
 
 const std::map<std::string, ParserFunction> parserFunctions = {
     std::pair<std::string, ParserFunction>("instrument",  &readInstrument),
@@ -56,6 +57,10 @@ Rawfile loadYaml(const QString& filePath)
     return rawfile;
 }
 
+} // namespace load
+
+
+namespace  {
 
 void readInstrument(const YAML::Node& node, Rawfile& rawfile)
 {
@@ -82,8 +87,6 @@ void readFormat(const YAML::Node& node, Rawfile& rawfile)
     const auto units  = node["units"].as<std::map<std::string, std::string>>();
     // TODO: readFormat(const YAML::Node& node, const Rawfile& rawfile)
 }
-
-
 
 void readExperiment(const YAML::Node& node, Rawfile& rawfile)
 {
@@ -131,9 +134,9 @@ void readSingleScan(const YAML::Node& node, Metadata& metadata, Rawfile& rawfile
     const auto sum = node["sum"].as<double>(NAN);
     const auto imageNode = node["image"];
 
-    const size2d size(node[0].size(), node.size());
-    std::vector<float> image;
+    const size2d size(imageNode[0].size(), imageNode.size());
 
+    std::vector<float> image;
     // fill image row after row...:
     for (auto rowNode: imageNode) {
         auto row = rowNode.as<std::vector<float>>();
@@ -211,7 +214,7 @@ void readScans(const YAML::Node& node, Metadata& metadata, Rawfile& rawfile)
             metadataCopy.deltaTime         =  metadata.deltaTime        ;
         }
 
-        readSingleScan(node, metadataCopy, rawfile);
+        readSingleScan(innerNode, metadataCopy, rawfile);
     }
     // TODO: readScan(const YAML::Node& node, const Metadata& metadata)
 }
@@ -256,10 +259,9 @@ void readMeasurement(const YAML::Node& node, Rawfile& rawfile)
     metadata.time;
     metadata.deltaTime;
 
-    const auto proposal = node["proposal"].as<std::string>(""); // not an Integer!!
-    const auto title = node["title"].as<std::string>("");
-    // const auto authors = node["authors"].as<std::vector<Author>>(""); TODO: uncomment.
-    const auto remark = node["remark"].as<std::string>("");
+    readSample(node["sample"], metadata);
+    readSetup(node["setup"], metadata);
+    readScans(node["scan"], metadata, rawfile); // adds the scanns to the rawfile
 
     /*
 measurement:
@@ -381,4 +383,4 @@ measurement:
 
 
 
-} // namespace load
+} // namespace
