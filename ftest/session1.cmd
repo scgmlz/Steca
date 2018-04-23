@@ -43,13 +43,13 @@
 [    1ms main]## "Toggle dropIncomplete"  emits  changed()
 [    1ms main]#: numSlices 1
 [    0ms main]## GammaControls  emits  gSession->sigImage()
-[    0ms main]#: setup 0
+[    0ms main]#: setupTab 0
 [    2ms main]#: stepAlpha 5
 [    0ms main]#: stepBeta 6
 [    0ms main]#: idwRadius 10
 [    0ms main]#: avgAlphaMax 5
 [    0ms main]#: avgRadius 5
-[    1ms main]#: mainframe 0
+[    1ms main]#: viewsTab 0
 [    1ms main]#: rbAll on
 [    0ms main]#: cb0 2
 [    0ms main]#: rbAll off
@@ -402,8 +402,8 @@
 [    0ms main]## DataImageTab  emits  gSession->sigImage()
 [   22ms main]## TableModel::refreshModel  emits  dataChanged(createIndex(0,0),createIndex(rowCount(),columnCount()-1))
 [    0ms main]## TableModel::refreshModel  emits  dataChanged(createIndex(0,0),createIndex(rowCount(),columnCount()-1))
-[        main]setup 1
-[    1ms main]#: setup 1
+[        main]setupTab 1
+[    1ms main]#: setupTab 1
 [ 2278ms main]## Baseline::addRange  emits  gSession->sigBaseline()
 [    0ms main]## sigBaseline  emits  sigDfgram()
 [    0ms main]## sigDfgram  emits  sigDoFits()
@@ -423,8 +423,8 @@
 [    0ms main]## Baseline::setPolynomDegree  emits  gSession->sigBaseline()
 [    0ms main]## sigBaseline  emits  sigDfgram()
 [    0ms main]## sigDfgram  emits  sigDoFits()
-[        main]setup 2
-[    1ms main]#: setup 2
+[        main]setupTab 2
+[    1ms main]#: setupTab 2
 [        main]addPeak
 [    0ms main]## Peaks::add  emits  gSession->sigPeaks()
 [    0ms main]## sigPeaks  emits  sigDfgram()
@@ -478,8 +478,8 @@
 [    0ms main]#: peakRangeMax 47.27
 [        main]peakRangeMin 45.8897
 [        main]peakRangeMax 47.2736
-[        main]setup 3
-[    2ms main]#: setup 3
+[        main]setupTab 3
+[    2ms main]#: setupTab 3
 [ 1366ms main]## InterpolParams::setEnabled  emits  gSession->sigInterpol()
 [    0ms main]## interpolation began
 [    1ms main]## Task with progress bar [ "interpolation" ] began
@@ -487,8 +487,8 @@
 [    0ms main]## Task with progress bar [ "interpolation" ] ended
 [    0ms main]## MainWin::runInterpolation  emits  gSession->sigRawFits()
 [        main]doInterpol 2
-[        main]mainframe 4
-[    0ms main]#: mainframe 4
+[        main]viewsTab 4
+[    0ms main]#: viewsTab 4
 [        main]exportPolefig
 [    0ms main]#! ## SPLIT line ' "@push polefig" ' at  5
 [    0ms main]#! ## SPLIT into ' "@push" ' and ' "polefig" '

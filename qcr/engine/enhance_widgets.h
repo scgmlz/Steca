@@ -15,6 +15,7 @@
 #ifndef ENHANCE_WIDGETS_H
 #define ENHANCE_WIDGETS_H
 
+#include "qcr/engine/string_ops.h"
 #include <functional> // no auto rm
 #include <QDialog>
 
@@ -28,6 +29,7 @@ protected:
     CSettable(const CSettable&) = delete;
     CSettable(const QString& name);
     ~CSettable();
+    void doLog(bool softwareCalled, const QString& msg);
 private:
     const QString name_;
 };
@@ -39,11 +41,26 @@ public:
     QcrControl(const QString& name)
         : CSettable(name) {}
     void programaticallySetValue(T val) {
+        softwareCalling_ = true;
         doSetValue(val);
+        softwareCalling_ = false;
     }
     virtual T getValue() const = 0;
+protected:
+    void init() {
+        reportedValue_ = getValue();
+        doLog(true, "initialization: "+name()+" "+strOp::to_s(reportedValue_));
+    }
+    void onChangedValue(T val) {
+        if (val!=reportedValue_) {
+            doLog(softwareCalling_, name()+" "+strOp::to_s(val));
+            reportedValue_ = val;
+        }
+    }
 private:
     virtual void doSetValue(T) = 0;
+    bool softwareCalling_ = false;
+    T reportedValue_;
 };
 
 //! Mix-in for modal dialogs.

@@ -14,6 +14,7 @@
 
 #include "string_ops.h"
 #include "qcr/engine/qcrexception.h"
+#include <QString>
 
 bool strOp::to_b(const QString& s)
 {
@@ -48,6 +49,26 @@ double strOp::to_d(const QString& s)
     if (!ok)
         throw QcrException("Expected a floating-point number, found string '" + s + "'");
     return ret;
+}
+
+QString strOp::to_s(bool val)
+{
+    return val ? "on" : "off";
+}
+
+QString strOp::to_s(int val)
+{
+    return QString::number(val);
+}
+
+QString strOp::to_s(double val)
+{
+    return QString::number(val);
+}
+
+QString strOp::to_s(QString val)
+{
+    return val;
 }
 
 void strOp::splitOnce(const QString& in, QString& part0, QString& part1)

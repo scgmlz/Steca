@@ -23,7 +23,7 @@
 //! @class Mainframe
 
 Mainframe::Mainframe()
-    : QcrTabWidget {"mainframe"}
+    : QcrTabWidget {"viewsTab"}
 {
     // inbound connections
     connect(gSession, &Session::sigCorr, [this]() {

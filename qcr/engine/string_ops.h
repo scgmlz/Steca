@@ -25,6 +25,11 @@ bool to_b(const QString&);
 int to_i(const QString&);
 double to_d(const QString&);
 
+QString to_s(bool);
+QString to_s(int);
+QString to_s(double);
+QString to_s(QString);
+
 void splitOnce(const QString&, QString&, QString&);
 
 } // namespace strOp

@@ -29,6 +29,12 @@ CSettable::~CSettable()
     gConsole->forget(name_);
 }
 
+void CSettable::doLog(bool softwareCalled, const QString& msg)
+{
+    gConsole->log2(!softwareCalled, msg);
+}
+
+
 //  ***********************************************************************************************
 //! @class CModal
 
@@ -42,6 +48,7 @@ CModal::~CModal()
     gConsole->log("@close");
     gConsole->call("@pop");
 }
+
 
 //  ***********************************************************************************************
 //! @class CModelessDialog
