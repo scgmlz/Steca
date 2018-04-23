@@ -68,7 +68,7 @@ void writePeakInfo(QTextStream& stream, bool interpolated, const QString& separa
 //! @class ExportPolefig
 
 ExportPolefig::ExportPolefig()
-    : CModal("polefig")
+    : CModal("pfig")
     , QDialog(gGui)
 {
     if (false && gSession->peaks().count()>1) { // TODO restore once peak fits are cached

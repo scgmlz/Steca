@@ -70,7 +70,7 @@ QString numberedName(const QString& templatedName, int num, int maxNum) {
 //! @class ExportDfgram
 
 ExportDfgram::ExportDfgram()
-    : CModal("dfgram")
+    : CModal("xdfg")
     , QDialog(gGui)
 {
     rbAll_.programaticallySetValue(true);

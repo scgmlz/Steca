@@ -23,7 +23,7 @@
 //! @class ExportBigtable
 
 ExportBigtable::ExportBigtable()
-    : CModal("exportTable")
+    : CModal("xbig")
     , QDialog(gGui)
 {
     fileField_ = new ExportfileDialogfield(this, true, [this]()->void{save();});
