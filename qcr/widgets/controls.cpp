@@ -134,13 +134,6 @@ QcrTextButton::QcrTextButton(QAction* action)
     setToolButtonStyle(Qt::ToolButtonTextOnly);
 }
 
-QcrIconButton::QcrIconButton(QAction* action)
-{
-    action->setParent(this);
-    setDefaultAction(action);
-    setToolButtonStyle(Qt::ToolButtonIconOnly);
-}
-
 //  ***********************************************************************************************
 //  control widget classes with console connection
 //  ***********************************************************************************************

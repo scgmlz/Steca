@@ -68,12 +68,6 @@ public:
     QcrTextButton(QAction*);
 };
 
-//! QToolButton with icon and owned QAction.
-class QcrIconButton : public QToolButton {
-public:
-    QcrIconButton(QAction*);
-};
-
 //! Named QSpinBox that can be set by console command.
 class QcrSpinBox : public QSpinBox, private CSettable {
     Q_OBJECT
