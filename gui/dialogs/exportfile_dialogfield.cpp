@@ -18,7 +18,8 @@
 #include <QGroupBox>
 
 namespace {
-static QString const DAT_EXT(".dat"), DAT_SEP(" "), // extension, separator
+static QString const
+    DAT_EXT(".dat"), DAT_SEP(" "), // extension, separator
     CSV_EXT(".csv"), CSV_SEP(", ");
 static QString saveFmt = DAT_EXT; //!< setting: default format for data export
 }
@@ -32,31 +33,26 @@ ExportfileDialogfield::ExportfileDialogfield(
 
     dir_ = new QcrLineEdit("dir", defaultDir.absolutePath());
     file_ = new QcrLineEdit("file");
-    auto* rbDat = new QcrRadioButton("fmtDat", DAT_EXT);
-    auto* rbCsv = new QcrRadioButton("fmtCsv", CSV_EXT);
-    auto* actBrowse = new QcrTrigger("selectDir", "Browse...");
-    auto* actCancel = new QcrTrigger("cancel", "Cancel");
-    auto* actSave = new QcrTrigger("save", "Save");
 
-    rbCsv->setChecked(saveFmt == CSV_EXT);
-    rbDat->setChecked(saveFmt == DAT_EXT);
+    rbCsv_.setChecked(saveFmt == CSV_EXT);
+    rbDat_.setChecked(saveFmt == DAT_EXT);
     dir_->setReadOnly(true);
 
     // internal connections
-    connect(actBrowse, &QAction::triggered, [this, parent]() {
+    connect(&actBrowse_, &QAction::triggered, [this, parent]() {
             dir_->setText(file_dialog::queryDirectory(parent, "Select folder", dir_->text())); });
-    connect(rbDat, &QRadioButton::clicked, []() { saveFmt = DAT_EXT; });
-    connect(rbCsv, &QRadioButton::clicked, []() { saveFmt = CSV_EXT; });
+    connect(&rbDat_, &QRadioButton::clicked, []() { saveFmt = DAT_EXT; });
+    connect(&rbCsv_, &QRadioButton::clicked, []() { saveFmt = CSV_EXT; });
 
     // outgoing connections
-    connect(actCancel, &QAction::triggered, [parent]() { parent->close(); });
-    connect(actSave, &QAction::triggered, onSave);
+    connect(&actCancel_, &QAction::triggered, [parent]() { parent->close(); });
+    connect(&actSave_, &QAction::triggered, onSave);
 
     // layout
     auto* destinationGrid = new QGridLayout;
     destinationGrid->addWidget(new QLabel("Save to folder:"), 0, 0, Qt::AlignRight);
     destinationGrid->addWidget(dir_,                          0, 1);
-    destinationGrid->addWidget(new QcrTextButton(actBrowse),    0, 2);
+    destinationGrid->addWidget(new XTextButton(&actBrowse_),    0, 2);
     destinationGrid->addWidget(new QLabel("File name:"),      1, 0, Qt::AlignRight);
     destinationGrid->addWidget(file_,                         1, 1);
 
@@ -64,8 +60,8 @@ ExportfileDialogfield::ExportfileDialogfield(
     destination->setLayout(destinationGrid);
 
     auto* ftypeGrid = new QVBoxLayout;
-    ftypeGrid->addWidget(rbDat);
-    ftypeGrid->addWidget(rbCsv);
+    ftypeGrid->addWidget(&rbDat_);
+    ftypeGrid->addWidget(&rbCsv_);
 
     auto* ftype = new QGroupBox("File type");
     ftype->setVisible(withTypes);
@@ -79,8 +75,8 @@ ExportfileDialogfield::ExportfileDialogfield(
     bottom->addWidget(&progressBar);
     bottom->setStretchFactor(&progressBar, 333);
     bottom->addStretch(1);
-    bottom->addWidget(new QcrTextButton(actCancel));
-    bottom->addWidget(new QcrTextButton(actSave));
+    bottom->addWidget(new XTextButton(&actCancel_));
+    bottom->addWidget(new XTextButton(&actSave_));
 
     addLayout(setup);
     addLayout(bottom);

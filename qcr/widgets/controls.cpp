@@ -124,17 +124,6 @@ XIconButton::XIconButton(QAction* action)
 }
 
 //  ***********************************************************************************************
-//  owning button classes
-//  ***********************************************************************************************
-
-QcrTextButton::QcrTextButton(QAction* action)
-{
-    action->setParent(this);
-    setDefaultAction(action);
-    setToolButtonStyle(Qt::ToolButtonTextOnly);
-}
-
-//  ***********************************************************************************************
 //  control widget classes with console connection
 //  ***********************************************************************************************
 
