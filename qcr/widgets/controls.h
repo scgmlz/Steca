@@ -136,20 +136,26 @@ public:
     QcrComboBox(const QString& name, const QStringList& items = {});
     void onCommand(const QStringList&) override;
     int getValue() const final { return currentIndex(); }
-    void setEditable() = delete; // stay with default: editable=false
-    void setCurrentText(const QString &) = delete;
 private:
     void doSetValue(int val) final { setCurrentIndex(val); }
     // hide some member functions of QComboBox:
     int currentIndex() const { return QComboBox::currentIndex(); }
     void setCurrentIndex(int val) { QComboBox::setCurrentIndex(val); }
+    void setCurrentText(const QString &) = delete;
+    void setEditable() = delete; // stay with default: editable=false
 };
 
-//! Named line edit that can be set by console command (but use XLineEdit for pure display).
-class QcrLineEdit : public QLineEdit, private CSettable {
+//! Named line edit that can be set by console command.
+class QcrLineEdit : public QLineEdit, public QcrControl<QString> {
 public:
     QcrLineEdit(const QString& name, const QString& val = "");
     void onCommand(const QStringList&) override;
+    QString getValue() const final { return text(); }
+private:
+    void doSetValue(QString val) final { setText(val); }
+    // hide some member functions of QLineEdit:
+    QString text() const { return QLineEdit::text(); }
+    void setText(QString val) { QLineEdit::setText(val); }
 };
 
 //! Named tab widget that can be set by console command.

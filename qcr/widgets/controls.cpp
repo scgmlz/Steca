@@ -181,7 +181,7 @@ void QcrSpinBox::onCommand(const QStringList& args)
     if      (args.size()<2)
         throw QcrException("Missing argument to command 'set'");
     int val = TO_INT(args[1]);
-    setValue(val);
+    programaticallySetValue(val);
     EMITS("QcrSpinBox::onCommand", valueReleased(val));
 }
 
@@ -225,7 +225,7 @@ void QcrDoubleSpinBox::onCommand(const QStringList& args)
     if      (args.size()<2)
         throw QcrException("Missing argument to command 'set'");
     double val = TO_DOUBLE(args[1]);
-    setValue(val);
+    programaticallySetValue(val);
     EMITS("QcrDoubleSpinBox::onCommand", valueReleased(val));
 }
 
@@ -245,7 +245,7 @@ void QcrCheckBox::onCommand(const QStringList& args)
         throw QcrException("Unexpected CheckBox command");
     if      (args.size()<2)
         throw QcrException("Missing argument to command 'set'");
-    setChecked(TO_INT(args[1]));
+    programaticallySetValue(TO_INT(args[1]));
 }
 
 //! @class QcrRadioButton
@@ -265,9 +265,9 @@ void QcrRadioButton::onCommand(const QStringList& args)
     if      (args.size()<2)
         throw QcrException("Missing argument to command 'switch'");
     else if (args[1]=="on")
-        setChecked(true);
+        programaticallySetValue(true);
     else if (args[1]=="off")
-        setChecked(false);
+        programaticallySetValue(false);
     else
         throw QcrException("Invalid argument to command 'switch'");
 }
@@ -288,13 +288,13 @@ void QcrComboBox::onCommand(const QStringList& args)
         throw QcrException("Unexpected ComboBox command");
     if (args.size()<2)
         throw QcrException("Missing argument to command 'choose'");
-    setCurrentIndex(TO_INT(args[1]));
+    programaticallySetValue(TO_INT(args[1]));
 }
 
 //! @class QcrLineEdit
 
 QcrLineEdit::QcrLineEdit(const QString& _name, const QString& val)
-    : CSettable(_name)
+    : QcrControl<QString>(_name)
 {
     // For unknown reason, hasFocus() is not always false when setText is called programmatically;
     // therefore we must use another criterion to distinuish user actions from other calls.
@@ -306,7 +306,7 @@ QcrLineEdit::QcrLineEdit(const QString& _name, const QString& val)
     connect(this, _SLOT_(QLineEdit,textChanged,const QString&),
             [this](const QString& val)->void {
                 gConsole->log2(false, name()+" settext "+val); });
-    setText(val);
+    programaticallySetValue(val);
 }
 
 void QcrLineEdit::onCommand(const QStringList& args)
