@@ -28,6 +28,8 @@ bool TO_BOOL(const QString& s)
 
 int TO_INT(const QString& s)
 {
+    if (s=="")
+        throw QcrException("Expected an integer number, found empty string");
     int ret;
     bool ok;
     ret = s.toInt(&ok);
@@ -38,6 +40,8 @@ int TO_INT(const QString& s)
 
 double TO_DOUBLE(const QString& s)
 {
+    if (s=="")
+        throw QcrException("Expected a floating-point number, found empty string");
     double ret;
     bool ok;
     ret = s.toDouble(&ok);

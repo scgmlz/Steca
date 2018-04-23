@@ -182,32 +182,31 @@ Console::Result Console::exec(QString line)
     QTextStream qterr(stderr);
     if (line[0]=='#')
         return Result::ok; // comment => nothing to do
-    if (line[0]=='@') {
+    int isplit = line.indexOf(' ');
+    qDebug() << "SPLIT line '" << line << "' at " << isplit;
+    QString cmd = line.left(isplit);
+    QString arg = line.mid(isplit+1);
+    qDebug() << "SPLIT into '" << cmd << "' and '" << arg << "'";
+    if (cmd[0]=='@') {
         log(line);
-        QStringList list = line.mid(1).split(' ');
-        QString cmd = list[0];
-        if (cmd=="ls") {
+        if (cmd=="@ls") {
             registryStack_.top()->dump(qterr);
-        } else if (cmd=="push") {
-            if (list.size()<2) {
+        } else if (cmd=="@push") {
+            if (arg=="") {
                 qterr << "command @push needs argument <name>\n";
                 return Result::err;
             }
-            registryStack_.push(new CommandRegistry(list[1]));
-        } else if (cmd=="pop") {
+            registryStack_.push(new CommandRegistry(arg));
+        } else if (cmd=="@pop") {
             if (registryStack_.empty()) {
                 qterr << "cannot pop: registry stack is empty\n";
                 return Result::err;
             }
             delete registryStack_.top();
             registryStack_.pop();
-        } else if (cmd=="file") {
-            if (list.size()<2) {
-                qterr << "command @file needs argument <file_name>\n";
-                return Result::err;
-            }
-            readFile(list[1]);
-        } else if (cmd=="close") {
+        } else if (cmd=="@file") {
+            readFile(arg);
+        } else if (cmd=="@close") {
             return Result::suspend;
         } else {
             qterr << "@ command " << cmd << " not known\n";
@@ -215,19 +214,13 @@ Console::Result Console::exec(QString line)
         }
         return Result::ok;
     }
-    QStringList args = line.split(' ');
-    QString cmd = args.takeFirst();
-    if (args.size()<1) {
-        qterr << "Missing argument to command '" << cmd << "'\n";
-        return Result::err;
-    }
     CSettable* f = registry().find(cmd);
     if (!f) {
         qterr << "Command '" << cmd << "' not found\n";
         return Result::err;
     }
     try {
-        f->onCommand(args); // execute command
+        f->onCommand(arg); // execute command
         return Result::ok;
     } catch (QcrException &ex) {
         qterr << "Command '" << line << "' failed:\n" << ex.msg() << "\n";
