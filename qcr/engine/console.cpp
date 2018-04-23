@@ -182,11 +182,15 @@ Console::Result Console::exec(QString line)
     QTextStream qterr(stderr);
     if (line[0]=='#')
         return Result::ok; // comment => nothing to do
+    QString cmd, arg;
     int isplit = line.indexOf(' ');
-    qDebug() << "SPLIT line '" << line << "' at " << isplit;
-    QString cmd = line.left(isplit);
-    QString arg = line.mid(isplit+1);
-    qDebug() << "SPLIT into '" << cmd << "' and '" << arg << "'";
+    if (isplit!=-1) {
+        cmd = line.left(isplit);
+        arg = line.mid(isplit+1);
+    } else {
+        cmd = line;
+        arg = "";
+    }
     if (cmd[0]=='@') {
         log(line);
         if (cmd=="@ls") {

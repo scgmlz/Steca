@@ -444,8 +444,8 @@
 [    0ms main]## MainWin::runFits  emits  gSession->sigRawFits()
 [    8ms main]#: peakRangeMin 40.04
 [    0ms main]#: peakRangeMax 41.96
-[        main]peakRangeMin set 40.0446
-[        main]peakRangeMax set 41.9566
+[        main]peakRangeMin 40.0446
+[        main]peakRangeMax 41.9566
 [        main]addPeak
 [    0ms main]## Peaks::add  emits  gSession->sigPeaks()
 [    0ms main]## sigPeaks  emits  sigDfgram()
@@ -476,8 +476,8 @@
 [    0ms main]## MainWin::runFits  emits  gSession->sigRawFits()
 [    6ms main]#: peakRangeMin 45.89
 [    0ms main]#: peakRangeMax 47.27
-[        main]peakRangeMin set 45.8897
-[        main]peakRangeMax set 47.2736
+[        main]peakRangeMin 45.8897
+[        main]peakRangeMax 47.2736
 [        main]setup 3
 [    2ms main]#: setup 3
 [ 1366ms main]## InterpolParams::setEnabled  emits  gSession->sigInterpol()

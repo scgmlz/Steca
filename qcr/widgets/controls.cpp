@@ -334,7 +334,7 @@ void QcrFileDialog::onCommand(const QString& arg)
         accept();
         return;
     }
-    QStringList args = arg.mid(1).split(' ');
+    QStringList args = arg.split(' ');
     if (args[0]!="select")
         throw QcrException("Unexpected filedialog command");
     if (args.size()<2)
