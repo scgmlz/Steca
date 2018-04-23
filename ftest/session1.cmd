@@ -31,3 +31,6 @@
 [        main]doInterpol on
 [        main]viewsTab 4
 [        main]exportPolefig
+rbOriginalGrid on
+file hhh
+save

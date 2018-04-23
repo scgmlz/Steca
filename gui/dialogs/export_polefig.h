@@ -19,7 +19,7 @@
 
 //! The modal dialog for saving the main polefig (fit results and metadata).
 
-class ExportPolefig : private CModal, public QDialog {
+class ExportPolefig : public QcrDialog {
 public:
     ExportPolefig();
 
@@ -35,6 +35,8 @@ private:
     void save();
     void saveCurrent();
     void saveAll(bool oneFile);
+
+    void onCommand(const QString&) override {}
 };
 
 #endif // EXPORT_POLEFIG_H

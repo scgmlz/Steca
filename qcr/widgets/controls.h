@@ -112,7 +112,7 @@ private:
 //! Named check box that can be set by console command.
 class QcrCheckBox : public QCheckBox, public QcrControl<bool> {
 public:
-    QcrCheckBox(const QString& name, const QString& text);
+    QcrCheckBox(const QString& name, const QString& text, bool val=false);
     bool getValue() const final { return isChecked(); }
 private:
     void doSetValue(bool val) final { setChecked(val); }
@@ -172,8 +172,17 @@ private:
     void setCurrentWidget(QWidget*) = delete;
 };
 
+//! Dialog, for modal use.
+class QcrDialog : public QDialog, protected CModal, CSettable {
+public:
+    QcrDialog(QWidget *parent = Q_NULLPTR, const QString &caption = QString());
+    ~QcrDialog();
+    int exec() override;
+    void onCommand(const QString&) override;
+};
+
 //! File dialog, for modal use, with console commands to select files and to close the dialog.
-class QcrFileDialog : public QFileDialog, private CModal, CSettable {
+class QcrFileDialog : public QFileDialog, protected CModal, CSettable {
 public:
     QcrFileDialog(QWidget *parent = Q_NULLPTR, const QString &caption = QString(),
                   const QString &directory = QString(), const QString &filter = QString());

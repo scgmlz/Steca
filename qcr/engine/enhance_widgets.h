@@ -75,7 +75,7 @@ protected:
     ~CModal();
 };
 
-//! A modeless dialog with support for capture&replay.
+//! A modeless (= persistent spawned popup) dialog with support for capture&replay.
 class CModelessDialog : protected QDialog, protected CSettable {
 public:
     virtual void onCommand(const QString&);

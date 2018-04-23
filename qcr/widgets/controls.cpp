@@ -23,10 +23,9 @@
 
 #define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 
-//  ***********************************************************************************************
-//  QcrAction, QcrTrigger and QcrToggle
-//  ***********************************************************************************************
+//  Action classes
 
+//  ***********************************************************************************************
 //! @class QcrAction
 
 QcrAction::QcrAction(const QString& text)
@@ -34,6 +33,7 @@ QcrAction::QcrAction(const QString& text)
     , tooltip_(text.toLower())
 {}
 
+//  ***********************************************************************************************
 //! @class QcrTrigger
 
 QcrTrigger::QcrTrigger(const QString& rawname, const QString& text, const QString& iconFile)
@@ -67,6 +67,7 @@ void QcrTrigger::onCommand(const QString& arg)
     trigger();
 }
 
+//  ***********************************************************************************************
 //! @class QcrToggle
 
 QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on, const QString& iconFile)
@@ -114,10 +115,9 @@ QcrIconButton::QcrIconButton(QcrAction* action)
     setToolButtonStyle(Qt::ToolButtonIconOnly);
 }
 
-//  ***********************************************************************************************
-//  control widget classes with console connection
-//  ***********************************************************************************************
+//  Control widget classes with console connection
 
+//  ***********************************************************************************************
 //! @class QcrSpinBox
 //!
 //! A QSpinBox controls an integer value. Therefore normally we need no extra width for a dot.
@@ -169,6 +169,7 @@ void QcrSpinBox::onCommand(const QString& arg)
     EMITS("QcrSpinBox::onCommand", valueReleased(val));
 }
 
+//  ***********************************************************************************************
 //! @class QcrDoubleSpinBox
 
 QcrDoubleSpinBox::QcrDoubleSpinBox(const QString& _name, int ndigits, double min, double max)
@@ -210,17 +211,20 @@ void QcrDoubleSpinBox::onCommand(const QString& arg)
     EMITS("QcrDoubleSpinBox::onCommand", valueReleased(val));
 }
 
+//  ***********************************************************************************************
 //! @class QcrCheckBox
 
-QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text)
+QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, bool val)
     : QCheckBox(text)
     , QcrControl<bool>(_name)
 {
+    doSetValue(val);
     init();
     connect(this, _SLOT_(QCheckBox,stateChanged,int), [this](int val)->void {
-            onChangedValue(hasFocus(), val); });
+            onChangedValue(hasFocus(), (bool)val); });
 }
 
+//  ***********************************************************************************************
 //! @class QcrRadioButton
 
 QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text)
@@ -232,6 +236,7 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text)
             onChangedValue(hasFocus(), val); });
 }
 
+//  ***********************************************************************************************
 //! @class QcrComboBox
 
 QcrComboBox::QcrComboBox(const QString& _name, const QStringList& items)
@@ -243,6 +248,7 @@ QcrComboBox::QcrComboBox(const QString& _name, const QStringList& items)
             onChangedValue(hasFocus(), val); });
 }
 
+//  ***********************************************************************************************
 //! @class QcrLineEdit
 
 QcrLineEdit::QcrLineEdit(const QString& _name, const QString& val)
@@ -262,6 +268,7 @@ QcrLineEdit::QcrLineEdit(const QString& _name, const QString& val)
     programaticallySetValue(val);
 }
 
+//  ***********************************************************************************************
 //! @class QcrTabWidget
 
 QcrTabWidget::QcrTabWidget(const QString& _name)
@@ -278,15 +285,52 @@ QcrTabWidget::QcrTabWidget(const QString& _name)
             onChangedValue(hasFocus(), val); });
 }
 
+//  ***********************************************************************************************
+//! @class QcrDialog
+
+QcrDialog::QcrDialog(QWidget *parent, const QString &caption)
+    : QDialog(parent)
+    , CModal("dlog")
+    , CSettable("dlog")
+{
+    setWindowTitle(caption);
+}
+
+QcrDialog::~QcrDialog()
+{
+    gConsole->log("dlog closing");
+}
+
+int QcrDialog::exec()
+{
+    if (gConsole->hasCommandsOnStack()) {
+        open();
+        gConsole->commandsFromStack();
+        close();
+        return QDialog::Accepted;
+    } else
+        return QDialog::exec();
+}
+
+void QcrDialog::onCommand(const QString& arg)
+{
+    if (arg=="")
+        throw QcrException("Empty argument in Dialog command");
+    if (arg=="close") {
+        accept();
+        return;
+    }
+}
+
+//  ***********************************************************************************************
 //! @class QcrFileDialog
 
-QcrFileDialog::QcrFileDialog(QWidget *parent, const QString &caption,
-                         const QString &directory, const QString &filter)
+QcrFileDialog::QcrFileDialog(
+    QWidget *parent, const QString &caption, const QString &directory, const QString &filter)
     : QFileDialog(parent, caption, directory, filter)
     , CModal("fdia")
     , CSettable("fdia")
-{
-}
+{}
 
 QcrFileDialog::~QcrFileDialog()
 {
@@ -301,7 +345,7 @@ int QcrFileDialog::exec()
         close();
         return QDialog::Accepted;
     } else
-        return QFileDialog::exec();
+        return QDialog::exec();
 }
 
 void QcrFileDialog::onCommand(const QString& arg)
