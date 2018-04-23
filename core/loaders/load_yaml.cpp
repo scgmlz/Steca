@@ -12,14 +12,14 @@
 //
 //  ***********************************************************************************************
 
-#include "core/def/idiomatic_for.h"
+#include "3rdparty/yaml-cpp/include/yaml-cpp/yaml.h" // inclusion order is critical ?
+
+//#include "core/def/idiomatic_for.h"
 #include "core/raw/rawfile.h"
-#include <qmath.h>
-#include <sstream>
+//#include <qmath.h>
+
 
 ; // preserve inclusion order
-//#include<yaml.h>
-#include "3rdparty/yaml-cpp/include/yaml-cpp/yaml.h" // inclusion order is critical ?
 
 namespace  {
 void readInstrument(const YAML::Node& node, Rawfile& rawfile);
@@ -122,44 +122,6 @@ void readSample(const YAML::Node& node, Metadata& metadata)
     metadata.motorTth = node["orientation"]["tths"]["value"].as<double>(NAN);
     metadata.motorPhi = node["orientation"]["phis"]["value"].as<double>(NAN);
     metadata.motorChi = node["orientation"]["chis"]["value"].as<double>(NAN);
-
-    /*
-
-    sample:
-        description:
-            name: Nickelbasislegierung / Ni-20Cr-10Co-8Mo
-        temperature: {}
-        orientation:
-            tths:
-                value: "45.00"
-                offset_coder: "3319.25"
-                precision: "0.03"
-            omgs:
-                value: "22.50"
-                offset_coder: "0.00"
-                precision: "0.01"
-            chis:
-                value: "90.07"
-                offset_coder: "0.00"
-                precision: "0.10"
-            phis:
-                value: 0
-                offset_coder: 0
-                precision: 0
-        position:
-            xt:
-                value: "-0.18"
-                offset_coder: "0.00"
-                precision: "0.01"
-            zt:
-                offset_coder: "0.00"
-                precision: "0.05"
-                value: "8.93"
-            yt:
-                offset_coder: "-10242.9"
-                precision: "0.01"
-                value: "-0.10"
-    */
     // TODO: readSample(const YAML::Node& node, const Metadata& metadata)
 }
 
@@ -176,57 +138,6 @@ void readSetup(const YAML::Node& node, Metadata& metadata)
     metadata.nmXe;
     metadata.nmYe;
     metadata.nmZe; // nm = new metadata
-
-    /*
-    setup:
-        collimator_1: "15'"
-        slit_m:
-            horizontal_clearance:
-                value: 0
-                offset_coder: 0
-                precision: 0
-            vertical_clearance:
-                value: 0
-                offset_coder: 0
-                precision: 0
-        monochromator:
-            crystal: Ge
-            omgm:
-                value: "41.21"
-                offset_coder: "0.00"
-                precision: "0.01"
-            tthm:
-                value: "70.50"
-                offset_coder: 0
-                precision: 0
-            angle: 0
-            incident_wavelength: "1.75"
-        slit_e:
-            clearance:
-                value: 0
-                offset_coder: 0
-                precision: 0
-        slit_p:
-            horizontal_clearance:
-                value: 0
-                offset_coder: 0
-                precision: 0
-            horizontal_translation:
-                value: 0
-                offset_coder: 0
-                precision: 0
-            vertical_clearance:
-                value: 0
-                offset_coder: 0
-                precision: 0
-            vertical_translation:
-                value: 0
-                offset_coder: 0
-                precision: 0
-        collimator_2:
-            fhwm: 5
-    */
-
     // TODO: readSetup(const YAML::Node& node, const Metadata& metadata)
 }
 
@@ -252,32 +163,6 @@ void readSingleScan(const YAML::Node& node, Metadata& metadata, Rawfile& rawfile
     }
 
     rawfile.addDataset(std::move(metadata), size, std::move(image));
-
-
-    /*
-    -   scan_parameters: {}
-        time: 300.0
-        monitor: 1 555 189
-        sum: 670025
-        image:
-            -   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            -   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-      */
-    // TODO: readSingleScan(const YAML::Node& node, const Metadata& metadata)
 }
 
 void readScans(const YAML::Node& node, Metadata& metadata, Rawfile& rawfile)
@@ -352,44 +237,8 @@ void readMeasurement(const YAML::Node& node, Rawfile& rawfile)
     readSetup(node["setup"], metadata);
     readScans(node["scan"], metadata, rawfile); // adds the scanns to the rawfile
 
-    /*
-measurement:
-    unique_identifier: "urn:uuid:dfc44406-a700-4c9b-bd2e-11b8ef383b1e"
-    number: 116953
-    history:
-        started: "2017-09-29 05:33:22"
-        stopped: "2017-09-29 05:38:23"
-        scan: "110ss_Reflection_chis=,90,time=,300,highestForce=,0.0,Force=,15599.75,highestEps=,0.0,Eps=,7.24507045746, - timescan(1, t=300)"
-    <... COLLAPSED ...>
-    scan:
-    -   scan_parameters: {}
-        time: 300.0
-        monitor: 1555189
-        sum: 670025
-        image:
-            -   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-            -   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-
-    */
     // TODO: readMeasurement(const YAML::Node& node, const Rawfile& rawfile)
 }
-
-
-
 
 
 } // namespace
