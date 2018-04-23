@@ -1,6 +1,6 @@
 //  ***********************************************************************************************
 //
-//  Steca: stress and texture calculator
+//  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/engine/qcrexception.h
 //! @brief     Defines class QCRException

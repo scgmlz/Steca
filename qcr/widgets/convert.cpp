@@ -1,6 +1,6 @@
 //  ***********************************************************************************************
 //
-//  Steca: stress and texture calculator
+//  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/widgets/convert.cpp
 //! @brief     Implements functions TO_INT, TO_DOUBLE

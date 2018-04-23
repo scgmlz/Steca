@@ -1,6 +1,6 @@
 //  ***********************************************************************************************
 //
-//  Steca: stress and texture calculator
+//  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/widgets/displays.h
 //! @brief     Defines specializations of Qt display widgets (XIcon,...), and widgetUtils

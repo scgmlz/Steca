@@ -1,6 +1,6 @@
 //  ***********************************************************************************************
 //
-//  Steca: stress and texture calculator
+//  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/widgets/controls.h
 //! @brief     Defines functions that return new Qt objects

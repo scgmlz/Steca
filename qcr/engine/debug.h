@@ -1,6 +1,6 @@
 //  ***********************************************************************************************
 //
-//  Steca: stress and texture calculator
+//  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/engine/debug.h
 //! @brief     Defines preprocessor macros and functions for debugging

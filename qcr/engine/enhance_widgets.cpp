@@ -1,6 +1,6 @@
 //  ***********************************************************************************************
 //
-//  Steca: stress and texture calculator
+//  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/engine/enhance_widgets.cpp
 //! @brief     Implements functions that return new Qt objects
