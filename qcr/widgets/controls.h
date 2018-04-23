@@ -35,7 +35,7 @@ protected:
     QString tooltip_;
 };
 
-//! A trigger, for use in buttons or menu entries, that can also be activated by console command.
+//! Trigger, for use in buttons or menu entries, that can also be activated by console command.
 class QcrTrigger : public QcrAction {
 public:
     QcrTrigger(const QString& name, const QString& text, const QString& iconFile="");
@@ -44,7 +44,7 @@ public:
     void onCommand(const QStringList&) override;
 };
 
-//! A Toggle, for use in buttons or menu entries, that can also be switched by console command.
+//! Toggle, for use in buttons or menu entries, that can also be switched by console command.
 class QcrToggle : public QcrAction {
 public:
     QcrToggle(const QString& name, const QString& text, bool on, const QString& iconFile="");
@@ -53,19 +53,19 @@ public:
     void onCommand(const QStringList&) override;
 };
 
-//! QToolButton with text display and associated QAction.
+//! Button with text display and associated action.
 class QcrTextButton : public QToolButton {
 public:
     QcrTextButton(QcrAction*);
 };
 
-//! QToolButton with icon and associated QAction.
+//! Button with icon and associated action.
 class QcrIconButton : public QToolButton {
 public:
     QcrIconButton(QcrAction*);
 };
 
-//! Named QSpinBox that can be set by console command.
+//! Named integer-valued spin box that can be set by console command.
 class QcrSpinBox : public QSpinBox, private CSettable {
     Q_OBJECT
 public:
@@ -80,7 +80,7 @@ private:
     int reportedValue_;
 };
 
-//! Named QDoubleSpinBox that can be set by console command.
+//! Named double-valued spin box that can be set by console command.
 class QcrDoubleSpinBox : public QDoubleSpinBox, private CSettable {
     Q_OBJECT
 public:
@@ -94,42 +94,42 @@ private:
     double reportedValue_;
 };
 
-//! Named QCheckBox that can be set by console command.
+//! Named check box that can be set by console command.
 class QcrCheckBox : public QCheckBox, private CSettable {
 public:
     QcrCheckBox(const QString& name, const QString& text);
     void onCommand(const QStringList&) override;
 };
 
-//! Named QRadioButton that can be set by console command.
+//! Named radio button that can be set by console command.
 class QcrRadioButton : public QRadioButton, private CSettable {
 public:
     QcrRadioButton(const QString& name, const QString& text);
     void onCommand(const QStringList&) override;
 };
 
-//! Named QComboBox that can be set by console command.
+//! Named combo box that can be set by console command.
 class QcrComboBox : public QComboBox, private CSettable {
 public:
     QcrComboBox(const QString& name, const QStringList& items = {});
     void onCommand(const QStringList&) override;
 };
 
-//! Named QLineEdit that can be set by console command (but use XLineEdit for pure display).
+//! Named line edit that can be set by console command (but use XLineEdit for pure display).
 class QcrLineEdit : public QLineEdit, private CSettable {
 public:
     QcrLineEdit(const QString& name, const QString& val = "");
     void onCommand(const QStringList&) override;
 };
 
-//! Named QTabWidget that can be set by console command.
+//! Named tab widget that can be set by console command.
 class QcrTabWidget : public QTabWidget, private CSettable {
 public:
     QcrTabWidget(const QString& name);
     void onCommand(const QStringList&) override;
 };
 
-//! QFileDialog, for modal use, with console commands to select files and to close the dialog.
+//! File dialog, for modal use, with console commands to select files and to close the dialog.
 class QcrFileDialog : public QFileDialog, private CModal, CSettable {
 public:
     QcrFileDialog(QWidget *parent = Q_NULLPTR, const QString &caption = QString(),
