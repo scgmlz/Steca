@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      qcr/engine/cmdexception.h
-//! @brief     Defines class CmdException
+//! @brief     Defines class QCRException
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -19,10 +19,10 @@
 #include <QString> // no auto rm
 
 //! The sole exception type used in this software.
-class CmdException : public QException {
+class QCRException : public QException {
 public:
-    CmdException() = delete;
-    CmdException(const QString& msg) noexcept : msg_(msg) {}
+    QCRException() = delete;
+    QCRException(const QString& msg) noexcept : msg_(msg) {}
     const QString& msg() const noexcept { return msg_; }
 private:
     QString msg_;
