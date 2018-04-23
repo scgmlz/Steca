@@ -69,13 +69,13 @@ ColumnSelector::ColumnSelector()
             setAll(false); });
     connect(&rbInten_, &QRadioButton::clicked, [this]() {
             setAll(false);
-            showCols_.at(int(eReflAttr::INTEN))->setChecked(true); });
+            showCols_.at(int(eReflAttr::INTEN))->programaticallySetValue(true); });
     connect(&rbTth_, &QRadioButton::clicked, [this]() {
             setAll(false);
-            showCols_.at(int(eReflAttr::TTH))->setChecked(true); });
+            showCols_.at(int(eReflAttr::TTH))->programaticallySetValue(true); });
     connect(&rbFWHM_, &QRadioButton::clicked, [this]() {
             setAll(false);
-            showCols_.at(int(eReflAttr::FWHM))->setChecked(true); });
+            showCols_.at(int(eReflAttr::FWHM))->programaticallySetValue(true); });
 
     for_i (showCols_.size()) {
         QCheckBox* cb = showCols_.at(i);
@@ -92,7 +92,7 @@ ColumnSelector::ColumnSelector()
 void ColumnSelector::setAll(bool on)
 {
     for (auto* col : showCols_)
-        col->setChecked(on);
+        col->programaticallySetValue(on);
 }
 
 void ColumnSelector::updateRadiobuttons()
@@ -101,7 +101,7 @@ void ColumnSelector::updateRadiobuttons()
     int nInten = 0, nTth = 0, nFwhm = 0;
 
     for_i (showCols_.size()) {
-        if (!showCols_.at(i)->isChecked()) {
+        if (!showCols_.at(i)->getValue()) {
             isAll = false;
             continue;
         }
@@ -120,14 +120,14 @@ void ColumnSelector::updateRadiobuttons()
         }
     }
 
-    rbHidden_.setChecked(true);
-    rbNone_.setChecked(isNone);
-    rbAll_.setChecked(isAll);
+    rbHidden_.programaticallySetValue(true);
+    rbNone_.programaticallySetValue(isNone);
+    rbAll_.programaticallySetValue(isAll);
 
     int const PRESET_SELECTION = 1;
-    rbInten_.setChecked(!isOther && PRESET_SELECTION == nInten);
-    rbTth_.setChecked(!isOther && PRESET_SELECTION == nTth);
-    rbFWHM_.setChecked(!isOther && PRESET_SELECTION == nFwhm);
+    rbInten_.programaticallySetValue(!isOther && PRESET_SELECTION == nInten);
+    rbTth_.programaticallySetValue(!isOther && PRESET_SELECTION == nTth);
+    rbFWHM_.programaticallySetValue(!isOther && PRESET_SELECTION == nFwhm);
 };
 
 

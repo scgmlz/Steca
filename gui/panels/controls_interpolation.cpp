@@ -62,7 +62,7 @@ ControlsInterpolation::ControlsInterpolation()
 
 void ControlsInterpolation::fromCore()
 {
-    doInterpol_ .setChecked(gSession->interpol().enabled());
+    doInterpol_ .programaticallySetValue(gSession->interpol().enabled());
     stepAlpha_  .programaticallySetValue(gSession->interpol().stepAlpha());
     stepBeta_   .programaticallySetValue(gSession->interpol().stepBeta());
     idwRadius_  .programaticallySetValue(gSession->interpol().idwRadius());

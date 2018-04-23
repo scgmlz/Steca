@@ -233,7 +233,7 @@ void QcrDoubleSpinBox::onCommand(const QStringList& args)
 
 QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text)
     : QCheckBox(text)
-    , CSettable(_name)
+    , QcrControl<bool>(_name)
 {
     connect(this, _SLOT_(QCheckBox,stateChanged,int), [this](int val)->void {
             gConsole->log2(hasFocus(), name()+" set "+QString::number(val)); });
@@ -252,7 +252,7 @@ void QcrCheckBox::onCommand(const QStringList& args)
 
 QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text)
     : QRadioButton(text)
-    , CSettable(_name)
+    , QcrControl<bool>(_name)
 {
     connect(this, &QRadioButton::toggled, [this](bool val)->void {
             gConsole->log2(hasFocus(), name()+" switch "+(val?"on":"off")); });

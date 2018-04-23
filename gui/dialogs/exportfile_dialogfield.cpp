@@ -34,8 +34,8 @@ ExportfileDialogfield::ExportfileDialogfield(
     dir_ = new QcrLineEdit("dir", defaultDir.absolutePath());
     file_ = new QcrLineEdit("file");
 
-    rbCsv_.setChecked(saveFmt == CSV_EXT);
-    rbDat_.setChecked(saveFmt == DAT_EXT);
+    rbCsv_.programaticallySetValue(saveFmt == CSV_EXT);
+    rbDat_.programaticallySetValue(saveFmt == DAT_EXT);
     dir_->setReadOnly(true);
 
     // internal connections

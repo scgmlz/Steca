@@ -72,16 +72,16 @@ ExportPolefig::ExportPolefig()
     , QDialog(gGui)
 {
     if (false && gSession->peaks().count()>1) { // TODO restore once peak fits are cached
-        rbAll_.setChecked(true);
+        rbAll_.programaticallySetValue(true);
     } else {
-        rbCurrent_.setChecked(true);
+        rbCurrent_.programaticallySetValue(true);
         rbAllSequential_.setEnabled(false);
         rbAll_.setEnabled(false);
     }
     bool interpolated = gSession->interpol().enabled();
-    rbOriginalGrid_.setChecked(!interpolated);
+    rbOriginalGrid_.programaticallySetValue(!interpolated);
     rbInterpolated_.setEnabled(interpolated);
-    rbInterpolated_.setChecked(interpolated);
+    rbInterpolated_.programaticallySetValue(interpolated);
 
     fileField_ = new ExportfileDialogfield(this, true, [this]()->void{save();});
 
@@ -113,17 +113,17 @@ ExportPolefig::ExportPolefig()
 }
 
 bool ExportPolefig::interpolated() {
-    ASSERT(rbInterpolated_.isChecked() != rbOriginalGrid_.isChecked());
-    return rbInterpolated_.isChecked();
+    ASSERT(rbInterpolated_.getValue() != rbOriginalGrid_.getValue());
+    return rbInterpolated_.getValue();
 }
 
 void ExportPolefig::save()
 {
-    if      (rbCurrent_.isChecked())
+    if      (rbCurrent_.getValue())
         saveCurrent();
-/*    else if (rbAllSequential_.isChecked())
+/*    else if (rbAllSequential_.getValue())
         saveAll(false);
-    else if (rbAll_.isChecked())
+    else if (rbAll_.getValue())
         saveAll(true);
 */
     else

@@ -80,6 +80,7 @@ private:
     void reportChange();
     int reportedValue_;
     void doSetValue(int val) final { setValue(val); }
+    // hide some member functions of QSpinBox:
     int value() const { return QSpinBox::value(); }
     void setValue(int val) { QSpinBox::setValue(val); }
 };
@@ -98,22 +99,35 @@ private:
     void reportChange();
     double reportedValue_;
     void doSetValue(double val) final { setValue(val); }
+    // hide some member functions of QDoubleSpinBox:
     double value() const { return QDoubleSpinBox::value(); }
     void setValue(double val) { QDoubleSpinBox::setValue(val); }
 };
 
 //! Named check box that can be set by console command.
-class QcrCheckBox : public QCheckBox, private CSettable {
+class QcrCheckBox : public QCheckBox, public QcrControl<bool> {
 public:
     QcrCheckBox(const QString& name, const QString& text);
     void onCommand(const QStringList&) override;
+    bool getValue() const final { return isChecked(); }
+private:
+    void doSetValue(bool val) final { setChecked(val); }
+    // hide some member functions of QCheckBox:
+    bool isChecked() const { return QCheckBox::isChecked(); }
+    void setChecked(bool val) { QCheckBox::setChecked(val); }
 };
 
 //! Named radio button that can be set by console command.
-class QcrRadioButton : public QRadioButton, private CSettable {
+class QcrRadioButton : public QRadioButton, public QcrControl<bool> {
 public:
     QcrRadioButton(const QString& name, const QString& text);
     void onCommand(const QStringList&) override;
+    bool getValue() const final { return isChecked(); }
+private:
+    void doSetValue(bool val) final { setChecked(val); }
+    // hide some member functions of QRadioButton:
+    bool isChecked() const { return QRadioButton::isChecked(); }
+    void setChecked(bool val) { QRadioButton::setChecked(val); }
 };
 
 //! Named combo box that can be set by console command.

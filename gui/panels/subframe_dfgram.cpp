@@ -45,7 +45,7 @@ Dfgram::Dfgram()
     // initializations
     plot_ = new PlotDfgram(*this);
     gGui->toggles->showBackground.setChecked(true);
-    intenAvg_.setChecked(true);
+    intenAvg_.programaticallySetValue(true);
     intenScale_.setDecimals(3);
 
     // inbound connections
@@ -99,9 +99,9 @@ void Dfgram::onNormChanged()
 {
     intenScale_.programaticallySetValue(gSession->intenScale()); // TODO own signal
     if (gSession->intenScaledAvg())
-        intenAvg_.setChecked(true);
+        intenAvg_.programaticallySetValue(true);
     else
-        intenSum_.setChecked(true);
+        intenSum_.programaticallySetValue(true);
     plot_->renderAll();
 }
 

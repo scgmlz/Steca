@@ -73,7 +73,7 @@ ExportDfgram::ExportDfgram()
     : CModal("dfgram")
     , QDialog(gGui)
 {
-    rbAll_.setChecked(true);
+    rbAll_.programaticallySetValue(true);
 
     fileField_ = new ExportfileDialogfield(this, true, [this]()->void{save();});
 
@@ -99,11 +99,11 @@ ExportDfgram::ExportDfgram()
 void ExportDfgram::save()
 {
     try {
-        if      (rbCurrent_.isChecked())
+        if      (rbCurrent_.getValue())
             saveCurrent();
-        else if (rbAllSequential_.isChecked())
+        else if (rbAllSequential_.getValue())
             saveAll(false);
-        else if (rbAll_.isChecked())
+        else if (rbAll_.getValue())
             saveAll(true);
         else
             qFatal("invalid case in ExportDfgram::save");
