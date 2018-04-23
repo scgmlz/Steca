@@ -1,20 +1,20 @@
 //  ***********************************************************************************************
 //
-//  Steca: stress and texture calculator
+//  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/widgets/controls.cpp
 //! @brief     Implements functions that return new Qt objects
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2016-2018
-//! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
+//! @copyright Forschungszentrum Jülich GmbH 2018-
+//! @author    Joachim Wuttke
 //
 //  ***********************************************************************************************
 
 #include "controls.h"
 #include "qcr/engine/debug.h"
-#include "qcr/engine/cmdexception.h"
+#include "qcr/engine/qcrexception.h"
 #include "qcr/engine/console.h"
 #include "qcr/widgets/convert.h"
 #include "qcr/widgets/displays.h"
@@ -24,15 +24,21 @@
 #define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 
 //  ***********************************************************************************************
-//  QAction overloads CTrigger and CToggle
+//  QcrAction, QcrTrigger and QcrToggle
 //  ***********************************************************************************************
 
-//! @class CTrigger
+//! @class QcrAction
 
-CTrigger::CTrigger(const QString& rawname, const QString& text, const QString& iconFile)
+QcrAction::QcrAction(const QString& rawname, const QString& text)
     : QAction(text, qApp)
     , CSettable(rawname)
     , tooltip_(text.toLower())
+{}
+
+//! @class QcrTrigger
+
+QcrTrigger::QcrTrigger(const QString& rawname, const QString& text, const QString& iconFile)
+    : QcrAction(rawname, text)
 {
     //QAction::setObjectName(name());
     if (iconFile!="")
@@ -47,26 +53,24 @@ CTrigger::CTrigger(const QString& rawname, const QString& text, const QString& i
     EMITS(("Trigger "+name()),changed());
 };
 
-CTrigger::CTrigger(
+QcrTrigger::QcrTrigger(
     const QString& name, const QString& text, const QString& iconFile, const QKeySequence& shortcut)
-    : CTrigger(name, text, iconFile)
+    : QcrTrigger(name, text, iconFile)
 {
     setShortcut(shortcut);
 }
 
-void CTrigger::onCommand(const QStringList& args)
+void QcrTrigger::onCommand(const QStringList& args)
 {
     if (args[0]!="trigger")
-        throw CmdException("Unexpected trigger command");
+        throw QcrException("Unexpected trigger command");
     trigger();
 }
 
-//! @class CToggle
+//! @class QcrToggle
 
-CToggle::CToggle(const QString& rawname, const QString& text, bool on, const QString& iconFile)
-    : QAction(text, qApp)
-    , CSettable(rawname)
-    , tooltip_(text.toLower())
+QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on, const QString& iconFile)
+    : QcrAction(rawname, text)
 {
     //QAction::setObjectName(CSettable::name());
     if (iconFile!="")
@@ -87,56 +91,38 @@ CToggle::CToggle(const QString& rawname, const QString& text, bool on, const QSt
     EMITS(("Toggle "+name()),changed());
 };
 
-CToggle::CToggle(const QString& name, const QString& text, bool on, const QString& iconFile,
+QcrToggle::QcrToggle(const QString& name, const QString& text, bool on, const QString& iconFile,
                  const QKeySequence& shortcut)
-    : CToggle(name, text, on, iconFile)
+    : QcrToggle(name, text, on, iconFile)
 {
     setShortcut(shortcut);
 }
 
-void CToggle::onCommand(const QStringList& args)
+void QcrToggle::onCommand(const QStringList& args)
 {
     if (args[0]!="switch")
-        throw CmdException("Unexpected toggle command");
+        throw QcrException("Unexpected toggle command");
     if      (args.size()<2)
-        throw CmdException("Missing argument to command 'switch'");
+        throw QcrException("Missing argument to command 'switch'");
     else if (args[1]=="on")
         setChecked(true);
     else if (args[1]=="off")
         setChecked(false);
     else
-        throw CmdException("Invalid argument to command 'switch'");
+        throw QcrException("Invalid argument to command 'switch'");
 }
 
 //  ***********************************************************************************************
 //! @classes with no console connection
 
-XTextButton::XTextButton(QAction* action)
+QcrTextButton::QcrTextButton(QcrAction* action)
 {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonTextOnly);
 }
 
-XIconButton::XIconButton(QAction* action)
+QcrIconButton::QcrIconButton(QcrAction* action)
 {
-    setDefaultAction(action);
-    setToolButtonStyle(Qt::ToolButtonIconOnly);
-}
-
-//  ***********************************************************************************************
-//  owning button classes
-//  ***********************************************************************************************
-
-CTextButton::CTextButton(QAction* action)
-{
-    action->setParent(this);
-    setDefaultAction(action);
-    setToolButtonStyle(Qt::ToolButtonTextOnly);
-}
-
-CIconButton::CIconButton(QAction* action)
-{
-    action->setParent(this);
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonIconOnly);
 }
@@ -145,7 +131,7 @@ CIconButton::CIconButton(QAction* action)
 //  control widget classes with console connection
 //  ***********************************************************************************************
 
-//! @class CSpinBox
+//! @class QcrSpinBox
 //!
 //! A QSpinBox controls an integer value. Therefore normally we need no extra width for a dot.
 //! However, sometimes we want to make a QSpinBox exactly as wide as a given QDoubleSpinBox,
@@ -156,8 +142,8 @@ CIconButton::CIconButton(QAction* action)
 //! https://forum.qt.io/topic/89011. Here, we explicitly deal with editingFinished and
 //! mouse release events.
 
-CSpinBox::CSpinBox(const QString& _name, int ndigits, bool withDot, int min, int max,
-                   const QString& tooltip)
+QcrSpinBox::QcrSpinBox(
+    const QString& _name, int ndigits, bool withDot, int min, int max, const QString& tooltip)
     : CSettable(_name)
 {
     widgetUtils::setWidth(this, 2+ndigits, withDot);
@@ -166,42 +152,42 @@ CSpinBox::CSpinBox(const QString& _name, int ndigits, bool withDot, int min, int
     if (tooltip!="")
         setToolTip(tooltip);
     reportedValue_ = value();
-    connect(this, &QSpinBox::editingFinished, this, &CSpinBox::reportChange);
+    connect(this, &QSpinBox::editingFinished, this, &QcrSpinBox::reportChange);
     connect(this, _SLOT_(QSpinBox,valueChanged,int), [this](int val)->void {
             if(!hasFocus())
                 gConsole->log2(false, name()+" set "+QString::number(val)); });
 }
 
-void CSpinBox::mouseReleaseEvent(QMouseEvent *event)
+void QcrSpinBox::mouseReleaseEvent(QMouseEvent *event)
 {
     QSpinBox::mouseReleaseEvent(event);
     reportChange();
 }
 
-void CSpinBox::reportChange()
+void QcrSpinBox::reportChange()
 {
     int val = value();
     if (val == reportedValue_)
         return;
     reportedValue_ = val;
     gConsole->log2(true, name()+" set "+QString::number(val));
-    EMITS("CSpinBox::reportChange", valueReleased(val));
+    EMITS("QcrSpinBox::reportChange", valueReleased(val));
 }
 
-void CSpinBox::onCommand(const QStringList& args)
+void QcrSpinBox::onCommand(const QStringList& args)
 {
     if (args[0]!="set")
-        throw CmdException("Unexpected SpinBox command");
+        throw QcrException("Unexpected SpinBox command");
     if      (args.size()<2)
-        throw CmdException("Missing argument to command 'set'");
+        throw QcrException("Missing argument to command 'set'");
     int val = TO_INT(args[1]);
     setValue(val);
-    EMITS("CSpinBox::onCommand", valueReleased(val));
+    EMITS("QcrSpinBox::onCommand", valueReleased(val));
 }
 
-//! @class CDoubleSpinBox
+//! @class QcrDoubleSpinBox
 
-CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, double min, double max)
+QcrDoubleSpinBox::QcrDoubleSpinBox(const QString& _name, int ndigits, double min, double max)
     : CSettable(_name)
 {
     widgetUtils::setWidth(this, 2+ndigits, true);
@@ -210,73 +196,61 @@ CDoubleSpinBox::CDoubleSpinBox(const QString& _name, int ndigits, double min, do
     setMinimum(min);
     setMaximum(max);
     reportedValue_ = value();
-    connect(this, &QDoubleSpinBox::editingFinished, this, &CDoubleSpinBox::reportChange);
+    connect(this, &QDoubleSpinBox::editingFinished, this, &QcrDoubleSpinBox::reportChange);
     connect(this, _SLOT_(QDoubleSpinBox,valueChanged,double), [this](double val)->void {
             if(!hasFocus())
                 gConsole->log2(false, name()+" set "+QString::number(val)); });
 }
 
-void CDoubleSpinBox::mouseReleaseEvent(QMouseEvent *event)
+void QcrDoubleSpinBox::mouseReleaseEvent(QMouseEvent *event)
 {
     QDoubleSpinBox::mouseReleaseEvent(event);
     reportChange();
 }
 
-void CDoubleSpinBox::reportChange()
+void QcrDoubleSpinBox::reportChange()
 {
     double val = value();
     if (val == reportedValue_)
         return;
     reportedValue_ = val;
     gConsole->log2(true, name()+" set "+QString::number(val));
-    EMITS("CDoubleSpinBox::reportChange", valueReleased(val));
+    EMITS("QcrDoubleSpinBox::reportChange", valueReleased(val));
 }
 
-void CDoubleSpinBox::onCommand(const QStringList& args)
+void QcrDoubleSpinBox::onCommand(const QStringList& args)
 {
     if (args[0]!="set")
-        throw CmdException("Unexpected DoubleSpinBox command");
+        throw QcrException("Unexpected DoubleSpinBox command");
     if      (args.size()<2)
-        throw CmdException("Missing argument to command 'set'");
+        throw QcrException("Missing argument to command 'set'");
     double val = TO_DOUBLE(args[1]);
     setValue(val);
-    EMITS("CDoubleSpinBox::onCommand", valueReleased(val));
+    EMITS("QcrDoubleSpinBox::onCommand", valueReleased(val));
 }
 
-//! @class CCheckBox
+//! @class QcrCheckBox
 
-CCheckBox::CCheckBox(const QString& _name, QAction* action)
-    : QCheckBox(action ? action->text().toLower() : "")
+QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text)
+    : QCheckBox(text)
     , CSettable(_name)
 {
-    if (!action)
-        return;
-    connect(this, &QCheckBox::toggled, [action](bool on) { action->setChecked(on); });
-    connect(action, &QAction::toggled, [this](bool on) { setChecked(on); });
-    setToolTip(action->toolTip());
-    setChecked(action->isChecked());
     connect(this, _SLOT_(QCheckBox,stateChanged,int), [this](int val)->void {
             gConsole->log2(hasFocus(), name()+" set "+QString::number(val)); });
 }
 
-CCheckBox::CCheckBox(const QString& name, const QString& text)
-    : CCheckBox(name, {})
-{
-    setText(text);
-}
-
-void CCheckBox::onCommand(const QStringList& args)
+void QcrCheckBox::onCommand(const QStringList& args)
 {
     if (args[0]!="set")
-        throw CmdException("Unexpected CheckBox command");
+        throw QcrException("Unexpected CheckBox command");
     if      (args.size()<2)
-        throw CmdException("Missing argument to command 'set'");
+        throw QcrException("Missing argument to command 'set'");
     setChecked(TO_INT(args[1]));
 }
 
-//! @class CRadioButton
+//! @class QcrRadioButton
 
-CRadioButton::CRadioButton(const QString& _name, const QString& text)
+QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text)
     : QRadioButton(text)
     , CSettable(_name)
 {
@@ -284,23 +258,23 @@ CRadioButton::CRadioButton(const QString& _name, const QString& text)
             gConsole->log2(hasFocus(), name()+" switch "+(val?"on":"off")); });
 }
 
-void CRadioButton::onCommand(const QStringList& args)
+void QcrRadioButton::onCommand(const QStringList& args)
 {
     if (args[0]!="switch")
-        throw CmdException("Unexpected RadioButton command");
+        throw QcrException("Unexpected RadioButton command");
     if      (args.size()<2)
-        throw CmdException("Missing argument to command 'switch'");
+        throw QcrException("Missing argument to command 'switch'");
     else if (args[1]=="on")
         setChecked(true);
     else if (args[1]=="off")
         setChecked(false);
     else
-        throw CmdException("Invalid argument to command 'switch'");
+        throw QcrException("Invalid argument to command 'switch'");
 }
 
-//! @class CComboBox
+//! @class QcrComboBox
 
-CComboBox::CComboBox(const QString& _name, const QStringList& items)
+QcrComboBox::QcrComboBox(const QString& _name, const QStringList& items)
     : CSettable(_name)
 {
     addItems(items);
@@ -308,18 +282,18 @@ CComboBox::CComboBox(const QString& _name, const QStringList& items)
             gConsole->log2(hasFocus(), name()+" choose "+QString::number(val)); });
 }
 
-void CComboBox::onCommand(const QStringList& args)
+void QcrComboBox::onCommand(const QStringList& args)
 {
     if (args[0]!="choose")
-        throw CmdException("Unexpected ComboBox command");
+        throw QcrException("Unexpected ComboBox command");
     if (args.size()<2)
-        throw CmdException("Missing argument to command 'choose'");
+        throw QcrException("Missing argument to command 'choose'");
     setCurrentIndex(TO_INT(args[1]));
 }
 
-//! @class CLineEdit
+//! @class QcrLineEdit
 
-CLineEdit::CLineEdit(const QString& _name, const QString& val)
+QcrLineEdit::QcrLineEdit(const QString& _name, const QString& val)
     : CSettable(_name)
 {
     // For unknown reason, hasFocus() is not always false when setText is called programmatically;
@@ -335,18 +309,18 @@ CLineEdit::CLineEdit(const QString& _name, const QString& val)
     setText(val);
 }
 
-void CLineEdit::onCommand(const QStringList& args)
+void QcrLineEdit::onCommand(const QStringList& args)
 {
     if (args[0]!="settext")
-        throw CmdException("Unexpected LineEdit command");
+        throw QcrException("Unexpected LineEdit command");
     if (args.size()<2)
-        throw CmdException("Missing argument to command 'settext'");
+        throw QcrException("Missing argument to command 'settext'");
     setText(args[1]); // TODO handle text that contains blanks
 }
 
-//! @class CTabWidget
+//! @class QcrTabWidget
 
-CTabWidget::CTabWidget(const QString& _name)
+QcrTabWidget::QcrTabWidget(const QString& _name)
     : CSettable(_name)
 {
     connect(this->tabBar(), &QTabBar::tabBarClicked, [this](int val) {
@@ -355,21 +329,21 @@ CTabWidget::CTabWidget(const QString& _name)
             gConsole->log2(false, name()+" choose "+QString::number(val)); });
 }
 
-void CTabWidget::onCommand(const QStringList& args)
+void QcrTabWidget::onCommand(const QStringList& args)
 {
     if (args[0]!="choose")
-        throw CmdException("Unexpected tabwidget command");
+        throw QcrException("Unexpected tabwidget command");
     if (args.size()<2)
-        throw CmdException("Missing argument to command 'choose'");
+        throw QcrException("Missing argument to command 'choose'");
     int val = TO_INT(args[1]);
     if (!isTabEnabled(val))
-        throw CmdException("Chosen tab is not enabled");
+        throw QcrException("Chosen tab is not enabled");
     setCurrentIndex(val);
 }
 
-//! @class CFileDialog
+//! @class QcrFileDialog
 
-CFileDialog::CFileDialog(QWidget *parent, const QString &caption,
+QcrFileDialog::QcrFileDialog(QWidget *parent, const QString &caption,
                          const QString &directory, const QString &filter)
     : QFileDialog(parent, caption, directory, filter)
     , CModal("fdia")
@@ -377,12 +351,12 @@ CFileDialog::CFileDialog(QWidget *parent, const QString &caption,
 {
 }
 
-CFileDialog::~CFileDialog()
+QcrFileDialog::~QcrFileDialog()
 {
     gConsole->log("fdia select "+selectedFiles().join(';'));
 }
 
-int CFileDialog::exec()
+int QcrFileDialog::exec()
 {
     if (gConsole->hasCommandsOnStack()) {
         open();
@@ -393,16 +367,16 @@ int CFileDialog::exec()
         return QFileDialog::exec();
 }
 
-void CFileDialog::onCommand(const QStringList& args)
+void QcrFileDialog::onCommand(const QStringList& args)
 {
     if        (args[0]=="close") {
         accept();
     } else if (args[0]=="select") {
         if (args.size()<2)
-            throw CmdException("Missing argument to command 'select'");
+            throw QcrException("Missing argument to command 'select'");
         QStringList list = args[1].split(';');
         QString tmp = '"' + list.join("\" \"") + '"';
         selectFile(tmp);
     } else
-        throw CmdException("Unexpected filedialog command");
+        throw QcrException("Unexpected filedialog command");
 }

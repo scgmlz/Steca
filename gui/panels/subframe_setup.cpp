@@ -20,7 +20,7 @@
 #include "gui/panels/controls_peakfits.h"
 
 SubframeSetup::SubframeSetup()
-    : CTabWidget {"setup"}
+    : QcrTabWidget {"setup"}
 {
     setTabPosition(QTabWidget::North);
 

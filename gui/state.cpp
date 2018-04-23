@@ -20,10 +20,10 @@
 
 GuiState::GuiState()
 {
-    polefigShowGridPts = new CCheckBox {"gridPts", "grid points"};
+    polefigShowGridPts = new QcrCheckBox {"gridPts", "grid points"};
 
-    diagramX = new CComboBox {"xAxis"};
-    diagramY = new CComboBox {"yAxis"};
+    diagramX = new QcrComboBox {"xAxis"};
+    diagramY = new QcrComboBox {"yAxis"};
 
     // initialize
     QStringList tags = PeakInfo::dataTags(false);

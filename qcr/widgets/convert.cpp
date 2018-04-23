@@ -1,19 +1,19 @@
 //  ***********************************************************************************************
 //
-//  Steca: stress and texture calculator
+//  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/widgets/convert.cpp
 //! @brief     Implements functions TO_INT, TO_DOUBLE
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2016-2018
-//! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
+//! @copyright Forschungszentrum Jülich GmbH 2018-
+//! @author    Joachim Wuttke
 //
 //  ***********************************************************************************************
 
 #include "convert.h"
-#include "qcr/engine/cmdexception.h"
+#include "qcr/engine/qcrexception.h"
 
 int TO_INT(const QString& s)
 {
@@ -21,7 +21,7 @@ int TO_INT(const QString& s)
     bool ok;
     ret = s.toInt(&ok);
     if (!ok)
-        throw CmdException("Expected an integer number, found string '" + s + "'");
+        throw QcrException("Expected an integer number, found string '" + s + "'");
     return ret;
 }
 
@@ -31,6 +31,6 @@ double TO_DOUBLE(const QString& s)
     bool ok;
     ret = s.toDouble(&ok);
     if (!ok)
-        throw CmdException("Expected a floating-point number, found string '" + s + "'");
+        throw QcrException("Expected a floating-point number, found string '" + s + "'");
     return ret;
 }

@@ -26,9 +26,9 @@ public:
     bool editingBaseline {false};
     bool editingPeakfits {false};
 
-    class CCheckBox* polefigShowGridPts;
-    class CComboBox* diagramX;
-    class CComboBox* diagramY;
+    class QcrCheckBox* polefigShowGridPts;
+    class QcrComboBox* diagramX;
+    class QcrComboBox* diagramY;
 
     std::vector<bool> bigtableShowCol;
     const class BigtableModel* bigtableModel;

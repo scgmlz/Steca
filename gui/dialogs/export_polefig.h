@@ -25,11 +25,11 @@ public:
 
 private:
     class ExportfileDialogfield* fileField_;
-    CRadioButton rbCurrent_       {"rbCurrent",       "Current peak only"};
-    CRadioButton rbAllSequential_ {"rbAllSequential", "All peaks to numbered files"};
-    CRadioButton rbAll_           {"rbAll",           "All peaks to one file"};
-    CRadioButton rbOriginalGrid_  {"rbOriginalGrid",  "Original α-β grid"};
-    CRadioButton rbInterpolated_  {"rbInterpolated",  "Interpolated α-β grid"};
+    QcrRadioButton rbCurrent_       {"rbCurrent",       "Current peak only"};
+    QcrRadioButton rbAllSequential_ {"rbAllSequential", "All peaks to numbered files"};
+    QcrRadioButton rbAll_           {"rbAll",           "All peaks to one file"};
+    QcrRadioButton rbOriginalGrid_  {"rbOriginalGrid",  "Original α-β grid"};
+    QcrRadioButton rbInterpolated_  {"rbInterpolated",  "Interpolated α-β grid"};
 
     bool interpolated();
     void save();

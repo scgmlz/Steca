@@ -33,6 +33,11 @@ public:
 private:
     QLineEdit* dir_;
     QLineEdit* file_;
+    QcrRadioButton rbDat_ {"fmtDat", ".dat"};
+    QcrRadioButton rbCsv_ {"fmtCsv", ".ext"};
+    QcrTrigger actBrowse_ {"selectDir", "Browse..."};
+    QcrTrigger actCancel_ {"cancel", "Cancel"};
+    QcrTrigger actSave_ {"save", "Save"};
 };
 
 #endif // EXPORTFILE_DIALOGFIELD_H

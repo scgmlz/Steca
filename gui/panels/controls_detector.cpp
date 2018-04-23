@@ -35,10 +35,10 @@ private:
     QHBoxLayout trafoLayout_;
     QHBoxLayout offsetLayout_;
 
-    CDoubleSpinBox detDistance_ {"detDistance", 6};
-    CDoubleSpinBox detPixelSize_ {"detPixelSize", 6};
-    CSpinBox beamOffsetI_ {"beamOffsetI", 3, true};
-    CSpinBox beamOffsetJ_ {"beamOffsetJ", 3, true};
+    QcrDoubleSpinBox detDistance_ {"detDistance", 6};
+    QcrDoubleSpinBox detPixelSize_ {"detPixelSize", 6};
+    QcrSpinBox beamOffsetI_ {"beamOffsetI", 3, true};
+    QcrSpinBox beamOffsetJ_ {"beamOffsetJ", 3, true};
 };
 
 GeometryControls::GeometryControls()
@@ -51,14 +51,14 @@ GeometryControls::GeometryControls()
     connect(gSession, &Session::sigDetector, this, &GeometryControls::fromCore);
 
     // outbound connections and control widget setup
-    connect(&detDistance_, &CDoubleSpinBox::valueReleased, [](double val) {
+    connect(&detDistance_, &QcrDoubleSpinBox::valueReleased, [](double val) {
             gSession->geometry().setDetectorDistance(val); });
-    connect(&detPixelSize_, &CDoubleSpinBox::valueReleased, [](double val) {
+    connect(&detPixelSize_, &QcrDoubleSpinBox::valueReleased, [](double val) {
             gSession->geometry().setPixSize(val); });
-    connect(&beamOffsetI_, &CSpinBox::valueReleased, [](int val) {
+    connect(&beamOffsetI_, &QcrSpinBox::valueReleased, [](int val) {
             gSession->geometry().midPixOffset().i = val;
             EMITS("GeometryControls", gSession->sigDetector()); });
-    connect(&beamOffsetJ_, &CSpinBox::valueReleased, [](int val) {
+    connect(&beamOffsetJ_, &QcrSpinBox::valueReleased, [](int val) {
             gSession->geometry().midPixOffset().j = val;
             EMITS("GeometryControls", gSession->sigDetector()); });
 
@@ -71,9 +71,9 @@ GeometryControls::GeometryControls()
     mmGrid_.addWidget(new QLabel("mm"), 1, 2);
 
     trafoLayout_.addWidget(new QLabel("image rotate"));
-    trafoLayout_.addWidget(new XIconButton(&gGui->imageTrafoActions->rotateImage));
+    trafoLayout_.addWidget(new QcrIconButton(&gGui->imageTrafoActions->rotateImage));
     trafoLayout_.addWidget(new QLabel("mirror"));
-    trafoLayout_.addWidget(new XIconButton(&gGui->imageTrafoActions->mirrorImage));
+    trafoLayout_.addWidget(new QcrIconButton(&gGui->imageTrafoActions->mirrorImage));
     trafoLayout_.addStretch(1);
 
     offsetLayout_.addWidget(new QLabel("offset X"));
@@ -110,11 +110,11 @@ private:
     void fromCore();
 
     QGridLayout layout_;
-    XIconButton link_ {&gGui->toggles->linkCuts};
-    CSpinBox cutLeft_ {"cutLeft", 3, false, 0};
-    CSpinBox cutTop_ {"cutTop", 3, false, 0};
-    CSpinBox cutRight_ {"cutRight", 3, false, 0};
-    CSpinBox cutBottom_ {"cutBottom", 3, false, 0};
+    QcrIconButton link_ {&gGui->toggles->linkCuts};
+    QcrSpinBox cutLeft_ {"cutLeft", 3, false, 0};
+    QcrSpinBox cutTop_ {"cutTop", 3, false, 0};
+    QcrSpinBox cutRight_ {"cutRight", 3, false, 0};
+    QcrSpinBox cutBottom_ {"cutBottom", 3, false, 0};
 };
 
 CutControls::CutControls()
@@ -123,13 +123,13 @@ CutControls::CutControls()
     connect(gSession, &Session::sigDetector, this, &CutControls::fromCore);
 
     // outbound connections
-    connect(&cutLeft_, &CSpinBox::valueReleased, [](int value) {
+    connect(&cutLeft_, &QcrSpinBox::valueReleased, [](int value) {
             gSession->imageCut().setLeft(value); });
-    connect(&cutRight_,  &CSpinBox::valueReleased, [](int value) {
+    connect(&cutRight_,  &QcrSpinBox::valueReleased, [](int value) {
             gSession->imageCut().setRight(value); });
-    connect(&cutTop_,    &CSpinBox::valueReleased, [](int value) {
+    connect(&cutTop_,    &QcrSpinBox::valueReleased, [](int value) {
             gSession->imageCut().setTop(value); });
-    connect(&cutBottom_, &CSpinBox::valueReleased, [](int value) {
+    connect(&cutBottom_, &QcrSpinBox::valueReleased, [](int value) {
             gSession->imageCut().setBottom(value); });
     connect(&gGui->toggles->linkCuts, &QAction::toggled, [](bool value) {
             gSession->imageCut().setLinked(value); });
@@ -170,12 +170,12 @@ private:
     void fromCore();
 
     QHBoxLayout layout_;
-    CSpinBox combineMeasurements_ {"combineMeasurements", 3, false, 1, 999,
+    QcrSpinBox combineMeasurements_ {"combineMeasurements", 3, false, 1, 999,
             "Combine this number of measurements into one group"};
-    CToggle dropIncompleteAction_ {"dropIncomplete",
+    QcrToggle dropIncompleteAction_ {"dropIncomplete",
             "Drop measurement groups that do not have the full number of members",
             false, ":/icon/dropIncomplete" };
-    XIconButton dropIncompleteButton_ { &dropIncompleteAction_ };
+    QcrIconButton dropIncompleteButton_ { &dropIncompleteAction_ };
 };
 
 ActiveClustersControls::ActiveClustersControls()
@@ -184,7 +184,7 @@ ActiveClustersControls::ActiveClustersControls()
     connect(gSession, &Session::sigClusters, this, &ActiveClustersControls::fromCore);
 
     // outbound connections
-    connect(&combineMeasurements_, &CSpinBox::valueReleased,
+    connect(&combineMeasurements_, &QcrSpinBox::valueReleased,
             [](int num) { gSession->dataset().setBinning(num); });
     connect(&dropIncompleteAction_, &QAction::toggled,
             [](bool on) { gSession->dataset().setDropIncomplete(on); });
@@ -220,7 +220,7 @@ private:
     void fromCore();
 
     QHBoxLayout layout_;
-    CSpinBox numSlices_{"numSlices", 2, false, 0, INT_MAX,
+    QcrSpinBox numSlices_{"numSlices", 2, false, 0, INT_MAX,
             "Number of γ slices (0: no slicing, take entire image)" };
 };
 
@@ -230,7 +230,7 @@ GammaControls::GammaControls()
     connect(gSession, &Session::sigClusters, this, &GammaControls::fromCore);
 
     // outbound connections
-    connect(&numSlices_, &CSpinBox::valueReleased, [](int val) {
+    connect(&numSlices_, &QcrSpinBox::valueReleased, [](int val) {
             gSession->gammaSelection().setNumSlices(val); });
 
     // layout

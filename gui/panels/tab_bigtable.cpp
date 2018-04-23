@@ -31,13 +31,13 @@ class ColumnSelector : public QWidget {
 public:
     ColumnSelector();
 private:
-    std::vector<CCheckBox*> showCols_;
-    CRadioButton rbHidden_ {"rbHidden", ""};
-    CRadioButton rbAll_ {"rbAll", "all"};
-    CRadioButton rbNone_ {"rbNone", "none"};
-    CRadioButton rbInten_ {"rbInten", "Intensity"};
-    CRadioButton rbTth_ {"rbTth", "2θ"};
-    CRadioButton rbFWHM_ {"rbFWHM", "fwhm"};
+    std::vector<QcrCheckBox*> showCols_;
+    QcrRadioButton rbHidden_ {"rbHidden", ""};
+    QcrRadioButton rbAll_ {"rbAll", "all"};
+    QcrRadioButton rbNone_ {"rbNone", "none"};
+    QcrRadioButton rbInten_ {"rbInten", "Intensity"};
+    QcrRadioButton rbTth_ {"rbTth", "2θ"};
+    QcrRadioButton rbFWHM_ {"rbFWHM", "fwhm"};
     void setAll(bool on);
     void updateRadiobuttons();
     using eReflAttr = PeakInfo::eReflAttr;
@@ -58,7 +58,7 @@ ColumnSelector::ColumnSelector()
     box->addSpacing(8);
     showCols_.resize(headers.count());
     for_i (showCols_.size()) {
-        showCols_[i] = new CCheckBox("cb"+QString::number(i), headers[i]);
+        showCols_[i] = new QcrCheckBox("cb"+QString::number(i), headers[i]);
         box->addWidget(showCols_[i]);
     }
     setLayout(box);
@@ -147,8 +147,8 @@ BigtableTab::BigtableTab()
 
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);
-    buttonBox->addWidget(new XIconButton {&gGui->triggers->spawnTable});
-    buttonBox->addWidget(new XIconButton {&gGui->triggers->exportBigtable});
+    buttonBox->addWidget(new QcrIconButton {&gGui->triggers->spawnTable});
+    buttonBox->addWidget(new QcrIconButton {&gGui->triggers->exportBigtable});
 
     auto* sideBox = new QVBoxLayout;
     sideBox->addWidget(colSelBox);

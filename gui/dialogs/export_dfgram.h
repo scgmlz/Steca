@@ -25,9 +25,9 @@ public:
 
 private:
     class ExportfileDialogfield* fileField_;
-    CRadioButton rbCurrent_       {"rbCurrent",       "Current diffractogram"};
-    CRadioButton rbAllSequential_ {"rbAllSequential", "All diffractograms to numbered files"};
-    CRadioButton rbAll_           {"rbAll",           "All diffractograms to one file"};
+    QcrRadioButton rbCurrent_       {"rbCurrent",       "Current diffractogram"};
+    QcrRadioButton rbAllSequential_ {"rbAllSequential", "All diffractograms to numbered files"};
+    QcrRadioButton rbAll_           {"rbAll",           "All diffractograms to one file"};
 
     void save();
     void saveCurrent();

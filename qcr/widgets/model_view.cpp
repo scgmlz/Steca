@@ -1,20 +1,20 @@
 //  ***********************************************************************************************
 //
-//  Steca: stress and texture calculator
+//  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/widgets/model_view.cpp
 //! @brief     Implements class TableView
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2016-2018
-//! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
+//! @copyright Forschungszentrum Jülich GmbH 2018-
+//! @author    Joachim Wuttke
 //
 //  ***********************************************************************************************
 
 #include "model_view.h"
 #include "qcr/engine/console.h"
-#include "qcr/engine/cmdexception.h"
+#include "qcr/engine/qcrexception.h"
 #include "qcr/engine/debug.h"
 #include "qcr/widgets/convert.h"
 
@@ -28,9 +28,9 @@ TableModel::TableModel(const QString& name)
 void TableModel::onCommand(const QStringList& args)
 {
     if (args[0]!="highlight")
-        throw CmdException("Unexpected command in TableModel "+name());
+        throw QcrException("Unexpected command in TableModel "+name());
     if      (args.size()<2)
-        throw CmdException("Missing argument to command 'highlight'");
+        throw QcrException("Missing argument to command 'highlight'");
     setHighlight(TO_INT(args[1]));
 }
 
@@ -71,11 +71,11 @@ void CheckTableModel::onCommand(const QStringList& args)
 {
     if        (args[0]=="activate") {
         if (args.size()<2)
-            throw CmdException("Missing argument to command 'activate'");
+            throw QcrException("Missing argument to command 'activate'");
         activateAndLog(false, TO_INT(args[1]), true);
     } else if (args[0]=="deactivate") {
         if (args.size()<2)
-            throw CmdException("Missing argument to command 'deactivate'");
+            throw QcrException("Missing argument to command 'deactivate'");
         activateAndLog(false, TO_INT(args[1]), false);
     } else
         TableModel::onCommand(args);

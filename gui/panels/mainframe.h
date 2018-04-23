@@ -21,7 +21,7 @@
 
 //! There are two tabs: data image and correction data image.
 
-class Mainframe : public CTabWidget {
+class Mainframe : public QcrTabWidget {
 public:
     Mainframe();
     const class BigtableTab& bigtableTab() const { return *bigtableTab_; }

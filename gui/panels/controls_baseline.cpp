@@ -96,14 +96,14 @@ ControlsBaseline::ControlsBaseline()
     hb_.addWidget(new QLabel("Pol. degree:"));
     hb_.addWidget(&spinDegree_);
     hb_.addStretch(1);
-    hb_.addWidget(new XIconButton(&gGui->triggers->clearBackground));
+    hb_.addWidget(new QcrIconButton(&gGui->triggers->clearBackground));
     box_.addLayout(&hb_);
 
     box_.addWidget(new BaseRangesView());
     box_.addStretch(1);
     setLayout(&box_);
 
-    connect(&spinDegree_, &CSpinBox::valueReleased, [](int degree_) {
+    connect(&spinDegree_, &QcrSpinBox::valueReleased, [](int degree_) {
             gSession->baseline().setPolynomDegree(degree_); });
 
     connect(gSession, &Session::sigBaseline, [this]() {

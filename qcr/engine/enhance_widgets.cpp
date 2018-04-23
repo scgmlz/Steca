@@ -1,19 +1,19 @@
 //  ***********************************************************************************************
 //
-//  Steca: stress and texture calculator
+//  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/engine/enhance_widgets.cpp
 //! @brief     Implements functions that return new Qt objects
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2016-2018
-//! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
+//! @copyright Forschungszentrum Jülich GmbH 2018-
+//! @author    Joachim Wuttke
 //
 //  ***********************************************************************************************
 
 #include "qcr/engine/console.h"
-#include "qcr/engine/cmdexception.h"
+#include "qcr/engine/qcrexception.h"
 #include <QDebug>
 
 //  ***********************************************************************************************
@@ -61,6 +61,6 @@ void CModelessDialog::closeEvent(QCloseEvent* event)
 void CModelessDialog::onCommand(const QStringList& args)
 {
     if (args[0]!="close")
-        throw CmdException("Unexpected command in ModelessDialog "+name());
+        throw QcrException("Unexpected command in ModelessDialog "+name());
     close();
 }

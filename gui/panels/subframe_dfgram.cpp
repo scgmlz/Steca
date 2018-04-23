@@ -32,11 +32,11 @@ private:
     void onHighlight();
 
     class PlotDfgram* plot_;
-    CComboBox comboNormType_ {"normTyp", {"none", "monitor", "Δ monitor", "Δ time"}};
-    CRadioButton intenSum_ {"intenSum", "sum"};
-    CRadioButton intenAvg_ {"intenAvg", "avg ×"};
-    CDoubleSpinBox intenScale_ {"intenScale", 6, 0.001};
-    CToggle actZoom_ {"actZoom", "zoom", false, ":/icon/zoom"};
+    QcrComboBox comboNormType_ {"normTyp", {"none", "monitor", "Δ monitor", "Δ time"}};
+    QcrRadioButton intenSum_ {"intenSum", "sum"};
+    QcrRadioButton intenAvg_ {"intenAvg", "avg ×"};
+    QcrDoubleSpinBox intenScale_ {"intenScale", 6, 0.001};
+    QcrToggle actZoom_ {"actZoom", "zoom", false, ":/icon/zoom"};
 };
 
 
@@ -67,7 +67,7 @@ Dfgram::Dfgram()
         intenScale_.setValue(gSession->intenScale());
         gSession->setIntenScaleAvg(on, intenScale_.value());
     });
-    connect(&intenScale_, &CDoubleSpinBox::valueReleased, [](double val) {
+    connect(&intenScale_, &QcrDoubleSpinBox::valueReleased, [](double val) {
         if (val > 0)
             gSession->setIntenScaleAvg(gSession->intenScaledAvg(), val);
     });
@@ -81,13 +81,13 @@ Dfgram::Dfgram()
     hb->addWidget(&intenAvg_);
     hb->addWidget(&intenScale_);
     hb->addStretch(); // ---
-    hb->addWidget(new XIconButton {&actZoom_});
+    hb->addWidget(new QcrIconButton {&actZoom_});
     hb->addStretch(); // ---
-    hb->addWidget(new XIconButton {&gGui->toggles->combinedDgram});
-    hb->addWidget(new XIconButton {&gGui->toggles->fixedIntenDgram});
-    hb->addWidget(new XIconButton {&gGui->toggles->showBackground});
+    hb->addWidget(new QcrIconButton {&gGui->toggles->combinedDgram});
+    hb->addWidget(new QcrIconButton {&gGui->toggles->fixedIntenDgram});
+    hb->addWidget(new QcrIconButton {&gGui->toggles->showBackground});
     hb->addStretch(); // ---
-    hb->addWidget(new XIconButton {&gGui->triggers->exportDfgram});
+    hb->addWidget(new QcrIconButton {&gGui->triggers->exportDfgram});
 
     auto* box = new QVBoxLayout;
     box->addWidget(plot_);

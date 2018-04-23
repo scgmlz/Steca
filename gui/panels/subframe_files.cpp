@@ -115,15 +115,15 @@ SubframeFiles::SubframeFiles()
 
     auto* dataControls = new QHBoxLayout;
     dataControls->addStretch();
-    dataControls->addWidget(new XIconButton(&gGui->triggers->addFiles));
-    dataControls->addWidget(new XIconButton(&gGui->triggers->removeFile));
+    dataControls->addWidget(new QcrIconButton(&gGui->triggers->addFiles));
+    dataControls->addWidget(new QcrIconButton(&gGui->triggers->removeFile));
 
     auto* corrFileView = new XLineDisplay;
 
     auto* corrControls = new QHBoxLayout;
     corrControls->addWidget(corrFileView);
-    corrControls->addWidget(new XIconButton(&gGui->triggers->corrFile));
-    corrControls->addWidget(new XIconButton(&gGui->toggles->enableCorr));
+    corrControls->addWidget(new QcrIconButton(&gGui->triggers->corrFile));
+    corrControls->addWidget(new QcrIconButton(&gGui->toggles->enableCorr));
 
     auto* box = new QVBoxLayout;
     box->addLayout(dataControls);

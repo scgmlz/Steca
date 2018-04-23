@@ -1,19 +1,19 @@
 //  ***********************************************************************************************
 //
-//  Steca: stress and texture calculator
+//  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/engine/console.cpp
 //! @brief     Implements class Console
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2016-2018
-//! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
+//! @copyright Forschungszentrum Jülich GmbH 2018-
+//! @author    Joachim Wuttke
 //
 //  ***********************************************************************************************
 
 #include "console.h"
-#include "cmdexception.h"
+#include "qcr/engine/qcrexception.h"
 #include <QDebug>
 #include <QFile>
 #include <QSocketNotifier>
@@ -229,7 +229,7 @@ Console::Result Console::exec(QString line)
     try {
         f->onCommand(args); // execute command
         return Result::ok;
-    } catch (CmdException &ex) {
+    } catch (QcrException &ex) {
         qterr << "Command '" << line << "' failed:\n" << ex.msg() << "\n";
     }
     return Result::err;

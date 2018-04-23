@@ -1,31 +1,31 @@
 //  ***********************************************************************************************
 //
-//  Steca: stress and texture calculator
+//  libqcr: capture and replay Qt widget actions
 //
-//! @file      qcr/engine/cmdexception.h
-//! @brief     Defines class CmdException
+//! @file      qcr/engine/qcrexception.h
+//! @brief     Defines class QcrException
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2016-2018
-//! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
+//! @copyright Forschungszentrum Jülich GmbH 2018-
+//! @author    Joachim Wuttke
 //
 //  ***********************************************************************************************
 
-#ifndef CMDEXCEPTION_H
-#define CMDEXCEPTION_H
+#ifndef QcrEXCEPTION_H
+#define QcrEXCEPTION_H
 
 #include <QException>
 #include <QString> // no auto rm
 
 //! The sole exception type used in this software.
-class CmdException : public QException {
+class QcrException : public QException {
 public:
-    CmdException() = delete;
-    CmdException(const QString& msg) noexcept : msg_(msg) {}
+    QcrException() = delete;
+    QcrException(const QString& msg) noexcept : msg_(msg) {}
     const QString& msg() const noexcept { return msg_; }
 private:
     QString msg_;
 };
 
-#endif // CMDEXCEPTION_H
+#endif // QcrEXCEPTION_H
