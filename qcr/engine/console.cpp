@@ -102,14 +102,14 @@ Console::Console()
         qFatal("cannot open log file");
     log_.setDevice(file);
     startTime_ = QDateTime::currentDateTime();
-    log("# Steca started at " + startTime_.toString("yyyy-MM-dd HH:mm::ss.zzz"));
+    log("#  Steca started at " + startTime_.toString("yyyy-MM-dd HH:mm::ss.zzz"));
 }
 
 Console::~Console()
 {
-    log("# Steca session ended");
-    log("# duration: " + QString::number(startTime_.msecsTo(QDateTime::currentDateTime())) + "ms");
-    log("# computing time: " + QString::number(computingTime_) + "ms");
+    log("#  Steca session ended");
+    log("#  duration: " + QString::number(startTime_.msecsTo(QDateTime::currentDateTime())) + "ms");
+    log("#  computing time: " + QString::number(computingTime_) + "ms");
     delete log_.device();
     while (!registryStack_.empty()) {
         delete registryStack_.top();
@@ -258,10 +258,8 @@ void Console::log(const QString& line)
         computingTime_ += tDiff;
     }
     log_ << " " << registry().name() << "]";
-    if (caller_==Caller::gui)
+    if      (caller_==Caller::gui || caller_==Caller::stack)
         log_ << line << "\n";
-    else if (caller_==Caller::stack)
-        log_ << line << " #< @file\n";
     else if (caller_==Caller::cli)
         log_ << "#: " << line << "\n";
     else if (caller_==Caller::sys)
