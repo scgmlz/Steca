@@ -46,6 +46,9 @@ public:
         softwareCalling_ = false;
     }
     virtual T getValue() const = 0;
+    virtual void onCommand(const QString& arg) {
+        programaticallySetValue(strOp::from_s<T>(arg));
+    }
 protected:
     void init() {
         reportedValue_ = getValue();

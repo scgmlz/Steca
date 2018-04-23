@@ -25,6 +25,9 @@ bool to_b(const QString&);
 int to_i(const QString&);
 double to_d(const QString&);
 
+template<typename T>
+T from_s(const QString&);
+
 QString to_s(bool);
 QString to_s(int);
 QString to_s(double);

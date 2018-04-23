@@ -99,11 +99,6 @@ QcrToggle::QcrToggle(const QString& name, const QString& text, bool on, const QS
     setShortcut(shortcut);
 }
 
-void QcrToggle::onCommand(const QString& arg)
-{
-    programaticallySetValue(strOp::to_b(arg));
-}
-
 //  ***********************************************************************************************
 //! @classes with no console connection
 
@@ -148,7 +143,7 @@ QcrSpinBox::QcrSpinBox(
     connect(this, &QSpinBox::editingFinished, this, &QcrSpinBox::reportChange);
     connect(this, _SLOT_(QSpinBox,valueChanged,int), [this](int val)->void {
             if(!hasFocus())
-                QcrControl::onChangedValue(val); });
+                onChangedValue(val); });
 }
 
 void QcrSpinBox::mouseReleaseEvent(QMouseEvent *event)
@@ -163,7 +158,7 @@ void QcrSpinBox::reportChange()
     if (val == reportedValue_)
         return;
     reportedValue_ = val;
-    QcrControl::onChangedValue(val);
+    onChangedValue(val);
     EMITS("QcrSpinBox::reportChange", valueReleased(val));
 }
 
@@ -189,7 +184,7 @@ QcrDoubleSpinBox::QcrDoubleSpinBox(const QString& _name, int ndigits, double min
     connect(this, &QDoubleSpinBox::editingFinished, this, &QcrDoubleSpinBox::reportChange);
     connect(this, _SLOT_(QDoubleSpinBox,valueChanged,double), [this](double val)->void {
             if(!hasFocus())
-                QcrControl::onChangedValue(val); });
+                onChangedValue(val); });
 }
 
 void QcrDoubleSpinBox::mouseReleaseEvent(QMouseEvent *event)
@@ -204,7 +199,7 @@ void QcrDoubleSpinBox::reportChange()
     if (val == reportedValue_)
         return;
     reportedValue_ = val;
-    QcrControl::onChangedValue(val);
+    onChangedValue(val);
     EMITS("QcrDoubleSpinBox::reportChange", valueReleased(val));
 }
 
@@ -223,12 +218,7 @@ QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text)
 {
     init();
     connect(this, _SLOT_(QCheckBox,stateChanged,int), [this](int val)->void {
-            QcrControl::onChangedValue(val); });
-}
-
-void QcrCheckBox::onCommand(const QString& arg)
-{
-    programaticallySetValue(strOp::to_i(arg));
+            onChangedValue(val); });
 }
 
 //! @class QcrRadioButton
@@ -239,12 +229,7 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text)
 {
     init();
     connect(this, &QRadioButton::toggled, [this](bool val)->void {
-            QcrControl::onChangedValue(val); });
-}
-
-void QcrRadioButton::onCommand(const QString& arg)
-{
-    programaticallySetValue(strOp::to_b(arg));
+            onChangedValue(val); });
 }
 
 //! @class QcrComboBox
@@ -255,12 +240,7 @@ QcrComboBox::QcrComboBox(const QString& _name, const QStringList& items)
     init();
     addItems(items);
     connect(this, _SLOT_(QComboBox,currentIndexChanged,int), [this](int val)->void {
-            QcrControl::onChangedValue(val); });
-}
-
-void QcrComboBox::onCommand(const QString& arg)
-{
-    programaticallySetValue(strOp::to_i(arg));
+            onChangedValue(val); });
 }
 
 //! @class QcrLineEdit
@@ -275,16 +255,11 @@ QcrLineEdit::QcrLineEdit(const QString& _name, const QString& val)
     // but also in a second line as if there were an indirect call.
     connect(this, _SLOT_(QLineEdit,textEdited,const QString&),
             [this](const QString& val)->void {
-                QcrControl::onChangedValue(val); });
+                onChangedValue(val); });
     connect(this, _SLOT_(QLineEdit,textChanged,const QString&),
             [this](const QString& val)->void {
-                QcrControl::onChangedValue(val); });
+                onChangedValue(val); });
     programaticallySetValue(val);
-}
-
-void QcrLineEdit::onCommand(const QString& arg)
-{
-    setText(arg);
 }
 
 //! @class QcrTabWidget
@@ -294,17 +269,13 @@ QcrTabWidget::QcrTabWidget(const QString& _name)
 {
     init();
     connect(this->tabBar(), &QTabBar::tabBarClicked, [this](int val) {
-            QcrControl::onChangedValue(val); });
+            if (!isTabEnabled(val))
+                throw QcrException("Chosen tab is not enabled");
+            onChangedValue(val); });
     connect(this, &QTabWidget::currentChanged, [this](int val) {
-            QcrControl::onChangedValue(val); });
-}
-
-void QcrTabWidget::onCommand(const QString& arg)
-{
-    int val = strOp::to_i(arg);
-    if (!isTabEnabled(val))
-        throw QcrException("Chosen tab is not enabled");
-    setCurrentIndex(val);
+            if (!isTabEnabled(val))
+                throw QcrException("Chosen tab is not enabled");
+            onChangedValue(val); });
 }
 
 //! @class QcrFileDialog
