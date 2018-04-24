@@ -52,7 +52,6 @@ void readExperiment(const YAML::Node& node, Rawfile& rawfile)
 
 void readSample(const YAML::Node& node, Metadata& metadata)
 {
-    metadata.comment = QString::fromStdString(node["description"]["name"].as<std::string>());
     metadata.motorXT = node["position"]["xt"]["value"].as<double>(NAN);
     metadata.motorYT = node["position"]["yt"]["value"].as<double>(NAN);
     metadata.motorZT = node["position"]["zt"]["value"].as<double>(NAN);
@@ -103,42 +102,16 @@ void readScans(const YAML::Node& node, Metadata& metadata, Rawfile& rawfile)
 {
     if (!node.IsDefined())
         return;
-    if (!node.IsSequence())
+    if (!node.IsSequence()) {
         THROW("invalid YAML format: 'scans' should be a list, but isn't.")
-
+    }
     for (const YAML::Node& innerNode: node) {
         Metadata metadataCopy(std::move(metadata));
-        { // Copy the metadata in a dirty way:
-            metadataCopy.date              =  metadata.date             ;
-            metadataCopy.comment           =  metadata.comment          ;
-            metadataCopy.motorXT           =  metadata.motorXT          ;
-            metadataCopy.motorYT           =  metadata.motorYT          ;
-            metadataCopy.motorZT           =  metadata.motorZT          ;
-            metadataCopy.motorOmg          =  metadata.motorOmg         ;
-            metadataCopy.motorTth          =  metadata.motorTth         ;
-            metadataCopy.motorPhi          =  metadata.motorPhi         ;
-            metadataCopy.motorChi          =  metadata.motorChi         ;
-            metadataCopy.motorPST          =  metadata.motorPST         ;
-            metadataCopy.motorSST          =  metadata.motorSST         ;
-            metadataCopy.motorOMGM         =  metadata.motorOMGM        ;
-            metadataCopy.nmT               =  metadata.nmT              ;
-            metadataCopy.nmTeload          =  metadata.nmTeload         ;
-            metadataCopy.nmTepos           =  metadata.nmTepos          ;
-            metadataCopy.nmTeext           =  metadata.nmTeext          ;
-            metadataCopy.nmXe              =  metadata.nmXe             ;
-            metadataCopy.nmYe              =  metadata.nmYe             ;
-            metadataCopy.nmZe              =  metadata.nmZe             ;
-
-            metadataCopy.monitorCount      =  metadata.monitorCount     ;
-            metadataCopy.deltaMonitorCount =  metadata.deltaMonitorCount;
-
-            metadataCopy.time              =  metadata.time             ;
-            metadataCopy.deltaTime         =  metadata.deltaTime        ;
-        }
-
+        // Copy the QStrings back, because std::move removes them from metadata:
+        metadata.date    = metadataCopy.date;
+        metadata.comment = metadataCopy.comment;
         readSingleScan(innerNode, metadataCopy, rawfile);
     }
-    // TODO: readScan(const YAML::Node& node, const Metadata& metadata)
 }
 
 void readMeasurement(const YAML::Node& node, Rawfile& rawfile)
@@ -151,13 +124,12 @@ void readMeasurement(const YAML::Node& node, Rawfile& rawfile)
 
     auto metadata = Metadata();
 
-    metadata.date = QString::fromStdString(node["history"]["started"].as<std::string>());
+    metadata.date    = QString::fromStdString(node["history"]["started"].as<std::string>(""));
+    metadata.comment = QString::fromStdString(node["history"]["scan"].as<std::string>(""));
 
     readSample(node["sample"], metadata);
     readSetup(node["setup"], metadata);
     readScans(node["scan"], metadata, rawfile); // adds the scanns to the rawfile
-
-    // TODO: readMeasurement(const YAML::Node& node, const Rawfile& rawfile)
 }
 
 } // namespace
