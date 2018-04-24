@@ -32,6 +32,7 @@ enum class eNorm {
     NONE,
     MONITOR,
     DELTA_MONITOR,
+    TIME,
     DELTA_TIME,
 };
 
