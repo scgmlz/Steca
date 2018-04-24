@@ -32,7 +32,7 @@ private:
     void onHighlight();
 
     class PlotDfgram* plot_;
-    QcrComboBox comboNormType_ {"normTyp", {"none", "monitor", "Δ monitor", "Δ time"}};
+    QcrComboBox comboNormType_ {"normTyp", {"none", "monitor", "Δ monitor", "time", "Δ time"}};
     QcrRadioButton intenSum_ {"intenSum", "sum"};
     QcrRadioButton intenAvg_ {"intenAvg", "avg ×"};
     QcrDoubleSpinBox intenScale_ {"intenScale", 6, 0.001};

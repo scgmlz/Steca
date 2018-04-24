@@ -66,6 +66,8 @@ double Sequence::avgMonitorCount() const { AVG_ONES(monitorCount) }
 
 double Sequence::avgDeltaMonitorCount() const { AVG_ONES(deltaMonitorCount) }
 
+double Sequence::avgTime() const { AVG_ONES(time) }
+
 double Sequence::avgDeltaTime() const { AVG_ONES(deltaTime) }
 
 size2d Sequence::imageSize() const
@@ -86,6 +88,10 @@ double Sequence::normFactor() const
     case eNorm::DELTA_MONITOR:
         num = gSession->activeClusters().avgDeltaMonitorCount();
         den = avgDeltaMonitorCount();
+        break;
+    case eNorm::TIME:
+        num = gSession->activeClusters().avgTime();
+        den = avgTime();
         break;
     case eNorm::DELTA_TIME:
         num = gSession->activeClusters().avgDeltaTime();

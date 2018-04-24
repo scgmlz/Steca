@@ -37,6 +37,7 @@ public:
 
     double monitorCount() const;
     double deltaMonitorCount() const;
+    double time() const;
     double deltaTime() const;
 
     deg omg() const;

@@ -48,6 +48,7 @@ public:
     const Metadata& avgMetadata() const { return metadata_; }
     double avgMonitorCount() const;
     double avgDeltaMonitorCount() const;
+    double avgTime() const;
     double avgDeltaTime() const;
 
     size2d imageSize() const;
