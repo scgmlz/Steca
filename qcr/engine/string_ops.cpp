@@ -18,7 +18,6 @@
 
 bool strOp::to_b(const QString& s)
 {
-    int ret;
     if (s=="on")
         return true;
     else if (s=="off")
