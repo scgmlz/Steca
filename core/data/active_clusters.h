@@ -34,6 +34,7 @@ public:
     size2d imageSize() const;
     double avgMonitorCount() const;
     double avgDeltaMonitorCount() const;
+    double avgTime() const;
     double avgDeltaTime() const;
     const Range& rgeGma() const;
     const Range& rgeFixedInten(bool trans, bool cut) const;
@@ -51,6 +52,7 @@ private:
     // computed on demand (NaNs or emptiness indicate yet unknown values)
     mutable double avgMonitorCount_;
     mutable double avgDeltaMonitorCount_;
+    mutable double avgTime_;
     mutable double avgDeltaTime_;
     mutable Range rgeFixedInten_;
     mutable Range rgeGma_;

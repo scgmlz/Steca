@@ -55,6 +55,13 @@ double ActiveClusters::avgDeltaMonitorCount() const
     return avgDeltaMonitorCount_;
 }
 
+double ActiveClusters::avgTime() const
+{
+    if (qIsNaN(avgTime_))
+        avgTime_ = calcAvgMutable(&Cluster::avgTime);
+    return avgTime_;
+}
+
 double ActiveClusters::avgDeltaTime() const
 {
     if (qIsNaN(avgDeltaTime_))

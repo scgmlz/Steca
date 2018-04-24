@@ -12,5 +12,6 @@ target_link_libraries (${lib}
     qcr
     LevMar
     caress_loader
+    yaml_cpp
     mar_loader
 )

@@ -54,6 +54,7 @@ deg Measurement::midTth() const { return metadata_.motorTth; }
 
 double Measurement::monitorCount() const { return metadata_.monitorCount; }
 double Measurement::deltaMonitorCount() const { return metadata_.deltaMonitorCount; }
+double Measurement::time() const { return metadata_.time; }
 double Measurement::deltaTime() const { return metadata_.deltaTime; }
 
 deg Measurement::omg() const { return metadata_.motorOmg; }
