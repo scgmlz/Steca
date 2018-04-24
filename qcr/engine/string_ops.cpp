@@ -50,9 +50,9 @@ double strOp::to_d(const QString& s)
     return ret;
 }
 
-template<> bool    strOp::from_s(const QString& s) { return strOp::to_b(s); }
-template<> int     strOp::from_s(const QString& s) { return strOp::to_i(s); }
-template<> double  strOp::from_s(const QString& s) { return strOp::to_d(s); }
+template<> bool    strOp::from_s(const QString& s) { return to_b(s); }
+template<> int     strOp::from_s(const QString& s) { return to_i(s); }
+template<> double  strOp::from_s(const QString& s) { return to_d(s); }
 template<> QString strOp::from_s(const QString& s) { return s; }
 
 QString strOp::to_s(bool val)
