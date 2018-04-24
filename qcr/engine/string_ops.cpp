@@ -16,7 +16,9 @@
 #include "qcr/engine/qcrexception.h"
 #include <QString>
 
-bool strOp::to_b(const QString& s)
+namespace strOp {
+
+bool to_b(const QString& s)
 {
     if (s=="on")
         return true;
@@ -26,7 +28,7 @@ bool strOp::to_b(const QString& s)
         throw QcrException("Expected 'on' or 'off', found string '" + s + "'");
 }
 
-int strOp::to_i(const QString& s)
+int to_i(const QString& s)
 {
     if (s=="")
         throw QcrException("Expected an integer number, found empty string");
@@ -38,7 +40,7 @@ int strOp::to_i(const QString& s)
     return ret;
 }
 
-double strOp::to_d(const QString& s)
+double to_d(const QString& s)
 {
     if (s=="")
         throw QcrException("Expected a floating-point number, found empty string");
@@ -50,32 +52,32 @@ double strOp::to_d(const QString& s)
     return ret;
 }
 
-template<> bool    strOp::from_s(const QString& s) { return to_b(s); }
-template<> int     strOp::from_s(const QString& s) { return to_i(s); }
-template<> double  strOp::from_s(const QString& s) { return to_d(s); }
-template<> QString strOp::from_s(const QString& s) { return s; }
+template<> bool    from_s(const QString& s) { return to_b(s); }
+template<> int     from_s(const QString& s) { return to_i(s); }
+template<> double  from_s(const QString& s) { return to_d(s); }
+template<> QString from_s(const QString& s) { return s; }
 
-QString strOp::to_s(bool val)
+QString to_s(bool val)
 {
     return val ? "on" : "off";
 }
 
-QString strOp::to_s(int val)
+QString to_s(int val)
 {
     return QString::number(val);
 }
 
-QString strOp::to_s(double val)
+QString to_s(double val)
 {
     return QString::number(val);
 }
 
-QString strOp::to_s(QString val)
+QString to_s(QString val)
 {
     return val;
 }
 
-void strOp::splitOnce(const QString& in, QString& part0, QString& part1)
+void splitOnce(const QString& in, QString& part0, QString& part1)
 {
     int j = in.indexOf(' ');
     if (j!=-1) {
@@ -86,3 +88,5 @@ void strOp::splitOnce(const QString& in, QString& part0, QString& part1)
         part1 = "";
     }
 }
+
+} // namespace strOp
