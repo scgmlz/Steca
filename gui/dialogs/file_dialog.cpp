@@ -12,6 +12,7 @@
 //
 //  ***********************************************************************************************
 
+#include "file_dialog.h"
 #include "core/loaders/loaders.h"
 #include "qcr/widgets/controls.h"
 #include "qcr/engine/debug.h"
@@ -123,7 +124,18 @@ QFile* openFileConfirmOverwrite(const QString& name, QWidget* parent, const QStr
         QMessageBox::question(parent, "File exists", "Overwrite "+path+" ?") != QMessageBox::Yes) {
         delete ret;
         return nullptr;
+    } // else :openFileForcedOverwrite
+    if (!ret->open(QIODevice::WriteOnly | QIODevice::Text)) {
+        qWarning() << "Cannot open file for writing: " << path;
+        return nullptr;
     }
+    return ret;
+}
+
+//! Opens file for writing;
+QFile* openFileForcedOverwrite(const QString& name, QWidget* parent, const QString& path)
+{
+    QFile* ret = new QFile(path);
     if (!ret->open(QIODevice::WriteOnly | QIODevice::Text)) {
         qWarning() << "Cannot open file for writing: " << path;
         return nullptr;

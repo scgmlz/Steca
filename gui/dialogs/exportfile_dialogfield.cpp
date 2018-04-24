@@ -25,6 +25,9 @@ static QString const
 static QString saveFmt = DAT_EXT; //!< setting: default format for data export
 }
 
+
+ExportfileDialogfield::eFileOverridePolicy ExportfileDialogfield::fileOverridePolicy = ExportfileDialogfield::eFileOverridePolicy::PROMT;
+
 ExportfileDialogfield::ExportfileDialogfield(
     QWidget* parent, bool withTypes, std::function<void(void)> onSave)
 {
@@ -106,7 +109,23 @@ QFile* ExportfileDialogfield::file()
     QString tmp = path(true);
     if (tmp.isEmpty())
         return {};
-    return file_dialog::openFileConfirmOverwrite("file", parentWidget(), tmp);
+    switch (fileOverridePolicy) {
+    case eFileOverridePolicy::PROMT:
+        return file_dialog::openFileConfirmOverwrite("file", parentWidget(), tmp);
+        break;
+    case eFileOverridePolicy::PANIC:
+        THROW("attempting to write to already existing file: '" + tmp + "'");
+        break;
+    case eFileOverridePolicy::SILENT_OVERRIDE:
+        return file_dialog::openFileForcedOverwrite("file", parentWidget(), tmp);
+        break;
+    default:
+        THROW("Unexpected fileOverridePolicy state: "
+              + QString::fromStdString(std::to_string((int)fileOverridePolicy)));
+        break;
+    }
+
+
 }
 
 QString ExportfileDialogfield::separator() const

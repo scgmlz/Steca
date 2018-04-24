@@ -28,6 +28,7 @@
 #define OPTPARSE_IMPLEMENTATION
 #define OPTPARSE_API static
 #include "optparse.h"
+#include "gui/dialogs/exportfile_dialogfield.h"
 
 #include <iostream>
 #include <QApplication>
@@ -43,7 +44,7 @@ int main(int argc, char* argv[]) {
     struct optparse options;
     optparse_init(&options, argv);
     int opt;
-    while ((opt = optparse(&options, "hvc")) != -1) {
+    while ((opt = optparse(&options, "hvcps")) != -1) {
         switch (opt) {
         case 'h':
             std::cout << APPLICATION_CLAIM << "\n\n"
@@ -51,11 +52,23 @@ int main(int argc, char* argv[]) {
                       << "Options:\n"
                       << "  -h  Print this message.\n"
                       << "  -v  Print " << APPLICATION_NAME << " version.\n"
-                      << "  -c  Read commands from console instead of starting the GUI.\n";
+                      << "  -c  Read commands from console instead of starting the GUI.\n"
+                      << "  -p  Sets the file override policy to 'Panic'. Default is 'Promt'.\n"
+                      << "  -s  Sets the file override policy to 'Silent Override'. Default is 'Promt'.\n";
             exit(0);
         case 'v':
             std::cout << APPLICATION_NAME << " version " << version << "\n";
             exit(0);
+        case 'p':
+            std::cout << "fileOverridePolicy set to " << "PANIC" << "\n";
+            ExportfileDialogfield::fileOverridePolicy
+                    = ExportfileDialogfield::eFileOverridePolicy::PANIC;
+            break;
+        case 's':
+            std::cout << "fileOverridePolicy set to " << "SILENT_OVERRIDE" << "\n";
+            ExportfileDialogfield::fileOverridePolicy
+                    = ExportfileDialogfield::eFileOverridePolicy::SILENT_OVERRIDE;
+            break;
         }
     }
 
