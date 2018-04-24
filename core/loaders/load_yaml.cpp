@@ -22,11 +22,11 @@ void readInstrument(const YAML::Node& node, Rawfile& rawfile)
     if (!node.IsDefined())
         return;
 
-    const auto name       = node["name"].as<std::string>("");
-    const auto operators  = node["operators"].as<std::vector<std::string>>();
-    const auto facility   = node["facility"].as<std::string>("");
-    const auto website    = node["website"].as<std::string>("");
-    const auto references = node["references"].as<std::vector<std::string>>();
+    // const auto name       = node["name"].as<std::string>("");
+    // const auto operators  = node["operators"].as<std::vector<std::string>>();
+    // const auto facility   = node["facility"].as<std::string>("");
+    // const auto website    = node["website"].as<std::string>("");
+    // const auto references = node["references"].as<std::vector<std::string>>();
 }
 
 void readFormat(const YAML::Node& node, Rawfile& rawfile)
@@ -34,9 +34,9 @@ void readFormat(const YAML::Node& node, Rawfile& rawfile)
     if (!node.IsDefined())
         return;
 
-    const auto identifier = node["identifier"].as<std::string>("");
-    // units = name: unit. eg: time: second, or clearance: millimeter:
-    const auto units  = node["units"].as<std::map<std::string, std::string>>();
+    // const auto identifier = node["identifier"].as<std::string>("");
+      // units = name: unit. eg: time: second, or clearance: millimeter:
+    // const auto units  = node["units"].as<std::map<std::string, std::string>>();
 }
 
 void readExperiment(const YAML::Node& node, Rawfile& rawfile)
@@ -44,10 +44,10 @@ void readExperiment(const YAML::Node& node, Rawfile& rawfile)
     if (!node.IsDefined())
         return;
 
-    const auto number = node["number"].as<std::string>("");
-    const auto proposal = node["proposal"].as<std::string>("");
-    const auto title = node["title"].as<std::string>("");
-    const auto remark = node["remark"].as<std::string>("");
+    // const auto number = node["number"].as<std::string>("");
+    // const auto proposal = node["proposal"].as<std::string>("");
+    // const auto title = node["title"].as<std::string>("");
+    // const auto remark = node["remark"].as<std::string>("");
 }
 
 void readSample(const YAML::Node& node, Metadata& metadata)
@@ -72,8 +72,7 @@ void readSetup(const YAML::Node& node, Metadata& metadata)
     metadata.nmTeext = Q_QNAN;
     metadata.nmXe = Q_QNAN;
     metadata.nmYe = Q_QNAN;
-    metadata.nmZe = Q_QNAN; // nm = new metadata
-    // TODO: readSetup(const YAML::Node& node, const Metadata& metadata)
+    metadata.nmZe = Q_QNAN;
 }
 
 void readSingleScan(const YAML::Node& node, Metadata& metadata, Rawfile& rawfile)
@@ -142,9 +141,9 @@ Rawfile loadYaml(const QString& filePath)
     YAML::Node yamlFile = YAML::LoadFile(filePath.toStdString()); // throws: ParserException, BadFile;
 
     Rawfile rawfile(filePath);
-    readInstrument (yamlFile["instrument"] , rawfile);
-    readFormat     (yamlFile["format"]     , rawfile);
-    readExperiment (yamlFile["experiment"] , rawfile);
+    // readInstrument (yamlFile["instrument"] , rawfile);
+    // readFormat     (yamlFile["format"]     , rawfile);
+    // readExperiment (yamlFile["experiment"] , rawfile);
     readMeasurement(yamlFile["measurement"], rawfile);
 
     return rawfile;
