@@ -29,6 +29,12 @@ CSettable::~CSettable()
     gConsole->forget(name_);
 }
 
+void CSettable::doLog(bool softwareCalled, const QString& msg)
+{
+    gConsole->log2(!softwareCalled, msg);
+}
+
+
 //  ***********************************************************************************************
 //! @class CModal
 
@@ -42,6 +48,7 @@ CModal::~CModal()
     gConsole->log("@close");
     gConsole->call("@pop");
 }
+
 
 //  ***********************************************************************************************
 //! @class CModelessDialog
@@ -58,9 +65,9 @@ void CModelessDialog::closeEvent(QCloseEvent* event)
     deleteLater();
 }
 
-void CModelessDialog::onCommand(const QStringList& args)
+void CModelessDialog::onCommand(const QString& arg)
 {
-    if (args[0]!="close")
+    if (arg!="close")
         throw QcrException("Unexpected command in ModelessDialog "+name());
     close();
 }

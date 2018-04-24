@@ -14,6 +14,7 @@
 
 #include "core/loaders/loaders.h"
 #include "qcr/widgets/controls.h"
+#include "qcr/engine/debug.h"
 #include <QFileSystemModel>
 #include <QMessageBox>
 #include <QSortFilterProxyModel>

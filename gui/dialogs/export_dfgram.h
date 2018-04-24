@@ -19,7 +19,7 @@
 
 //! The modal dialog for saving diffractograms.
 
-class ExportDfgram : private CModal, public QDialog {
+class ExportDfgram : public QcrDialog {
 public:
     ExportDfgram();
 

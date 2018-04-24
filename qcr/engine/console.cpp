@@ -14,6 +14,7 @@
 
 #include "console.h"
 #include "qcr/engine/qcrexception.h"
+#include "qcr/engine/string_ops.h"
 #include <QDebug>
 #include <QFile>
 #include <QSocketNotifier>
@@ -63,8 +64,11 @@ void CommandRegistry::forget(const QString& name)
     //qDebug() << "registry " << name_ << " forgets " << name;
     auto it = widgets_.find(name);
     if (it==widgets_.end())
-        qFatal("Cannot deregister, there is no entry '%s' in the widget registry",
-                name.toLatin1().constData());
+        qFatal("Cannot deregister, there is no entry '%s' in the widget registry '%s'",
+               name.toLatin1().constData(), name_.toLatin1().constData());
+    else
+        qDebug("Deregister entry '%s' from the widget registry '%s'",
+               name.toLatin1().constData(), name_.toLatin1().constData());
     widgets_.erase(it);
 }
 
@@ -101,14 +105,14 @@ Console::Console()
         qFatal("cannot open log file");
     log_.setDevice(file);
     startTime_ = QDateTime::currentDateTime();
-    log("# Steca started at " + startTime_.toString("yyyy-MM-dd HH:mm::ss.zzz"));
+    log("#  Steca started at " + startTime_.toString("yyyy-MM-dd HH:mm::ss.zzz"));
 }
 
 Console::~Console()
 {
-    log("# Steca session ended");
-    log("# duration: " + QString::number(startTime_.msecsTo(QDateTime::currentDateTime())) + "ms");
-    log("# computing time: " + QString::number(computingTime_) + "ms");
+    log("#  Steca session ended");
+    log("#  duration: " + QString::number(startTime_.msecsTo(QDateTime::currentDateTime())) + "ms");
+    log("#  computing time: " + QString::number(computingTime_) + "ms");
     delete log_.device();
     while (!registryStack_.empty()) {
         delete registryStack_.top();
@@ -182,32 +186,28 @@ Console::Result Console::exec(QString line)
     QTextStream qterr(stderr);
     if (line[0]=='#')
         return Result::ok; // comment => nothing to do
-    if (line[0]=='@') {
+    QString cmd, arg;
+    strOp::splitOnce(line, cmd, arg);
+    if (cmd[0]=='@') {
         log(line);
-        QStringList list = line.mid(1).split(' ');
-        QString cmd = list[0];
-        if (cmd=="ls") {
+        if (cmd=="@ls") {
             registryStack_.top()->dump(qterr);
-        } else if (cmd=="push") {
-            if (list.size()<2) {
+        } else if (cmd=="@push") {
+            if (arg=="") {
                 qterr << "command @push needs argument <name>\n";
                 return Result::err;
             }
-            registryStack_.push(new CommandRegistry(list[1]));
-        } else if (cmd=="pop") {
+            registryStack_.push(new CommandRegistry(arg));
+        } else if (cmd=="@pop") {
             if (registryStack_.empty()) {
                 qterr << "cannot pop: registry stack is empty\n";
                 return Result::err;
             }
             delete registryStack_.top();
             registryStack_.pop();
-        } else if (cmd=="file") {
-            if (list.size()<2) {
-                qterr << "command @file needs argument <file_name>\n";
-                return Result::err;
-            }
-            readFile(list[1]);
-        } else if (cmd=="close") {
+        } else if (cmd=="@file") {
+            readFile(arg);
+        } else if (cmd=="@close") {
             return Result::suspend;
         } else {
             qterr << "@ command " << cmd << " not known\n";
@@ -215,19 +215,13 @@ Console::Result Console::exec(QString line)
         }
         return Result::ok;
     }
-    QStringList args = line.split(' ');
-    QString cmd = args.takeFirst();
-    if (args.size()<1) {
-        qterr << "Missing argument to command '" << cmd << "'\n";
-        return Result::err;
-    }
     CSettable* f = registry().find(cmd);
     if (!f) {
         qterr << "Command '" << cmd << "' not found\n";
         return Result::err;
     }
     try {
-        f->onCommand(args); // execute command
+        f->onCommand(arg); // execute command
         return Result::ok;
     } catch (QcrException &ex) {
         qterr << "Command '" << line << "' failed:\n" << ex.msg() << "\n";
@@ -267,10 +261,8 @@ void Console::log(const QString& line)
         computingTime_ += tDiff;
     }
     log_ << " " << registry().name() << "]";
-    if (caller_==Caller::gui)
+    if      (caller_==Caller::gui || caller_==Caller::stack)
         log_ << line << "\n";
-    else if (caller_==Caller::stack)
-        log_ << line << " #< @file\n";
     else if (caller_==Caller::cli)
         log_ << "#: " << line << "\n";
     else if (caller_==Caller::sys)

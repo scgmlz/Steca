@@ -14,6 +14,7 @@
 
 #include "core/session.h"
 #include "core/data/cluster.h"
+#include "qcr/engine/debug.h"
 
 QJsonObject GammaSelection::toJson() const
 {

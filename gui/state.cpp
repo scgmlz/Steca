@@ -29,6 +29,7 @@ GuiState::GuiState()
     QStringList tags = PeakInfo::dataTags(false);
     for_i (Metadata::numAttributes(false) - Metadata::numAttributes(true))
         tags.removeLast(); // remove all tags that are not numbers
+    qDebug() << "diagram tags: " << tags.join(" ");
     diagramX->addItems(tags);
     diagramY->addItems(tags);
 

@@ -15,19 +15,21 @@
 #ifndef ENHANCE_WIDGETS_H
 #define ENHANCE_WIDGETS_H
 
+#include "qcr/engine/string_ops.h"
 #include <functional> // no auto rm
 #include <QDialog>
 
 //! Mix-in for control widgets that can be changed by a console command.
 class CSettable {
 public:
-    virtual void onCommand(const QStringList&) = 0;
+    virtual void onCommand(const QString&) = 0;
     const QString& name() const { return name_; }
 protected:
     CSettable() = delete;
     CSettable(const CSettable&) = delete;
     CSettable(const QString& name);
     ~CSettable();
+    void doLog(bool softwareCalled, const QString& msg);
 private:
     const QString name_;
 };
@@ -39,11 +41,29 @@ public:
     QcrControl(const QString& name)
         : CSettable(name) {}
     void programaticallySetValue(T val) {
+        softwareCalling_ = true;
         doSetValue(val);
+        softwareCalling_ = false;
     }
     virtual T getValue() const = 0;
+    virtual void onCommand(const QString& arg) {
+        programaticallySetValue(strOp::from_s<T>(arg));
+    }
+protected:
+    void init() {
+        reportedValue_ = getValue();
+        doLog(true, "initialization: "+name()+" "+strOp::to_s(reportedValue_));
+    }
+    void onChangedValue(bool hasFocus, T val) {
+        if (val!=reportedValue_) {
+            doLog(softwareCalling_||!hasFocus, name()+" "+strOp::to_s(val));
+            reportedValue_ = val;
+        }
+    }
 private:
     virtual void doSetValue(T) = 0;
+    bool softwareCalling_ = false;
+    T reportedValue_;
 };
 
 //! Mix-in for modal dialogs.
@@ -55,10 +75,10 @@ protected:
     ~CModal();
 };
 
-//! A modeless dialog with support for capture&replay.
+//! A modeless (= persistent spawned popup) dialog with support for capture&replay.
 class CModelessDialog : protected QDialog, protected CSettable {
 public:
-    virtual void onCommand(const QStringList&);
+    virtual void onCommand(const QString&);
 protected:
     CModelessDialog(QWidget* parent, const QString& name);
 private:

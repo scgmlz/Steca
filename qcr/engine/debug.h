@@ -26,6 +26,6 @@
 
 #define ASSERT(cond) if (!(cond)) qFatal("assertion failed: " #cond)
 
-#define EMITS(src,sig) qDebug()<<src<<" emits "<<#sig; emit sig;
+#define EMITS(src,sig) qDebug()<<src<<"emits"<<#sig; emit sig;
 
 #endif // DEBUG_H

@@ -19,6 +19,7 @@
 
 #include "core/session.h"
 #include "core/fit/peak_functions.h"
+#include "qcr/engine/debug.h"
 #include <QJsonDocument>
 
 Session* gSession; //!< global, for data handling

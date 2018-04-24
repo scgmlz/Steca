@@ -19,6 +19,7 @@
 #include "gui/view/bigtable.h"
 #include "gui/mainwin.h"
 #include "gui/state.h"
+#include "qcr/engine/debug.h"
 #include <QScrollArea>
 #include <QThread> // for sleep for debugging
 
@@ -58,7 +59,7 @@ ColumnSelector::ColumnSelector()
     box->addSpacing(8);
     showCols_.resize(headers.count());
     for_i (showCols_.size()) {
-        showCols_[i] = new QcrCheckBox("cb"+QString::number(i), headers[i]);
+        showCols_[i] = new QcrCheckBox("cb"+QString::number(i), headers[i], true);
         box->addWidget(showCols_[i]);
     }
     setLayout(box);
@@ -77,16 +78,12 @@ ColumnSelector::ColumnSelector()
             setAll(false);
             showCols_.at(int(eReflAttr::FWHM))->programaticallySetValue(true); });
 
-    for_i (showCols_.size()) {
-        QCheckBox* cb = showCols_.at(i);
-        connect(cb, &QCheckBox::toggled, [this, i](bool on) {
+    for_i (showCols_.size())
+        connect(showCols_.at(i), &QCheckBox::toggled, [this, i](bool on) {
                 gGui->state->bigtableShowCol[i] = on;
                 updateRadiobuttons();
                 EMITS("ColumnSelector "<<i,gSession->sigBigtableCols());
             });
-    }
-
-    rbAll_.click();
 }
 
 void ColumnSelector::setAll(bool on)

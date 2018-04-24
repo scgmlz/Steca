@@ -20,6 +20,7 @@
 #include "gui/dialogs/file_dialog.h"
 #include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/mainwin.h"
+#include "qcr/engine/debug.h"
 #include <qmath.h>
 #include <QGroupBox>
 #include <QMessageBox>
@@ -70,8 +71,7 @@ QString numberedName(const QString& templatedName, int num, int maxNum) {
 //! @class ExportDfgram
 
 ExportDfgram::ExportDfgram()
-    : CModal("dfgram")
-    , QDialog(gGui)
+    : QcrDialog(gGui, "Export diffractogram")
 {
     rbAll_.programaticallySetValue(true);
 

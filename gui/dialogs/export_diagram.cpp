@@ -18,12 +18,13 @@
 #include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/mainwin.h"
 #include "gui/state.h"
+#include "qcr/engine/debug.h"
 
 //  ***********************************************************************************************
 //! @class ExportDiagram
 
 ExportDiagram::ExportDiagram()
-    : CModal("exportDiagram")
+    : CModal("xdia")
     , QDialog(gGui)
 {
     fileField_ = new ExportfileDialogfield(this, true, [this]()->void{save();});

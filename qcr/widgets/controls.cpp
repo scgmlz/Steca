@@ -16,17 +16,16 @@
 #include "qcr/engine/debug.h"
 #include "qcr/engine/qcrexception.h"
 #include "qcr/engine/console.h"
-#include "qcr/widgets/convert.h"
+#include "qcr/engine/string_ops.h"
 #include "qcr/widgets/displays.h"
 #include <QApplication> // for qApp for new Action
 #include <iostream> // debug
 
 #define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 
-//  ***********************************************************************************************
-//  QcrAction, QcrTrigger and QcrToggle
-//  ***********************************************************************************************
+//  Action classes
 
+//  ***********************************************************************************************
 //! @class QcrAction
 
 QcrAction::QcrAction(const QString& text)
@@ -34,6 +33,7 @@ QcrAction::QcrAction(const QString& text)
     , tooltip_(text.toLower())
 {}
 
+//  ***********************************************************************************************
 //! @class QcrTrigger
 
 QcrTrigger::QcrTrigger(const QString& rawname, const QString& text, const QString& iconFile)
@@ -44,7 +44,7 @@ QcrTrigger::QcrTrigger(const QString& rawname, const QString& text, const QStrin
     if (iconFile!="")
         setIcon(QIcon(iconFile));
     connect(this, &QAction::triggered, [this]()->void {
-            gConsole->log(name()+" trigger"); });
+            gConsole->log(name()); });
     connect(this, &QAction::changed, [this]()->void {
             QString txt = tooltip_;
             if (!isEnabled())
@@ -60,26 +60,27 @@ QcrTrigger::QcrTrigger(
     setShortcut(shortcut);
 }
 
-void QcrTrigger::onCommand(const QStringList& args)
+void QcrTrigger::onCommand(const QString& arg)
 {
-    if (args[0]!="trigger")
-        throw QcrException("Unexpected trigger command");
+    if (arg!="")
+        throw QcrException("Found unexpected argument to trigger command");
     trigger();
 }
 
+//  ***********************************************************************************************
 //! @class QcrToggle
 
 QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on, const QString& iconFile)
     : QcrAction(text)
     , QcrControl<bool>(rawname)
 {
+    init();
     //QAction::setObjectName(CSettable::name());
     if (iconFile!="")
         setIcon(QIcon(iconFile));
     setCheckable(true);
     programaticallySetValue(on);
-    connect(this, &QAction::toggled, [this](bool val)->void {
-            gConsole->log(name()+" switch "+(val ? "on" : "off")); });
+    connect(this, &QAction::toggled, this, [this](bool val){onChangedValue(true, val);});
     connect(this, &QAction::changed, [this]()->void {
             QString txt = tooltip_;
             if (!isEnabled())
@@ -99,15 +100,6 @@ QcrToggle::QcrToggle(const QString& name, const QString& text, bool on, const QS
     setShortcut(shortcut);
 }
 
-void QcrToggle::onCommand(const QStringList& args)
-{
-    if (args[0]!="switch")
-        throw QcrException("Unexpected toggle command");
-    if (args.size()<2)
-        throw QcrException("Missing argument to command 'switch'");
-    programaticallySetValue(TO_BOOL(args[1]));
-}
-
 //  ***********************************************************************************************
 //! @classes with no console connection
 
@@ -123,10 +115,9 @@ QcrIconButton::QcrIconButton(QcrAction* action)
     setToolButtonStyle(Qt::ToolButtonIconOnly);
 }
 
-//  ***********************************************************************************************
-//  control widget classes with console connection
-//  ***********************************************************************************************
+//  Control widget classes with console connection
 
+//  ***********************************************************************************************
 //! @class QcrSpinBox
 //!
 //! A QSpinBox controls an integer value. Therefore normally we need no extra width for a dot.
@@ -142,6 +133,7 @@ QcrSpinBox::QcrSpinBox(
     const QString& _name, int ndigits, bool withDot, int min, int max, const QString& tooltip)
     : QcrControl<int>(_name)
 {
+    init();
     widgetUtils::setWidth(this, 2+ndigits, withDot);
     setMinimum(min);
     setMaximum(max > min ? max : min);
@@ -151,7 +143,7 @@ QcrSpinBox::QcrSpinBox(
     connect(this, &QSpinBox::editingFinished, this, &QcrSpinBox::reportChange);
     connect(this, _SLOT_(QSpinBox,valueChanged,int), [this](int val)->void {
             if(!hasFocus())
-                gConsole->log2(false, name()+" set "+QString::number(val)); });
+                onChangedValue(hasFocus(), val); });
 }
 
 void QcrSpinBox::mouseReleaseEvent(QMouseEvent *event)
@@ -166,26 +158,24 @@ void QcrSpinBox::reportChange()
     if (val == reportedValue_)
         return;
     reportedValue_ = val;
-    gConsole->log2(true, name()+" set "+QString::number(val));
+    onChangedValue(hasFocus(), val);
     EMITS("QcrSpinBox::reportChange", valueReleased(val));
 }
 
-void QcrSpinBox::onCommand(const QStringList& args)
+void QcrSpinBox::onCommand(const QString& arg)
 {
-    if (args[0]!="set")
-        throw QcrException("Unexpected SpinBox command");
-    if      (args.size()<2)
-        throw QcrException("Missing argument to command 'set'");
-    int val = TO_INT(args[1]);
+    int val = strOp::to_i(arg);
     programaticallySetValue(val);
     EMITS("QcrSpinBox::onCommand", valueReleased(val));
 }
 
+//  ***********************************************************************************************
 //! @class QcrDoubleSpinBox
 
 QcrDoubleSpinBox::QcrDoubleSpinBox(const QString& _name, int ndigits, double min, double max)
     : QcrControl<double>(_name)
 {
+    init();
     widgetUtils::setWidth(this, 2+ndigits, true);
     if (min>max)
         qSwap(min, max);
@@ -195,7 +185,7 @@ QcrDoubleSpinBox::QcrDoubleSpinBox(const QString& _name, int ndigits, double min
     connect(this, &QDoubleSpinBox::editingFinished, this, &QcrDoubleSpinBox::reportChange);
     connect(this, _SLOT_(QDoubleSpinBox,valueChanged,double), [this](double val)->void {
             if(!hasFocus())
-                gConsole->log2(false, name()+" set "+QString::number(val)); });
+                onChangedValue(hasFocus(), val); });
 }
 
 void QcrDoubleSpinBox::mouseReleaseEvent(QMouseEvent *event)
@@ -210,137 +200,137 @@ void QcrDoubleSpinBox::reportChange()
     if (val == reportedValue_)
         return;
     reportedValue_ = val;
-    gConsole->log2(true, name()+" set "+QString::number(val));
+    onChangedValue(hasFocus(), val);
     EMITS("QcrDoubleSpinBox::reportChange", valueReleased(val));
 }
 
-void QcrDoubleSpinBox::onCommand(const QStringList& args)
+void QcrDoubleSpinBox::onCommand(const QString& arg)
 {
-    if (args[0]!="set")
-        throw QcrException("Unexpected DoubleSpinBox command");
-    if      (args.size()<2)
-        throw QcrException("Missing argument to command 'set'");
-    double val = TO_DOUBLE(args[1]);
+    double val = strOp::to_d(arg);
     programaticallySetValue(val);
     EMITS("QcrDoubleSpinBox::onCommand", valueReleased(val));
 }
 
+//  ***********************************************************************************************
 //! @class QcrCheckBox
 
-QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text)
+QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, bool val)
     : QCheckBox(text)
     , QcrControl<bool>(_name)
 {
+    doSetValue(val);
+    init();
     connect(this, _SLOT_(QCheckBox,stateChanged,int), [this](int val)->void {
-            gConsole->log2(hasFocus(), name()+" set "+QString::number(val)); });
+            onChangedValue(hasFocus(), (bool)val); });
 }
 
-void QcrCheckBox::onCommand(const QStringList& args)
-{
-    if (args[0]!="set")
-        throw QcrException("Unexpected CheckBox command");
-    if      (args.size()<2)
-        throw QcrException("Missing argument to command 'set'");
-    programaticallySetValue(TO_INT(args[1]));
-}
-
+//  ***********************************************************************************************
 //! @class QcrRadioButton
 
 QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text)
     : QRadioButton(text)
     , QcrControl<bool>(_name)
 {
+    init();
     connect(this, &QRadioButton::toggled, [this](bool val)->void {
-            gConsole->log2(hasFocus(), name()+" switch "+(val?"on":"off")); });
+            onChangedValue(hasFocus(), val); });
 }
 
-void QcrRadioButton::onCommand(const QStringList& args)
-{
-    if (args[0]!="switch")
-        throw QcrException("Unexpected RadioButton command");
-    if (args.size()<2)
-        throw QcrException("Missing argument to command 'switch'");
-    programaticallySetValue(TO_BOOL(args[1]));
-}
-
+//  ***********************************************************************************************
 //! @class QcrComboBox
 
 QcrComboBox::QcrComboBox(const QString& _name, const QStringList& items)
     : QcrControl<int>(_name)
 {
+    init();
     addItems(items);
     connect(this, _SLOT_(QComboBox,currentIndexChanged,int), [this](int val)->void {
-            gConsole->log2(hasFocus(), name()+" choose "+QString::number(val)); });
+            onChangedValue(hasFocus(), val); });
 }
 
-void QcrComboBox::onCommand(const QStringList& args)
-{
-    if (args[0]!="choose")
-        throw QcrException("Unexpected ComboBox command");
-    if (args.size()<2)
-        throw QcrException("Missing argument to command 'choose'");
-    programaticallySetValue(TO_INT(args[1]));
-}
-
+//  ***********************************************************************************************
 //! @class QcrLineEdit
 
 QcrLineEdit::QcrLineEdit(const QString& _name, const QString& val)
     : QcrControl<QString>(_name)
 {
+    init();
     // For unknown reason, hasFocus() is not always false when setText is called programmatically;
     // therefore we must use another criterion to distinuish user actions from other calls.
     // The following works, but has the drawback that a user action is logged not only as such,
     // but also in a second line as if there were an indirect call.
     connect(this, _SLOT_(QLineEdit,textEdited,const QString&),
             [this](const QString& val)->void {
-                gConsole->log2(true, name()+" settext "+val); });
+                onChangedValue(hasFocus(), val); });
     connect(this, _SLOT_(QLineEdit,textChanged,const QString&),
             [this](const QString& val)->void {
-                gConsole->log2(false, name()+" settext "+val); });
+                onChangedValue(hasFocus(), val); });
     programaticallySetValue(val);
 }
 
-void QcrLineEdit::onCommand(const QStringList& args)
-{
-    if (args[0]!="settext")
-        throw QcrException("Unexpected LineEdit command");
-    if (args.size()<2)
-        throw QcrException("Missing argument to command 'settext'");
-    setText(args[1]); // TODO handle text that contains blanks
-}
-
+//  ***********************************************************************************************
 //! @class QcrTabWidget
 
 QcrTabWidget::QcrTabWidget(const QString& _name)
     : QcrControl<int>(_name)
 {
+    init();
     connect(this->tabBar(), &QTabBar::tabBarClicked, [this](int val) {
-            gConsole->log2(true, name()+" choose "+QString::number(val)); });
+            if (!isTabEnabled(val))
+                throw QcrException("Chosen tab is not enabled");
+            onChangedValue(hasFocus(), val); });
     connect(this, &QTabWidget::currentChanged, [this](int val) {
-            gConsole->log2(false, name()+" choose "+QString::number(val)); });
+            if (!isTabEnabled(val))
+                throw QcrException("Chosen tab is not enabled");
+            onChangedValue(hasFocus(), val); });
 }
 
-void QcrTabWidget::onCommand(const QStringList& args)
+//  ***********************************************************************************************
+//! @class QcrDialog
+
+QcrDialog::QcrDialog(QWidget *parent, const QString &caption)
+    : QDialog(parent)
+    , CModal("dlog")
+    , CSettable("dlog")
 {
-    if (args[0]!="choose")
-        throw QcrException("Unexpected tabwidget command");
-    if (args.size()<2)
-        throw QcrException("Missing argument to command 'choose'");
-    int val = TO_INT(args[1]);
-    if (!isTabEnabled(val))
-        throw QcrException("Chosen tab is not enabled");
-    setCurrentIndex(val);
+    setWindowTitle(caption);
 }
 
+QcrDialog::~QcrDialog()
+{
+    gConsole->log("dlog closing");
+}
+
+int QcrDialog::exec()
+{
+    if (gConsole->hasCommandsOnStack()) {
+        open();
+        gConsole->commandsFromStack();
+        close();
+        return QDialog::Accepted;
+    } else
+        return QDialog::exec();
+}
+
+void QcrDialog::onCommand(const QString& arg)
+{
+    if (arg=="")
+        throw QcrException("Empty argument in Dialog command");
+    if (arg=="close") {
+        accept();
+        return;
+    }
+}
+
+//  ***********************************************************************************************
 //! @class QcrFileDialog
 
-QcrFileDialog::QcrFileDialog(QWidget *parent, const QString &caption,
-                         const QString &directory, const QString &filter)
+QcrFileDialog::QcrFileDialog(
+    QWidget *parent, const QString &caption, const QString &directory, const QString &filter)
     : QFileDialog(parent, caption, directory, filter)
     , CModal("fdia")
     , CSettable("fdia")
-{
-}
+{}
 
 QcrFileDialog::~QcrFileDialog()
 {
@@ -355,19 +345,23 @@ int QcrFileDialog::exec()
         close();
         return QDialog::Accepted;
     } else
-        return QFileDialog::exec();
+        return QDialog::exec();
 }
 
-void QcrFileDialog::onCommand(const QStringList& args)
+void QcrFileDialog::onCommand(const QString& arg)
 {
-    if        (args[0]=="close") {
+    if (arg=="")
+        throw QcrException("Empty argument in FileDialog command");
+    if (arg=="close") {
         accept();
-    } else if (args[0]=="select") {
-        if (args.size()<2)
-            throw QcrException("Missing argument to command 'select'");
-        QStringList list = args[1].split(';');
-        QString tmp = '"' + list.join("\" \"") + '"';
-        selectFile(tmp);
-    } else
+        return;
+    }
+    QStringList args = arg.split(' ');
+    if (args[0]!="select")
         throw QcrException("Unexpected filedialog command");
+    if (args.size()<2)
+        throw QcrException("Missing argument to command 'select'");
+    QStringList list = args[1].split(';');
+    QString tmp = '"' + list.join("\" \"") + '"';
+    selectFile(tmp);
 }

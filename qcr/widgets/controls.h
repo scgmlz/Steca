@@ -41,7 +41,7 @@ public:
     QcrTrigger(const QString& name, const QString& text, const QString& iconFile="");
     QcrTrigger(const QString& name, const QString& text, const QString& iconFile,
                const QKeySequence& shortcut);
-    void onCommand(const QStringList&) override;
+    void onCommand(const QString&) override;
 };
 
 //! Toggle, for use in buttons or menu entries, that can also be switched by console command.
@@ -50,7 +50,6 @@ public:
     QcrToggle(const QString& name, const QString& text, bool on, const QString& iconFile="");
     QcrToggle(const QString& name, const QString& text, bool on, const QString& iconFile,
               const QKeySequence& shortcut);
-    void onCommand(const QStringList&) override;
     bool getValue() const final { return isChecked(); }
 private:
     void doSetValue(bool val) final { setChecked(val); }
@@ -77,7 +76,7 @@ class QcrSpinBox : public QSpinBox, public QcrControl<int> {
 public:
     QcrSpinBox(const QString& name, int ndigits, bool withDot, int min = INT_MIN, int max = INT_MAX,
                const QString& tooltip="");
-    void onCommand(const QStringList&) override;
+    void onCommand(const QString&) override;
     int getValue() const final { return value(); }
 signals:
     void valueReleased(int); //! Improving over valueChanged, do not signal intermediate states
@@ -96,7 +95,7 @@ class QcrDoubleSpinBox : public QDoubleSpinBox, public QcrControl<double> {
     Q_OBJECT
 public:
     QcrDoubleSpinBox(const QString& name, int ndigits, double min = LLONG_MIN, double max = LLONG_MAX);
-    void onCommand(const QStringList&) override;
+    void onCommand(const QString&) override;
     double getValue() const final { return value(); }
 signals:
     void valueReleased(double); //! Improving over valueChanged, do not signal intermediate states
@@ -113,8 +112,7 @@ private:
 //! Named check box that can be set by console command.
 class QcrCheckBox : public QCheckBox, public QcrControl<bool> {
 public:
-    QcrCheckBox(const QString& name, const QString& text);
-    void onCommand(const QStringList&) override;
+    QcrCheckBox(const QString& name, const QString& text, bool val=false);
     bool getValue() const final { return isChecked(); }
 private:
     void doSetValue(bool val) final { setChecked(val); }
@@ -127,7 +125,6 @@ private:
 class QcrRadioButton : public QRadioButton, public QcrControl<bool> {
 public:
     QcrRadioButton(const QString& name, const QString& text);
-    void onCommand(const QStringList&) override;
     bool getValue() const final { return isChecked(); }
 private:
     void doSetValue(bool val) final { setChecked(val); }
@@ -140,7 +137,6 @@ private:
 class QcrComboBox : public QComboBox, public QcrControl<int> {
 public:
     QcrComboBox(const QString& name, const QStringList& items = {});
-    void onCommand(const QStringList&) override;
     int getValue() const final { return currentIndex(); }
 private:
     void doSetValue(int val) final { setCurrentIndex(val); }
@@ -155,7 +151,6 @@ private:
 class QcrLineEdit : public QLineEdit, public QcrControl<QString> {
 public:
     QcrLineEdit(const QString& name, const QString& val = "");
-    void onCommand(const QStringList&) override;
     QString getValue() const final { return text(); }
 private:
     void doSetValue(QString val) final { setText(val); }
@@ -168,7 +163,6 @@ private:
 class QcrTabWidget : public QTabWidget, public QcrControl<int> {
 public:
     QcrTabWidget(const QString& name);
-    void onCommand(const QStringList&) override;
     int getValue() const final { return currentIndex(); }
 private:
     void doSetValue(int val) final { setCurrentIndex(val); }
@@ -178,14 +172,23 @@ private:
     void setCurrentWidget(QWidget*) = delete;
 };
 
+//! Dialog, for modal use.
+class QcrDialog : protected CModal, CSettable, public QDialog  { // (inheritance order matters!)
+public:
+    QcrDialog(QWidget *parent = Q_NULLPTR, const QString &caption = QString());
+    ~QcrDialog();
+    int exec() override;
+    void onCommand(const QString&) override;
+};
+
 //! File dialog, for modal use, with console commands to select files and to close the dialog.
-class QcrFileDialog : public QFileDialog, private CModal, CSettable {
+class QcrFileDialog : protected CModal, CSettable, public QFileDialog  {
 public:
     QcrFileDialog(QWidget *parent = Q_NULLPTR, const QString &caption = QString(),
                   const QString &directory = QString(), const QString &filter = QString());
     ~QcrFileDialog();
     int exec() override;
-    void onCommand(const QStringList&) override;
+    void onCommand(const QString&) override;
 };
 
 #endif // CONTROLS_H

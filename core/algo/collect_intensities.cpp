@@ -17,6 +17,7 @@
 #include "core/def/idiomatic_for.h"
 #include "core/raw/angle_map.h"
 #include "core/typ/async.h"
+#include "qcr/engine/debug.h"
 #include <qmath.h>
 
 namespace {

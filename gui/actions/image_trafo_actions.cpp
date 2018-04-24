@@ -14,6 +14,7 @@
 
 #include "image_trafo_actions.h"
 #include "core/session.h"
+#include "qcr/engine/debug.h"
 
 ImageTrafoActions::ImageTrafoActions()
 {

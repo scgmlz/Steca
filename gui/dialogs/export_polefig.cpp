@@ -18,6 +18,7 @@
 #include "core/def/idiomatic_for.h"
 #include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/mainwin.h"
+#include "qcr/engine/debug.h"
 #include <QGroupBox>
 #include <QButtonGroup>
 
@@ -68,20 +69,19 @@ void writePeakInfo(QTextStream& stream, bool interpolated, const QString& separa
 //! @class ExportPolefig
 
 ExportPolefig::ExportPolefig()
-    : CModal("polefig")
-    , QDialog(gGui)
+    : QcrDialog(gGui, "Export Polefigure")
 {
     if (false && gSession->peaks().count()>1) { // TODO restore once peak fits are cached
-        rbAll_.programaticallySetValue(true);
+        exportCombi_.programaticallySetValue(true);
     } else {
-        rbCurrent_.programaticallySetValue(true);
-        rbAllSequential_.setEnabled(false);
-        rbAll_.setEnabled(false);
+        exportCurrent_.programaticallySetValue(true);
+        exportMulti_.setEnabled(false);
+        exportCombi_.setEnabled(false);
     }
     bool interpolated = gSession->interpol().enabled();
-    rbOriginalGrid_.programaticallySetValue(!interpolated);
-    rbInterpolated_.setEnabled(interpolated);
-    rbInterpolated_.programaticallySetValue(interpolated);
+    gridOriginal_.programaticallySetValue(!interpolated);
+    gridInterpol_.setEnabled(interpolated);
+    gridInterpol_.programaticallySetValue(interpolated);
 
     fileField_ = new ExportfileDialogfield(this, true, [this]()->void{save();});
 
@@ -91,16 +91,16 @@ ExportPolefig::ExportPolefig()
 
     // layout
     auto* savePeaksLayout = new QVBoxLayout;
-    savePeaksLayout->addWidget(&rbCurrent_);
-    savePeaksLayout->addWidget(&rbAllSequential_);
-    savePeaksLayout->addWidget(&rbAll_);
+    savePeaksLayout->addWidget(&exportCurrent_);
+    savePeaksLayout->addWidget(&exportMulti_);
+    savePeaksLayout->addWidget(&exportCombi_);
 
     auto* savePeaks = new QGroupBox {"Save which peaks"};
     savePeaks->setLayout(savePeaksLayout);
 
     auto* saveGridLayout = new QVBoxLayout;
-    saveGridLayout->addWidget(&rbOriginalGrid_);
-    saveGridLayout->addWidget(&rbInterpolated_);
+    saveGridLayout->addWidget(&gridOriginal_);
+    saveGridLayout->addWidget(&gridInterpol_);
 
     auto* saveGrid = new QGroupBox {"Save which grid"};
     saveGrid->setLayout(saveGridLayout);
@@ -113,17 +113,17 @@ ExportPolefig::ExportPolefig()
 }
 
 bool ExportPolefig::interpolated() {
-    ASSERT(rbInterpolated_.getValue() != rbOriginalGrid_.getValue());
-    return rbInterpolated_.getValue();
+    ASSERT(gridInterpol_.getValue() != gridOriginal_.getValue());
+    return gridInterpol_.getValue();
 }
 
 void ExportPolefig::save()
 {
-    if      (rbCurrent_.getValue())
+    if      (exportCurrent_.getValue())
         saveCurrent();
-/*    else if (rbAllSequential_.getValue())
+/*    else if (exportMulti_.getValue())
         saveAll(false);
-    else if (rbAll_.getValue())
+    else if (exportCombi_.getValue())
         saveAll(true);
 */
     else

@@ -28,7 +28,7 @@
 
 class FilesModel : public CheckTableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
-    FilesModel() : CheckTableModel("file") {}
+    FilesModel() : CheckTableModel("datafiles") {}
     int highlighted() const final { return gSession->dataset().highlight().fileIndex(); }
     void setHighlight(int i) final { gSession->dataset().highlight().setFile(i); }
     bool activated(int i) const { return gSession->dataset().fileAt(i).activated() == Qt::Checked; }

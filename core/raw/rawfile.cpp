@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/raw/rawfile.h"
+#include "qcr/engine/debug.h"
 #include <QStringBuilder> // for ".." % ..
 
 Rawfile::Rawfile(const QString& fileName)
