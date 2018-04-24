@@ -112,11 +112,6 @@ ExportPolefig::ExportPolefig()
     setLayout(vbox);
 }
 
-ExportPolefig::~ExportPolefig()
-{
-    qDebug() << "~ExportPolefig";
-}
-
 bool ExportPolefig::interpolated() {
     ASSERT(gridInterpol_.getValue() != gridOriginal_.getValue());
     return gridInterpol_.getValue();

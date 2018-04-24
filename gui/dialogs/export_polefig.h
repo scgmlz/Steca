@@ -22,7 +22,6 @@
 class ExportPolefig : public QcrDialog {
 public:
     ExportPolefig();
-    ~ExportPolefig();
 
 private:
     class ExportfileDialogfield* fileField_;

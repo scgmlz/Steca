@@ -83,11 +83,6 @@ ExportfileDialogfield::ExportfileDialogfield(
     addLayout(bottom);
 }
 
-ExportfileDialogfield::~ExportfileDialogfield()
-{
-    qDebug() << "~ExportfileDialogfield";
-}
-
 QString ExportfileDialogfield::path(bool withSuffix, bool withNumber)
 {
     QString dir = dir_->text().trimmed();
