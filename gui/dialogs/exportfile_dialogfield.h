@@ -25,6 +25,7 @@ public:
     ExportfileDialogfield() = delete;
     ExportfileDialogfield(const ExportfileDialogfield&) = delete;
     ExportfileDialogfield(QWidget* parent, bool withTypes, std::function<void(void)> onSave);
+    ~ExportfileDialogfield();
 
     QString path(bool withSuffix, bool withNumber=false);
     QFile* file();

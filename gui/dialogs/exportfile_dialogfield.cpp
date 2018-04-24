@@ -12,9 +12,10 @@
 //
 //  ***********************************************************************************************
 
+#include "exportfile_dialogfield.h"
 #include "core/typ/exception.h"
-#include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/dialogs/file_dialog.h"
+#include "qcr/engine/debug.h"
 #include <QGroupBox>
 
 namespace {
@@ -80,6 +81,11 @@ ExportfileDialogfield::ExportfileDialogfield(
 
     addLayout(setup);
     addLayout(bottom);
+}
+
+ExportfileDialogfield::~ExportfileDialogfield()
+{
+    qDebug() << "~ExportfileDialogfield";
 }
 
 QString ExportfileDialogfield::path(bool withSuffix, bool withNumber)
