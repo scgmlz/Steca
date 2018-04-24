@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/raw/rawfile.h"
-#include "3rdparty/yaml-cpp/include/yaml-cpp/yaml.h"
+#include "yaml-cpp/include/yaml-cpp/yaml.h"
 
 namespace  {
 
@@ -52,27 +52,27 @@ void readExperiment(const YAML::Node& node, Rawfile& rawfile)
 
 void readSample(const YAML::Node& node, Metadata& metadata)
 {
-    metadata.motorXT = node["position"]["xt"]["value"].as<double>(NAN);
-    metadata.motorYT = node["position"]["yt"]["value"].as<double>(NAN);
-    metadata.motorZT = node["position"]["zt"]["value"].as<double>(NAN);
-    metadata.motorOmg = node["orientation"]["omgs"]["value"].as<double>(NAN);
-    metadata.motorTth = node["orientation"]["tths"]["value"].as<double>(NAN);
-    metadata.motorPhi = node["orientation"]["phis"]["value"].as<double>(NAN);
-    metadata.motorChi = node["orientation"]["chis"]["value"].as<double>(NAN);
+    metadata.motorXT = node["position"]["xt"]["value"].as<double>(Q_QNAN);
+    metadata.motorYT = node["position"]["yt"]["value"].as<double>(Q_QNAN);
+    metadata.motorZT = node["position"]["zt"]["value"].as<double>(Q_QNAN);
+    metadata.motorOmg = node["orientation"]["omgs"]["value"].as<double>(Q_QNAN);
+    metadata.motorTth = node["orientation"]["tths"]["value"].as<double>(Q_QNAN);
+    metadata.motorPhi = node["orientation"]["phis"]["value"].as<double>(Q_QNAN);
+    metadata.motorChi = node["orientation"]["chis"]["value"].as<double>(Q_QNAN);
 }
 
 void readSetup(const YAML::Node& node, Metadata& metadata)
 {
-    metadata.motorPST = NAN; // node["orientation"]["xt"]["value"].as<double>(NAN);
-    metadata.motorSST = NAN; // node["orientation"]["xt"]["value"].as<double>(NAN);
-    metadata.motorOMGM = node["monochromator"]["omgm"]["value"].as<double>(NAN);
-    metadata.nmT;
-    metadata.nmTeload;
-    metadata.nmTepos;
-    metadata.nmTeext;
-    metadata.nmXe;
-    metadata.nmYe;
-    metadata.nmZe; // nm = new metadata
+    metadata.motorPST = Q_QNAN; // node["orientation"]["xt"]["value"].as<double>(Q_QNAN);
+    metadata.motorSST = Q_QNAN; // node["orientation"]["xt"]["value"].as<double>(Q_QNAN);
+    metadata.motorOMGM = node["monochromator"]["omgm"]["value"].as<double>(Q_QNAN);
+    metadata.nmT = Q_QNAN;
+    metadata.nmTeload = Q_QNAN;
+    metadata.nmTepos = Q_QNAN;
+    metadata.nmTeext = Q_QNAN;
+    metadata.nmXe = Q_QNAN;
+    metadata.nmYe = Q_QNAN;
+    metadata.nmZe = Q_QNAN; // nm = new metadata
     // TODO: readSetup(const YAML::Node& node, const Metadata& metadata)
 }
 
@@ -81,9 +81,9 @@ void readSingleScan(const YAML::Node& node, Metadata& metadata, Rawfile& rawfile
     if (!node.IsDefined())
         return;
 
-    metadata.time = node["time"].as<double>(NAN);
-    metadata.monitorCount = node["monitor"].as<double>(NAN);
-    const auto sum = node["sum"].as<double>(NAN);
+    metadata.time = node["time"].as<double>(Q_QNAN);
+    metadata.monitorCount = node["monitor"].as<double>(Q_QNAN);
+    const auto sum = node["sum"].as<double>(Q_QNAN);
     const auto imageNode = node["image"];
 
     const size2d size(imageNode[0].size(), imageNode.size());

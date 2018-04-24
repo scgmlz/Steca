@@ -41,7 +41,7 @@ public:
     QString date, comment;
     deg motorXT, motorYT, motorZT, motorOmg, motorTth, motorPhi, motorChi, motorPST, motorSST,
         motorOMGM;
-    double nmT, nmTeload, nmTepos, nmTeext, nmXe, nmYe, nmZe; // nm = new metadata
+    double nmT, nmTeload, nmTepos, nmTeext, nmXe, nmYe, nmZe; // nm = prehistorically 'new' metadata
     double monitorCount, deltaMonitorCount;
     double time, deltaTime;
 };
