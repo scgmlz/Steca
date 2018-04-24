@@ -39,7 +39,7 @@
 MainWin* gGui; //!< global pointer to _the_ main window
 
 namespace {
-const QString dataFormats {"Data files (*.dat *.mar*);;All files (*.*)"};
+const QString dataFormats {"Data files (*.dat *.yaml *.mar*);;All files (*.*)"};
 }
 
 //  ***********************************************************************************************
