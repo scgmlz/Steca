@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/raw/rawfile.h"
+#include "qcr/engine/debug.h"
 #include "yaml-cpp/include/yaml-cpp/yaml.h"
 
 namespace  {
@@ -89,10 +90,11 @@ void readSingleScan(const YAML::Node& node, Metadata& metadata, Rawfile& rawfile
 
     std::vector<float> image;
     // fill image row after row...:
-    for (auto rowNode: imageNode) {
-        auto row = rowNode.as<std::vector<float>>();
-        image.insert(image.end(), row.begin(), row.end());
-    }
+    qDebug() << "DEBUG[load_yaml] before read scan";
+    for (const auto& rowNode: imageNode)
+        for (const auto& cellNode: rowNode)
+            image.push_back(cellNode.as<float>());
+    qDebug() << "DEBUG[load_yaml] after read scan";
 
     rawfile.addDataset(std::move(metadata), size, std::move(image));
 }
@@ -118,8 +120,8 @@ void readMeasurement(const YAML::Node& node, Rawfile& rawfile)
     if (!node.IsDefined())
         return;
 
-    const auto unique_identifier = node["unique_identifier"].as<std::string>("");
-    const auto number = node["number"].as<std::string>(""); // Integer maybe?
+    // const auto unique_identifier = node["unique_identifier"].as<std::string>("");
+    // const auto number = node["number"].as<std::string>(""); // Integer maybe?
 
     auto metadata = Metadata();
 
@@ -128,7 +130,7 @@ void readMeasurement(const YAML::Node& node, Rawfile& rawfile)
 
     readSample(node["sample"], metadata);
     readSetup(node["setup"], metadata);
-    readScans(node["scan"], metadata, rawfile); // adds the scanns to the rawfile
+    readScans(node["scan"], metadata, rawfile); // adds the scans to the rawfile
 }
 
 } // namespace
@@ -138,13 +140,16 @@ namespace load {
 
 Rawfile loadYaml(const QString& filePath)
 {
+    qDebug() << "DEBUG[load_yaml] before load file";
     YAML::Node yamlFile = YAML::LoadFile(filePath.toStdString()); // throws: ParserException, BadFile;
+    qDebug() << "DEBUG[load_yaml] after load file";
 
     Rawfile rawfile(filePath);
     // readInstrument (yamlFile["instrument"] , rawfile);
     // readFormat     (yamlFile["format"]     , rawfile);
     // readExperiment (yamlFile["experiment"] , rawfile);
     readMeasurement(yamlFile["measurement"], rawfile);
+    qDebug() << "DEBUG[load_yaml] done";
 
     return rawfile;
 }
