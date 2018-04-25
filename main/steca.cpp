@@ -61,7 +61,6 @@ int main(int argc, char* argv[]) {
         case 'p':
             std::cout << "fileOverridePolicy set to " << "PANIC" << "\n";
             setFileOverridePolicy(file_dialog::eFileOverridePolicy::PANIC);
-            //std::cout << "fileOverridePolicy set to " << (int)file_dialog::fileOverridePolicy << "\n";
             break;
         case 's':
             std::cout << "fileOverridePolicy set to " << "SILENT_OVERRIDE" << "\n";
