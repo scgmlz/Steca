@@ -150,7 +150,7 @@ void ExportDfgram::saveAll(bool oneFile)
                 existingFiles << QFileInfo(currPath).fileName();
         }
         if (existingFiles.size() &&
-            !file_dialog::confirmOverride(existingFiles.size()>1 ? "Files exist" : "File exists", this, existingFiles.join(", ")))
+            !file_dialog::confirmOverwrite(existingFiles.size()>1 ? "Files exist" : "File exists", this, existingFiles.join(", ")))
             return;
     }
     Progress progress(&fileField_->progressBar, "save diffractograms", expt.size());

@@ -52,19 +52,17 @@ int main(int argc, char* argv[]) {
                       << "  -h  Print this message.\n"
                       << "  -v  Print " << APPLICATION_NAME << " version.\n"
                       << "  -c  Read commands from console instead of starting the GUI.\n"
-                      << "  -p  Sets the file override policy to 'Panic'. Default is 'Promt'.\n"
-                      << "  -s  Sets the file override policy to 'Silent Override'. Default is 'Promt'.\n";
+                      << "  -p  Sets the file overwrite policy to 'Panic'. Default is 'Promt'.\n"
+                      << "  -s  Sets the file overwrite policy to 'Silent Overwrite'. Default is 'Promt'.\n";
             exit(0);
         case 'v':
             std::cout << APPLICATION_NAME << " version " << version << "\n";
             exit(0);
         case 'p':
-            std::cout << "fileOverridePolicy set to " << "PANIC" << "\n";
-            setFileOverridePolicy(file_dialog::eFileOverridePolicy::PANIC);
+            setFileOverwritePolicy(file_dialog::eFileOverwritePolicy::PANIC);
             break;
         case 's':
-            std::cout << "fileOverridePolicy set to " << "SILENT_OVERRIDE" << "\n";
-            setFileOverridePolicy(file_dialog::eFileOverridePolicy::SILENT_OVERRIDE);
+            setFileOverwritePolicy(file_dialog::eFileOverwritePolicy::SILENT_OVERWRITE);
             break;
         }
     }

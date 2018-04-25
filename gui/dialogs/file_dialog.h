@@ -22,15 +22,15 @@
 
 namespace file_dialog {
 
-enum class eFileOverridePolicy {
-    PROMT = 0, // promps a confirmation dialog.
+enum class eFileOverwritePolicy {
+    PROMPT = 0, // promps a confirmation dialog.
     PANIC = 1, // throws an exception
-    SILENT_OVERRIDE = 2, // silently overrides the files
+    SILENT_OVERWRITE = 2, // silently overrides the files
 };
 
-void setFileOverridePolicy(eFileOverridePolicy newFileOverridePolicy);
+void setFileOverwritePolicy(eFileOverwritePolicy newFileOverwriteePolicy);
 
-bool confirmOverride(const QString& name, QWidget* parent, const QString& path);
+bool confirmOverwrite(const QString& name, QWidget* parent, const QString& path);
 QFile* openFileConfirmOverwrite(const QString&, QWidget*, const QString&);
 QStringList queryImportFileNames(QWidget*, const QString&, QDir&, const QString&, bool plural=true);
 QString queryImportFileName(QWidget*, const QString&, QDir&, const QString&);
