@@ -12,6 +12,7 @@
 //
 //  ***********************************************************************************************
 
+#include "file_dialog.h"
 #include "core/loaders/loaders.h"
 #include "qcr/widgets/controls.h"
 #include "qcr/engine/debug.h"
@@ -115,17 +116,49 @@ QString FileDialog::getFile()
 
 namespace file_dialog {
 
+static eFileOverwritePolicy fileOverwritePolicy = eFileOverwritePolicy::PROMPT;
+void setFileOverwritePolicy(eFileOverwritePolicy newFileOverwriteePolicy)
+{
+    fileOverwritePolicy = newFileOverwriteePolicy;
+
+    qDebug() << "fileOverwritePolicy set to " << (int)newFileOverwriteePolicy << "\n";
+}
+
+bool confirmOverwrite(const QString& name, QWidget* parent, const QString& path)
+{
+    switch (fileOverwritePolicy) {
+    case eFileOverwritePolicy::PROMPT:
+        return QMessageBox::question(parent, "File exists", "Overwrite " + path + " ?")
+                == QMessageBox::Yes;
+        break;
+    case eFileOverwritePolicy::PANIC: {
+        QString temp = "attempting to write to already existing file: '" + path + "'";
+        qFatal(temp.toStdString().c_str());
+    }
+        break;
+    case eFileOverwritePolicy::SILENT_OVERWRITE:
+        return true;
+        break;
+    default: {
+        std::string temp = "Unexpected fileOverwritePolicy state: " + std::to_string((int)fileOverwritePolicy);
+        qFatal(temp.c_str());
+    }
+        break;
+    }
+}
+
 //! Opens file for writing; asks for confirmation before overwriting.
 QFile* openFileConfirmOverwrite(const QString& name, QWidget* parent, const QString& path)
 {
     QFile* ret = new QFile(path);
     if (ret->exists() &&
-        QMessageBox::question(parent, "File exists", "Overwrite "+path+" ?") != QMessageBox::Yes) {
+        !confirmOverwrite(name, parent, path)) {
         delete ret;
         return nullptr;
-    }
+    } // else:
     if (!ret->open(QIODevice::WriteOnly | QIODevice::Text)) {
         qWarning() << "Cannot open file for writing: " << path;
+        delete ret;
         return nullptr;
     }
     return ret;

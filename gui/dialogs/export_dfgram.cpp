@@ -137,7 +137,7 @@ void ExportDfgram::saveAll(bool oneFile)
         return;
     QTextStream* stream = nullptr;
     if (oneFile) {
-        QFile* file = file_dialog::openFileConfirmOverwrite("file", this, path);
+        QFile* file = fileField_->file();
         if (!file)
             return;
         stream = new QTextStream(file);
@@ -150,9 +150,7 @@ void ExportDfgram::saveAll(bool oneFile)
                 existingFiles << QFileInfo(currPath).fileName();
         }
         if (existingFiles.size() &&
-            QMessageBox::question(this, existingFiles.size()>1 ? "Files exist" : "File exists",
-                                  "Overwrite files " + existingFiles.join(", ") + " ?") !=
-            QMessageBox::Yes)
+            !file_dialog::confirmOverwrite(existingFiles.size()>1 ? "Files exist" : "File exists", this, existingFiles.join(", ")))
             return;
     }
     Progress progress(&fileField_->progressBar, "save diffractograms", expt.size());

@@ -34,8 +34,8 @@ void PlotDfgramOverlay::addRange(const Range& range)
     } else if (gGui->state->editingPeakfits) {
         if (Peak* peak = gSession->peaks().selectedPeak()) {
             peak->setRange(range);
-            gConsole->log("peakRangeMin set "+QString::number(range.min));
-            gConsole->log("peakRangeMax set "+QString::number(range.max));
+            gConsole->log("peakRangeMin "+QString::number(range.min));
+            gConsole->log("peakRangeMax "+QString::number(range.max));
         }
     }
 }
