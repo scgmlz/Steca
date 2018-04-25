@@ -140,18 +140,22 @@ namespace load {
 
 Rawfile loadYaml(const QString& filePath)
 {
-    qDebug() << "DEBUG[load_yaml] before load file";
-    YAML::Node yamlFile = YAML::LoadFile(filePath.toStdString()); // throws: ParserException, BadFile;
-    qDebug() << "DEBUG[load_yaml] after load file";
+    try {
+        qDebug() << "DEBUG[load_yaml] before load file";
+        YAML::Node yamlFile = YAML::LoadFile(filePath.toStdString()); // throws: ParserException, BadFile;
+        qDebug() << "DEBUG[load_yaml] after load file";
 
-    Rawfile rawfile(filePath);
-    // readInstrument (yamlFile["instrument"] , rawfile);
-    // readFormat     (yamlFile["format"]     , rawfile);
-    // readExperiment (yamlFile["experiment"] , rawfile);
-    readMeasurement(yamlFile["measurement"], rawfile);
+        Rawfile rawfile(filePath);
+        // readInstrument (yamlFile["instrument"] , rawfile);
+        // readFormat     (yamlFile["format"]     , rawfile);
+        // readExperiment (yamlFile["experiment"] , rawfile);
+        readMeasurement(yamlFile["measurement"], rawfile);
+        return rawfile;
     qDebug() << "DEBUG[load_yaml] done";
-
-    return rawfile;
+    } catch (YAML::Exception e) {
+        QString message(e.what());
+        THROW("Bad yaml file: '" + message + "'" );
+    }
 }
 
 } // namespace load
