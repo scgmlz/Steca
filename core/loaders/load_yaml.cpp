@@ -15,7 +15,6 @@
 #include "core/raw/rawfile.h"
 #include "qcr/engine/debug.h"
 #include "yaml-cpp/include/yaml-cpp/yaml.h"
-///home/jochimcoenen/Programming/Steca/3rdparty/yaml-cpp/include/yaml-cpp/exceptions.h
 
 namespace  {
 
