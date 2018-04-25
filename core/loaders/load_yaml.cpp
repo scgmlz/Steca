@@ -15,6 +15,7 @@
 #include "core/raw/rawfile.h"
 #include "qcr/engine/debug.h"
 #include "yaml-cpp/include/yaml-cpp/yaml.h"
+///home/jochimcoenen/Programming/Steca/3rdparty/yaml-cpp/include/yaml-cpp/exceptions.h
 
 namespace  {
 
@@ -152,8 +153,9 @@ Rawfile loadYaml(const QString& filePath)
         readMeasurement(yamlFile["measurement"], rawfile);
         return rawfile;
     qDebug() << "DEBUG[load_yaml] done";
-    } catch (std::exception e) {
-        THROW("Bad yaml file. Nothing was loaded");
+    } catch (YAML::Exception e) {
+        QString message(e.what());
+        THROW("Bad yaml file: '" + message + "'" + );
     }
 }
 
