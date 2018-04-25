@@ -153,8 +153,7 @@ Rawfile loadYaml(const QString& filePath)
         return rawfile;
     qDebug() << "DEBUG[load_yaml] done";
     } catch (YAML::Exception e) {
-        QString message(e.what());
-        THROW("Bad yaml file: '" + message + "'" );
+        THROW("Invalid data in file "+filePath+":\n" + e.what());
     }
 }
 
