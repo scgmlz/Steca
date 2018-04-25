@@ -216,7 +216,7 @@ void MainWin::addFiles()
     try {
         gSession->dataset().addGivenFiles(fileNames);
     } catch (Exception e) {
-        qWarning() << e.msg();
+        qWarning() << e.what();
     }
 }
 

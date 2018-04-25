@@ -29,6 +29,7 @@ public:
     Exception() = delete;
     Exception(const QString& msg) noexcept : msg_(msg) {}
     const QString& msg() const noexcept { return msg_; }
+    const char* what() const noexcept { return msg_.toLatin1().constData(); }
 private:
     QString msg_;
 };

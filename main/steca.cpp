@@ -59,10 +59,10 @@ int main(int argc, char* argv[]) {
             std::cout << APPLICATION_NAME << " version " << version << "\n";
             exit(0);
         case 'p':
-            file_dialog::setFileOverwritePolicy(file_dialog::eFileOverwritePolicy::PANIC);
+            setFileOverwritePolicy(file_dialog::eFileOverwritePolicy::PANIC);
             break;
         case 's':
-            file_dialog::setFileOverwritePolicy(file_dialog::eFileOverwritePolicy::SILENT_OVERWRITE);
+            setFileOverwritePolicy(file_dialog::eFileOverwritePolicy::SILENT_OVERWRITE);
             break;
         }
     }

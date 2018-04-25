@@ -117,11 +117,12 @@ QString FileDialog::getFile()
 namespace file_dialog {
 
 static eFileOverwritePolicy fileOverwritePolicy = eFileOverwritePolicy::PROMPT;
-void setFileOverwritePolicy(eFileOverwritePolicy newFileOverwriteePolicy)
-{
-    fileOverwritePolicy = newFileOverwriteePolicy;
 
-    qDebug() << "fileOverwritePolicy set to " << (int)newFileOverwriteePolicy << "\n";
+void setFileOverwritePolicy(eFileOverwritePolicy val)
+{
+    fileOverwritePolicy = val;
+
+    qDebug() << "fileOverwritePolicy set to " << (int)fileOverwritePolicy << "\n";
 }
 
 bool confirmOverwrite(const QString& name, QWidget* parent, const QString& path)
@@ -131,18 +132,14 @@ bool confirmOverwrite(const QString& name, QWidget* parent, const QString& path)
         return QMessageBox::question(parent, "File exists", "Overwrite " + path + " ?")
                 == QMessageBox::Yes;
         break;
-    case eFileOverwritePolicy::PANIC: {
-        QString temp = "attempting to write to already existing file: '" + path + "'";
-        qFatal(temp.toStdString().c_str());
-    }
+    case eFileOverwritePolicy::PANIC:
+        qFatal("attempting to write to existing file '%s'", path.toLatin1().constData());
         break;
     case eFileOverwritePolicy::SILENT_OVERWRITE:
         return true;
         break;
-    default: {
-        std::string temp = "Unexpected fileOverwritePolicy state: " + std::to_string((int)fileOverwritePolicy);
-        qFatal(temp.c_str());
-    }
+    default:
+        qFatal("impossible case");
         break;
     }
 }
