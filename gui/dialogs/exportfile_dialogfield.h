@@ -26,13 +26,6 @@ public:
     ExportfileDialogfield(const ExportfileDialogfield&) = delete;
     ExportfileDialogfield(QWidget* parent, bool withTypes, std::function<void(void)> onSave);
 
-    enum class eFileOverridePolicy {
-        PROMT = 0, // promps a confirmation dialog.
-        PANIC = 1, // throws an exception
-        SILENT_OVERRIDE = 2, // silently overrides the files
-    };
-    static eFileOverridePolicy fileOverridePolicy;
-
     QString path(bool withSuffix, bool withNumber=false);
     QFile* file();
     QString separator() const;

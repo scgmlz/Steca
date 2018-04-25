@@ -28,7 +28,7 @@
 #define OPTPARSE_IMPLEMENTATION
 #define OPTPARSE_API static
 #include "optparse.h"
-#include "gui/dialogs/exportfile_dialogfield.h"
+#include "gui/dialogs/file_dialog.h"
 
 #include <iostream>
 #include <QApplication>
@@ -40,7 +40,6 @@ const char* version =
     ;
 
 int main(int argc, char* argv[]) {
-
     struct optparse options;
     optparse_init(&options, argv);
     int opt;
@@ -61,13 +60,12 @@ int main(int argc, char* argv[]) {
             exit(0);
         case 'p':
             std::cout << "fileOverridePolicy set to " << "PANIC" << "\n";
-            ExportfileDialogfield::fileOverridePolicy
-                    = ExportfileDialogfield::eFileOverridePolicy::PANIC;
+            setFileOverridePolicy(file_dialog::eFileOverridePolicy::PANIC);
+            //std::cout << "fileOverridePolicy set to " << (int)file_dialog::fileOverridePolicy << "\n";
             break;
         case 's':
             std::cout << "fileOverridePolicy set to " << "SILENT_OVERRIDE" << "\n";
-            ExportfileDialogfield::fileOverridePolicy
-                    = ExportfileDialogfield::eFileOverridePolicy::SILENT_OVERRIDE;
+            setFileOverridePolicy(file_dialog::eFileOverridePolicy::SILENT_OVERRIDE);
             break;
         }
     }

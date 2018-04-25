@@ -116,28 +116,47 @@ QString FileDialog::getFile()
 
 namespace file_dialog {
 
+static eFileOverridePolicy fileOverridePolicy;// = eFileOverridePolicy::PROMT;
+void setFileOverridePolicy(eFileOverridePolicy newFileOverridePolicy)
+{
+    fileOverridePolicy = newFileOverridePolicy;
+}
+
+bool confirmOverride(const QString& name, QWidget* parent, const QString& path)
+{
+    switch (fileOverridePolicy) {
+    case eFileOverridePolicy::PROMT:
+        return QMessageBox::question(parent, "File exists", "Overwrite " + path + " ?")
+                == QMessageBox::Yes;
+        break;
+    case eFileOverridePolicy::PANIC: {
+        QString temp = "attempting to write to already existing file: '" + path + "'";
+        qFatal(temp.toStdString().c_str());
+    }
+        break;
+    case eFileOverridePolicy::SILENT_OVERRIDE:
+        return true;
+        break;
+    default: {
+        std::string temp = "Unexpected fileOverridePolicy state: " + std::to_string((int)fileOverridePolicy);
+        qFatal(temp.c_str());
+    }
+        break;
+    }
+}
+
 //! Opens file for writing; asks for confirmation before overwriting.
 QFile* openFileConfirmOverwrite(const QString& name, QWidget* parent, const QString& path)
 {
     QFile* ret = new QFile(path);
     if (ret->exists() &&
-        QMessageBox::question(parent, "File exists", "Overwrite "+path+" ?") != QMessageBox::Yes) {
+        !confirmOverride(name, parent, path)) {
         delete ret;
         return nullptr;
-    } // else :openFileForcedOverwrite
+    } // else:
     if (!ret->open(QIODevice::WriteOnly | QIODevice::Text)) {
         qWarning() << "Cannot open file for writing: " << path;
-        return nullptr;
-    }
-    return ret;
-}
-
-//! Opens file for writing;
-QFile* openFileForcedOverwrite(const QString& name, QWidget* parent, const QString& path)
-{
-    QFile* ret = new QFile(path);
-    if (!ret->open(QIODevice::WriteOnly | QIODevice::Text)) {
-        qWarning() << "Cannot open file for writing: " << path;
+        delete ret;
         return nullptr;
     }
     return ret;
