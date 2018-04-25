@@ -117,11 +117,12 @@ QString FileDialog::getFile()
 namespace file_dialog {
 
 static eFileOverwritePolicy fileOverwritePolicy = eFileOverwritePolicy::PROMPT;
-void setFileOverwritePolicy(eFileOverwritePolicy newFileOverwriteePolicy)
-{
-    fileOverwritePolicy = newFileOverwriteePolicy;
 
-    qDebug() << "fileOverwritePolicy set to " << (int)newFileOverwriteePolicy << "\n";
+void setFileOverwritePolicy(eFileOverwritePolicy val)
+{
+    fileOverwritePolicy = val;
+
+    qDebug() << "fileOverwritePolicy set to " << (int)fileOverwritePolicy << "\n";
 }
 
 bool confirmOverwrite(const QString& name, QWidget* parent, const QString& path)

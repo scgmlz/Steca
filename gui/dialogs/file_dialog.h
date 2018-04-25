@@ -28,7 +28,7 @@ enum class eFileOverwritePolicy {
     SILENT_OVERWRITE = 2, // silently overrides the files
 };
 
-void setFileOverwritePolicy(eFileOverwritePolicy newFileOverwriteePolicy);
+void setFileOverwritePolicy(eFileOverwritePolicy);
 
 bool confirmOverwrite(const QString& name, QWidget* parent, const QString& path);
 QFile* openFileConfirmOverwrite(const QString&, QWidget*, const QString&);
