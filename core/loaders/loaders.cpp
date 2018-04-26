@@ -41,8 +41,16 @@ bool couldBeCaress(const QFileInfo& info) {
 
 // Yaml file format
 bool couldBeYaml(const QFileInfo& info) {
-    static QByteArray const header("instrument:"); // this will do for now.
-    return header == peek(0, header.size(), info);
+    static QByteArray const header1("instrument:"); // this will do for now.
+    static QByteArray const header2("format:");
+    static QByteArray const header3("experiment:");
+    static QByteArray const header4("measurement:");
+
+    auto peeked = peek(0, header4.size(), info);
+    return (header1 == peeked.left(header1.size())
+         || header2 == peeked.left(header2.size())
+         || header3 == peeked.left(header3.size())
+         || header4 == peeked.left(header4.size()));
 }
 
 // Mar file format

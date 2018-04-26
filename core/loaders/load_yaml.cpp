@@ -85,15 +85,24 @@ void readSingleScan(const YAML::Node& node, Metadata& metadata, Rawfile& rawfile
     metadata.monitorCount = node["monitor"].as<double>(Q_QNAN);
     const auto sum = node["sum"].as<double>(Q_QNAN);
     const auto imageNode = node["image"];
+    const auto dimensionsNode = node["dimensions"];
 
-    const size2d size(imageNode[0].size(), imageNode.size());
+    const size2d size(dimensionsNode["width"].as<int>(), dimensionsNode["height"].as<int>());
 
     std::vector<float> image;
     // fill image row after row...:
     qDebug() << "DEBUG[load_yaml] before read scan";
+    std::stringstream imageStr(imageNode.as<std::string>());
+    while (!imageStr.eof()) {
+        float v;
+        imageStr >> v;
+        image.push_back(v);
+    }
+    /*
     for (const auto& rowNode: imageNode)
         for (const auto& cellNode: rowNode)
             image.push_back(cellNode.as<float>());
+    */
     qDebug() << "DEBUG[load_yaml] after read scan";
 
     rawfile.addDataset(std::move(metadata), size, std::move(image));
