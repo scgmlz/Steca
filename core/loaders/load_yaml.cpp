@@ -98,11 +98,6 @@ void readSingleScan(const YAML::Node& node, Metadata& metadata, Rawfile& rawfile
         imageStr >> v;
         image.push_back(v);
     }
-    /*
-    for (const auto& rowNode: imageNode)
-        for (const auto& cellNode: rowNode)
-            image.push_back(cellNode.as<float>());
-    */
     qDebug() << "DEBUG[load_yaml] after read scan";
 
     rawfile.addDataset(std::move(metadata), size, std::move(image));
@@ -164,6 +159,8 @@ Rawfile loadYaml(const QString& filePath)
     } catch (YAML::Exception e) {
         THROW("Invalid data in file "+filePath+":\n" + e.what());
     }
+    // just to avoid compiler warnings:
+    return Rawfile("");
 }
 
 } // namespace load
