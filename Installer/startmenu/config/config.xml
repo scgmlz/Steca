@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Installer>
+    <Name>Stecca</Name>
+    <Version>1.0.0</Version>
+    <Title>Steca Installer</Title>
+    <Publisher>JFZ - JCNS - Scientific Computing Group</Publisher>
+    <!-- Directory name is used in component.xml -->
+    <StartMenuDir>JCNS-SCG</StartMenuDir>
+    <TargetDir>@HomeDir@/JCNS</TargetDir>
+	<InstallerApplicationIcon>..\icon.png</InstallerApplicationIcon>
+	<InstallerWindowIcon>..\icon.png</InstallerWindowIcon>
+</Installer>
