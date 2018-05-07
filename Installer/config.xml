@@ -7,6 +7,6 @@
     <!-- Directory name is used in component.xml -->
     <StartMenuDir>JCNS-SCG</StartMenuDir>
     <TargetDir>@HomeDir@/JCNS</TargetDir>
-	<InstallerApplicationIcon>..\icon.png</InstallerApplicationIcon>
-	<InstallerWindowIcon>..\icon.png</InstallerWindowIcon>
+	<InstallerApplicationIcon>.\icon.png</InstallerApplicationIcon>
+	<InstallerWindowIcon>.\icon.png</InstallerWindowIcon>
 </Installer>

@@ -33,12 +33,12 @@ function Component()
 
 Component.prototype.createOperations = function()
 {
-    // call default implementation to actually install Steca.exe!
+    // call default implementation to actually install Steca!
     component.createOperations();
 
     if (systemInfo.productType === "windows") {
         component.addOperation("CreateShortcut", "@TargetDir@/Steca.exe", "@StartMenuDir@/Steca.lnk",
             "workingDirectory=@TargetDir@", "iconPath=%SystemRoot%/system32/SHELL32.dll",
-            "iconId=2", "description=Open Steca");
+            "iconId=2", "description=Steca: The stress and texture calculator for neutron and x-ray materials diffraction) ");
     }
 }
