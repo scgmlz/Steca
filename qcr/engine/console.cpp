@@ -17,7 +17,13 @@
 #include "qcr/engine/string_ops.h"
 #include <QDebug>
 #include <QFile>
+
+#ifdef Q_OS_WIN
+#include <QWinEventNotifier>
+#include <windows.h>
+#else
 #include <QSocketNotifier>
+#endif
 
 Console* gConsole; //!< global
 
@@ -93,8 +99,14 @@ void CommandRegistry::dump(QTextStream& stream)
 Console::Console()
 {
     gConsole = this;
-    notifier_ = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read, this);
+
+#ifdef Q_OS_WIN
+	notifier_ = new QWinEventNotifier();// GetStdHandle(STD_INPUT_HANDLE));
+	connect(notifier_, &QWinEventNotifier::activated, [this] (HANDLE) {readLine(); });
+#else
+	notifier_ = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read, this);
     connect(notifier_, &QSocketNotifier::activated, [this](int) { readLine(); });
+#endif
 
     // start registry
     registryStack_.push(new CommandRegistry("main"));
