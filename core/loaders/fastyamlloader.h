@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/loaders/fastyamlloader.h
-//! @brief     Defines loader functions in namespace load.
+//! @brief     Defines libyaml encapsulation in namespace loadYAML.
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -18,17 +18,13 @@
 #include "core/raw/rawfile.h"
 #include "core/typ/exception.h"
 #include<yaml.h>
-#include<memory>
 #include <QMap>
 #include <QDebug>
-
-//! Functions loadRawfile and loadComment, and their dependences.
 
 namespace loadYAML {
 
 #define DEBUG_OUT_TEMP(a) // qDebug() << a;
 
-//typedef Container<yaml_parser_t, void, &yaml_parser_delete> YamlParserType;
 typedef std::shared_ptr<yaml_parser_t> YamlParserType;
 
 class YamlNode {

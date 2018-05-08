@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "fastyamlloader.h"
-//#include <QStringBuilder> // for ".." % ..
+#include <yaml.h>
 #include <QMap>
 #include <sstream>
 
