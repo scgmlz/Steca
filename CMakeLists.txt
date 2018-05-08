@@ -33,6 +33,7 @@ find_package(Qt5Core    REQUIRED)
 find_package(Qt5Gui     REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Network REQUIRED)
+find_package(libyaml    REQUIRED)
 message(STATUS "found Qt5Core=${Qt5Core_VERSION_STRING}, Qt5Gui=${Qt5Gui_VERSION_STRING}")
 
 add_subdirectory(3rdparty/LevMar)
