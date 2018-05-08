@@ -13,5 +13,5 @@ target_link_libraries (${lib}
     LevMar
     caress_loader
     mar_loader
-    ${libyaml_LIBRARIES}
+    ${LIBYAML_LIBRARY}
 )
