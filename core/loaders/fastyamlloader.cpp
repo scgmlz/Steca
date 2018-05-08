@@ -13,22 +13,23 @@
 //  ***********************************************************************************************
 
 #include "fastyamlloader.h"
-#include <QStringBuilder> // for ".." % ..
+//#include <QStringBuilder> // for ".." % ..
 #include <QMap>
 #include <sstream>
 
 namespace loadYAML {
 
-yaml_event_type_t parser_parse(YamlParserType parser, yaml_event_t& event) {
+yaml_event_type_t parser_parse(YamlParserType parser, yaml_event_t& event)
+{
     if (!yaml_parser_parse(parser.get(), &event)) {
-       THROW(QString::fromStdString("Parser error " + std::to_string((*parser).error)));
+       THROW(QString::fromStdString("Parser error " + std::to_string(parser->error)));
     }
     return event.type;
 }
 
-YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent) {
-    switch(prevEvent.type)
-    {
+YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
+{
+    switch(prevEvent.type) {
     case YAML_NO_EVENT:
         THROW("DEBUG[parseYamlFast2] YAML_NO_EVENT");
         break;
@@ -54,7 +55,6 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent) {
         break;
     case YAML_SEQUENCE_START_EVENT: {
         DEBUG_OUT_TEMP("DEBUG[parseYamlFast2] YAML_SEQUENCE_START_EVENT");
-        //node.nodeType_ = YamlNode::eNodeType::SEQUENCE;
         YamlNode node = YamlNode(new YamlNode::SequenceType());
         YamlNode::SequenceType& sequence = node.getSequence();
 
@@ -66,7 +66,7 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent) {
         DEBUG_OUT_TEMP("DEBUG[parseYamlFast2] YAML_SEQUENCE_END_EVENT");
 
         yaml_event_delete(&event);
-        return node;//YamlNode(sequence);
+        return node;
     }
     break;
     case YAML_SEQUENCE_END_EVENT:
@@ -74,7 +74,6 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent) {
         break;
     case YAML_MAPPING_START_EVENT: {
         DEBUG_OUT_TEMP("DEBUG[parseYamlFast2] YAML_MAPPING_START_EVENT");
-        //node.nodeType_ = YamlNode::eNodeType::MAP;
         YamlNode node = YamlNode(new YamlNode::MapType());
         YamlNode::MapType& map = node.getMap();
 
@@ -100,7 +99,6 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent) {
         break;
     case YAML_SCALAR_EVENT:
         DEBUG_OUT_TEMP("DEBUG[parseYamlFast2] YAML_SCALAR_EVENT = " << QString::fromLatin1((char*)prevEvent.data.scalar.value));
-        //node.nodeType_ = YamlNode::eNodeType::SCALAR;
         if ((char*)prevEvent.data.scalar.tag
                 && std::string((char*)prevEvent.data.scalar.tag) == "!array2d") {
             qDebug() << QString("DEBUG[parseYamlFast2] before read array2d");
@@ -127,7 +125,6 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent) {
         return YamlNode(QString::fromLatin1((char*)prevEvent.data.scalar.value));
         break;
     }
-    //DEBUG_OUT_TEMP("DEBUG[parseYamlFast2] after switch");
 
 }
 
@@ -148,7 +145,6 @@ const YamlNode loadYamlFast(const std::string& filePath) {
     parser_parse(parser, event);
     return parseYamlFast(parser, event);
     yaml_event_delete(&event);
-    // qDebug() << "DEBUG[load_yaml] after parseYamlFast";
     yaml_parser_delete(parser.get());
 }
 

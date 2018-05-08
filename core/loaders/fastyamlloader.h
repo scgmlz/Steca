@@ -19,9 +19,7 @@
 #include "core/typ/exception.h"
 #include<yaml.h>
 #include<memory>
-#include <QVariant>
 #include <QMap>
-#include <QStringBuilder>
 #include <QDebug>
 
 //! Functions loadRawfile and loadComment, and their dependences.
@@ -46,16 +44,40 @@ public:
         SCALAR,
     };
 
-    YamlNode(MapType&& map) : map_(new MapType(map)), nodeType_(eNodeType::MAP) { }
-    YamlNode(const MapType& map) : map_(new MapType(map)), nodeType_(eNodeType::MAP) { }
-    YamlNode(MapType* map) : map_(map), nodeType_(eNodeType::MAP) { }
+    YamlNode(MapType&& map) :
+        nodeType_(eNodeType::MAP),
+        map_(new MapType(map))
+    { }
+    YamlNode(const MapType& map) :
+        nodeType_(eNodeType::MAP),
+        map_(new MapType(map))
+    { }
+    YamlNode(MapType* map) :
+        nodeType_(eNodeType::MAP),
+        map_(map)
+    { }
 
-    YamlNode(SequenceType&& sequence) : sequence_(new SequenceType(sequence)), nodeType_(eNodeType::SEQUENCE) { }
-    YamlNode(const SequenceType& sequence) : sequence_(new SequenceType(sequence)), nodeType_(eNodeType::SEQUENCE) { }
-    YamlNode(SequenceType* sequence) : sequence_(sequence), nodeType_(eNodeType::SEQUENCE) { }
+    YamlNode(SequenceType&& sequence) :
+        nodeType_(eNodeType::SEQUENCE),
+        sequence_(new SequenceType(sequence))
+    { }
+    YamlNode(const SequenceType& sequence) :
+        nodeType_(eNodeType::SEQUENCE),
+        sequence_(new SequenceType(sequence))
+    { }
+    YamlNode(SequenceType* sequence) :
+        nodeType_(eNodeType::SEQUENCE),
+        sequence_(sequence)
+    { }
 
-    YamlNode( ScalarType&& scalar) : scalar_(scalar), nodeType_(eNodeType::SCALAR) { }
-    YamlNode(std::shared_ptr<std::vector<float>> vec) : vec_(vec), nodeType_(eNodeType::SCALAR) { }
+    YamlNode( ScalarType&& scalar) :
+        nodeType_(eNodeType::SCALAR) ,
+        scalar_(scalar)
+    { }
+    YamlNode(std::shared_ptr<std::vector<float>> vec) :
+        nodeType_(eNodeType::SCALAR) ,
+        vec_(vec)
+    { }
 
 
     YamlNode(eNodeType nodeType) : nodeType_(nodeType) { }
@@ -65,12 +87,12 @@ public:
     YamlNode() { }
 
     YamlNode(const YamlNode& other)
-        : nodeType_(other.nodeType_),
+        : isEnd(other.isEnd),
+          nodeType_(other.nodeType_),
           map_(other.map_),
           sequence_(other.sequence_),
           scalar_(other.scalar_),
-          vec_(other.vec_),
-          isEnd(other.isEnd)
+          vec_(other.vec_)
     { }
 
     ~YamlNode() { }
@@ -83,31 +105,30 @@ public:
     inline bool IsMap() const { return nodeType() == eNodeType::MAP; }
     inline bool IsScalar() const { return nodeType() == eNodeType::SCALAR; }
 
-    inline const ScalarType& value() const {
-        return getScalar();
-    }
+    inline const ScalarType& value() const { return getScalar(); }
 
-    inline double doubleValue(double deafault = Q_QNAN) const {
+    inline double doubleValue(double deafault = Q_QNAN) const
+    {
         bool ok = false;
         auto result = getScalar().toDouble(&ok);
         return ok ? result : deafault;
     }
 
-    inline float floatValue(float deafault = Q_QNAN) const {
+    inline float floatValue(float deafault = Q_QNAN) const
+    {
         bool ok = false;
         auto result = getScalar().toFloat(&ok);
         return ok ? result : deafault;
     }
 
-    inline int intValue(int deafault = 0, int base = 10) const {
+    inline int intValue(int deafault = 0, int base = 10) const
+    {
         bool ok = false;
         auto result = getScalar().toInt(&ok, base);
         return ok ? result : deafault;
     }
 
-    inline std::shared_ptr<std::vector<float>> floatVectorValue() const {
-        return vec_;
-    }
+    inline std::shared_ptr<std::vector<float>> floatVectorValue() const { return vec_; }
 
     YamlNode& operator= ( const YamlNode& other )
     {

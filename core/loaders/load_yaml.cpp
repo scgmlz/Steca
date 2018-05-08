@@ -15,7 +15,6 @@
 #include "fastyamlloader.h"
 #include "core/raw/rawfile.h"
 #include "qcr/engine/debug.h"
-//#include "yaml-cpp/include/yaml-cpp/yaml.h"
 
 namespace  {
 
@@ -36,7 +35,6 @@ void readInstrument(const YamlNode& node, Rawfile& rawfile)
 {
     if (!node.IsDefined())
         return;
-
     // const auto name       = node["name"].value();
     // const auto operators  = map(node["operators"], [](const auto& n){return n.value();});
     // const auto facility   = node["facility"].value();
@@ -48,7 +46,6 @@ void readFormat(const YamlNode& node, Rawfile& rawfile)
 {
     if (!node.IsDefined())
         return;
-
     // const auto identifier = node["identifier"].value();
     // units = name: unit. eg: time: second, or clearance: millimeter:
     // const auto units      = node["units"].as<std::map<std::string, std::string>>();
@@ -58,7 +55,6 @@ void readExperiment(const YamlNode& node, Rawfile& rawfile)
 {
     if (!node.IsDefined())
         return;
-
     // const auto number = node["number"].value();
     // const auto proposal = node["proposal"].value();
     // const auto title = node["title"].value();
@@ -99,10 +95,10 @@ void readSingleScan(const YamlNode& node, Metadata& metadata, Rawfile& rawfile)
     if (!node.IsDefined())
         return;
 
-    metadata.time = node["time"].doubleValue(Q_QNAN);
-    metadata.monitorCount = node["monitor"].doubleValue(Q_QNAN);
-    const auto sum = node["sum"].doubleValue(Q_QNAN);
-    const auto imageNode = node["image"];
+    metadata.time             = node["time"].doubleValue(Q_QNAN);
+    metadata.monitorCount     = node["monitor"].doubleValue(Q_QNAN);
+    const auto sum            = node["sum"].doubleValue(Q_QNAN);
+    const auto imageNode      = node["image"];
     const auto dimensionsNode = node["dimensions"];
 
     const size2d size(dimensionsNode["width"].intValue(), dimensionsNode["height"].intValue());
