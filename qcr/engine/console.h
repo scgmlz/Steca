@@ -45,7 +45,11 @@ private:
     enum class Caller { gui, cli, stack, sys } caller_ { Caller::gui };
     enum class Result : int { ok, err, suspend };
     Result exec(QString);
-    class QSocketNotifier *notifier_;
+#ifdef Q_OS_WIN
+	class QWinEventNotifier *notifier_;
+#else
+	class QSocketNotifier *notifier_;
+#endif
     std::stack<class CommandRegistry*> registryStack_;
     std::deque<QString> commandLifo_;
 private slots:

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+    <DisplayName>Steca</DisplayName>
+    <Description>Stress and texture calculator (data reduction for neutron and x-ray materials diffraction).</Description>
+    <Version>1.0.0-1</Version>
+    <ReleaseDate>2018-05-03</ReleaseDate>
+    <Default>true</Default>
+    <Script>installscript.qs</Script>
+</Package>
