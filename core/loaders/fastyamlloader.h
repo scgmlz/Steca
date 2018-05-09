@@ -23,8 +23,6 @@
 
 namespace loadYAML {
 
-#define DEBUG_OUT_TEMP(a) // qDebug() << a;
-
 typedef std::shared_ptr<yaml_parser_t> YamlParserType;
 
 class YamlNode {

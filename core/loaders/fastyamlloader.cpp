@@ -17,6 +17,13 @@
 #include <QMap>
 #include <sstream>
 
+// Allows for a very verbious yaml parser for debugging purposes:
+#if VERBIOUS_YAML_PARSER
+    #define YAML_DEBUG_OUT(a) qDebug() << a;
+#else
+    #define YAML_DEBUG_OUT(a)
+#endif
+
 namespace loadYAML {
 
 YamlNode::SequenceType::iterator YamlNode::begin()
@@ -90,7 +97,7 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
         THROW("DEBUG[parseYamlFast2] YAML_NO_EVENT");
         break;
     case YAML_STREAM_START_EVENT: {
-        DEBUG_OUT_TEMP("DEBUG[parseYamlFast2] YAML_STREAM_START_EVENT");
+        YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_STREAM_START_EVENT");
         yaml_event_t event;
         parser_parse(parser, event);
         return parseYamlFast(parser, event);
@@ -99,7 +106,7 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
         THROW("DEBUG[parseYamlFast2] YAML_STREAM_END_EVENT");
         break;
     case YAML_DOCUMENT_START_EVENT: {
-        DEBUG_OUT_TEMP("DEBUG[parseYamlFast2] YAML_DOCUMENT_START_EVENT");
+        YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_DOCUMENT_START_EVENT");
         yaml_event_t event;
         parser_parse(parser, event);
         return parseYamlFast(parser, event);
@@ -108,7 +115,7 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
         THROW("DEBUG[parseYamlFast2] YAML_DOCUMENT_END_EVENT");
         break;
     case YAML_SEQUENCE_START_EVENT: {
-        DEBUG_OUT_TEMP("DEBUG[parseYamlFast2] YAML_SEQUENCE_START_EVENT");
+        YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_SEQUENCE_START_EVENT");
         YamlNode node = YamlNode(new YamlNode::SequenceType());
         YamlNode::SequenceType& sequence = node.getSequence();
 
@@ -117,7 +124,7 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
             sequence.push_back(parseYamlFast(parser, event));
             yaml_event_delete(&event);
         };
-        DEBUG_OUT_TEMP("DEBUG[parseYamlFast2] YAML_SEQUENCE_END_EVENT");
+        YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_SEQUENCE_END_EVENT");
 
         yaml_event_delete(&event);
         return node;
@@ -126,14 +133,14 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
         THROW("DEBUG[parseYamlFast2] YAML_SEQUENCE_END_EVENT -- BAD");
         break;
     case YAML_MAPPING_START_EVENT: {
-        DEBUG_OUT_TEMP("DEBUG[parseYamlFast2] YAML_MAPPING_START_EVENT");
+        YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_MAPPING_START_EVENT");
         YamlNode node = YamlNode(new YamlNode::MapType());
         YamlNode::MapType& map = node.getMap();
 
         yaml_event_t event;
         while(YAML_MAPPING_END_EVENT != parser_parse(parser, event)) {
             QString key = QString::fromLatin1((char*)event.data.scalar.value);
-            DEBUG_OUT_TEMP("DEBUG[parseYamlFast2] key == " << key);
+            YAML_DEBUG_OUT("DEBUG[parseYamlFast2] key == " << key);
             yaml_event_delete(&event);
             parser_parse(parser, event);
             map.insert(key, parseYamlFast(parser, event));
@@ -146,33 +153,32 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
         THROW("DEBUG[parseYamlFast2] YAML_MAPPING_END_EVENT");
         break;
     case YAML_ALIAS_EVENT:
-        DEBUG_OUT_TEMP("DEBUG[parseYamlFast2] YAML_ALIAS_EVENT");
+        YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_ALIAS_EVENT");
         THROW(QString("Got alias (anchor %s)"));
         break;
     case YAML_SCALAR_EVENT:
-        DEBUG_OUT_TEMP("DEBUG[parseYamlFast2] YAML_SCALAR_EVENT = " << QString::fromLatin1((char*)prevEvent.data.scalar.value));
+        YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_SCALAR_EVENT = " << QString::fromLatin1((char*)prevEvent.data.scalar.value));
         if ((char*)prevEvent.data.scalar.tag // handle !array2d tag:
                 && std::string((char*)prevEvent.data.scalar.tag) == "!array2d") {
-            qDebug() << QString("DEBUG[parseYamlFast2] before read array2d");
-            std::shared_ptr<std::vector<float>> vec(new std::vector<float>);
+            YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_SCALAR_EVENT, tag = !array2d");
 
             std::stringstream arrayStr((char*)prevEvent.data.scalar.value, std::ios_base::in);
             int width; arrayStr >> width;
             int height; arrayStr >> height;
-            qDebug() << QString("DEBUG[parseYamlFast2] mid read array2d");
             // find start of actual array data:
             while ('[' != arrayStr.get())
             { }
 
+            std::shared_ptr<std::vector<float>> vec(new std::vector<float>);
             vec->reserve(width*height);
             for (int i = 0; i < width*height; i++) {
                 int v;
                 arrayStr >> v;
                 vec->push_back(v);
             }
-            qDebug() << QString("DEBUG[parseYamlFast2] after read array2d");
             return YamlNode(vec);
         }
+        YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_SCALAR_EVENT = " << QString::fromLatin1((char*)prevEvent.data.scalar.value));
         return YamlNode(QString::fromLatin1((char*)prevEvent.data.scalar.value));
     }
 }
