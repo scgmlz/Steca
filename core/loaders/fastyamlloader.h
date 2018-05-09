@@ -16,7 +16,6 @@
 #define FASTYAMLLOADER_H
 
 #include "core/raw/rawfile.h"
-#include "core/typ/exception.h"
 #include<yaml.h>
 #include <QMap>
 #include <QDebug>
