@@ -15,31 +15,50 @@
 #include "fastyamlloader.h"
 #include "core/raw/rawfile.h"
 #include "qcr/engine/debug.h"
+#include <algorithm>
+#include <functional>
 
 namespace  {
 
-typedef loadYAML::YamlNode YamlNode;
+using loadYAML::YamlNode;
 
-template <class Container, class Function>
-auto map (const Container &cont, Function fun) {
-    std::vector< typename
-            std::result_of<Function(const typename Container::value_type&)>::type> ret;
-    ret.reserve(cont.size());
-    for (const auto &v : cont) {
-        ret.push_back(fun(v));
-    }
-    return ret;
+///  Applies the given function to a range and stores the result in a new std::vector.
+///
+/// @param  begin First element in the range to transform.
+/// @param  end The end itereator.
+/// @param  func The transform function of following signature: `Ret fun(const Type &a);`.
+/// @return A new std::vector<Ret> with the stored results
+template <class InputIt, class Function>
+auto&& transformToVector(InputIt begin, InputIt end , Function func)
+{
+    std::vector<typename std::result_of<Function(const typename InputIt::value_type&)>::type> ret;
+    std::transform(begin, end, std::back_inserter(ret), func);
+    return std::move(ret);
 }
+
+/// Applies the given function to the elements of a container and stores the result in a new std::vector.
+///
+/// @param  cont Container whos elements are to be transformed
+/// @param  func The transform function of following signature: `Ret fun(const Type &a);`.
+/// @return A new std::vector<Ret> with the stored results
+template <class Container, class Function>
+auto&& transformToVector(Container cont , Function func)
+{
+    return transformToVector(cont.begin(), cont.end(), func);
+}
+
 
 void readInstrument(const YamlNode& node, Rawfile& rawfile)
 {
     if (!node.IsDefined())
         return;
     // const auto name       = node["name"].value();
-    // const auto operators  = map(node["operators"], [](const auto& n){return n.value();});
+    // const auto operators  = transformToVector(node["operators"],
+    //         [](const auto& n){return n.value();});
     // const auto facility   = node["facility"].value();
     // const auto website    = node["website"].value();
-    // const auto references = map(node["references"], [](const auto& n){return n.value();});
+    // const auto references = transformToVector(node["references"],
+    //         [](const auto& n){return n.value();});
 }
 
 void readFormat(const YamlNode& node, Rawfile& rawfile)

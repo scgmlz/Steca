@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/loaders/fastyamlloader.cpp
-//! @brief     Implements loader functions.
+//! @brief     Implements libyaml encapsulation in namespace loadYAML.
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -18,6 +18,62 @@
 #include <sstream>
 
 namespace loadYAML {
+
+YamlNode::SequenceType::iterator YamlNode::begin()
+{
+    switch (nodeType_) {
+    case eNodeType::MAP:
+        THROW("node(map) doesn't have an iterator")
+        break;
+    case eNodeType::SEQUENCE:
+        return sequence_->begin();
+        break;
+    case eNodeType::SCALAR:
+        THROW("node(scalar) doesn't have an iterator")
+    }
+}
+
+YamlNode::SequenceType::iterator YamlNode::end()
+{
+    switch (nodeType_) {
+    case eNodeType::MAP:
+        THROW("node(map) doesn't have an iterator")
+        break;
+    case eNodeType::SEQUENCE:
+        return sequence_->end();
+        break;
+    case eNodeType::SCALAR:
+        THROW("node(scalar) doesn't have an iterator")
+    }
+}
+
+YamlNode::SequenceType::const_iterator YamlNode::begin() const
+{
+    switch (nodeType_) {
+    case eNodeType::MAP:
+        THROW("node(map) doesn't have an iterator")
+        break;
+    case eNodeType::SEQUENCE:
+        return sequence_->cbegin();
+        break;
+    case eNodeType::SCALAR:
+        THROW("node(scalar) doesn't have an iterator")
+    }
+}
+
+YamlNode::SequenceType::const_iterator YamlNode::end() const
+{
+    switch (nodeType_) {
+    case eNodeType::MAP:
+        THROW("node(map) doesn't have an iterator")
+        break;
+    case eNodeType::SEQUENCE:
+        return sequence_->cend();
+        break;
+    case eNodeType::SCALAR:
+        THROW("node(scalar) doesn't have an iterator")
+    }
+}
 
 yaml_event_type_t parser_parse(YamlParserType parser, yaml_event_t& event)
 {
@@ -39,7 +95,6 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
         parser_parse(parser, event);
         return parseYamlFast(parser, event);
     }
-    break;
     case YAML_STREAM_END_EVENT:
         THROW("DEBUG[parseYamlFast2] YAML_STREAM_END_EVENT");
         break;
@@ -49,7 +104,6 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
         parser_parse(parser, event);
         return parseYamlFast(parser, event);
     }
-    break;
     case YAML_DOCUMENT_END_EVENT:
         THROW("DEBUG[parseYamlFast2] YAML_DOCUMENT_END_EVENT");
         break;
@@ -68,7 +122,6 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
         yaml_event_delete(&event);
         return node;
     }
-    break;
     case YAML_SEQUENCE_END_EVENT:
         THROW("DEBUG[parseYamlFast2] YAML_SEQUENCE_END_EVENT -- BAD");
         break;
@@ -89,7 +142,6 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
         yaml_event_delete(&event);
         return node;
     }
-    break;
     case YAML_MAPPING_END_EVENT:
         THROW("DEBUG[parseYamlFast2] YAML_MAPPING_END_EVENT");
         break;
@@ -99,7 +151,7 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
         break;
     case YAML_SCALAR_EVENT:
         DEBUG_OUT_TEMP("DEBUG[parseYamlFast2] YAML_SCALAR_EVENT = " << QString::fromLatin1((char*)prevEvent.data.scalar.value));
-        if ((char*)prevEvent.data.scalar.tag
+        if ((char*)prevEvent.data.scalar.tag // handle !array2d tag:
                 && std::string((char*)prevEvent.data.scalar.tag) == "!array2d") {
             qDebug() << QString("DEBUG[parseYamlFast2] before read array2d");
             std::shared_ptr<std::vector<float>> vec(new std::vector<float>);
@@ -121,31 +173,29 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
             qDebug() << QString("DEBUG[parseYamlFast2] after read array2d");
             return YamlNode(vec);
         }
-
         return YamlNode(QString::fromLatin1((char*)prevEvent.data.scalar.value));
-        break;
     }
-
 }
 
 const YamlNode loadYamlFast(const std::string& filePath) {
     FILEContainer file(fopen(filePath.c_str(), "r"));
     YamlParserType parser( new yaml_parser_t());
 
-    /* Initialize parser */
+    // Initialize parse
     if(!yaml_parser_initialize(&*parser))
         THROW("Failed to initialize parser!");
     if(*file == nullptr)
         THROW("Failed to open file!");
 
-    /* Set input file */
+    // Set input file
     yaml_parser_set_input_file(&*parser, *file);
 
     yaml_event_t event;
     parser_parse(parser, event);
-    return parseYamlFast(parser, event);
+    auto result = parseYamlFast(parser, event);
     yaml_event_delete(&event);
     yaml_parser_delete(parser.get());
+    return result;
 }
 
 } // namespace load

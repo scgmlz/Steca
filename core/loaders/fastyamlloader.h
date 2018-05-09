@@ -75,7 +75,6 @@ public:
         vec_(vec)
     { }
 
-
     YamlNode(eNodeType nodeType) : nodeType_(nodeType) { }
 
     YamlNode(bool _isEnd) : isEnd(_isEnd) { }
@@ -103,30 +102,30 @@ public:
 
     inline const ScalarType& value() const { return getScalar(); }
 
-    inline double doubleValue(double deafault = Q_QNAN) const
+    inline double doubleValue(double defaultVal = Q_QNAN) const
     {
         bool ok = false;
         auto result = getScalar().toDouble(&ok);
-        return ok ? result : deafault;
+        return ok ? result : defaultVal;
     }
 
-    inline float floatValue(float deafault = Q_QNAN) const
+    inline float floatValue(float defaultVal = Q_QNAN) const
     {
         bool ok = false;
         auto result = getScalar().toFloat(&ok);
-        return ok ? result : deafault;
+        return ok ? result : defaultVal;
     }
 
-    inline int intValue(int deafault = 0, int base = 10) const
+    inline int intValue(int defaultVal = 0, int base = 10) const
     {
         bool ok = false;
         auto result = getScalar().toInt(&ok, base);
-        return ok ? result : deafault;
+        return ok ? result : defaultVal;
     }
 
     inline std::shared_ptr<std::vector<float>> floatVectorValue() const { return vec_; }
 
-    YamlNode& operator= ( const YamlNode& other )
+    YamlNode& operator= (const YamlNode& other)
     {
         nodeType_ = other.nodeType_;
         *map_ = *other.map_;
@@ -139,13 +138,11 @@ public:
 
     inline YamlNode& operator[](const KeyType& key)
     {
-        //return getMap().find(key)->second;
         return getMap().find(key).value();
     }
 
     inline const YamlNode& operator[](const KeyType& key) const
     {
-        //return getMap().find(key)->second;
         return getMap().find(key).value();
     }
 
@@ -161,71 +158,20 @@ public:
 
     const int size() const {
         return sequence_->size();
-    }
-    inline SequenceType::iterator begin()
-    {
-        switch (nodeType_) {
-        case eNodeType::MAP:
-            THROW("node(map) doesn't have an iterator")
-            break;
-        case eNodeType::SEQUENCE:
-            return sequence_->begin();
-            break;
-        case eNodeType::SCALAR:
-            THROW("node(scalar) doesn't have an iterator")
-        }
-    }
+    }   inline SequenceType::iterator begin();
 
-    inline SequenceType::iterator end()
-    {
-        switch (nodeType_) {
-        case eNodeType::MAP:
-            THROW("node(map) doesn't have an iterator")
-            break;
-        case eNodeType::SEQUENCE:
-            return sequence_->end();
-            break;
-        case eNodeType::SCALAR:
-            THROW("node(scalar) doesn't have an iterator")
-        }
-    }
+    SequenceType::iterator end();
 
-    inline SequenceType::const_iterator begin() const
-    {
-        switch (nodeType_) {
-        case eNodeType::MAP:
-            THROW("node(map) doesn't have an iterator")
-            break;
-        case eNodeType::SEQUENCE:
-            return sequence_->cbegin();
-            break;
-        case eNodeType::SCALAR:
-            THROW("node(scalar) doesn't have an iterator")
-        }
-    }
+    SequenceType::const_iterator begin() const;
 
-    inline SequenceType::const_iterator end() const
-    {
-        switch (nodeType_) {
-        case eNodeType::MAP:
-            THROW("node(map) doesn't have an iterator")
-            break;
-        case eNodeType::SEQUENCE:
-            return sequence_->cend();
-            break;
-        case eNodeType::SCALAR:
-            THROW("node(scalar) doesn't have an iterator")
-        }
-    }
+    SequenceType::const_iterator end() const;
 
     inline const eNodeType nodeType() const { return nodeType_; }
 
-
-
     friend YamlNode&& parseYamlFast(YamlParserType parser, YamlNode&& node);
     friend YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent);
-private:
 
+private:
     eNodeType nodeType_;
     const std::shared_ptr<MapType> map_;// = nullptr;
     const std::shared_ptr<SequenceType> sequence_;// = nullptr;
