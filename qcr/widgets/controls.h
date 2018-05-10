@@ -175,7 +175,7 @@ private:
 //! Dialog, for modal use.
 class QcrDialog : protected CModal, CSettable, public QDialog  { // (inheritance order matters!)
 public:
-    QcrDialog(QWidget *parent = Q_NULLPTR, const QString &caption = QString());
+    QcrDialog(QWidget* parent, const QString& caption);
     ~QcrDialog();
     int exec() override;
     void onCommand(const QString&) override;
@@ -184,8 +184,8 @@ public:
 //! File dialog, for modal use, with console commands to select files and to close the dialog.
 class QcrFileDialog : protected CModal, CSettable, public QFileDialog  {
 public:
-    QcrFileDialog(QWidget *parent = Q_NULLPTR, const QString &caption = QString(),
-                  const QString &directory = QString(), const QString &filter = QString());
+    QcrFileDialog(
+        QWidget* parent, const QString& caption, const QString& directory, const QString& filter);
     ~QcrFileDialog();
     int exec() override;
     void onCommand(const QString&) override;

@@ -326,7 +326,7 @@ void QcrDialog::onCommand(const QString& arg)
 //! @class QcrFileDialog
 
 QcrFileDialog::QcrFileDialog(
-    QWidget *parent, const QString &caption, const QString &directory, const QString &filter)
+    QWidget* parent, const QString& caption, const QString& directory, const QString& filter)
     : QFileDialog(parent, caption, directory, filter)
     , CModal("fdia")
     , CSettable("fdia")
