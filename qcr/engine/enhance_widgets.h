@@ -16,6 +16,7 @@
 #define ENHANCE_WIDGETS_H
 
 #include "qcr/engine/cell.h"
+#include "qcr/engine/debug.h"
 #include "qcr/engine/string_ops.h"
 #include <functional> // no auto rm
 #include <QDialog>

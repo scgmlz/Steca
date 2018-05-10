@@ -21,15 +21,15 @@
 class Cell
 {
 public:
-    Cell();
+    Cell() {}
     typedef long int stamp_t;
 protected:
-    static stamp_t latestTimestamp__ { 0 }
+    static stamp_t latestTimestamp__;
     static stamp_t mintTimestamp() { return ++latestTimestamp__; }
 private:
-    stamp_t timestamp_ { 0 }
+    stamp_t timestamp_ { 0 };
 };
 
-class FinalCell : public Cell;
+class FinalCell : public Cell {};
 
 #endif // CELL_H
