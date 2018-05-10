@@ -50,7 +50,6 @@ QcrTrigger::QcrTrigger(const QString& rawname, const QString& text, const QStrin
             if (!isEnabled())
                 txt += "\nThis trigger is currently inoperative.";
             setToolTip(txt); });
-    EMITS(("Trigger "+name()),changed());
 };
 
 QcrTrigger::QcrTrigger(
@@ -90,7 +89,6 @@ QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on, const
             else
                 txt += "\nThis toggle is currently unchecked. Click to check.";
             setToolTip(txt); });
-    EMITS(("Toggle "+name()),changed());
 };
 
 QcrToggle::QcrToggle(const QString& name, const QString& text, bool on, const QString& iconFile,

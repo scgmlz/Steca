@@ -58,8 +58,8 @@ protected:
     void onChangedValue(bool hasFocus, T val) {
         if (val!=reportedValue_) {
             doLog(softwareCalling_||!hasFocus, name()+" "+strOp::to_s(val));
-            if (!softwareCalling_ && !hasFocus)
-                printf("BUG in %s: !softwareCalling_ && !hasFocus\n",
+            if (softwareCalling_ && hasFocus)
+                printf("UNEXPECTED in %s: softwareCalling_ && hasFocus\n",
                        name().toLatin1().constData());
             // TODO get rid of hasFocus ???
             reportedValue_ = val;
