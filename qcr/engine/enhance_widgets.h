@@ -56,14 +56,14 @@ protected:
         doLog(true, "initialization: "+name()+" "+strOp::to_s(reportedValue_));
     }
     void onChangedValue(bool hasFocus, T val) {
-        if (val!=reportedValue_) {
-            doLog(softwareCalling_||!hasFocus, name()+" "+strOp::to_s(val));
-            if (softwareCalling_ && hasFocus)
-                printf("UNEXPECTED in %s: softwareCalling_ && hasFocus\n",
-                       name().toLatin1().constData());
-            // TODO get rid of hasFocus ???
-            reportedValue_ = val;
-        }
+        if (val==reportedValue_)
+            return; // nothing to do
+        doLog(softwareCalling_||!hasFocus, name()+" "+strOp::to_s(val));
+        if (softwareCalling_ && hasFocus)
+            printf("UNEXPECTED in %s: softwareCalling_ && hasFocus\n",
+                   name().toLatin1().constData());
+        // TODO get rid of hasFocus ???
+        reportedValue_ = val;
     }
     bool softwareCalling_ = false;
 private:
