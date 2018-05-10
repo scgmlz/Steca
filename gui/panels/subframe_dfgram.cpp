@@ -36,7 +36,7 @@ private:
     QcrComboBox comboNormType_ {"normTyp", {"none", "monitor", "Δ monitor", "time", "Δ time"}};
     QcrRadioButton intenSum_ {"intenSum", "sum"};
     QcrRadioButton intenAvg_ {"intenAvg", "avg ×"};
-    QcrDoubleSpinBox intenScale_ {"intenScale", 6, 0.001};
+    QcrDoubleSpinBox intenScale_ {"intenScale", 4, 0.001};
     QcrToggle actZoom_ {"actZoom", "zoom", false, ":/icon/zoom"};
 };
 
@@ -47,7 +47,6 @@ Dfgram::Dfgram()
     plot_ = new PlotDfgram(*this);
     gGui->toggles->showBackground.programaticallySetValue(true);
     intenAvg_.programaticallySetValue(true);
-    intenScale_.setDecimals(3);
 
     // inbound connections
     connect(gSession, &Session::sigDataHighlight, this, &Dfgram::onHighlight);

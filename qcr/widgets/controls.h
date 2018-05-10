@@ -94,7 +94,8 @@ private:
 class QcrDoubleSpinBox : public QDoubleSpinBox, public QcrControl<double> {
     Q_OBJECT
 public:
-    QcrDoubleSpinBox(const QString& name, int ndigits, double min = LLONG_MIN, double max = LLONG_MAX);
+    QcrDoubleSpinBox(const QString& name, int ndigits,
+                     double min = LLONG_MIN, double max = LLONG_MAX);
     void onCommand(const QString&) override;
     double getValue() const final { return value(); }
 signals:

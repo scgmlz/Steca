@@ -179,6 +179,7 @@ QcrDoubleSpinBox::QcrDoubleSpinBox(const QString& _name, int ndigits, double min
     widgetUtils::setWidth(this, 2+ndigits, true);
     if (min>max)
         qSwap(min, max);
+    setDecimals(ndigits);
     setMinimum(min);
     setMaximum(max);
     reportedValue_ = value();

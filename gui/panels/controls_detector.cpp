@@ -37,7 +37,7 @@ private:
     QHBoxLayout offsetLayout_;
 
     QcrDoubleSpinBox detDistance_ {"detDistance", 6};
-    QcrDoubleSpinBox detPixelSize_ {"detPixelSize", 6};
+    QcrDoubleSpinBox detPixelSize_ {"detPixelSize", 3};
     QcrSpinBox beamOffsetI_ {"beamOffsetI", 3, true};
     QcrSpinBox beamOffsetJ_ {"beamOffsetJ", 3, true};
 };
@@ -46,7 +46,6 @@ GeometryControls::GeometryControls()
 {
     // initialization
     fromCore();
-    detPixelSize_.setDecimals(3);
 
     // inbound connection
     connect(gSession, &Session::sigDetector, this, &GeometryControls::fromCore);
