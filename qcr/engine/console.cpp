@@ -251,9 +251,9 @@ void Console::forget(const QString& name)
     registry().forget(name);
 }
 
-void Console::log2(bool hadFocus, const QString& line)
+void Console::log2(bool userCall, const QString& line)
 {
-    if (caller_==Caller::gui && !hadFocus)
+    if (caller_==Caller::gui && !userCall)
         log("#: " + line);
     else
         log(line);

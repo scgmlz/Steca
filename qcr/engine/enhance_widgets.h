@@ -59,11 +59,12 @@ protected:
     void onChangedValue(bool hasFocus, T val) {
         if (val==reportedValue_)
             return; // nothing to do
-        doLog(softwareCalling_||!hasFocus, name()+" "+strOp::to_s(val));
-        if (softwareCalling_ && hasFocus)
-            qDebug() << "UNEXPECTED in "+name()+" softwareCalling_ && hasFocus";
-        if (!softwareCalling_ && !hasFocus)
-            qDebug() << "UNDESIRABLE in "+name()+" !softwareCalling_ && !hasFocus";
+        bool userCall = hasFocus && !softwareCalling_;
+        doLog(!userCall, name()+" "+strOp::to_s(val));
+        if (hasFocus && softwareCalling_)
+            qDebug() << "UNEXPECTED in "+name()+" hasFocus && softwareCalling_";
+        if (!hasFocus && !softwareCalling_)
+            qDebug() << "UNDESIRABLE in "+name()+" !hasFocus && !softwareCalling_";
         // not sure whether we want to get rid of hasFocus
         reportedValue_ = val;
     }
