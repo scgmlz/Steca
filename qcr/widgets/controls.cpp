@@ -33,6 +33,14 @@ QcrAction::QcrAction(const QString& text)
     , tooltip_(text.toLower())
 {}
 
+bool QcrAction::hasFocus()
+{
+    for (const QWidget* w: associatedWidgets())
+        if (w->hasFocus())
+            return true;
+    return false;
+}
+
 //  ***********************************************************************************************
 //! @class QcrTrigger
 
@@ -79,8 +87,13 @@ QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on, const
         setIcon(QIcon(iconFile));
     setCheckable(true);
     programaticallySetValue(on);
-    connect(this, &QAction::toggled, this, [this](bool val){onChangedValue(true, val);});
+    connect(this, &QAction::toggled, this, [this](bool val){
+            //qDebug()<<"TOGGLE "<<name()<<"toggled";
+            onChangedValue(hasFocus(), val);});
     connect(this, &QAction::changed, [this]()->void {
+            // Called upon any property change.
+            // Also called when this is toggled (https://bugreports.qt.io/browse/QTBUG-68213)
+            //qDebug()<<"TOGGLE "<<name()<<"changed";
             QString txt = tooltip_;
             if (!isEnabled())
                 txt += "\nThis toggle is currently inoperative.";

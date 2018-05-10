@@ -33,6 +33,7 @@ public:
     QcrAction(const QString& text);
 protected:
     QString tooltip_;
+    bool hasFocus();
 };
 
 //! Trigger, for use in buttons or menu entries, that can also be activated by console command.
