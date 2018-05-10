@@ -29,7 +29,7 @@ class Console : public QObject
 public:
     Console();
     ~Console();
-    QString learn(const QString& name, CSettable*);
+    QString learn(const QString& name, class CSettable*);
     void forget(const QString& name);
     void readFile(const QString& fName);
     void call(const QString&);

@@ -81,7 +81,7 @@ public:
 signals:
     void valueReleased(int); //! Improving over valueChanged, do not signal intermediate states
 private:
-    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent*) override;
     void reportChange();
     int reportedValue_;
     void doSetValue(int val) final { setValue(val); }
@@ -100,7 +100,7 @@ public:
 signals:
     void valueReleased(double); //! Improving over valueChanged, do not signal intermediate states
 private:
-    void mouseReleaseEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent*) override;
     void reportChange();
     double reportedValue_;
     void doSetValue(double val) final { setValue(val); }
@@ -138,13 +138,16 @@ class QcrComboBox : public QComboBox, public QcrControl<int> {
 public:
     QcrComboBox(const QString& name, const QStringList& items = {});
     int getValue() const final { return currentIndex(); }
+    void addItems(const QStringList& texts);
 private:
     void doSetValue(int val) final { setCurrentIndex(val); }
     // hide some member functions of QComboBox:
     int currentIndex() const { return QComboBox::currentIndex(); }
     void setCurrentIndex(int val) { QComboBox::setCurrentIndex(val); }
-    void setCurrentText(const QString &) = delete;
+    void setCurrentText(const QString&) = delete;
     void setEditable() = delete; // stay with default: editable=false
+    void addItem(const QIcon&, const QVariant&) = delete; // reimplement if needed, cf. addItems
+    void addItem(const QIcon&, const QString&, const QVariant&) = delete;
 };
 
 //! Named line edit that can be set by console command.

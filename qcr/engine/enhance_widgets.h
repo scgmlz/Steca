@@ -15,6 +15,7 @@
 #ifndef ENHANCE_WIDGETS_H
 #define ENHANCE_WIDGETS_H
 
+#include "qcr/engine/console.h" // DEBUG
 #include "qcr/engine/string_ops.h"
 #include <functional> // no auto rm
 #include <QDialog>
@@ -57,12 +58,16 @@ protected:
     void onChangedValue(bool hasFocus, T val) {
         if (val!=reportedValue_) {
             doLog(softwareCalling_||!hasFocus, name()+" "+strOp::to_s(val));
+            if (!softwareCalling_ && !hasFocus)
+                printf("BUG in %s: !softwareCalling_ && !hasFocus\n",
+                       name().toLatin1().constData());
+            // TODO get rid of hasFocus ???
             reportedValue_ = val;
         }
     }
+    bool softwareCalling_ = false;
 private:
     virtual void doSetValue(T) = 0;
-    bool softwareCalling_ = false;
     T reportedValue_;
 };
 

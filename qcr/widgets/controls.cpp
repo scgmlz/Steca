@@ -146,7 +146,7 @@ QcrSpinBox::QcrSpinBox(
                 onChangedValue(hasFocus(), val); });
 }
 
-void QcrSpinBox::mouseReleaseEvent(QMouseEvent *event)
+void QcrSpinBox::mouseReleaseEvent(QMouseEvent* event)
 {
     QSpinBox::mouseReleaseEvent(event);
     reportChange();
@@ -188,7 +188,7 @@ QcrDoubleSpinBox::QcrDoubleSpinBox(const QString& _name, int ndigits, double min
                 onChangedValue(hasFocus(), val); });
 }
 
-void QcrDoubleSpinBox::mouseReleaseEvent(QMouseEvent *event)
+void QcrDoubleSpinBox::mouseReleaseEvent(QMouseEvent* event)
 {
     QDoubleSpinBox::mouseReleaseEvent(event);
     reportChange();
@@ -248,6 +248,13 @@ QcrComboBox::QcrComboBox(const QString& _name, const QStringList& items)
             onChangedValue(hasFocus(), val); });
 }
 
+void QcrComboBox::addItems(const QStringList& texts)
+{
+    softwareCalling_ = true;
+    QComboBox::addItems(texts);
+    softwareCalling_ = false;
+}
+
 //  ***********************************************************************************************
 //! @class QcrLineEdit
 
@@ -288,7 +295,7 @@ QcrTabWidget::QcrTabWidget(const QString& _name)
 //  ***********************************************************************************************
 //! @class QcrDialog
 
-QcrDialog::QcrDialog(QWidget *parent, const QString &caption)
+QcrDialog::QcrDialog(QWidget* parent, const QString& caption)
     : QDialog(parent)
     , CModal("dlog")
     , CSettable("dlog")
