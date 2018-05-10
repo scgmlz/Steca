@@ -15,7 +15,7 @@
 #ifndef CELL_H
 #define CELL_H
 
-#include <list>
+#include <set>
 
 //! Manages update dependences.
 class Cell
@@ -23,15 +23,21 @@ class Cell
 public:
     Cell() {}
     typedef long int stamp_t;
+    stamp_t update();
+    void add_source(Cell*);
+    void rm_source(Cell*);
 protected:
+    virtual void recompute() = 0;
 private:
     stamp_t timestamp_ { 0 };
+    std::set<Cell*> sources_;
 };
 
 class FinalCell : public Cell {
 private:
     static stamp_t latestTimestamp__;
     static stamp_t mintTimestamp() { return ++latestTimestamp__; }
+    void recompute() final {};
 };
 
 #endif // CELL_H
