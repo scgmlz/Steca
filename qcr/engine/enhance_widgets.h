@@ -15,13 +15,13 @@
 #ifndef ENHANCE_WIDGETS_H
 #define ENHANCE_WIDGETS_H
 
-#include "qcr/engine/console.h" // DEBUG
+#include "qcr/engine/cell.h"
 #include "qcr/engine/string_ops.h"
 #include <functional> // no auto rm
 #include <QDialog>
 
 //! Mix-in for control widgets that can be changed by a console command.
-class CSettable {
+class CSettable : public FinalCell {
 public:
     virtual void onCommand(const QString&) = 0;
     const QString& name() const { return name_; }
@@ -60,12 +60,13 @@ protected:
             return; // nothing to do
         doLog(softwareCalling_||!hasFocus, name()+" "+strOp::to_s(val));
         if (softwareCalling_ && hasFocus)
-            printf("UNEXPECTED in %s: softwareCalling_ && hasFocus\n",
-                   name().toLatin1().constData());
-        // TODO get rid of hasFocus ???
+            qDebug() << "UNEXPECTED in "+name()+" softwareCalling_ && hasFocus";
+        if (!softwareCalling_ && !hasFocus)
+            qDebug() << "UNDESIRABLE in "+name()+" !softwareCalling_ && !hasFocus";
+        // not sure whether we want to get rid of hasFocus
         reportedValue_ = val;
     }
-    bool softwareCalling_ = false;
+    bool softwareCalling_ = false; // make it private again ??
 private:
     virtual void doSetValue(T) = 0;
     T reportedValue_;
