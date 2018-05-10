@@ -292,6 +292,13 @@ QcrTabWidget::QcrTabWidget(const QString& _name)
             onChangedValue(hasFocus(), val); });
 }
 
+void QcrTabWidget::addTab(QWidget* page, const QString& label)
+{
+    softwareCalling_ = true;
+    QTabWidget::addTab(page, label);
+    softwareCalling_ = false;
+}
+
 //  ***********************************************************************************************
 //! @class QcrDialog
 

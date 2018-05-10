@@ -167,6 +167,7 @@ class QcrTabWidget : public QTabWidget, public QcrControl<int> {
 public:
     QcrTabWidget(const QString& name);
     int getValue() const final { return currentIndex(); }
+    void addTab(QWidget* page, const QString& label);
 private:
     void doSetValue(int val) final { setCurrentIndex(val); }
     // hide some member functions of QTabWidget:
