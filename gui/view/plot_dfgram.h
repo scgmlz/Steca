@@ -40,6 +40,7 @@ private:
 class PlotDfgram : public QCustomPlot {
 public:
     PlotDfgram(class Dfgram&);
+    PlotDfgram(const PlotDfgram&) = delete;
 
     void plotEmpty();
     void renderAll();

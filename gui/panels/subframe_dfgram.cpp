@@ -27,6 +27,7 @@
 class Dfgram : public QWidget {
 public:
     Dfgram();
+    Dfgram(const Dfgram&) = delete;
 private:
     void onNormChanged();
     void onHighlight();
