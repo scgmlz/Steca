@@ -15,14 +15,13 @@
 #ifndef ENHANCE_WIDGETS_H
 #define ENHANCE_WIDGETS_H
 
-#include "qcr/engine/cell.h"
 #include "qcr/engine/debug.h"
 #include "qcr/engine/string_ops.h"
 #include <functional> // no auto rm
 #include <QDialog>
 
 //! Mix-in for control widgets that can be changed by a console command.
-class CSettable : public FinalCell {
+class CSettable {
 public:
     virtual void onCommand(const QString&) = 0;
     const QString& name() const { return name_; }

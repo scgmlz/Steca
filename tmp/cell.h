@@ -40,4 +40,17 @@ private:
     void recompute() final {};
 };
 
+/*
+template<class T>
+class ParamCell : public Cell {
+public:
+    T getParam() { return value_; }
+    void setParam() { }
+    void addClient(
+private:
+    T value_;
+    void recompute() final {};
+};
+*/
+
 #endif // CELL_H
