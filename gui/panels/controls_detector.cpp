@@ -180,8 +180,7 @@ private:
     void fromCore();
 
     QHBoxLayout layout_;
-    QcrSpinBox combineMeasurements_ {"combineMeasurements", 3, false, 1, 999,
-            "Combine this number of measurements into one group"};
+    QcrSpinBox* combineMeasurements_;
     QcrToggle dropIncompleteAction_ {"dropIncomplete",
             "Drop measurement groups that do not have the full number of members",
             false, ":/icon/dropIncomplete" };
@@ -190,18 +189,21 @@ private:
 
 ActiveClustersControls::ActiveClustersControls()
 {
+    combineMeasurements_ = new QcrSpinBox {"combineMeasurements", 3, false, 1, 999,
+                                           "Combine this number of measurements into one group"};
+
     // inbound connection
     connect(gSession, &Session::sigClusters, this, &ActiveClustersControls::fromCore);
 
     // outbound connections
-    connect(&combineMeasurements_, &QcrSpinBox::valueReleased,
+    connect(combineMeasurements_, &QcrSpinBox::valueReleased,
             [](int num) { gSession->dataset().setBinning(num); });
     connect(&dropIncompleteAction_, &QAction::toggled,
             [](bool on) { gSession->dataset().setDropIncomplete(on); });
 
     // layout
     layout_.addWidget(new QLabel("combine"));
-    layout_.addWidget(&combineMeasurements_);
+    layout_.addWidget(combineMeasurements_);
     layout_.addWidget(new QLabel("measurements"));
     layout_.addWidget(&dropIncompleteButton_);
     layout_.addStretch(1);
@@ -214,7 +216,7 @@ ActiveClustersControls::ActiveClustersControls()
 
 void ActiveClustersControls::fromCore()
 {
-    combineMeasurements_.programaticallySetValue(gSession->dataset().binning());
+    combineMeasurements_->programaticallySetValue(gSession->dataset().binning());
     dropIncompleteAction_.setEnabled(gSession->dataset().hasIncomplete());
 }
 
@@ -230,22 +232,23 @@ private:
     void fromCore();
 
     QHBoxLayout layout_;
-    QcrSpinBox numSlices_{"numSlices", 2, false, 0, INT_MAX,
-            "Number of γ slices (0: no slicing, take entire image)" };
+    QcrSpinBox* numSlices_;
 };
 
 GammaControls::GammaControls()
 {
+    numSlices_ = new QcrSpinBox {"numSlices", 2, false, 0, INT_MAX,
+                                 "Number of γ slices (0: no slicing, take entire image)" };
     // inbound connection
     connect(gSession, &Session::sigClusters, this, &GammaControls::fromCore);
 
     // outbound connections
-    connect(&numSlices_, &QcrSpinBox::valueReleased, [](int val) {
+    connect(numSlices_, &QcrSpinBox::valueReleased, [](int val) {
             gSession->gammaSelection().setNumSlices(val); });
 
     // layout
     layout_.addWidget(new QLabel("number of γ slices"));
-    layout_.addWidget(&numSlices_);
+    layout_.addWidget(numSlices_);
     layout_.addStretch(1);
     setLayout(&layout_);
 
@@ -255,7 +258,7 @@ GammaControls::GammaControls()
 
 void GammaControls::fromCore()
 {
-    numSlices_.programaticallySetValue(gSession->gammaSelection().numSlices());
+    numSlices_->programaticallySetValue(gSession->gammaSelection().numSlices());
     EMITS("GammaControls", gSession->sigImage()); // TODO redundant with emission from idxSlice
 }
 
