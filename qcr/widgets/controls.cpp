@@ -226,11 +226,21 @@ void QcrDoubleSpinBox::onCommand(const QString& arg)
 //  ***********************************************************************************************
 //! @class QcrCheckBox
 
-QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, bool val, ParamCell<bool>* cell)
+QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, bool val)
+    : QCheckBox(text)
+    , QcrControl<bool>(_name)
+{
+    doSetValue(val);
+    init();
+    connect(this, _SLOT_(QCheckBox,stateChanged,int), [this](int val)->void {
+            onChangedValue(hasFocus(), (bool)val); });
+}
+
+QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, ParamCell<bool>* cell)
     : QCheckBox(text)
     , QcrControl<bool>(_name, cell)
 {
-    doSetValue(val);
+    doSetValue(cell->getParam());
     init();
     connect(this, _SLOT_(QCheckBox,stateChanged,int), [this](int val)->void {
             onChangedValue(hasFocus(), (bool)val); });
@@ -315,9 +325,9 @@ void QcrTabWidget::addTab(QWidget* page, const QString& label)
 //! @class QcrDialog
 
 QcrDialog::QcrDialog(QWidget* parent, const QString& caption)
-    : QDialog(parent)
-    , CModal("dlog")
+    : CModal("dlog")
     , CSettable("dlog")
+    , QDialog(parent)
 {
     setWindowTitle(caption);
 }
@@ -353,9 +363,9 @@ void QcrDialog::onCommand(const QString& arg)
 
 QcrFileDialog::QcrFileDialog(
     QWidget* parent, const QString& caption, const QString& directory, const QString& filter)
-    : QFileDialog(parent, caption, directory, filter)
-    , CModal("fdia")
+    : CModal("fdia")
     , CSettable("fdia")
+    , QFileDialog(parent, caption, directory, filter)
 {}
 
 QcrFileDialog::~QcrFileDialog()

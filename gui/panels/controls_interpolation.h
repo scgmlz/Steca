@@ -24,7 +24,7 @@ public:
     ControlsInterpolation();
 private:
     void fromCore();
-    QcrCheckBox      doInterpol_ {"doInterpol", "enabled"};
+    QcrCheckBox*     doInterpol_;
     QcrDoubleSpinBox stepAlpha_  {"stepAlpha", 6, 1., 30.};
     QcrDoubleSpinBox stepBeta_   {"stepBeta", 6, 1., 30.};
     QcrDoubleSpinBox idwRadius_  {"idwRadius", 6, 0., 90.};

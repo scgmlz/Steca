@@ -250,7 +250,7 @@ itf_t interpolateValues(deg searchRadius, const PeakInfos& infos, deg alpha, deg
 //! Interpolates infos to equidistant grid in alpha and beta.
 void algo::interpolateInfos(QProgressBar* progressBar)
 {
-    if (!gSession->interpol().enabled()) {
+    if (!gSession->interpol().enabled.getParam()) {
         gSession->setInterpolatedPeakInfos({});
         return;
     }
