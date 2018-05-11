@@ -31,16 +31,19 @@ double const Geometry::DEF_DETECTOR_DISTANCE = 1035;
 double const Geometry::DEF_DETECTOR_PIXEL_SIZE = 1;
 
 Geometry::Geometry()
-    : detectorDistance_ {DEF_DETECTOR_DISTANCE}
-    , pixSize_ {DEF_DETECTOR_PIXEL_SIZE}
 {
+    detectorDistance.connectAction([](){ emit gSession->sigDetector();});
+    pixSize.         connectAction([](){ emit gSession->sigDetector();});
+    // TODO restore constraints?
+    // detectorDistance_ = qMin(qMax(detectorDistance, 10.), 9999.);
+    // pixSize_ = qMin(qMax(pixSize, .1), 9.9);
 }
 
 void Geometry::fromSettings()
 {
     XSettings s("DetectorGeometry");
-    detectorDistance_ = s.readReal("detectorDistance", DEF_DETECTOR_DISTANCE);
-    pixSize_ = s.readReal("pixelSize", DEF_DETECTOR_PIXEL_SIZE);
+    detectorDistance.setParam(s.readReal("detectorDistance", DEF_DETECTOR_DISTANCE));
+    pixSize.         setParam(s.readReal("pixelSize", DEF_DETECTOR_PIXEL_SIZE));
     midPixOffset_.i = s.readInt("offsetX", 0);
     midPixOffset_.j = s.readInt("offsetY", 0);
 }
@@ -48,38 +51,26 @@ void Geometry::fromSettings()
 void Geometry::toSettings() const
 {
     XSettings s("DetectorGeometry");
-    s.setValue("detectorDistance", detectorDistance_);
-    s.setValue("pixelSize", pixSize_);
+    s.setValue("detectorDistance", detectorDistance.val());
+    s.setValue("pixelSize", pixSize.val());
     s.setValue("offsetX", midPixOffset_.i);
     s.setValue("offsetY", midPixOffset_.j);
 }
 
 void Geometry::fromJson(const JsonObj& obj)
 {
-    setDetectorDistance(obj.loadPreal("distance"));
-    setPixSize(obj.loadPreal("pixel size"));
+    detectorDistance.setParam(obj.loadPreal("distance"));
+    pixSize.         setParam(obj.loadPreal("pixel size"));
     setOffset(obj.loadIJ("beam offset"));
 }
 
 QJsonObject Geometry::toJson() const
 {
     return {
-        { "distance", QJsonValue(detectorDistance()) },
-        { "pixel size", QJsonValue(pixSize()) },
+        { "distance", QJsonValue(detectorDistance.val()) },
+        { "pixel size", QJsonValue(pixSize.val()) },
         { "beam offset", midPixOffset().toJson() }
     };
-}
-
-void Geometry::setDetectorDistance(double detectorDistance)
-{
-    detectorDistance_ = qMin(qMax(detectorDistance, 10.), 9999.);
-    EMITS("Geometry::setDetectorDistance", gSession->sigDetector());
-}
-
-void Geometry::setPixSize(double pixSize)
-{
-    pixSize_ = qMin(qMax(pixSize, .1), 9.9);
-    EMITS(" Geometry::setPixSize", gSession->sigDetector());
 }
 
 void Geometry::setOffset(const IJ& midPixOffset)
@@ -90,8 +81,8 @@ void Geometry::setOffset(const IJ& midPixOffset)
 
 int Geometry::compare(const Geometry& that) const
 {
-    RET_COMPARE_VALUE(detectorDistance_)
-    RET_COMPARE_VALUE(pixSize_)
+    RET_COMPARE_VALUE(detectorDistance.val())
+    RET_COMPARE_VALUE(pixSize.val())
     RET_COMPARE_COMPARABLE(midPixOffset_)
     return 0;
 }

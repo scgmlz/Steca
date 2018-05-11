@@ -302,9 +302,6 @@ void ParamsView::onData()
 ControlsPeakfits::ControlsPeakfits()
     : comboReflType_ {"reflTyp", FunctionRegistry::instance()->keys()}
 {
-    // inbound connection
-    connect(gSession, &Session::sigPeaks, this, &ControlsPeakfits::onPeaks);
-
     // outbound connections
     connect(&gGui->triggers->addPeak, &QAction::triggered, [this]() {
             gSession->peaks().add(comboReflType_.currentText()); });
@@ -333,11 +330,6 @@ ControlsPeakfits::ControlsPeakfits()
     setLayout(box);
     update();
 }
-
-void ControlsPeakfits::onPeaks()
-{
-    Peak* peak = gSession->peaks().selectedPeak();
-};
 
 void ControlsPeakfits::hideEvent(QHideEvent*)
 {

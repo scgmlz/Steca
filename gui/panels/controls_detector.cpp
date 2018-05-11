@@ -45,8 +45,8 @@ private:
 GeometryControls::GeometryControls()
 {
     // initialization
-    detDistance_  = new QcrDoubleSpinBox {"detDistance", 6};
-    detPixelSize_ = new QcrDoubleSpinBox {"detPixelSize", 3};
+    detDistance_  = new QcrDoubleSpinBox {"detDistance", &gSession->geometry().detectorDistance, 6};
+    detPixelSize_ = new QcrDoubleSpinBox {"detPixelSize", &gSession->geometry().pixSize, 3};
     beamOffsetI_  = new QcrSpinBox       {"beamOffsetI", 3, true};
     beamOffsetJ_  = new QcrSpinBox       {"beamOffsetJ", 3, true};
     fromCore();
@@ -55,10 +55,6 @@ GeometryControls::GeometryControls()
     connect(gSession, &Session::sigDetector, this, &GeometryControls::fromCore);
 
     // outbound connections and control widget setup
-    connect(detDistance_, &QcrDoubleSpinBox::valueReleased, [](double val) {
-            gSession->geometry().setDetectorDistance(val); });
-    connect(detPixelSize_, &QcrDoubleSpinBox::valueReleased, [](double val) {
-            gSession->geometry().setPixSize(val); });
     connect(beamOffsetI_, &QcrSpinBox::valueReleased, [](int val) {
             gSession->geometry().midPixOffset().i = val;
             EMITS("GeometryControls", gSession->sigDetector()); });
@@ -96,8 +92,6 @@ GeometryControls::GeometryControls()
 void GeometryControls::fromCore()
 {
     const Geometry& g = gSession->geometry();
-    detDistance_ ->programaticallySetValue(g.detectorDistance());
-    detPixelSize_->programaticallySetValue(g.pixSize());
     beamOffsetI_ ->programaticallySetValue(g.midPixOffset().i);
     beamOffsetJ_ ->programaticallySetValue(g.midPixOffset().j);
 }

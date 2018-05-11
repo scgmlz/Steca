@@ -23,7 +23,6 @@ class ControlsPeakfits : public QWidget {
 public:
     ControlsPeakfits();
 private:
-    void onPeaks();
     QHBoxLayout topControls_;
     QcrComboBox comboReflType_;
     void hideEvent(QHideEvent*) final;

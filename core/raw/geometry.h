@@ -15,6 +15,7 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
+#include "qcr/engine/cell.h"
 #include "core/typ/angles.h"
 #include "core/typ/size2d.h"
 #include "core/typ/ij.h"
@@ -32,20 +33,16 @@ public:
     void fromSettings();
     void fromJson(const JsonObj& obj);
 
-    void setDetectorDistance(double);
-    void setPixSize(double);
     void setOffset(const IJ& midPixOffset);
 
-    double detectorDistance() const { return detectorDistance_; }
-    double pixSize() const { return pixSize_; }
+    ParamCell<double> detectorDistance {DEF_DETECTOR_DISTANCE};   // from the sample to the detector
+    ParamCell<double> pixSize          {DEF_DETECTOR_PIXEL_SIZE}; // size of the detector pixel
     IJ& midPixOffset() { return midPixOffset_; }
     const IJ& midPixOffset() const { return midPixOffset_; }
     void toSettings() const;
     QJsonObject toJson() const;
 
 private:
-    double detectorDistance_; // the distance from the sample to the detector
-    double pixSize_; // size of the detector pixel
     IJ midPixOffset_;
 };
 
