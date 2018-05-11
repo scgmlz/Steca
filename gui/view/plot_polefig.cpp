@@ -36,7 +36,6 @@ PlotPolefig::PlotPolefig()
     : flat_(false)
     , alphaMax_(90)
     , avgAlphaMax_(0)
-
 {
     update();
 }

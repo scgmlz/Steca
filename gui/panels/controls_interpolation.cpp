@@ -17,13 +17,13 @@
 
 ControlsInterpolation::ControlsInterpolation()
 {
-    doInterpol_  = new QcrCheckBox{"doInterpol", "enabled", &gSession->interpol().enabled};
-    stepAlpha_   = new QcrDoubleSpinBox {"stepAlpha", 6, 1., 30.};
-    stepBeta_    = new QcrDoubleSpinBox {"stepBeta", 6, 1., 30.};
-    idwRadius_   = new QcrDoubleSpinBox {"idwRadius", 6, 0., 90.};
-    avgAlphaMax_ = new QcrDoubleSpinBox {"avgAlphaMax", 6, 0., 90.};
-    avgRadius_   = new QcrDoubleSpinBox {"avgRadius", 6, 0., 90.};
-    threshold_   = new QcrSpinBox       {"threshold", 6, 0, 100};
+    doInterpol_ =new QcrCheckBox     {"doInterpol", "enabled", &gSession->interpol().enabled};
+    stepAlpha_  =new QcrDoubleSpinBox{"stepAlpha",  &gSession->interpol().stepAlpha,  6, 1., 30.};
+    stepBeta_   =new QcrDoubleSpinBox{"stepBeta",   &gSession->interpol().stepBeta,   6, 1., 30.};
+    idwRadius_  =new QcrDoubleSpinBox{"idwRadius",  &gSession->interpol().idwRadius,  6, 0., 90.};
+    avgAlphaMax_=new QcrDoubleSpinBox{"avgAlphaMax",&gSession->interpol().avgAlphaMax,6, 0., 90.};
+    avgRadius_  =new QcrDoubleSpinBox{"avgRadius",  &gSession->interpol().avgRadius,  6, 0., 90.};
+    threshold_  =new QcrSpinBox      {"threshold",  &gSession->interpol().threshold,  6, 0, 100};
  // inbound connection
     connect(gSession, &Session::sigInterpol, this, &ControlsInterpolation::fromCore);
 

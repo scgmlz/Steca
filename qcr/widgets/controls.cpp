@@ -177,14 +177,14 @@ void QcrSpinBox::reportChange()
         return;
     reportedValue_ = val;
     onChangedValue(hasFocus(), val);
-    EMITS("QcrSpinBox::reportChange", valueReleased(val));
+    EMITS("QcrSpinBox "+name()+" reportChange", valueReleased(val));
 }
 
 void QcrSpinBox::onCommand(const QString& arg)
 {
     int val = strOp::to_i(arg);
     programaticallySetValue(val);
-    EMITS("QcrSpinBox::onCommand", valueReleased(val));
+    EMITS("QcrSpinBox "+name()+" onCommand", valueReleased(val));
 }
 
 //  ***********************************************************************************************
@@ -227,14 +227,14 @@ void QcrDoubleSpinBox::reportChange()
         return;
     reportedValue_ = val;
     onChangedValue(hasFocus(), val);
-    EMITS("QcrDoubleSpinBox::reportChange", valueReleased(val));
+    EMITS("QcrDoubleSpinBox "+name()+" reportChange", valueReleased(val));
 }
 
 void QcrDoubleSpinBox::onCommand(const QString& arg)
 {
     double val = strOp::to_d(arg);
     programaticallySetValue(val);
-    EMITS("QcrDoubleSpinBox::onCommand", valueReleased(val));
+    EMITS("QcrDoubleSpinBox "+name()+" onCommand", valueReleased(val));
 }
 
 //  ***********************************************************************************************
