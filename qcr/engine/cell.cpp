@@ -41,3 +41,11 @@ Cell::stamp_t Cell::update()
     }
     return timestamp_;
 }
+
+void Cell::connectAction(const std::function<void()>*)
+{
+}
+
+void Cell::actOnChange()
+{
+}

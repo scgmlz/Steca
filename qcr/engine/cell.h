@@ -15,7 +15,9 @@
 #ifndef CELL_H
 #define CELL_H
 
+#include <functional>
 #include <set>
+#include <vector>
 
 //! Manages update dependences.
 class Cell
@@ -26,11 +28,14 @@ public:
     stamp_t update();
     void add_source(Cell*);
     void rm_source(Cell*);
+    void connectAction(const std::function<void()>*);
 protected:
     virtual void recompute() = 0;
+    void actOnChange();
 private:
     stamp_t timestamp_ { 0 };
     std::set<Cell*> sources_;
+    std::vector<const std::function<void()>*> actionsOnChange_;
 };
 
 class FinalCell : public Cell {
@@ -40,17 +45,20 @@ private:
     void recompute() final {};
 };
 
-/*
+//! Holds a single data value, and functions to be run upon change
 template<class T>
 class ParamCell : public Cell {
 public:
     T getParam() { return value_; }
-    void setParam() { }
-    void addClient(
+    void setParam(T val) {
+        if (val==value_)
+            return;
+        value_ = val;
+        actOnChange();
+    }
 private:
     T value_;
     void recompute() final {};
 };
-*/
 
 #endif // CELL_H
