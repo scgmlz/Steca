@@ -32,6 +32,7 @@ double const Geometry::DEF_DETECTOR_PIXEL_SIZE = 1;
 
 Geometry::Geometry()
 {
+    qDebug() << "DEB G:G " << detectorDistance.val();
     detectorDistance.connectAction([](){ emit gSession->sigDetector();});
     pixSize.         connectAction([](){ emit gSession->sigDetector();});
     // TODO restore constraints?
@@ -42,10 +43,12 @@ Geometry::Geometry()
 void Geometry::fromSettings()
 {
     XSettings s("DetectorGeometry");
+    qDebug() << "DEB GfS1 " << detectorDistance.val();
     detectorDistance.setParam(s.readReal("detectorDistance", DEF_DETECTOR_DISTANCE));
     pixSize.         setParam(s.readReal("pixelSize", DEF_DETECTOR_PIXEL_SIZE));
     midPixOffset_.i = s.readInt("offsetX", 0);
     midPixOffset_.j = s.readInt("offsetY", 0);
+    qDebug() << "DEB GfS2 " << detectorDistance.val();
 }
 
 void Geometry::toSettings() const

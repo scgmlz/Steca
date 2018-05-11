@@ -91,11 +91,11 @@ int main(int argc, char* argv[]) {
     app.setStyle(QStyleFactory::create("Fusion"));
 #endif
 
+    Console console;
     QLoggingCategory::setFilterRules("*.debug=true\nqt.*.debug=false");
     qInstallMessageHandler(messageHandler);
 
     Session session;
-    Console console;
     auto* mainwin = new MainWin; // must be pointer, because it can be deleted by 'quit' trigger
     mainwin->show();
     if (nonoptArgs.size())

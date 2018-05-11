@@ -45,11 +45,14 @@ private:
 GeometryControls::GeometryControls()
 {
     // initialization
+    qDebug() << "DEB C1 " << gSession->geometry().detectorDistance.val();
     detDistance_  = new QcrDoubleSpinBox {"detDistance", &gSession->geometry().detectorDistance, 6};
     detPixelSize_ = new QcrDoubleSpinBox {"detPixelSize", &gSession->geometry().pixSize, 3};
     beamOffsetI_  = new QcrSpinBox       {"beamOffsetI", 3, true};
     beamOffsetJ_  = new QcrSpinBox       {"beamOffsetJ", 3, true};
+    qDebug() << "DEB C2 " << gSession->geometry().detectorDistance.val();
     fromCore();
+    qDebug() << "DEB C3 " << gSession->geometry().detectorDistance.val();
 
     // inbound connection
     connect(gSession, &Session::sigDetector, this, &GeometryControls::fromCore);
