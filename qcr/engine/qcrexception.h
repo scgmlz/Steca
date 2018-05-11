@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef QcrEXCEPTION_H
-#define QcrEXCEPTION_H
+#ifndef QCREXCEPTION_H
+#define QCREXCEPTION_H
 
 #include <QException>
 #include <QString> // no auto rm
@@ -28,4 +28,4 @@ private:
     QString msg_;
 };
 
-#endif // QcrEXCEPTION_H
+#endif // QCREXCEPTION_H
