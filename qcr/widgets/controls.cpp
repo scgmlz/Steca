@@ -149,13 +149,13 @@ QcrSpinBox::QcrSpinBox(const QString& _name, ParamCell<int>* cell, int ndigits,
                        bool withDot, int min, int max, const QString& tooltip)
     : QcrControl<int>(_name, cell)
 {
-    if (cell)
-        doSetValue(cell->val());
-    init();
     widgetUtils::setWidth(this, 2+ndigits, withDot);
     ASSERT(min<=max);
     setMinimum(min);
     setMaximum(max);
+    if (cell)
+        doSetValue(cell->val());
+    init();
     if (tooltip!="")
         setToolTip(tooltip);
     reportedValue_ = value();
@@ -199,14 +199,14 @@ QcrDoubleSpinBox::QcrDoubleSpinBox(
     const QString& _name, ParamCell<double>* cell, int ndigits, double min, double max)
     : QcrControl<double>(_name, cell)
 {
-    if (cell)
-        doSetValue(cell->val());
-    init();
     widgetUtils::setWidth(this, 2+ndigits, true);
     setDecimals(ndigits);
     ASSERT(min<=max);
     setMinimum(min);
     setMaximum(max);
+    if (cell)
+        doSetValue(cell->val());
+    init();
     reportedValue_ = value();
     connect(this, &QDoubleSpinBox::editingFinished, this, &QcrDoubleSpinBox::reportChange);
     connect(this, _SLOT_(QDoubleSpinBox,valueChanged,double), [this](double val)->void {
