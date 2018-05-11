@@ -45,7 +45,6 @@ Dfgram::Dfgram()
 {
     // initializations
     plot_ = new PlotDfgram(*this);
-    gGui->toggles->showBackground.programaticallySetValue(true);
     intenAvg_.programaticallySetValue(true);
 
     // inbound connections

@@ -28,7 +28,7 @@ public:
     QcrToggle fixedIntenDgram {"dfg.fixInt", "Fixed intensity scale", false, ":/icon/scale"};
     QcrToggle fixedIntenImage {"img.fixInt", "Global intensity scale", false, ":/icon/scale"};
     QcrToggle linkCuts {"linkCuts", "Link cuts", false, ":/icon/link"};
-    QcrToggle showBackground {"showBackground", "Show fitted background", false,
+    QcrToggle showBackground {"showBackground", "Show fitted background", true,
             ":/icon/showBackground"};
     QcrToggle showBins {"showBins", "Show bins", false, ":/icon/angle"};
     QcrToggle viewClusters {"viewMeasurements", "Measurements", true, "", Qt::Key_F9};
