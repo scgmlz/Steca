@@ -226,9 +226,9 @@ void QcrDoubleSpinBox::onCommand(const QString& arg)
 //  ***********************************************************************************************
 //! @class QcrCheckBox
 
-QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, bool val)
+QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, bool val, ParamCell<bool>* cell)
     : QCheckBox(text)
-    , QcrControl<bool>(_name)
+    , QcrControl<bool>(_name, cell)
 {
     doSetValue(val);
     init();
