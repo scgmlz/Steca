@@ -153,8 +153,9 @@ QcrSpinBox::QcrSpinBox(const QString& _name, ParamCell<int>* cell, int ndigits,
         doSetValue(cell->val());
     init();
     widgetUtils::setWidth(this, 2+ndigits, withDot);
+    ASSERT(min<=max);
     setMinimum(min);
-    setMaximum(max > min ? max : min);
+    setMaximum(max);
     if (tooltip!="")
         setToolTip(tooltip);
     reportedValue_ = value();
@@ -202,9 +203,8 @@ QcrDoubleSpinBox::QcrDoubleSpinBox(
         doSetValue(cell->val());
     init();
     widgetUtils::setWidth(this, 2+ndigits, true);
-    if (min>max)
-        qSwap(min, max);
     setDecimals(ndigits);
+    ASSERT(min<=max);
     setMinimum(min);
     setMaximum(max);
     reportedValue_ = value();
