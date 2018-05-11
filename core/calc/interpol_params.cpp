@@ -14,11 +14,10 @@
 
 #include "core/session.h"
 #include "core/def/settings.h"
-#include "qcr/engine/debug.h"
 
 InterpolParams::InterpolParams()
 {
-    enabled.connectAction([](){EMITS("InterpolParams::enabled", gSession->sigInterpol());});
+    enabled.connectAction([](){ emit gSession->sigInterpol();});
 }
 
 void InterpolParams::fromSettings()
