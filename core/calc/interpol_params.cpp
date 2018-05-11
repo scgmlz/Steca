@@ -25,6 +25,23 @@ InterpolParams::InterpolParams()
     avgAlphaMax.connectAction([](){ emit gSession->sigInterpol();});
     avgRadius.  connectAction([](){ emit gSession->sigInterpol();});
     threshold.  connectAction([](){ emit gSession->sigInterpol();});
+
+/* TODO do we want to duplicate these constraints (the are also imposed in the GUI)
+void InterpolParams::setStepAlpha(double val) {
+    stepAlpha_ = qMax(0., qMin(val, 90.)); }
+void InterpolParams::setStepBeta(double val) {
+    stepBeta_ = qMax(0., qMin(val, 360.)); }
+void InterpolParams::setIdwRadius(double val) {
+    if (!qIsNaN(val))
+        val = qMax(0., val);
+    idwRadius_ = val; }
+void InterpolParams::setAvgAlphaMax(double val) {
+    avgAlphaMax_ = qMax(0., qMin(val, 90.)); }
+void InterpolParams::setAvgRadius(double val) {
+    avgRadius_ = qMax(0., val); }
+void InterpolParams::setThreshold(int val) {
+    threshold_ = qMax(0, qMin(val, 1)); // TODO check }
+*/
 }
 
 void InterpolParams::fromSettings()
@@ -74,42 +91,3 @@ void InterpolParams::fromJson(const JsonObj& obj)
     avgRadius  .setParam(obj.loadInt("avg radius"));
     threshold  .setParam(obj.loadInt("threshold"));
 }
-/*
-void InterpolParams::setStepAlpha(double val)
-{
-    stepAlpha_ = qMax(0., qMin(val, 90.));
-    EMITS("InterpolParams::setStepAlpha", gSession->sigInterpol());
-}
-
-void InterpolParams::setStepBeta(double val)
-{
-    stepBeta_ = qMax(0., qMin(val, 360.));
-    EMITS("InterpolParams::setStepBeta", gSession->sigInterpol());
-}
-
-void InterpolParams::setIdwRadius(double val)
-{
-    if (!qIsNaN(val))
-        val = qMax(0., val);
-    idwRadius_ = val;
-    EMITS("InterpolParams::setIdwRadiu", gSession->sigInterpol());
-}
-
-void InterpolParams::setAvgAlphaMax(double val)
-{
-    avgAlphaMax_ = qMax(0., qMin(val, 90.));
-    EMITS("InterpolParams::setAvgAlphaMax", gSession->sigInterpol());
-}
-
-void InterpolParams::setAvgRadius(double val)
-{
-    avgRadius_ = qMax(0., val);
-    EMITS("InterpolParams::setAvgRadius", gSession->sigInterpol());
-}
-
-void InterpolParams::setThreshold(int val)
-{
-    threshold_ = qMax(0, qMin(val, 1)); // TODO check
-    EMITS("InterpolParams::setThreshold", gSession->sigInterpol());
-}
-*/
