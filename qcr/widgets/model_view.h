@@ -15,7 +15,7 @@
 #ifndef MODEL_VIEW_H
 #define MODEL_VIEW_H
 
-#include "qcr/engine/enhance_widgets.h"
+#include "qcr/engine/settable.h"
 #include <QTreeView>
 
 //! Pure virtual base class of all models of rectangular table form

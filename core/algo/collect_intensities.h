@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef PROJECT_INTENSITY_H
-#define PROJECT_INTENSITY_H
+#ifndef COLLECT_INTENSITIES_H
+#define COLLECT_INTENSITIES_H
 
 #include "core/typ/angles.h"
 #include <vector> // no auto rm
@@ -35,4 +35,4 @@ void projectActiveClusters(QProgressBar*);
 
 } // namespace algo
 
-#endif // PROJECT_INTENSITY_H
+#endif // COLLECT_INTENSITIES_H

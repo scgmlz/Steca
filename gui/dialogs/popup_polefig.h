@@ -15,7 +15,7 @@
 #ifndef POPUP_POLEFIG_H
 #define POPUP_POLEFIG_H
 
-#include "qcr/engine/enhance_widgets.h"
+#include "qcr/engine/settable.h"
 
 //! Popup display of the present pole figure.
 

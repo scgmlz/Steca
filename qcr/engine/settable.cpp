@@ -2,7 +2,7 @@
 //
 //  libqcr: capture and replay Qt widget actions
 //
-//! @file      qcr/engine/enhance_widgets.cpp
+//! @file      qcr/engine/settable.cpp
 //! @brief     Implements classes CSettable, CModal, CModelessDialog
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,6 +12,7 @@
 //
 //  ***********************************************************************************************
 
+#include "settable.h"
 #include "qcr/engine/console.h"
 #include "qcr/engine/qcrexception.h"
 #include <QDebug>

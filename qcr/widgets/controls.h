@@ -16,7 +16,7 @@
 #define CONTROLS_H
 
 #include <QtGlobal>
-#include "qcr/engine/enhance_widgets.h"
+#include "qcr/engine/single_value.h"
 #include <QAction>
 #include <QCheckBox>
 #include <QComboBox>

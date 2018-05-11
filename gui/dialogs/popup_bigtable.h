@@ -15,7 +15,7 @@
 #ifndef POPUP_BIGTABLE_H
 #define POPUP_BIGTABLE_H
 
-#include "qcr/engine/enhance_widgets.h"
+#include "qcr/engine/settable.h"
 
 //! Popup display of the present XY diagram.
 

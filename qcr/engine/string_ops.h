@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef CONVERT_H
-#define CONVERT_H
+#ifndef STRING_OPS_H
+#define STRING_OPS_H
 
 #include <QtGlobal>
 
@@ -37,4 +37,4 @@ void splitOnce(const QString&, QString&, QString&);
 
 } // namespace strOp
 
-#endif // CONVERT_H
+#endif // STRING_OPS_H
