@@ -28,14 +28,14 @@ public:
     stamp_t update();
     void add_source(Cell*);
     void rm_source(Cell*);
-    void connectAction(const std::function<void()>*);
+    void connectAction(std::function<void()>&&);
 protected:
     virtual void recompute() = 0;
     void actOnChange();
 private:
     stamp_t timestamp_ { 0 };
     std::set<Cell*> sources_;
-    std::vector<const std::function<void()>*> actionsOnChange_;
+    std::vector<std::function<void()>> actionsOnChange_;
 };
 
 class FinalCell : public Cell {

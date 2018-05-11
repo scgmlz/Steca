@@ -42,10 +42,13 @@ Cell::stamp_t Cell::update()
     return timestamp_;
 }
 
-void Cell::connectAction(const std::function<void()>*)
+void Cell::connectAction(std::function<void()>&& f)
 {
+    actionsOnChange_.push_back(std::move(f));
 }
 
 void Cell::actOnChange()
 {
+    for (const std::function<void()>& f: actionsOnChange_)
+        f();
 }

@@ -16,13 +16,14 @@
 #define SINGLE_VALUE_H
 
 #include "qcr/engine/settable.h"
+#include "qcr/engine/cell.h"
 #include "qcr/engine/string_ops.h"
 
 //! Base class for all Qcr widgets that hold a single value.
 template<class T>
 class QcrControl : protected CSettable {
 public:
-    QcrControl(const QString& name);
+    QcrControl(const QString& name, ParamCell<T>* cell = nullptr);
     void programaticallySetValue(T val);
     virtual T getValue() const = 0;
     virtual void onCommand(const QString& arg);
@@ -33,15 +34,20 @@ protected:
 private:
     virtual void doSetValue(T) = 0;
     T reportedValue_;
+    ParamCell<T>* cell_;
 };
 
 //  ***********************************************************************************************
 //  implementation of QcrControl<T>
 
 template<class T>
-QcrControl<T>::QcrControl(const QString& name)
-    : CSettable(name)
-{}
+QcrControl<T>::QcrControl(const QString& name, ParamCell<T>* cell)
+    : CSettable {name}
+    , cell_ {cell}
+{
+    if (cell_)
+        cell_->connectAction([this](){programaticallySetValue(cell_->getParam());});
+}
 
 template<class T>
 void QcrControl<T>::programaticallySetValue(T val)
@@ -77,6 +83,8 @@ void QcrControl<T>::onChangedValue(bool hasFocus, T val)
         qDebug() << "UNDESIRABLE in "+name()+" !hasFocus && !softwareCalling_";
     // not sure whether we want to get rid of hasFocus
     reportedValue_ = val;
+    if (cell_)
+        cell_->setParam(val);
 }
 
 #endif // SINGLE_VALUE_H
