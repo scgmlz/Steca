@@ -114,37 +114,43 @@ private:
     void fromCore();
 
     QGridLayout layout_;
-    QcrIconButton link_ {&gGui->toggles->linkCuts};
-    QcrSpinBox cutLeft_ {"cutLeft", 3, false, 0};
-    QcrSpinBox cutTop_ {"cutTop", 3, false, 0};
-    QcrSpinBox cutRight_ {"cutRight", 3, false, 0};
-    QcrSpinBox cutBottom_ {"cutBottom", 3, false, 0};
+    QcrIconButton* link_;
+    QcrSpinBox* cutLeft_;
+    QcrSpinBox* cutTop_;
+    QcrSpinBox* cutRight_;
+    QcrSpinBox* cutBottom_;
 };
 
 CutControls::CutControls()
 {
+    link_ = new QcrIconButton {&gGui->toggles->linkCuts};
+    cutLeft_   = new QcrSpinBox {"cutLeft", 3, false, 0};
+    cutTop_    = new QcrSpinBox {"cutTop", 3, false, 0};
+    cutRight_  = new QcrSpinBox {"cutRight", 3, false, 0};
+    cutBottom_ = new QcrSpinBox {"cutBottom", 3, false, 0};
+
     // inbound connection
     connect(gSession, &Session::sigDetector, this, &CutControls::fromCore);
 
     // outbound connections
-    connect(&cutLeft_, &QcrSpinBox::valueReleased, [](int value) {
+    connect(cutLeft_, &QcrSpinBox::valueReleased, [](int value) {
             gSession->imageCut().setLeft(value); });
-    connect(&cutRight_,  &QcrSpinBox::valueReleased, [](int value) {
+    connect(cutRight_,  &QcrSpinBox::valueReleased, [](int value) {
             gSession->imageCut().setRight(value); });
-    connect(&cutTop_,    &QcrSpinBox::valueReleased, [](int value) {
+    connect(cutTop_,    &QcrSpinBox::valueReleased, [](int value) {
             gSession->imageCut().setTop(value); });
-    connect(&cutBottom_, &QcrSpinBox::valueReleased, [](int value) {
+    connect(cutBottom_, &QcrSpinBox::valueReleased, [](int value) {
             gSession->imageCut().setBottom(value); });
     connect(&gGui->toggles->linkCuts, &QAction::toggled, [](bool value) {
             gSession->imageCut().setLinked(value); });
 
     // layout
     layout_.addWidget(new QLabel("cut"), 1, 0);
-    layout_.addWidget(&cutLeft_, 1, 2);
-    layout_.addWidget(&link_, 1, 3, Qt::AlignHCenter);
-    layout_.addWidget(&cutTop_, 0, 3);
-    layout_.addWidget(&cutBottom_, 2, 3);
-    layout_.addWidget(&cutRight_, 1, 4);
+    layout_.addWidget(cutLeft_, 1, 2);
+    layout_.addWidget(link_, 1, 3, Qt::AlignHCenter);
+    layout_.addWidget(cutTop_, 0, 3);
+    layout_.addWidget(cutBottom_, 2, 3);
+    layout_.addWidget(cutRight_, 1, 4);
     layout_.setColumnStretch(5, 1);
     setLayout(&layout_);
 
@@ -156,10 +162,10 @@ void CutControls::fromCore()
 {
     const ImageCut& cut = gSession->imageCut();
     gGui->toggles->linkCuts.programaticallySetValue(cut.linked());
-    cutLeft_.programaticallySetValue(cut.left());
-    cutTop_.programaticallySetValue(cut.top());
-    cutRight_.programaticallySetValue(cut.right());
-    cutBottom_.programaticallySetValue(cut.bottom());
+    cutLeft_  ->programaticallySetValue(cut.left());
+    cutTop_   ->programaticallySetValue(cut.top());
+    cutRight_ ->programaticallySetValue(cut.right());
+    cutBottom_->programaticallySetValue(cut.bottom());
 }
 
 //  ***********************************************************************************************
