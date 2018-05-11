@@ -20,7 +20,6 @@
 #include "gui/mainwin.h"
 #include "qcr/engine/debug.h"
 #include <QGroupBox>
-#include <QButtonGroup>
 
 namespace {
 
