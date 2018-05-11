@@ -256,12 +256,12 @@ void algo::interpolateInfos(QProgressBar* progressBar)
     }
     qDebug() << "interpolation began";
 
-    double stepAlpha   = gSession->interpol().stepAlpha();
-    double stepBeta    = gSession->interpol().stepBeta();
-    double idwRadius   = gSession->interpol().idwRadius();
-    double avgAlphaMax = gSession->interpol().avgAlphaMax();
-    double avgRadius   = gSession->interpol().avgRadius();
-    int    threshold   = gSession->interpol().threshold();
+    double stepAlpha   = gSession->interpol().stepAlpha.getParam();
+    double stepBeta    = gSession->interpol().stepBeta.getParam();
+    double idwRadius   = gSession->interpol().idwRadius.getParam();
+    double avgAlphaMax = gSession->interpol().avgAlphaMax.getParam();
+    double avgRadius   = gSession->interpol().avgRadius.getParam();
+    int    threshold   = gSession->interpol().threshold.getParam();
 
     // Two interpolation methods are used here:
     // If grid point alpha <= averagingAlphaMax, points within averagingRadius

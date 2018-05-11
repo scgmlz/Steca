@@ -27,31 +27,16 @@ public:
     void fromJson(const JsonObj& obj);
     void fromSettings();
 
-    ParamCell<bool> enabled;
-    void setStepAlpha(double);
-    void setStepBeta(double);
-    void setIdwRadius(double);
-    void setAvgAlphaMax(double);
-    void setAvgRadius(double);
-    void setThreshold(int);
-
-    double stepAlpha()   const { return stepAlpha_; }
-    double stepBeta()    const { return stepBeta_; }
-    double idwRadius()   const { return idwRadius_; }
-    double avgAlphaMax() const { return avgAlphaMax_; }
-    double avgRadius()   const { return avgRadius_; }
-    int    threshold()   const { return threshold_; }
+    ParamCell<bool>   enabled     {false};
+    ParamCell<double> stepAlpha   {5.};
+    ParamCell<double> stepBeta    {5.};
+    ParamCell<double> idwRadius   {10.};
+    ParamCell<double> avgAlphaMax {5.};
+    ParamCell<double> avgRadius   {5.};
+    ParamCell<int>    threshold   {100};
 
     QJsonObject toJson() const;
     void toSettings() const;
-
-private:
-    double stepAlpha_   {5.};
-    double stepBeta_    {5.};
-    double idwRadius_   {10.};
-    double avgAlphaMax_ {5.};
-    double avgRadius_   {5.};
-    int    threshold_   {100};
 };
 
 #endif // INTERPOL_PARAMS_H

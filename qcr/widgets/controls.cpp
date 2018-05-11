@@ -140,10 +140,17 @@ QcrIconButton::QcrIconButton(QcrAction* action)
 //! https://forum.qt.io/topic/89011. Here, we explicitly deal with editingFinished and
 //! mouse release events.
 
-QcrSpinBox::QcrSpinBox(
-    const QString& _name, int ndigits, bool withDot, int min, int max, const QString& tooltip)
-    : QcrControl<int>(_name)
+QcrSpinBox::QcrSpinBox(const QString& _name, int ndigits,
+                       bool withDot, int min, int max, const QString& tooltip)
+    : QcrSpinBox(_name, nullptr, ndigits, withDot, min, max, tooltip)
+{}
+
+QcrSpinBox::QcrSpinBox(const QString& _name, ParamCell<int>* cell, int ndigits,
+                       bool withDot, int min, int max, const QString& tooltip)
+    : QcrControl<int>(_name, cell)
 {
+    if (cell)
+        doSetValue(cell->getParam());
     init();
     widgetUtils::setWidth(this, 2+ndigits, withDot);
     setMinimum(min);
@@ -184,8 +191,15 @@ void QcrSpinBox::onCommand(const QString& arg)
 //! @class QcrDoubleSpinBox
 
 QcrDoubleSpinBox::QcrDoubleSpinBox(const QString& _name, int ndigits, double min, double max)
-    : QcrControl<double>(_name)
+    : QcrDoubleSpinBox(_name, nullptr, ndigits, min, max)
+{}
+
+QcrDoubleSpinBox::QcrDoubleSpinBox(
+    const QString& _name, ParamCell<double>* cell, int ndigits, double min, double max)
+    : QcrControl<double>(_name, cell)
 {
+    if (cell)
+        doSetValue(cell->getParam());
     init();
     widgetUtils::setWidth(this, 2+ndigits, true);
     if (min>max)

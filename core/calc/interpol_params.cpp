@@ -17,57 +17,64 @@
 
 InterpolParams::InterpolParams()
 {
-    enabled.connectAction([](){ emit gSession->sigInterpol();});
+    enabled.    connectAction([](){ emit gSession->sigInterpol();});
+    enabled.    connectAction([](){ emit gSession->sigInterpol();});
+    stepAlpha.  connectAction([](){ emit gSession->sigInterpol();});
+    stepBeta.   connectAction([](){ emit gSession->sigInterpol();});
+    idwRadius.  connectAction([](){ emit gSession->sigInterpol();});
+    avgAlphaMax.connectAction([](){ emit gSession->sigInterpol();});
+    avgRadius.  connectAction([](){ emit gSession->sigInterpol();});
+    threshold.  connectAction([](){ emit gSession->sigInterpol();});
 }
 
 void InterpolParams::fromSettings()
 {
     XSettings s("interpolation parameters");
-    bool val; s.getBool("enabled", val); enabled.setParam(val);
-    s.getReal("step alpha", stepAlpha_);
-    s.getReal("step beta", stepBeta_);
-    s.getReal("idw radius", idwRadius_);
-    s.getReal("alpha max", avgAlphaMax_);
-    s.getReal("avg radius", avgRadius_);
-    s.getInt ("threshold", threshold_);
+    { bool   val; s.getBool("enabled", val);    enabled.setParam(val); }
+    { double val; s.getReal("step alpha", val); stepAlpha.setParam(val); }
+    { double val; s.getReal("step beta", val);  stepBeta.setParam(val); }
+    { double val; s.getReal("idw radius", val); idwRadius.setParam(val); }
+    { double val; s.getReal("alpha max", val);  avgAlphaMax.setParam(val); }
+    { double val; s.getReal("avg radius", val); avgRadius.setParam(val); }
+    { int    val; s.getInt ("threshold", val);  threshold.setParam(val); }
 }
 
 void InterpolParams::toSettings() const
 {
     XSettings s("interpolation parameters");
-    s.setValue("enabled", enabled.getParam());
-    s.setValue("step alpha", stepAlpha_);
-    s.setValue("step beta", stepBeta_);
-    s.setValue("idw radius", idwRadius_);
-    s.setValue("alpha max", avgAlphaMax_);
-    s.setValue("avg radius", avgRadius_);
-    s.setValue("threshold", threshold_);
+    s.setValue("enabled",    enabled.getParam());
+    s.setValue("step alpha", stepAlpha.getParam());
+    s.setValue("step beta",  stepBeta.getParam());
+    s.setValue("idw radius", idwRadius.getParam());
+    s.setValue("alpha max",  avgAlphaMax.getParam());
+    s.setValue("avg radius", avgRadius.getParam());
+    s.setValue("threshold",  threshold.getParam());
 }
 
 QJsonObject InterpolParams::toJson() const
 {
     return {
-        { "enabled", QJsonValue(enabled.getParam()) },
-        { "step alpha", QJsonValue(stepAlpha_) },
-        { "step beta", QJsonValue(stepBeta_) },
-        { "idw radius", QJsonValue(idwRadius_) },
-        { "alpha max", QJsonValue(avgAlphaMax_) },
-        { "avg radius", QJsonValue(avgRadius_) },
-        { "threshold", QJsonValue(threshold_) },
+        { "enabled",    QJsonValue(enabled.getParam()) },
+        { "step alpha", QJsonValue(stepAlpha.getParam()) },
+        { "step beta",  QJsonValue(stepBeta.getParam()) },
+        { "idw radius", QJsonValue(idwRadius.getParam()) },
+        { "alpha max",  QJsonValue(avgAlphaMax.getParam()) },
+        { "avg radius", QJsonValue(avgRadius.getParam()) },
+        { "threshold",  QJsonValue(threshold.getParam()) },
     };
 }
 
 void InterpolParams::fromJson(const JsonObj& obj)
 {
-    enabled.setParam(obj.loadBool("enabled"));
-    setStepAlpha(obj.loadInt("step alpha"));
-    setStepBeta(obj.loadInt("step beta"));
-    setIdwRadius(obj.loadInt("idw radius"));
-    setAvgAlphaMax(obj.loadInt("alpha max"));
-    setAvgRadius(obj.loadInt("avg radius"));
-    setThreshold(obj.loadInt("threshold"));
+    enabled    .setParam(obj.loadBool("enabled"));
+    stepAlpha  .setParam(obj.loadInt("step alpha"));
+    stepBeta   .setParam(obj.loadInt("step beta"));
+    idwRadius  .setParam(obj.loadInt("idw radius"));
+    avgAlphaMax.setParam(obj.loadInt("alpha max"));
+    avgRadius  .setParam(obj.loadInt("avg radius"));
+    threshold  .setParam(obj.loadInt("threshold"));
 }
-
+/*
 void InterpolParams::setStepAlpha(double val)
 {
     stepAlpha_ = qMax(0., qMin(val, 90.));
@@ -105,3 +112,4 @@ void InterpolParams::setThreshold(int val)
     threshold_ = qMax(0, qMin(val, 1)); // TODO check
     EMITS("InterpolParams::setThreshold", gSession->sigInterpol());
 }
+*/
