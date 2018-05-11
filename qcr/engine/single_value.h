@@ -46,7 +46,7 @@ QcrControl<T>::QcrControl(const QString& name, ParamCell<T>* cell)
     , cell_ {cell}
 {
     if (cell_)
-        cell_->connectAction([this](){programaticallySetValue(cell_->getParam());});
+        cell_->connectAction([this](){programaticallySetValue(cell_->val());});
 }
 
 template<class T>

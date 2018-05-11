@@ -62,7 +62,7 @@ Session::~Session()
 
 const PeakInfos& Session::peakInfos() const
 {
-    if (interpol().enabled.getParam())
+    if (interpol().enabled.val())
         return interpolatedPeakInfos_;
     else
         return directPeakInfos_;

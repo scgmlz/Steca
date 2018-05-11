@@ -49,7 +49,7 @@ void PlotPolefig::refresh()
 
 void PlotPolefig::update()
 {
-    avgAlphaMax_ = gSession->interpol().avgAlphaMax.getParam();
+    avgAlphaMax_ = gSession->interpol().avgAlphaMax.val();
     QWidget::update();
 }
 

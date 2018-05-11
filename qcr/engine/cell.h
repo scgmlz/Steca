@@ -50,7 +50,7 @@ template<class T>
 class ParamCell : public Cell {
 public:
     ParamCell(T value) : value_(value) {}
-    T getParam() const { return value_; }
+    T val() const { return value_; }
     void setParam(T val) {
         if (val==value_)
             return;

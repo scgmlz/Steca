@@ -150,7 +150,7 @@ QcrSpinBox::QcrSpinBox(const QString& _name, ParamCell<int>* cell, int ndigits,
     : QcrControl<int>(_name, cell)
 {
     if (cell)
-        doSetValue(cell->getParam());
+        doSetValue(cell->val());
     init();
     widgetUtils::setWidth(this, 2+ndigits, withDot);
     setMinimum(min);
@@ -199,7 +199,7 @@ QcrDoubleSpinBox::QcrDoubleSpinBox(
     : QcrControl<double>(_name, cell)
 {
     if (cell)
-        doSetValue(cell->getParam());
+        doSetValue(cell->val());
     init();
     widgetUtils::setWidth(this, 2+ndigits, true);
     if (min>max)
@@ -254,7 +254,7 @@ QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, ParamCell<bo
     : QCheckBox(text)
     , QcrControl<bool>(_name, cell)
 {
-    doSetValue(cell->getParam());
+    doSetValue(cell->val());
     init();
     connect(this, _SLOT_(QCheckBox,stateChanged,int), [this](int val)->void {
             onChangedValue(hasFocus(), (bool)val); });

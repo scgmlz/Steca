@@ -59,25 +59,25 @@ void InterpolParams::fromSettings()
 void InterpolParams::toSettings() const
 {
     XSettings s("interpolation parameters");
-    s.setValue("enabled",    enabled.getParam());
-    s.setValue("step alpha", stepAlpha.getParam());
-    s.setValue("step beta",  stepBeta.getParam());
-    s.setValue("idw radius", idwRadius.getParam());
-    s.setValue("alpha max",  avgAlphaMax.getParam());
-    s.setValue("avg radius", avgRadius.getParam());
-    s.setValue("threshold",  threshold.getParam());
+    s.setValue("enabled",    enabled.val());
+    s.setValue("step alpha", stepAlpha.val());
+    s.setValue("step beta",  stepBeta.val());
+    s.setValue("idw radius", idwRadius.val());
+    s.setValue("alpha max",  avgAlphaMax.val());
+    s.setValue("avg radius", avgRadius.val());
+    s.setValue("threshold",  threshold.val());
 }
 
 QJsonObject InterpolParams::toJson() const
 {
     return {
-        { "enabled",    QJsonValue(enabled.getParam()) },
-        { "step alpha", QJsonValue(stepAlpha.getParam()) },
-        { "step beta",  QJsonValue(stepBeta.getParam()) },
-        { "idw radius", QJsonValue(idwRadius.getParam()) },
-        { "alpha max",  QJsonValue(avgAlphaMax.getParam()) },
-        { "avg radius", QJsonValue(avgRadius.getParam()) },
-        { "threshold",  QJsonValue(threshold.getParam()) },
+        { "enabled",    QJsonValue(enabled.val()) },
+        { "step alpha", QJsonValue(stepAlpha.val()) },
+        { "step beta",  QJsonValue(stepBeta.val()) },
+        { "idw radius", QJsonValue(idwRadius.val()) },
+        { "alpha max",  QJsonValue(avgAlphaMax.val()) },
+        { "avg radius", QJsonValue(avgRadius.val()) },
+        { "threshold",  QJsonValue(threshold.val()) },
     };
 }
 

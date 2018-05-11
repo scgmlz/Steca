@@ -53,7 +53,7 @@ ControlsInterpolation::ControlsInterpolation()
 
 void ControlsInterpolation::fromCore()
 {
-    bool on = gSession->interpol().enabled.getParam();
+    bool on = gSession->interpol().enabled.val();
     stepAlpha_  ->setEnabled(on);
     stepBeta_   ->setEnabled(on);
     idwRadius_  ->setEnabled(on);
