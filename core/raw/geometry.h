@@ -43,7 +43,7 @@ public:
 //! Image cut (margins)
 class ImageCut {
 public:
-    ImageCut() = default;
+    ImageCut() { clear(); }
     ImageCut(int left, int top, int right, int bottom);
     COMPARABLE(const ImageCut&);
 

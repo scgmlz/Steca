@@ -96,7 +96,7 @@ ImageCut::ImageCut(int left, int top, int right, int bottom)
 
 void ImageCut::clear()
 {
-    *this = ImageCut();
+    left_ = 0; top_ = 0; right_ = 0; bottom_ = 0;
 }
 
 void ImageCut::fromJson(const JsonObj& obj)
