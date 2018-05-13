@@ -18,7 +18,6 @@
 #include "qcr/engine/cell.h"
 #include "core/typ/angles.h"
 #include "core/typ/size2d.h"
-#include "core/typ/ij.h"
 #include "core/typ/range.h"
 
 //! Detector geometry.
