@@ -259,16 +259,16 @@ void IdxMeas::fromCore()
 
 DataImageTab::DataImageTab()
     : btnShowBins_ {&gGui->toggles->showBins}
-{
-    idxMeas_ = new QcrSpinBox {
+    , idxMeas_ {
         "idxMeas", &gSession->dataset().highlight().measurementIdx, 4, false, 1, INT_MAX,
-        "Number of measurement within the current group of measurements"};
-    idxSlice_ = new QcrSpinBox {
+        "Number of measurement within the current group of measurements"}
+    , idxSlice_ {
         "idxSlice", &gSession->gammaSelection().currSlice,
-        4, false, 1, INT_MAX, "Number of γ slice to be shown" };
-    idxTheta_ = new QcrSpinBox {
+        4, false, 1, INT_MAX, "Number of γ slice to be shown" }
+    , idxTheta_ {
         "idxTheta", &gSession->thetaSelection().currArc,
-        4, false, 1, INT_MAX, "Number of 2θ bin to be shown" };
+        4, false, 1, INT_MAX, "Number of 2θ bin to be shown" }
+{
 
     // inbound connection
     connect(gSession, &Session::sigGamma, [this]() {
@@ -282,11 +282,11 @@ DataImageTab::DataImageTab()
     box1_.addWidget(&btnShowBins_, Qt::AlignLeft);
 
     boxIdx_.addWidget(new QLabel("image #"), 0, 0, Qt::AlignLeft);
-    boxIdx_.addWidget(idxMeas_, 0, 1, Qt::AlignLeft);
+    boxIdx_.addWidget(&idxMeas_, 0, 1, Qt::AlignLeft);
     boxIdx_.addWidget(new QLabel("ϑ bin #"), 1, 0, Qt::AlignLeft);
-    boxIdx_.addWidget(idxTheta_, 1, 1, Qt::AlignLeft);
+    boxIdx_.addWidget(&idxTheta_, 1, 1, Qt::AlignLeft);
     boxIdx_.addWidget(new QLabel("γ slice #"), 2, 0, Qt::AlignLeft);
-    boxIdx_.addWidget(idxSlice_, 2, 1, Qt::AlignLeft);
+    boxIdx_.addWidget(&idxSlice_, 2, 1, Qt::AlignLeft);
     controls_.addStretch(100);
     controls_.addLayout(&boxIdx_);
 

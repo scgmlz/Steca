@@ -67,14 +67,14 @@ private:
     QGridLayout boxIdx_;
     QGridLayout boxRanges_;
     QPixmap pixmap() final;
-    QcrSpinBox* idxMeas_;
-    QcrSpinBox* idxSlice_;
-    QcrSpinBox* idxTheta_;
+    QcrIconButton btnShowBins_;
+    QcrSpinBox idxMeas_;
+    QcrSpinBox idxSlice_;
+    QcrSpinBox idxTheta_;
     QLabel gammaRangeTotal_;
     QLabel gammaRangeSlice_;
     QLabel thetaRangeTotal_;
     QLabel thetaRangeBin_;
-    QcrIconButton btnShowBins_;
 };
 
 //! A tab for the correction image and associated controls.
