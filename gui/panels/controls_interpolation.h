@@ -24,13 +24,13 @@ public:
     ControlsInterpolation();
 private:
     void fromCore();
-    QcrCheckBox*      doInterpol_ ;
-    QcrDoubleSpinBox* stepAlpha_  ;
-    QcrDoubleSpinBox* stepBeta_   ;
-    QcrDoubleSpinBox* idwRadius_  ;
-    QcrDoubleSpinBox* avgAlphaMax_;
-    QcrDoubleSpinBox* avgRadius_  ;
-    QcrSpinBox*       threshold_  ;
+    QcrCheckBox      doInterpol_ ;
+    QcrDoubleSpinBox stepAlpha_  ;
+    QcrDoubleSpinBox stepBeta_   ;
+    QcrDoubleSpinBox idwRadius_  ;
+    QcrDoubleSpinBox avgAlphaMax_;
+    QcrDoubleSpinBox avgRadius_  ;
+    QcrSpinBox       threshold_  ;
 };
 
 #endif // CONTROLS_INTERPOLATION_H
