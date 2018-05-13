@@ -77,10 +77,17 @@ void QcrTrigger::onCommand(const QString& arg)
 //  ***********************************************************************************************
 //! @class QcrToggle
 
-QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on, const QString& iconFile,
-                     const QKeySequence& shortcut)
+QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on,
+                     const QString& iconFile, const QKeySequence& shortcut)
+    : QcrToggle(rawname, nullptr, text, iconFile, shortcut)
+{
+    programaticallySetValue(on);
+}
+
+QcrToggle::QcrToggle(const QString& rawname, ParamCell<bool>* cell, const QString& text,
+                     const QString& iconFile, const QKeySequence& shortcut)
     : QcrAction(text)
-    , QcrControl<bool>(rawname)
+    , QcrControl<bool>(rawname, cell)
 {
     setShortcut(shortcut);
     init();
@@ -88,7 +95,8 @@ QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on, const
     if (iconFile!="")
         setIcon(QIcon(iconFile));
     setCheckable(true);
-    programaticallySetValue(on);
+    if (cell)
+        doSetValue(cell->val());
     connect(this, &QAction::toggled, this, [this](bool val){
             //qDebug()<<"TOGGLE "<<name()<<"toggled";
             onChangedValue(hasFocus(), val);});

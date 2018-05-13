@@ -48,8 +48,10 @@ public:
 //! Toggle, for use in buttons or menu entries, that can also be switched by console command.
 class QcrToggle : public QcrAction, public QcrControl<bool> {
 public:
-    QcrToggle(const QString& name, const QString& text, bool on, const QString& iconFile="",
-              const QKeySequence& shortcut = {});
+    QcrToggle(const QString& name, const QString& text, bool on,
+              const QString& iconFile="", const QKeySequence& shortcut = {});
+    QcrToggle(const QString& name, ParamCell<bool>* cell, const QString& text,
+              const QString& iconFile="", const QKeySequence& shortcut = {});
     bool getValue() const final { return isChecked(); }
 private:
     void doSetValue(bool val) final { setChecked(val); }
