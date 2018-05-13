@@ -84,7 +84,7 @@ QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on,
     programaticallySetValue(on);
 }
 
-QcrToggle::QcrToggle(const QString& rawname, ParamCell<bool>* cell, const QString& text,
+QcrToggle::QcrToggle(const QString& rawname, SingleValueCell<bool>* cell, const QString& text,
                      const QString& iconFile, const QKeySequence& shortcut)
     : QcrAction(text)
     , QcrControl<bool>(rawname, cell)
@@ -148,7 +148,7 @@ QcrSpinBox::QcrSpinBox(const QString& _name, int ndigits,
     : QcrSpinBox(_name, nullptr, ndigits, withDot, min, max, tooltip)
 {}
 
-QcrSpinBox::QcrSpinBox(const QString& _name, ParamCell<int>* cell, int ndigits,
+QcrSpinBox::QcrSpinBox(const QString& _name, SingleValueCell<int>* cell, int ndigits,
                        bool withDot, int min, int max, const QString& tooltip)
     : QcrControl<int>(_name, cell)
 {
@@ -199,7 +199,7 @@ QcrDoubleSpinBox::QcrDoubleSpinBox(const QString& _name, int ndigits, double min
 {}
 
 QcrDoubleSpinBox::QcrDoubleSpinBox(
-    const QString& _name, ParamCell<double>* cell, int ndigits, double min, double max)
+    const QString& _name, SingleValueCell<double>* cell, int ndigits, double min, double max)
     : QcrControl<double>(_name, cell)
 {
     widgetUtils::setWidth(this, 2+ndigits, true);
@@ -253,7 +253,7 @@ QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, bool val)
             onChangedValue(hasFocus(), (bool)val); });
 }
 
-QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, ParamCell<bool>* cell)
+QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, SingleValueCell<bool>* cell)
     : QCheckBox(text)
     , QcrControl<bool>(_name, cell)
 {

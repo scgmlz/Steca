@@ -112,8 +112,8 @@ public:
 
     size2d imageSize() const;
 
-    ParamCell<bool> intenScaledAvg {true}; // if not, summed
-    ParamCell<double> intenScale {1};
+    SingleValueCell<bool> intenScaledAvg {true}; // if not, summed
+    SingleValueCell<double> intenScale {1};
 
 signals:
     void sigActivated();     //!< selection of active clusters has changed

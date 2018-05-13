@@ -34,9 +34,9 @@ public:
     void fromSettings();
     void fromJson(const JsonObj& obj);
 
-    ParamCell<double> detectorDistance {DEF_DETECTOR_DISTANCE};   // from the sample to the detector
-    ParamCell<double> pixSize          {DEF_DETECTOR_PIXEL_SIZE}; // size of the detector pixel
-    ParamCell<int>    pixOffset[2]     {0, 0};
+    SingleValueCell<double> detectorDistance {DEF_DETECTOR_DISTANCE};   // from the sample to the detector
+    SingleValueCell<double> pixSize          {DEF_DETECTOR_PIXEL_SIZE}; // size of the detector pixel
+    SingleValueCell<int>    pixOffset[2]     {0, 0};
     void toSettings() const;
     QJsonObject toJson() const;
 };
@@ -48,8 +48,8 @@ public:
     ImageCut();
     COMPARABLE(const ImageCut&);
 
-    ParamCell<int> left {0}, right {0}, top {0}, bottom {0};
-    ParamCell<bool> linked {false};
+    SingleValueCell<int> left {0}, right {0}, top {0}, bottom {0};
+    SingleValueCell<bool> linked {false};
 
     void clear();
     void fromJson(const JsonObj& obj);

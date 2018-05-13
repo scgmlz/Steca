@@ -23,7 +23,7 @@
 template<class T>
 class QcrControl : protected CSettable {
 public:
-    QcrControl(const QString& name, ParamCell<T>* cell = nullptr);
+    QcrControl(const QString& name, SingleValueCell<T>* cell = nullptr);
     void programaticallySetValue(T val);
     virtual T getValue() const = 0;
     virtual void onCommand(const QString& arg);
@@ -34,14 +34,14 @@ protected:
 private:
     virtual void doSetValue(T) = 0;
     T reportedValue_;
-    ParamCell<T>* cell_;
+    SingleValueCell<T>* cell_;
 };
 
 //  ***********************************************************************************************
 //  implementation of QcrControl<T>
 
 template<class T>
-QcrControl<T>::QcrControl(const QString& name, ParamCell<T>* cell)
+QcrControl<T>::QcrControl(const QString& name, SingleValueCell<T>* cell)
     : CSettable {name}
     , cell_ {cell}
 {

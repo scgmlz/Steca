@@ -47,10 +47,10 @@ protected:
 
 //! Holds a single data value, and functions to be run upon change
 template<class T>
-class ParamCell : public FinalCell {
+class SingleValueCell : public FinalCell {
 public:
-    ParamCell() = delete;
-    ParamCell(T value) : value_(value) {}
+    SingleValueCell() = delete;
+    SingleValueCell(T value) : value_(value) {}
     T val() const { return value_; }
     void setCoerce(std::function<T(T)> coerce) { coerce_ = coerce; }
     void setPostHook(std::function<void(T)> postHook) { postHook_ = postHook; }

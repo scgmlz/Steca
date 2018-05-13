@@ -27,13 +27,13 @@ public:
     void fromJson(const JsonObj& obj);
     void fromSettings();
 
-    ParamCell<bool>   enabled     {false};
-    ParamCell<double> stepAlpha   {5.};
-    ParamCell<double> stepBeta    {5.};
-    ParamCell<double> idwRadius   {10.};
-    ParamCell<double> avgAlphaMax {5.};
-    ParamCell<double> avgRadius   {5.};
-    ParamCell<int>    threshold   {100};
+    SingleValueCell<bool>   enabled     {false};
+    SingleValueCell<double> stepAlpha   {5.};
+    SingleValueCell<double> stepBeta    {5.};
+    SingleValueCell<double> idwRadius   {10.};
+    SingleValueCell<double> avgAlphaMax {5.};
+    SingleValueCell<double> avgRadius   {5.};
+    SingleValueCell<int>    threshold   {100};
 
     QJsonObject toJson() const;
     void toSettings() const;

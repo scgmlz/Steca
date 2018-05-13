@@ -50,7 +50,7 @@ class QcrToggle : public QcrAction, public QcrControl<bool> {
 public:
     QcrToggle(const QString& name, const QString& text, bool on,
               const QString& iconFile="", const QKeySequence& shortcut = {});
-    QcrToggle(const QString& name, ParamCell<bool>* cell, const QString& text,
+    QcrToggle(const QString& name, SingleValueCell<bool>* cell, const QString& text,
               const QString& iconFile="", const QKeySequence& shortcut = {});
     bool getValue() const final { return isChecked(); }
 private:
@@ -78,7 +78,7 @@ class QcrSpinBox : public QSpinBox, public QcrControl<int> {
 public:
     QcrSpinBox(const QString& name, int ndigits,
                bool withDot, int min = INT_MIN, int max = INT_MAX, const QString& tooltip="");
-    QcrSpinBox(const QString& name, ParamCell<int>* cell, int ndigits,
+    QcrSpinBox(const QString& name, SingleValueCell<int>* cell, int ndigits,
                bool withDot, int min = INT_MIN, int max = INT_MAX, const QString& tooltip="");
     void onCommand(const QString&) override;
     int getValue() const final { return value(); }
@@ -100,7 +100,7 @@ class QcrDoubleSpinBox : public QDoubleSpinBox, public QcrControl<double> {
 public:
     QcrDoubleSpinBox(const QString& name, int ndigits,
                      double min = LLONG_MIN, double max = LLONG_MAX);
-    QcrDoubleSpinBox(const QString& name, ParamCell<double>* cell, int ndigits,
+    QcrDoubleSpinBox(const QString& name, SingleValueCell<double>* cell, int ndigits,
                      double min = LLONG_MIN, double max = LLONG_MAX);
     void onCommand(const QString&) override;
     double getValue() const final { return value(); }
@@ -120,7 +120,7 @@ private:
 class QcrCheckBox : public QCheckBox, public QcrControl<bool> {
 public:
     QcrCheckBox(const QString& name, const QString& text, bool val=false);
-    QcrCheckBox(const QString& name, const QString& text, ParamCell<bool>* cell);
+    QcrCheckBox(const QString& name, const QString& text, SingleValueCell<bool>* cell);
     bool getValue() const final { return isChecked(); }
 private:
     void doSetValue(bool val) final { setChecked(val); }
