@@ -44,8 +44,8 @@ private:
 Dfgram::Dfgram()
     : comboNormType_ {"normTyp", {"none", "monitor", "Δ monitor", "time", "Δ time"}}
     , intenSum_ {"intenSum", "sum"}
-    , intenAvg_ {"intenAvg", "avg ×"}
-    , intenScale_ {"intenScale", 4, 0.001}
+    , intenAvg_ {"intenAvg", "avg ×"} // TODO connect with &gSession->intenScaleAvge
+    , intenScale_ {"intenScale", &gSession->intenScale, 4, 0.001}
 {
     // initializations
     plot_ = new PlotDfgram(*this);
@@ -65,14 +65,8 @@ Dfgram::Dfgram()
     // outbound connections
     connect(&comboNormType_, _SLOT_(QComboBox,currentIndexChanged,int), [](int index) {
             gSession->setNormMode(eNorm(index)); });
-    connect(&intenAvg_, &QRadioButton::toggled, [this](bool on) {
-        intenScale_.setEnabled(on);
-        intenScale_.programaticallySetValue(gSession->intenScale());
-        gSession->setIntenScaleAvg(on, intenScale_.getValue());
-    });
-    connect(&intenScale_, &QcrDoubleSpinBox::valueReleased, [](double val) {
-        if (val > 0)
-            gSession->setIntenScaleAvg(gSession->intenScaledAvg(), val);
+    connect(&intenAvg_, &QRadioButton::toggled, [](bool on) {
+        gSession->intenScaledAvg.setParam(on);
     });
 
     // layout
@@ -100,8 +94,8 @@ Dfgram::Dfgram()
 
 void Dfgram::onNormChanged()
 {
-    intenScale_.programaticallySetValue(gSession->intenScale()); // TODO own signal
-    if (gSession->intenScaledAvg())
+    intenScale_.programaticallySetValue(gSession->intenScale.val()); // TODO own signal
+    if (gSession->intenScaledAvg.val())
         intenAvg_.programaticallySetValue(true);
     else
         intenSum_.programaticallySetValue(true);

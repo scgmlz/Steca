@@ -98,8 +98,8 @@ Curve algo::projectCluster(const Sequence& cluster, const Range& rgeGma)
         projectMeasurement(intens, counts, *one, rgeGma, minTth, deltaTth);
 
     // sum or average
-    if (gSession->intenScaledAvg()) {
-        double scale = gSession->intenScale();
+    if (gSession->intenScaledAvg.val()) {
+        double scale = gSession->intenScale.val();
         for_i (numBins) {
             int cnt = counts.at(i);
             if (cnt > 0)

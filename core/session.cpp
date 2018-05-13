@@ -77,8 +77,8 @@ void Session::clear()
 
     normMode_ = eNorm::NONE;
 
-    intenScaledAvg_ = true;
-    intenScale_ = 1;
+    intenScaledAvg.setParam(true);
+    intenScale.setParam(1);
 }
 
 void Session::sessionFromJson(const QByteArray& json)
@@ -98,9 +98,8 @@ void Session::sessionFromJson(const QByteArray& json)
     peaks().fromJson(top.loadArr("peaks"));
     baseline().fromJson(top.loadObj("baseline"));
 
-    bool arg1 = top.loadBool("average intensity?", true);
-    double arg2 = top.loadPreal("intensity scale", 1);
-    setIntenScaleAvg(arg1, arg2);
+    intenScaledAvg.setParam(top.loadBool("average intensity?", true));
+    intenScale.setParam(top.loadPreal("intensity scale", 1));
 
     geometry().fromJson(top.loadObj("detector"));
     imageCut().fromJson(top.loadObj("cut"));
@@ -121,8 +120,8 @@ QByteArray Session::serializeSession() const
 
     // TODO serialize metaSelection_
 
-    top.insert("average intensity?", intenScaledAvg());
-    top.insert("intensity scale", double_to_json((double)intenScale()));
+    top.insert("average intensity?", intenScaledAvg.val());
+    top.insert("intensity scale", double_to_json((double)intenScale.val()));
     // TODO serialize image rotation and mirror
     top.insert("detector", geometry().toJson());
     top.insert("cut", imageCut().toJson());
@@ -167,14 +166,6 @@ void Session::setImageTransformMirror(bool on)
 void Session::setImageTransformRotate(const ImageTransform& rot)
 {
     imageTransform_ = imageTransform_.rotateTo(rot);
-}
-
-// TODO: split into two functions (see usage in panel_diff..)
-void Session::setIntenScaleAvg(bool avg, double scale)
-{
-    intenScaledAvg_ = avg;
-    intenScale_ = scale;
-    EMITS("Session::setIntenScaleAvg", gSession->sigNorm());
 }
 
 void Session::setNormMode(eNorm normMode)

@@ -15,6 +15,7 @@
 #ifndef SESSION_H
 #define SESSION_H
 
+#include "qcr/engine/cell.h"
 #include "core/calc/baseline.h"
 #include "core/calc/interpol_params.h"
 #include "core/calc/gamma_selection.h"
@@ -97,15 +98,12 @@ public:
 
     void setImageTransformMirror(bool);
     void setImageTransformRotate(const ImageTransform&);
-    void setIntenScaleAvg(bool, double);
     void updateImageSize(); //!< Clears image size if session has no files
     void setImageSize(const size2d&); //!< Ensures same size for all images
 
     // const methods:
     QByteArray serializeSession() const;
 
-    bool intenScaledAvg() const { return intenScaledAvg_; }
-    double intenScale() const { return intenScale_; }
     bool metaSelected(int i) const { return metaSelection_[i]; }
 
     bool hasData() const { return dataset().countFiles(); }
@@ -113,6 +111,9 @@ public:
     const ActiveClusters& activeClusters() const { return dataset().activeClusters(); }
 
     size2d imageSize() const;
+
+    ParamCell<bool> intenScaledAvg {true}; // if not, summed
+    ParamCell<double> intenScale {1};
 
 signals:
     void sigActivated();     //!< selection of active clusters has changed
@@ -150,8 +151,6 @@ private:
     PeakInfos interpolatedPeakInfos_;
     eNorm normMode_ {eNorm::NONE};
     // others
-    bool intenScaledAvg_ {true}; // if not, summed
-    double intenScale_ {1};
     std::vector<bool> metaSelection_; //!< true if meta datum is to be displayed
     size2d imageSize_; //!< All images must have this same size
 };
