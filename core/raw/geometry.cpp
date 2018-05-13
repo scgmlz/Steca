@@ -43,9 +43,9 @@ void Geometry::fromSettings()
 {
     XSettings s("DetectorGeometry");
     detectorDistance.setParam(s.readReal("detectorDistance", DEF_DETECTOR_DISTANCE));
-    pixSize.         setParam(s.readReal("pixelSize", DEF_DETECTOR_PIXEL_SIZE));
-    midPixOffset_.i = s.readInt("offsetX", 0);
-    midPixOffset_.j = s.readInt("offsetY", 0);
+    pixSize         .setParam(s.readReal("pixelSize", DEF_DETECTOR_PIXEL_SIZE));
+    pixOffset[0]    .setParam(s.readInt("offsetX", 0));
+    pixOffset[1]    .setParam(s.readInt("offsetY", 0));
 }
 
 void Geometry::toSettings() const
@@ -53,15 +53,16 @@ void Geometry::toSettings() const
     XSettings s("DetectorGeometry");
     s.setValue("detectorDistance", detectorDistance.val());
     s.setValue("pixelSize", pixSize.val());
-    s.setValue("offsetX", midPixOffset_.i);
-    s.setValue("offsetY", midPixOffset_.j);
+    s.setValue("offsetX", pixOffset[0].val());
+    s.setValue("offsetY", pixOffset[1].val());
 }
 
 void Geometry::fromJson(const JsonObj& obj)
 {
     detectorDistance.setParam(obj.loadPreal("distance"));
     pixSize.         setParam(obj.loadPreal("pixel size"));
-    setOffset(obj.loadIJ("beam offset"));
+    pixOffset[0]    .setParam(obj.loadPint ("beam offset X"));
+    pixOffset[1]    .setParam(obj.loadPint ("beam offset Y"));
 }
 
 QJsonObject Geometry::toJson() const
@@ -69,21 +70,17 @@ QJsonObject Geometry::toJson() const
     return {
         { "distance", QJsonValue(detectorDistance.val()) },
         { "pixel size", QJsonValue(pixSize.val()) },
-        { "beam offset", midPixOffset().toJson() }
+        { "beam offset X", QJsonValue(pixOffset[0].val()) },
+        { "beam offset Y", QJsonValue(pixOffset[1].val()) }
     };
-}
-
-void Geometry::setOffset(const IJ& midPixOffset)
-{
-    midPixOffset_ = midPixOffset;
-    EMITS("Geometry::setOffset", gSession->sigDetector());
 }
 
 int Geometry::compare(const Geometry& that) const
 {
     RET_COMPARE_VALUE(detectorDistance.val())
     RET_COMPARE_VALUE(pixSize.val())
-    RET_COMPARE_COMPARABLE(midPixOffset_)
+    RET_COMPARE_VALUE(pixOffset[0].val())
+    RET_COMPARE_VALUE(pixOffset[1].val())
     return 0;
 }
 
@@ -214,8 +211,8 @@ ImageKey::ImageKey(deg midTth_)
     : geometry(gSession->geometry())
     , size(gSession->imageSize())
     , cut(gSession->imageCut())
-    , midPixX(size.w/2 + geometry.midPixOffset().i)
-    , midPixY(size.h/2 + geometry.midPixOffset().j)
+    , midPixX(size.w/2 + geometry.pixOffset[0].val())
+    , midPixY(size.h/2 + geometry.pixOffset[1].val())
     , midTth(midTth_)
 {}
 

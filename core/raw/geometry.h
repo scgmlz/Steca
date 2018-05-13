@@ -33,17 +33,11 @@ public:
     void fromSettings();
     void fromJson(const JsonObj& obj);
 
-    void setOffset(const IJ& midPixOffset);
-
     ParamCell<double> detectorDistance {DEF_DETECTOR_DISTANCE};   // from the sample to the detector
     ParamCell<double> pixSize          {DEF_DETECTOR_PIXEL_SIZE}; // size of the detector pixel
-    IJ& midPixOffset() { return midPixOffset_; }
-    const IJ& midPixOffset() const { return midPixOffset_; }
+    ParamCell<int>    pixOffset[2]     {0, 0};
     void toSettings() const;
     QJsonObject toJson() const;
-
-private:
-    IJ midPixOffset_;
 };
 
 

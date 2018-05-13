@@ -29,8 +29,6 @@ class GeometryControls : public QWidget {
 public:
     GeometryControls();
 private:
-    void fromCore();
-
     QVBoxLayout vbox_;
     QGridLayout mmGrid_;
     QHBoxLayout trafoLayout_;
@@ -47,20 +45,8 @@ GeometryControls::GeometryControls()
     // initialization
     detDistance_  = new QcrDoubleSpinBox {"detDistance", &gSession->geometry().detectorDistance, 6};
     detPixelSize_ = new QcrDoubleSpinBox {"detPixelSize", &gSession->geometry().pixSize, 3};
-    beamOffsetI_  = new QcrSpinBox       {"beamOffsetI", 3, true};
-    beamOffsetJ_  = new QcrSpinBox       {"beamOffsetJ", 3, true};
-    fromCore();
-
-    // inbound connection
-    connect(gSession, &Session::sigDetector, this, &GeometryControls::fromCore);
-
-    // outbound connections and control widget setup
-    connect(beamOffsetI_, &QcrSpinBox::valueReleased, [](int val) {
-            gSession->geometry().midPixOffset().i = val;
-            EMITS("GeometryControls", gSession->sigDetector()); });
-    connect(beamOffsetJ_, &QcrSpinBox::valueReleased, [](int val) {
-            gSession->geometry().midPixOffset().j = val;
-            EMITS("GeometryControls", gSession->sigDetector()); });
+    beamOffsetI_  = new QcrSpinBox    {"beamOffsetI", &gSession->geometry().pixOffset[0], 3, true};
+    beamOffsetJ_  = new QcrSpinBox    {"beamOffsetJ", &gSession->geometry().pixOffset[1], 3, true};
 
     // layout
     mmGrid_.addWidget(new QLabel("det. distance"), 0, 0);
@@ -87,13 +73,6 @@ GeometryControls::GeometryControls()
     vbox_.addLayout(&trafoLayout_);
     vbox_.addLayout(&offsetLayout_);
     setLayout(&vbox_);
-}
-
-void GeometryControls::fromCore()
-{
-    const Geometry& g = gSession->geometry();
-    beamOffsetI_ ->programaticallySetValue(g.midPixOffset().i);
-    beamOffsetJ_ ->programaticallySetValue(g.midPixOffset().j);
 }
 
 //  ***********************************************************************************************

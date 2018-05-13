@@ -123,9 +123,8 @@ void ImageView::paintEvent(QPaintEvent*)
         const int rw = rr - rl;
 
         // cross
-        const IJ& off = gSession->geometry().midPixOffset();
-        const int x = qRound(rcx + scale_ * off.i);
-        const int y = qRound(rcy + scale_ * off.j);
+        const int x = qRound(rcx + scale_ * gSession->geometry().pixOffset[0].val());
+        const int y = qRound(rcy + scale_ * gSession->geometry().pixOffset[1].val());
         p.drawLine(x, rt, x, rb);
         p.drawLine(rl, y, rr, y);
 
