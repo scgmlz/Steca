@@ -135,7 +135,7 @@ int Cluster::totalOffset() const
 
 bool Cluster::isIncomplete() const
 {
-    return count()<gSession->dataset().binning();
+    return count()<gSession->dataset().binning.val();
 }
 
 void Cluster::setCurve(int i, Curve&& c) const

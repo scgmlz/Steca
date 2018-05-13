@@ -160,7 +160,7 @@ void IdxMeas::fromCore()
         programaticallySetValue(1);
         return;
     }
-    setEnabled( gSession->dataset().binning() > 1);
+    setEnabled( gSession->dataset().binning.val() > 1);
     int max = hl.cluster()->count();
     setMaximum(max);
     if ( hl.measurementIndex()+1>max )

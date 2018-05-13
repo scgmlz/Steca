@@ -109,6 +109,11 @@ const Measurement* HighlightedData::measurement() const
 //  ***********************************************************************************************
 //! @class Dataset
 
+Dataset::Dataset() {
+    binning.       setPostHook( [this](int)  { onClusteringChanged(); } );
+    dropIncomplete.setPostHook( [this](bool) { onClusteringChanged(); } );
+}
+
 void Dataset::clear()
 {
     qDebug() << "Dataset::clear";
@@ -157,22 +162,6 @@ void Dataset::addGivenFiles(const QStringList& filePaths)
         highlight().setFile( i<0 ? 0 : i );
 }
 
-void Dataset::setBinning(int by)
-{
-    if (by==binning_)
-        return;
-    binning_ = by;
-    onClusteringChanged();
-}
-
-void Dataset::setDropIncomplete(bool on)
-{
-    if (on==dropIncomplete_)
-        return;
-    dropIncomplete_ = on;
-    onClusteringChanged();
-}
-
 void Dataset::activateCluster(int index, bool on)
 {
     allClusters_.at(index)->setActivated(on);
@@ -219,14 +208,14 @@ void Dataset::updateClusters()
     hasIncomplete_ = false;
     for (Datafile& file : files_) {
         file.clusters_.clear();
-        for (int i=0; i<file.numMeasurements(); i+=binning_) {
-            if (i+binning_>file.numMeasurements()) {
+        for (int i=0; i<file.numMeasurements(); i+=binning.val()) {
+            if (i+binning.val()>file.numMeasurements()) {
                 hasIncomplete_ = true;
-                if (dropIncomplete_)
+                if (dropIncomplete.val())
                     break;
             }
             std::vector<const Measurement*> group;
-            for (int ii=i; ii<file.numMeasurements() && ii<i+binning_; ii++)
+            for (int ii=i; ii<file.numMeasurements() && ii<i+binning.val(); ii++)
                 group.push_back(file.raw_.measurements().at(ii));
             std::unique_ptr<Cluster> cluster(new Cluster(group, file, allClusters_.size(), i));
             file.clusters_.push_back(cluster.get());
@@ -264,7 +253,7 @@ QJsonObject Dataset::toJson() const
     for (const Datafile& file : files_)
         arr.append(file.raw_.fileInfo().absoluteFilePath());
     ret.insert("files", arr);
-    ret.insert("binning", binning_);
+    ret.insert("binning", binning.val());
     return ret;
 }
 
@@ -275,7 +264,7 @@ void Dataset::fromJson(const JsonObj& obj)
     for (const QJsonValue& file : files)
         paths.append(file.toString());
     addGivenFiles(paths);
-    setBinning(obj.loadPint("binning", 1));
+    binning.setParam(obj.loadPint("binning", 1));
 }
 
 bool Dataset::hasFile(const QString& fileName) const

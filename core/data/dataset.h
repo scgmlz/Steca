@@ -15,6 +15,7 @@
 #ifndef DATASET_H
 #define DATASET_H
 
+#include "qcr/engine/cell.h"
 #include "core/data/active_clusters.h"
 #include "core/data/cluster.h"
 #include <memory>
@@ -73,7 +74,7 @@ private:
 
 class Dataset {
 public:
-    Dataset() = default;
+    Dataset();
     Dataset(const Dataset&) = delete;
 
     // Accessor methods
@@ -85,8 +86,6 @@ public:
     void fromJson(const JsonObj& obj);
     void addGivenFiles(const QStringList& filePaths);
     void removeFile();
-    void setBinning(int by);
-    void setDropIncomplete(bool on);
     void activateCluster(int index, bool on);
     void setFileActivation(int index, bool on);
 
@@ -97,8 +96,8 @@ public:
     const Cluster& clusterAt(int i) const;
     int offset(const Datafile& file) const { return file.offset_; }
 
-    int binning() const { return binning_; }
-    bool dropIncomplete() const { return dropIncomplete_; }
+    ParamCell<int> binning {1};             //!< bin so many Measurement|s into one cluster
+    ParamCell<bool> dropIncomplete {false}; //!< drop Cluster|s with less than 'binning' members.
     bool hasIncomplete() const { return hasIncomplete_; }
 
     const ActiveClusters& activeClusters() const { return activeClusters_; }
@@ -110,8 +109,6 @@ private:
     std::vector<std::unique_ptr<Cluster>> allClusters_; //!< all Cluster|s are owned by this
     // leave this a unique_ptr because other vectors backlink through Cluster* pointers
 
-    int binning_ {1}; //!< bin so many Measurement|s into one cluster
-    bool dropIncomplete_ {false}; //!< drop Cluster|s that have less than binning_ members.
     bool hasIncomplete_; //!< current binning does result in at least one incomplete cluster
 
     HighlightedData highlight_; //!< wraps pointer to highlighted Datafile and Cluster

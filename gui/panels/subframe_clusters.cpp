@@ -99,7 +99,7 @@ QVariant ActiveClustersModel::data(const QModelIndex& index, int role) const
         if (cluster.isIncomplete())
             ret += QString("\nThis cluster has only %1 elements, while the binning factor is %2.")
                 .arg(cluster.count())
-                .arg(gSession->dataset().binning());
+                .arg(gSession->dataset().binning.val());
         return ret;
     }
     case Qt::ForegroundRole: {

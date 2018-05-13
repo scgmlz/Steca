@@ -119,6 +119,7 @@ CutControls::CutControls()
 class ActiveClustersControls : public QWidget {
 public:
     ActiveClustersControls();
+    ~ActiveClustersControls();
 private:
     void fromCore();
 
@@ -130,21 +131,17 @@ private:
 
 ActiveClustersControls::ActiveClustersControls()
 {
-    combineMeasurements_ = new QcrSpinBox {"combineMeasurements", 3, false, 1, 999,
-                                           "Combine this number of measurements into one group"};
-    dropIncompleteAction_ = new QcrToggle {"dropIncomplete",
-            "Drop measurement groups that do not have the full number of members",
-            false, ":/icon/dropIncomplete" };
+    combineMeasurements_ = new QcrSpinBox {
+        "combineMeasurements", &gSession->dataset().binning, 3, false, 1, 999,
+        "Combine this number of measurements into one group"};
+    dropIncompleteAction_ = new QcrToggle {
+        "dropIncomplete", &gSession->dataset().dropIncomplete,
+        "Drop measurement groups that do not have the full number of members",
+        ":/icon/dropIncomplete" };
     dropIncompleteButton_ = new QcrIconButton { dropIncompleteAction_ };
 
     // inbound connection
     connect(gSession, &Session::sigClusters, this, &ActiveClustersControls::fromCore);
-
-    // outbound connections
-    connect(combineMeasurements_, &QcrSpinBox::valueReleased,
-            [](int num) { gSession->dataset().setBinning(num); });
-    connect(dropIncompleteAction_, &QAction::toggled,
-            [](bool on) { gSession->dataset().setDropIncomplete(on); });
 
     // layout
     layout_.addWidget(new QLabel("combine"));
@@ -159,9 +156,13 @@ ActiveClustersControls::ActiveClustersControls()
     fromCore();
 }
 
+ActiveClustersControls::~ActiveClustersControls()
+{
+    delete dropIncompleteAction_;
+}
+
 void ActiveClustersControls::fromCore()
 {
-    combineMeasurements_->programaticallySetValue(gSession->dataset().binning());
     dropIncompleteAction_->setEnabled(gSession->dataset().hasIncomplete());
 }
 
