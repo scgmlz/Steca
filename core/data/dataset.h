@@ -55,18 +55,16 @@ public:
     void setFile(int);
     void setCluster(int);
     void reset();
-    void setMeasurement(int val);
 
     const Cluster* cluster() const { return current_; }
     int clusterIndex() const;
     const Datafile* file() const;
     int fileIndex() const;
     const Measurement* measurement() const;
-    int measurementIndex() const { return measurement_; }
+    ParamCell<int> measurementIdx {0}; //!< selected for image display (idx in highlighted cluster)
 
 private:
     const Cluster* current_ { nullptr };
-    int measurement_ {0}; //!< selected for image display (index in highlighted cluster)
 };
 
 

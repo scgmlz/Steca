@@ -77,12 +77,6 @@ void HighlightedData::reset()
     setCluster(0);
 }
 
-void HighlightedData::setMeasurement(int val)
-{
-    measurement_ = current_ ? qMin( val, current_->count()-1 ) : 0;
-    EMITS("HighlightedData::setMeasurement", gSession->sigDataHighlight());
-}
-
 const Datafile* HighlightedData::file() const
 {
     if (!current_)
@@ -102,7 +96,7 @@ int HighlightedData::clusterIndex() const
 
 const Measurement* HighlightedData::measurement() const
 {
-    return current_ ? current_->at(measurement_) : nullptr;
+    return current_ ? current_->at(measurementIdx.val()) : nullptr;
 }
 
 

@@ -140,35 +140,6 @@ void ImageView::paintEvent(QPaintEvent*)
 }
 
 //  ***********************************************************************************************
-//! @class IdxMeas
-
-IdxMeas::IdxMeas()
-    : QcrSpinBox {"idxMeas", 4, false, 1, INT_MAX,
-        "Number of measurement within the current group of measurements"}
-{
-    connect(gSession, &Session::sigDataHighlight, this, &IdxMeas::fromCore);
-    connect(this, &QcrSpinBox::valueReleased, [](int val) {
-            gSession->dataset().highlight().setMeasurement(val-1); });
-    fromCore();
-}
-
-void IdxMeas::fromCore()
-{
-    auto& hl = gSession->dataset().highlight();
-    if (!hl.cluster()) {
-        setEnabled(false);
-        programaticallySetValue(1);
-        return;
-    }
-    setEnabled( gSession->dataset().binning.val() > 1);
-    int max = hl.cluster()->count();
-    setMaximum(max);
-    if ( hl.measurementIndex()+1>max )
-        hl.setMeasurement(max-1);
-    programaticallySetValue(hl.measurementIndex()+1);
-}
-
-//  ***********************************************************************************************
 //  base class ImageTab
 //  ***********************************************************************************************
 
@@ -255,11 +226,43 @@ QImage ImageTab::makeImage(const Image& image)
 }
 
 //  ***********************************************************************************************
+//! @class IdxMeas
+
+/* TODO restore enable/disable, restore signal
+IdxMeas::IdxMeas()
+{
+    connect(gSession, &Session::sigDataHighlight, this, &IdxMeas::fromCore);
+    connect(this, &QcrSpinBox::valueReleased, [](int val) {
+            gSession->dataset().highlight().setMeasurement(val-1); });
+    fromCore();
+}
+
+void IdxMeas::fromCore()
+{
+    auto& hl = gSession->dataset().highlight();
+    if (!hl.cluster()) {
+        setEnabled(false);
+        programaticallySetValue(1);
+        return;
+    }
+    setEnabled( gSession->dataset().binning.val() > 1);
+    int max = hl.cluster()->count();
+    setMaximum(max);
+    if ( hl.measurementIndex()+1>max )
+        hl.setMeasurement(max-1);
+    programaticallySetValue(hl.measurementIndex()+1);
+}
+*/
+
+//  ***********************************************************************************************
 //! @class DataImageTab
 
 DataImageTab::DataImageTab()
     : btnShowBins_ {&gGui->toggles->showBins}
 {
+    idxMeas_ = new QcrSpinBox {
+        "idxMeas", &gSession->dataset().highlight().measurementIdx, 4, false, 1, INT_MAX,
+        "Number of measurement within the current group of measurements"};
     idxSlice_ = new QcrSpinBox {
         "idxSlice", &gSession->gammaSelection().currSlice,
         4, false, 1, INT_MAX, "Number of γ slice to be shown" };
@@ -279,7 +282,7 @@ DataImageTab::DataImageTab()
     box1_.addWidget(&btnShowBins_, Qt::AlignLeft);
 
     boxIdx_.addWidget(new QLabel("image #"), 0, 0, Qt::AlignLeft);
-    boxIdx_.addWidget(&idxMeas_, 0, 1, Qt::AlignLeft);
+    boxIdx_.addWidget(idxMeas_, 0, 1, Qt::AlignLeft);
     boxIdx_.addWidget(new QLabel("ϑ bin #"), 1, 0, Qt::AlignLeft);
     boxIdx_.addWidget(idxTheta_, 1, 1, Qt::AlignLeft);
     boxIdx_.addWidget(new QLabel("γ slice #"), 2, 0, Qt::AlignLeft);

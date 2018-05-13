@@ -33,15 +33,6 @@ private:
     QPixmap original_, scaled_;
 };
 
-//! A spin box that governs which measurement out of the highlighted group shall be shown.
-
-class IdxMeas : public QcrSpinBox {
-public:
-    IdxMeas();
-private:
-    void fromCore();
-};
-
 //! Pure virtual base class for DataImageTab and CorrImageTab, shows a detector image and controls.
 
 class ImageTab : public QWidget {
@@ -76,7 +67,7 @@ private:
     QGridLayout boxIdx_;
     QGridLayout boxRanges_;
     QPixmap pixmap() final;
-    IdxMeas idxMeas_;
+    QcrSpinBox* idxMeas_;
     QcrSpinBox* idxSlice_;
     QcrSpinBox* idxTheta_;
     QLabel gammaRangeTotal_;
