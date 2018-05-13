@@ -119,51 +119,45 @@ CutControls::CutControls()
 class ActiveClustersControls : public QWidget {
 public:
     ActiveClustersControls();
-    ~ActiveClustersControls();
 private:
     void fromCore();
 
     QHBoxLayout layout_;
-    QcrSpinBox* combineMeasurements_;
-    QcrToggle* dropIncompleteAction_;
-    QcrIconButton* dropIncompleteButton_;
+    QcrSpinBox    combineMeasurements_;
+    QcrToggle     dropIncompleteAction_;
+    QcrIconButton dropIncompleteButton_;
 };
 
 ActiveClustersControls::ActiveClustersControls()
-{
-    combineMeasurements_ = new QcrSpinBox {
+    : combineMeasurements_ {
         "combineMeasurements", &gSession->dataset().binning, 3, false, 1, 999,
-        "Combine this number of measurements into one group"};
-    dropIncompleteAction_ = new QcrToggle {
+        "Combine this number of measurements into one group"}
+    , dropIncompleteAction_ {
         "dropIncomplete", &gSession->dataset().dropIncomplete,
         "Drop measurement groups that do not have the full number of members",
-        ":/icon/dropIncomplete" };
-    dropIncompleteButton_ = new QcrIconButton { dropIncompleteAction_ };
+        ":/icon/dropIncomplete" }
+    , dropIncompleteButton_ { &dropIncompleteAction_ }
+{
 
     // inbound connection
     connect(gSession, &Session::sigClusters, this, &ActiveClustersControls::fromCore);
 
     // layout
     layout_.addWidget(new QLabel("combine"));
-    layout_.addWidget(combineMeasurements_);
+    layout_.addWidget(&combineMeasurements_);
     layout_.addWidget(new QLabel("measurements"));
-    layout_.addWidget(dropIncompleteButton_);
+    layout_.addWidget(&dropIncompleteButton_);
     layout_.addStretch(1);
     setLayout(&layout_);
 
     //initialization
-    dropIncompleteAction_->setEnabled(false);
+    dropIncompleteAction_.setEnabled(false);
     fromCore();
-}
-
-ActiveClustersControls::~ActiveClustersControls()
-{
-    delete dropIncompleteAction_;
 }
 
 void ActiveClustersControls::fromCore()
 {
-    dropIncompleteAction_->setEnabled(gSession->dataset().hasIncomplete());
+    dropIncompleteAction_.setEnabled(gSession->dataset().hasIncomplete());
 }
 
 //  ***********************************************************************************************
