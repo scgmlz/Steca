@@ -60,7 +60,7 @@ public:
     QJsonObject toJson() const;
 
 private:
-    static void confine(ParamCell<int>& m1, ParamCell<int>& m2, int maxTogether);
+    void postHook(int);
     void setAll(int);
 };
 

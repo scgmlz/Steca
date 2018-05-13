@@ -93,38 +93,23 @@ EQ_NE_OPERATOR(Geometry)
 
 ImageCut::ImageCut()
 {
-    left.connectAction( [this]() {
-            if (linked.val()) {
-                setAll(left.val());
-            } else {
-                confine(left, right, gSession->imageSize().w);
-                EMITS("ImageCut::setLeft", gSession->sigDetector());
-               // TODO check consequence of rotation implied by imageSize()
-            } });
-    right.connectAction( [this]() {
-            if (linked.val()) {
-                setAll(right.val());
-            } else {
-                confine(right, left, gSession->imageSize().w);
-                EMITS("ImageCut::setRight", gSession->sigDetector());
-               // TODO check consequence of rotation implied by imageSize()
-            } });
-    top.connectAction( [this]() {
-            if (linked.val()) {
-                setAll(top.val());
-            } else {
-                confine(top, bottom, gSession->imageSize().w);
-                EMITS("ImageCut::setTop", gSession->sigDetector());
-               // TODO check consequence of rotation implied by imageSize()
-            } });
-    bottom.connectAction( [this]() {
-            if (linked.val()) {
-                setAll(bottom.val());
-            } else {
-                confine(bottom, top, gSession->imageSize().w);
-                EMITS("ImageCut::setBottom", gSession->sigDetector());
-               // TODO check consequence of rotation implied by imageSize()
-            } });
+    // TODO: restore constraints
+
+    left  .setPostHook([this](int val){ postHook(val); });
+    right .setPostHook([this](int val){ postHook(val); });
+    top   .setPostHook([this](int val){ postHook(val); });
+    bottom.setPostHook([this](int val){ postHook(val); });
+}
+
+void ImageCut::postHook(int val)
+{
+    if (linked.val()) {
+        left.setParam(val);
+        right.setParam(val);
+        top.setParam(val);
+        bottom.setParam(val);
+    }
+    EMITS("ImageCut::setAll", gSession->sigDetector());
 }
 
 void ImageCut::clear()
@@ -155,23 +140,6 @@ QJsonObject ImageCut::toJson() const
     };
 }
 
-void ImageCut::confine(ParamCell<int>& m1, ParamCell<int>& m2, int maxTogether)
-{
-    m1.setParam(qMax(qMin(m1.val(), maxTogether - m2.val() - 1), 0));
-    m2.setParam(qMax(qMin(m2.val(), maxTogether - m1.val() - 1), 0));
-}
-
-void ImageCut::setAll(int val)
-{
-    int h = qMax(qMin(val, (gSession->imageSize().w-1)/2), 0);
-    left.setParam(h);
-    right.setParam(h);
-    int v = qMax(qMin(val, (gSession->imageSize().h-1)/2), 0);
-    top.setParam(v);
-    bottom.setParam(v);
-    EMITS("ImageCut::setAll", gSession->sigDetector());
-}
-
 int ImageCut::compare(const ImageCut& that) const
 {
     RET_COMPARE_VALUE(left.val())
@@ -185,7 +153,7 @@ EQ_NE_OPERATOR(ImageCut)
 
 size2d ImageCut::marginSize() const
 {
-    return size2d(left.val() + right.val(), top.val() + bottom.val());
+    return size2d(horiz(), vertical());
 }
 
 

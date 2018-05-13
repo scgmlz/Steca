@@ -42,7 +42,7 @@ class FinalCell : public Cell {
 protected:
     static stamp_t latestTimestamp__;
     static stamp_t mintTimestamp() { return ++latestTimestamp__; }
-    void recompute() final {};
+    void recompute() override {};
 };
 
 //! Holds a single data value, and functions to be run upon change
@@ -57,10 +57,11 @@ public:
         if (val==value_)
             return;
         value_ = val;
-        if (userCall)
-            mintTimestamp();
         actOnChange();
-        postHook_(val);
+        if (userCall) {
+            mintTimestamp();
+            postHook_(val);
+        }
     }
 private:
     T value_;
