@@ -37,17 +37,19 @@ void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString
 //        break;
     case QtWarningMsg:
     default:
-        if (msg.left(4)=="QXcb") {
-            ; // std::cerr << "QBUG " << msg.toStdString() << "\n" << std::flush;
-        } else {
-            std::cerr << "WARN " << msg.toStdString() << "\n" << std::flush;
-            qApp->restoreOverrideCursor();
-            QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
-            gConsole->log("#WARNING: " + msg);
-        }
+        if (msg.left(4)=="QXcb")
+            return;
+        std::cerr << "WARN " << msg.toStdString() << "\n" << std::flush;
+        if (!qApp)
+            return;
+        qApp->restoreOverrideCursor();
+        QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
+        gConsole->log("#WARNING: " + msg);
         break;
     case QtFatalMsg:
         std::cerr << "BUG! " << msg.toStdString() << context(ctx) << "\n" << std::flush;
+        if (!qApp)
+            return;
         qApp->restoreOverrideCursor();
         QMessageBox::critical(QApplication::activeWindow(), qAppName(),
                               "Sorry, you encountered a fatal bug.\n"
