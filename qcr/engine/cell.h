@@ -39,7 +39,7 @@ private:
 };
 
 class FinalCell : public Cell {
-private:
+protected:
     static stamp_t latestTimestamp__;
     static stamp_t mintTimestamp() { return ++latestTimestamp__; }
     void recompute() final {};
@@ -47,19 +47,24 @@ private:
 
 //! Holds a single data value, and functions to be run upon change
 template<class T>
-class ParamCell : public Cell {
+class ParamCell : public FinalCell {
 public:
+    ParamCell() = delete;
     ParamCell(T value) : value_(value) {}
     T val() const { return value_; }
-    void setParam(T val) {
+    void setPostHook(std::function<void(T)> postHook) { postHook_ = postHook; }
+    void setParam(T val, bool userCall=false) {
         if (val==value_)
             return;
         value_ = val;
+        if (userCall)
+            mintTimestamp();
         actOnChange();
+        postHook_(val);
     }
 private:
     T value_;
-    void recompute() final {};
+    std::function<void(T)> postHook_ = [](T){};
 };
 
 #endif // CELL_H

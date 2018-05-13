@@ -129,7 +129,10 @@ ImageCut::ImageCut()
 
 void ImageCut::clear()
 {
-    *this = std::move(ImageCut());
+    left  .setParam(0);
+    right .setParam(0);
+    top   .setParam(0);
+    bottom.setParam(0);
 }
 
 void ImageCut::fromJson(const JsonObj& obj)

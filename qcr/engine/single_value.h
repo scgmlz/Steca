@@ -77,14 +77,16 @@ void QcrControl<T>::onChangedValue(bool hasFocus, T val)
         return; // nothing to do
     bool userCall = hasFocus && !softwareCalling_;
     doLog(!userCall, name()+" "+strOp::to_s(val));
+
+    // not sure whether we want to get rid of hasFocus; perform some tests:
     if (hasFocus && softwareCalling_)
         qDebug() << "UNEXPECTED in "+name()+" hasFocus && softwareCalling_";
     if (!hasFocus && !softwareCalling_)
         qDebug() << "UNDESIRABLE in "+name()+" !hasFocus && !softwareCalling_";
-    // not sure whether we want to get rid of hasFocus
+
     reportedValue_ = val;
     if (cell_)
-        cell_->setParam(val);
+        cell_->setParam(val, userCall);
 }
 
 #endif // SINGLE_VALUE_H

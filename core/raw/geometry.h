@@ -20,6 +20,8 @@
 #include "core/typ/size2d.h"
 #include "core/typ/range.h"
 
+// TODO after removal of ImageKey: delete copy c'tors
+
 //! Detector geometry.
 class Geometry {
 public:
@@ -44,7 +46,6 @@ public:
 class ImageCut {
 public:
     ImageCut();
-    ImageCut(const ImageCut&) = default; // TODO delete after removal of ImageCut
     COMPARABLE(const ImageCut&);
 
     ParamCell<int> left {0}, right {0}, top {0}, bottom {0};
