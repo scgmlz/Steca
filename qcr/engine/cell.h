@@ -54,22 +54,29 @@ public:
     T val() const { return value_; }
     void setCoerce(std::function<T(T)> coerce) { coerce_ = coerce; }
     void setPostHook(std::function<void(T)> postHook) { postHook_ = postHook; }
-    void setVal(T val, bool userCall=false) {
-        T newval = coerce_(val);
-        if (newval==value_)
-            return;
-        value_ = newval;
-        actOnChange();
-        if (userCall) {
-            mintTimestamp();
-            postHook_(newval);
-        }
-    }
+    void setVal(T, bool userCall=false);
     void reCoerce() { setVal(value_); }
 private:
     T value_;
     std::function<void(T)> postHook_ = [](T){};
-    std::function<T(T)> coerce_ = [](T val){ return val; };
+    std::function<T(T)> coerce_ = [](T val) { return val; };
 };
+
+//  ***********************************************************************************************
+//  class SingleValueCell implementation
+
+template<class T>
+void SingleValueCell<T>::setVal(T val, bool userCall)
+{
+    T newval = coerce_(val);
+    if (newval==value_)
+        return;
+    value_ = newval;
+    actOnChange();
+    if (userCall) {
+        mintTimestamp();
+        postHook_(newval);
+    }
+}
 
 #endif // CELL_H
