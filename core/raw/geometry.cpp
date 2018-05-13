@@ -33,7 +33,9 @@ double const Geometry::DEF_DETECTOR_PIXEL_SIZE = 1;
 Geometry::Geometry()
 {
     detectorDistance.connectAction([](){ emit gSession->sigDetector();});
-    pixSize.         connectAction([](){ emit gSession->sigDetector();});
+    pixSize         .connectAction([](){ emit gSession->sigDetector();});
+    pixOffset[0]    .connectAction([](){ emit gSession->sigDetector();});
+    pixOffset[1]    .connectAction([](){ emit gSession->sigDetector();});
     // TODO restore constraints?
     // detectorDistance_ = qMin(qMax(detectorDistance, 10.), 9999.);
     // pixSize_ = qMin(qMax(pixSize, .1), 9.9);
@@ -89,6 +91,42 @@ EQ_NE_OPERATOR(Geometry)
 //  ***********************************************************************************************
 //! @class ImageCut
 
+ImageCut::ImageCut()
+{
+    left.connectAction( [this]() {
+            if (linked.val()) {
+                setAll(left.val());
+            } else {
+                confine(left, right, gSession->imageSize().w);
+                EMITS("ImageCut::setLeft", gSession->sigDetector());
+               // TODO check consequence of rotation implied by imageSize()
+            } });
+    right.connectAction( [this]() {
+            if (linked.val()) {
+                setAll(right.val());
+            } else {
+                confine(right, left, gSession->imageSize().w);
+                EMITS("ImageCut::setRight", gSession->sigDetector());
+               // TODO check consequence of rotation implied by imageSize()
+            } });
+    top.connectAction( [this]() {
+            if (linked.val()) {
+                setAll(top.val());
+            } else {
+                confine(top, bottom, gSession->imageSize().w);
+                EMITS("ImageCut::setTop", gSession->sigDetector());
+               // TODO check consequence of rotation implied by imageSize()
+            } });
+    bottom.connectAction( [this]() {
+            if (linked.val()) {
+                setAll(bottom.val());
+            } else {
+                confine(bottom, top, gSession->imageSize().w);
+                EMITS("ImageCut::setBottom", gSession->sigDetector());
+               // TODO check consequence of rotation implied by imageSize()
+            } });
+}
+
 void ImageCut::clear()
 {
     *this = std::move(ImageCut());
@@ -118,51 +156,6 @@ void ImageCut::confine(ParamCell<int>& m1, ParamCell<int>& m2, int maxTogether)
 {
     m1.setParam(qMax(qMin(m1.val(), maxTogether - m2.val() - 1), 0));
     m2.setParam(qMax(qMin(m2.val(), maxTogether - m1.val() - 1), 0));
-}
-
-void ImageCut::setLeft(int val)
-{
-    if (linked.val()) {
-        setAll(val);
-    } else {
-        left.setParam(val);
-        confine(left, right, gSession->imageSize().w);
-        EMITS("ImageCut::setLeft", gSession->sigDetector());
-        // TODO check consequence of rotation implied by imageSize()
-    }
-}
-
-void ImageCut::setRight(int val)
-{
-    if (linked.val()) {
-        setAll(val);
-    } else {
-        right.setParam(val);
-        confine(right, left, gSession->imageSize().w);
-        EMITS("ImageCut::setRight", gSession->sigDetector());
-    }
-}
-
-void ImageCut::setTop(int val)
-{
-    if (linked.val()) {
-        setAll(val);
-    } else {
-        top.setParam(val);
-        confine(top, bottom, gSession->imageSize().h);
-        EMITS("ImageCut::setTop", gSession->sigDetector());
-    }
-}
-
-void ImageCut::setBottom(int val)
-{
-    if (linked.val()) {
-        setAll(val);
-    } else {
-        bottom.setParam(val);
-        confine(bottom, top, gSession->imageSize().h);
-        EMITS("", gSession->sigDetector());
-    }
 }
 
 void ImageCut::setAll(int val)

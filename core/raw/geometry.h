@@ -43,18 +43,14 @@ public:
 //! Image cut (margins)
 class ImageCut {
 public:
-    ImageCut() {}
+    ImageCut();
     ImageCut(const ImageCut&) = default; // TODO delete after removal of ImageCut
     COMPARABLE(const ImageCut&);
 
-    void clear();
-    void setLeft(int);
-    void setRight(int);
-    void setTop(int);
-    void setBottom(int);
-
     ParamCell<int> left {0}, right {0}, top {0}, bottom {0};
     ParamCell<bool> linked {false};
+
+    void clear();
     void fromJson(const JsonObj& obj);
 
     int horiz() const { return left.val() + right.val(); }
