@@ -77,7 +77,7 @@ private:
     QGridLayout boxRanges_;
     QPixmap pixmap() final;
     IdxMeas idxMeas_;
-    QcrSpinBox idxSlice_{"idxSlice", 4, false, 1, INT_MAX, "Number of γ slice to be shown" };
+    QcrSpinBox* idxSlice_;
     QcrSpinBox idxTheta_ {"idxTheta", 4, false, 1, INT_MAX, "Number of 2θ bin to be shown" };
     QLabel gammaRangeTotal_;
     QLabel gammaRangeSlice_;

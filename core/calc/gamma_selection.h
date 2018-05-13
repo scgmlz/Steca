@@ -27,7 +27,6 @@ public:
     void fromJson(const JsonObj& obj);
     void onData();
 
-    void selectSlice(int);
     void setRange(const Range&);
 
     const Range& range() const { return range_; }
@@ -35,14 +34,13 @@ public:
     double min() const { return range_.min; }
     double max() const { return range_.max; }
     ParamCell<int> numSlices {1};
-    int idxSlice() const { return iSlice_; }
+    ParamCell<int> currSlice {0};
     QJsonObject toJson() const;
 
 private:
     void recomputeCache();
     Range fullRange_;
     Range range_;
-    int iSlice_ {0};
 };
 
 #endif // GAMMA_SELECTION_H

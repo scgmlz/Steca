@@ -52,20 +52,24 @@ public:
     ParamCell() = delete;
     ParamCell(T value) : value_(value) {}
     T val() const { return value_; }
+    void setCoerce(std::function<T(T)> coerce) { coerce_ = coerce; }
     void setPostHook(std::function<void(T)> postHook) { postHook_ = postHook; }
     void setParam(T val, bool userCall=false) {
-        if (val==value_)
+        T newval = coerce_(val);
+        if (newval==value_)
             return;
-        value_ = val;
+        value_ = newval;
         actOnChange();
         if (userCall) {
             mintTimestamp();
-            postHook_(val);
+            postHook_(newval);
         }
     }
+    void reCoerce() { setParam(value_); }
 private:
     T value_;
     std::function<void(T)> postHook_ = [](T){};
+    std::function<T(T)> coerce_ = [](T val){ return val; };
 };
 
 #endif // CELL_H

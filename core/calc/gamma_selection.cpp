@@ -18,21 +18,24 @@
 
 GammaSelection::GammaSelection()
 {
-    numSlices.setPostHook( [this](int) {selectSlice(iSlice_);} );
+    // TODO restore C<->human offset of 1 for current slice index?
+    currSlice.setCoerce( [this](int i) { return qMax(0, qMin(i, numSlices.val())); });
+    numSlices.setPostHook( [this](int) { currSlice.reCoerce(); });
+    currSlice.setPostHook( [this](int) { recomputeCache(); });
 }
 
 QJsonObject GammaSelection::toJson() const
 {
     return {
         { "number of slices", QJsonValue(numSlices.val()) },
-        { "current slice index", QJsonValue(iSlice_) },
+        { "current slice index", QJsonValue(currSlice.val()) },
     };
 }
 
 void GammaSelection::fromJson(const JsonObj& obj)
 {
     numSlices.setParam(obj.loadInt("number of slices"));
-    selectSlice(obj.loadInt("current slice index"));
+    currSlice.setParam(obj.loadInt("current slice index"));
 }
 
 //! Resets fullRange_ according to loaded data.
@@ -54,14 +57,8 @@ void GammaSelection::recomputeCache()
     else if (numSlices.val()==0)
         range_ = fullRange_;
     else
-        range_ = slice2range(iSlice_);
+        range_ = slice2range(currSlice.val());
     EMITS("GammaSelection::recomputeCache", gSession->sigGamma());
-}
-
-void GammaSelection::selectSlice(int i)
-{
-    iSlice_ = qMin(qMax(i, 0), numSlices.val()-1);
-    recomputeCache();
 }
 
 void GammaSelection::setRange(const Range& r)

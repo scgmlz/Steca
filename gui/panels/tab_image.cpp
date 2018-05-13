@@ -260,9 +260,12 @@ QImage ImageTab::makeImage(const Image& image)
 DataImageTab::DataImageTab()
     : btnShowBins_ {&gGui->toggles->showBins}
 {
+    idxSlice_ = new QcrSpinBox {
+        "idxSlice", &gSession->gammaSelection().currSlice,
+        4, false, 1, INT_MAX, "Number of γ slice to be shown" };
+
     // inbound connection
     connect(gSession, &Session::sigGamma, [this]() {
-            idxSlice_.programaticallySetValue(gSession->gammaSelection().idxSlice()+1);
             const Measurement* measurement = gSession->dataset().highlight().measurement();
             gammaRangeTotal_.setText(measurement->rgeGmaFull().to_s()+" deg");
             gammaRangeSlice_.setText(gSession->gammaSelection().range().to_s()+" deg");
@@ -275,8 +278,6 @@ DataImageTab::DataImageTab()
     // outbound connections and control widget setup
     connect(&idxTheta_, &QcrSpinBox::valueReleased, [](int val) {
             gSession->thetaSelection().selectSlice(val-1); });
-    connect(&idxSlice_, &QcrSpinBox::valueReleased, [](int val) {
-            gSession->gammaSelection().selectSlice(val-1); });
 
     // layout
     box1_.addWidget(&btnShowBins_, Qt::AlignLeft);
@@ -286,7 +287,7 @@ DataImageTab::DataImageTab()
     boxIdx_.addWidget(new QLabel("ϑ bin #"), 1, 0, Qt::AlignLeft);
     boxIdx_.addWidget(&idxTheta_, 1, 1, Qt::AlignLeft);
     boxIdx_.addWidget(new QLabel("γ slice #"), 2, 0, Qt::AlignLeft);
-    boxIdx_.addWidget(&idxSlice_, 2, 1, Qt::AlignLeft);
+    boxIdx_.addWidget(idxSlice_, 2, 1, Qt::AlignLeft);
     controls_.addStretch(100);
     controls_.addLayout(&boxIdx_);
 
