@@ -77,10 +77,12 @@ void QcrTrigger::onCommand(const QString& arg)
 //  ***********************************************************************************************
 //! @class QcrToggle
 
-QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on, const QString& iconFile)
+QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on, const QString& iconFile,
+                     const QKeySequence& shortcut)
     : QcrAction(text)
     , QcrControl<bool>(rawname)
 {
+    setShortcut(shortcut);
     init();
     //QAction::setObjectName(CSettable::name());
     if (iconFile!="")
@@ -103,13 +105,6 @@ QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on, const
                 txt += "\nThis toggle is currently unchecked. Click to check.";
             setToolTip(txt); });
 };
-
-QcrToggle::QcrToggle(const QString& name, const QString& text, bool on, const QString& iconFile,
-                 const QKeySequence& shortcut)
-    : QcrToggle(name, text, on, iconFile)
-{
-    setShortcut(shortcut);
-}
 
 //  ***********************************************************************************************
 //! @classes with no console connection
