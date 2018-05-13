@@ -169,18 +169,6 @@ void Session::setImageTransformRotate(const ImageTransform& rot)
     imageTransform_ = imageTransform_.rotateTo(rot);
 }
 
-IJ Session::midPix() const
-{
-    size2d sz = imageSize();
-    IJ mid(sz.w / 2, sz.h / 2);
-
-    const IJ& off = geometry_.midPixOffset();
-    mid.i += off.i;
-    mid.j += off.j;
-
-    return mid;
-}
-
 // TODO: split into two functions (see usage in panel_diff..)
 void Session::setIntenScaleAvg(bool avg, double scale)
 {

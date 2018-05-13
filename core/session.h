@@ -113,7 +113,6 @@ public:
     const ActiveClusters& activeClusters() const { return dataset().activeClusters(); }
 
     size2d imageSize() const;
-    IJ midPix() const;
 
 signals:
     void sigActivated();     //!< selection of active clusters has changed

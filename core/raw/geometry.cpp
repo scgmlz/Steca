@@ -214,7 +214,7 @@ ImageKey::ImageKey(deg midTth_)
     : geometry(gSession->geometry())
     , size(gSession->imageSize())
     , cut(gSession->imageCut())
-    , midPix(gSession->midPix())
+    , midPix({size.w/2 + geometry.midPixOffset().i, size.h/2 + geometry.midPixOffset().j})
     , midTth(midTth_)
 {}
 
