@@ -117,7 +117,7 @@ void algo::projectActiveClusters(class QProgressBar* progressBar)
 {
     const ActiveClusters& seq = gSession->activeClusters();
     Progress progress(progressBar, "project intensities", seq.size());
-    int nGamma = qMax(1, gSession->gammaSelection().numSlices());
+    int nGamma = qMax(1, gSession->gammaSelection().numSlices.val());
     for (const Cluster* cluster : seq.clusters()) {
         progress.step();
         for_i (nGamma) {

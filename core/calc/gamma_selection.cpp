@@ -16,17 +16,22 @@
 #include "core/data/cluster.h"
 #include "qcr/engine/debug.h"
 
+GammaSelection::GammaSelection()
+{
+    numSlices.setPostHook( [this](int) {selectSlice(iSlice_);} );
+}
+
 QJsonObject GammaSelection::toJson() const
 {
     return {
-        { "number of slices", QJsonValue(numSlices_) },
+        { "number of slices", QJsonValue(numSlices.val()) },
         { "current slice index", QJsonValue(iSlice_) },
     };
 }
 
 void GammaSelection::fromJson(const JsonObj& obj)
 {
-    setNumSlices(obj.loadInt("number of slices"));
+    numSlices.setParam(obj.loadInt("number of slices"));
     selectSlice(obj.loadInt("current slice index"));
 }
 
@@ -46,22 +51,16 @@ void GammaSelection::recomputeCache()
 {
     if (!fullRange_.isValid())
         range_.invalidate();
-    else if (numSlices_==0)
+    else if (numSlices.val()==0)
         range_ = fullRange_;
     else
         range_ = slice2range(iSlice_);
     EMITS("GammaSelection::recomputeCache", gSession->sigGamma());
 }
 
-void GammaSelection::setNumSlices(int n)
-{
-    numSlices_ = qMax(0, n);
-    selectSlice(iSlice_);
-}
-
 void GammaSelection::selectSlice(int i)
 {
-    iSlice_ = qMin(qMax(i, 0), numSlices_-1);
+    iSlice_ = qMin(qMax(i, 0), numSlices.val()-1);
     recomputeCache();
 }
 
@@ -73,7 +72,7 @@ void GammaSelection::setRange(const Range& r)
 
 Range GammaSelection::slice2range(int i) const
 {
-    if (!numSlices_)
+    if (!numSlices.val())
         return {};
-    return fullRange_.slice(i, numSlices_);
+    return fullRange_.slice(i, numSlices.val());
 }

@@ -15,18 +15,18 @@
 #ifndef GAMMA_SELECTION_H
 #define GAMMA_SELECTION_H
 
+#include "qcr/engine/cell.h"
 #include <QObject>
 
 //! Supports different ways of setting a gamma range.
 
 class GammaSelection : public QObject {
 public:
-    GammaSelection() {}
+    GammaSelection();
 
     void fromJson(const JsonObj& obj);
     void onData();
 
-    void setNumSlices(int);
     void selectSlice(int);
     void setRange(const Range&);
 
@@ -34,7 +34,7 @@ public:
     Range slice2range(int) const;
     double min() const { return range_.min; }
     double max() const { return range_.max; }
-    int numSlices() const { return numSlices_; }
+    ParamCell<int> numSlices {1};
     int idxSlice() const { return iSlice_; }
     QJsonObject toJson() const;
 
@@ -42,7 +42,6 @@ private:
     void recomputeCache();
     Range fullRange_;
     Range range_;
-    int numSlices_ {1};
     int iSlice_ {0};
 };
 

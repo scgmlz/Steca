@@ -175,37 +175,21 @@ class GammaControls : public QWidget {
 public:
     GammaControls();
 private:
-    void fromCore();
-
     QHBoxLayout layout_;
     QcrSpinBox* numSlices_;
 };
 
 GammaControls::GammaControls()
 {
-    numSlices_ = new QcrSpinBox {"numSlices", 2, false, 0, INT_MAX,
-                                 "Number of γ slices (0: no slicing, take entire image)" };
-    // inbound connection
-    connect(gSession, &Session::sigClusters, this, &GammaControls::fromCore);
-
-    // outbound connections
-    connect(numSlices_, &QcrSpinBox::valueReleased, [](int val) {
-            gSession->gammaSelection().setNumSlices(val); });
+    numSlices_ = new QcrSpinBox {
+        "numSlices", &gSession->gammaSelection().numSlices, 2, false, 0, INT_MAX,
+        "Number of γ slices (0: no slicing, take entire image)" };
 
     // layout
     layout_.addWidget(new QLabel("number of γ slices"));
     layout_.addWidget(numSlices_);
     layout_.addStretch(1);
     setLayout(&layout_);
-
-    //initialization
-    fromCore();
-}
-
-void GammaControls::fromCore()
-{
-    numSlices_->programaticallySetValue(gSession->gammaSelection().numSlices());
-    EMITS("GammaControls", gSession->sigImage()); // TODO redundant with emission from idxSlice
 }
 
 //  ***********************************************************************************************

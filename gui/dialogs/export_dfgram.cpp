@@ -156,7 +156,7 @@ void ExportDfgram::saveAll(bool oneFile)
     Progress progress(&fileField_->progressBar, "save diffractograms", expt.size());
     int picNum = 0;
     int fileNum = 0;
-    int nSlices = gSession->gammaSelection().numSlices();
+    int nSlices = gSession->gammaSelection().numSlices.val();
     for (const Cluster* cluster : expt.clusters()) {
         ++picNum;
         progress.step();

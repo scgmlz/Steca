@@ -77,7 +77,7 @@ void algo::rawFits(class QProgressBar* progressBar)
     PeakInfos tmp;
     const ActiveClusters& seq = gSession->activeClusters();
     Progress progress(progressBar, "peak fitting", seq.size());
-    int nGamma = qMax(1, gSession->gammaSelection().numSlices());
+    int nGamma = qMax(1, gSession->gammaSelection().numSlices.val());
     for (const Cluster* cluster : seq.clusters()) {
         progress.step();
         for_i (nGamma) {
