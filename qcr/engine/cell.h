@@ -26,19 +26,19 @@ public:
     Cell() {}
     typedef long int stamp_t;
     stamp_t update();
-    void add_source(Cell*);
-    void rm_source(Cell*);
+    void add_client(Cell*);
+    void rm_client(Cell*);
     void connectAction(std::function<void()>&&);
 protected:
     virtual void recompute() = 0;
     void actOnChange();
 private:
     stamp_t timestamp_ { 0 };
-    std::set<Cell*> sources_;
+    std::set<Cell*> clients_;
     std::vector<std::function<void()>> actionsOnChange_;
 };
 
-class FinalCell : public Cell {
+class ValueCell : public Cell {
 protected:
     static stamp_t latestTimestamp__;
     static stamp_t mintTimestamp() { return ++latestTimestamp__; }
@@ -47,7 +47,7 @@ protected:
 
 //! Holds a single data value, and functions to be run upon change
 template<class T>
-class SingleValueCell : public FinalCell {
+class SingleValueCell : public ValueCell {
 public:
     SingleValueCell() = delete;
     SingleValueCell(T value) : value_(value) {}
