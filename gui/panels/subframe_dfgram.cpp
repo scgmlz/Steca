@@ -33,15 +33,19 @@ private:
     void onHighlight();
 
     class PlotDfgram* plot_;
-    QcrComboBox comboNormType_ {"normTyp", {"none", "monitor", "Δ monitor", "time", "Δ time"}};
-    QcrRadioButton intenSum_ {"intenSum", "sum"};
-    QcrRadioButton intenAvg_ {"intenAvg", "avg ×"};
-    QcrDoubleSpinBox intenScale_ {"intenScale", 4, 0.001};
+    QcrComboBox comboNormType_;
+    QcrRadioButton intenSum_;
+    QcrRadioButton intenAvg_;
+    QcrDoubleSpinBox intenScale_;
     QcrToggle actZoom_ {"actZoom", "zoom", false, ":/icon/zoom"};
 };
 
 
 Dfgram::Dfgram()
+    : comboNormType_ {"normTyp", {"none", "monitor", "Δ monitor", "time", "Δ time"}}
+    , intenSum_ {"intenSum", "sum"}
+    , intenAvg_ {"intenAvg", "avg ×"}
+    , intenScale_ {"intenScale", 4, 0.001}
 {
     // initializations
     plot_ = new PlotDfgram(*this);
