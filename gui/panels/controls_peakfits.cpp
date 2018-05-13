@@ -119,11 +119,13 @@ public:
     RangeControl();
     void onData();
 private:
-    QcrDoubleSpinBox spinRangeMin_ {"peakRangeMin", 6, 0., 89.9};
-    QcrDoubleSpinBox spinRangeMax_ {"peakRangeMax", 6, 0., 90.};
+    QcrDoubleSpinBox spinRangeMin_;
+    QcrDoubleSpinBox spinRangeMax_;
 };
 
 RangeControl::RangeControl()
+    : spinRangeMin_ {"peakRangeMin", 6, 0., 89.9}
+    , spinRangeMax_ {"peakRangeMax", 6, 0., 90.}
 {
     spinRangeMin_.setSingleStep(.1);
     spinRangeMax_.setSingleStep(.1);
