@@ -97,25 +97,17 @@ private:
 CutControls::CutControls()
 {
     link_ = new QcrIconButton {&gGui->toggles->linkCuts};
-    cutLeft_   = new QcrSpinBox {"cutLeft", 3, false, 0};
-    cutTop_    = new QcrSpinBox {"cutTop", 3, false, 0};
-    cutRight_  = new QcrSpinBox {"cutRight", 3, false, 0};
-    cutBottom_ = new QcrSpinBox {"cutBottom", 3, false, 0};
+    cutLeft_   = new QcrSpinBox {"cutLeft",   &gSession->imageCut().left,   3, false, 0};
+    cutTop_    = new QcrSpinBox {"cutTop",    &gSession->imageCut().top,    3, false, 0};
+    cutRight_  = new QcrSpinBox {"cutRight",  &gSession->imageCut().right,  3, false, 0};
+    cutBottom_ = new QcrSpinBox {"cutBottom", &gSession->imageCut().bottom, 3, false, 0};
 
     // inbound connection
     connect(gSession, &Session::sigDetector, this, &CutControls::fromCore);
 
     // outbound connections
-    connect(cutLeft_, &QcrSpinBox::valueReleased, [](int value) {
-            gSession->imageCut().setLeft(value); });
-    connect(cutRight_,  &QcrSpinBox::valueReleased, [](int value) {
-            gSession->imageCut().setRight(value); });
-    connect(cutTop_,    &QcrSpinBox::valueReleased, [](int value) {
-            gSession->imageCut().setTop(value); });
-    connect(cutBottom_, &QcrSpinBox::valueReleased, [](int value) {
-            gSession->imageCut().setBottom(value); });
     connect(&gGui->toggles->linkCuts, &QAction::toggled, [](bool value) {
-            gSession->imageCut().setLinked(value); });
+            gSession->imageCut().linked.setParam(value); });
 
     // layout
     layout_.addWidget(new QLabel("cut"), 1, 0);
@@ -134,11 +126,7 @@ CutControls::CutControls()
 void CutControls::fromCore()
 {
     const ImageCut& cut = gSession->imageCut();
-    gGui->toggles->linkCuts.programaticallySetValue(cut.linked());
-    cutLeft_  ->programaticallySetValue(cut.left());
-    cutTop_   ->programaticallySetValue(cut.top());
-    cutRight_ ->programaticallySetValue(cut.right());
-    cutBottom_->programaticallySetValue(cut.bottom());
+    gGui->toggles->linkCuts.programaticallySetValue(cut.linked.val());
 }
 
 //  ***********************************************************************************************

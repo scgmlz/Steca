@@ -68,8 +68,8 @@ void ImageLens::doTrans(int& x, int& y) const
 
 void ImageLens::doCut(int& i, int& j) const
 {
-    i += gSession->imageCut().left();
-    j += gSession->imageCut().top();
+    i += gSession->imageCut().left.val();
+    j += gSession->imageCut().top.val();
 }
 
 

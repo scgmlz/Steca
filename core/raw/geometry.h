@@ -48,28 +48,23 @@ public:
     COMPARABLE(const ImageCut&);
 
     void clear();
-    void fromJson(const JsonObj& obj);
     void setLeft(int);
     void setRight(int);
     void setTop(int);
     void setBottom(int);
-    void setLinked(bool);
 
-    int left() const { return left_; }
-    int right() const { return right_; }
-    int top() const { return top_; }
-    int bottom() const { return bottom_; }
-    int linked() const { return linked_; }
+    ParamCell<int> left {0}, right {0}, top {0}, bottom {0};
+    ParamCell<bool> linked {false};
+    void fromJson(const JsonObj& obj);
 
+    int horiz() const { return left.val() + right.val(); }
+    int vertical() const { return top.val() + bottom.val(); }
     size2d marginSize() const;
     QJsonObject toJson() const;
 
 private:
-    void confine(int& m1, int& m2, int maxTogether);
+    static void confine(ParamCell<int>& m1, ParamCell<int>& m2, int maxTogether);
     void setAll(int);
-
-    int left_ {0}, top_ {0}, right_ {0}, bottom_ {0};
-    bool linked_ { false };
 };
 
 

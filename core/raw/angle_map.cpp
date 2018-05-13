@@ -77,10 +77,10 @@ AngleMap::AngleMap(const ImageKey& key)
     qDebug() << "AngleMap: core computation done";
 
     const ImageCut& cut = key.cut;
-    ASSERT(size_.w > cut.left() + cut.right());
-    ASSERT(size_.h > cut.top() + cut.bottom());
+    ASSERT(size_.w > cut.horiz());
+    ASSERT(size_.h > cut.vertical());
     const int countWithoutCut =
-        (size_.w - cut.left() - cut.right()) * (size_.h - cut.top() - cut.bottom());
+        (size_.w - cut.horiz()) * (size_.h - cut.vertical());
     ASSERT(countWithoutCut > 0);
 
     qDebug() << "AngleMap: compute ranges";
@@ -91,8 +91,8 @@ AngleMap::AngleMap(const ImageKey& key)
     gmas_.resize(countWithoutCut);
     gmaIndexes_.resize(countWithoutCut);
     int gi = 0;
-    for (int i = cut.left(), iEnd = size_.w - cut.right(); i < iEnd; ++i) {
-        for (int j = cut.top(), jEnd = size_.h - cut.bottom(); j < jEnd; ++j) {
+    for (int i = cut.left.val(), iEnd = size_.w - cut.right.val(); i < iEnd; ++i) {
+        for (int j = cut.top.val(), jEnd = size_.h - cut.bottom.val(); j < jEnd; ++j) {
             const ScatterDirection& dir = arrAngles_[pointToIndex(i, j)];
             gmas_[gi] = dir.gma;
             gmaIndexes_[gi] = i + j * size_.w;

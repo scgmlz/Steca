@@ -74,7 +74,7 @@ void Corrset::calcNormalizer() const
     ASSERT(!size.isEmpty());
 
     int w = size.w, h = size.h;
-    int di = gSession->imageCut().left(), dj = gSession->imageCut().top();
+    int di = gSession->imageCut().left.val(), dj = gSession->imageCut().top.val();
 
     double sum = 0;
     for_ij (w, h)

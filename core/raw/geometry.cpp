@@ -96,36 +96,37 @@ void ImageCut::clear()
 
 void ImageCut::fromJson(const JsonObj& obj)
 {
-    setLeft(obj.loadUint("left"));
-    setRight(obj.loadUint("right"));
-    setTop(obj.loadUint("top"));
-    setBottom(obj.loadUint("bottom"));
-    setLinked(obj.loadBool("linked"));
+    left  .setParam(obj.loadUint("left"));
+    right .setParam(obj.loadUint("right"));
+    top   .setParam(obj.loadUint("top"));
+    bottom.setParam(obj.loadUint("bottom"));
+    linked.setParam(obj.loadBool("linked"));
 }
 
 QJsonObject ImageCut::toJson() const
 {
     return {
-        { "left", left_ },
-        { "top", top_ },
-        { "right", right_ },
-        { "bottom", bottom_ },
-        { "linked", linked_ }
+        { "left", left.val() },
+        { "top", top.val() },
+        { "right", right.val() },
+        { "bottom", bottom.val() },
+        { "linked", linked.val() }
     };
 }
 
-void ImageCut::confine(int& m1, int& m2, int maxTogether)
+void ImageCut::confine(ParamCell<int>& m1, ParamCell<int>& m2, int maxTogether)
 {
-    m1 = qMax(qMin(m1, maxTogether - m2 - 1), 0);
-    m2 = qMax(qMin(m2, maxTogether - m1 - 1), 0);
+    m1.setParam(qMax(qMin(m1.val(), maxTogether - m2.val() - 1), 0));
+    m2.setParam(qMax(qMin(m2.val(), maxTogether - m1.val() - 1), 0));
 }
 
 void ImageCut::setLeft(int val)
 {
-    if (linked_) {
+    if (linked.val()) {
         setAll(val);
     } else {
-        confine(left_=val, right_, gSession->imageSize().w);
+        left.setParam(val);
+        confine(left, right, gSession->imageSize().w);
         EMITS("ImageCut::setLeft", gSession->sigDetector());
         // TODO check consequence of rotation implied by imageSize()
     }
@@ -133,53 +134,54 @@ void ImageCut::setLeft(int val)
 
 void ImageCut::setRight(int val)
 {
-    if (linked_) {
+    if (linked.val()) {
         setAll(val);
     } else {
-        confine(right_=val, left_, gSession->imageSize().w);
+        right.setParam(val);
+        confine(right, left, gSession->imageSize().w);
         EMITS("ImageCut::setRight", gSession->sigDetector());
     }
 }
 
 void ImageCut::setTop(int val)
 {
-    if (linked_) {
+    if (linked.val()) {
         setAll(val);
     } else {
-        confine(top_=val, bottom_, gSession->imageSize().h);
+        top.setParam(val);
+        confine(top, bottom, gSession->imageSize().h);
         EMITS("ImageCut::setTop", gSession->sigDetector());
     }
 }
 
 void ImageCut::setBottom(int val)
 {
-    if (linked_) {
+    if (linked.val()) {
         setAll(val);
     } else {
-        confine(bottom_=val, top_, gSession->imageSize().h);
+        bottom.setParam(val);
+        confine(bottom, top, gSession->imageSize().h);
         EMITS("", gSession->sigDetector());
     }
 }
 
-void ImageCut::setLinked(bool val)
-{
-    linked_ = val;
-    EMITS("ImageCut::setLinked", gSession->sigDetector());
-}
-
 void ImageCut::setAll(int val)
 {
-    left_ = right_ = qMax(qMin(val, (gSession->imageSize().w-1)/2), 0);
-    top_ = bottom_ = qMax(qMin(val, (gSession->imageSize().h-1)/2), 0);
+    int h = qMax(qMin(val, (gSession->imageSize().w-1)/2), 0);
+    left.setParam(h);
+    right.setParam(h);
+    int v = qMax(qMin(val, (gSession->imageSize().h-1)/2), 0);
+    top.setParam(v);
+    bottom.setParam(v);
     EMITS("ImageCut::setAll", gSession->sigDetector());
 }
 
 int ImageCut::compare(const ImageCut& that) const
 {
-    RET_COMPARE_VALUE(left())
-        RET_COMPARE_VALUE(top())
-        RET_COMPARE_VALUE(right())
-        RET_COMPARE_VALUE(bottom())
+    RET_COMPARE_VALUE(left.val())
+        RET_COMPARE_VALUE(top.val())
+        RET_COMPARE_VALUE(right.val())
+        RET_COMPARE_VALUE(bottom.val())
     return 0;
 }
 
@@ -187,7 +189,7 @@ EQ_NE_OPERATOR(ImageCut)
 
 size2d ImageCut::marginSize() const
 {
-    return size2d(left() + right(), top() + bottom());
+    return size2d(left.val() + right.val(), top.val() + bottom.val());
 }
 
 
