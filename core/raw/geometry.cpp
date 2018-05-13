@@ -89,11 +89,6 @@ EQ_NE_OPERATOR(Geometry)
 //  ***********************************************************************************************
 //! @class ImageCut
 
-ImageCut::ImageCut(int left, int top, int right, int bottom)
-    : left_(left), top_(top), right_(right), bottom_(bottom)
-{
-}
-
 void ImageCut::clear()
 {
     left_ = 0; top_ = 0; right_ = 0; bottom_ = 0;

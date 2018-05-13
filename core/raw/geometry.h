@@ -44,7 +44,6 @@ public:
 class ImageCut {
 public:
     ImageCut() { clear(); }
-    ImageCut(int left, int top, int right, int bottom);
     COMPARABLE(const ImageCut&);
 
     void clear();
