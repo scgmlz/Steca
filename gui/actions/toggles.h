@@ -22,6 +22,7 @@
 class Toggles : private QObject {
 public:
     Toggles();
+    ~Toggles();
     QcrToggle combinedDgram {"dfg.all", "All measurements", false, ":/icon/all"};
     QcrToggle crosshair {"crosshair", "Show crosshair", false, ":/icon/crop"};
     QcrToggle enableCorr {"enableCorr", "Enable correction file", false, ":/icon/useCorrection"};

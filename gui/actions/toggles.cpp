@@ -55,3 +55,8 @@ Toggles::Toggles()
     connect(&viewClusters, AT, [](bool on) { gGui->dockClusters_->setVisible(on); });
     connect(&viewMetadata, AT, [](bool on) { gGui->dockMetadata_->setVisible(on); });
 }
+
+Toggles::~Toggles()
+{
+    delete linkCuts;
+}
