@@ -84,8 +84,6 @@ class CutControls : public QFrame {
 public:
     CutControls();
 private:
-    void fromCore();
-
     QGridLayout layout_;
     QcrIconButton* link_;
     QcrSpinBox* cutLeft_;
@@ -96,18 +94,11 @@ private:
 
 CutControls::CutControls()
 {
-    link_ = new QcrIconButton {&gGui->toggles->linkCuts};
+    link_ = new QcrIconButton {gGui->toggles->linkCuts};
     cutLeft_   = new QcrSpinBox {"cutLeft",   &gSession->imageCut().left,   3, false, 0};
     cutTop_    = new QcrSpinBox {"cutTop",    &gSession->imageCut().top,    3, false, 0};
     cutRight_  = new QcrSpinBox {"cutRight",  &gSession->imageCut().right,  3, false, 0};
     cutBottom_ = new QcrSpinBox {"cutBottom", &gSession->imageCut().bottom, 3, false, 0};
-
-    // inbound connection
-    connect(gSession, &Session::sigDetector, this, &CutControls::fromCore);
-
-    // outbound connections
-    connect(&gGui->toggles->linkCuts, &QAction::toggled, [](bool value) {
-            gSession->imageCut().linked.setParam(value); });
 
     // layout
     layout_.addWidget(new QLabel("cut"), 1, 0);
@@ -118,15 +109,6 @@ CutControls::CutControls()
     layout_.addWidget(cutRight_, 1, 4);
     layout_.setColumnStretch(5, 1);
     setLayout(&layout_);
-
-    // initialization
-    fromCore();
-}
-
-void CutControls::fromCore()
-{
-    const ImageCut& cut = gSession->imageCut();
-    gGui->toggles->linkCuts.programaticallySetValue(cut.linked.val());
 }
 
 //  ***********************************************************************************************

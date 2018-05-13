@@ -21,6 +21,8 @@
 
 Toggles::Toggles()
 {
+    linkCuts = new QcrToggle {"linkCuts", &gSession->imageCut().linked, "Link cuts", ":/icon/link"};
+
 #define AT &QAction::toggled
 
     connect(&enableCorr, AT, [](bool on) { gSession->corrset().tryEnable(on); });
