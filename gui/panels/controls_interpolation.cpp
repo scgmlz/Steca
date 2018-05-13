@@ -24,7 +24,8 @@ ControlsInterpolation::ControlsInterpolation()
     avgAlphaMax_=new QcrDoubleSpinBox{"avgAlphaMax",&gSession->interpol().avgAlphaMax,6, 0., 90.};
     avgRadius_  =new QcrDoubleSpinBox{"avgRadius",  &gSession->interpol().avgRadius,  6, 0., 90.};
     threshold_  =new QcrSpinBox      {"threshold",  &gSession->interpol().threshold,  6, 0, 100};
- // inbound connection
+
+    // inbound connection
     connect(gSession, &Session::sigInterpol, this, &ControlsInterpolation::fromCore);
 
     // layout
@@ -49,7 +50,6 @@ ControlsInterpolation::ControlsInterpolation()
 
     fromCore();
 }
-
 
 void ControlsInterpolation::fromCore()
 {

@@ -78,7 +78,7 @@ private:
     QPixmap pixmap() final;
     IdxMeas idxMeas_;
     QcrSpinBox* idxSlice_;
-    QcrSpinBox idxTheta_ {"idxTheta", 4, false, 1, INT_MAX, "Number of 2θ bin to be shown" };
+    QcrSpinBox* idxTheta_;
     QLabel gammaRangeTotal_;
     QLabel gammaRangeSlice_;
     QLabel thetaRangeTotal_;

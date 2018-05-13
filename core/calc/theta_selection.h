@@ -15,6 +15,7 @@
 #ifndef THETA_SELECTION_H
 #define THETA_SELECTION_H
 
+#include "qcr/engine/cell.h"
 #include <QObject>
 
 //! Select a theta bin for overlay in scattering image.
@@ -25,18 +26,17 @@ public:
 
     void fromJson(const JsonObj& obj);
     void onData();
-    void recomputeCache();
-    void selectSlice(int);
 
     const Range& range() const { return range_; }
-    int iSlice() const { return iSlice_; }
     QJsonObject toJson() const;
 
+    ParamCell<int> currArc {0};
+
 private:
+    void recomputeCache();
     Range fullRange_;
     Range range_;
     int numSlices_;
-    int iSlice_ {0};
 };
 
 #endif // THETA_SELECTION_H

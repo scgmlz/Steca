@@ -18,20 +18,24 @@
 #include "qcr/engine/debug.h"
 
 ThetaSelection::ThetaSelection()
-{}
+{
+    currArc.setCoerce( [this](int i) { return qMax(0, qMin(i, numSlices_)); });
+    currArc.setPostHook( [this](int) {
+            recomputeCache();
+            EMITS("DataImageTab",gSession->sigImage()); });
+}
+
 
 QJsonObject ThetaSelection::toJson() const
 {
     return {
-        { "number of slices", QJsonValue(numSlices_) },
-        { "current slice index", QJsonValue(iSlice_) },
+        { "current arc index", QJsonValue(currArc.val()) },
     };
 }
 
 void ThetaSelection::fromJson(const JsonObj& obj)
 {
-    numSlices_ = obj.loadInt("number of slices");
-    selectSlice(obj.loadInt("current slice index"));
+    currArc.setParam(obj.loadInt("current arc index"));
 }
 
 //! Resets fullRange_ and numSlices_ according to loaded data.
@@ -53,13 +57,7 @@ void ThetaSelection::recomputeCache()
 {
     if (!numSlices_)
         return;
-    iSlice_ = qMin(qMax(iSlice_, 0), numSlices_-1);
-    range_ = fullRange_.slice(iSlice_, numSlices_);
+    currArc.reCoerce();
+    range_ = fullRange_.slice(currArc.val(), numSlices_);
     EMITS("ThetaSelection::recomputeCache", gSession->sigTheta());
-}
-
-void ThetaSelection::selectSlice(int i)
-{
-    iSlice_ = i;
-    recomputeCache();
 }
