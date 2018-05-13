@@ -44,10 +44,10 @@ Geometry::Geometry()
 void Geometry::fromSettings()
 {
     XSettings s("DetectorGeometry");
-    detectorDistance.setParam(s.readReal("detectorDistance", DEF_DETECTOR_DISTANCE));
-    pixSize         .setParam(s.readReal("pixelSize", DEF_DETECTOR_PIXEL_SIZE));
-    pixOffset[0]    .setParam(s.readInt("offsetX", 0));
-    pixOffset[1]    .setParam(s.readInt("offsetY", 0));
+    detectorDistance.setVal(s.readReal("detectorDistance", DEF_DETECTOR_DISTANCE));
+    pixSize         .setVal(s.readReal("pixelSize", DEF_DETECTOR_PIXEL_SIZE));
+    pixOffset[0]    .setVal(s.readInt("offsetX", 0));
+    pixOffset[1]    .setVal(s.readInt("offsetY", 0));
 }
 
 void Geometry::toSettings() const
@@ -61,10 +61,10 @@ void Geometry::toSettings() const
 
 void Geometry::fromJson(const JsonObj& obj)
 {
-    detectorDistance.setParam(obj.loadPreal("distance"));
-    pixSize.         setParam(obj.loadPreal("pixel size"));
-    pixOffset[0]    .setParam(obj.loadPint ("beam offset X"));
-    pixOffset[1]    .setParam(obj.loadPint ("beam offset Y"));
+    detectorDistance.setVal(obj.loadPreal("distance"));
+    pixSize.         setVal(obj.loadPreal("pixel size"));
+    pixOffset[0]    .setVal(obj.loadPint ("beam offset X"));
+    pixOffset[1]    .setVal(obj.loadPint ("beam offset Y"));
 }
 
 QJsonObject Geometry::toJson() const
@@ -104,29 +104,29 @@ ImageCut::ImageCut()
 void ImageCut::postHook(int val)
 {
     if (linked.val()) {
-        left.setParam(val);
-        right.setParam(val);
-        top.setParam(val);
-        bottom.setParam(val);
+        left.setVal(val);
+        right.setVal(val);
+        top.setVal(val);
+        bottom.setVal(val);
     }
     EMITS("ImageCut::setAll", gSession->sigDetector());
 }
 
 void ImageCut::clear()
 {
-    left  .setParam(0);
-    right .setParam(0);
-    top   .setParam(0);
-    bottom.setParam(0);
+    left  .setVal(0);
+    right .setVal(0);
+    top   .setVal(0);
+    bottom.setVal(0);
 }
 
 void ImageCut::fromJson(const JsonObj& obj)
 {
-    left  .setParam(obj.loadUint("left"));
-    right .setParam(obj.loadUint("right"));
-    top   .setParam(obj.loadUint("top"));
-    bottom.setParam(obj.loadUint("bottom"));
-    linked.setParam(obj.loadBool("linked"));
+    left  .setVal(obj.loadUint("left"));
+    right .setVal(obj.loadUint("right"));
+    top   .setVal(obj.loadUint("top"));
+    bottom.setVal(obj.loadUint("bottom"));
+    linked.setVal(obj.loadBool("linked"));
 }
 
 QJsonObject ImageCut::toJson() const

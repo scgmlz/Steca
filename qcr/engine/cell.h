@@ -54,7 +54,7 @@ public:
     T val() const { return value_; }
     void setCoerce(std::function<T(T)> coerce) { coerce_ = coerce; }
     void setPostHook(std::function<void(T)> postHook) { postHook_ = postHook; }
-    void setParam(T val, bool userCall=false) {
+    void setVal(T val, bool userCall=false) {
         T newval = coerce_(val);
         if (newval==value_)
             return;
@@ -65,7 +65,7 @@ public:
             postHook_(newval);
         }
     }
-    void reCoerce() { setParam(value_); }
+    void reCoerce() { setVal(value_); }
 private:
     T value_;
     std::function<void(T)> postHook_ = [](T){};

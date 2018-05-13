@@ -86,7 +86,7 @@ void QcrControl<T>::onChangedValue(bool hasFocus, T val)
 
     reportedValue_ = val;
     if (cell_)
-        cell_->setParam(val, userCall);
+        cell_->setVal(val, userCall);
 }
 
 #endif // SINGLE_VALUE_H

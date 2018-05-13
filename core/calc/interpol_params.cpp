@@ -47,13 +47,13 @@ void InterpolParams::setThreshold(int val) {
 void InterpolParams::fromSettings()
 {
     XSettings s("interpolation parameters");
-    { bool   val; s.getBool("enabled", val);    enabled.setParam(val); }
-    { double val; s.getReal("step alpha", val); stepAlpha.setParam(val); }
-    { double val; s.getReal("step beta", val);  stepBeta.setParam(val); }
-    { double val; s.getReal("idw radius", val); idwRadius.setParam(val); }
-    { double val; s.getReal("alpha max", val);  avgAlphaMax.setParam(val); }
-    { double val; s.getReal("avg radius", val); avgRadius.setParam(val); }
-    { int    val; s.getInt ("threshold", val);  threshold.setParam(val); }
+    { bool   val; s.getBool("enabled", val);    enabled.setVal(val); }
+    { double val; s.getReal("step alpha", val); stepAlpha.setVal(val); }
+    { double val; s.getReal("step beta", val);  stepBeta.setVal(val); }
+    { double val; s.getReal("idw radius", val); idwRadius.setVal(val); }
+    { double val; s.getReal("alpha max", val);  avgAlphaMax.setVal(val); }
+    { double val; s.getReal("avg radius", val); avgRadius.setVal(val); }
+    { int    val; s.getInt ("threshold", val);  threshold.setVal(val); }
 }
 
 void InterpolParams::toSettings() const
@@ -83,11 +83,11 @@ QJsonObject InterpolParams::toJson() const
 
 void InterpolParams::fromJson(const JsonObj& obj)
 {
-    enabled    .setParam(obj.loadBool("enabled"));
-    stepAlpha  .setParam(obj.loadInt("step alpha"));
-    stepBeta   .setParam(obj.loadInt("step beta"));
-    idwRadius  .setParam(obj.loadInt("idw radius"));
-    avgAlphaMax.setParam(obj.loadInt("alpha max"));
-    avgRadius  .setParam(obj.loadInt("avg radius"));
-    threshold  .setParam(obj.loadInt("threshold"));
+    enabled    .setVal(obj.loadBool("enabled"));
+    stepAlpha  .setVal(obj.loadInt("step alpha"));
+    stepBeta   .setVal(obj.loadInt("step beta"));
+    idwRadius  .setVal(obj.loadInt("idw radius"));
+    avgAlphaMax.setVal(obj.loadInt("alpha max"));
+    avgRadius  .setVal(obj.loadInt("avg radius"));
+    threshold  .setVal(obj.loadInt("threshold"));
 }

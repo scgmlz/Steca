@@ -18,12 +18,12 @@
 void Baseline::fromJson(const JsonObj obj)
 {
     ranges_.fromJson(obj.loadArr("ranges"));
-    polynomDegree.setParam(obj.loadUint("polynom degree"));
+    polynomDegree.setVal(obj.loadUint("polynom degree"));
 }
 
 void Baseline::clear()
 {
-    polynomDegree.setParam(0);
+    polynomDegree.setVal(0);
     ranges_.clear();
 }
 

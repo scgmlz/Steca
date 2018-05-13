@@ -35,7 +35,7 @@ QJsonObject ThetaSelection::toJson() const
 
 void ThetaSelection::fromJson(const JsonObj& obj)
 {
-    currArc.setParam(obj.loadInt("current arc index"));
+    currArc.setVal(obj.loadInt("current arc index"));
 }
 
 //! Resets fullRange_ and numSlices_ according to loaded data.

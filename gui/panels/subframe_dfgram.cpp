@@ -66,7 +66,7 @@ Dfgram::Dfgram()
     connect(&comboNormType_, _SLOT_(QComboBox,currentIndexChanged,int), [](int index) {
             gSession->setNormMode(eNorm(index)); });
     connect(&intenAvg_, &QRadioButton::toggled, [](bool on) {
-        gSession->intenScaledAvg.setParam(on);
+        gSession->intenScaledAvg.setVal(on);
     });
 
     // layout

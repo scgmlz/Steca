@@ -258,7 +258,7 @@ void Dataset::fromJson(const JsonObj& obj)
     for (const QJsonValue& file : files)
         paths.append(file.toString());
     addGivenFiles(paths);
-    binning.setParam(obj.loadPint("binning", 1));
+    binning.setVal(obj.loadPint("binning", 1));
 }
 
 bool Dataset::hasFile(const QString& fileName) const

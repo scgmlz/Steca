@@ -77,8 +77,8 @@ void Session::clear()
 
     normMode_ = eNorm::NONE;
 
-    intenScaledAvg.setParam(true);
-    intenScale.setParam(1);
+    intenScaledAvg.setVal(true);
+    intenScale.setVal(1);
 }
 
 void Session::sessionFromJson(const QByteArray& json)
@@ -98,8 +98,8 @@ void Session::sessionFromJson(const QByteArray& json)
     peaks().fromJson(top.loadArr("peaks"));
     baseline().fromJson(top.loadObj("baseline"));
 
-    intenScaledAvg.setParam(top.loadBool("average intensity?", true));
-    intenScale.setParam(top.loadPreal("intensity scale", 1));
+    intenScaledAvg.setVal(top.loadBool("average intensity?", true));
+    intenScale.setVal(top.loadPreal("intensity scale", 1));
 
     geometry().fromJson(top.loadObj("detector"));
     imageCut().fromJson(top.loadObj("cut"));
