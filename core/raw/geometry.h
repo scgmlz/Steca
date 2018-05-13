@@ -43,7 +43,8 @@ public:
 //! Image cut (margins)
 class ImageCut {
 public:
-    ImageCut() { clear(); }
+    ImageCut() {}
+    ImageCut(const ImageCut&) = default; // TODO delete after removal of ImageCut
     COMPARABLE(const ImageCut&);
 
     void clear();

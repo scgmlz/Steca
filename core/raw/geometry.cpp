@@ -91,7 +91,7 @@ EQ_NE_OPERATOR(Geometry)
 
 void ImageCut::clear()
 {
-    left_ = 0; top_ = 0; right_ = 0; bottom_ = 0;
+    *this = std::move(ImageCut());
 }
 
 void ImageCut::fromJson(const JsonObj& obj)
