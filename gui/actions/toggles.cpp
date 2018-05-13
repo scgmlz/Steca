@@ -20,8 +20,8 @@
 #include <QStatusBar>
 
 Toggles::Toggles()
+    : linkCuts {"linkCuts", &gSession->imageCut().linked, "Link cuts", ":/icon/link"}
 {
-    linkCuts = new QcrToggle {"linkCuts", &gSession->imageCut().linked, "Link cuts", ":/icon/link"};
 
 #define AT &QAction::toggled
 
@@ -54,9 +54,4 @@ Toggles::Toggles()
     connect(&viewFiles, AT, [](bool on) { gGui->dockFiles_->setVisible(on); });
     connect(&viewClusters, AT, [](bool on) { gGui->dockClusters_->setVisible(on); });
     connect(&viewMetadata, AT, [](bool on) { gGui->dockMetadata_->setVisible(on); });
-}
-
-Toggles::~Toggles()
-{
-    delete linkCuts;
 }

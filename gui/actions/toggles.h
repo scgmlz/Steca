@@ -22,13 +22,12 @@
 class Toggles : private QObject {
 public:
     Toggles();
-    ~Toggles();
     QcrToggle combinedDgram {"dfg.all", "All measurements", false, ":/icon/all"};
     QcrToggle crosshair {"crosshair", "Show crosshair", false, ":/icon/crop"};
     QcrToggle enableCorr {"enableCorr", "Enable correction file", false, ":/icon/useCorrection"};
     QcrToggle fixedIntenDgram {"dfg.fixInt", "Fixed intensity scale", false, ":/icon/scale"};
     QcrToggle fixedIntenImage {"img.fixInt", "Global intensity scale", false, ":/icon/scale"};
-    QcrToggle* linkCuts;
+    QcrToggle linkCuts;
     QcrToggle showBackground {"showBackground", "Show fitted background", true,
             ":/icon/showBackground"};
     QcrToggle showBins {"showBins", "Show bins", false, ":/icon/angle"};

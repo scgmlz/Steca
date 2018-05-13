@@ -34,26 +34,24 @@ private:
     QHBoxLayout trafoLayout_;
     QHBoxLayout offsetLayout_;
 
-    QcrDoubleSpinBox* detDistance_;
-    QcrDoubleSpinBox* detPixelSize_;
-    QcrSpinBox* beamOffsetI_;
-    QcrSpinBox* beamOffsetJ_;
+    QcrDoubleSpinBox detDistance_;
+    QcrDoubleSpinBox detPixelSize_;
+    QcrSpinBox beamOffsetI_;
+    QcrSpinBox beamOffsetJ_;
 };
 
 GeometryControls::GeometryControls()
+    : detDistance_  {"detDistance", &gSession->geometry().detectorDistance, 6}
+    , detPixelSize_ {"detPixelSize", &gSession->geometry().pixSize, 3}
+    , beamOffsetI_  {"beamOffsetI", &gSession->geometry().pixOffset[0], 3, true}
+    , beamOffsetJ_  {"beamOffsetJ", &gSession->geometry().pixOffset[1], 3, true}
 {
-    // initialization
-    detDistance_  = new QcrDoubleSpinBox {"detDistance", &gSession->geometry().detectorDistance, 6};
-    detPixelSize_ = new QcrDoubleSpinBox {"detPixelSize", &gSession->geometry().pixSize, 3};
-    beamOffsetI_  = new QcrSpinBox    {"beamOffsetI", &gSession->geometry().pixOffset[0], 3, true};
-    beamOffsetJ_  = new QcrSpinBox    {"beamOffsetJ", &gSession->geometry().pixOffset[1], 3, true};
-
     // layout
     mmGrid_.addWidget(new QLabel("det. distance"), 0, 0);
-    mmGrid_.addWidget(detDistance_, 0, 1);
+    mmGrid_.addWidget(&detDistance_, 0, 1);
     mmGrid_.addWidget(new QLabel("mm"), 0, 2);
     mmGrid_.addWidget(new QLabel("pixel size"), 1, 0);
-    mmGrid_.addWidget(detPixelSize_, 1, 1);
+    mmGrid_.addWidget(&detPixelSize_, 1, 1);
     mmGrid_.addWidget(new QLabel("mm"), 1, 2);
 
     trafoLayout_.addWidget(new QLabel("image rotate"));
@@ -63,9 +61,9 @@ GeometryControls::GeometryControls()
     trafoLayout_.addStretch(1);
 
     offsetLayout_.addWidget(new QLabel("offset X"));
-    offsetLayout_.addWidget(beamOffsetI_);
+    offsetLayout_.addWidget(&beamOffsetI_);
     offsetLayout_.addWidget(new QLabel(" Y"));
-    offsetLayout_.addWidget(beamOffsetJ_);
+    offsetLayout_.addWidget(&beamOffsetJ_);
     offsetLayout_.addWidget(new QLabel("pix"));
     offsetLayout_.addStretch(1);
 
@@ -85,28 +83,28 @@ public:
     CutControls();
 private:
     QGridLayout layout_;
-    QcrIconButton* link_;
-    QcrSpinBox* cutLeft_;
-    QcrSpinBox* cutTop_;
-    QcrSpinBox* cutRight_;
-    QcrSpinBox* cutBottom_;
+    QcrIconButton link_;
+    QcrSpinBox cutLeft_;
+    QcrSpinBox cutTop_;
+    QcrSpinBox cutRight_;
+    QcrSpinBox cutBottom_;
 };
 
 CutControls::CutControls()
+    : link_      {&gGui->toggles->linkCuts}
+    , cutLeft_   {"cutLeft",   &gSession->imageCut().left,   3, false, 0}
+    , cutTop_    {"cutTop",    &gSession->imageCut().top,    3, false, 0}
+    , cutRight_  {"cutRight",  &gSession->imageCut().right,  3, false, 0}
+    , cutBottom_ {"cutBottom", &gSession->imageCut().bottom, 3, false, 0}
 {
-    link_ = new QcrIconButton {gGui->toggles->linkCuts};
-    cutLeft_   = new QcrSpinBox {"cutLeft",   &gSession->imageCut().left,   3, false, 0};
-    cutTop_    = new QcrSpinBox {"cutTop",    &gSession->imageCut().top,    3, false, 0};
-    cutRight_  = new QcrSpinBox {"cutRight",  &gSession->imageCut().right,  3, false, 0};
-    cutBottom_ = new QcrSpinBox {"cutBottom", &gSession->imageCut().bottom, 3, false, 0};
 
     // layout
     layout_.addWidget(new QLabel("cut"), 1, 0);
-    layout_.addWidget(cutLeft_, 1, 2);
-    layout_.addWidget(link_, 1, 3, Qt::AlignHCenter);
-    layout_.addWidget(cutTop_, 0, 3);
-    layout_.addWidget(cutBottom_, 2, 3);
-    layout_.addWidget(cutRight_, 1, 4);
+    layout_.addWidget(&cutLeft_, 1, 2);
+    layout_.addWidget(&link_, 1, 3, Qt::AlignHCenter);
+    layout_.addWidget(&cutTop_, 0, 3);
+    layout_.addWidget(&cutBottom_, 2, 3);
+    layout_.addWidget(&cutRight_, 1, 4);
     layout_.setColumnStretch(5, 1);
     setLayout(&layout_);
 }
