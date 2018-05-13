@@ -39,9 +39,9 @@ public:
     void step();
 
 private:
+    QProgressBar* bar_;
     const QString taskName_;
     int total_, i_;
-    QProgressBar* bar_;
 };
 
 #endif // ASYNC_H
