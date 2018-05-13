@@ -214,7 +214,8 @@ ImageKey::ImageKey(deg midTth_)
     : geometry(gSession->geometry())
     , size(gSession->imageSize())
     , cut(gSession->imageCut())
-    , midPix({size.w/2 + geometry.midPixOffset().i, size.h/2 + geometry.midPixOffset().j})
+    , midPixX(size.w/2 + geometry.midPixOffset().i)
+    , midPixY(size.h/2 + geometry.midPixOffset().j)
     , midTth(midTth_)
 {}
 
@@ -223,7 +224,8 @@ int ImageKey::compare(const ImageKey& that) const
     RET_COMPARE_COMPARABLE(geometry)
     RET_COMPARE_COMPARABLE(size)
     RET_COMPARE_COMPARABLE(cut)
-    RET_COMPARE_COMPARABLE(midPix)
+    RET_COMPARE_VALUE(midPixX)
+    RET_COMPARE_VALUE(midPixY)
     RET_COMPARE_VALUE(midTth)
     return 0;
 }

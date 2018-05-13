@@ -62,12 +62,12 @@ AngleMap::AngleMap(const ImageKey& key)
     const double b_x1 = d_z * s;
     const double b_z1 = d_z * c;
     for_int (i, size_.w) {
-        const double d_x = (i - key.midPix.i) * key.geometry.pixSize.val();
+        const double d_x = (i - key.midPixX) * key.geometry.pixSize.val();
         const double b_x = b_x1 + d_x * c;
         const double b_z = b_z1 - d_x * s;
         const double b_x2 = b_x * b_x;
         for_int (j, size_.h) {
-            const double b_y = (key.midPix.j - j) * key.geometry.pixSize.val(); // == d_y
+            const double b_y = (key.midPixY - j) * key.geometry.pixSize.val(); // == d_y
             const double b_r = sqrt(b_x2 + b_y * b_y);
             const rad gma = atan2(b_y, b_x);
             const rad tth = atan2(b_r, b_z);

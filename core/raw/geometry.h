@@ -103,7 +103,7 @@ public:
     const Geometry geometry;
     const size2d size;
     const ImageCut cut;
-    const IJ midPix;
+    const int midPixX, midPixY;
     const deg midTth;
 };
 
