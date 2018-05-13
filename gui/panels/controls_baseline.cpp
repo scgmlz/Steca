@@ -92,6 +92,8 @@ BaseRangesView::BaseRangesView()
 //! @class ControlsBaseline
 
 ControlsBaseline::ControlsBaseline()
+    : spinDegree_ {"degree", 4, false, 0, 4,
+        "Degree of the polynomial used to fit the baseline"}
 {
     hb_.addWidget(new QLabel("Pol. degree:"));
     hb_.addWidget(&spinDegree_);
@@ -102,12 +104,6 @@ ControlsBaseline::ControlsBaseline()
     box_.addWidget(new BaseRangesView());
     box_.addStretch(1);
     setLayout(&box_);
-
-    connect(&spinDegree_, &QcrSpinBox::valueReleased, [](int degree_) {
-            gSession->baseline().setPolynomDegree(degree_); });
-
-    connect(gSession, &Session::sigBaseline, [this]() {
-            spinDegree_.programaticallySetValue(gSession->baseline().polynomDegree()); });
 }
 
 void ControlsBaseline::hideEvent(QHideEvent*)

@@ -15,6 +15,7 @@
 #ifndef BASELINE_H
 #define BASELINE_H
 
+#include "qcr/engine/cell.h"
 #include "core/typ/range.h"
 
 //! Settings needed for fitting the baseline.
@@ -30,10 +31,9 @@ public:
 
     QJsonObject toJson() const;
     const Ranges& ranges() const { return ranges_; }
-    int polynomDegree() const { return polynomDegree_; }
+    ParamCell<int> polynomDegree {0};
 
 private:
-    int polynomDegree_ {0};
     Ranges ranges_;
 };
 

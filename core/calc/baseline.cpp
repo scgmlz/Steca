@@ -18,12 +18,12 @@
 void Baseline::fromJson(const JsonObj obj)
 {
     ranges_.fromJson(obj.loadArr("ranges"));
-    polynomDegree_ = obj.loadUint("polynom degree");
+    polynomDegree.setParam(obj.loadUint("polynom degree"));
 }
 
 void Baseline::clear()
 {
-    polynomDegree_ = 0;
+    polynomDegree.setParam(0);
     ranges_.clear();
 }
 
@@ -45,16 +45,10 @@ void Baseline::removeRange(const Range& r)
     EMITS("Baseline::removeRange", gSession->sigBaseline());
 }
 
-void Baseline::setPolynomDegree(int degree)
-{
-    polynomDegree_ = degree;
-    EMITS("Baseline::setPolynomDegree", gSession->sigBaseline());
-}
-
 QJsonObject Baseline::toJson() const
 {
     QJsonObject ret;
-    ret.insert("polynom degree", polynomDegree());
+    ret.insert("polynom degree", polynomDegree.val());
     ret.insert("ranges", ranges().toJson());
     return ret;
 }

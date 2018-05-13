@@ -283,7 +283,7 @@ void PlotDfgram::calcBackground()
     dgramBgFitted_.clear();
 
     const Polynom& bgPolynom = Polynom::fromFit(
-        gSession->baseline().polynomDegree(), dgram_, gSession->baseline().ranges());
+        gSession->baseline().polynomDegree.val(), dgram_, gSession->baseline().ranges());
         // TODO bundle this code line which similarly appears in at least one other place
 
     for_i (dgram_.count()) {
