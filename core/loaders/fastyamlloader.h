@@ -22,6 +22,14 @@
 
 namespace loadYAML {
 
+/// A helper struct for retrieving an !array2d value from a yaml document.
+///
+/// YamlArray2d contains the width, height and data of the !array2d.
+struct YamlArray2d {
+    int width = 0, height = 0;
+    std::vector<float> data;
+};
+
 typedef std::shared_ptr<yaml_parser_t> YamlParserType;
 
 class YamlNode {
@@ -67,9 +75,9 @@ public:
         nodeType_(eNodeType::SCALAR) ,
         scalar_(scalar)
     { }
-    YamlNode(std::shared_ptr<std::vector<float>> vec) :
+    YamlNode(std::shared_ptr<YamlArray2d> array2d) :
         nodeType_(eNodeType::SCALAR) ,
-        vec_(vec)
+        array2d_(array2d)
     { }
 
     YamlNode(eNodeType nodeType) : nodeType_(nodeType) { }
@@ -84,7 +92,7 @@ public:
           map_(other.map_),
           sequence_(other.sequence_),
           scalar_(other.scalar_),
-          vec_(other.vec_)
+          array2d_(other.array2d_)
     { }
 
     ~YamlNode() { }
@@ -120,7 +128,7 @@ public:
         return ok ? result : defaultVal;
     }
 
-    inline std::shared_ptr<std::vector<float>> floatVectorValue() const { return vec_; }
+    inline std::shared_ptr<YamlArray2d> array2dValue() const { return array2d_; }
 
     YamlNode& operator= (const YamlNode& other)
     {
@@ -128,7 +136,7 @@ public:
         *map_ = *other.map_;
         *sequence_ = *other.sequence_;
         scalar_ = other.scalar_;
-        *vec_ = *other.vec_;
+        *array2d_ = *other.array2d_;
         isEnd = other.isEnd;
         return *this;
     }
@@ -173,7 +181,7 @@ private:
     const std::shared_ptr<MapType> map_;// = nullptr;
     const std::shared_ptr<SequenceType> sequence_;// = nullptr;
     ScalarType scalar_ = "";
-    const std::shared_ptr<std::vector<float>> vec_;
+    const std::shared_ptr<YamlArray2d> array2d_;
 
     inline MapType& getMap() { return *map_; }
     inline const MapType& getMap() const { return *map_; }

@@ -114,17 +114,14 @@ void readSingleScan(const YamlNode& node, Metadata& metadata, Rawfile& rawfile)
     if (!node.IsDefined())
         return;
 
-    metadata.time             = node["time"].doubleValue(Q_QNAN);
-    metadata.monitorCount     = node["monitor"].doubleValue(Q_QNAN);
-    const auto sum            = node["sum"].doubleValue(Q_QNAN);
-    const auto imageNode      = node["image"];
-    const auto dimensionsNode = node["dimensions"];
+    metadata.time         = node["time"].doubleValue(Q_QNAN);
+    metadata.monitorCount = node["monitor"].doubleValue(Q_QNAN);
+    const auto sum        = node["sum"].doubleValue(Q_QNAN);
+    const auto image      = node["image"].array2dValue();
 
-    const size2d size(dimensionsNode["width"].intValue(), dimensionsNode["height"].intValue());
+    const size2d size(image->width, image->height);
 
-    const std::shared_ptr<std::vector<float>> image = imageNode.floatVectorValue();
-
-    rawfile.addDataset(std::move(metadata), size, std::move(*image));
+    rawfile.addDataset(std::move(metadata), size, std::move(image->data));
 }
 
 void readScans(const YamlNode& node, Metadata& metadata, Rawfile& rawfile)

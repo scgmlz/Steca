@@ -164,20 +164,21 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
             YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_SCALAR_EVENT, tag = !array2d");
 
             std::stringstream arrayStr((char*)prevEvent.data.scalar.value, std::ios_base::in);
-            int width; arrayStr >> width;
-            int height; arrayStr >> height;
+
+            std::shared_ptr<YamlArray2d> array2d(new YamlArray2d);
+
+            arrayStr >> array2d->width;
+            arrayStr >> array2d->height;
             // find start of actual array data:
             while ('[' != arrayStr.get())
             { }
-
-            std::shared_ptr<std::vector<float>> vec(new std::vector<float>);
-            vec->reserve(width*height);
-            for (int i = 0; i < width*height; i++) {
+            array2d->data.reserve(array2d->width * array2d->height);
+            for (int i = 0; i < array2d->width * array2d->height; i++) {
                 int v;
                 arrayStr >> v;
-                vec->push_back(v);
+                array2d->data.push_back(v);
             }
-            return YamlNode(vec);
+            return YamlNode(array2d);
         }
         YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_SCALAR_EVENT = " << QString::fromLatin1((char*)prevEvent.data.scalar.value));
         return YamlNode(QString::fromLatin1((char*)prevEvent.data.scalar.value));
