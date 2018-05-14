@@ -33,8 +33,8 @@ public:
     Range slice2range(int) const;
     double min() const { return range_.min; }
     double max() const { return range_.max; }
-    SingleValueCell<int> numSlices {1};
-    SingleValueCell<int> currSlice {0};
+    SingleValueCell<int> numSlices {"numSlices", 1};
+    SingleValueCell<int> currSlice {"currSlice", 0};
     QJsonObject toJson() const;
 
 private:

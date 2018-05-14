@@ -24,7 +24,6 @@
 class Mainframe : public QcrTabWidget {
 public:
     Mainframe();
-    const class BigtableTab& bigtableTab() const { return *bigtableTab_; }
 
 private:
     class DataImageTab*  dataImageTab_;

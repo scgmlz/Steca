@@ -26,22 +26,28 @@ extern class Cell* gRoot;
 //! Manages update dependences.
 class Cell {
 public:
-    Cell() {}
+    Cell() = delete;
+    Cell(const QString& name) : name_(name) {}
     typedef long int stamp_t;
     stamp_t update();
     void addSource(Cell*);
     void rmSource(Cell*);
+    void clearSources();
     void connectAction(std::function<void()>&&);
+    const QString& name() const { return name_; }
 protected:
     virtual void recompute() {};
     void actOnChange();
 private:
+    const QString name_;
     stamp_t timestamp_ { 0 };
     std::set<Cell*> sources_;
     std::vector<std::function<void()>> actionsOnChange_;
 };
 
 class ValueCell : public Cell {
+public:
+    ValueCell(const QString& name) : Cell(name) {}
 protected:
     static stamp_t latestTimestamp__;
     static stamp_t mintTimestamp() { return ++latestTimestamp__; }
@@ -52,7 +58,7 @@ template<class T>
 class SingleValueCell : public ValueCell {
 public:
     SingleValueCell() = delete;
-    SingleValueCell(T value) : value_(value) {}
+    SingleValueCell(const QString& name, T value) : ValueCell(name), value_(value) {}
     T val() const { return value_; }
     void setCoerce(std::function<T(T)> coerce) { coerce_ = coerce; }
     void setPostHook(std::function<void(T)> postHook) { postHook_ = postHook; }
@@ -80,6 +86,8 @@ void SingleValueCell<T>::setVal(T val, bool userCall)
         postHook_(newval);
         ASSERT(gRoot);
         gRoot->update();
+    } else {
+        qDebug() << "non-user call";
     }
 }
 

@@ -177,10 +177,11 @@ public:
     int getValue() const final { return currentIndex(); }
     void addTab(QWidget* page, const QString& label);
 private:
+    SingleValueCell<int> defaultCell;
     void doSetValue(int val) final { setCurrentIndex(val); }
     // hide some member functions of QTabWidget:
     int currentIndex() const { return QTabWidget::currentIndex(); }
-    void setCurrentIndex(int val) { QTabWidget::setCurrentIndex(val); }
+    void setCurrentIndex(int val);
     void setCurrentWidget(QWidget*) = delete;
 };
 
@@ -201,6 +202,12 @@ public:
     ~QcrFileDialog();
     int exec() override;
     void onCommand(const QString&) override;
+};
+
+//! Generic widget that has an associated Cell.
+class QcrWidget : public QWidget {
+public:
+    Cell* cell {nullptr};
 };
 
 #endif // CONTROLS_H

@@ -25,6 +25,7 @@
 Mainframe::Mainframe()
     : QcrTabWidget {"viewsTab"}
 {
+    gRoot->addSource(this->cell());
     // layout
     setTabPosition(QTabWidget::North);
     addTab((dataImageTab_ = new DataImageTab), "Data image");

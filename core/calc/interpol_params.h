@@ -27,13 +27,13 @@ public:
     void fromJson(const JsonObj& obj);
     void fromSettings();
 
-    SingleValueCell<bool>   enabled     {false};
-    SingleValueCell<double> stepAlpha   {5.};
-    SingleValueCell<double> stepBeta    {5.};
-    SingleValueCell<double> idwRadius   {10.};
-    SingleValueCell<double> avgAlphaMax {5.};
-    SingleValueCell<double> avgRadius   {5.};
-    SingleValueCell<int>    threshold   {100};
+    SingleValueCell<bool>   enabled     {"interpolEnabled", false};
+    SingleValueCell<double> stepAlpha   {"stepAlpha",   5.};
+    SingleValueCell<double> stepBeta    {"stepBeta",    5.};
+    SingleValueCell<double> idwRadius   {"idwRadius",   10.};
+    SingleValueCell<double> avgAlphaMax {"avgAlphaMax", 5.};
+    SingleValueCell<double> avgRadius   {"avgRadius",   5.};
+    SingleValueCell<int>    threshold   {"threshold",   100};
 
     QJsonObject toJson() const;
     void toSettings() const;

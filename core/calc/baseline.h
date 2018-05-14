@@ -31,7 +31,7 @@ public:
 
     QJsonObject toJson() const;
     const Ranges& ranges() const { return ranges_; }
-    SingleValueCell<int> polynomDegree {0};
+    SingleValueCell<int> polynomDegree {"polynomDegree", 0};
 
 private:
     Ranges ranges_;

@@ -30,7 +30,7 @@ public:
     const Range& range() const { return range_; }
     QJsonObject toJson() const;
 
-    SingleValueCell<int> currArc {0};
+    SingleValueCell<int> currArc {"currArc", 0};
 
 private:
     void recomputeCache();

@@ -27,14 +27,15 @@ public:
     void programaticallySetValue(T val);
     virtual T getValue() const = 0;
     virtual void onCommand(const QString& arg);
+    Cell* cell() { return cell_; }
 protected:
     void init();
     void onChangedValue(bool hasFocus, T val);
     bool softwareCalling_ = false; // make it private again ??
+    SingleValueCell<T>* cell_;
 private:
     virtual void doSetValue(T) = 0;
     T reportedValue_;
-    SingleValueCell<T>* cell_;
 };
 
 //  ***********************************************************************************************
@@ -75,14 +76,15 @@ void QcrControl<T>::onChangedValue(bool hasFocus, T val)
 {
     if (val==reportedValue_)
         return; // nothing to do
-    bool userCall = hasFocus && !softwareCalling_;
+    bool userCall = hasFocus || !softwareCalling_;
     doLog(!userCall, name()+" "+strOp::to_s(val));
 
     // not sure whether we want to get rid of hasFocus; perform some tests:
     if (hasFocus && softwareCalling_)
         qDebug() << "UNEXPECTED in "+name()+" hasFocus && softwareCalling_";
-    if (!hasFocus && !softwareCalling_)
-        qDebug() << "UNDESIRABLE in "+name()+" !hasFocus && !softwareCalling_";
+    //if (!hasFocus && !softwareCalling_)
+    //    qDebug() << "UNDESIRABLE in "+name()+" !hasFocus && !softwareCalling_";
+    // <= seems unavoidable in QTabWidget tab selection
 
     reportedValue_ = val;
     if (cell_)
