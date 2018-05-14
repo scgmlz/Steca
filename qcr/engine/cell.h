@@ -15,13 +15,13 @@
 #ifndef CELL_H
 #define CELL_H
 
+#include <QObject>
 #include <functional>
 #include <set>
 #include <vector>
 
 //! Manages update dependences.
-class Cell
-{
+class Cell {
 public:
     Cell() {}
     typedef long int stamp_t;

@@ -19,6 +19,7 @@
 #include "core/typ/angles.h"
 #include "core/typ/size2d.h"
 #include "core/typ/range.h"
+#include <array>
 
 // TODO after removal of ImageKey: delete copy c'tors
 
@@ -34,9 +35,9 @@ public:
     void fromSettings();
     void fromJson(const JsonObj& obj);
 
-    SingleValueCell<double> detectorDistance {DEF_DETECTOR_DISTANCE};   // from the sample to the detector
-    SingleValueCell<double> pixSize          {DEF_DETECTOR_PIXEL_SIZE}; // size of the detector pixel
-    SingleValueCell<int>    pixOffset[2]     {0, 0};
+    SingleValueCell<double> detectorDistance {DEF_DETECTOR_DISTANCE};
+    SingleValueCell<double> pixSize          {DEF_DETECTOR_PIXEL_SIZE};
+    std::array<SingleValueCell<int>,2>    pixOffset {{0, 0}};
     void toSettings() const;
     QJsonObject toJson() const;
 };
