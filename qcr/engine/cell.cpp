@@ -15,28 +15,28 @@
 #include "cell.h"
 #include <QtDebug>
 
-CellSignaller* gRoot;
+Cell* gRoot {nullptr};
 
 Cell::stamp_t ValueCell::latestTimestamp__ = 0;
 
-void Cell::add_client(Cell* src) {
-    if (clients_.find(src)!=clients_.end())
-        qFatal("duplicate cell client entry");
-    clients_.insert(src);
+void Cell::addSource(Cell* src) {
+    if (sources_.find(src)!=sources_.end())
+        qFatal("duplicate cell source entry");
+    sources_.insert(src);
 }
 
-void Cell::rm_client(Cell* src) {
-    auto it = clients_.find(src);
-    if (it==clients_.end())
-        qFatal("failed removing cell client entry");
-    clients_.erase(it);
+void Cell::rmSource(Cell* src) {
+    auto it = sources_.find(src);
+    if (it==sources_.end())
+        qFatal("failed removing cell source entry");
+    sources_.erase(it);
 }
 
 Cell::stamp_t Cell::update()
 {
     stamp_t t_new = timestamp_;
-    for (Cell* cli: clients_)
-        t_new = std::max(t_new, cli->update());
+    for (Cell* src: sources_)
+        t_new = std::max(t_new, src->update());
     if (t_new>timestamp_) {
         recompute();
         timestamp_ = t_new;

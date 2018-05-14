@@ -28,7 +28,7 @@ Session::Session()
     : metaSelection_( std::vector<bool>(Metadata::size(), false) )
 {
     gSession = this;
-    gRoot = &cellSignaller;
+    gRoot = &rootCell;
 
     register_peak_functions();
 

@@ -114,7 +114,7 @@ public:
     SingleValueCell<bool> intenScaledAvg {true}; // if not, summed
     SingleValueCell<double> intenScale {1};
 
-    CellSignaller cellSignaller;
+    Cell rootCell;
 
 private:
     // with reference accessor methods:

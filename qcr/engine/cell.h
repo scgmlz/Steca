@@ -15,19 +15,13 @@
 #ifndef CELL_H
 #define CELL_H
 
+#include "qcr/engine/debug.h"
 #include <QObject>
 #include <functional>
 #include <set>
 #include <vector>
 
-extern class CellSignaller* gRoot;
-
-class CellSignaller : public QObject {
-    Q_OBJECT
-public:
-signals:
-    void sigTimestep();
-};
+extern class Cell* gRoot;
 
 //! Manages update dependences.
 class Cell {
@@ -35,15 +29,15 @@ public:
     Cell() {}
     typedef long int stamp_t;
     stamp_t update();
-    void add_client(Cell*);
-    void rm_client(Cell*);
+    void addSource(Cell*);
+    void rmSource(Cell*);
     void connectAction(std::function<void()>&&);
 protected:
-    virtual void recompute() = 0;
+    virtual void recompute() {};
     void actOnChange();
 private:
     stamp_t timestamp_ { 0 };
-    std::set<Cell*> clients_;
+    std::set<Cell*> sources_;
     std::vector<std::function<void()>> actionsOnChange_;
 };
 
@@ -51,7 +45,6 @@ class ValueCell : public Cell {
 protected:
     static stamp_t latestTimestamp__;
     static stamp_t mintTimestamp() { return ++latestTimestamp__; }
-    void recompute() override {};
 };
 
 //! Holds a single data value, and functions to be run upon change
@@ -67,7 +60,7 @@ public:
     void reCoerce() { setVal(value_); }
 private:
     T value_;
-    std::function<void(T)> postHook_ = [](T){};
+    std::function<void(T)> postHook_ = [](T) {};
     std::function<T(T)> coerce_ = [](T val) { return val; };
 };
 
@@ -85,7 +78,8 @@ void SingleValueCell<T>::setVal(T val, bool userCall)
     if (userCall) {
         mintTimestamp();
         postHook_(newval);
-        emit gRoot->sigTimestep();
+        ASSERT(gRoot);
+        gRoot->update();
     }
 }
 
