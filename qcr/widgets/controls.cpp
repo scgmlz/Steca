@@ -326,12 +326,12 @@ QcrTabWidget::QcrTabWidget(const QString& _name)
     connect(this->tabBar(), &QTabBar::tabBarClicked, [this](int val) {
             qDebug() << "tabBarClicked " << val;
             if (!isTabEnabled(val))
-                throw QcrException("Chosen tab is not enabled");
+                return;
             onChangedValue(hasFocus(), val); });
     connect(this, &QTabWidget::currentChanged, [this](int val) {
             qDebug() << "tabBarChanged " << val;
             if (!isTabEnabled(val))
-                throw QcrException("Chosen tab is not enabled");
+                qFatal("Chosen tab is not enabled");
             onChangedValue(hasFocus(), val); });
 }
 
@@ -344,12 +344,7 @@ void QcrTabWidget::addTab(QWidget* page, const QString& label)
 
 void QcrTabWidget::setCurrentIndex(int val)
 {
-    qDebug() << "DEB 1 Set curr idx";
     QTabWidget::setCurrentIndex(val);
-//    cell->clearSources();
-//    if (currentWidget()->cell)
-//        ;
-    qDebug() << "DEB 9 Set curr idx";
 }
 
 //  ***********************************************************************************************

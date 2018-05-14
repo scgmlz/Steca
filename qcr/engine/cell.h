@@ -38,9 +38,9 @@ public:
 protected:
     virtual void recompute() {};
     void actOnChange();
+    stamp_t timestamp_ { 0 };
 private:
     const QString name_;
-    stamp_t timestamp_ { 0 };
     std::set<Cell*> sources_;
     std::vector<std::function<void()>> actionsOnChange_;
 };
@@ -50,6 +50,8 @@ public:
     ValueCell(const QString& name) : Cell(name) {}
 protected:
     static stamp_t latestTimestamp__;
+    void timeStep() { timestamp_ = mintTimestamp(); }
+private:
     static stamp_t mintTimestamp() { return ++latestTimestamp__; }
 };
 
@@ -82,12 +84,13 @@ void SingleValueCell<T>::setVal(T val, bool userCall)
     value_ = newval;
     actOnChange();
     if (userCall) {
-        mintTimestamp();
+        timeStep();
+        qDebug() << name() << " -> " << val << ", t=" << timestamp_;
         postHook_(newval);
         ASSERT(gRoot);
         gRoot->update();
     } else {
-        qDebug() << "non-user call";
+        qDebug() << name() << " -> " << val << " (non-user call)";
     }
 }
 
