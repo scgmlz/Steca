@@ -115,6 +115,8 @@ public:
     SingleValueCell<bool> intenScaledAvg {true}; // if not, summed
     SingleValueCell<double> intenScale {1};
 
+    CellSignaller cellSignaller;
+
 signals:
     void sigActivated();     //!< selection of active clusters has changed
     void sigBaseline();      //!< baseline settings have changed

@@ -15,6 +15,8 @@
 #include "cell.h"
 #include <QtDebug>
 
+CellSignaller* gRoot;
+
 Cell::stamp_t ValueCell::latestTimestamp__ = 0;
 
 void Cell::add_client(Cell* src) {

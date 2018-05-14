@@ -17,9 +17,9 @@
 #error needs exception handling
 #endif
 
+#include "qcr/engine/debug.h"
 #include "core/session.h"
 #include "core/fit/peak_functions.h"
-#include "qcr/engine/debug.h"
 #include <QJsonDocument>
 
 Session* gSession; //!< global, for data handling
@@ -28,6 +28,7 @@ Session::Session()
     : metaSelection_( std::vector<bool>(Metadata::size(), false) )
 {
     gSession = this;
+    gRoot = &cellSignaller;
 
     register_peak_functions();
 

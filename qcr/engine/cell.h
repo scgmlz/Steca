@@ -20,6 +20,15 @@
 #include <set>
 #include <vector>
 
+extern class CellSignaller* gRoot;
+
+class CellSignaller : public QObject {
+    Q_OBJECT
+public:
+signals:
+    void sigTimestep();
+};
+
 //! Manages update dependences.
 class Cell {
 public:
@@ -76,6 +85,7 @@ void SingleValueCell<T>::setVal(T val, bool userCall)
     if (userCall) {
         mintTimestamp();
         postHook_(newval);
+        emit gRoot->sigTimestep();
     }
 }
 
