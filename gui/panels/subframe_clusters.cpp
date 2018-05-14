@@ -56,8 +56,8 @@ void ActiveClustersModel::onMetaSelection()
     for_i (Metadata::size())
         if (gSession->metaSelected(i))
             metaInfoNums_.push_back(i);
-    EMITS("ActiveClustersModel::onMetaSelection", dataChanged(createIndex(0,COL_ATTRS), createIndex(rowCount(),columnCount())));
-    EMITS("ActiveClustersModel::onMetaSelection", headerDataChanged(Qt::Horizontal, COL_ATTRS, columnCount()));
+    emit dataChanged(createIndex(0,COL_ATTRS), createIndex(rowCount(),columnCount()));
+    emit headerDataChanged(Qt::Horizontal, COL_ATTRS, columnCount());
     endResetModel();
 }
 
@@ -157,12 +157,6 @@ ActiveClustersView::ActiveClustersView()
     : CheckTableView(new ActiveClustersModel())
 {
     setSelectionMode(QAbstractItemView::NoSelection);
-
-    // inbound connections:
-    connect(gSession, &Session::sigClusters, this, &TableView::onData);
-    connect(gSession, &Session::sigDataHighlight, this, &TableView::onHighlight);
-    connect(gSession, &Session::sigActivated, this, &CheckTableView::onActivated);
-    connect(gSession, &Session::sigMetaSelection, this, &ActiveClustersView::onMetaSelection);
 
     // internal connection:
     connect(this, &ActiveClustersView::clicked, model(), &CheckTableModel::onClicked);

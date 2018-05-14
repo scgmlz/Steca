@@ -51,10 +51,6 @@ Dfgram::Dfgram()
     plot_ = new PlotDfgram(*this);
     intenAvg_.programaticallySetValue(true);
 
-    // inbound connections
-    connect(gSession, &Session::sigDataHighlight, this, &Dfgram::onHighlight);
-    connect(gSession, &Session::sigNorm, this, &Dfgram::onNormChanged);
-
     // internal connections
     connect(&actZoom_, &QAction::toggled, this, [this](bool on) {
         plot_->setInteraction(QCP::iRangeDrag, on);

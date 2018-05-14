@@ -28,9 +28,6 @@ PolefigTab::PolefigTab()
     // internal connections
     connect(gGui->state->polefigShowGridPts, &QCheckBox::toggled, [this]() { render(); });
 
-    // inbound connection
-    connect(gSession, &Session::sigRawFits, [this]() { render(); });
-
     // layout
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);

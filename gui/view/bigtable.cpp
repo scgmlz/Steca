@@ -186,9 +186,6 @@ BigtableView::BigtableView()
     int w = QFontMetrics(h->font()).width("000000000");
     setColumnWidth(0, w);
 
-    // inbound connections:
-    connect(gSession, &Session::sigBigtableCols, this, &BigtableView::updateShownColumns);
-
     // internal connections:
     connect(
         header(), &QHeaderView::sectionMoved,

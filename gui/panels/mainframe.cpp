@@ -25,10 +25,6 @@
 Mainframe::Mainframe()
     : QcrTabWidget {"viewsTab"}
 {
-    // inbound connections
-    connect(gSession, &Session::sigCorr, [this]() {
-            setTabEnabled(1, gSession->corrset().hasFile()); });
-
     // layout
     setTabPosition(QTabWidget::North);
     addTab((dataImageTab_ = new DataImageTab), "Data image");

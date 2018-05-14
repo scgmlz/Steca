@@ -43,7 +43,6 @@ Qt::CheckState Datafile::activated() const
 void HighlightedData::clear()
 {
     current_ = nullptr;
-    EMITS("HighlightedData::clear", gSession->sigDataHighlight());
 }
 
 //! temporarily clear, don't emit signal
@@ -67,7 +66,6 @@ void HighlightedData::setCluster(int i)
         return clear();
     ASSERT(i<gSession->dataset().countClusters());
     current_ = &gSession->dataset().clusterAt(i);
-    EMITS("HighlightedData::setCluster", gSession->sigDataHighlight());
 }
 
 void HighlightedData::reset()
@@ -160,7 +158,6 @@ void Dataset::activateCluster(int index, bool on)
 {
     allClusters_.at(index)->setActivated(on);
     updateActiveClusters();
-    EMITS("Dataset::activateCluster", gSession->sigActivated());
 }
 
 void Dataset::setFileActivation(int index, bool on)
@@ -169,7 +166,6 @@ void Dataset::setFileActivation(int index, bool on)
     for (Cluster* cluster : fil.clusters_)
         cluster->setActivated(on);
     updateActiveClusters();
-    EMITS("Dataset::setFileActivation", gSession->sigActivated());
 }
 
 void Dataset::onFileChanged()
@@ -182,18 +178,12 @@ void Dataset::onFileChanged()
         cnt += file.numMeasurements();
     }
     updateClusters();
-    EMITS("Dataset::onFileChanged", gSession->sigFiles());
-    EMITS("Dataset::onFileChanged", gSession->sigClusters());
-    EMITS("Dataset::onFileChanged", gSession->sigActivated());
 }
 
 void Dataset::onClusteringChanged()
 {
     updateClusters();
     highlight().reset();
-    EMITS("Dataset::onClusteringChanged", gSession->sigClusters());
-    EMITS("Dataset::onClusteringChanged", gSession->sigActivated());
-    EMITS("Dataset::onClusteringChanged", gSession->sigDataHighlight());
 }
 
 void Dataset::updateClusters()

@@ -29,8 +29,7 @@ void Corrset::removeFile()
     raw_.release();
     // TODO empty image? was corrImage_.clear();
     normalizer_.release();
-    gSession->updateImageSize();
-    EMITS("Corrset::removeFile", gSession->sigCorr());
+    gSession->updateImageSize(); /* UNDER CONSTRUCTION */
 }
 
 void Corrset::loadFile(const QString& filePath)
@@ -45,7 +44,6 @@ void Corrset::loadFile(const QString& filePath)
     normalizer_.release(); // will be calculated when needed
     // all ok
     enabled_ = true;
-    EMITS("Corrset::loadFile", gSession->sigCorr());
 }
 
 void Corrset::tryEnable(bool on)
@@ -53,7 +51,6 @@ void Corrset::tryEnable(bool on)
     if ((on && !hasFile()) || on==enabled_)
         return;
     enabled_ = on;
-    EMITS("Corrset::tryEnable", gSession->sigCorr());
 }
 
 const Image* Corrset::normalizer() const

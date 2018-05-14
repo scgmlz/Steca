@@ -136,10 +136,6 @@ ActiveClustersControls::ActiveClustersControls()
         ":/icon/dropIncomplete" }
     , dropIncompleteButton_ { &dropIncompleteAction_ }
 {
-
-    // inbound connection
-    connect(gSession, &Session::sigClusters, this, &ActiveClustersControls::fromCore);
-
     // layout
     layout_.addWidget(new QLabel("combine"));
     layout_.addWidget(&combineMeasurements_);

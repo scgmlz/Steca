@@ -24,10 +24,6 @@ ControlsInterpolation::ControlsInterpolation()
     , avgRadius_  {"avgRadius",  &gSession->interpol().avgRadius,  6, 0., 90.}
     , threshold_  {"threshold",  &gSession->interpol().threshold,  6, 0, 100}
 {
-
-    // inbound connection
-    connect(gSession, &Session::sigInterpol, this, &ControlsInterpolation::fromCore);
-
     // layout
     auto* grid = new QGridLayout;
     grid->addWidget(&doInterpol_,               0, 1);

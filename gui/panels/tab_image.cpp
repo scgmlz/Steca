@@ -147,9 +147,6 @@ ImageTab::ImageTab()
     : btnScale_ {&gGui->toggles->fixedIntenImage}
     , btnOverlay_ {&gGui->toggles->crosshair}
 {
-    // inbound connections
-    connect(gSession, &Session::sigImage, [this]() { render(); });
-
     // internal connections
     connect(&gGui->toggles->enableCorr, &QAction::toggled, [this](bool /*unused*/) { render(); });
     connect(&gGui->toggles->showBins, &QAction::toggled, [this](bool /*unused*/) { render(); });
@@ -226,35 +223,6 @@ QImage ImageTab::makeImage(const Image& image)
 }
 
 //  ***********************************************************************************************
-//! @class IdxMeas
-
-/* TODO restore enable/disable, restore signal
-IdxMeas::IdxMeas()
-{
-    connect(gSession, &Session::sigDataHighlight, this, &IdxMeas::fromCore);
-    connect(this, &QcrSpinBox::valueReleased, [](int val) {
-            gSession->dataset().highlight().setMeasurement(val-1); });
-    fromCore();
-}
-
-void IdxMeas::fromCore()
-{
-    auto& hl = gSession->dataset().highlight();
-    if (!hl.cluster()) {
-        setEnabled(false);
-        programaticallySetValue(1);
-        return;
-    }
-    setEnabled( gSession->dataset().binning.val() > 1);
-    int max = hl.cluster()->count();
-    setMaximum(max);
-    if ( hl.measurementIndex()+1>max )
-        hl.setMeasurement(max-1);
-    programaticallySetValue(hl.measurementIndex()+1);
-}
-*/
-
-//  ***********************************************************************************************
 //! @class DataImageTab
 
 DataImageTab::DataImageTab()
@@ -271,12 +239,12 @@ DataImageTab::DataImageTab()
 {
 
     // inbound connection
-    connect(gSession, &Session::sigGamma, [this]() {
+    /*
             const Measurement* measurement = gSession->dataset().highlight().measurement();
             gammaRangeTotal_.setText(measurement->rgeGmaFull().to_s()+" deg");
             gammaRangeSlice_.setText(gSession->gammaSelection().range().to_s()+" deg");
             thetaRangeTotal_.setText(measurement->rgeTth().to_s()+" deg");
-            EMITS("DataImageTab",gSession->sigImage()); });
+    */
 
     // layout
     box1_.addWidget(&btnShowBins_, Qt::AlignLeft);

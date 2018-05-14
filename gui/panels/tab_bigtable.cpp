@@ -82,7 +82,6 @@ ColumnSelector::ColumnSelector()
         connect(showCols_.at(i), &QCheckBox::toggled, [this, i](bool on) {
                 gGui->state->bigtableShowCol[i] = on;
                 updateRadiobuttons();
-                EMITS("ColumnSelector "<<i,gSession->sigBigtableCols());
             });
 }
 
@@ -134,9 +133,6 @@ void ColumnSelector::updateRadiobuttons()
 BigtableTab::BigtableTab()
     : bigtableView_ {new BigtableView()}
 {
-    // inbound connection
-    connect(gSession, &Session::sigRawFits, [this]() { render(); });
-
     // layout
     auto* colSelBox = new QScrollArea;
     colSelBox->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

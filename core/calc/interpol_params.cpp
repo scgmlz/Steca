@@ -17,15 +17,6 @@
 
 InterpolParams::InterpolParams()
 {
-    enabled.    connectAction([](){ emit gSession->sigInterpol();});
-    enabled.    connectAction([](){ emit gSession->sigInterpol();});
-    stepAlpha.  connectAction([](){ emit gSession->sigInterpol();});
-    stepBeta.   connectAction([](){ emit gSession->sigInterpol();});
-    idwRadius.  connectAction([](){ emit gSession->sigInterpol();});
-    avgAlphaMax.connectAction([](){ emit gSession->sigInterpol();});
-    avgRadius.  connectAction([](){ emit gSession->sigInterpol();});
-    threshold.  connectAction([](){ emit gSession->sigInterpol();});
-
 /* TODO do we want to duplicate these constraints (the are also imposed in the GUI)
 void InterpolParams::setStepAlpha(double val) {
     stepAlpha_ = qMax(0., qMin(val, 90.)); }

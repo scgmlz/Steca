@@ -32,10 +32,6 @@ double const Geometry::DEF_DETECTOR_PIXEL_SIZE = 1;
 
 Geometry::Geometry()
 {
-    detectorDistance.connectAction([](){ emit gSession->sigDetector();});
-    pixSize         .connectAction([](){ emit gSession->sigDetector();});
-    pixOffset[0]    .connectAction([](){ emit gSession->sigDetector();});
-    pixOffset[1]    .connectAction([](){ emit gSession->sigDetector();});
     // TODO restore constraints?
     // detectorDistance_ = qMin(qMax(detectorDistance, 10.), 9999.);
     // pixSize_ = qMin(qMax(pixSize, .1), 9.9);
@@ -109,7 +105,6 @@ void ImageCut::postHook(int val)
         top.setVal(val);
         bottom.setVal(val);
     }
-    EMITS("ImageCut::setAll", gSession->sigDetector());
 }
 
 void ImageCut::clear()

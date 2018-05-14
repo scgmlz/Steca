@@ -58,15 +58,6 @@ MainWin::MainWin()
     setWindowIcon(QIcon(":/icon/retroStier"));
     setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
 
-    // inbound signals
-    QObject::connect(gSession, &Session::sigFiles, this, &MainWin::updateAbilities);
-    QObject::connect(gSession, &Session::sigCorr, this, &MainWin::updateAbilities);
-    QObject::connect(gSession, &Session::sigPeaks, this, &MainWin::updateAbilities);
-    QObject::connect(gSession, &Session::sigBaseline, this, &MainWin::updateAbilities);
-
-    QObject::connect(gSession, &Session::sigDoFits, this, &MainWin::runFits);
-    QObject::connect(gSession, &Session::sigInterpol, this, &MainWin::runInterpolation);
-
     setAttribute(Qt::WA_DeleteOnClose, true);
     initLayout();
     readSettings();
@@ -248,11 +239,9 @@ void MainWin::runFits()
     algo::projectActiveClusters(&gGui->progressBar);
     algo::rawFits(&gGui->progressBar);
     algo::interpolateInfos(&gGui->progressBar);
-    EMITS("MainWin::runFits", gSession->sigRawFits());
 }
 
 void MainWin::runInterpolation()
 {
     algo::interpolateInfos(&gGui->progressBar);
-    EMITS("MainWin::runInterpolation", gSession->sigRawFits());
 }

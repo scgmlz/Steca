@@ -85,7 +85,6 @@ private:
 BaseRangesView::BaseRangesView()
     : TableView(new BaseRangesModel())
 {
-    connect(gSession, &Session::sigBaseline, this, &BaseRangesView::onData);
 }
 
 //  ***********************************************************************************************

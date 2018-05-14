@@ -85,11 +85,6 @@ private:
 MetabigtableView::MetabigtableView()
     : CheckTableView(new MetabigtableModel())
 {
-    // inbound connections:
-    connect(gSession, &Session::sigDataHighlight, this, &TableView::onData);
-    connect(gSession, &Session::sigClusters, this, &TableView::onData);
-    connect(gSession, &Session::sigMetaSelection, this, &TableView::onHighlight);
-
     // internal connection:
     connect(this, &MetabigtableView::clicked, model(), &CheckTableModel::onClicked);
 }

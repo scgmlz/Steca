@@ -29,8 +29,6 @@ SubframeSetup::SubframeSetup()
     addTab(new ControlsPeakfits(), "Peakfits");
     addTab(new ControlsInterpolation(), "Interpol");
 
-    connect(gSession, &Session::sigFiles, this, &SubframeSetup::updateTabsAvailability);
-
     updateTabsAvailability();
 }
 

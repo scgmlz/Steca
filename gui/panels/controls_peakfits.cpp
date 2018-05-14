@@ -105,7 +105,6 @@ private:
 PeaksView::PeaksView()
     : TableView(new PeaksModel())
 {
-    connect(gSession, &Session::sigPeaks, this, &PeaksView::onData);
     connect(this, &TableView::clicked, model_, &TableModel::onClicked);
 }
 
@@ -129,9 +128,6 @@ RangeControl::RangeControl()
 {
     spinRangeMin_.setSingleStep(.1);
     spinRangeMax_.setSingleStep(.1);
-
-    // inbound connections
-    connect(gSession, &Session::sigPeaks, this, &RangeControl::onData);
 
     // outbound connections
     connect(&spinRangeMin_, &QcrDoubleSpinBox::valueReleased, [this](double val) {
@@ -280,8 +276,6 @@ ParamsView::ParamsView()
     addWidget(widgets_[0] = new RawParamsView());
     addWidget(widgets_[1] = new FitParamsView());
     widgets_[0]->show();
-    connect(gSession, &Session::sigPeaks, this, &ParamsView::onData);
-    connect(gSession, &Session::sigRawFits, this, &ParamsView::onData);
     onData();
 }
 
@@ -313,7 +307,6 @@ ControlsPeakfits::ControlsPeakfits()
             [](const QString& peakFunctionName) {
                 if (gSession->peaks().selectedPeak()) { // TODO rm this if
                     gSession->peaks().selectedPeak()->setPeakFunction(peakFunctionName);
-                    EMITS("ControlsPeakfits", gSession->sigPeaks());
                 } });
 
     // layout

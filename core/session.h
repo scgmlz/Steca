@@ -42,8 +42,7 @@ enum class eNorm {
 //! One instance of this class coexists with the main window. It is accessible from everywhere
 //! through the global pointer gSession.
 
-class Session : public QObject {
-    Q_OBJECT
+class Session {
 public:
     Session();
     ~Session();
@@ -116,26 +115,6 @@ public:
     SingleValueCell<double> intenScale {1};
 
     CellSignaller cellSignaller;
-
-signals:
-    void sigActivated();     //!< selection of active clusters has changed
-    void sigBaseline();      //!< baseline settings have changed
-    void sigBigtableCols();  //!< column selection in bigtable has changed
-    void sigClusters();      //!< list of clusters has changed
-    void sigCorr();          //!< corr file has been loaded or unloaded or enabled or disabled
-    void sigDataHighlight(); //!< highlighted File or/and Cluster has changed
-    void sigDetector();      //!< detector geometry has changed
-    void sigDfgram();        //!< diffractogram must be repainted
-    void sigDoFits();        //!< fits must be redone
-    void sigFiles();         //!< list of loaded files has changed
-    void sigGamma();         //!< gamma selection has changed
-    void sigImage();         //!< image must be repainted
-    void sigInterpol();      //!< interpolation parameters have changed
-    void sigMetaSelection(); //!< meta data selected for display have changed
-    void sigNorm();          //!< normalization has changed
-    void sigPeaks();         //!< peak list or selected peak or peak settings has changed
-    void sigRawFits();       //!< fit results have changed
-    void sigTheta();         //!< theta selection has changed
 
 private:
     // with reference accessor methods:

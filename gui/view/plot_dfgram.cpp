@@ -126,10 +126,6 @@ PlotDfgram::PlotDfgram(Dfgram& diffractogram)
     fits_->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 8));
     fits_->setLineStyle(QCPGraph::lsNone);
     fits_->setPen(QPen(Qt::red));
-
-    // inbound connections:
-    connect(gSession, &Session::sigPeaks, this, &PlotDfgram::renderAll);
-    connect(gSession, &Session::sigDfgram, this, &PlotDfgram::renderAll);
 }
 
 void PlotDfgram::clearReflLayer()

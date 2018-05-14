@@ -84,9 +84,6 @@ private:
 FilesView::FilesView()
     : CheckTableView(new FilesModel())
 {
-    connect(gSession, &Session::sigFiles, this, &TableView::onData);
-    connect(gSession, &Session::sigDataHighlight, this, &TableView::onHighlight);
-    connect(gSession, &Session::sigActivated, this, &CheckTableView::onActivated);
     connect(this, &FilesView::clicked, model(), &FilesModel::onClicked);
 }
 
@@ -132,9 +129,4 @@ SubframeFiles::SubframeFiles()
     box->addLayout(corrControls);
     box->setContentsMargins(0,0,0,0);
     widget()->setLayout(box);
-
-    // inbound connection
-    connect(gSession, &Session::sigCorr, [corrFileView]() {
-            corrFileView->setText( gSession->corrset().hasFile() ?
-                                   gSession->corrset().raw().fileName() : ""); });
 }

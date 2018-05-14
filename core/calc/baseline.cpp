@@ -30,19 +30,16 @@ void Baseline::clear()
 void Baseline::setRanges(const Ranges& rr)
 {
     ranges_ = rr;
-    EMITS("Baseline::setRanges", gSession->sigBaseline());
 }
 
 void Baseline::addRange(const Range& r)
 {
     ranges_.add(r);
-    EMITS("Baseline::addRange", gSession->sigBaseline());
 }
 
 void Baseline::removeRange(const Range& r)
 {
     ranges_.remove(r);
-    EMITS("Baseline::removeRange", gSession->sigBaseline());
 }
 
 QJsonObject Baseline::toJson() const

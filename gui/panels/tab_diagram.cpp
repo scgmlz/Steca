@@ -35,9 +35,6 @@ DiagramTab::DiagramTab()
     connect(gGui->state->diagramY, _SLOT_(QComboBox,currentIndexChanged,int), [this]() {
             render(); });
 
-    // inbound connection
-    connect(gSession, &Session::sigRawFits, [this]() { render(); });
-
     // layout
     auto* selectorBox = new QGridLayout;
     selectorBox->addWidget(new QLabel("x"), 0, 0);

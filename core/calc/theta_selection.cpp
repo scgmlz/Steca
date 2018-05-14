@@ -20,9 +20,7 @@
 ThetaSelection::ThetaSelection()
 {
     currArc.setCoerce( [this](int i) { return qMax(0, qMin(i, numSlices_)); });
-    currArc.setPostHook( [this](int) {
-            recomputeCache();
-            EMITS("DataImageTab",gSession->sigImage()); });
+    currArc.setPostHook( [this](int) { recomputeCache(); /* UNDER CONSTRUCTION */ });
 }
 
 
@@ -59,5 +57,4 @@ void ThetaSelection::recomputeCache()
         return;
     currArc.reCoerce();
     range_ = fullRange_.slice(currArc.val(), numSlices_);
-    EMITS("ThetaSelection::recomputeCache", gSession->sigTheta());
 }
