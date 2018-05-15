@@ -28,6 +28,13 @@ QcrMixin::QcrMixin(QObject& object, const QString& name)
     object_.setObjectName(name);
 }
 
+void QcrMixin::remake()
+{
+    const QWidget* w = dynamic_cast<const QWidget*>(&object());
+    bool vis = w && w->isVisible();
+    qDebug() << "remake " << name() << " (visible: " << vis << ")";
+}
+
 //  ***********************************************************************************************
 //! @class QcrRoot
 
@@ -39,11 +46,9 @@ QcrRoot::QcrRoot(QObject& object, const QString& name)
 
 void QcrRoot::fullRemake()
 {
-    for (QObject* o: object().findChildren<QObject*>()) {
-        if (QcrMixin* m = dynamic_cast<QcrMixin*>(o)) {
-            qDebug() << "QCR: " << m->name();
+    for (QWidget* w: object().findChildren<QWidget*>()) {
+        if (QcrMixin* m = dynamic_cast<QcrMixin*>(w))
             m->remake();
-        }
     }
 }
 //  ***********************************************************************************************

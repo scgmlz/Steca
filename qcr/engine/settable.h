@@ -25,7 +25,7 @@ class QcrMixin {
 public:
     const QObject& object() const { return object_; }
     const QString name() const { return object().objectName(); }
-    virtual void remake() {}
+    virtual void remake();
 protected:
     QcrMixin() = delete;
     QcrMixin(const QcrMixin&) = delete;
