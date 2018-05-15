@@ -80,7 +80,6 @@ MainWin::MainWin()
     splMain->setStretchFactor(1, 1);
     setCentralWidget(splMain);
 
-    statusBar();
     statusBar()->addWidget(&progressBar);
 
     // initialize state
