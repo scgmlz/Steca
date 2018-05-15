@@ -15,44 +15,23 @@
 #ifndef VIEWS_H
 #define VIEWS_H
 
-#include "qcr/engine/cell.h"
+#include "qcr/engine/settable.h"
 #include <QMainWindow>
 #include <QDockWidget>
 
-class WidgetCell : public Cell {
-public:
-    WidgetCell(class QcrMixin* qwner, const QString& name) : Cell(name), qwner_(qwner)  {}
-private:
-    class QcrMixin* qwner_;
-    void recompute() final;
-};
-
-class QcrMixin {
-public:
-    QcrMixin() = delete;
-    QcrMixin(const QcrMixin&) = delete;
-    QcrMixin(QObject* owner, const QString& name) : owner_(owner), defaultCell {this, name} {}
-    void remake();
-    Cell* cell() { return cell_; }
-private:
-    Cell* cell_ {&defaultCell};
-    QObject* owner_;
-    WidgetCell defaultCell;
-};
-
 class QcrWidget : public QWidget, public QcrMixin {
 public:
-    QcrWidget(const QString& name) : QcrMixin {this, name} {}
+    QcrWidget(const QString& name) : QcrMixin {*this, name} {}
 };
 
 class QcrMainWindow : public QMainWindow, public QcrMixin {
 public:
-    QcrMainWindow() : QcrMixin {this, "mainwindow"} {}
+    QcrMainWindow() : QcrMixin {*this, "mainwindow"} {}
 };
 
 class QcrDockWidget : public QDockWidget, public QcrMixin {
 public:
-    QcrDockWidget(const QString& name) : QcrMixin {this, name} { setObjectName(name); }
+    QcrDockWidget(const QString& name) : QcrMixin {*this, name} { setObjectName(name); }
 };
 
 #endif // VIEWS_H

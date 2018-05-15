@@ -18,18 +18,41 @@
 #include <QDebug>
 
 //  ***********************************************************************************************
-//! @class QcrSettable
+//! @class QcrMixin
 
-QcrSettable::QcrSettable(QObject& object, const QString& name)
+QcrMixin::QcrMixin(QObject& object, const QString& name)
     : object_ {object}
 {
-    object_.setObjectName(gConsole->learn(name, this));
+    object_.setObjectName(name);
 }
 
-QcrSettable::~QcrSettable()
+QcrMixin::~QcrMixin()
 {
     gConsole->forget(name());
 }
+
+void QcrMixin::recursiveRemake()
+{
+    postProcess();
+    static int indent = 0;
+    qDebug() << QString(indent, ' ') + "REMAKE " << name() << " (" << object().children().size() << " children)";
+    ++indent;
+    for (QObject* o: object().children()) {
+        if (QcrMixin* m = dynamic_cast<QcrMixin*>(o))
+            m->recursiveRemake();
+        else
+            qDebug() << QString(indent, ' ') + "cannot remake " << o->objectName();
+    }
+    -- indent;
+    preProcess();
+}
+
+//  ***********************************************************************************************
+//! @class QcrSettable
+
+QcrSettable::QcrSettable(QObject& object, const QString& name)
+    : QcrMixin {object, gConsole->learn(name, this)}
+{}
 
 void QcrSettable::doLog(bool softwareCalled, const QString& msg)
 {

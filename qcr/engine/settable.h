@@ -18,20 +18,30 @@
 #include "qcr/engine/debug.h"
 #include <QDialog>
 
-//! Mix-in for QObject, providing Console connection and recompute functionality.
-class QcrSettable {
+//! Mix-in for QObject, enforcing a name, and providing recompute functionality.
+class QcrMixin {
 public:
-    virtual void executeConsoleCommand(const QString&) = 0;
     const QObject& object() const { return object_; }
     const QString name() const { return object().objectName(); }
+    void recursiveRemake();
+    virtual void preProcess() {}
+    virtual void postProcess() {}
 protected:
-    QcrSettable() = delete;
-    QcrSettable(const QcrSettable&) = delete;
-    QcrSettable(QObject& object, const QString& name);
-    ~QcrSettable();
-    void doLog(bool softwareCalled, const QString& msg);
+    QcrMixin() = delete;
+    QcrMixin(const QcrMixin&) = delete;
+    QcrMixin(QObject& object, const QString& name);
+    ~QcrMixin();
 private:
     QObject& object_;
+};
+
+//! Mix-in for QObject, enforcing a unique name, providing Console connection.
+class QcrSettable : public QcrMixin {
+public:
+    virtual void executeConsoleCommand(const QString&) = 0;
+protected:
+    QcrSettable(QObject& object, const QString& name);
+    void doLog(bool softwareCalled, const QString& msg);
 };
 
 //! Mix-in for modal dialogs.

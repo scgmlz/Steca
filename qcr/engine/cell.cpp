@@ -13,9 +13,17 @@
 //  ***********************************************************************************************
 
 #include "cell.h"
+#include "qcr/engine/settable.h"
 #include <QtDebug>
 
-Cell* gRoot {nullptr};
+QcrMixin* gRoot {nullptr};
+
+void remakeAll()
+{
+    ASSERT(gRoot);
+    gRoot->recursiveRemake();
+}
+
 
 Cell::stamp_t ValueCell::latestTimestamp__ = 0;
 

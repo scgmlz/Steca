@@ -21,7 +21,7 @@
 #include <set>
 #include <vector>
 
-extern class Cell* gRoot;
+void remakeAll();
 
 //! Manages update dependences.
 class Cell {
@@ -87,8 +87,7 @@ void SingleValueCell<T>::setVal(T val, bool userCall)
         timeStep();
         qDebug() << name() << " -> " << val << ", t=" << timestamp_;
         postHook_(newval);
-        ASSERT(gRoot);
-        gRoot->update();
+        remakeAll();
     } else {
         qDebug() << name() << " -> " << val << " (non-user call)";
     }
