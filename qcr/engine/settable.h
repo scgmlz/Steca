@@ -45,7 +45,7 @@ protected:
 //! A modeless (= persistent spawned popup) dialog with support for capture&replay.
 class CModelessDialog : protected QDialog, protected CSettable {
 public:
-    virtual void onCommand(const QString&);
+    void onCommand(const QString&) final;
 protected:
     CModelessDialog(QWidget* parent, const QString& name);
 private:
