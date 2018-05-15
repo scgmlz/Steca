@@ -2,7 +2,7 @@
 //
 //  libqcr: capture and replay Qt widget actions
 //
-//! @file      qcr/engine/qcrexception.h
+//! @file      qcr/base/qcrexception.h
 //! @brief     Defines class QcrException
 //!
 //! @homepage  https://github.com/scgmlz/Steca

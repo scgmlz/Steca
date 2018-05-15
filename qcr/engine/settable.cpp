@@ -14,7 +14,7 @@
 
 #include "settable.h"
 #include "qcr/engine/console.h"
-#include "qcr/engine/qcrexception.h"
+#include "qcr/base/qcrexception.h"
 #include <QDebug>
 
 QcrRoot* gRoot {nullptr};

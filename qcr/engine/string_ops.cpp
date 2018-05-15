@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "string_ops.h"
-#include "qcr/engine/qcrexception.h"
+#include "qcr/base/qcrexception.h"
 #include <QString>
 
 namespace strOp {

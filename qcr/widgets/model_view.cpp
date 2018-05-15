@@ -14,7 +14,7 @@
 
 #include "model_view.h"
 #include "qcr/engine/console.h"
-#include "qcr/engine/qcrexception.h"
+#include "qcr/base/qcrexception.h"
 #include "qcr/base/debug.h"
 #include "qcr/engine/string_ops.h"
 
