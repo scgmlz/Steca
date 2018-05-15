@@ -16,6 +16,7 @@
 #include "qcr/engine/console.h"
 #include "qcr/base/qcrexception.h"
 #include <QDebug>
+#include <QAction>
 
 QcrRoot* gRoot {nullptr};
 
@@ -30,9 +31,13 @@ QcrMixin::QcrMixin(QObject& object, const QString& name)
 
 void QcrMixin::remake()
 {
-    const QWidget* w = dynamic_cast<const QWidget*>(&object());
-    if (w && w->isVisible())
-        remake_();
+    if (const QWidget* w = dynamic_cast<const QWidget*>(&object())) {
+        if (w->isVisible()) {
+            //qDebug() << "UPDATE WIDGET " << name();
+            remake_();
+        } else
+            ;//qDebug() << "IGNORE WIDGET " << name();
+    }
 }
 
 //  ***********************************************************************************************

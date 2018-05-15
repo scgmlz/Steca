@@ -44,8 +44,8 @@ DiagramTab::DiagramTab()
 
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);
-    buttonBox->addWidget(new QcrIconButton {&gGui->triggers->spawnDiagram});
-    buttonBox->addWidget(new QcrIconButton {&gGui->triggers->exportDiagram});
+    buttonBox->addWidget(new QcrIconTriggerButton {&gGui->triggers->spawnDiagram});
+    buttonBox->addWidget(new QcrIconTriggerButton {&gGui->triggers->exportDiagram});
 
     auto* controls = new QVBoxLayout;
     controls->addLayout(selectorBox);

@@ -37,12 +37,25 @@ protected:
 };
 
 //! Trigger, for use in buttons or menu entries, that can also be activated by console command.
-class QcrTrigger : public QcrAction, protected QcrSettable {
+class QcrTrigger : public QcrAction, public QcrSettable {
 public:
     QcrTrigger(const QString& name, const QString& text, const QString& iconFile="");
     QcrTrigger(const QString& name, const QString& text, const QString& iconFile,
                const QKeySequence& shortcut);
     void executeConsoleCommand(const QString&) override;
+    void remake() final { remake_(); }
+};
+
+//! Trigger button with text display and associated action.
+class QcrTextTriggerButton : public QToolButton, public QcrMixin {
+public:
+    QcrTextTriggerButton(QcrTrigger*);
+};
+
+//! Trigger button with icon and associated action.
+class QcrIconTriggerButton : public QToolButton, public QcrMixin {
+public:
+    QcrIconTriggerButton(QcrTrigger*);
 };
 
 //! Toggle, for use in buttons or menu entries, that can also be switched by console command.
@@ -53,6 +66,7 @@ public:
     QcrToggle(const QString& name, SingleValueCell<bool>* cell, const QString& text,
               const QString& iconFile="", const QKeySequence& shortcut = {});
     bool getValue() const final { return isChecked(); }
+    void remake() final { remake_(); }
 private:
     void doSetValue(bool val) final { setChecked(val); }
     // hide some member functions of QAction:
@@ -60,16 +74,16 @@ private:
     void setChecked(bool val) { QAction::setChecked(val); }
 };
 
-//! Button with text display and associated action.
-class QcrTextButton : public QToolButton {
+//! Toggle button with text display and associated action.
+class QcrTextToggleButton : public QToolButton, public QcrMixin {
 public:
-    QcrTextButton(QcrAction*);
+    QcrTextToggleButton(QcrToggle*);
 };
 
-//! Button with icon and associated action.
-class QcrIconButton : public QToolButton {
+//! Toggle button with icon and associated action.
+class QcrIconToggleButton : public QToolButton, public QcrMixin {
 public:
-    QcrIconButton(QcrAction*);
+    QcrIconToggleButton(QcrToggle*);
 };
 
 //! Named integer-valued spin box that can be set by console command.

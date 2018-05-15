@@ -112,16 +112,16 @@ SubframeFiles::SubframeFiles()
 
     auto* dataControls = new QHBoxLayout;
     dataControls->addStretch();
-    dataControls->addWidget(new QcrIconButton(&gGui->triggers->addFiles));
-    dataControls->addWidget(new QcrIconButton(&gGui->triggers->removeFile));
+    dataControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->addFiles));
+    dataControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->removeFile));
 
     auto* corrFileView = new QcrLineDisplay {"corrFile", []()->QString {
             return gSession->corrset().fileName(); }};
 
     auto* corrControls = new QHBoxLayout;
     corrControls->addWidget(corrFileView);
-    corrControls->addWidget(new QcrIconButton(&gGui->triggers->corrFile));
-    corrControls->addWidget(new QcrIconButton(&gGui->toggles->enableCorr));
+    corrControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->corrFile));
+    corrControls->addWidget(new QcrIconToggleButton(&gGui->toggles->enableCorr));
 
     auto* box = new QVBoxLayout;
     box->addLayout(dataControls);

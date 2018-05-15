@@ -31,8 +31,8 @@ PolefigTab::PolefigTab()
     // layout
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);
-    buttonBox->addWidget(new QcrIconButton {&gGui->triggers->spawnPolefig});
-    buttonBox->addWidget(new QcrIconButton {&gGui->triggers->exportPolefig});
+    buttonBox->addWidget(new QcrIconTriggerButton {&gGui->triggers->spawnPolefig});
+    buttonBox->addWidget(new QcrIconTriggerButton {&gGui->triggers->exportPolefig});
 
     auto* controls = new QVBoxLayout;
     controls->addWidget(gGui->state->polefigShowGridPts);

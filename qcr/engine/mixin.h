@@ -25,14 +25,14 @@ class QcrMixin {
 public:
     const QObject& object() const { return object_; }
     const QString name() const { return object().objectName(); }
-    void remake();
+    virtual void remake();
     void setRemake(std::function<void()> _remake) { remake_ = _remake; }
 protected:
     QcrMixin() = delete;
     QcrMixin(const QcrMixin&) = delete;
     QcrMixin(QObject& object, const QString& name);
-private:
     std::function<void()> remake_ {[](){}};
+private:
     QObject& object_;
 };
 

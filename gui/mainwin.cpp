@@ -86,6 +86,13 @@ MainWin::MainWin()
     // initialize state
     readSettings();
     updateAbilities();
+
+    triggers->corrFile.setRemake([=]() {
+            bool hasCorr = gSession->hasCorrFile();
+            triggers->corrFile.setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
+            QString text = QString(hasCorr ? "Remove" : "Add") + " correction file";
+            triggers->corrFile.setText(text);
+            triggers->corrFile.setToolTip(text.toLower()); });
 }
 
 MainWin::~MainWin()
@@ -106,11 +113,6 @@ void MainWin::updateAbilities()
     bool hasPeak = gSession->peaks().count();
     bool hasBase = gSession->baseline().ranges().count();
     toggles->enableCorr.programaticallySetValue(gSession->corrset().isEnabled());
-    bool hasCorr = gSession->hasCorrFile();
-    triggers->corrFile.setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
-    QString text = QString(hasCorr ? "Remove" : "Add") + " correction file";
-    triggers->corrFile.setText(text);
-    triggers->corrFile.setToolTip(text.toLower());
     triggers->removeFile.setEnabled(hasFile);
     triggers->removePeak.setEnabled(hasPeak);
     triggers->clearBackground.setEnabled(hasBase);

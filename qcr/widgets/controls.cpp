@@ -74,6 +74,25 @@ void QcrTrigger::executeConsoleCommand(const QString& arg)
 }
 
 //  ***********************************************************************************************
+//! trigger button classes
+
+QcrTextTriggerButton::QcrTextTriggerButton(QcrTrigger* action)
+    : QcrMixin(*this, action->name()+"Btn")
+{
+    setDefaultAction(action);
+    setToolButtonStyle(Qt::ToolButtonTextOnly);
+    setRemake([=](){action->remake();});
+}
+
+QcrIconTriggerButton::QcrIconTriggerButton(QcrTrigger* action)
+    : QcrMixin(*this, action->name()+"Btn")
+{
+    setDefaultAction(action);
+    setToolButtonStyle(Qt::ToolButtonIconOnly);
+    setRemake([=](){action->remake();});
+}
+
+//  ***********************************************************************************************
 //! @class QcrToggle
 
 QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on,
@@ -114,18 +133,22 @@ QcrToggle::QcrToggle(const QString& rawname, SingleValueCell<bool>* cell, const 
 };
 
 //  ***********************************************************************************************
-//! @classes with no console connection
+//! toggle button classes
 
-QcrTextButton::QcrTextButton(QcrAction* action)
+QcrTextToggleButton::QcrTextToggleButton(QcrToggle* action)
+    : QcrMixin(*this, action->name()+"Btn")
 {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonTextOnly);
+    setRemake([=](){action->remake();});
 }
 
-QcrIconButton::QcrIconButton(QcrAction* action)
+QcrIconToggleButton::QcrIconToggleButton(QcrToggle* action)
+    : QcrMixin(*this, action->name()+"Btn")
 {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonIconOnly);
+    setRemake([=](){action->remake();});
 }
 
 //  Control widget classes with console connection

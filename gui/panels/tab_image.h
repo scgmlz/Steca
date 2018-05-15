@@ -52,8 +52,8 @@ protected:
     QHBoxLayout box1_;
 private:
     void render();
-    QcrIconButton btnScale_;
-    QcrIconButton btnOverlay_;
+    QcrIconToggleButton btnScale_;
+    QcrIconToggleButton btnOverlay_;
 };
 
 //! A tab for a data image and associated controls.
@@ -69,7 +69,7 @@ private:
     QGridLayout boxIdx_;
     QGridLayout boxRanges_;
     QPixmap pixmap() final;
-    QcrIconButton btnShowBins_;
+    QcrIconToggleButton btnShowBins_;
     QcrSpinBox idxMeas_;
     QcrSpinBox idxSlice_;
     QcrSpinBox idxTheta_;

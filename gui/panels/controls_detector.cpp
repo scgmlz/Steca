@@ -55,9 +55,9 @@ GeometryControls::GeometryControls()
     mmGrid_.addWidget(new QLabel("mm"), 1, 2);
 
     trafoLayout_.addWidget(new QLabel("image rotate"));
-    trafoLayout_.addWidget(new QcrIconButton(&gGui->imageTrafoActions->rotateImage));
+    trafoLayout_.addWidget(new QcrIconTriggerButton(&gGui->imageTrafoActions->rotateImage));
     trafoLayout_.addWidget(new QLabel("mirror"));
-    trafoLayout_.addWidget(new QcrIconButton(&gGui->imageTrafoActions->mirrorImage));
+    trafoLayout_.addWidget(new QcrIconToggleButton(&gGui->imageTrafoActions->mirrorImage));
     trafoLayout_.addStretch(1);
 
     offsetLayout_.addWidget(new QLabel("offset X"));
@@ -83,7 +83,7 @@ public:
     CutControls();
 private:
     QGridLayout layout_;
-    QcrIconButton link_;
+    QcrIconToggleButton link_;
     QcrSpinBox cutLeft_;
     QcrSpinBox cutTop_;
     QcrSpinBox cutRight_;
@@ -123,7 +123,7 @@ private:
     QHBoxLayout layout_;
     QcrSpinBox    combineMeasurements_;
     QcrToggle     dropIncompleteAction_;
-    QcrIconButton dropIncompleteButton_;
+    QcrIconToggleButton dropIncompleteButton_;
 };
 
 ActiveClustersControls::ActiveClustersControls()
