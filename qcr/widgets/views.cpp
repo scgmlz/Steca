@@ -3,7 +3,7 @@
 //  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/widgets/displays.cpp
-//! @brief     Implements specializations of Qt display widgets (XIcon,...), and widgetUtils
+//! @brief     Implements specializations of Qt display widgets (XIcon,...)
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,23 +12,25 @@
 //
 //  ***********************************************************************************************
 
-#include "displays.h"
+#include "views.h"
 #include "qcr/base/string_ops.h"
 #include <QIcon>
 
-XIcon::XIcon(const QString& fileName)
+QcrIcon::QcrIcon(const QString& fileName)
+    : QcrMixin {*this, fileName}
 {
     int h = sizeHint().height();
     setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
 }
 
-XLineDisplay::XLineDisplay()
+QcrLineDisplay::QcrLineDisplay(const QString& name)
+    : QcrMixin {*this, name}
 {
     setReadOnly(true);
 }
 
-XLineDisplay::XLineDisplay(int ndigits, bool withDot)
-    : XLineDisplay()
+QcrLineDisplay::QcrLineDisplay(const QString& name, int ndigits, bool withDot)
+    : QcrLineDisplay {name}
 {
     strOp::setWidth(this, ndigits, withDot);
 }

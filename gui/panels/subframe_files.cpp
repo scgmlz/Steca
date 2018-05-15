@@ -14,7 +14,7 @@
 
 #include "gui/panels/subframe_files.h"
 #include "core/session.h"
-#include "qcr/widgets/displays.h"
+#include "qcr/widgets/views.h"
 #include "qcr/widgets/model_view.h"
 #include "gui/mainwin.h"
 #include "gui/actions/toggles.h"
@@ -115,7 +115,7 @@ SubframeFiles::SubframeFiles()
     dataControls->addWidget(new QcrIconButton(&gGui->triggers->addFiles));
     dataControls->addWidget(new QcrIconButton(&gGui->triggers->removeFile));
 
-    auto* corrFileView = new XLineDisplay;
+    auto* corrFileView = new QcrLineDisplay {"corrFile"};
 
     auto* corrControls = new QHBoxLayout;
     corrControls->addWidget(corrFileView);

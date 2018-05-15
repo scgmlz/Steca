@@ -14,7 +14,7 @@
 
 #include "controls_peakfits.h"
 #include "core/session.h"
-#include "qcr/widgets/displays.h"
+#include "qcr/widgets/views.h"
 #include "qcr/widgets/model_view.h"
 #include "gui/mainwin.h"
 #include "gui/state.h"
@@ -173,9 +173,9 @@ public:
     virtual void updatePeakFun(const PeakFunction&);
 protected:
     QGridLayout grid_;
-    XLineDisplay readFitPeakX_ {6, true};
-    XLineDisplay readFitPeakY_ {6, true};
-    XLineDisplay readFitFWHM_ {6, true};
+    QcrLineDisplay readFitPeakX_ {"fittedX", 6, true};
+    QcrLineDisplay readFitPeakY_ {"fittedY", 6, true};
+    QcrLineDisplay readFitFWHM_  {"fittedW", 6, true};
 };
 
 AnyParamsView::AnyParamsView()
@@ -223,9 +223,9 @@ public:
     FitParamsView();
     virtual void updatePeakFun(const PeakFunction&);
 private:
-    XLineDisplay spinGuessPeakX_ {6, true};
-    XLineDisplay spinGuessPeakY_ {6, true};
-    XLineDisplay spinGuessFWHM_ {6, true};
+    QcrLineDisplay spinGuessPeakX_ {"guessedX", 6, true};
+    QcrLineDisplay spinGuessPeakY_ {"guessedY", 6, true};
+    QcrLineDisplay spinGuessFWHM_  {"guessedW", 6, true};
 };
 
 FitParamsView::FitParamsView()

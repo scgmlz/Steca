@@ -16,8 +16,10 @@
 #define VIEWS_H
 
 #include "qcr/engine/mixin.h"
-#include <QMainWindow>
 #include <QDockWidget>
+#include <QLabel>
+#include <QLineEdit>
+#include <QMainWindow>
 
 class QcrMainWindow : public QMainWindow, public QcrRoot {
 public:
@@ -32,6 +34,20 @@ public:
 class QcrDockWidget : public QDockWidget, public QcrMixin {
 public:
     QcrDockWidget(const QString& name) : QcrMixin {*this, name} {}
+};
+
+//! QLabel displaying an icon, with no associated action.
+class QcrIcon : public QLabel, public QcrMixin {
+public:
+    QcrIcon(const QString& fileName);
+};
+
+//! Read-only QLineEdit for number display.
+class QcrLineDisplay : public QLineEdit, public QcrMixin {
+public:
+    QcrLineDisplay() = delete;
+    QcrLineDisplay(const QString& name);
+    QcrLineDisplay(const QString& name, int ndigits, bool withDot);
 };
 
 #endif // VIEWS_H
