@@ -58,30 +58,11 @@ MainWin::MainWin()
 
     setWindowIcon(QIcon(":/icon/retroStier"));
     setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
-
     setAttribute(Qt::WA_DeleteOnClose, true);
-    initLayout();
-    readSettings();
-    updateAbilities();
 
+    // layout
     setContentsMargins(5,5,5,5);
-    statusBar()->addWidget(&progressBar);
-}
 
-MainWin::~MainWin()
-{
-    saveSettings();
-    // the following deletions are obligatory to prevent a crash upon closing this MainWin:
-    delete imageTrafoActions;
-    delete triggers;
-    delete toggles;
-    // whereas all the following only reduces the number of perfectly inconsequential leaks:
-    delete menus_;
-    gGui = nullptr;
-}
-
-void MainWin::initLayout()
-{
     addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_    = new SubframeFiles()));
     addDockWidget(Qt::LeftDockWidgetArea, (dockClusters_ = new SubframeClusters()));
     addDockWidget(Qt::LeftDockWidgetArea, (dockMetadata_ = new SubframeMetadata()));
@@ -100,6 +81,23 @@ void MainWin::initLayout()
     setCentralWidget(splMain);
 
     statusBar();
+    statusBar()->addWidget(&progressBar);
+
+    // initialize state
+    readSettings();
+    updateAbilities();
+}
+
+MainWin::~MainWin()
+{
+    saveSettings();
+    // the following deletions are obligatory to prevent a crash upon closing this MainWin:
+    delete imageTrafoActions;
+    delete triggers;
+    delete toggles;
+    // whereas all the following only reduces the number of perfectly inconsequential leaks:
+    delete menus_;
+    gGui = nullptr;
 }
 
 void MainWin::updateAbilities()

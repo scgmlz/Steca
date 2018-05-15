@@ -19,6 +19,7 @@
 #include <QMainWindow>
 #include <QDockWidget>
 #include <QSplitter>
+#include <QMenuBar>
 
 class QcrWidget : public QWidget, public QcrMixin {
 public:
@@ -39,6 +40,11 @@ class QcrSplitter : public QSplitter, public QcrMixin {
 public:
     QcrSplitter(const QString& name, Qt::Orientation ori)
         : QSplitter {ori}, QcrMixin {*this, name} {}
+};
+
+class QcrMenu : public QMenu, public QcrMixin {
+public:
+    QcrMenu(const QString& name) : QcrMixin {*this, name} {}
 };
 
 #endif // VIEWS_H

@@ -15,7 +15,7 @@
 #ifndef MENUS_H
 #define MENUS_H
 
-#include <QMenuBar>
+#include "qcr/widgets/views.h"
 
 //! Submenus and menu entries of the MainWin menu bar.
 
@@ -23,13 +23,13 @@ class Menus {
 public:
     Menus() = delete;
     Menus(QMenuBar*);
-    QMenu* dgram_;
-    QMenu* image_;
-    QMenu* export_;
+    QcrMenu* dgram_;
+    QcrMenu* image_;
+    QcrMenu* export_;
 private:
     QMenuBar* mbar_;
     QAction* separator() const;
-    QMenu* actionsToMenu(const char* menuName, QList<QAction*> actions);
+    QcrMenu* actionsToMenu(const char* menuName, QList<QAction*> actions);
 };
 
 #endif // MENUS_H

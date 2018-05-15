@@ -40,7 +40,6 @@ public:
     QProgressBar progressBar {this};
 
 private:
-    void initLayout();
     void updateAbilities();
 
     void readSettings();
