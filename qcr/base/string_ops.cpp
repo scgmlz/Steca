@@ -2,7 +2,7 @@
 //
 //  libqcr: capture and replay Qt widget actions
 //
-//! @file      qcr/engine/string_ops.cpp
+//! @file      qcr/base/string_ops.cpp
 //! @brief     Implements namespace strOp with various string operations
 //!
 //! @homepage  https://github.com/scgmlz/Steca

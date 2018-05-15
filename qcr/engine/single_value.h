@@ -17,7 +17,7 @@
 
 #include "qcr/engine/settable.h"
 #include "qcr/engine/cell.h"
-#include "qcr/engine/string_ops.h"
+#include "qcr/base/string_ops.h"
 
 //! Base class for all Qcr widgets that hold a single value.
 template<class T>

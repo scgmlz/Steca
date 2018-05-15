@@ -16,7 +16,7 @@
 #include "qcr/base/debug.h"
 #include "qcr/base/qcrexception.h"
 #include "qcr/engine/console.h"
-#include "qcr/engine/string_ops.h"
+#include "qcr/base/string_ops.h"
 #include "qcr/widgets/displays.h"
 #include <QApplication> // for qApp for new Action
 #include <iostream> // debug
