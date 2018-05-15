@@ -101,6 +101,8 @@ TableView::TableView(TableModel* model)
     setHeaderHidden(true);
     setSelectionMode(QAbstractItemView::NoSelection);
     setAlternatingRowColors(true);
+
+    setRemake([this]() {onData();});
 }
 
 void TableView::executeConsoleCommand(const QString& arg)
