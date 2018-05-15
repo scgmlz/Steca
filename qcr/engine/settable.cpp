@@ -20,14 +20,15 @@
 //  ***********************************************************************************************
 //! @class QcrSettable
 
-QcrSettable::QcrSettable(const QString& name)
-    : name_ {gConsole->learn(name, this)}
+QcrSettable::QcrSettable(QObject& object, const QString& name)
+    : object_ {object}
 {
+    object_.setObjectName(gConsole->learn(name, this));
 }
 
 QcrSettable::~QcrSettable()
 {
-    gConsole->forget(name_);
+    gConsole->forget(name());
 }
 
 void QcrSettable::doLog(bool softwareCalled, const QString& msg)
@@ -55,8 +56,8 @@ QcrModal::~QcrModal()
 //! @class QcrModelessDialog
 
 QcrModelessDialog::QcrModelessDialog(QWidget* parent, const QString& name)
-    : QDialog(parent)
-    , QcrSettable(name)
+    : QDialog {parent}
+    , QcrSettable {*this, name}
 {
     setModal(false);
 }

@@ -23,7 +23,7 @@
 template<class T>
 class QcrControl : protected QcrSettable {
 public:
-    QcrControl(const QString& name, SingleValueCell<T>* cell = nullptr);
+    QcrControl(QObject& object, const QString& name, SingleValueCell<T>* cell = nullptr);
     void programaticallySetValue(T val);
     virtual T getValue() const = 0;
     virtual void executeConsoleCommand(const QString& arg);
@@ -42,8 +42,8 @@ private:
 //  implementation of QcrControl<T>
 
 template<class T>
-QcrControl<T>::QcrControl(const QString& name, SingleValueCell<T>* cell)
-    : QcrSettable {name}
+QcrControl<T>::QcrControl(QObject& object, const QString& name, SingleValueCell<T>* cell)
+    : QcrSettable {object, name}
     , cell_ {cell}
 {
     if (cell_)

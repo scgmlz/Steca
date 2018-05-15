@@ -22,7 +22,7 @@
 //! @class TableModel
 
 TableModel::TableModel(const QString& name)
-    : QcrSettable(name)
+    : QcrSettable {*this, name}
 {}
 
 void TableModel::executeConsoleCommand(const QString& arg)

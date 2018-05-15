@@ -18,19 +18,20 @@
 #include "qcr/engine/debug.h"
 #include <QDialog>
 
-//! Mix-in for control widgets that can be changed by a console command.
+//! Mix-in for QObject, providing Console connection and recompute functionality.
 class QcrSettable {
 public:
     virtual void executeConsoleCommand(const QString&) = 0;
-    const QString& name() const { return name_; }
+    const QObject& object() const { return object_; }
+    const QString name() const { return object().objectName(); }
 protected:
     QcrSettable() = delete;
     QcrSettable(const QcrSettable&) = delete;
-    QcrSettable(const QString& name);
+    QcrSettable(QObject& object, const QString& name);
     ~QcrSettable();
     void doLog(bool softwareCalled, const QString& msg);
 private:
-    const QString name_;
+    QObject& object_;
 };
 
 //! Mix-in for modal dialogs.

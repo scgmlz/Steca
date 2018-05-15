@@ -45,8 +45,8 @@ bool QcrAction::hasFocus()
 //! @class QcrTrigger
 
 QcrTrigger::QcrTrigger(const QString& rawname, const QString& text, const QString& iconFile)
-    : QcrAction(text)
-    , QcrSettable(rawname)
+    : QcrAction {text}
+    , QcrSettable {*this, rawname}
 {
     //QAction::setObjectName(name());
     if (iconFile!="")
@@ -62,7 +62,7 @@ QcrTrigger::QcrTrigger(const QString& rawname, const QString& text, const QStrin
 
 QcrTrigger::QcrTrigger(
     const QString& name, const QString& text, const QString& iconFile, const QKeySequence& shortcut)
-    : QcrTrigger(name, text, iconFile)
+    : QcrTrigger {name, text, iconFile}
 {
     setShortcut(shortcut);
 }
@@ -79,15 +79,15 @@ void QcrTrigger::executeConsoleCommand(const QString& arg)
 
 QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on,
                      const QString& iconFile, const QKeySequence& shortcut)
-    : QcrToggle(rawname, nullptr, text, iconFile, shortcut)
+    : QcrToggle {rawname, nullptr, text, iconFile, shortcut}
 {
     programaticallySetValue(on);
 }
 
 QcrToggle::QcrToggle(const QString& rawname, SingleValueCell<bool>* cell, const QString& text,
                      const QString& iconFile, const QKeySequence& shortcut)
-    : QcrAction(text)
-    , QcrControl<bool>(rawname, cell)
+    : QcrAction {text}
+    , QcrControl<bool> {*this, rawname, cell}
 {
     setShortcut(shortcut);
     init();
@@ -150,7 +150,7 @@ QcrSpinBox::QcrSpinBox(const QString& _name, int ndigits,
 
 QcrSpinBox::QcrSpinBox(const QString& _name, SingleValueCell<int>* cell, int ndigits,
                        bool withDot, int min, int max, const QString& tooltip)
-    : QcrControl<int>(_name, cell)
+    : QcrControl<int> {*this, _name, cell}
 {
     widgetUtils::setWidth(this, 2+ndigits, withDot);
     ASSERT(min<=max);
@@ -200,7 +200,7 @@ QcrDoubleSpinBox::QcrDoubleSpinBox(const QString& _name, int ndigits, double min
 
 QcrDoubleSpinBox::QcrDoubleSpinBox(
     const QString& _name, SingleValueCell<double>* cell, int ndigits, double min, double max)
-    : QcrControl<double>(_name, cell)
+    : QcrControl<double> {*this, _name, cell}
 {
     widgetUtils::setWidth(this, 2+ndigits, true);
     setDecimals(ndigits);
@@ -244,8 +244,8 @@ void QcrDoubleSpinBox::executeConsoleCommand(const QString& arg)
 //! @class QcrCheckBox
 
 QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, bool val)
-    : QCheckBox(text)
-    , QcrControl<bool>(_name)
+    : QCheckBox {text}
+    , QcrControl<bool> {*this, _name}
 {
     doSetValue(val);
     init();
@@ -254,8 +254,8 @@ QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, bool val)
 }
 
 QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, SingleValueCell<bool>* cell)
-    : QCheckBox(text)
-    , QcrControl<bool>(_name, cell)
+    : QCheckBox {text}
+    , QcrControl<bool> {*this, _name, cell}
 {
     doSetValue(cell->val());
     init();
@@ -267,8 +267,8 @@ QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, SingleValueC
 //! @class QcrRadioButton
 
 QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text)
-    : QRadioButton(text)
-    , QcrControl<bool>(_name)
+    : QRadioButton {text}
+    , QcrControl<bool> {*this, _name}
 {
     init();
     connect(this, &QRadioButton::toggled, [this](bool val)->void {
@@ -279,7 +279,7 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text)
 //! @class QcrComboBox
 
 QcrComboBox::QcrComboBox(const QString& _name, const QStringList& items)
-    : QcrControl<int>(_name)
+    : QcrControl<int> {*this, _name}
 {
     init();
     addItems(items);
@@ -298,7 +298,7 @@ void QcrComboBox::addItems(const QStringList& texts)
 //! @class QcrLineEdit
 
 QcrLineEdit::QcrLineEdit(const QString& _name, const QString& val)
-    : QcrControl<QString>(_name)
+    : QcrControl<QString> {*this, _name}
 {
     init();
     // For unknown reason, hasFocus() is not always false when setText is called programmatically;
@@ -318,7 +318,7 @@ QcrLineEdit::QcrLineEdit(const QString& _name, const QString& val)
 //! @class QcrTabWidget
 
 QcrTabWidget::QcrTabWidget(const QString& _name)
-    : QcrControl<int> {_name}
+    : QcrControl<int> {*this, _name}
     , defaultCell {_name, 0}
 {
     cell_ = &defaultCell;
@@ -351,9 +351,9 @@ void QcrTabWidget::setCurrentIndex(int val)
 //! @class QcrDialog
 
 QcrDialog::QcrDialog(QWidget* parent, const QString& caption)
-    : QcrModal("dlog")
-    , QcrSettable("dlog")
-    , QDialog(parent)
+    : QcrModal {"dlog"}
+    , QcrSettable {*this, "dlog"}
+    , QDialog {parent}
 {
     setWindowTitle(caption);
 }
@@ -389,9 +389,9 @@ void QcrDialog::executeConsoleCommand(const QString& arg)
 
 QcrFileDialog::QcrFileDialog(
     QWidget* parent, const QString& caption, const QString& directory, const QString& filter)
-    : QcrModal("fdia")
-    , QcrSettable("fdia")
-    , QFileDialog(parent, caption, directory, filter)
+    : QcrModal {"fdia"}
+    , QcrSettable {*this, "fdia"}
+    , QFileDialog {parent, caption, directory, filter}
 {}
 
 QcrFileDialog::~QcrFileDialog()
