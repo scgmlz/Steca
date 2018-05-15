@@ -33,6 +33,7 @@ QcrMixin::~QcrMixin()
 
 void QcrMixin::recursiveRemake()
 {
+    return fullRemake(); // TMP
     postProcess();
     static int indent = 0;
     qDebug() << QString(indent, ' ') + "REMAKE " << name() << " (" << object().children().size() << " children)";
@@ -45,6 +46,14 @@ void QcrMixin::recursiveRemake()
     }
     -- indent;
     preProcess();
+}
+
+void QcrMixin::fullRemake()
+{
+    for (QObject* o: object().findChildren<QObject*>()) {
+        if (QcrMixin* m = dynamic_cast<QcrMixin*>(o))
+            qDebug() << "QCR: " << m->name();
+    }
 }
 
 //  ***********************************************************************************************

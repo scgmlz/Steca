@@ -26,6 +26,7 @@ public:
     const QObject& object() const { return object_; }
     const QString name() const { return object().objectName(); }
     void recursiveRemake();
+    void fullRemake();
     virtual void preProcess() {}
     virtual void postProcess() {}
 protected:
