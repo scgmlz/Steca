@@ -72,7 +72,8 @@ void QcrSettable::doLog(bool softwareCalled, const QString& msg)
 //  ***********************************************************************************************
 //! @class QcrModal
 
-QcrModal::QcrModal(const QString& name)
+QcrModal::QcrModal(QObject& object, const QString& name)
+    : QcrSettable {object, name}
 {
     gConsole->call("@push "+name);
 }

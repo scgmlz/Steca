@@ -53,11 +53,9 @@ protected:
 };
 
 //! Mix-in for modal dialogs.
-class QcrModal {
+class QcrModal : public QcrSettable {
 protected:
-    QcrModal() = delete;
-    QcrModal(const QcrModal&) = delete;
-    QcrModal(const QString& name);
+    QcrModal(QObject& object, const QString& name);
     ~QcrModal();
 };
 
