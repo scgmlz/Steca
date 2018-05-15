@@ -186,7 +186,7 @@ private:
 };
 
 //! Dialog, for modal use.
-class QcrDialog : protected QcrModal, public QDialog  { // inheritance order matters?
+class QcrDialog : public QDialog, protected QcrModal {
 public:
     QcrDialog(QWidget* parent, const QString& caption);
     ~QcrDialog();
@@ -195,7 +195,7 @@ public:
 };
 
 //! File dialog, for modal use, with console commands to select files and to close the dialog.
-class QcrFileDialog : protected QcrModal, public QFileDialog  {
+class QcrFileDialog : public QFileDialog, protected QcrModal {
 public:
     QcrFileDialog(
         QWidget* parent, const QString& caption, const QString& directory, const QString& filter);
