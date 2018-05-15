@@ -143,8 +143,9 @@ void ImageView::paintEvent(QPaintEvent*)
 //  base class ImageTab
 //  ***********************************************************************************************
 
-ImageTab::ImageTab()
-    : btnScale_ {&gGui->toggles->fixedIntenImage}
+ImageTab::ImageTab(const QString& name)
+    : QcrWidget {name}
+    , btnScale_ {&gGui->toggles->fixedIntenImage}
     , btnOverlay_ {&gGui->toggles->crosshair}
 {
     // internal connections
@@ -226,7 +227,8 @@ QImage ImageTab::makeImage(const Image& image)
 //! @class DataImageTab
 
 DataImageTab::DataImageTab()
-    : btnShowBins_ {&gGui->toggles->showBins}
+    : ImageTab {"dataImage"}
+    , btnShowBins_ {&gGui->toggles->showBins}
     , idxMeas_ {
         "idxMeas", &gSession->dataset().highlight().measurementIdx, 4, false, 1, INT_MAX,
         "Number of measurement within the current group of measurements"}
@@ -291,6 +293,7 @@ QPixmap DataImageTab::pixmap()
 //! @class CorrImageTab
 
 CorrImageTab::CorrImageTab()
+    : ImageTab {"corrImage"}
 {
     controls_.addStretch(1);
 }

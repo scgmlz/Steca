@@ -48,6 +48,7 @@ const QString dataFormats {"Data files (*.dat *.yaml *.mar*);;All files (*.*)"};
 MainWin::MainWin()
 {
     gGui = this;
+    gRoot->addSource(this->cell());
 
     triggers = new Triggers;
     toggles = new Toggles;

@@ -15,8 +15,8 @@
 #ifndef MAINWIN_H
 #define MAINWIN_H
 
+#include "qcr/widgets/views.h"
 #include <QDir>
-#include <QMainWindow>
 #include <QProgressBar>
 #include <QSplitter>
 
@@ -24,7 +24,7 @@ extern class MainWin* gGui; //!< global pointer to _the_ main window
 
 //! The main window. Its single instance is accessible through the global pointer gGui.
 
-class MainWin : public QMainWindow {
+class MainWin : public QcrMainWindow {
     Q_OBJECT
 public:
     MainWin();

@@ -15,8 +15,9 @@
 #ifndef TAB_IMAGE_H
 #define TAB_IMAGE_H
 
-#include "core/raw/image.h"
 #include "qcr/widgets/controls.h"
+#include "qcr/widgets/views.h"
+#include "core/raw/image.h"
 #include <QPainter>
 
 //! Displays a 2d detector image, and possibly some overlay. Used in ImageTab.
@@ -35,9 +36,10 @@ private:
 
 //! Pure virtual base class for DataImageTab and CorrImageTab, shows a detector image and controls.
 
-class ImageTab : public QWidget {
+class ImageTab : public QcrWidget {
 public:
-    ImageTab();
+    ImageTab() = delete;
+    ImageTab(const QString&);
 protected:
     virtual QPixmap pixmap() = 0;
     QPixmap makePixmap(const Image&);

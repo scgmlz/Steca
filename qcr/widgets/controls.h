@@ -204,10 +204,4 @@ public:
     void onCommand(const QString&) override;
 };
 
-//! Generic widget that has an associated Cell.
-class QcrWidget : public QWidget {
-public:
-    Cell* cell {nullptr};
-};
-
 #endif // CONTROLS_H
