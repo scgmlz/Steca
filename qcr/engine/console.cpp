@@ -36,18 +36,18 @@ class CommandRegistry {
 public:
     CommandRegistry() = delete;
     CommandRegistry(const QString& _name) : name_(_name) {}
-    QString learn(const QString&, CSettable*);
+    QString learn(const QString&, QcrSettable*);
     void forget(const QString&);
-    CSettable* find(const QString& name);
+    QcrSettable* find(const QString& name);
     void dump(QTextStream&);
     QString name() const { return name_; }
 private:
     const QString name_;
-    std::map<const QString, CSettable*> widgets_;
+    std::map<const QString, QcrSettable*> widgets_;
     std::map<const QString, int> numberedEntries_;
 };
 
-QString CommandRegistry::learn(const QString& name, CSettable* widget)
+QString CommandRegistry::learn(const QString& name, QcrSettable* widget)
 {
     QString ret = name;
     if (ret.contains("#")) {
@@ -79,7 +79,7 @@ void CommandRegistry::forget(const QString& name)
     widgets_.erase(it);
 }
 
-CSettable* CommandRegistry::find(const QString& name)
+QcrSettable* CommandRegistry::find(const QString& name)
 {
     auto entry = widgets_.find(name);
     if (entry==widgets_.end())
@@ -228,7 +228,7 @@ Console::Result Console::exec(QString line)
         }
         return Result::ok;
     }
-    CSettable* f = registry().find(cmd);
+    QcrSettable* f = registry().find(cmd);
     if (!f) {
         qterr << "Command '" << cmd << "' not found\n";
         return Result::err;
@@ -242,7 +242,7 @@ Console::Result Console::exec(QString line)
     return Result::err;
 }
 
-QString Console::learn(const QString& name, CSettable* widget)
+QString Console::learn(const QString& name, QcrSettable* widget)
 {
     return registry().learn(name, widget);
 }

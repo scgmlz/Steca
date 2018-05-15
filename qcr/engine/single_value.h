@@ -21,7 +21,7 @@
 
 //! Base class for all Qcr widgets that hold a single value.
 template<class T>
-class QcrControl : protected CSettable {
+class QcrControl : protected QcrSettable {
 public:
     QcrControl(const QString& name, SingleValueCell<T>* cell = nullptr);
     void programaticallySetValue(T val);
@@ -43,7 +43,7 @@ private:
 
 template<class T>
 QcrControl<T>::QcrControl(const QString& name, SingleValueCell<T>* cell)
-    : CSettable {name}
+    : QcrSettable {name}
     , cell_ {cell}
 {
     if (cell_)

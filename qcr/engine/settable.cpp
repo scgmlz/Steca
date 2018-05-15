@@ -3,7 +3,7 @@
 //  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/engine/settable.cpp
-//! @brief     Implements classes CSettable, CModal, CModelessDialog
+//! @brief     Implements classes QcrSettable, CModal, CModelessDialog
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -18,19 +18,19 @@
 #include <QDebug>
 
 //  ***********************************************************************************************
-//! @class CSettable
+//! @class QcrSettable
 
-CSettable::CSettable(const QString& name)
+QcrSettable::QcrSettable(const QString& name)
     : name_ {gConsole->learn(name, this)}
 {
 }
 
-CSettable::~CSettable()
+QcrSettable::~QcrSettable()
 {
     gConsole->forget(name_);
 }
 
-void CSettable::doLog(bool softwareCalled, const QString& msg)
+void QcrSettable::doLog(bool softwareCalled, const QString& msg)
 {
     gConsole->log2(!softwareCalled, msg);
 }
@@ -56,7 +56,7 @@ CModal::~CModal()
 
 CModelessDialog::CModelessDialog(QWidget* parent, const QString& name)
     : QDialog(parent)
-    , CSettable(name)
+    , QcrSettable(name)
 {
     setModal(false);
 }

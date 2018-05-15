@@ -37,7 +37,7 @@ protected:
 };
 
 //! Trigger, for use in buttons or menu entries, that can also be activated by console command.
-class QcrTrigger : public QcrAction, protected CSettable {
+class QcrTrigger : public QcrAction, protected QcrSettable {
 public:
     QcrTrigger(const QString& name, const QString& text, const QString& iconFile="");
     QcrTrigger(const QString& name, const QString& text, const QString& iconFile,
@@ -186,7 +186,7 @@ private:
 };
 
 //! Dialog, for modal use.
-class QcrDialog : protected CModal, CSettable, public QDialog  { // (inheritance order matters!)
+class QcrDialog : protected CModal, QcrSettable, public QDialog  { // (inheritance order matters!)
 public:
     QcrDialog(QWidget* parent, const QString& caption);
     ~QcrDialog();
@@ -195,7 +195,7 @@ public:
 };
 
 //! File dialog, for modal use, with console commands to select files and to close the dialog.
-class QcrFileDialog : protected CModal, CSettable, public QFileDialog  {
+class QcrFileDialog : protected CModal, QcrSettable, public QFileDialog  {
 public:
     QcrFileDialog(
         QWidget* parent, const QString& caption, const QString& directory, const QString& filter);

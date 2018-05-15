@@ -3,7 +3,7 @@
 //  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/engine/settable.h
-//! @brief     Defines classes CSettable, CModal, CModelessDialog
+//! @brief     Defines classes QcrSettable, CModal, CModelessDialog
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -19,15 +19,15 @@
 #include <QDialog>
 
 //! Mix-in for control widgets that can be changed by a console command.
-class CSettable {
+class QcrSettable {
 public:
     virtual void executeConsoleCommand(const QString&) = 0;
     const QString& name() const { return name_; }
 protected:
-    CSettable() = delete;
-    CSettable(const CSettable&) = delete;
-    CSettable(const QString& name);
-    ~CSettable();
+    QcrSettable() = delete;
+    QcrSettable(const QcrSettable&) = delete;
+    QcrSettable(const QString& name);
+    ~QcrSettable();
     void doLog(bool softwareCalled, const QString& msg);
 private:
     const QString name_;
@@ -43,7 +43,7 @@ protected:
 };
 
 //! A modeless (= persistent spawned popup) dialog with support for capture&replay.
-class CModelessDialog : protected QDialog, protected CSettable {
+class CModelessDialog : protected QDialog, protected QcrSettable {
 public:
     void executeConsoleCommand(const QString&) final;
 protected:

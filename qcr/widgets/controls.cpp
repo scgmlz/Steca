@@ -46,7 +46,7 @@ bool QcrAction::hasFocus()
 
 QcrTrigger::QcrTrigger(const QString& rawname, const QString& text, const QString& iconFile)
     : QcrAction(text)
-    , CSettable(rawname)
+    , QcrSettable(rawname)
 {
     //QAction::setObjectName(name());
     if (iconFile!="")
@@ -91,7 +91,7 @@ QcrToggle::QcrToggle(const QString& rawname, SingleValueCell<bool>* cell, const 
 {
     setShortcut(shortcut);
     init();
-    //QAction::setObjectName(CSettable::name());
+    //QAction::setObjectName(QcrSettable::name());
     if (iconFile!="")
         setIcon(QIcon(iconFile));
     setCheckable(true);
@@ -352,7 +352,7 @@ void QcrTabWidget::setCurrentIndex(int val)
 
 QcrDialog::QcrDialog(QWidget* parent, const QString& caption)
     : CModal("dlog")
-    , CSettable("dlog")
+    , QcrSettable("dlog")
     , QDialog(parent)
 {
     setWindowTitle(caption);
@@ -390,7 +390,7 @@ void QcrDialog::executeConsoleCommand(const QString& arg)
 QcrFileDialog::QcrFileDialog(
     QWidget* parent, const QString& caption, const QString& directory, const QString& filter)
     : CModal("fdia")
-    , CSettable("fdia")
+    , QcrSettable("fdia")
     , QFileDialog(parent, caption, directory, filter)
 {}
 

@@ -20,7 +20,7 @@
 
 //! Pure virtual base class of all models of rectangular table form
 
-class TableModel : public QAbstractTableModel, public CSettable {
+class TableModel : public QAbstractTableModel, public QcrSettable {
 public:
     TableModel() = delete;
     TableModel(const QString& name);
