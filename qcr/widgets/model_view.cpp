@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "model_view.h"
+#include "qcr/engine/cell.h" // remakeAll
 #include "qcr/engine/console.h"
 #include "qcr/base/qcrexception.h"
 #include "qcr/base/debug.h"
@@ -43,6 +44,12 @@ void TableModel::resetModel()
 
 void TableModel::onClicked(const QModelIndex& cell)
 {
+    setHighlightedCell(cell);
+    remakeAll();
+}
+
+void TableModel::setHighlightedCell(const QModelIndex& cell)
+{
     int row = cell.row();
     if (row < 0 || row >= rowCount())
         return;
@@ -65,11 +72,12 @@ void CheckTableModel::onActivated()
 
 void CheckTableModel::onClicked(const QModelIndex& cell)
 {
-    TableModel::onClicked(cell);
+    TableModel::setHighlightedCell(cell);
     int row = cell.row();
     int col = cell.column();
     if (col==1)
         activateAndLog(true, row, !activated(row));
+    remakeAll();
 }
 
 void CheckTableModel::activateAndLog(bool primaryCall, int row, bool on)

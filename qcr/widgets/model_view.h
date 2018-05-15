@@ -39,6 +39,8 @@ public:
     virtual int rowCount() const = 0;
     virtual int highlighted() const = 0;
     virtual void setHighlight(int i) = 0;
+protected:
+    void setHighlightedCell(const QModelIndex& cell);
 private:
     QString name_;
 };
