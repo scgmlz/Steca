@@ -89,7 +89,7 @@ MainWin::MainWin()
 
     // TODO move this elsewhere
     triggers->removeFile.setRemake([=]() {
-            triggers->removeFile.setEnabled(gSession->peaks().count()); });
+            triggers->removeFile.setEnabled(gSession->dataset().countFiles()); });
     triggers->corrFile.setRemake([=]() {
             bool hasCorr = gSession->hasCorrFile();
             triggers->corrFile.setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
