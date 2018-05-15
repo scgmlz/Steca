@@ -345,7 +345,7 @@ QcrTabWidget::QcrTabWidget(const QString& _name)
 {
     cell_ = &defaultCell;
     init();
-    connect(this->tabBar(), &QTabBar::tabBarClicked, [this](int val) {
+    connect(this->tabBar(), &QTabBar::tabBarClicked, [=](int val) {
             qDebug() << "tabBarClicked " << val; });
     connect(this, &QTabWidget::currentChanged, [this](int val) {
             qDebug() << "tabBarChanged " << val;

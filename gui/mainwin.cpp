@@ -98,8 +98,6 @@ MainWin::MainWin()
             triggers->corrFile.setToolTip(text.toLower()); });
     toggles->enableCorr.setRemake([=]() {
             toggles->enableCorr.setEnabled(gSession->hasCorrFile()); });
-
-    remakeAll();
 }
 
 MainWin::~MainWin()
