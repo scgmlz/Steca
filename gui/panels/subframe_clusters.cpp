@@ -148,7 +148,7 @@ public:
 private:
     void currentChanged(const QModelIndex& current, const QModelIndex&) override final {
         gotoCurrent(current); }
-    void onMetaSelection();
+    void refresh();
     int sizeHintForColumn(int) const override final;
     ActiveClustersModel* model() { return static_cast<ActiveClustersModel*>(model_); }
 };
@@ -160,9 +160,11 @@ ActiveClustersView::ActiveClustersView()
 
     // internal connection:
     connect(this, &ActiveClustersView::clicked, model(), &CheckTableModel::onClicked);
+
+    setRemake([this]() {refresh();});
 }
 
-void ActiveClustersView::onMetaSelection()
+void ActiveClustersView::refresh()
 {
     model()->onMetaSelection();
     setHeaderHidden(model()->metaCount()==0);
