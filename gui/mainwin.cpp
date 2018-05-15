@@ -87,12 +87,15 @@ MainWin::MainWin()
     readSettings();
     updateAbilities();
 
+    // TODO move this elsewhere
     triggers->corrFile.setRemake([=]() {
             bool hasCorr = gSession->hasCorrFile();
             triggers->corrFile.setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
             QString text = QString(hasCorr ? "Remove" : "Add") + " correction file";
             triggers->corrFile.setText(text);
             triggers->corrFile.setToolTip(text.toLower()); });
+    toggles->enableCorr.setRemake([=]() {
+            toggles->enableCorr.setEnabled(gSession->hasCorrFile()); });
 }
 
 MainWin::~MainWin()
@@ -206,6 +209,7 @@ void MainWin::addFiles()
     } catch (Exception e) {
         qWarning() << e.what();
     }
+    remakeAll();
 }
 
 void MainWin::loadCorrFile()
@@ -224,6 +228,7 @@ void MainWin::loadCorrFile()
             qWarning() << e.msg();
         }
     }
+    remakeAll();
 }
 
 void MainWin::runFits()
