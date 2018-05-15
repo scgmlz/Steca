@@ -103,10 +103,10 @@ MainWin::~MainWin()
 void MainWin::updateAbilities()
 {
     bool hasFile = gSession->dataset().countFiles();
-    bool hasCorr = gSession->hasCorrFile();
     bool hasPeak = gSession->peaks().count();
     bool hasBase = gSession->baseline().ranges().count();
     toggles->enableCorr.programaticallySetValue(gSession->corrset().isEnabled());
+    bool hasCorr = gSession->hasCorrFile();
     triggers->corrFile.setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
     QString text = QString(hasCorr ? "Remove" : "Add") + " correction file";
     triggers->corrFile.setText(text);

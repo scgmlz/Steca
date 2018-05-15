@@ -32,7 +32,7 @@ void QcrMixin::remake()
 {
     const QWidget* w = dynamic_cast<const QWidget*>(&object());
     if (w && w->isVisible())
-        qDebug() << "we should remake " << name();
+        remake_();
 }
 
 //  ***********************************************************************************************

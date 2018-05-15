@@ -25,9 +25,9 @@ QcrIcon::QcrIcon(const QString& fileName)
 
 QcrLineDisplay::QcrLineDisplay(const QString& name, std::function<QString()> freshText)
     : QcrMixin {*this, name}
-    , freshText_ {freshText}
 {
     setReadOnly(true);
+    setRemake( [this, freshText]() { setText( freshText() ); } );
 }
 
 QcrLineDisplay::QcrLineDisplay(const QString& name, int ndigits, bool withDot)
