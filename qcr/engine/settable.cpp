@@ -17,6 +17,8 @@
 #include "qcr/engine/qcrexception.h"
 #include <QDebug>
 
+QcrRoot* gRoot {nullptr};
+
 //  ***********************************************************************************************
 //! @class QcrMixin
 
@@ -31,31 +33,24 @@ QcrMixin::~QcrMixin()
     gConsole->forget(name());
 }
 
-void QcrMixin::recursiveRemake()
+//  ***********************************************************************************************
+//! @class QcrRoot
+
+QcrRoot::QcrRoot(QObject& object, const QString& name)
+    : QcrMixin {object, name}
 {
-    return fullRemake(); // TMP
-    postProcess();
-    static int indent = 0;
-    qDebug() << QString(indent, ' ') + "REMAKE " << name() << " (" << object().children().size() << " children)";
-    ++indent;
-    for (QObject* o: object().children()) {
-        if (QcrMixin* m = dynamic_cast<QcrMixin*>(o))
-            m->recursiveRemake();
-        else
-            qDebug() << QString(indent, ' ') + "cannot remake " << o->objectName();
-    }
-    -- indent;
-    preProcess();
+    gRoot = this;
 }
 
-void QcrMixin::fullRemake()
+void QcrRoot::fullRemake()
 {
     for (QObject* o: object().findChildren<QObject*>()) {
-        if (QcrMixin* m = dynamic_cast<QcrMixin*>(o))
+        if (QcrMixin* m = dynamic_cast<QcrMixin*>(o)) {
             qDebug() << "QCR: " << m->name();
+            m->remake();
+        }
     }
 }
-
 //  ***********************************************************************************************
 //! @class QcrSettable
 

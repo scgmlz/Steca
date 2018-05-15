@@ -16,12 +16,10 @@
 #include "qcr/engine/settable.h"
 #include <QtDebug>
 
-QcrMixin* gRoot {nullptr};
-
 void remakeAll()
 {
     ASSERT(gRoot);
-    gRoot->recursiveRemake();
+    gRoot->fullRemake();
 }
 
 
@@ -46,7 +44,7 @@ void Cell::clearSources() {
 
 Cell::stamp_t Cell::update()
 {
-    stamp_t t_new = timestamp_;
+    //stamp_t t_new = timestamp_;
     qDebug() << "Updating " << name() << " t=" << timestamp_;
     recompute();
     /*

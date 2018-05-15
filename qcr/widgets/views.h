@@ -18,33 +18,20 @@
 #include "qcr/engine/settable.h"
 #include <QMainWindow>
 #include <QDockWidget>
-#include <QSplitter>
-#include <QMenuBar>
+
+class QcrMainWindow : public QMainWindow, public QcrRoot {
+public:
+    QcrMainWindow() : QcrRoot {*this, "mainwindow"} {}
+};
 
 class QcrWidget : public QWidget, public QcrMixin {
 public:
     QcrWidget(const QString& name) : QcrMixin {*this, name} {}
 };
 
-class QcrMainWindow : public QMainWindow, public QcrMixin {
-public:
-    QcrMainWindow() : QcrMixin {*this, "mainwindow"} {}
-};
-
 class QcrDockWidget : public QDockWidget, public QcrMixin {
 public:
     QcrDockWidget(const QString& name) : QcrMixin {*this, name} {}
-};
-
-class QcrSplitter : public QSplitter, public QcrMixin {
-public:
-    QcrSplitter(const QString& name, Qt::Orientation ori)
-        : QSplitter {ori}, QcrMixin {*this, name} {}
-};
-
-class QcrMenu : public QMenu, public QcrMixin {
-public:
-    QcrMenu(const QString& name) : QcrMixin {*this, name} {}
 };
 
 #endif // VIEWS_H

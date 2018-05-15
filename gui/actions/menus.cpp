@@ -112,9 +112,9 @@ QAction* Menus::separator() const
     return ret;
 };
 
-QcrMenu* Menus::actionsToMenu(const char* menuName, QList<QAction*> actions)
+QMenu* Menus::actionsToMenu(const char* menuName, QList<QAction*> actions)
 {
-    QcrMenu* menu = new QcrMenu { menuName };
+    QMenu* menu = new QMenu { menuName };
     mbar_->addMenu(menu);
     menu->addActions(actions);
     QString prefix = QString("%1: ").arg(menu->title().remove('&'));

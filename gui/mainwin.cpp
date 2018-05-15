@@ -32,6 +32,7 @@
 #include "gui/panels/subframe_setup.h"
 #include "gui/dialogs/file_dialog.h"
 #include "qcr/engine/debug.h"
+#include <QSplitter>
 #include <QStatusBar>
 #include <QStringBuilder> // for ".." % ..
 #include <iostream> // debug
@@ -67,13 +68,13 @@ MainWin::MainWin()
     addDockWidget(Qt::LeftDockWidgetArea, (dockClusters_ = new SubframeClusters()));
     addDockWidget(Qt::LeftDockWidgetArea, (dockMetadata_ = new SubframeMetadata()));
 
-    auto* splTop = new QcrSplitter {"topSplitter", Qt::Horizontal};
+    auto* splTop = new QSplitter {Qt::Horizontal};
     splTop->setChildrenCollapsible(false);
     splTop->addWidget(frameSetup_ = new SubframeSetup());
     splTop->addWidget(mainframe_  = new Mainframe());
     splTop->setStretchFactor(1, 1);
 
-    auto* splMain = new QcrSplitter {"mainSplitter", Qt::Vertical};
+    auto* splMain = new QSplitter {Qt::Vertical};
     splMain->setChildrenCollapsible(false);
     splMain->addWidget(splTop);
     splMain->addWidget(frameDfgram_ = new SubframeDfgram());

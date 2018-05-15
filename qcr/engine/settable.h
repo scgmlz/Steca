@@ -18,17 +18,14 @@
 #include "qcr/engine/debug.h"
 #include <QDialog>
 
-extern class QcrMixin* gRoot;
+extern class QcrRoot* gRoot;
 
 //! Mix-in for QObject, enforcing a name, and providing recompute functionality.
 class QcrMixin {
 public:
     const QObject& object() const { return object_; }
     const QString name() const { return object().objectName(); }
-    void recursiveRemake();
-    void fullRemake();
-    virtual void preProcess() {}
-    virtual void postProcess() {}
+    virtual void remake() {}
 protected:
     QcrMixin() = delete;
     QcrMixin(const QcrMixin&) = delete;
@@ -37,6 +34,14 @@ protected:
 private:
     QObject& object_;
 };
+
+//! Root of class hierarchy, normally mixed-in to QMainWindow
+class QcrRoot : public QcrMixin {
+public:
+    QcrRoot(QObject& object, const QString& name);
+    void fullRemake();
+};
+
 
 //! Mix-in for QObject, enforcing a unique name, providing Console connection.
 class QcrSettable : public QcrMixin {
