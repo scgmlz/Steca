@@ -19,7 +19,7 @@
 
 //! Popup display of the present XY diagram.
 
-class PopupDiagram : public CModelessDialog {
+class PopupDiagram : public QcrModelessDialog {
 public:
     PopupDiagram();
 };

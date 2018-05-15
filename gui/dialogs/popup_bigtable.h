@@ -19,7 +19,7 @@
 
 //! Popup display of the present XY diagram.
 
-class PopupBigtable : public CModelessDialog {
+class PopupBigtable : public QcrModelessDialog {
 public:
     PopupBigtable();
 };

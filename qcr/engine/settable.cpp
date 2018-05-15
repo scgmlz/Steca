@@ -3,7 +3,7 @@
 //  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/engine/settable.cpp
-//! @brief     Implements classes QcrSettable, CModal, CModelessDialog
+//! @brief     Implements classes QcrSettable, QcrModal, QcrModelessDialog
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -37,14 +37,14 @@ void QcrSettable::doLog(bool softwareCalled, const QString& msg)
 
 
 //  ***********************************************************************************************
-//! @class CModal
+//! @class QcrModal
 
-CModal::CModal(const QString& name)
+QcrModal::QcrModal(const QString& name)
 {
     gConsole->call("@push "+name);
 }
 
-CModal::~CModal()
+QcrModal::~QcrModal()
 {
     gConsole->log("@close");
     gConsole->call("@pop");
@@ -52,21 +52,21 @@ CModal::~CModal()
 
 
 //  ***********************************************************************************************
-//! @class CModelessDialog
+//! @class QcrModelessDialog
 
-CModelessDialog::CModelessDialog(QWidget* parent, const QString& name)
+QcrModelessDialog::QcrModelessDialog(QWidget* parent, const QString& name)
     : QDialog(parent)
     , QcrSettable(name)
 {
     setModal(false);
 }
 
-void CModelessDialog::closeEvent(QCloseEvent* event)
+void QcrModelessDialog::closeEvent(QCloseEvent* event)
 {
     deleteLater();
 }
 
-void CModelessDialog::executeConsoleCommand(const QString& arg)
+void QcrModelessDialog::executeConsoleCommand(const QString& arg)
 {
     if (arg!="close")
         throw QcrException("Unexpected command in ModelessDialog "+name());

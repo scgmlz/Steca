@@ -19,7 +19,7 @@
 
 //! The modal dialog for the data shown in the diagram
 
-class ExportDiagram : private CModal, public QDialog {
+class ExportDiagram : private QcrModal, public QDialog {
 public:
     ExportDiagram();
 private:

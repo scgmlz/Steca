@@ -20,7 +20,7 @@
 #include <QVBoxLayout>
 
 PopupDiagram::PopupDiagram()
-    : CModelessDialog(gGui, "polefig#")
+    : QcrModelessDialog(gGui, "polefig#")
 {
     setWindowTitle("Steca " + name());
 

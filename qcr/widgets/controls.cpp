@@ -351,7 +351,7 @@ void QcrTabWidget::setCurrentIndex(int val)
 //! @class QcrDialog
 
 QcrDialog::QcrDialog(QWidget* parent, const QString& caption)
-    : CModal("dlog")
+    : QcrModal("dlog")
     , QcrSettable("dlog")
     , QDialog(parent)
 {
@@ -389,7 +389,7 @@ void QcrDialog::executeConsoleCommand(const QString& arg)
 
 QcrFileDialog::QcrFileDialog(
     QWidget* parent, const QString& caption, const QString& directory, const QString& filter)
-    : CModal("fdia")
+    : QcrModal("fdia")
     , QcrSettable("fdia")
     , QFileDialog(parent, caption, directory, filter)
 {}

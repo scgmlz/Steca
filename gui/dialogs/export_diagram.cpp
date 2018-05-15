@@ -24,7 +24,7 @@
 //! @class ExportDiagram
 
 ExportDiagram::ExportDiagram()
-    : CModal("xdia")
+    : QcrModal("xdia")
     , QDialog(gGui)
 {
     fileField_ = new ExportfileDialogfield(this, true, [this]()->void{save();});

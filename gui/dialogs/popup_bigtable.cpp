@@ -18,7 +18,7 @@
 #include <QVBoxLayout>
 
 PopupBigtable::PopupBigtable()
-    : CModelessDialog(gGui, "table#")
+    : QcrModelessDialog(gGui, "table#")
 {
     auto* bigtableView = new BigtableView;
     bigtableView->setMinimumSize(600,600);

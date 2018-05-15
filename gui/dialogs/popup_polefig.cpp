@@ -17,7 +17,7 @@
 #include "gui/mainwin.h"
 
 PopupPolefig::PopupPolefig()
-    : CModelessDialog(gGui, "polefig#")
+    : QcrModelessDialog(gGui, "polefig#")
 {
     setWindowTitle("Steca " + name());
 
