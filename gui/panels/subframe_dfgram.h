@@ -15,11 +15,11 @@
 #ifndef SUBFRAME_DFGRAM_H
 #define SUBFRAME_DFGRAM_H
 
-#include <QTabWidget> // no need for QcrTabWidget, since there is only one tab
+#include "qcr/widgets/controls.h"
 
 //! Part of the main window that contains a diffractogram, with associated controls.
 
-class SubframeDfgram : public QTabWidget {
+class SubframeDfgram : public QcrTabWidget {
 public:
     SubframeDfgram();
 };

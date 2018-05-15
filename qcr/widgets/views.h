@@ -18,6 +18,7 @@
 #include "qcr/engine/settable.h"
 #include <QMainWindow>
 #include <QDockWidget>
+#include <QSplitter>
 
 class QcrWidget : public QWidget, public QcrMixin {
 public:
@@ -31,7 +32,13 @@ public:
 
 class QcrDockWidget : public QDockWidget, public QcrMixin {
 public:
-    QcrDockWidget(const QString& name) : QcrMixin {*this, name} { setObjectName(name); }
+    QcrDockWidget(const QString& name) : QcrMixin {*this, name} {}
+};
+
+class QcrSplitter : public QSplitter, public QcrMixin {
+public:
+    QcrSplitter(const QString& name, Qt::Orientation ori)
+        : QSplitter {ori}, QcrMixin {*this, name} {}
 };
 
 #endif // VIEWS_H

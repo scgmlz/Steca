@@ -108,6 +108,7 @@ void Dfgram::onHighlight()
 //! @class SubframeDfgram
 
 SubframeDfgram::SubframeDfgram()
+    : QcrTabWidget {"dfgramTabs"}
 {
     setTabPosition(QTabWidget::North);
     addTab(new Dfgram, "Diffractogram");

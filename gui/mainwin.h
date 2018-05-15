@@ -18,7 +18,6 @@
 #include "qcr/widgets/views.h"
 #include <QDir>
 #include <QProgressBar>
-#include <QSplitter>
 
 extern class MainWin* gGui; //!< global pointer to _the_ main window
 
@@ -66,8 +65,6 @@ private:
     QDockWidget* dockMetadata_;
     class Menus* menus_;
 
-    QSplitter splMain_ {Qt::Vertical};
-    QSplitter splTop_ {Qt::Horizontal};
     QByteArray initialState_;
     QDir sessionDir_ {QDir::homePath()};
     QDir dataDir_ {QDir::homePath()};
