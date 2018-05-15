@@ -106,8 +106,8 @@ void MainWin::updateAbilities()
     bool hasCorr = gSession->hasCorrFile();
     bool hasPeak = gSession->peaks().count();
     bool hasBase = gSession->baseline().ranges().count();
-    triggers->corrFile.setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
     toggles->enableCorr.programaticallySetValue(gSession->corrset().isEnabled());
+    triggers->corrFile.setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
     QString text = QString(hasCorr ? "Remove" : "Add") + " correction file";
     triggers->corrFile.setText(text);
     triggers->corrFile.setToolTip(text.toLower());

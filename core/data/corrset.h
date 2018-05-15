@@ -36,6 +36,7 @@ public:
     // Lookup methods
     const Rawfile& raw() const { return *raw_; }
     bool hasFile() const { return raw_.get(); }
+    QString fileName() const { return hasFile() ? raw_->fileName() : ""; }
     bool isEnabled() const { return enabled_; }
     bool hasNANs() const { return hasNANs_; }
     const Image& image() const { return *corrImage_; }
