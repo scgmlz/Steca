@@ -324,10 +324,7 @@ QcrTabWidget::QcrTabWidget(const QString& _name)
     cell_ = &defaultCell;
     init();
     connect(this->tabBar(), &QTabBar::tabBarClicked, [this](int val) {
-            qDebug() << "tabBarClicked " << val;
-            if (!isTabEnabled(val))
-                return;
-            onChangedValue(hasFocus(), val); });
+            qDebug() << "tabBarClicked " << val; });
     connect(this, &QTabWidget::currentChanged, [this](int val) {
             qDebug() << "tabBarChanged " << val;
             if (!isTabEnabled(val))
