@@ -34,7 +34,7 @@ BigtableModel::BigtableModel()
     gGui->state->bigtableModel = this;
     headers_ = PeakInfo::dataTags(false);
     comparators_ = PeakInfo::dataCmps();
-    ASSERT(comparators_.size() == headers_.count());
+    ASSERT((int)comparators_.size() == headers_.count());
     numCols_ = headers_.size();
     colIndexMap_.resize(numCols_);
     for_i (numCols_)
@@ -93,7 +93,7 @@ QVariant BigtableModel::headerData(int section, Qt::Orientation, int role) const
 //! Called upon QHeaderView::sectionMoved.
 void BigtableModel::onColumnMove(int from, int to)
 {
-    ASSERT(from < colIndexMap_.size() && to < colIndexMap_.size());
+    ASSERT(from < (int)colIndexMap_.size() && to < (int)colIndexMap_.size());
     qSwap(colIndexMap_[from], colIndexMap_[to]);
 }
 

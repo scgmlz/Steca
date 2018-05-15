@@ -22,19 +22,8 @@
 //! @class TableModel
 
 TableModel::TableModel(const QString& name)
-    : QcrSettable {*this, name}
+    : name_(name)
 {}
-
-void TableModel::executeConsoleCommand(const QString& arg)
-{
-    QString cmd, cmdarg;
-    strOp::splitOnce(arg, cmd, cmdarg);
-    if (cmd!="highlight")
-        throw QcrException("Unexpected command '"+cmd+"' in TableModel "+name());
-    if (cmdarg=="")
-        throw QcrException("Missing argument to command 'highlight'");
-    setHighlight(strOp::to_i(cmdarg));
-}
 
 void TableModel::refreshModel()
 {
@@ -68,21 +57,6 @@ void TableModel::onClicked(const QModelIndex& cell)
 CheckTableModel::CheckTableModel(const QString& _name) : TableModel(_name)
 {}
 
-void CheckTableModel::executeConsoleCommand(const QString& arg)
-{
-    QStringList args = arg.split(' ');
-    if        (args[0]=="activate") {
-        if (args.size()<2)
-            throw QcrException("Missing argument to command 'activate'");
-        activateAndLog(false, strOp::to_i(args[1]), true);
-    } else if (args[0]=="deactivate") {
-        if (args.size()<2)
-            throw QcrException("Missing argument to command 'deactivate'");
-        activateAndLog(false, strOp::to_i(args[1]), false);
-    } else
-        TableModel::executeConsoleCommand(arg);
-}
-
 //! Refreshes the check box column.
 void CheckTableModel::onActivated()
 {
@@ -113,7 +87,8 @@ void CheckTableModel::activateAndLog(bool primaryCall, int row, bool on)
 #pragma GCC diagnostic ignored "-Woverloaded-virtual" // TODO try without
 
 TableView::TableView(TableModel* model)
-    : name_(model->name()), model_(model)
+    : QcrSettable {*this, model->name()}
+    , model_(model)
 {
     // set model
     QTreeView::setModel(model);
@@ -126,6 +101,17 @@ TableView::TableView(TableModel* model)
     setHeaderHidden(true);
     setSelectionMode(QAbstractItemView::NoSelection);
     setAlternatingRowColors(true);
+}
+
+void TableView::executeConsoleCommand(const QString& arg)
+{
+    QString cmd, cmdarg;
+    strOp::splitOnce(arg, cmd, cmdarg);
+    if (cmd!="highlight")
+        throw QcrException("Unexpected command '"+cmd+"' in TableModel "+name());
+    if (cmdarg=="")
+        throw QcrException("Missing argument to command 'highlight'");
+    model_->setHighlight(strOp::to_i(cmdarg));
 }
 
 #pragma GCC diagnostic pop
@@ -183,6 +169,21 @@ void TableView::onData()
 
 //  ***********************************************************************************************
 //! @class CheckTableView
+
+void CheckTableView::executeConsoleCommand(const QString& arg)
+{
+    QStringList args = arg.split(' ');
+    if        (args[0]=="activate") {
+        if (args.size()<2)
+            throw QcrException("Missing argument to command 'activate'");
+        model()->activateAndLog(false, strOp::to_i(args[1]), true);
+    } else if (args[0]=="deactivate") {
+        if (args.size()<2)
+            throw QcrException("Missing argument to command 'deactivate'");
+        model()->activateAndLog(false, strOp::to_i(args[1]), false);
+    } else
+        TableView::executeConsoleCommand(arg);
+}
 
 void CheckTableView::onActivated()
 {
