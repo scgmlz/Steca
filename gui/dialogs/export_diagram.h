@@ -15,11 +15,11 @@
 #ifndef EXPORT_DIAGRAM_H
 #define EXPORT_DIAGRAM_H
 
-#include "qcr/engine/mixin.h"
+#include "qcr/widgets/controls.h"
 
 //! The modal dialog for the data shown in the diagram
 
-class ExportDiagram : private QcrModal, public QDialog {
+class ExportDiagram : public QcrDialog {
 public:
     ExportDiagram();
 private:

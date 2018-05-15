@@ -24,8 +24,7 @@
 //! @class ExportDiagram
 
 ExportDiagram::ExportDiagram()
-    : QcrModal("xdia")
-    , QDialog(gGui)
+    : QcrDialog(gGui, "Export diagram")
 {
     fileField_ = new ExportfileDialogfield(this, true, [this]()->void{save();});
 
