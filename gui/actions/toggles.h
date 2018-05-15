@@ -24,7 +24,7 @@ public:
     Toggles();
     QcrToggle combinedDgram {"dfg.all", "All measurements", false, ":/icon/all"};
     QcrToggle crosshair {"crosshair", "Show crosshair", false, ":/icon/crop"};
-    QcrToggle enableCorr {"enableCorr", "Enable correction file", false, ":/icon/useCorrection"};
+    QcrToggle enableCorr;
     QcrToggle fixedIntenDgram {"dfg.fixInt", "Fixed intensity scale", false, ":/icon/scale"};
     QcrToggle fixedIntenImage {"img.fixInt", "Global intensity scale", false, ":/icon/scale"};
     QcrToggle linkCuts;

@@ -20,7 +20,7 @@
 void Corrset::clear()
 {
     removeFile();
-    enabled_ = true;
+    enabled.setVal(true);
     hasNANs_ = false;
 }
 
@@ -43,19 +43,12 @@ void Corrset::loadFile(const QString& filePath)
     corrImage_.reset(new Image{raw_->summedImage()});
     normalizer_.release(); // will be calculated when needed
     // all ok
-    enabled_ = true;
-}
-
-void Corrset::tryEnable(bool on)
-{
-    if ((on && !hasFile()) || on==enabled_)
-        return;
-    enabled_ = on;
+    enabled.setVal(true);
 }
 
 const Image* Corrset::normalizer() const
 {
-    if (!hasFile() || !enabled_)
+    if (!hasFile() || !enabled.val())
         return nullptr;
     if (!normalizer_.get())
         calcNormalizer();
@@ -98,7 +91,7 @@ QJsonObject Corrset::toJson() const
     QJsonObject ret;
     if (hasFile())
         ret.insert("file", raw_->fileInfo().absoluteFilePath());
-    ret.insert("enabled", enabled_);
+    ret.insert("enabled", enabled.val());
     return ret;
 }
 
@@ -106,5 +99,5 @@ void Corrset::fromJson(const JsonObj& obj)
 {
     if (obj.find("file") != obj.end())
         loadFile(obj.loadString("file"));
-    tryEnable(obj.loadBool("enabled", true));
+    enabled.setVal(obj.loadBool("enabled", true));
 }

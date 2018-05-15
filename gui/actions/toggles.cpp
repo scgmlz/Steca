@@ -20,12 +20,12 @@
 #include <QStatusBar>
 
 Toggles::Toggles()
-    : linkCuts {"linkCuts", &gSession->imageCut().linked, "Link cuts", ":/icon/link"}
+    : enableCorr {"enableCorr", &gSession->corrset().enabled,
+        "Enable correction file", ":/icon/useCorrection"}
+    , linkCuts {"linkCuts", &gSession->imageCut().linked,
+              "Link cuts", ":/icon/link"}
 {
-
 #define AT &QAction::toggled
-
-    connect(&enableCorr, AT, [](bool on) { gSession->corrset().tryEnable(on); });
 
     connect(&viewStatusbar, AT, [](bool on) { gGui->statusBar()->setVisible(on); });
 #ifndef Q_OS_OSX

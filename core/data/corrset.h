@@ -30,14 +30,13 @@ public:
     void fromJson(const JsonObj& obj);
     void removeFile();
     void loadFile(const QString& filePath);
-    void tryEnable(bool on);
+    SingleValueCell<bool> enabled {"corrEnabled", true};
     void clearIntens() { normalizer_.release(); }
 
     // Lookup methods
     const Rawfile& raw() const { return *raw_; }
     bool hasFile() const { return raw_.get(); }
     QString fileName() const { return hasFile() ? raw_->fileName() : ""; }
-    bool isEnabled() const { return enabled_; }
     bool hasNANs() const { return hasNANs_; }
     const Image& image() const { return *corrImage_; }
     const Image* normalizer() const;
@@ -48,7 +47,6 @@ private:
     void calcNormalizer() const;
 
     std::unique_ptr<const Rawfile> raw_; //!< owned by this
-    bool enabled_ {true};
     mutable bool hasNANs_ {false};
     std::unique_ptr<Image> corrImage_;
     mutable std::unique_ptr<Image> normalizer_;

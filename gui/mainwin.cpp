@@ -88,6 +88,8 @@ MainWin::MainWin()
     updateAbilities();
 
     // TODO move this elsewhere
+    triggers->removeFile.setRemake([=]() {
+            triggers->removeFile.setEnabled(gSession->peaks().count()); });
     triggers->corrFile.setRemake([=]() {
             bool hasCorr = gSession->hasCorrFile();
             triggers->corrFile.setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
@@ -96,6 +98,8 @@ MainWin::MainWin()
             triggers->corrFile.setToolTip(text.toLower()); });
     toggles->enableCorr.setRemake([=]() {
             toggles->enableCorr.setEnabled(gSession->hasCorrFile()); });
+
+    remakeAll();
 }
 
 MainWin::~MainWin()
@@ -115,8 +119,6 @@ void MainWin::updateAbilities()
     bool hasFile = gSession->dataset().countFiles();
     bool hasPeak = gSession->peaks().count();
     bool hasBase = gSession->baseline().ranges().count();
-    toggles->enableCorr.programaticallySetValue(gSession->corrset().isEnabled());
-    triggers->removeFile.setEnabled(hasFile);
     triggers->removePeak.setEnabled(hasPeak);
     triggers->clearBackground.setEnabled(hasBase);
     triggers->exportDfgram.setEnabled(hasFile);
