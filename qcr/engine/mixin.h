@@ -3,7 +3,7 @@
 //  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/engine/mixin.h
-//! @brief     Defines classes QcrSettable, QcrModal, QcrModelessDialog
+//! @brief     Defines classes QcrMixin, QcrRoot, QcrSettable, QcrModal, QcrModelessDialog
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
