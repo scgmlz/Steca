@@ -46,8 +46,11 @@ public:
 class QcrLineDisplay : public QLineEdit, public QcrMixin {
 public:
     QcrLineDisplay() = delete;
-    QcrLineDisplay(const QString& name);
+    QcrLineDisplay(const QString& name, std::function<QString()> freshText);
     QcrLineDisplay(const QString& name, int ndigits, bool withDot);
+private:
+    void remake() final { setText(freshText_()); }
+    std::function<QString()> freshText_;
 };
 
 #endif // VIEWS_H

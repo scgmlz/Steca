@@ -23,14 +23,15 @@ QcrIcon::QcrIcon(const QString& fileName)
     setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
 }
 
-QcrLineDisplay::QcrLineDisplay(const QString& name)
+QcrLineDisplay::QcrLineDisplay(const QString& name, std::function<QString()> freshText)
     : QcrMixin {*this, name}
+    , freshText_ {freshText}
 {
     setReadOnly(true);
 }
 
 QcrLineDisplay::QcrLineDisplay(const QString& name, int ndigits, bool withDot)
-    : QcrLineDisplay {name}
+    : QcrLineDisplay {name, []()->QString{return "???";}}
 {
     strOp::setWidth(this, ndigits, withDot);
 }
