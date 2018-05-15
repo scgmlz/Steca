@@ -28,11 +28,6 @@ QcrMixin::QcrMixin(QObject& object, const QString& name)
     object_.setObjectName(name);
 }
 
-QcrMixin::~QcrMixin()
-{
-    gConsole->forget(name());
-}
-
 //  ***********************************************************************************************
 //! @class QcrRoot
 
@@ -57,6 +52,11 @@ void QcrRoot::fullRemake()
 QcrSettable::QcrSettable(QObject& object, const QString& name)
     : QcrMixin {object, gConsole->learn(name, this)}
 {}
+
+QcrSettable::~QcrSettable()
+{
+    gConsole->forget(name());
+}
 
 void QcrSettable::doLog(bool softwareCalled, const QString& msg)
 {

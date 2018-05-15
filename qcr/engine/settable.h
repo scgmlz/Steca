@@ -30,7 +30,6 @@ protected:
     QcrMixin() = delete;
     QcrMixin(const QcrMixin&) = delete;
     QcrMixin(QObject& object, const QString& name);
-    ~QcrMixin();
 private:
     QObject& object_;
 };
@@ -49,6 +48,7 @@ public:
     virtual void executeConsoleCommand(const QString&) = 0;
 protected:
     QcrSettable(QObject& object, const QString& name);
+    ~QcrSettable();
     void doLog(bool softwareCalled, const QString& msg);
 };
 

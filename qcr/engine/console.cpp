@@ -73,9 +73,6 @@ void CommandRegistry::forget(const QString& name)
     if (it==widgets_.end())
         qFatal("Cannot deregister, there is no entry '%s' in the widget registry '%s'",
                name.toLatin1().constData(), name_.toLatin1().constData());
-    else
-        qDebug("Deregister entry '%s' from the widget registry '%s'",
-               name.toLatin1().constData(), name_.toLatin1().constData());
     widgets_.erase(it);
 }
 
