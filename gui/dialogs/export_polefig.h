@@ -36,7 +36,7 @@ private:
     void saveCurrent();
     void saveAll(bool oneFile);
 
-    void onCommand(const QString&) override {}
+    void executeConsoleCommand(const QString&) override {}
 };
 
 #endif // EXPORT_POLEFIG_H

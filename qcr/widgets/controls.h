@@ -42,7 +42,7 @@ public:
     QcrTrigger(const QString& name, const QString& text, const QString& iconFile="");
     QcrTrigger(const QString& name, const QString& text, const QString& iconFile,
                const QKeySequence& shortcut);
-    void onCommand(const QString&) override;
+    void executeConsoleCommand(const QString&) override;
 };
 
 //! Toggle, for use in buttons or menu entries, that can also be switched by console command.
@@ -80,7 +80,7 @@ public:
                bool withDot, int min = INT_MIN, int max = INT_MAX, const QString& tooltip="");
     QcrSpinBox(const QString& name, SingleValueCell<int>* cell, int ndigits,
                bool withDot, int min = INT_MIN, int max = INT_MAX, const QString& tooltip="");
-    void onCommand(const QString&) override;
+    void executeConsoleCommand(const QString&) override;
     int getValue() const final { return value(); }
 signals:
     void valueReleased(int); //! Improving over valueChanged, do not signal intermediate states
@@ -102,7 +102,7 @@ public:
                      double min = LLONG_MIN, double max = LLONG_MAX);
     QcrDoubleSpinBox(const QString& name, SingleValueCell<double>* cell, int ndigits,
                      double min = LLONG_MIN, double max = LLONG_MAX);
-    void onCommand(const QString&) override;
+    void executeConsoleCommand(const QString&) override;
     double getValue() const final { return value(); }
 signals:
     void valueReleased(double); //! Improving over valueChanged, do not signal intermediate states
@@ -191,7 +191,7 @@ public:
     QcrDialog(QWidget* parent, const QString& caption);
     ~QcrDialog();
     int exec() override;
-    void onCommand(const QString&) override;
+    void executeConsoleCommand(const QString&) override;
 };
 
 //! File dialog, for modal use, with console commands to select files and to close the dialog.
@@ -201,7 +201,7 @@ public:
         QWidget* parent, const QString& caption, const QString& directory, const QString& filter);
     ~QcrFileDialog();
     int exec() override;
-    void onCommand(const QString&) override;
+    void executeConsoleCommand(const QString&) override;
 };
 
 #endif // CONTROLS_H

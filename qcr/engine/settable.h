@@ -21,7 +21,7 @@
 //! Mix-in for control widgets that can be changed by a console command.
 class CSettable {
 public:
-    virtual void onCommand(const QString&) = 0;
+    virtual void executeConsoleCommand(const QString&) = 0;
     const QString& name() const { return name_; }
 protected:
     CSettable() = delete;
@@ -45,7 +45,7 @@ protected:
 //! A modeless (= persistent spawned popup) dialog with support for capture&replay.
 class CModelessDialog : protected QDialog, protected CSettable {
 public:
-    void onCommand(const QString&) final;
+    void executeConsoleCommand(const QString&) final;
 protected:
     CModelessDialog(QWidget* parent, const QString& name);
 private:

@@ -25,7 +25,7 @@ TableModel::TableModel(const QString& name)
     : CSettable(name)
 {}
 
-void TableModel::onCommand(const QString& arg)
+void TableModel::executeConsoleCommand(const QString& arg)
 {
     QString cmd, cmdarg;
     strOp::splitOnce(arg, cmd, cmdarg);
@@ -68,7 +68,7 @@ void TableModel::onClicked(const QModelIndex& cell)
 CheckTableModel::CheckTableModel(const QString& _name) : TableModel(_name)
 {}
 
-void CheckTableModel::onCommand(const QString& arg)
+void CheckTableModel::executeConsoleCommand(const QString& arg)
 {
     QStringList args = arg.split(' ');
     if        (args[0]=="activate") {
@@ -80,7 +80,7 @@ void CheckTableModel::onCommand(const QString& arg)
             throw QcrException("Missing argument to command 'deactivate'");
         activateAndLog(false, strOp::to_i(args[1]), false);
     } else
-        TableModel::onCommand(arg);
+        TableModel::executeConsoleCommand(arg);
 }
 
 //! Refreshes the check box column.

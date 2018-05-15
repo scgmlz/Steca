@@ -26,7 +26,7 @@ public:
     QcrControl(const QString& name, SingleValueCell<T>* cell = nullptr);
     void programaticallySetValue(T val);
     virtual T getValue() const = 0;
-    virtual void onCommand(const QString& arg);
+    virtual void executeConsoleCommand(const QString& arg);
     Cell* cell() { return cell_; }
 protected:
     void init();
@@ -59,7 +59,7 @@ void QcrControl<T>::programaticallySetValue(T val)
 }
 
 template<class T>
-void QcrControl<T>::onCommand(const QString& arg)
+void QcrControl<T>::executeConsoleCommand(const QString& arg)
 {
     programaticallySetValue(strOp::from_s<T>(arg));
 }

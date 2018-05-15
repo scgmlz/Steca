@@ -67,7 +67,7 @@ QcrTrigger::QcrTrigger(
     setShortcut(shortcut);
 }
 
-void QcrTrigger::onCommand(const QString& arg)
+void QcrTrigger::executeConsoleCommand(const QString& arg)
 {
     if (arg!="")
         throw QcrException("Found unexpected argument to trigger command");
@@ -184,7 +184,7 @@ void QcrSpinBox::reportChange()
     emit valueReleased(val);
 }
 
-void QcrSpinBox::onCommand(const QString& arg)
+void QcrSpinBox::executeConsoleCommand(const QString& arg)
 {
     int val = strOp::to_i(arg);
     programaticallySetValue(val);
@@ -233,7 +233,7 @@ void QcrDoubleSpinBox::reportChange()
     emit valueReleased(val);
 }
 
-void QcrDoubleSpinBox::onCommand(const QString& arg)
+void QcrDoubleSpinBox::executeConsoleCommand(const QString& arg)
 {
     double val = strOp::to_d(arg);
     programaticallySetValue(val);
@@ -374,7 +374,7 @@ int QcrDialog::exec()
         return QDialog::exec();
 }
 
-void QcrDialog::onCommand(const QString& arg)
+void QcrDialog::executeConsoleCommand(const QString& arg)
 {
     if (arg=="")
         throw QcrException("Empty argument in Dialog command");
@@ -410,7 +410,7 @@ int QcrFileDialog::exec()
         return QDialog::exec();
 }
 
-void QcrFileDialog::onCommand(const QString& arg)
+void QcrFileDialog::executeConsoleCommand(const QString& arg)
 {
     if (arg=="")
         throw QcrException("Empty argument in FileDialog command");
