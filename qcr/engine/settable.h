@@ -18,6 +18,8 @@
 #include "qcr/engine/debug.h"
 #include <QDialog>
 
+extern class QcrMixin* gRoot;
+
 //! Mix-in for QObject, enforcing a name, and providing recompute functionality.
 class QcrMixin {
 public:
