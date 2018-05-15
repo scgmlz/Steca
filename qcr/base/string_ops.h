@@ -16,6 +16,7 @@
 #define STRING_OPS_H
 
 #include <QtGlobal>
+#include <QWidget>
 
 //! String operations
 
@@ -34,6 +35,8 @@ QString to_s(double);
 QString to_s(QString);
 
 void splitOnce(const QString&, QString&, QString&);
+
+void setWidth(QWidget* w, int ndigits, bool withDot);
 
 } // namespace strOp
 

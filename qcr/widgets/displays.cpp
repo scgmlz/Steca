@@ -13,16 +13,8 @@
 //  ***********************************************************************************************
 
 #include "displays.h"
+#include "qcr/base/string_ops.h"
 #include <QIcon>
-
-void widgetUtils::setWidth(QWidget* w, int ndigits, bool withDot)
-{
-    int width = ndigits;
-#ifdef Q_OS_WIN
-    width += 1 + (withDot?1:0);
-#endif
-    w->setFixedWidth(width * w->fontMetrics().width('m'));
-}
 
 XIcon::XIcon(const QString& fileName)
 {
@@ -38,5 +30,5 @@ XLineDisplay::XLineDisplay()
 XLineDisplay::XLineDisplay(int ndigits, bool withDot)
     : XLineDisplay()
 {
-    widgetUtils::setWidth(this, ndigits, withDot);
+    strOp::setWidth(this, ndigits, withDot);
 }

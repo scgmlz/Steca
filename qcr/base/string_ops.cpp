@@ -89,4 +89,13 @@ void splitOnce(const QString& in, QString& part0, QString& part1)
     }
 }
 
+void setWidth(QWidget* w, int ndigits, bool withDot)
+{
+    int width = ndigits;
+#ifdef Q_OS_WIN
+    width += 1 + (withDot?1:0);
+#endif
+    w->setFixedWidth(width * w->fontMetrics().width('m'));
+}
+
 } // namespace strOp

@@ -152,7 +152,7 @@ QcrSpinBox::QcrSpinBox(const QString& _name, SingleValueCell<int>* cell, int ndi
                        bool withDot, int min, int max, const QString& tooltip)
     : QcrControl<int> {*this, _name, cell}
 {
-    widgetUtils::setWidth(this, 2+ndigits, withDot);
+    strOp::setWidth(this, 2+ndigits, withDot);
     ASSERT(min<=max);
     setMinimum(min);
     setMaximum(max);
@@ -202,7 +202,7 @@ QcrDoubleSpinBox::QcrDoubleSpinBox(
     const QString& _name, SingleValueCell<double>* cell, int ndigits, double min, double max)
     : QcrControl<double> {*this, _name, cell}
 {
-    widgetUtils::setWidth(this, 2+ndigits, true);
+    strOp::setWidth(this, 2+ndigits, true);
     setDecimals(ndigits);
     ASSERT(min<=max);
     setMinimum(min);
