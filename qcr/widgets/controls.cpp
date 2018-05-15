@@ -328,11 +328,9 @@ QcrLineEdit::QcrLineEdit(const QString& _name, const QString& val)
     // The following works, but has the drawback that a user action is logged not only as such,
     // but also in a second line as if there were an indirect call.
     connect(this, _SLOT_(QLineEdit,textEdited,const QString&),
-            [this](const QString& val)->void {
-                onChangedValue(hasFocus(), val); });
+            [this](const QString& val)->void { onChangedValue(hasFocus(), val); });
     connect(this, _SLOT_(QLineEdit,textChanged,const QString&),
-            [this](const QString& val)->void {
-                onChangedValue(hasFocus(), val); });
+            [this](const QString& val)->void { onChangedValue(hasFocus(), val); });
     programaticallySetValue(val);
 }
 
