@@ -102,10 +102,10 @@ int FilesView::sizeHintForColumn(int col) const
 //! @class SubframeFiles
 
 SubframeFiles::SubframeFiles()
+    : QcrDockWidget("files")
 {
     setFeatures(DockWidgetMovable);
     setWindowTitle("Files");
-    setObjectName("dock-files");
 
     // layout
     setWidget(new QWidget);

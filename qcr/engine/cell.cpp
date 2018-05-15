@@ -40,12 +40,15 @@ Cell::stamp_t Cell::update()
 {
     stamp_t t_new = timestamp_;
     qDebug() << "Updating " << name() << " t=" << timestamp_;
+    recompute();
+    /*
     for (Cell* src: sources_)
         t_new = std::max(t_new, src->update());
     if (t_new>timestamp_) {
         recompute();
         timestamp_ = t_new;
     }
+    */
     qDebug() << " Updated " << name() << " t=" << timestamp_;
     return timestamp_;
 }

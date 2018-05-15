@@ -15,10 +15,10 @@
 #ifndef SUBFRAME_METADATA_H
 #define SUBFRAME_METADATA_H
 
-#include <QDockWidget>
+#include "qcr/widgets/views.h"
 
 //! Part of the main window that shows the metadata of the selected dataset
-class SubframeMetadata : public QDockWidget {
+class SubframeMetadata : public QcrDockWidget {
 public:
     SubframeMetadata();
 };

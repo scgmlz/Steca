@@ -103,9 +103,9 @@ int MetabigtableView::sizeHintForColumn(int col) const
 //! @class SubframeMetadata
 
 SubframeMetadata::SubframeMetadata()
+    : QcrDockWidget("metadata")
 {
     setFeatures(DockWidgetMovable);
     setWindowTitle("Metadata");
-    setObjectName("dock-metadata");
     setWidget(new MetabigtableView());
 }

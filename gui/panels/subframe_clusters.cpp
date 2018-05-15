@@ -183,9 +183,9 @@ int ActiveClustersView::sizeHintForColumn(int col) const
 //! @class SubframeClusters
 
 SubframeClusters::SubframeClusters()
+    : QcrDockWidget("measurements")
 {
     setFeatures(DockWidgetMovable);
     setWindowTitle("Measurements");
-    setObjectName("dock-measurements");
     setWidget(new ActiveClustersView()); // list of Cluster|s
 }

@@ -17,6 +17,7 @@
 
 #include "qcr/engine/cell.h"
 #include <QMainWindow>
+#include <QDockWidget>
 
 class WidgetCell : public Cell {
 public:
@@ -28,6 +29,8 @@ private:
 
 class QcrMixin {
 public:
+    QcrMixin() = delete;
+    QcrMixin(const QcrMixin&) = delete;
     QcrMixin(QObject* owner, const QString& name) : owner_(owner), defaultCell {this, name} {}
     void remake();
     Cell* cell() { return cell_; }
@@ -45,6 +48,11 @@ public:
 class QcrMainWindow : public QMainWindow, public QcrMixin {
 public:
     QcrMainWindow() : QcrMixin {this, "mainwindow"} {}
+};
+
+class QcrDockWidget : public QDockWidget, public QcrMixin {
+public:
+    QcrDockWidget(const QString& name) : QcrMixin {this, name} { setObjectName(name); }
 };
 
 #endif // VIEWS_H

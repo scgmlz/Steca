@@ -22,8 +22,14 @@ void WidgetCell::recompute()
 
 void QcrMixin::remake()
 {
-    qDebug() << "REMAKE " << cell()->name();
-    for (QObject* o: owner_->children())
+    static int indent = 0;
+    qDebug() << QString(indent, ' ') + "REMAKE " << cell()->name() << " (" << owner_->children().size() << " children)";
+    ++indent;
+    for (QObject* o: owner_->children()) {
         if (QcrMixin* m = dynamic_cast<QcrMixin*>(o))
             m->remake();
+        else
+            qDebug() << QString(indent, ' ') + "cannot remake " << o->objectName();
+    }
+    -- indent;
 }

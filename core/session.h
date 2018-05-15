@@ -114,8 +114,6 @@ public:
     SingleValueCell<bool> intenScaledAvg {"intenScaledAvg", true}; // if not, summed
     SingleValueCell<double> intenScale {"intenScale", 1};
 
-    Cell rootCell {"root"};
-
 private:
     // with reference accessor methods:
     Dataset dataset_;

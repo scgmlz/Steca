@@ -48,7 +48,7 @@ const QString dataFormats {"Data files (*.dat *.yaml *.mar*);;All files (*.*)"};
 MainWin::MainWin()
 {
     gGui = this;
-    gRoot->addSource(this->cell());
+    gRoot = cell();
 
     triggers = new Triggers;
     toggles = new Toggles;
@@ -77,24 +77,18 @@ MainWin::~MainWin()
     delete toggles;
     // whereas all the following only reduces the number of perfectly inconsequential leaks:
     delete menus_;
-    delete mainframe_;
-    delete frameDfgram_;
-    delete frameSetup_;
-    delete dockMetadata_;
-    delete dockClusters_;
-    delete dockFiles_;
     gGui = nullptr;
 }
 
 void MainWin::initLayout()
 {
-    addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_ = new SubframeFiles()));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_    = new SubframeFiles()));
     addDockWidget(Qt::LeftDockWidgetArea, (dockClusters_ = new SubframeClusters()));
     addDockWidget(Qt::LeftDockWidgetArea, (dockMetadata_ = new SubframeMetadata()));
 
     splTop_.setChildrenCollapsible(false);
     splTop_.addWidget(frameSetup_ = new SubframeSetup());
-    splTop_.addWidget(mainframe_ = new Mainframe());
+    splTop_.addWidget(mainframe_  = new Mainframe());
     splTop_.setStretchFactor(1, 1);
 
     splMain_.setChildrenCollapsible(false);
