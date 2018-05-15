@@ -148,10 +148,6 @@ ImageTab::ImageTab(const QString& name)
     , btnScale_ {&gGui->toggles->fixedIntenImage}
     , btnOverlay_ {&gGui->toggles->crosshair}
 {
-    // internal connections
-    connect(&gGui->toggles->enableCorr, &QAction::toggled, [this](bool /*unused*/) { render(); });
-    connect(&gGui->toggles->showBins, &QAction::toggled, [this](bool /*unused*/) { render(); });
-
     // layout
     box1_.addWidget(&btnScale_, Qt::AlignLeft);
     box1_.addWidget(&btnOverlay_, Qt::AlignLeft);
@@ -160,6 +156,8 @@ ImageTab::ImageTab(const QString& name)
     box_.addLayout(&controls_);
     box_.addWidget(&imageView_);
     setLayout(&box_);
+
+    setRemake([this]() {render();});
 }
 
 void ImageTab::render()

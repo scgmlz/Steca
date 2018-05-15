@@ -145,6 +145,7 @@ void TableView::gotoCurrent(const QModelIndex& current)
         return; // the following would prevent execution of "onClicked"
     model_->setHighlight(current.row());
     updateScroll();
+    remakeAll(); // TODO ????????????????
 }
 
 //! Highlights one cluster. Called either from GUI > currentChanged, or through Console command.

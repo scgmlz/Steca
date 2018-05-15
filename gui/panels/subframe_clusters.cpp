@@ -51,6 +51,7 @@ private:
 
 void ActiveClustersModel::onMetaSelection()
 {
+    // TODO consider caching
     beginResetModel(); // needed because columnCount may have shrinked
     metaInfoNums_.clear();
     for_i (Metadata::size())
