@@ -15,7 +15,7 @@
 #ifndef SINGLE_VALUE_H
 #define SINGLE_VALUE_H
 
-#include "qcr/engine/settable.h"
+#include "qcr/engine/mixin.h"
 #include "qcr/engine/cell.h"
 #include "qcr/base/string_ops.h"
 

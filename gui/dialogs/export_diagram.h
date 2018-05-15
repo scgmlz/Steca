@@ -15,7 +15,7 @@
 #ifndef EXPORT_DIAGRAM_H
 #define EXPORT_DIAGRAM_H
 
-#include "qcr/engine/settable.h"
+#include "qcr/engine/mixin.h"
 
 //! The modal dialog for the data shown in the diagram
 

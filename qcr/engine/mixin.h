@@ -2,7 +2,7 @@
 //
 //  libqcr: capture and replay Qt widget actions
 //
-//! @file      qcr/engine/settable.h
+//! @file      qcr/engine/mixin.h
 //! @brief     Defines classes QcrSettable, QcrModal, QcrModelessDialog
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef SETTABLE_H
-#define SETTABLE_H
+#ifndef MIXIN_H
+#define MIXIN_H
 
 #include "qcr/base/debug.h"
 #include <QDialog>
@@ -71,4 +71,4 @@ private:
     void closeEvent(QCloseEvent*);
 };
 
-#endif // SETTABLE_H
+#endif // MIXIN_H

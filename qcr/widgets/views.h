@@ -15,7 +15,7 @@
 #ifndef VIEWS_H
 #define VIEWS_H
 
-#include "qcr/engine/settable.h"
+#include "qcr/engine/mixin.h"
 #include <QMainWindow>
 #include <QDockWidget>
 

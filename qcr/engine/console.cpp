@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "console.h"
-#include "qcr/engine/settable.h"
+#include "qcr/engine/mixin.h"
 #include "qcr/base/qcrexception.h"
 #include "qcr/base/string_ops.h"
 #include <QDebug>

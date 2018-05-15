@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "cell.h"
-#include "qcr/engine/settable.h"
+#include "qcr/engine/mixin.h"
 #include <QtDebug>
 
 void remakeAll()
