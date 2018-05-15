@@ -15,7 +15,7 @@
 #ifndef CELL_H
 #define CELL_H
 
-#include "qcr/engine/debug.h"
+#include "qcr/base/debug.h"
 #include <QObject>
 #include <functional>
 #include <set>

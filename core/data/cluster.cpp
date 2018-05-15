@@ -14,7 +14,7 @@
 
 #include "cluster.h"
 #include "core/session.h"
-#include "qcr/engine/debug.h"
+#include "qcr/base/debug.h"
 #include <qmath.h>
 
 //  ***********************************************************************************************

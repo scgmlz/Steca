@@ -15,7 +15,7 @@
 #include "core/session.h"
 #include "core/def/comparators.h"
 #include "core/def/settings.h"
-#include "qcr/engine/debug.h"
+#include "qcr/base/debug.h"
 #include <iostream> // for debugging
 
 #define RET_COMPARE_COMPARABLE(o)            \

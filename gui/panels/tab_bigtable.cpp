@@ -19,7 +19,7 @@
 #include "gui/view/bigtable.h"
 #include "gui/mainwin.h"
 #include "gui/state.h"
-#include "qcr/engine/debug.h"
+#include "qcr/base/debug.h"
 #include <QScrollArea>
 #include <QThread> // for sleep for debugging
 

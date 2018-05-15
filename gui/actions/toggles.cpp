@@ -15,7 +15,7 @@
 #include "toggles.h"
 #include "core/session.h"
 #include "gui/mainwin.h"
-#include "qcr/engine/debug.h"
+#include "qcr/base/debug.h"
 #include <QDockWidget>
 #include <QStatusBar>
 

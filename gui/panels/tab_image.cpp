@@ -19,7 +19,7 @@
 #include "core/raw/angle_map.h"
 #include "gui/actions/toggles.h"
 #include "gui/mainwin.h"
-#include "qcr/engine/debug.h"
+#include "qcr/base/debug.h"
 #include <qmath.h>
 
 namespace {

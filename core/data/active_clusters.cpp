@@ -17,7 +17,7 @@
 #include "core/typ/async.h"
 #include "core/calc/lens.h"
 #include "core/data/cluster.h"
-#include "qcr/engine/debug.h"
+#include "qcr/base/debug.h"
 
 ActiveClusters::ActiveClusters()
 {

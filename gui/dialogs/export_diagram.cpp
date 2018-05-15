@@ -18,7 +18,7 @@
 #include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/mainwin.h"
 #include "gui/state.h"
-#include "qcr/engine/debug.h"
+#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class ExportDiagram

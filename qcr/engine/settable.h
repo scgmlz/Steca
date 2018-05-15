@@ -15,7 +15,7 @@
 #ifndef SETTABLE_H
 #define SETTABLE_H
 
-#include "qcr/engine/debug.h"
+#include "qcr/base/debug.h"
 #include <QDialog>
 
 extern class QcrRoot* gRoot;

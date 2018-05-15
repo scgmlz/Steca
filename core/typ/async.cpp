@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/typ/async.h"
-#include "qcr/engine/debug.h"
+#include "qcr/base/debug.h"
 #include <QtWidgets/QProgressBar>
 #include <QtWidgets/QApplication>
 

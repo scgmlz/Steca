@@ -14,7 +14,7 @@
 
 #include "core/session.h"
 #include "core/def/idiomatic_for.h"
-#include "qcr/engine/debug.h"
+#include "qcr/base/debug.h"
 
 Peak::Peak(const QString& functionName) : peakFunction_(nullptr)
 {

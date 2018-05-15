@@ -17,7 +17,7 @@
 #error needs exception handling
 #endif
 
-#include "qcr/engine/debug.h"
+#include "qcr/base/debug.h"
 #include "core/session.h"
 #include "core/fit/peak_functions.h"
 #include <QJsonDocument>

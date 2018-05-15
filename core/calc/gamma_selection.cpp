@@ -14,7 +14,7 @@
 
 #include "core/session.h"
 #include "core/data/cluster.h"
-#include "qcr/engine/debug.h"
+#include "qcr/base/debug.h"
 
 GammaSelection::GammaSelection()
 {

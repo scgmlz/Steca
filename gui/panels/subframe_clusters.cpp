@@ -16,7 +16,7 @@
 #include "core/session.h"
 #include "core/def/idiomatic_for.h"
 #include "qcr/widgets/model_view.h"
-#include "qcr/engine/debug.h"
+#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class ActiveClustersModel (local scope)

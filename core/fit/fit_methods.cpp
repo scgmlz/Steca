@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "fit_methods.h"
-#include "qcr/engine/debug.h"
+#include "qcr/base/debug.h"
 #include "core/def/idiomatic_for.h"
 #include "core/typ/curve.h"
 #include "LevMar/LM/levmar.h"

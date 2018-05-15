@@ -31,7 +31,7 @@
 #include "gui/panels/subframe_metadata.h"
 #include "gui/panels/subframe_setup.h"
 #include "gui/dialogs/file_dialog.h"
-#include "qcr/engine/debug.h"
+#include "qcr/base/debug.h"
 #include <QSplitter>
 #include <QStatusBar>
 #include <QStringBuilder> // for ".." % ..

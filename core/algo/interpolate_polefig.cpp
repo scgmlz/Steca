@@ -17,7 +17,7 @@
 #include "core/def/idiomatic_for.h"
 #include "core/data/peak_info.h"
 #include "core/typ/async.h"
-#include "qcr/engine/debug.h"
+#include "qcr/base/debug.h"
 #include <qmath.h>
 
 //  ***********************************************************************************************

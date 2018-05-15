@@ -2,7 +2,7 @@
 //
 //  libqcr: capture and replay Qt widget actions
 //
-//! @file      qcr/engine/debug.h
+//! @file      qcr/base/debug.h
 //! @brief     Defines preprocessor macros and functions for debugging
 //!
 //! @homepage  https://github.com/scgmlz/Steca

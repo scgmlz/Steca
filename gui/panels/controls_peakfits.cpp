@@ -19,7 +19,7 @@
 #include "gui/mainwin.h"
 #include "gui/state.h"
 #include "gui/actions/triggers.h"
-#include "qcr/engine/debug.h"
+#include "qcr/base/debug.h"
 #define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 #include <QStackedWidget>
 

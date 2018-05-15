@@ -15,7 +15,7 @@
 #include "core/session.h"
 #include "core/data/cluster.h"
 #include "core/loaders/loaders.h"
-#include "qcr/engine/debug.h"
+#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class Datafile
