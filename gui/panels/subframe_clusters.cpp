@@ -47,12 +47,16 @@ private:
     // update display items only if they have changed. Whether this is really
     // useful is to be determined. The cache for the activation state is gone.
     std::vector<int> metaInfoNums_; //!< indices of metadata items selected for display
+    int columnCountCached_ {-1};
 };
 
 void ActiveClustersModel::onMetaSelection()
 {
-    // TODO consider caching
-    beginResetModel(); // needed because columnCount may have shrinked
+    if (columnCountCached_!=-1 && columnCount()==columnCountCached_) {
+        TableModel::refreshModel();
+        return;
+    }
+    beginResetModel();
     metaInfoNums_.clear();
     for_i (Metadata::size())
         if (gSession->metaSelected(i))
@@ -60,6 +64,7 @@ void ActiveClustersModel::onMetaSelection()
     emit dataChanged(createIndex(0,COL_ATTRS), createIndex(rowCount(),columnCount()));
     emit headerDataChanged(Qt::Horizontal, COL_ATTRS, columnCount());
     endResetModel();
+    columnCountCached_ = columnCount();
 }
 
 QVariant ActiveClustersModel::data(const QModelIndex& index, int role) const
