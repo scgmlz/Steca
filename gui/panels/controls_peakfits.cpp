@@ -15,7 +15,7 @@
 #include "controls_peakfits.h"
 #include "core/session.h"
 #include "qcr/widgets/views.h"
-#include "qcr/widgets/model_view.h"
+#include "qcr/widgets/tables.h"
 #include "gui/mainwin.h"
 #include "gui/state.h"
 #include "gui/actions/triggers.h"

@@ -2,7 +2,7 @@
 //
 //  libqcr: capture and replay Qt widget actions
 //
-//! @file      qcr/widgets/model_view.h
+//! @file      qcr/widgets/tables.h
 //! @brief     Defines classes TableModel and TableView
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -27,7 +27,6 @@ public:
     TableModel(const TableModel&) = delete;
 
     void refreshModel(); // within rectangle plus one row
-    void resetModel(); // complete reset, including cursor position
     virtual void onClicked(const QModelIndex& cell);
 
     int columnCount(const QModelIndex& /*unused*/) const { return columnCount(); }
@@ -70,7 +69,6 @@ public:
 
     virtual void executeConsoleCommand(const QString&);
     void onData();
-    void onHighlight();
 protected:
     int mWidth() const;
     QString name_;
@@ -86,7 +84,6 @@ class CheckTableView : public TableView {
 public:
     CheckTableView(TableModel* model) : TableView(model) {}
     void executeConsoleCommand(const QString&) override;
-    void onActivated();
 private:
     CheckTableModel* model() { return static_cast<CheckTableModel*>(model_); }
 };

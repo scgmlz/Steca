@@ -2,7 +2,7 @@
 //
 //  libqcr: capture and replay Qt widget actions
 //
-//! @file      qcr/widgets/model_view.cpp
+//! @file      qcr/widgets/tables.cpp
 //! @brief     Implements class TableView
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "model_view.h"
+#include "tables.h"
 #include "qcr/engine/cell.h" // remakeAll
 #include "qcr/engine/console.h"
 #include "qcr/base/qcrexception.h"
@@ -28,18 +28,16 @@ TableModel::TableModel(const QString& name)
 
 void TableModel::refreshModel()
 {
-    emit dataChanged(createIndex(0,0),createIndex(rowCount(),columnCount()-1));
-}
-
-//! Redraws the entire table, and sets currentIndex to (0,0) [?] which may be unwanted
-
-//! Prefer this over dataChanged if and only rowCount may have shrinked,
-//! and be aware that it resets the currentIndex so that arrow keys will start from row 0.
-
-void TableModel::resetModel()
-{
-    beginResetModel();
-    endResetModel();
+    static int rowCountCached = -1;
+    if (rowCountCached==-1 || rowCount()<rowCountCached) {
+        // Redraws the entire table, and sets currentIndex to (0,0) [?].
+        // Resets the currentIndex so that arrow keys will start from row 0.
+        beginResetModel();
+        endResetModel();
+    } else {
+        emit dataChanged(createIndex(0,0),createIndex(rowCount(),columnCount()-1));
+    }
+    rowCountCached = rowCount();
 }
 
 void TableModel::onClicked(const QModelIndex& cell)
@@ -64,7 +62,7 @@ void TableModel::setHighlightedCell(const QModelIndex& cell)
 CheckTableModel::CheckTableModel(const QString& _name) : TableModel(_name)
 {}
 
-//! Refreshes the check box column.
+//! Refreshes the check box column. TODO currently unused
 void CheckTableModel::onActivated()
 {
     emit dataChanged(createIndex(0,1),createIndex(rowCount()-1,1));
@@ -165,15 +163,9 @@ void TableView::updateScroll()
         scrollTo(model_->index(row,0));
 }
 
-void TableView::onHighlight()
-{
-    model_->refreshModel();
-    updateScroll();
-}
-
 void TableView::onData()
 {
-    model_->resetModel();
+    model_->refreshModel();
     updateScroll();
 }
 
@@ -194,10 +186,4 @@ void CheckTableView::executeConsoleCommand(const QString& arg)
         model()->activateAndLog(false, strOp::to_i(args[1]), false);
     } else
         TableView::executeConsoleCommand(arg);
-}
-
-void CheckTableView::onActivated()
-{
-    model()->onActivated();
-    updateScroll();
 }

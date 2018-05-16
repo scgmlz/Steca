@@ -98,7 +98,7 @@ void Dfgram::onNormChanged()
     plot_->renderAll();
 }
 
-void Dfgram::onHighlight()
+void Dfgram::onHighlight() // TODO currently unused
 {
     actZoom_.programaticallySetValue(false);
     plot_->renderAll();
