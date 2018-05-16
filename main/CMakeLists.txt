@@ -13,7 +13,7 @@ target_link_libraries (Steca gui)
 
 
 ##### CPACK
-set(CPACK_PACKAGE_NAME "Steca")
+set(CPACK_PACKAGE_NAME "StecaPackage")
 set(CPACK_GENERATOR "IFW")
 set(STECA_VERSION "1.0.0")
 set(CPACK_PACKAGE_DESCRIPTION "Steca: Stress and texture calculator for neutron and x-ray materials diffraction.")
@@ -21,12 +21,15 @@ set(CPACK_PACKAGE_VENDOR "Forschungszentrum Juelich GmbH. Scientific Computing G
 set(CPACK_PACKAGE_VERSION ${STECA_VERSION})
 set(CPACK_PACKAGE_INSTALL_DIRECTORY "${CMAKE_PROJECT_NAME}-${STECA_VERSION}")
 set(CPACK_SOURCE_PACKAGE_FILE_NAME "${CPACK_PACKAGE_NAME}")
-set(CPACK_IFW_PACKAGE_GROUP Steca)
+set(CPACK_IFW_PACKAGE_GROUP "StecaGroup")
+set(CPACK_IFW_PACKAGE_START_MENU_DIRECTORY "AAAStecaStartMenuDir")
+set(CPACK_IFW_TARGET_DIRECTORY @HomeDir@/${CPACK_PACKAGE_INSTALL_DIRECTORY})
+#set(CPACK_PACKAGE_EXECUTABLES 
+#  Steca "prog 1")
 
 set(CMAKE_INSTALL_UCRT_LIBRARIES TRUE)
 include(InstallRequiredSystemLibraries)
-include(CPack)
-include(CPackIFW)
+
 
 #The following code was adapted from "Using windeployqt with CPack":
 #https://hk.saowen.com/a/d1cf90fcfea6d511629fd5a6c8113808721a7f19656677e8a5fab370a8d35cd4
@@ -114,7 +117,11 @@ endfunction()
 
 mark_as_advanced(WINDEPLOYQT_EXECUTABLE)
 #########################################################################################
-
+#First run "install", then run "cpack_add_component" 
 install(TARGETS Steca
+      COMPONENT Steca
   DESTINATION bin)
 windeployqt("Steca" "bin")
+
+include(CPack)
+include(CPackIFW)
