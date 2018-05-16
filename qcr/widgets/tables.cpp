@@ -3,7 +3,7 @@
 //  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/widgets/tables.cpp
-//! @brief     Implements class TableView
+//! @brief     Implements classes TableModel, CheckTableModel and TableView, CheckTableView
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -28,8 +28,7 @@ TableModel::TableModel(const QString& name)
 
 void TableModel::refreshModel()
 {
-    static int rowCountCached = -1;
-    if (rowCountCached==-1 || rowCount()<rowCountCached) {
+    if (rowCountCached_==-1 || rowCount()<rowCountCached_) {
         // Redraws the entire table, and sets currentIndex to (0,0) [?].
         // Resets the currentIndex so that arrow keys will start from row 0.
         beginResetModel();
@@ -37,7 +36,7 @@ void TableModel::refreshModel()
     } else {
         emit dataChanged(createIndex(0,0),createIndex(rowCount(),columnCount()-1));
     }
-    rowCountCached = rowCount();
+    rowCountCached_ = rowCount();
 }
 
 void TableModel::onClicked(const QModelIndex& cell)

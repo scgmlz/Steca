@@ -3,7 +3,7 @@
 //  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/widgets/tables.h
-//! @brief     Defines classes TableModel and TableView
+//! @brief     Defines classes TableModel, CheckTableModel and TableView, CheckTableView
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -42,6 +42,7 @@ protected:
     void setHighlightedCell(const QModelIndex& cell);
 private:
     QString name_;
+    int rowCountCached_ {-1};
 };
 
 //! Pure virtual base class for rectangular table models with rows that can be checked.
