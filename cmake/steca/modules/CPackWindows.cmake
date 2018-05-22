@@ -11,8 +11,8 @@ set(CPACK_GENERATOR IFW)
 # Default Directories for installation and Start Menu
 set(CPACK_IFW_PACKAGE_START_MENU_DIRECTORY "A Steca Istallation with IFW")
 set(CPACK_IFW_TARGET_DIRECTORY "@HomeDir@/${CMAKE_PROJECT_NAME}")
-set(CPACK_IFW_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/main/icons/bee.ico")
-set(CPACK_IFW_PACKAGE_WINDOW_ICON "${CMAKE_SOURCE_DIR}/main/icons/bee.png")
+set(CPACK_IFW_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/main/icons/Steca.ico")
+set(CPACK_IFW_PACKAGE_WINDOW_ICON "${CMAKE_SOURCE_DIR}/main/icons/Steca.png")
 
 # If not set, all components will be merged in the group
 set(CPACK_COMPONENTS_GROUPING IGNORE)
