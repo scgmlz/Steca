@@ -41,8 +41,7 @@ bool couldBeCaress(const QFileInfo& info) {
 
 // Yaml file format
 bool couldBeYaml(const QFileInfo& info) {
-    static QByteArray const header("instrument:"); // this will do for now.
-    return header == peek(0, header.size(), info);
+    return info.suffix().toLower() == "yaml";
 }
 
 // Mar file format
