@@ -25,7 +25,7 @@ before_build:
 - echo "Steca before_build"
 - echo %PATH%
 - C:\cygwin\bin\wget -q http://apps.jcns.fz-juelich.de/doku/sc/_media/steca2:libyamlwin64.zip -O %temp%\local_x64.zip
-- 7z x %temp%\local_x64.zip -o C:\opt > null
+- 7z x %temp%\local_x64.zip -oC:\opt > null
 
 build_script:
 - git submodule update --init --recursive
