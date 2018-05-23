@@ -1,6 +1,7 @@
 get_filename_component(lib ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
 include_directories (
+  ${LIBYAML_INCLUDE_DIR}
   ${CMAKE_HOME_DIRECTORY}
   ${CMAKE_HOME_DIRECTORY}/3rdparty
 )
