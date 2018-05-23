@@ -147,6 +147,7 @@ private:
 class QcrRadioButton : public QRadioButton, public QcrControl<bool> {
 public:
     QcrRadioButton(const QString& name, const QString& text);
+    QcrRadioButton(const QString& name, const QString& text, SingleValueCell<bool>* cell);
     bool getValue() const final { return isChecked(); }
 private:
     void doSetValue(bool val) final { setChecked(val); }

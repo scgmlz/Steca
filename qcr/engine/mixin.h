@@ -31,7 +31,7 @@ protected:
     QcrMixin() = delete;
     QcrMixin(const QcrMixin&) = delete;
     QcrMixin(QObject& object, const QString& name);
-    std::function<void()> remake_ {[](){}};
+    std::function<void()> remake_ {[this](){ qDebug() << "Empty QcrMixin::remake " << name();}};
 private:
     QObject& object_;
 };

@@ -24,7 +24,7 @@
 
 //! A diffractogram display, with associated controls, for use in SubframeDfgram.
 
-class Dfgram : public QWidget {
+class Dfgram : public QcrWidget {
 public:
     Dfgram();
     Dfgram(const Dfgram&) = delete;
@@ -42,9 +42,10 @@ private:
 
 
 Dfgram::Dfgram()
-    : comboNormType_ {"normTyp", {"none", "monitor", "Δ monitor", "time", "Δ time"}}
+    : QcrWidget {"dfgram"}
+    , comboNormType_ {"normTyp", {"none", "monitor", "Δ monitor", "time", "Δ time"}}
     , intenSum_ {"intenSum", "sum"}
-    , intenAvg_ {"intenAvg", "avg ×"} // TODO connect with &gSession->intenScaleAvge
+    , intenAvg_ {"intenAvg", "avg ×", &gSession->intenScaledAvg}
     , intenScale_ {"intenScale", &gSession->intenScale, 4, 0.001}
 {
     // initializations
@@ -61,9 +62,6 @@ Dfgram::Dfgram()
     // outbound connections
     connect(&comboNormType_, _SLOT_(QComboBox,currentIndexChanged,int), [](int index) {
             gSession->setNormMode(eNorm(index)); });
-    connect(&intenAvg_, &QRadioButton::toggled, [](bool on) {
-        gSession->intenScaledAvg.setVal(on);
-    });
 
     // layout
     auto* hb = new QHBoxLayout;
@@ -86,6 +84,8 @@ Dfgram::Dfgram()
     box->addWidget(plot_);
     box->addLayout(hb);
     setLayout(box);
+
+    setRemake([this]() {plot_->renderAll();});
 }
 
 void Dfgram::onNormChanged()

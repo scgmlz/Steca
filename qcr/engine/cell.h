@@ -36,7 +36,7 @@ public:
     void connectAction(std::function<void()>&&);
     const QString& name() const { return name_; }
 protected:
-    virtual void recompute() {};
+    virtual void recompute() { qDebug() << "Dummy recompute of " << name(); }
     void actOnChange();
     stamp_t timestamp_ { 0 };
 private:

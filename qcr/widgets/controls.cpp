@@ -297,6 +297,16 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text)
             onChangedValue(hasFocus(), val); });
 }
 
+QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, SingleValueCell<bool>* cell)
+    : QRadioButton {text}
+    , QcrControl<bool> {*this, _name, cell}
+{
+    doSetValue(cell->val());
+    init();
+    connect(this, &QRadioButton::toggled, [this](bool val)->void {
+            onChangedValue(hasFocus(), val); });
+}
+
 //  ***********************************************************************************************
 //! @class QcrComboBox
 
