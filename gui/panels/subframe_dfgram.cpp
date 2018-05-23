@@ -74,8 +74,8 @@ Dfgram::Dfgram()
     hb->addStretch(); // ---
     hb->addWidget(new QcrIconToggleButton {&actZoom_});
     hb->addStretch(); // ---
-    hb->addWidget(new QcrIconToggleButton {&gGui->toggles->combinedDgram});
-    hb->addWidget(new QcrIconToggleButton {&gGui->toggles->fixedIntenDgram});
+    hb->addWidget(new QcrIconToggleButton {&gGui->toggles->combinedDfgram});
+    hb->addWidget(new QcrIconToggleButton {&gGui->toggles->fixedIntenDfgram});
     hb->addWidget(new QcrIconToggleButton {&gGui->toggles->showBackground});
     hb->addStretch(); // ---
     hb->addWidget(new QcrIconTriggerButton {&gGui->triggers->exportDfgram});

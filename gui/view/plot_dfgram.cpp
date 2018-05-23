@@ -210,7 +210,7 @@ void PlotDfgram::renderAll()
         plotEmpty();
         return;
     }
-    calcDgram();
+    calcDfgram();
     if (dgram_.isEmpty()) {
         plotEmpty();
         return;
@@ -220,7 +220,7 @@ void PlotDfgram::renderAll()
 
     const Range& tthRange = dgram_.rgeX();
     Range intenRange;
-    if (gGui->toggles->fixedIntenDgram.getValue()) {
+    if (gGui->toggles->fixedIntenDfgram.getValue()) {
         intenRange = gSession->dataset().highlight().cluster()->rgeInten();
     } else {
         intenRange = dgramBgFitted_.rgeY();
@@ -261,12 +261,12 @@ void PlotDfgram::renderAll()
     replot();
 }
 
-void PlotDfgram::calcDgram()
+void PlotDfgram::calcDfgram()
 {
     dgram_.clear();
     if (!gSession->hasData())
         return;
-    if (gGui->toggles->combinedDgram.getValue())
+    if (gGui->toggles->combinedDfgram.getValue())
         dgram_ = gSession->activeClusters().avgCurve();
     else
         dgram_ = algo::projectCluster(*gSession->dataset().highlight().cluster(),

@@ -22,10 +22,10 @@
 class Toggles : private QObject {
 public:
     Toggles();
-    QcrToggle combinedDgram {"dfg.all", "All measurements", false, ":/icon/all"};
+    QcrToggle combinedDfgram {"dfg.all", "All measurements", false, ":/icon/all"};
     QcrToggle crosshair {"crosshair", "Show crosshair", false, ":/icon/crop"};
     QcrToggle enableCorr;
-    QcrToggle fixedIntenDgram {"dfg.fixInt", "Fixed intensity scale", false, ":/icon/scale"};
+    QcrToggle fixedIntenDfgram {"dfg.fixInt", "Fixed intensity scale", false, ":/icon/scale"};
     QcrToggle fixedIntenImage {"img.fixInt", "Global intensity scale", false, ":/icon/scale"};
     QcrToggle linkCuts;
     QcrToggle showBackground {"showBackground", "Show fitted background", true,

@@ -59,7 +59,7 @@ private:
     std::vector<QCPGraph*> reflGraph_;
     PlotDfgramOverlay* overlay_;
 
-    void calcDgram();
+    void calcDfgram();
     void calcBackground();
     void calcPeaks();
     Curve dgram_, dgramBgFitted_, bg_;

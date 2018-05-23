@@ -75,8 +75,8 @@ Menus::Menus(QMenuBar* mbar)
                 &triggers->addPeak,
                 &triggers->removePeak,
                 separator(),
-                &toggles->combinedDgram,
-                &toggles->fixedIntenDgram,
+                &toggles->combinedDfgram,
+                &toggles->fixedIntenDfgram,
         });
 
     actionsToMenu(
