@@ -24,12 +24,13 @@ environment:
 before_build:
 - echo "Steca before_build"
 - echo %PATH%
-- python -m pip install pyyaml
+- C:\cygwin\bin\wget -q http://apps.jcns.fz-juelich.de/doku/sc/_media/steca2:libyamlwin64.zip -O %temp%\local_x64.zip
+- 7z x %temp%\local_x64.zip -o C:\opt > null
 
 build_script:
 - git submodule update --init --recursive
 - mkdir build
 - cd build
-- cmake -G "%CMAKE_GENERATOR%" ..
+- cmake -G "%CMAKE_GENERATOR%" -DCMAKE_INCLUDE_PATH=C:/opt/local_x64/include -DCMAKE_LIBRARY_PATH=C:/opt/local_x64/lib ..
 - cmake --build . --config %BUILD_CONF% -- /clp:ErrorsOnly
 - ctest
