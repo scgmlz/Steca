@@ -5,7 +5,6 @@ platform:
 
 configuration:
   - Release
-  - Debug
 
 # http://www.appveyor.com/docs/installed-software
 environment:
