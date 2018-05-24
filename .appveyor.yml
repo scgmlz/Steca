@@ -4,8 +4,8 @@ platform:
 - x64
 
 configuration:
-  - Debug
   - Release
+  - Debug
 
 # http://www.appveyor.com/docs/installed-software
 environment:
