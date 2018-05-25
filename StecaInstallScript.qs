@@ -37,8 +37,8 @@ Component.prototype.createOperations = function()
     component.createOperations();
 
     if (systemInfo.productType === "windows") {
-        component.addOperation("CreateShortcut", "@TargetDir@/Steca.exe", "@StartMenuDir@/Steca.lnk",
-            "workingDirectory=@TargetDir@", "iconPath=%SystemRoot%/system32/SHELL32.dll",
-            "iconId=2", "description=Steca: The stress and texture calculator for neutron and x-ray materials diffraction) ");
+        component.addOperation("CreateShortcut", "@TargetDir@/bin/Steca.exe", "@StartMenuDir@/Steca.lnk",
+            "workingDirectory=@TargetDir@", "iconPath=@TargetDir@/bin/Steca.exe",
+            "iconId=0", "description=Steca: The stress and texture calculator for neutron and x-ray materials diffraction");
     }
 }

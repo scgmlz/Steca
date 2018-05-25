@@ -1,12 +1,9 @@
-image:
-- Visual Studio 2015
-- Visual Studio 2017
+image: Visual Studio 2017
 
 platform:
 - x64
 
 configuration:
-  - Debug
   - Release
 
 # http://www.appveyor.com/docs/installed-software
@@ -14,17 +11,22 @@ environment:
   global:
     BUILD_CONF: $(configuration)
   matrix:
-  - QTDIR: C:\Qt\5.10.1\msvc2015
-    PATH: C:\Qt\5.10.1\msvc2015\bin;%PATH%
-    CMAKE_GENERATOR: "Visual Studio 14 2015"
   - QTDIR: C:\Qt\5.10.1\msvc2017_64
-    PATH: C:\Qt\5.10.1\msvc2017_64\bin;%PATH%
+    PATH: C:\Qt\5.10.1\msvc2017_64\bin;C:\opt\local_x64\lib;%PATH%
     CMAKE_GENERATOR: "Visual Studio 15 2017 Win64"
+build:
+  parallel: true
+    
+before_build:
+- echo "Steca before_build"
+- echo %PATH%
+- C:\cygwin\bin\wget -q http://apps.jcns.fz-juelich.de/doku/sc/_media/steca2:local_x64.zip -O %temp%\local_x64.zip
+- 7z x %temp%\local_x64.zip -oC:\opt > null
 
 build_script:
 - git submodule update --init --recursive
 - mkdir build
 - cd build
-- cmake -G "%CMAKE_GENERATOR%" ..
-- cmake --build . --config %BUILD_CONF% -- /clp:ErrorsOnly
+- cmake -G "%CMAKE_GENERATOR%" -DCMAKE_INCLUDE_PATH=C:/opt/local_x64/include -DCMAKE_LIBRARY_PATH=C:/opt/local_x64/lib -DBUILD_SHARED_LIBS=OFF ..
+- cmake --build . --config %BUILD_CONF%
 - ctest
