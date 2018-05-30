@@ -97,15 +97,24 @@ QcrIconTriggerButton::QcrIconTriggerButton(QcrTrigger* action)
 
 QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on,
                      const QString& iconFile, const QKeySequence& shortcut)
-    : QcrToggle {rawname, nullptr, text, iconFile, shortcut}
+    : QcrAction {text}
+    , QcrControl<bool> {*this, rawname, on}
 {
     programaticallySetValue(on);
+    initToggle(iconFile, shortcut);
 }
 
 QcrToggle::QcrToggle(const QString& rawname, SingleValueCell<bool>* cell, const QString& text,
                      const QString& iconFile, const QKeySequence& shortcut)
     : QcrAction {text}
     , QcrControl<bool> {*this, rawname, cell}
+
+{
+    doSetValue(cell->val());
+    initToggle(iconFile, shortcut);
+}
+
+void QcrToggle::initToggle(const QString& iconFile, const QKeySequence& shortcut)
 {
     setShortcut(shortcut);
     init();
@@ -113,8 +122,6 @@ QcrToggle::QcrToggle(const QString& rawname, SingleValueCell<bool>* cell, const 
     if (iconFile!="")
         setIcon(QIcon(iconFile));
     setCheckable(true);
-    if (cell)
-        doSetValue(cell->val());
     connect(this, &QAction::toggled, this, [this](bool val){
             //qDebug()<<"TOGGLE "<<name()<<"toggled";
             onChangedValue(hasFocus(), val);});
@@ -167,19 +174,26 @@ QcrIconToggleButton::QcrIconToggleButton(QcrToggle* action)
 
 QcrSpinBox::QcrSpinBox(const QString& _name, int ndigits,
                        bool withDot, int min, int max, const QString& tooltip)
-    : QcrSpinBox(_name, nullptr, ndigits, withDot, min, max, tooltip)
-{}
+    : QcrControl<int> {*this, _name, 0}
+{
+    initSpinBox(ndigits, withDot, min, max, tooltip);
+}
+
 
 QcrSpinBox::QcrSpinBox(const QString& _name, SingleValueCell<int>* cell, int ndigits,
                        bool withDot, int min, int max, const QString& tooltip)
     : QcrControl<int> {*this, _name, cell}
 {
+    doSetValue(cell->val());
+    initSpinBox(ndigits, withDot, min, max, tooltip);
+}
+
+void QcrSpinBox::initSpinBox(int ndigits, bool withDot, int min, int max, const QString& tooltip)
+{
     strOp::setWidth(this, 2+ndigits, withDot);
     ASSERT(min<=max);
     setMinimum(min);
     setMaximum(max);
-    if (cell)
-        doSetValue(cell->val());
     init();
     if (tooltip!="")
         setToolTip(tooltip);
@@ -217,20 +231,26 @@ void QcrSpinBox::executeConsoleCommand(const QString& arg)
 //! @class QcrDoubleSpinBox
 
 QcrDoubleSpinBox::QcrDoubleSpinBox(const QString& _name, int ndigits, double min, double max)
-    : QcrDoubleSpinBox(_name, nullptr, ndigits, min, max)
-{}
+    : QcrControl<double> {*this, _name, 0.}
+{
+    initDoubleSpinBox(ndigits, min, max);
+}
 
 QcrDoubleSpinBox::QcrDoubleSpinBox(
     const QString& _name, SingleValueCell<double>* cell, int ndigits, double min, double max)
     : QcrControl<double> {*this, _name, cell}
+{
+    doSetValue(cell->val());
+    initDoubleSpinBox(ndigits, min, max);
+}
+
+void QcrDoubleSpinBox::initDoubleSpinBox(int ndigits, double min = LLONG_MIN, double max = LLONG_MAX)
 {
     strOp::setWidth(this, 2+ndigits, true);
     setDecimals(ndigits);
     ASSERT(min<=max);
     setMinimum(min);
     setMaximum(max);
-    if (cell)
-        doSetValue(cell->val());
     init();
     reportedValue_ = value();
     connect(this, &QDoubleSpinBox::editingFinished, this, &QcrDoubleSpinBox::reportChange);
@@ -267,9 +287,8 @@ void QcrDoubleSpinBox::executeConsoleCommand(const QString& arg)
 
 QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, bool val)
     : QCheckBox {text}
-    , QcrControl<bool> {*this, _name}
+    , QcrControl<bool> {*this, _name, val}
 {
-    doSetValue(val);
     init();
     connect(this, _SLOT_(QCheckBox,stateChanged,int), [this](int val)->void {
             onChangedValue(hasFocus(), (bool)val); });
@@ -288,9 +307,9 @@ QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, SingleValueC
 //  ***********************************************************************************************
 //! @class QcrRadioButton
 
-QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text)
+QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, bool val)
     : QRadioButton {text}
-    , QcrControl<bool> {*this, _name}
+    , QcrControl<bool> {*this, _name, val}
 {
     init();
     connect(this, &QRadioButton::toggled, [this](bool val)->void {
@@ -311,7 +330,7 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, Single
 //! @class QcrComboBox
 
 QcrComboBox::QcrComboBox(const QString& _name, const QStringList& items)
-    : QcrControl<int> {*this, _name}
+    : QcrControl<int> {*this, _name, -1}
 {
     init();
     addItems(items);
@@ -330,7 +349,7 @@ void QcrComboBox::addItems(const QStringList& texts)
 //! @class QcrLineEdit
 
 QcrLineEdit::QcrLineEdit(const QString& _name, const QString& val)
-    : QcrControl<QString> {*this, _name}
+    : QcrControl<QString> {*this, _name, val}
 {
     init();
     // For unknown reason, hasFocus() is not always false when setText is called programmatically;
@@ -341,17 +360,14 @@ QcrLineEdit::QcrLineEdit(const QString& _name, const QString& val)
             [this](const QString& val)->void { onChangedValue(hasFocus(), val); });
     connect(this, _SLOT_(QLineEdit,textChanged,const QString&),
             [this](const QString& val)->void { onChangedValue(hasFocus(), val); });
-    programaticallySetValue(val);
 }
 
 //  ***********************************************************************************************
 //! @class QcrTabWidget
 
 QcrTabWidget::QcrTabWidget(const QString& _name)
-    : QcrControl<int> {*this, _name}
-    , defaultCell {_name, 0}
+    : QcrControl<int> {*this, _name, 0}
 {
-    cell_ = &defaultCell;
     init();
     connect(this->tabBar(), &QTabBar::tabBarClicked, [=](int val) {
             qDebug() << "tabBarClicked " << val; });

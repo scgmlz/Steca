@@ -16,6 +16,7 @@
 #include "qcr/engine/mixin.h"
 #include <QtDebug>
 
+// TODO RECONSIDER: move out of global namespace
 void remakeAll()
 {
     ASSERT(gRoot);
@@ -24,6 +25,7 @@ void remakeAll()
 
 
 Cell::stamp_t ValueCell::latestTimestamp__ = 0;
+
 
 void Cell::addSource(Cell* src) {
     if (sources_.find(src)!=sources_.end())
@@ -59,6 +61,7 @@ Cell::stamp_t Cell::update()
     return timestamp_;
 }
 
+//! Appends given function to actionsOnChange_.
 void Cell::connectAction(std::function<void()>&& f)
 {
     actionsOnChange_.push_back(std::move(f));

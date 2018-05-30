@@ -68,6 +68,7 @@ public:
     bool getValue() const final { return isChecked(); }
     void remake() final { remake_(); }
 private:
+    void initToggle(const QString& iconFile, const QKeySequence& shortcut);
     void doSetValue(bool val) final { setChecked(val); }
     // hide some member functions of QAction:
     bool isChecked() const { return QAction::isChecked(); }
@@ -99,6 +100,7 @@ public:
 signals:
     void valueReleased(int); //! Improving over valueChanged, do not signal intermediate states
 private:
+    void initSpinBox(int ndigits, bool withDot, int min, int max, const QString& tooltip);
     void mouseReleaseEvent(QMouseEvent*) override;
     void reportChange();
     int reportedValue_;
@@ -121,6 +123,7 @@ public:
 signals:
     void valueReleased(double); //! Improving over valueChanged, do not signal intermediate states
 private:
+    void initDoubleSpinBox(int ndigits, double min, double max);
     void mouseReleaseEvent(QMouseEvent*) override;
     void reportChange();
     double reportedValue_;
@@ -146,7 +149,7 @@ private:
 //! Named radio button that can be set by console command.
 class QcrRadioButton : public QRadioButton, public QcrControl<bool> {
 public:
-    QcrRadioButton(const QString& name, const QString& text);
+    QcrRadioButton(const QString& name, const QString& text, bool val=false);
     QcrRadioButton(const QString& name, const QString& text, SingleValueCell<bool>* cell);
     bool getValue() const final { return isChecked(); }
 private:
@@ -192,7 +195,6 @@ public:
     int getValue() const final { return currentIndex(); }
     void addTab(QWidget* page, const QString& label);
 private:
-    SingleValueCell<int> defaultCell;
     void doSetValue(int val) final { setCurrentIndex(val); }
     // hide some member functions of QTabWidget:
     int currentIndex() const { return QTabWidget::currentIndex(); }

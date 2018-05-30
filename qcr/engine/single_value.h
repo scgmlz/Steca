@@ -23,7 +23,9 @@
 template<class T>
 class QcrControl : public QcrSettable {
 public:
-    QcrControl(QObject& object, const QString& name, SingleValueCell<T>* cell = nullptr);
+    QcrControl(QObject& object, const QString& name, SingleValueCell<T>* cell);
+    QcrControl(QObject& object, const QString& name, const T val);
+    ~QcrControl();
     void programaticallySetValue(T val);
     virtual T getValue() const = 0;
     virtual void executeConsoleCommand(const QString& arg);
@@ -32,22 +34,41 @@ protected:
     void init();
     void onChangedValue(bool hasFocus, T val);
     bool softwareCalling_ = false; // make it private again ??
-    SingleValueCell<T>* cell_;
+    SingleValueCell<T>* cell_ {nullptr};
 private:
     virtual void doSetValue(T) = 0;
     T reportedValue_;
+    bool ownsItsCell_ {false};
 };
 
 //  ***********************************************************************************************
 //  implementation of QcrControl<T>
 
+//! Constructor that associates this QcrControl with an external SingleValueCell.
 template<class T>
 QcrControl<T>::QcrControl(QObject& object, const QString& name, SingleValueCell<T>* cell)
     : QcrSettable {object, name}
     , cell_ {cell}
 {
-    if (cell_)
-        cell_->connectAction([this](){programaticallySetValue(cell_->val());});
+    cell_->connectAction([this](){programaticallySetValue(cell_->val());});
+}
+
+//! Constructs a QcrControl that owns a SingleValueCell.
+template<class T>
+QcrControl<T>::QcrControl(QObject& object, const QString& name, const T val)
+    : QcrSettable {object, name}
+    , ownsItsCell_ {true}
+{
+    // TODO RECONSIDER smart pointer
+    cell_ = new SingleValueCell<T>(name, val);
+    cell_->connectAction([this](){programaticallySetValue(cell_->val());});
+}
+
+template<class T>
+QcrControl<T>::~QcrControl()
+{
+    if (ownsItsCell_)
+        delete cell_;
 }
 
 template<class T>

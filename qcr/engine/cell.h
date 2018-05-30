@@ -28,6 +28,7 @@ class Cell {
 public:
     Cell() = delete;
     Cell(const QString& name) : name_(name) {}
+    virtual ~Cell() = default; // needed as long as explicitly delete some Cell.
     typedef long int stamp_t;
     stamp_t update();
     void addSource(Cell*);
