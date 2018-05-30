@@ -31,7 +31,7 @@ public:
     virtual void executeConsoleCommand(const QString& arg);
     Cell* cell() { return cell_; }
 protected:
-    void init();
+    void initControl();
     void onChangedValue(bool hasFocus, T val);
     bool softwareCalling_ = false; // make it private again ??
     SingleValueCell<T>* cell_ {nullptr};
@@ -50,7 +50,6 @@ QcrControl<T>::QcrControl(QObject& object, const QString& name, SingleValueCell<
     : QcrSettable {object, name}
     , cell_ {cell}
 {
-    cell_->connectAction([this](){programaticallySetValue(cell_->val());});
 }
 
 //! Constructs a QcrControl that owns a SingleValueCell.
@@ -59,9 +58,7 @@ QcrControl<T>::QcrControl(QObject& object, const QString& name, const T val)
     : QcrSettable {object, name}
     , ownsItsCell_ {true}
 {
-    // TODO RECONSIDER smart pointer
-    cell_ = new SingleValueCell<T>(name, val);
-    cell_->connectAction([this](){programaticallySetValue(cell_->val());});
+    cell_ = new SingleValueCell<T>(name, val); // TODO RECONSIDER smart pointer
 }
 
 template<class T>
@@ -69,6 +66,19 @@ QcrControl<T>::~QcrControl()
 {
     if (ownsItsCell_)
         delete cell_;
+}
+
+//! Ensures synchronization of this Control with its associated Cell.
+
+//! Cannot be called from QcrControl constructors, because it calls the pure virtual member function
+//! 'doSetValue'; overrides of 'doSetValue' in subclasses are not available in the constructor of 'QcrControl'.
+template<class T>
+void QcrControl<T>::initControl()
+{
+    programaticallySetValue(cell_->val());
+    cell_->connectAction([this](){programaticallySetValue(cell_->val());});
+    reportedValue_ = getValue();
+    doLog(true, "initialization: "+name()+" "+strOp::to_s(reportedValue_));
 }
 
 template<class T>
@@ -83,13 +93,6 @@ template<class T>
 void QcrControl<T>::executeConsoleCommand(const QString& arg)
 {
     programaticallySetValue(strOp::from_s<T>(arg));
-}
-
-template<class T>
-void QcrControl<T>::init()
-{
-    reportedValue_ = getValue();
-    doLog(true, "initialization: "+name()+" "+strOp::to_s(reportedValue_));
 }
 
 template<class T>
