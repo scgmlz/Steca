@@ -151,7 +151,7 @@ Rawfile loadCaress(const QString& filePath) {
                 double tempTime = 0;
                 if ((y < 2015)
                     || ((y == 2015) && ((s_m.compare("Jan") == 0) || (s_m.compare("Feb") == 0)))) {
-                    tempTime = double(tim1) / 100; // HACK REVIEW how deltaTime is used!!
+                    tempTime = double(tim1) / 100; // TODO REVIEW this HACK how deltaTime is used!!
                 } else {
                     tempTime = double(tim1);
                 }
