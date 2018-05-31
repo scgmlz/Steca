@@ -22,14 +22,14 @@ GuiState::GuiState()
 {
     polefigShowGridPts = new QcrCheckBox {"gridPts", "grid points"};
 
-    diagramX = new QcrComboBox {"xAxis"};
-    diagramY = new QcrComboBox {"yAxis"};
+    diagramX = new QcrComboBox {"diagramCoordX"};
+    diagramY = new QcrComboBox {"diagramCoordY"};
 
     // initialize
     QStringList tags = PeakInfo::dataTags(false);
     for_i (Metadata::numAttributes(false) - Metadata::numAttributes(true))
         tags.removeLast(); // remove all tags that are not numbers
-    qDebug() << "diagram tags: " << tags.join(" ");
+    // qDebug() << "diagram tags: " << tags.join(" ");
     diagramX->addItems(tags);
     diagramY->addItems(tags);
 

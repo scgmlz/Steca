@@ -80,8 +80,10 @@ template<class T>
 void SingleValueCell<T>::setVal(T val, bool userCall)
 {
     T newval = coerce_(val);
-    if (newval==value_)
+    if (newval==value_) {
+        qDebug() << name() << " -> " << val << " (as before)";
         return;
+    }
     value_ = newval;
     actOnChange();
     if (userCall) {

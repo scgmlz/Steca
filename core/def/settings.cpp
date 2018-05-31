@@ -12,16 +12,19 @@
 //
 //  ***********************************************************************************************
 
+#include "qcr/base/debug.h"
 #include "core/def/settings.h"
 
 XSettings::XSettings(const QString& group)
 {
+    qDebug() << "XSettings BEG " << group;
     beginGroup(group);
 }
 
 XSettings::~XSettings()
 {
     endGroup();
+    qDebug() << "XSettings END";
 }
 
 bool XSettings::readBool(const QString& key, bool def)
@@ -42,6 +45,7 @@ double XSettings::readReal(const QString& key, double def)
     auto var = value(key);
     bool ok;
     double val = var.toDouble(&ok);
+    // qDebug() << "XSettings READ REAL " << key << " -> val=" << val << ", ok=" << ok;
     return ok ? val : def;
 }
 
