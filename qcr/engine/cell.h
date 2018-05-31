@@ -28,12 +28,9 @@ class Cell {
 public:
     Cell() = delete;
     Cell(const QString& name) : name_(name) {}
-    virtual ~Cell() = default; // needed as long as explicitly delete some Cell.
+    virtual ~Cell() = default; // needed as long as some Cells are explicitly deleted.
     typedef long int stamp_t;
     stamp_t update();
-    void addSource(Cell*);
-    void rmSource(Cell*);
-    void clearSources();
     void connectAction(std::function<void()>&&);
     const QString& name() const { return name_; }
 protected:
@@ -42,7 +39,6 @@ protected:
     stamp_t timestamp_ { 0 };
 private:
     const QString name_;
-    std::set<Cell*> sources_;
     std::vector<std::function<void()>> actionsOnChange_;
 };
 

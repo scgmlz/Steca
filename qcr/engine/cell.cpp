@@ -27,23 +27,6 @@ void remakeAll()
 Cell::stamp_t ValueCell::latestTimestamp__ = 0;
 
 
-void Cell::addSource(Cell* src) {
-    if (sources_.find(src)!=sources_.end())
-        qFatal("duplicate cell source entry");
-    sources_.insert(src);
-}
-
-void Cell::rmSource(Cell* src) {
-    auto it = sources_.find(src);
-    if (it==sources_.end())
-        qFatal("failed removing cell source entry");
-    sources_.erase(it);
-}
-
-void Cell::clearSources() {
-    sources_.clear();
-}
-
 Cell::stamp_t Cell::update()
 {
     //stamp_t t_new = timestamp_;
