@@ -16,6 +16,7 @@
 #define EXPORTFILE_DIALOGFIELD_H
 
 #include "qcr/widgets/controls.h"
+#include "qcr/widgets/dialogs.h"
 #include <QProgressBar>
 
 //! Base class for dialogs for saving some output to a file.

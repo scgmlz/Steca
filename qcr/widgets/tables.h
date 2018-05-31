@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef MODEL_VIEW_H
-#define MODEL_VIEW_H
+#ifndef TABLES_H
+#define TABLES_H
 
 #include "qcr/engine/mixin.h"
 #include <QTreeView>
@@ -89,4 +89,4 @@ private:
     CheckTableModel* model() { return static_cast<CheckTableModel*>(model_); }
 };
 
-#endif // MODEL_VIEW_H
+#endif // TABLES_H

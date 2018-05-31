@@ -20,7 +20,6 @@
 
 extern class QcrRoot* gRoot;
 
-
 //! Mix-in for QObject, enforcing a name, and providing recompute functionality.
 class QcrMixin {
 public:
@@ -37,14 +36,12 @@ private:
     QObject& object_;
 };
 
-
 //! Root of class hierarchy, normally mixed-in to QMainWindow
 class QcrRoot : public QcrMixin {
 public:
     QcrRoot(QObject& object, const QString& name);
     void fullRemake();
 };
-
 
 //! Mix-in for QObject, enforcing a unique name, providing Console connection.
 class QcrSettable : public QcrMixin {
@@ -55,15 +52,6 @@ protected:
     ~QcrSettable();
     void doLog(bool softwareCalled, const QString& msg);
 };
-
-
-//! Mix-in for modal dialogs.
-class QcrModal : public QcrSettable {
-protected:
-    QcrModal(QObject& object, const QString& name);
-    ~QcrModal();
-};
-
 
 //! A modeless (= persistent spawned popup) dialog with support for capture&replay.
 class QcrModelessDialog : protected QDialog, protected QcrSettable {

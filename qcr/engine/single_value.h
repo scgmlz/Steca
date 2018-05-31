@@ -33,7 +33,7 @@ public:
 protected:
     void initControl();
     void onChangedValue(bool hasFocus, T val);
-    bool softwareCalling_ = false; // make it private again ??
+    bool softwareCalling_ {false}; // make it private again ??
     SingleValueCell<T>* cell_ {nullptr};
 private:
     virtual void doSetValue(T) = 0;

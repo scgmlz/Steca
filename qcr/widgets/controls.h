@@ -20,7 +20,6 @@
 #include <QAction>
 #include <QCheckBox>
 #include <QComboBox>
-#include <QFileDialog>
 #include <QLabel>
 #include <QLayout>
 #include <QLineEdit>
@@ -200,25 +199,6 @@ private:
     int currentIndex() const { return QTabWidget::currentIndex(); }
     void setCurrentIndex(int val);
     void setCurrentWidget(QWidget*) = delete;
-};
-
-//! Dialog, for modal use.
-class QcrDialog : public QDialog, protected QcrModal {
-public:
-    QcrDialog(QWidget* parent, const QString& caption);
-    ~QcrDialog();
-    int exec() override;
-    void executeConsoleCommand(const QString&) override;
-};
-
-//! File dialog, for modal use, with console commands to select files and to close the dialog.
-class QcrFileDialog : public QFileDialog, protected QcrModal {
-public:
-    QcrFileDialog(
-        QWidget* parent, const QString& caption, const QString& directory, const QString& filter);
-    ~QcrFileDialog();
-    int exec() override;
-    void executeConsoleCommand(const QString&) override;
 };
 
 #endif // CONTROLS_H

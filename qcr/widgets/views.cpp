@@ -2,7 +2,7 @@
 //
 //  libqcr: capture and replay Qt widget actions
 //
-//! @file      qcr/widgets/displays.cpp
+//! @file      qcr/widgets/views.cpp
 //! @brief     Implements specializations of Qt display widgets (XIcon,...)
 //!
 //! @homepage  https://github.com/scgmlz/Steca

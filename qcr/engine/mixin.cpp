@@ -20,6 +20,7 @@
 
 QcrRoot* gRoot {nullptr};
 
+
 //  ***********************************************************************************************
 //! @class QcrMixin
 
@@ -40,6 +41,7 @@ void QcrMixin::remake()
     }
 }
 
+
 //  ***********************************************************************************************
 //! @class QcrRoot
 
@@ -55,38 +57,6 @@ void QcrRoot::fullRemake()
         if (QcrMixin* m = dynamic_cast<QcrMixin*>(w))
             m->remake();
     }
-}
-//  ***********************************************************************************************
-//! @class QcrSettable
-
-QcrSettable::QcrSettable(QObject& object, const QString& name)
-    : QcrMixin {object, gConsole->learn(name, this)}
-{}
-
-QcrSettable::~QcrSettable()
-{
-    gConsole->forget(name());
-}
-
-void QcrSettable::doLog(bool softwareCalled, const QString& msg)
-{
-    gConsole->log2(!softwareCalled, msg);
-}
-
-
-//  ***********************************************************************************************
-//! @class QcrModal
-
-QcrModal::QcrModal(QObject& object, const QString& name)
-    : QcrSettable {object, name}
-{
-    gConsole->call("@push "+name);
-}
-
-QcrModal::~QcrModal()
-{
-    gConsole->log("@close");
-    gConsole->call("@pop");
 }
 
 
@@ -110,4 +80,22 @@ void QcrModelessDialog::executeConsoleCommand(const QString& arg)
     if (arg!="close")
         throw QcrException("Unexpected command in ModelessDialog "+name());
     close();
+}
+
+
+//  ***********************************************************************************************
+//! @class QcrSettable
+
+QcrSettable::QcrSettable(QObject& object, const QString& name)
+    : QcrMixin {object, gConsole->learn(name, this)}
+{}
+
+QcrSettable::~QcrSettable()
+{
+    gConsole->forget(name());
+}
+
+void QcrSettable::doLog(bool softwareCalled, const QString& msg)
+{
+    gConsole->log2(!softwareCalled, msg);
 }

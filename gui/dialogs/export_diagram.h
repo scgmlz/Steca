@@ -15,7 +15,7 @@
 #ifndef EXPORT_DIAGRAM_H
 #define EXPORT_DIAGRAM_H
 
-#include "qcr/widgets/controls.h"
+#include "qcr/widgets/dialogs.h"
 
 //! The modal dialog for the data shown in the diagram
 

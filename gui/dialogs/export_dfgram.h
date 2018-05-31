@@ -16,6 +16,7 @@
 #define EXPORT_DFGRAM_H
 
 #include "qcr/widgets/controls.h"
+#include "qcr/widgets/dialogs.h"
 
 //! The modal dialog for saving diffractograms.
 
