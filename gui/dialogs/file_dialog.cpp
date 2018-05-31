@@ -14,7 +14,7 @@
 
 #include "file_dialog.h"
 #include "core/loaders/loaders.h"
-#include "qcr/widgets/dialogs.h"
+#include "qcr/widgets/modal_dialogs.h"
 #include "qcr/base/debug.h"
 #include <QFileSystemModel>
 #include <QMessageBox>

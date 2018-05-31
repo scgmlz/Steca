@@ -2,7 +2,7 @@
 //
 //  libqcr: capture and replay Qt widget actions
 //
-//! @file      qcr/widgets/dialogs.cpp
+//! @file      qcr/widgets/modal_dialogs.cpp
 //! @brief     Implements functions that return new Qt objects
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "dialogs.h"
+#include "modal_dialogs.h"
 #include "qcr/base/debug.h"
 #include "qcr/base/qcrexception.h"
 #include "qcr/engine/console.h"
