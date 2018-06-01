@@ -32,20 +32,18 @@ public:
     ParamWrapper() = delete;
     ParamWrapper(T value) : value_{value} {}
     T val() const { return value_; }
-    void connectAction(std::function<void()>&&);
     void setCoerce(std::function<T(T)> coerce) { coerce_ = coerce; }
     void setPostHook(std::function<void(T)> postHook) { postHook_ = postHook; }
     void setVal(T);
     void reCoerce() { setVal(value_); }
 private:
-    friend QcrControl<T>;
-    void guiSetsVal(T, bool userCall=false);
     T value_;
-    QcrControl<T>* widget_ {nullptr};
     std::function<void(T)> postHook_ = [](T) {};
     std::function<T(T)> coerce_ = [](T val) { return val; };
-    void actOnChange();
-    std::vector<std::function<void()>> actionsOnChange_;
+
+    friend QcrControl<T>;
+    void guiSetsVal(T, bool userCall=false);
+    std::function<void(T)> callGuiOnSet_ = [](T){};
 };
 
 //  ***********************************************************************************************
@@ -56,12 +54,12 @@ void ParamWrapper<T>::setVal(T val)
 {
     T newval = coerce_(val);
     if (newval==value_) {
-        qDebug() << " == " << val << " (as before)";
+        qDebug() << " == " << val << " -> " << newval << " (as before)";
         return;
     }
     value_ = newval;
-    actOnChange();
-    qDebug() << " -> " << val << " (non-user call)";
+    callGuiOnSet_(newval);
+    qDebug() << " -> " << val << " -> " << newval <<  " (non-user call)";
 }
 
 template<class T>
@@ -73,7 +71,6 @@ void ParamWrapper<T>::guiSetsVal(T val, bool userCall)
         return;
     }
     value_ = newval;
-    actOnChange();
     if (userCall) {
         qDebug() << " -> " << val;
         postHook_(newval);
@@ -81,20 +78,6 @@ void ParamWrapper<T>::guiSetsVal(T val, bool userCall)
     } else {
         qDebug() << " -> " << val << " (non-user call)";
     }
-}
-
-//! Appends given function to actionsOnChange_.
-template<class T>
-void ParamWrapper<T>::connectAction(std::function<void()>&& f)
-{
-    actionsOnChange_.push_back(std::move(f));
-}
-
-template<class T>
-void ParamWrapper<T>::actOnChange()
-{
-    for (const std::function<void()>& f: actionsOnChange_)
-        f();
 }
 
 #endif // PARAM_WRAPPER_H
