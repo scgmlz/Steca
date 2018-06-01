@@ -2,8 +2,8 @@
 //
 //  libqcr: capture and replay Qt widget actions
 //
-//! @file      qcr/engine/cell.h
-//! @brief     Defines class Cell
+//! @file      qcr/engine/param_wrapper.h
+//! @brief     Defines and implements templated class ParamWrapper
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef CELL_H
-#define CELL_H
+#ifndef PARAM_WRAPPER_H
+#define PARAM_WRAPPER_H
 
 #include "qcr/base/debug.h"
 #include <QObject>
@@ -27,7 +27,7 @@ template<class T>
 class ParamWrapper {
 public:
     ParamWrapper() = delete;
-    ParamWrapper(T value) : value_(value) {}
+    ParamWrapper(T value) : value_{value} {}
     T val() const { return value_; }
     void connectAction(std::function<void()>&&);
     void setCoerce(std::function<T(T)> coerce) { coerce_ = coerce; }
@@ -78,4 +78,4 @@ void ParamWrapper<T>::actOnChange()
         f();
 }
 
-#endif // CELL_H
+#endif // PARAM_WRAPPER_H

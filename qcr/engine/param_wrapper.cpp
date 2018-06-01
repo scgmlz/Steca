@@ -2,8 +2,8 @@
 //
 //  libqcr: capture and replay Qt widget actions
 //
-//! @file      qcr/engine/cell.cpp
-//! @brief     Implements class Cell
+//! @file      qcr/engine/param_wrapper.cpp
+//! @brief     Implements global function used by class ParamWrapper
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "cell.h"
+#include "param_wrapper.h"
 #include "qcr/engine/mixin.h"
 #include <QtDebug>
 

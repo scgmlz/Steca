@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "tables.h"
-#include "qcr/engine/cell.h" // remakeAll
+#include "qcr/engine/param_wrapper.h" // remakeAll
 #include "qcr/engine/console.h"
 #include "qcr/base/qcrexception.h"
 #include "qcr/base/debug.h"

@@ -15,7 +15,7 @@
 #ifndef SESSION_H
 #define SESSION_H
 
-#include "qcr/engine/cell.h"
+#include "qcr/engine/param_wrapper.h"
 #include "core/calc/baseline.h"
 #include "core/calc/interpol_params.h"
 #include "core/calc/gamma_selection.h"
