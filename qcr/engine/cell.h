@@ -18,7 +18,6 @@
 #include "qcr/base/debug.h"
 #include <QObject>
 #include <functional>
-#include <set>
 #include <vector>
 
 void remakeAll();
