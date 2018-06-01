@@ -19,8 +19,8 @@
 
 ThetaSelection::ThetaSelection()
 {
-    currArc.setCoerce( [this](int i) { return qMax(0, qMin(i, numSlices_)); });
-    currArc.setPostHook( [this](int) { recomputeCache(); /* UNDER CONSTRUCTION */ });
+// TODO COERCE    currArc.setCoerce( [this](int i) { return qMax(0, qMin(i, numSlices_)); });
+// TODO HOOK    currArc.setPostHook( [this](int) { recomputeCache(); /* UNDER CONSTRUCTION */ });
 }
 
 
@@ -55,6 +55,6 @@ void ThetaSelection::recomputeCache()
 {
     if (!numSlices_)
         return;
-    currArc.reCoerce();
+// TODO COERCE    currArc.reCoerce();
     range_ = fullRange_.slice(currArc.val(), numSlices_);
 }

@@ -113,7 +113,7 @@ public:
     size2d imageSize() const;
 
     ParamWrapper<bool> intenScaledAvg {true}; // if not, summed
-    ParamWrapper<double> intenScale {1};
+    NumberWrapper<double> intenScale {1};
 
 private:
     // with reference accessor methods:

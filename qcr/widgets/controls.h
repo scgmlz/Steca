@@ -92,7 +92,7 @@ class QcrSpinBox : public QSpinBox, public QcrControl<int> {
 public:
     QcrSpinBox(int val, const QString& name, int ndigits,
                bool withDot, int min = INT_MIN, int max = INT_MAX, const QString& tooltip="");
-    QcrSpinBox(const QString& name, ParamWrapper<int>* cell, int ndigits,
+    QcrSpinBox(const QString& name, NumberWrapper<int>* cell, int ndigits,
                bool withDot, int min = INT_MIN, int max = INT_MAX, const QString& tooltip="");
     void executeConsoleCommand(const QString&) override;
     int getValue() const final { return value(); }
@@ -115,7 +115,7 @@ class QcrDoubleSpinBox : public QDoubleSpinBox, public QcrControl<double> {
 public:
     QcrDoubleSpinBox(const QString& name, int ndigits,
                      double min = LLONG_MIN, double max = LLONG_MAX);
-    QcrDoubleSpinBox(const QString& name, ParamWrapper<double>* cell, int ndigits,
+    QcrDoubleSpinBox(const QString& name, NumberWrapper<double>* cell, int ndigits,
                      double min = LLONG_MIN, double max = LLONG_MAX);
     void executeConsoleCommand(const QString&) override;
     double getValue() const final { return value(); }

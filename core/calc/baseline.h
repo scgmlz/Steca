@@ -31,7 +31,7 @@ public:
 
     QJsonObject toJson() const;
     const Ranges& ranges() const { return ranges_; }
-    ParamWrapper<int> polynomDegree {0};
+    NumberWrapper<int> polynomDegree {0};
 
 private:
     Ranges ranges_;

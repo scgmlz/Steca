@@ -30,7 +30,7 @@ public:
     const Range& range() const { return range_; }
     QJsonObject toJson() const;
 
-    ParamWrapper<int> currArc {0};
+    NumberWrapper<int> currArc {0};
 
 private:
     void recomputeCache();

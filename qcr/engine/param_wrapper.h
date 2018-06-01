@@ -30,15 +30,15 @@ template<class T>
 class ParamWrapper {
 public:
     ParamWrapper() = delete;
-    ParamWrapper(T value) : value_{value}, coerce_{[this](T val) { return val; }} {}
+    ParamWrapper(T value) : value_{value} {}
 
     void setVal(T);
     T val() const { return value_; }
 
     void setPostHook(std::function<void(T)> postHook) { postHook_ = postHook; }
-private:
+protected:
     T value_;
-    std::function<T(T)> coerce_;
+    std::function<T(T)> coerce_ {[](T val) { return val; }};
     std::function<void(T)> postHook_ = [](T) {};
 
     friend QcrControl<T>;
@@ -48,16 +48,22 @@ private:
 
 //! Holds a single number.
 template<class T>
-class NumberWrapper : public ParamWrapper {
+class NumberWrapper : public ParamWrapper<T> {
 public:
-    NumberWrapper(T value) : value_{value}, coerce_{[this](T val) { return coerceMinMax(val); }} {}
+    NumberWrapper(T value) : ParamWrapper<T>{value} {
+        ParamWrapper<T>::coerce_ = [this](T val) { return coerceMinMax(val); }; }
+    // NumberWrapper(T value, T _min, T _max) : NumberWrapper<T>{value} { setMin(_min); setMax(_max); }
+    void setMinFct(const std::function<T()>& f) { minFct_ = f; hasMin_ = true; }
+    void setMaxFct(const std::function<T()>& f) { maxFct_ = f; hasMax_ = true;  }
+    void setMin(const T mval) { setMinFct( [mval](){ return mval; } ); }
+    void setMax(const T mval) { setMaxFct( [mval](){ return mval; } ); }
 
 private:
     bool hasMin_ {false};
     bool hasMax_ {false};
-    std::function<void(T)> minFct_ = [](T) { return T(); };
-    std::function<void(T)> maxFct_ = [](T) { return T(); };
-    T coerceMinMax(T val);
+    const std::function<T()> minFct_ {[]() { return T(); }};
+    const std::function<T()> maxFct_ {[]() { return T(); }};
+    T coerceMinMax(T val) const;
 };
 
 //  ***********************************************************************************************
@@ -67,13 +73,15 @@ template<class T>
 void ParamWrapper<T>::setVal(T val)
 {
     T newval = coerce_(val);
-    if (newval==value_) {
+    if (newval!=val)
+        qDebug() << "Value " << val << " corrected into " << newval;
+/*    if (newval==value_) {
         qDebug() << " == " << val << " -> " << newval << " (as before)";
         return;
-    }
+        }*/
     value_ = newval;
     callGuiOnSet_(newval);
-    qDebug() << " -> " << val << " -> " << newval <<  " (non-user call)";
+    // qDebug() << " -> " << val << " -> " << newval <<  " (non-user call)";
 }
 
 template<class T>
@@ -98,14 +106,13 @@ void ParamWrapper<T>::guiSetsVal(T val, bool userCall)
 //  class NumberWrapper implementation
 
 template<class T>
-T NumberWrapper<T>::coerceMinMax(T val)
+T NumberWrapper<T>::coerceMinMax(T val) const
 {
-    T ret = val;
     if (hasMin_)
-        ret = std::max(val, minFct_());
+        val = qMax(val, minFct_());
     if (hasMax_)
-        ret = std::min(val, maxFct_());
-    return ret;
+        val = qMin(val, maxFct_());
+    return val;
 }
 
 #endif // PARAM_WRAPPER_H
