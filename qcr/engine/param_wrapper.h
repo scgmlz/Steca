@@ -36,9 +36,10 @@ public:
     void setCoerce(std::function<T(T)> coerce) { coerce_ = coerce; }
     void setPostHook(std::function<void(T)> postHook) { postHook_ = postHook; }
     void setVal(T);
-    void guiSetsVal(T, bool userCall=false);
     void reCoerce() { setVal(value_); }
 private:
+    friend QcrControl<T>;
+    void guiSetsVal(T, bool userCall=false);
     T value_;
     QcrControl<T>* widget_ {nullptr};
     std::function<void(T)> postHook_ = [](T) {};
