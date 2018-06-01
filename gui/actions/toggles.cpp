@@ -22,8 +22,6 @@
 Toggles::Toggles()
     : enableCorr {"enableCorr", &gSession->corrset().enabled,
         "Enable correction file", ":/icon/useCorrection"}
-    , linkCuts {"linkCuts", &gSession->imageCut().linked,
-              "Link cuts", ":/icon/link"}
 {
 #define AT &QAction::toggled
 

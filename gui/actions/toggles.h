@@ -27,7 +27,7 @@ public:
     QcrToggle enableCorr;
     QcrToggle fixedIntenDfgram {"dfg.fixInt", "Fixed intensity scale", false, ":/icon/scale"};
     QcrToggle fixedIntenImage {"img.fixInt", "Global intensity scale", false, ":/icon/scale"};
-    QcrToggle linkCuts;
+    QcrToggle linkCuts {"linkCuts", "Link cuts", false, ":/icon/link"};
     QcrToggle showBackground {"showBackground", "Show fitted background", true,
             ":/icon/showBackground"};
     QcrToggle showBins {"showBins", "Show bins", false, ":/icon/angle"};

@@ -46,14 +46,13 @@ public:
 //! Image cut (margins)
 class ImageCut {
 public:
-    ImageCut();
+    ImageCut() {}
     COMPARABLE(const ImageCut&);
 
     ParamWrapper<int> left {0};
     ParamWrapper<int> right {0};
     ParamWrapper<int> top {0};
     ParamWrapper<int> bottom {0};
-    ParamWrapper<bool> linked {false};
 
     void clear();
     void fromJson(const JsonObj& obj);
@@ -64,7 +63,6 @@ public:
     QJsonObject toJson() const;
 
 private:
-    void postHook(int);
     void setAll(int);
 };
 

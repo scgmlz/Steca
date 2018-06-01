@@ -87,26 +87,6 @@ EQ_NE_OPERATOR(Geometry)
 //  ***********************************************************************************************
 //! @class ImageCut
 
-ImageCut::ImageCut()
-{
-    // TODO: restore constraints
-
-    left  .setPostHook([this](int val){ postHook(val); });
-    right .setPostHook([this](int val){ postHook(val); });
-    top   .setPostHook([this](int val){ postHook(val); });
-    bottom.setPostHook([this](int val){ postHook(val); });
-}
-
-void ImageCut::postHook(int val)
-{
-    if (linked.val()) {
-        left.setVal(val);
-        right.setVal(val);
-        top.setVal(val);
-        bottom.setVal(val);
-    }
-}
-
 void ImageCut::clear()
 {
     left  .setVal(0);
@@ -121,7 +101,6 @@ void ImageCut::fromJson(const JsonObj& obj)
     right .setVal(obj.loadUint("right"));
     top   .setVal(obj.loadUint("top"));
     bottom.setVal(obj.loadUint("bottom"));
-    linked.setVal(obj.loadBool("linked"));
 }
 
 QJsonObject ImageCut::toJson() const
@@ -131,7 +110,6 @@ QJsonObject ImageCut::toJson() const
         { "top", top.val() },
         { "right", right.val() },
         { "bottom", bottom.val() },
-        { "linked", linked.val() }
     };
 }
 
