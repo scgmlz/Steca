@@ -30,7 +30,7 @@ public:
     void fromJson(const JsonObj& obj);
     void removeFile();
     void loadFile(const QString& filePath);
-    ParamWrapper<bool> enabled {"corrEnabled", true};
+    ParamWrapper<bool> enabled {true};
     void clearIntens() { normalizer_.release(); }
 
     // Lookup methods

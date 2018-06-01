@@ -59,7 +59,7 @@ QcrControl<T>::QcrControl(QObject& object, const QString& name, const T val)
     : QcrSettable {object, name}
     , ownsItsCell_ {true}
 {
-    cell_ = new ParamWrapper<T>(name, val); // TODO RECONSIDER smart pointer
+    cell_ = new ParamWrapper<T>(val); // TODO RECONSIDER smart pointer
 }
 
 template<class T>
@@ -80,9 +80,8 @@ void QcrControl<T>::initControl()
     programaticallySetValue(givenValue);
     reportedValue_ = getValue();
     if (!ownsItsCell_ && reportedValue_ != givenValue)
-        qWarning("Widget %s has changed value of cell %s from %s to %s",
+        qWarning("Widget %s has changed value of cell from %s to %s",
                name().toLatin1().constData(),
-               cell_->name().toLatin1().constData(),
                strOp::to_s(givenValue).toLatin1().constData(),
                strOp::to_s(reportedValue_).toLatin1().constData());
     cell_->connectAction([this](){programaticallySetValue(cell_->val());});

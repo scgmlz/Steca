@@ -26,15 +26,11 @@ void remakeAll();
 //! Manages update dependences.
 class Cell {
 public:
-    Cell() = delete;
-    Cell(const QString& name) : name_(name) {}
     virtual ~Cell() = default; // needed as long as some Cells are explicitly deleted.
     void connectAction(std::function<void()>&&);
-    const QString& name() const { return name_; }
 protected:
     void actOnChange();
 private:
-    const QString name_;
     std::vector<std::function<void()>> actionsOnChange_;
 };
 
@@ -43,7 +39,7 @@ template<class T>
 class ParamWrapper : public Cell {
 public:
     ParamWrapper() = delete;
-    ParamWrapper(const QString& name, T value) : Cell(name), value_(value) {}
+    ParamWrapper(T value) : value_(value) {}
     T val() const { return value_; }
     void setCoerce(std::function<T(T)> coerce) { coerce_ = coerce; }
     void setPostHook(std::function<void(T)> postHook) { postHook_ = postHook; }
@@ -63,17 +59,17 @@ void ParamWrapper<T>::setVal(T val, bool userCall)
 {
     T newval = coerce_(val);
     if (newval==value_) {
-        qDebug() << name() << " -> " << val << " (as before)";
+        qDebug() << " == " << val << " (as before)";
         return;
     }
     value_ = newval;
     actOnChange();
     if (userCall) {
-        qDebug() << name() << " -> " << val;
+        qDebug() << " -> " << val;
         postHook_(newval);
         remakeAll();
     } else {
-        qDebug() << name() << " -> " << val << " (non-user call)";
+        qDebug() << " -> " << val << " (non-user call)";
     }
 }
 

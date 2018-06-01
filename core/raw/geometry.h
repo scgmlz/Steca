@@ -35,9 +35,9 @@ public:
     void fromSettings();
     void fromJson(const JsonObj& obj);
 
-    ParamWrapper<double> detectorDistance {"detectorDistance", DEF_DETECTOR_DISTANCE};
-    ParamWrapper<double> pixSize          {"pixSize", DEF_DETECTOR_PIXEL_SIZE};
-    std::array<ParamWrapper<int>,2>    pixOffset {{{"pixOffsetX", 0}, {"pixOffsetY", 0}}};
+    ParamWrapper<double> detectorDistance {DEF_DETECTOR_DISTANCE};
+    ParamWrapper<double> pixSize          {DEF_DETECTOR_PIXEL_SIZE};
+    std::array<ParamWrapper<int>,2>    pixOffset {0, 0};
     void toSettings() const;
     QJsonObject toJson() const;
 };
@@ -49,11 +49,11 @@ public:
     ImageCut();
     COMPARABLE(const ImageCut&);
 
-    ParamWrapper<int> left {"cutLeft", 0};
-    ParamWrapper<int> right {"cutRight", 0};
-    ParamWrapper<int> top {"cutTop", 0};
-    ParamWrapper<int> bottom {"cutBottom", 0};
-    ParamWrapper<bool> linked {"linkCuts", false};
+    ParamWrapper<int> left {0};
+    ParamWrapper<int> right {0};
+    ParamWrapper<int> top {0};
+    ParamWrapper<int> bottom {0};
+    ParamWrapper<bool> linked {false};
 
     void clear();
     void fromJson(const JsonObj& obj);
