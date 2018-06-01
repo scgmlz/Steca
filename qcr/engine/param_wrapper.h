@@ -22,6 +22,9 @@
 
 void remakeAll();
 
+template<class T>
+class QcrControl;
+
 //! Holds a single data value, and functions to be run upon change
 template<class T>
 class ParamWrapper {
@@ -36,6 +39,7 @@ public:
     void reCoerce() { setVal(value_); }
 private:
     T value_;
+    QcrControl<T>* widget_ {nullptr};
     std::function<void(T)> postHook_ = [](T) {};
     std::function<T(T)> coerce_ = [](T val) { return val; };
     void actOnChange();
