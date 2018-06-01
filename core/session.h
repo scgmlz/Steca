@@ -46,6 +46,7 @@ class Session {
 public:
     Session();
     ~Session();
+    Session(const Session&) = delete;
 
     // accessor methods:
     Dataset& dataset() { return dataset_; }
