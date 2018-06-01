@@ -66,6 +66,7 @@ public:
     DataImageTab();
     ~DataImageTab();
 private:
+    const Measurement* measurement();
     QGridLayout boxIdx_;
     QGridLayout boxRanges_;
     QPixmap pixmap() final;

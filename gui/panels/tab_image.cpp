@@ -279,13 +279,21 @@ DataImageTab::~DataImageTab()
 
 QPixmap DataImageTab::pixmap()
 {
-    const Measurement* measurement = gSession->dataset().highlight().measurement();
-    if (!measurement)
+    const Measurement* m = measurement();
+    if (!m)
         return makeBlankPixmap();
     if (gGui->toggles->showBins.getValue())
-        return makeOverlayPixmap(*measurement);
-    return makePixmap(measurement->image());
+        return makeOverlayPixmap(*m);
+    return makePixmap(m->image());
 }
+
+const Measurement* DataImageTab::measurement()
+{
+    const Cluster* cluster = gSession->dataset().highlight().cluster();
+    return cluster ? cluster->at(idxMeas_.getValue()) : nullptr;
+}
+
+
 
 //  ***********************************************************************************************
 //! @class CorrImageTab

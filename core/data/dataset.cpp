@@ -92,11 +92,6 @@ int HighlightedData::clusterIndex() const
     return current_ ? current_->index() : -1;
 }
 
-const Measurement* HighlightedData::measurement() const
-{
-    return current_ ? current_->at(measurementIdx.val()) : nullptr;
-}
-
 
 //  ***********************************************************************************************
 //! @class Dataset
