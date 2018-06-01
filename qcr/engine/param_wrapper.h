@@ -31,10 +31,12 @@ class ParamWrapper {
 public:
     ParamWrapper() = delete;
     ParamWrapper(T value) : value_{value} {}
+
+    void setVal(T);
     T val() const { return value_; }
+
     void setCoerce(std::function<T(T)> coerce) { coerce_ = coerce; }
     void setPostHook(std::function<void(T)> postHook) { postHook_ = postHook; }
-    void setVal(T);
     void reCoerce() { setVal(value_); }
 private:
     T value_;
