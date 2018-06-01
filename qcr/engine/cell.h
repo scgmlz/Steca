@@ -29,7 +29,7 @@ public:
     Cell() = delete;
     Cell(const QString& name) : name_(name) {}
     virtual ~Cell() = default; // needed as long as some Cells are explicitly deleted.
-    typedef long int stamp_t;
+    typedef long unsigned int stamp_t;
     stamp_t update();
     void connectAction(std::function<void()>&&);
     const QString& name() const { return name_; }

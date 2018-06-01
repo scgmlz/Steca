@@ -48,6 +48,7 @@ const QString dataFormats {"Data files (*.dat *.yaml *.mar*);;All files (*.*)"};
 
 MainWin::MainWin()
 {
+    qDebug() << "MainWin BEG c'tor";
     gGui = this;
     gRoot = this;
 
@@ -98,6 +99,7 @@ MainWin::MainWin()
             triggers->corrFile.setToolTip(text.toLower()); });
     toggles->enableCorr.setRemake([=]() {
             toggles->enableCorr.setEnabled(gSession->hasCorrFile()); });
+    qDebug() << "MainWin END c'tor";
 }
 
 MainWin::~MainWin()

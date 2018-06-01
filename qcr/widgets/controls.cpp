@@ -187,13 +187,13 @@ QcrSpinBox::QcrSpinBox(const QString& _name, SingleValueCell<int>* cell, int ndi
 
 void QcrSpinBox::initSpinBox(int ndigits, bool withDot, int min, int max, const QString& tooltip)
 {
-    initControl();
     strOp::setWidth(this, 2+ndigits, withDot);
     ASSERT(min<=max);
     setMinimum(min);
     setMaximum(max);
     if (tooltip!="")
         setToolTip(tooltip);
+    initControl();
     reportedValue_ = value();
     connect(this, &QSpinBox::editingFinished, this, &QcrSpinBox::reportChange);
     connect(this, _SLOT_(QSpinBox,valueChanged,int), [this](int val)->void {
@@ -237,17 +237,21 @@ QcrDoubleSpinBox::QcrDoubleSpinBox(
     const QString& _name, SingleValueCell<double>* cell, int ndigits, double min, double max)
     : QcrControl<double> {*this, _name, cell}
 {
+    qDebug() << "init BEG QcrDoubleSpinBox " << name() << cell->val() << " =? " << value();
     initDoubleSpinBox(ndigits, min, max);
+    qDebug() << "init END QcrDoubleSpinBox " << name() << cell->val() << " =? " << value();
 }
 
 void QcrDoubleSpinBox::initDoubleSpinBox(int ndigits, double min = LLONG_MIN, double max = LLONG_MAX)
 {
-    initControl();
     strOp::setWidth(this, 2+ndigits, true);
     setDecimals(ndigits);
     ASSERT(min<=max);
     setMinimum(min);
     setMaximum(max);
+    qDebug() << "init M_1 QcrDoubleSpinBox " << name() << cell()->val() << " =? " << value();
+    initControl();
+    qDebug() << "init M_2 QcrDoubleSpinBox " << name() << cell()->val() << " =? " << value();
     reportedValue_ = value();
     connect(this, &QDoubleSpinBox::editingFinished, this, &QcrDoubleSpinBox::reportChange);
     connect(this, _SLOT_(QDoubleSpinBox,valueChanged,double), [this](double val)->void {

@@ -15,9 +15,10 @@
 #ifndef SINGLE_VALUE_H
 #define SINGLE_VALUE_H
 
+#include "qcr/base/debug.h"
+#include "qcr/base/string_ops.h"
 #include "qcr/engine/mixin.h"
 #include "qcr/engine/cell.h"
-#include "qcr/base/string_ops.h"
 
 //! Base class for all Qcr widgets that hold a single value.
 template<class T>
@@ -29,7 +30,7 @@ public:
     void programaticallySetValue(T val);
     virtual T getValue() const = 0;
     virtual void executeConsoleCommand(const QString& arg);
-    Cell* cell() { return cell_; }
+    SingleValueCell<T>* cell() { return cell_; }
 protected:
     void initControl();
     void onChangedValue(bool hasFocus, T val);
@@ -75,10 +76,17 @@ QcrControl<T>::~QcrControl()
 template<class T>
 void QcrControl<T>::initControl()
 {
-    programaticallySetValue(cell_->val());
-    cell_->connectAction([this](){programaticallySetValue(cell_->val());});
+    T givenValue = cell_->val();
+    programaticallySetValue(givenValue);
     reportedValue_ = getValue();
-    doLog(true, "initialization: "+name()+" "+strOp::to_s(reportedValue_));
+    if (!ownsItsCell_ && reportedValue_ != givenValue)
+        qWarning("Widget %s has changed value of cell %s from %s to %s",
+               name().toLatin1().constData(),
+               cell_->name().toLatin1().constData(),
+               strOp::to_s(givenValue).toLatin1().constData(),
+               strOp::to_s(reportedValue_).toLatin1().constData());
+    cell_->connectAction([this](){programaticallySetValue(cell_->val());});
+    doLog(true, "initControl "+name()+" "+strOp::to_s(reportedValue_));
 }
 
 template<class T>
