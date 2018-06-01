@@ -23,24 +23,14 @@
 
 void remakeAll();
 
-//! Manages update dependences.
-class Cell {
-public:
-    virtual ~Cell() = default; // needed as long as some Cells are explicitly deleted.
-    void connectAction(std::function<void()>&&);
-protected:
-    void actOnChange();
-private:
-    std::vector<std::function<void()>> actionsOnChange_;
-};
-
 //! Holds a single data value, and functions to be run upon change
 template<class T>
-class ParamWrapper : public Cell {
+class ParamWrapper {
 public:
     ParamWrapper() = delete;
     ParamWrapper(T value) : value_(value) {}
     T val() const { return value_; }
+    void connectAction(std::function<void()>&&);
     void setCoerce(std::function<T(T)> coerce) { coerce_ = coerce; }
     void setPostHook(std::function<void(T)> postHook) { postHook_ = postHook; }
     void setVal(T, bool userCall=false);
@@ -49,6 +39,8 @@ private:
     T value_;
     std::function<void(T)> postHook_ = [](T) {};
     std::function<T(T)> coerce_ = [](T val) { return val; };
+    void actOnChange();
+    std::vector<std::function<void()>> actionsOnChange_;
 };
 
 //  ***********************************************************************************************
@@ -71,6 +63,20 @@ void ParamWrapper<T>::setVal(T val, bool userCall)
     } else {
         qDebug() << " -> " << val << " (non-user call)";
     }
+}
+
+//! Appends given function to actionsOnChange_.
+template<class T>
+void ParamWrapper<T>::connectAction(std::function<void()>&& f)
+{
+    actionsOnChange_.push_back(std::move(f));
+}
+
+template<class T>
+void ParamWrapper<T>::actOnChange()
+{
+    for (const std::function<void()>& f: actionsOnChange_)
+        f();
 }
 
 #endif // CELL_H

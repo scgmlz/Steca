@@ -22,16 +22,3 @@ void remakeAll()
     ASSERT(gRoot);
     gRoot->fullRemake();
 }
-
-
-//! Appends given function to actionsOnChange_.
-void Cell::connectAction(std::function<void()>&& f)
-{
-    actionsOnChange_.push_back(std::move(f));
-}
-
-void Cell::actOnChange()
-{
-    for (const std::function<void()>& f: actionsOnChange_)
-        f();
-}
