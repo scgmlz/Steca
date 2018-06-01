@@ -25,27 +25,39 @@ void remakeAll();
 template<class T>
 class QcrControl;
 
-//! Holds a single data value, and functions to be run upon change
+//! Holds a single parameter.
 template<class T>
 class ParamWrapper {
 public:
     ParamWrapper() = delete;
-    ParamWrapper(T value) : value_{value} {}
+    ParamWrapper(T value) : value_{value}, coerce_{[this](T val) { return val; }} {}
 
     void setVal(T);
     T val() const { return value_; }
 
-    void setCoerce(std::function<T(T)> coerce) { coerce_ = coerce; }
     void setPostHook(std::function<void(T)> postHook) { postHook_ = postHook; }
-    void reCoerce() { setVal(value_); }
 private:
     T value_;
+    std::function<T(T)> coerce_;
     std::function<void(T)> postHook_ = [](T) {};
-    std::function<T(T)> coerce_ = [](T val) { return val; };
 
     friend QcrControl<T>;
     void guiSetsVal(T, bool userCall=false);
     std::function<void(T)> callGuiOnSet_ = [](T){};
+};
+
+//! Holds a single number.
+template<class T>
+class NumberWrapper : public ParamWrapper {
+public:
+    NumberWrapper(T value) : value_{value}, coerce_{[this](T val) { return coerceMinMax(val); }} {}
+
+private:
+    bool hasMin_ {false};
+    bool hasMax_ {false};
+    std::function<void(T)> minFct_ = [](T) { return T(); };
+    std::function<void(T)> maxFct_ = [](T) { return T(); };
+    T coerceMinMax(T val);
 };
 
 //  ***********************************************************************************************
@@ -80,6 +92,20 @@ void ParamWrapper<T>::guiSetsVal(T val, bool userCall)
     } else {
         qDebug() << " -> " << val << " (non-user call)";
     }
+}
+
+//  ***********************************************************************************************
+//  class NumberWrapper implementation
+
+template<class T>
+T NumberWrapper<T>::coerceMinMax(T val)
+{
+    T ret = val;
+    if (hasMin_)
+        ret = std::max(val, minFct_());
+    if (hasMax_)
+        ret = std::min(val, maxFct_());
+    return ret;
 }
 
 #endif // PARAM_WRAPPER_H
