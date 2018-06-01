@@ -24,18 +24,18 @@
 template<class T>
 class QcrControl : public QcrSettable {
 public:
-    QcrControl(QObject& object, const QString& name, SingleValueCell<T>* cell);
+    QcrControl(QObject& object, const QString& name, ParamWrapper<T>* cell);
     QcrControl(QObject& object, const QString& name, const T val);
     ~QcrControl();
     void programaticallySetValue(T val);
     virtual T getValue() const = 0;
     virtual void executeConsoleCommand(const QString& arg);
-    SingleValueCell<T>* cell() { return cell_; }
+    ParamWrapper<T>* cell() { return cell_; }
 protected:
     void initControl();
     void onChangedValue(bool hasFocus, T val);
     bool softwareCalling_ {false}; // make it private again ??
-    SingleValueCell<T>* cell_ {nullptr};
+    ParamWrapper<T>* cell_ {nullptr};
 private:
     virtual void doSetValue(T) = 0;
     T reportedValue_;
@@ -45,21 +45,21 @@ private:
 //  ***********************************************************************************************
 //  implementation of QcrControl<T>
 
-//! Constructor that associates this QcrControl with an external SingleValueCell.
+//! Constructor that associates this QcrControl with an external ParamWrapper.
 template<class T>
-QcrControl<T>::QcrControl(QObject& object, const QString& name, SingleValueCell<T>* cell)
+QcrControl<T>::QcrControl(QObject& object, const QString& name, ParamWrapper<T>* cell)
     : QcrSettable {object, name}
     , cell_ {cell}
 {
 }
 
-//! Constructs a QcrControl that owns a SingleValueCell.
+//! Constructs a QcrControl that owns a ParamWrapper.
 template<class T>
 QcrControl<T>::QcrControl(QObject& object, const QString& name, const T val)
     : QcrSettable {object, name}
     , ownsItsCell_ {true}
 {
-    cell_ = new SingleValueCell<T>(name, val); // TODO RECONSIDER smart pointer
+    cell_ = new ParamWrapper<T>(name, val); // TODO RECONSIDER smart pointer
 }
 
 template<class T>

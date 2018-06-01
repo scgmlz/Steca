@@ -111,8 +111,8 @@ public:
 
     size2d imageSize() const;
 
-    SingleValueCell<bool> intenScaledAvg {"intenScaledAvg", true}; // if not, summed
-    SingleValueCell<double> intenScale {"intenScale", 1};
+    ParamWrapper<bool> intenScaledAvg {"intenScaledAvg", true}; // if not, summed
+    ParamWrapper<double> intenScale {"intenScale", 1};
 
 private:
     // with reference accessor methods:

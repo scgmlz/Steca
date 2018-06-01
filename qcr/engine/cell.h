@@ -54,10 +54,10 @@ private:
 
 //! Holds a single data value, and functions to be run upon change
 template<class T>
-class SingleValueCell : public ValueCell {
+class ParamWrapper : public ValueCell {
 public:
-    SingleValueCell() = delete;
-    SingleValueCell(const QString& name, T value) : ValueCell(name), value_(value) {}
+    ParamWrapper() = delete;
+    ParamWrapper(const QString& name, T value) : ValueCell(name), value_(value) {}
     T val() const { return value_; }
     void setCoerce(std::function<T(T)> coerce) { coerce_ = coerce; }
     void setPostHook(std::function<void(T)> postHook) { postHook_ = postHook; }
@@ -70,10 +70,10 @@ private:
 };
 
 //  ***********************************************************************************************
-//  class SingleValueCell implementation
+//  class ParamWrapper implementation
 
 template<class T>
-void SingleValueCell<T>::setVal(T val, bool userCall)
+void ParamWrapper<T>::setVal(T val, bool userCall)
 {
     T newval = coerce_(val);
     if (newval==value_) {

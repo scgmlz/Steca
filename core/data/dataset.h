@@ -92,8 +92,8 @@ public:
     const Cluster& clusterAt(int i) const;
     int offset(const Datafile& file) const { return file.offset_; }
 
-    SingleValueCell<int> binning {"binning", 1};             //!< bin so many Measurement|s into one cluster
-    SingleValueCell<bool> dropIncomplete {"dropIncomplete", false}; //!< drop Cluster|s with less than 'binning' members.
+    ParamWrapper<int> binning {"binning", 1};             //!< bin so many Measurement|s into one cluster
+    ParamWrapper<bool> dropIncomplete {"dropIncomplete", false}; //!< drop Cluster|s with less than 'binning' members.
     bool hasIncomplete() const { return hasIncomplete_; }
 
     const ActiveClusters& activeClusters() const { return activeClusters_; }

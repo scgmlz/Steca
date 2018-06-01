@@ -103,7 +103,7 @@ QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on,
     initToggle(iconFile, shortcut);
 }
 
-QcrToggle::QcrToggle(const QString& rawname, SingleValueCell<bool>* cell, const QString& text,
+QcrToggle::QcrToggle(const QString& rawname, ParamWrapper<bool>* cell, const QString& text,
                      const QString& iconFile, const QKeySequence& shortcut)
     : QcrAction {text}
     , QcrControl<bool> {*this, rawname, cell}
@@ -178,7 +178,7 @@ QcrSpinBox::QcrSpinBox(int val, const QString& _name, int ndigits,
 }
 
 
-QcrSpinBox::QcrSpinBox(const QString& _name, SingleValueCell<int>* cell, int ndigits,
+QcrSpinBox::QcrSpinBox(const QString& _name, ParamWrapper<int>* cell, int ndigits,
                        bool withDot, int min, int max, const QString& tooltip)
     : QcrControl<int> {*this, _name, cell}
 {
@@ -234,7 +234,7 @@ QcrDoubleSpinBox::QcrDoubleSpinBox(const QString& _name, int ndigits, double min
 }
 
 QcrDoubleSpinBox::QcrDoubleSpinBox(
-    const QString& _name, SingleValueCell<double>* cell, int ndigits, double min, double max)
+    const QString& _name, ParamWrapper<double>* cell, int ndigits, double min, double max)
     : QcrControl<double> {*this, _name, cell}
 {
     qDebug() << "init BEG QcrDoubleSpinBox " << name() << cell->val() << " =? " << value();
@@ -294,7 +294,7 @@ QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, bool val)
             onChangedValue(hasFocus(), (bool)val); });
 }
 
-QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, SingleValueCell<bool>* cell)
+QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, ParamWrapper<bool>* cell)
     : QCheckBox {text}
     , QcrControl<bool> {*this, _name, cell}
 {
@@ -315,7 +315,7 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, bool v
             onChangedValue(hasFocus(), val); });
 }
 
-QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, SingleValueCell<bool>* cell)
+QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, ParamWrapper<bool>* cell)
     : QRadioButton {text}
     , QcrControl<bool> {*this, _name, cell}
 {

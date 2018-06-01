@@ -30,7 +30,7 @@ public:
     void fromJson(const JsonObj& obj);
     void removeFile();
     void loadFile(const QString& filePath);
-    SingleValueCell<bool> enabled {"corrEnabled", true};
+    ParamWrapper<bool> enabled {"corrEnabled", true};
     void clearIntens() { normalizer_.release(); }
 
     // Lookup methods
