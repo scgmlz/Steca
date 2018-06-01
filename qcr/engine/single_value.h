@@ -118,8 +118,7 @@ void QcrControl<T>::onChangedValue(bool hasFocus, T val)
     // <= seems unavoidable in QTabWidget tab selection
 
     reportedValue_ = val;
-    if (cell_)
-        cell_->setVal(val, userCall);
+    cell_->guiSetsVal(val, userCall);
 }
 
 #endif // SINGLE_VALUE_H

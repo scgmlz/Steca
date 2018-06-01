@@ -35,7 +35,8 @@ public:
     void connectAction(std::function<void()>&&);
     void setCoerce(std::function<T(T)> coerce) { coerce_ = coerce; }
     void setPostHook(std::function<void(T)> postHook) { postHook_ = postHook; }
-    void setVal(T, bool userCall=false);
+    void setVal(T);
+    void guiSetsVal(T, bool userCall=false);
     void reCoerce() { setVal(value_); }
 private:
     T value_;
@@ -50,7 +51,20 @@ private:
 //  class ParamWrapper implementation
 
 template<class T>
-void ParamWrapper<T>::setVal(T val, bool userCall)
+void ParamWrapper<T>::setVal(T val)
+{
+    T newval = coerce_(val);
+    if (newval==value_) {
+        qDebug() << " == " << val << " (as before)";
+        return;
+    }
+    value_ = newval;
+    actOnChange();
+    qDebug() << " -> " << val << " (non-user call)";
+}
+
+template<class T>
+void ParamWrapper<T>::guiSetsVal(T val, bool userCall)
 {
     T newval = coerce_(val);
     if (newval==value_) {
