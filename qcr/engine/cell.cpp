@@ -34,7 +34,7 @@ Cell::stamp_t Cell::update()
     recompute();
     /*
     for (Cell* src: sources_)
-        t_new = std::max(t_new, src->update());
+        t_new = qMax(t_new, src->update());
     if (t_new>timestamp_) {
         recompute();
         timestamp_ = t_new;

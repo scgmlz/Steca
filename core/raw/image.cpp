@@ -47,7 +47,7 @@ void Image::fill(float val, const size2d& size)
     int newSize = size.count();
     size_ = size;
     intens_.resize(newSize, val); // sets only new pixels to val
-    auto maxIndex = std::min(oldSize, newSize);
+    auto maxIndex = qMin(oldSize, newSize);
     for_i(maxIndex) { // set all remaining pixels to val
         intens_[i] = val;
     }
