@@ -170,9 +170,9 @@ QcrIconToggleButton::QcrIconToggleButton(QcrToggle* action)
 //! https://forum.qt.io/topic/89011. Here, we explicitly deal with editingFinished and
 //! mouse release events.
 
-QcrSpinBox::QcrSpinBox(const QString& _name, int ndigits,
+QcrSpinBox::QcrSpinBox(int val, const QString& _name, int ndigits,
                        bool withDot, int min, int max, const QString& tooltip)
-    : QcrControl<int> {*this, _name, 0}
+    : QcrControl<int> {*this, _name, val}
 {
     initSpinBox(ndigits, withDot, min, max, tooltip);
 }

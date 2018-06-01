@@ -228,7 +228,7 @@ DataImageTab::DataImageTab()
     : ImageTab {"dataImage"}
     , btnShowBins_ {&gGui->toggles->showBins}
     , idxMeas_ {
-        "idxMeas", &gSession->dataset().highlight().measurementIdx, 4, false, 1, INT_MAX,
+        1, "idxMeas", 4, false, 1, INT_MAX,
         "Number of measurement within the current group of measurements"}
     , idxSlice_ {
         "idxSlice", &gSession->gammaSelection().currSlice,
@@ -290,7 +290,7 @@ QPixmap DataImageTab::pixmap()
 const Measurement* DataImageTab::measurement()
 {
     const Cluster* cluster = gSession->dataset().highlight().cluster();
-    return cluster ? cluster->at(idxMeas_.getValue()) : nullptr;
+    return cluster ? cluster->at(idxMeas_.getValue()-1) : nullptr;
 }
 
 

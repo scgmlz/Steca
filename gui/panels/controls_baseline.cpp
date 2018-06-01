@@ -91,7 +91,7 @@ BaseRangesView::BaseRangesView()
 //! @class ControlsBaseline
 
 ControlsBaseline::ControlsBaseline()
-    : spinDegree_ {"degree", 4, false, 0, 4,
+    : spinDegree_ {2, "degree", 4, false, 0, 4,
         "Degree of the polynomial used to fit the baseline"}
 {
     hb_.addWidget(new QLabel("Pol. degree:"));

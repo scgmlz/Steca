@@ -60,8 +60,6 @@ public:
     int clusterIndex() const;
     const Datafile* file() const;
     int fileIndex() const;
-    const Measurement* measurement() const;
-    SingleValueCell<int> measurementIdx {"highlightedMeasurement", 0}; //!< selected for image display (idx in highlighted cluster)
 
 private:
     const Cluster* current_ { nullptr };

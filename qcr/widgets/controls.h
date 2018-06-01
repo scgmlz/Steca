@@ -90,7 +90,7 @@ public:
 class QcrSpinBox : public QSpinBox, public QcrControl<int> {
     Q_OBJECT
 public:
-    QcrSpinBox(const QString& name, int ndigits,
+    QcrSpinBox(int val, const QString& name, int ndigits,
                bool withDot, int min = INT_MIN, int max = INT_MAX, const QString& tooltip="");
     QcrSpinBox(const QString& name, SingleValueCell<int>* cell, int ndigits,
                bool withDot, int min = INT_MIN, int max = INT_MAX, const QString& tooltip="");
