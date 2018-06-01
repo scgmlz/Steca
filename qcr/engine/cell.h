@@ -29,35 +29,22 @@ public:
     Cell() = delete;
     Cell(const QString& name) : name_(name) {}
     virtual ~Cell() = default; // needed as long as some Cells are explicitly deleted.
-    typedef long unsigned int stamp_t;
-    stamp_t update();
     void connectAction(std::function<void()>&&);
     const QString& name() const { return name_; }
 protected:
     virtual void recompute() { qDebug() << "Dummy recompute of " << name(); }
     void actOnChange();
-    stamp_t timestamp_ { 0 };
 private:
     const QString name_;
     std::vector<std::function<void()>> actionsOnChange_;
 };
 
-class ValueCell : public Cell {
-public:
-    ValueCell(const QString& name) : Cell(name) {}
-protected:
-    static stamp_t latestTimestamp__;
-    void timeStep() { timestamp_ = mintTimestamp(); }
-private:
-    static stamp_t mintTimestamp() { return ++latestTimestamp__; }
-};
-
 //! Holds a single data value, and functions to be run upon change
 template<class T>
-class ParamWrapper : public ValueCell {
+class ParamWrapper : public Cell {
 public:
     ParamWrapper() = delete;
-    ParamWrapper(const QString& name, T value) : ValueCell(name), value_(value) {}
+    ParamWrapper(const QString& name, T value) : Cell(name), value_(value) {}
     T val() const { return value_; }
     void setCoerce(std::function<T(T)> coerce) { coerce_ = coerce; }
     void setPostHook(std::function<void(T)> postHook) { postHook_ = postHook; }
@@ -83,8 +70,7 @@ void ParamWrapper<T>::setVal(T val, bool userCall)
     value_ = newval;
     actOnChange();
     if (userCall) {
-        timeStep();
-        qDebug() << name() << " -> " << val << ", t=" << timestamp_;
+        qDebug() << name() << " -> " << val;
         postHook_(newval);
         remakeAll();
     } else {

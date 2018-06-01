@@ -24,26 +24,6 @@ void remakeAll()
 }
 
 
-Cell::stamp_t ValueCell::latestTimestamp__ = 0;
-
-
-Cell::stamp_t Cell::update()
-{
-    //stamp_t t_new = timestamp_;
-    qDebug() << "Updating " << name() << " t=" << timestamp_;
-    recompute();
-    /*
-    for (Cell* src: sources_)
-        t_new = qMax(t_new, src->update());
-    if (t_new>timestamp_) {
-        recompute();
-        timestamp_ = t_new;
-    }
-    */
-    qDebug() << " Updated " << name() << " t=" << timestamp_;
-    return timestamp_;
-}
-
 //! Appends given function to actionsOnChange_.
 void Cell::connectAction(std::function<void()>&& f)
 {
