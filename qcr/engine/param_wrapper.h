@@ -43,7 +43,7 @@ protected:
 
     friend QcrControl<T>;
     void guiSetsVal(T, bool userCall=false);
-    std::function<void(T)> callGuiOnSet_ = [](T){};
+    std::function<void(T)> setGuiVal_ = [](T){};
 };
 
 //! Holds a single number.
@@ -80,7 +80,7 @@ void ParamWrapper<T>::setVal(T val)
         return;
         }*/
     value_ = newval;
-    callGuiOnSet_(newval);
+    setGuiVal_(newval);
     // qDebug() << " -> " << val << " -> " << newval <<  " (non-user call)";
 }
 

@@ -84,7 +84,7 @@ void QcrControl<T>::initControl()
                name().toLatin1().constData(),
                strOp::to_s(givenValue).toLatin1().constData(),
                strOp::to_s(reportedValue_).toLatin1().constData());
-    cell_->callGuiOnSet_ = [this](T val){programaticallySetValue(val);};
+    cell_->setGuiVal_ = [this](T val){programaticallySetValue(val);};
     doLog(true, "initControl "+name()+" "+strOp::to_s(reportedValue_));
 }
 
