@@ -208,8 +208,8 @@ void MainWin::addFiles()
     TakesLongTime __("addFiles");
     try {
         gSession->dataset().addGivenFiles(fileNames);
-    } catch (Exception e) {
-        qWarning() << e.what();
+    } catch (Exception ex) {
+        qWarning() << ex.msg();
     }
     remakeAll();
 }
@@ -226,8 +226,8 @@ void MainWin::loadCorrFile()
             return;
         try {
             gSession->corrset().loadFile(fileName);
-        } catch (Exception e) {
-            qWarning() << e.msg();
+        } catch (Exception ex) {
+            qWarning() << ex.msg();
         }
     }
     remakeAll();

@@ -13,9 +13,10 @@
 //  ***********************************************************************************************
 
 #include "file_dialog.h"
-#include "core/loaders/loaders.h"
-#include "qcr/widgets/modal_dialogs.h"
+#include "qcr/base/string_ops.h"
 #include "qcr/base/debug.h"
+#include "qcr/widgets/modal_dialogs.h"
+#include "core/loaders/loaders.h"
 #include <QFileSystemModel>
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
@@ -133,7 +134,7 @@ bool confirmOverwrite(const QString& name, QWidget* parent, const QString& path)
                 == QMessageBox::Yes;
         break;
     case eFileOverwritePolicy::PANIC:
-        qFatal("attempting to write to existing file '%s'", path.toLatin1().constData());
+        qFatal("attempting to write to existing file '%s'", strOp::to_ascii(path));
         break;
     case eFileOverwritePolicy::SILENT_OVERWRITE:
         return true;

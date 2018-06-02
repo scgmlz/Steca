@@ -16,6 +16,7 @@
 #define PARAM_WRAPPER_H
 
 #include "qcr/base/debug.h"
+#include "qcr/base/string_ops.h"
 #include <QObject>
 #include <functional>
 #include <vector>
@@ -75,10 +76,6 @@ void ParamWrapper<T>::setVal(T val)
     T newval = coerce_(val);
     if (newval!=val)
         qDebug() << "Value " << val << " corrected into " << newval;
-/*    if (newval==value_) {
-        qDebug() << " == " << val << " -> " << newval << " (as before)";
-        return;
-        }*/
     value_ = newval;
     setGuiVal_(newval);
     // qDebug() << " -> " << val << " -> " << newval <<  " (non-user call)";
@@ -87,15 +84,13 @@ void ParamWrapper<T>::setVal(T val)
 template<class T>
 void ParamWrapper<T>::guiSetsVal(T val, bool userCall)
 {
-    T newval = coerce_(val);
-    if (newval==value_) {
-        qDebug() << " == " << val << " (as before)";
-        return;
-    }
-    value_ = newval;
+    if (coerce_(val) != val)
+        qFatal("GUI delivered value %s that ought to be coerced to %s",
+               strOp::to_ascii(val), strOp::to_ascii(coerce_(val)));
+    value_ = val;
     if (userCall) {
         qDebug() << " -> " << val;
-        postHook_(newval);
+        postHook_(val);
         remakeAll();
     } else {
         qDebug() << " -> " << val << " (non-user call)";

@@ -180,8 +180,8 @@ Rawfile loadYaml(const QString& filePath)
         readMeasurement(yamlFile["measurement"], rawfile);
         return rawfile;
     qDebug() << "DEBUG[load_yaml] done";
-    } catch (Exception e) {
-        THROW("Invalid data in file "+filePath+":\n" + e.what());
+    } catch (Exception ex) {
+        THROW("Invalid data in file "+filePath+":\n" + ex.msg());
     }
     // just to avoid compiler warnings:
     return Rawfile("");

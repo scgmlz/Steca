@@ -256,8 +256,8 @@ Rawfile loadTiffDat(const QString& filePath) {
         try {
             // load one dataseq
             loadTiff(&ret, dir.filePath(tiffFileName), phi, monitor, expTime);
-        } catch (Exception& e) {
-            THROW(tiffFileName + ": " + e.msg());
+        } catch (Exception& ex) {
+            THROW(tiffFileName + ": " + ex.msg());
         }
     }
 
