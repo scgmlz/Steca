@@ -71,8 +71,8 @@ QcrControl<T>::~QcrControl()
 
 //! Ensures synchronization of this Control with its associated Cell.
 
-//! Cannot be called from QcrControl constructors, because it calls the pure virtual member function
-//! 'doSetValue'; overrides of 'doSetValue' in subclasses are not available in the constructor of 'QcrControl'.
+//! Cannot be called from QcrControl constructors, because it calls the pure virtual member
+//! function 'doSetValue'; its overrides are not available in the constructor of 'QcrControl'.
 template<class T>
 void QcrControl<T>::initControl()
 {
