@@ -34,7 +34,7 @@ public:
     double min() const { return range_.min; }
     double max() const { return range_.max; }
     NumberWrapper<int> numSlices {1};
-    NumberWrapper<int> currSlice {0};
+    NumberWrapper<int> currSlice {1}; // counting from 1, for user convenience
     QJsonObject toJson() const;
 
 private:
