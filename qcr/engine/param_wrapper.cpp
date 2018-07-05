@@ -17,8 +17,9 @@
 #include <QtDebug>
 
 // TODO RECONSIDER: move out of global namespace
-void remakeAll()
+void remakeAll(const QString& whence)
 {
+    qDebug() << "remakeAll < " << whence;
     ASSERT(gRoot);
     gRoot->fullRemake();
 }

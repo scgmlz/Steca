@@ -21,7 +21,7 @@
 #include <functional>
 #include <vector>
 
-void remakeAll();
+void remakeAll(const QString& whence);
 
 template<class T>
 class QcrControl;
@@ -91,7 +91,7 @@ void ParamWrapper<T>::guiSetsVal(T val, bool userCall)
     if (userCall) {
         qDebug() << " -> " << val;
         postHook_(val);
-        remakeAll();
+        remakeAll("ParamWrapper");
     } else {
         qDebug() << " -> " << val << " (non-user call)";
     }

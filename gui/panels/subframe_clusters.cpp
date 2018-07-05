@@ -152,9 +152,9 @@ int ActiveClustersView::sizeHintForColumn(int col) const
 {
     switch (col) {
     case ActiveClustersModel::COL_CHECK: {
-        return 2*mWidth();
+        return 1.5*mWidth();
     } default:
-        return 3*mWidth();
+        return 4.5*mWidth();
     }
 }
 

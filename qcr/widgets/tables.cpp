@@ -42,7 +42,6 @@ void TableModel::refreshModel()
 void TableModel::onClicked(const QModelIndex& cell)
 {
     setHighlightedCell(cell);
-    remakeAll();
 }
 
 void TableModel::setHighlightedCell(const QModelIndex& cell)
@@ -81,7 +80,7 @@ void CheckTableModel::activateAndLog(bool primaryCall, int row, bool on)
     setActivated(row, on);
     gConsole->log2(primaryCall,
                    name() + ( on ? " activate " : " deactivate ") + QString::number(row));
-    remakeAll();
+    remakeAll("CheckTableModel::activateAndLog");
 }
 
 
@@ -144,7 +143,6 @@ void TableView::gotoCurrent(const QModelIndex& current)
         return; // the following would prevent execution of "onClicked"
     model_->setHighlight(current.row());
     updateScroll();
-    // remakeAll(); // TODO ????????????????
 }
 
 //! Highlights one cluster. Called either from GUI > currentChanged, or through Console command.

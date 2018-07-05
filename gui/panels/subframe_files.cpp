@@ -92,7 +92,7 @@ int FilesView::sizeHintForColumn(int col) const
 {
     switch (col) {
     case 1: {
-        return 2*mWidth();
+        return 1.5*mWidth();
     } default:
         return 10*mWidth();
     }
