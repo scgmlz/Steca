@@ -25,6 +25,9 @@ class MetabigtableModel : public CheckTableModel {
 public:
     MetabigtableModel() : CheckTableModel("meta") {}
 
+    enum { COL_CHECK = 1, COL_TAG, COL_VALUE, NUM_COLUMNS };
+
+private:
     int highlighted() const final { return 0; }// gSession->dataset().highlight().clusterIndex(); }
     void setHighlight(int i) final { ; } //gSession->dataset().highlight().setCluster(i); }
     bool activated(int row) const { return gSession->metaIsSelected(row); }
@@ -35,8 +38,6 @@ public:
 
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const { return {}; }
-
-    enum { COL_CHECK = 1, COL_TAG, COL_VALUE, NUM_COLUMNS };
 };
 
 QVariant MetabigtableModel::data(const QModelIndex& index, int role) const

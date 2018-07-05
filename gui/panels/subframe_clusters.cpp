@@ -27,19 +27,19 @@ class ActiveClustersModel : public CheckTableModel { // < QAbstractTableModel < 
 public:
     ActiveClustersModel() : CheckTableModel("measurement") {}
 
+    enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
+
+private:
     int highlighted() const final { return gSession->dataset().highlight().clusterIndex(); }
     void setHighlight(int row) final { gSession->dataset().highlight().setCluster(row); }
     bool activated(int row) const { return gSession->dataset().clusterAt(row).isActivated(); }
     void setActivated(int row, bool on) { gSession->dataset().activateCluster(row, on); }
 
+    int columnCount() const final { return COL_ATTRS + gSession->metaSelectedCount(); }
     int rowCount() const final { return gSession->dataset().countClusters(); }
 
-    enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
-
-private:
     QVariant data(const QModelIndex&, int) const final;
     QVariant headerData(int, Qt::Orientation, int) const final;
-    int columnCount() const final { return COL_ATTRS + gSession->metaSelectedCount(); }
 };
 
 QVariant ActiveClustersModel::data(const QModelIndex& index, int role) const
