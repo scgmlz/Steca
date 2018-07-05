@@ -31,7 +31,7 @@ public:
     int rowCount() const final { return Metadata::numAttributes(false); }
     int highlighted() const final { return 0; }// gSession->dataset().highlight().clusterIndex(); }
     void setHighlight(int i) final { ; } //gSession->dataset().highlight().setCluster(i); }
-    bool activated(int row) const { return gSession->metaSelected(row); }
+    bool activated(int row) const { return gSession->metaIsSelected(row); }
     void setActivated(int row, bool on) { gSession->setMetaSelected(row, on); }
 
     QVariant data(const QModelIndex&, int) const;
@@ -52,6 +52,8 @@ QVariant MetabigtableModel::data(const QModelIndex& index, int role) const
             return activated(row) ? Qt::Checked : Qt::Unchecked;
         break;
     case Qt::DisplayRole:
+        if (row==0 && col==1)
+            qDebug() << "subframe Metadata: call to data()";
         switch (col) {
         case COL_TAG:
             return Metadata::attributeTag(row, false);

@@ -26,9 +26,7 @@
 class ActiveClustersModel : public CheckTableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
     ActiveClustersModel() : CheckTableModel("measurement") {}
-    void onMetaSelection();
     void activateCluster(bool, int, bool);
-    int metaCount() const { return metaInfoNums_.size(); }
     int rowCount() const final { return gSession->dataset().countClusters(); }
     int highlighted() const final { return gSession->dataset().highlight().clusterIndex(); }
     void setHighlight(int row) final { gSession->dataset().highlight().setCluster(row); }
@@ -40,32 +38,8 @@ public:
 private:
     QVariant data(const QModelIndex&, int) const final;
     QVariant headerData(int, Qt::Orientation, int) const final;
-    int columnCount() const final { return COL_ATTRS + metaCount(); }
-
-    // The following local caches duplicate state information from Session.
-    // The are needed to detect changes of state, which in turn helps us to
-    // update display items only if they have changed. Whether this is really
-    // useful is to be determined. The cache for the activation state is gone.
-    std::vector<int> metaInfoNums_; //!< indices of metadata items selected for display
-    int columnCountCached_ {-1};
+    int columnCount() const final { return COL_ATTRS + gSession->metaSelectedCount(); }
 };
-
-void ActiveClustersModel::onMetaSelection()
-{
-    if (columnCountCached_!=-1 && columnCount()==columnCountCached_) {
-        TableModel::refreshModel();
-        return;
-    }
-    beginResetModel();
-    metaInfoNums_.clear();
-    for_i (Metadata::size())
-        if (gSession->metaSelected(i))
-            metaInfoNums_.push_back(i);
-    emit dataChanged(createIndex(0,COL_ATTRS), createIndex(rowCount(),columnCount()));
-    emit headerDataChanged(Qt::Horizontal, COL_ATTRS, columnCount());
-    endResetModel();
-    columnCountCached_ = columnCount();
-}
 
 QVariant ActiveClustersModel::data(const QModelIndex& index, int role) const
 {
@@ -76,13 +50,15 @@ QVariant ActiveClustersModel::data(const QModelIndex& index, int role) const
     int col = index.column();
     switch (role) {
     case Qt::DisplayRole: {
+        if (row==0 && col==1)
+            qDebug() << "subframe Cluster: call to data(), meta#=" << gSession->metaSelectedCount();
         if (col==COL_NUMBER) {
             QString ret = QString::number(cluster.totalOffset()+1);
             if (cluster.count()>1)
                 ret += "-" + QString::number(cluster.totalOffset()+cluster.count());
             return ret;
-        } else if (col>=COL_ATTRS && col < COL_ATTRS+metaCount()) {
-            return cluster.avgMetadata().attributeStrValue(metaInfoNums_.at(col-COL_ATTRS));
+        } else if (col>=COL_ATTRS && col < COL_ATTRS+gSession->metaSelectedCount()) {
+            return cluster.avgMetadata().attributeStrValue(gSession->metaSelectedAt(col-COL_ATTRS));
         } else
             return {};
     }
@@ -137,8 +113,8 @@ QVariant ActiveClustersModel::headerData(int col, Qt::Orientation ori, int role)
         return {};
     if (col==COL_NUMBER)
         return "#";
-    else if (col>=COL_ATTRS && col < COL_ATTRS+metaCount())
-        return Metadata::attributeTag(metaInfoNums_.at(col-COL_ATTRS), false);
+    else if (col>=COL_ATTRS && col < COL_ATTRS+gSession->metaSelectedCount())
+        return Metadata::attributeTag(gSession->metaSelectedAt(col-COL_ATTRS), false);
     return {};
 }
 
@@ -167,13 +143,15 @@ ActiveClustersView::ActiveClustersView()
     // internal connection:
     connect(this, &ActiveClustersView::clicked, model(), &CheckTableModel::onClicked);
 
-    setRemake([this]() {refresh();});
+    setRemake([this]() {
+            refresh();
+            onData();
+        });
 }
 
 void ActiveClustersView::refresh()
 {
-    model()->onMetaSelection();
-    setHeaderHidden(model()->metaCount()==0);
+    setHeaderHidden(gSession->metaSelectedCount()==0);
 }
 
 int ActiveClustersView::sizeHintForColumn(int col) const

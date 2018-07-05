@@ -131,6 +131,7 @@ void Dataset::removeFile()
             qFatal("impossible case in Dataset::removeFile");
     } else
         highlight().clear(); // TODO or directly emit signal ?
+    remakeAll();
 }
 
 void Dataset::addGivenFiles(const QStringList& filePaths)

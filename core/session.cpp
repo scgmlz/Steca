@@ -19,6 +19,7 @@
 
 #include "qcr/base/debug.h"
 #include "core/session.h"
+#include "core/def/idiomatic_for.h"
 #include "core/fit/peak_functions.h"
 #include <QJsonDocument>
 
@@ -113,9 +114,14 @@ QByteArray Session::serializeSession() const
     return QJsonDocument(top).toJson();
 }
 
-void Session::setMetaSelected(int i, bool on)
+void Session::setMetaSelected(int idx, bool on)
 {
-    metaSelection_[i] = on;
+    metaSelection_[idx] = on;
+    // alternative representation:
+    metaInfoNums_.clear();
+    for_i (Metadata::size())
+        if (metaSelection_[i])
+            metaInfoNums_.push_back(i);
 }
 
 void Session::updateImageSize()

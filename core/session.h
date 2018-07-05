@@ -85,6 +85,11 @@ public:
     void setNormMode(eNorm);
     eNorm normMode() const { return normMode_; }
 
+    void setMetaSelected(int, bool);
+    bool metaIsSelected(int i) const { return metaSelection_[i]; }
+    int metaSelectedCount() const { return metaInfoNums_.size(); }
+    int metaSelectedAt(int i) const { return metaInfoNums_.at(i); }
+
     // modifying methods:
     void clear();
     void sessionFromJson(const QByteArray&);
@@ -94,8 +99,6 @@ public:
     void setInterpolatedPeakInfos(PeakInfos&& val) {
         interpolatedPeakInfos_ = std::move(val); }
 
-    void setMetaSelected(int, bool);
-
     void setImageTransformMirror(bool);
     void setImageTransformRotate(const ImageTransform&);
     void updateImageSize(); //!< Clears image size if session has no files
@@ -104,7 +107,6 @@ public:
     // const methods:
     QByteArray serializeSession() const;
 
-    bool metaSelected(int i) const { return metaSelection_[i]; }
 
     bool hasData() const { return dataset().countFiles(); }
     bool hasCorrFile() const { return corrset().hasFile(); }
@@ -132,6 +134,7 @@ private:
     eNorm normMode_ {eNorm::NONE};
     // others
     std::vector<bool> metaSelection_; //!< true if meta datum is to be displayed
+    std::vector<int> metaInfoNums_; //!< indices of metadata items selected for display
     size2d imageSize_; //!< All images must have this same size
 };
 

@@ -237,9 +237,7 @@ QcrDoubleSpinBox::QcrDoubleSpinBox(
     const QString& _name, NumberWrapper<double>* cell, int ndigits, double min, double max)
     : QcrControl<double> {*this, _name, cell}
 {
-    qDebug() << "init BEG QcrDoubleSpinBox " << name() << cell->val() << " =? " << value();
     initDoubleSpinBox(ndigits, min, max);
-    qDebug() << "init END QcrDoubleSpinBox " << name() << cell->val() << " =? " << value();
 }
 
 void QcrDoubleSpinBox::initDoubleSpinBox(int ndigits, double min = LLONG_MIN, double max = LLONG_MAX)
@@ -249,9 +247,7 @@ void QcrDoubleSpinBox::initDoubleSpinBox(int ndigits, double min = LLONG_MIN, do
     ASSERT(min<=max);
     setMinimum(min);
     setMaximum(max);
-    qDebug() << "init M_1 QcrDoubleSpinBox " << name() << cell()->val() << " =? " << value();
     initControl();
-    qDebug() << "init M_2 QcrDoubleSpinBox " << name() << cell()->val() << " =? " << value();
     reportedValue_ = value();
     connect(this, &QDoubleSpinBox::editingFinished, this, &QcrDoubleSpinBox::reportChange);
     connect(this, _SLOT_(QDoubleSpinBox,valueChanged,double), [this](double val)->void {
@@ -367,10 +363,7 @@ QcrTabWidget::QcrTabWidget(const QString& _name)
     : QcrControl<int> {*this, _name, 0}
 {
     initControl();
-    connect(this->tabBar(), &QTabBar::tabBarClicked, [=](int val) {
-            qDebug() << "tabBarClicked " << val; });
     connect(this, &QTabWidget::currentChanged, [this](int val) {
-            qDebug() << "tabBarChanged " << val;
             if (!isTabEnabled(val))
                 qFatal("Chosen tab is not enabled");
             onChangedValue(hasFocus(), val); });
