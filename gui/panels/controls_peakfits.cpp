@@ -105,7 +105,6 @@ private:
 PeaksView::PeaksView()
     : TableView(new PeaksModel())
 {
-    connect(this, &TableView::clicked, model_, &TableModel::onClicked);
 }
 
 //  ***********************************************************************************************

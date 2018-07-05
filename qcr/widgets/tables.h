@@ -69,7 +69,7 @@ public:
     TableView(TableModel*);
 
     virtual void executeConsoleCommand(const QString&);
-    void onData();
+    virtual void onData();
 protected:
     int mWidth() const;
     QString name_;

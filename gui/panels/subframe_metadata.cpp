@@ -87,8 +87,6 @@ private:
 MetabigtableView::MetabigtableView()
     : CheckTableView(new MetabigtableModel())
 {
-    // internal connection:
-    connect(this, &MetabigtableView::clicked, model(), &CheckTableModel::onClicked);
 }
 
 int MetabigtableView::sizeHintForColumn(int col) const

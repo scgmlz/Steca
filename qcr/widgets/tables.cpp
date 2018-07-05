@@ -102,6 +102,8 @@ TableView::TableView(TableModel* model)
             for (int i=0; i<model->columnCount(); ++i)
                 resizeColumnToContents(i);
         });
+    connect(this, &TableView::clicked, model_, &TableModel::onClicked);
+
     // other settings
     setHeaderHidden(true);
     setSelectionMode(QAbstractItemView::NoSelection);

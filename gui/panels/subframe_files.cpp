@@ -86,7 +86,6 @@ private:
 FilesView::FilesView()
     : CheckTableView(new FilesModel())
 {
-    connect(this, &FilesView::clicked, model(), &FilesModel::onClicked);
 }
 
 int FilesView::sizeHintForColumn(int col) const

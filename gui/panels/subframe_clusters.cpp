@@ -133,25 +133,21 @@ private:
     void refresh();
     int sizeHintForColumn(int) const override final;
     ActiveClustersModel* model() { return static_cast<ActiveClustersModel*>(model_); }
+    void onData() override;
 };
 
 ActiveClustersView::ActiveClustersView()
     : CheckTableView(new ActiveClustersModel())
 {
     setSelectionMode(QAbstractItemView::NoSelection);
-
-    // internal connection:
-    connect(this, &ActiveClustersView::clicked, model(), &CheckTableModel::onClicked);
-
-    setRemake([this]() {
-            refresh();
-            onData();
-        });
+    onData();
 }
 
-void ActiveClustersView::refresh()
+void ActiveClustersView::onData()
 {
     setHeaderHidden(gSession->metaSelectedCount()==0);
+    model_->refreshModel();
+    updateScroll();
 }
 
 int ActiveClustersView::sizeHintForColumn(int col) const
