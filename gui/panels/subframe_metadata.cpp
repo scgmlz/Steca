@@ -25,14 +25,13 @@ class MetabigtableModel : public CheckTableModel {
 public:
     MetabigtableModel() : CheckTableModel("meta") {}
 
-    void reset();
-
-    int columnCount() const final { return NUM_COLUMNS; }
-    int rowCount() const final { return Metadata::numAttributes(false); }
     int highlighted() const final { return 0; }// gSession->dataset().highlight().clusterIndex(); }
     void setHighlight(int i) final { ; } //gSession->dataset().highlight().setCluster(i); }
     bool activated(int row) const { return gSession->metaIsSelected(row); }
     void setActivated(int row, bool on) { gSession->setMetaSelected(row, on); }
+
+    int columnCount() const final { return NUM_COLUMNS; }
+    int rowCount() const final { return Metadata::numAttributes(false); }
 
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const { return {}; }

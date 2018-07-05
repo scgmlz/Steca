@@ -26,12 +26,13 @@
 class ActiveClustersModel : public CheckTableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
     ActiveClustersModel() : CheckTableModel("measurement") {}
-    void activateCluster(bool, int, bool);
-    int rowCount() const final { return gSession->dataset().countClusters(); }
+
     int highlighted() const final { return gSession->dataset().highlight().clusterIndex(); }
     void setHighlight(int row) final { gSession->dataset().highlight().setCluster(row); }
     bool activated(int row) const { return gSession->dataset().clusterAt(row).isActivated(); }
     void setActivated(int row, bool on) { gSession->dataset().activateCluster(row, on); }
+
+    int rowCount() const final { return gSession->dataset().countClusters(); }
 
     enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
 
