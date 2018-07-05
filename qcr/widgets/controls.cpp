@@ -114,12 +114,12 @@ QcrToggle::QcrToggle(const QString& rawname, ParamWrapper<bool>* cell, const QSt
 
 void QcrToggle::initToggle(const QString& iconFile, const QKeySequence& shortcut)
 {
-    initControl();
     setShortcut(shortcut);
+    setCheckable(true);
     //QAction::setObjectName(QcrSettable::name());
     if (iconFile!="")
         setIcon(QIcon(iconFile));
-    setCheckable(true);
+    initControl();
     connect(this, &QAction::toggled, this, [this](bool val){
             //qDebug()<<"TOGGLE "<<name()<<"toggled";
             onChangedValue(hasFocus(), val);});
