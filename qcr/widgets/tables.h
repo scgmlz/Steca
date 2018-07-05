@@ -74,6 +74,8 @@ protected:
     int mWidth() const;
     QString name_;
     TableModel* model_;
+    void currentChanged(const QModelIndex& current, const QModelIndex&) override final {
+        gotoCurrent(current); }
     void gotoCurrent(const QModelIndex&);
     void updateScroll();
     void highlight(bool primaryCall, int row);

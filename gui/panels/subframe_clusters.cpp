@@ -129,9 +129,6 @@ class ActiveClustersView : public CheckTableView { // < QTreeView < QAbstractIte
 public:
     ActiveClustersView();
 private:
-    void currentChanged(const QModelIndex& current, const QModelIndex&) override final {
-        gotoCurrent(current); }
-    void refresh();
     int sizeHintForColumn(int) const override final;
     ActiveClustersModel* model() { return static_cast<ActiveClustersModel*>(model_); }
     void onData() override;

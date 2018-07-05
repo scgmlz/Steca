@@ -78,8 +78,6 @@ class MetabigtableView : public CheckTableView {
 public:
     MetabigtableView();
 private:
-    void currentChanged(const QModelIndex& current, const QModelIndex&) override final {
-        gotoCurrent(current); }
     int sizeHintForColumn(int) const final;
     MetabigtableModel* model() { return static_cast<MetabigtableModel*>(model_); }
 };

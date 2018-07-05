@@ -79,8 +79,6 @@ class FilesView : public CheckTableView {
 public:
     FilesView();
 private:
-    void currentChanged(const QModelIndex& current, const QModelIndex&) override final {
-        gotoCurrent(current); }
     int sizeHintForColumn(int) const final;
     FilesModel* model() { return static_cast<FilesModel*>(model_); }
 };

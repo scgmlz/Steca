@@ -28,14 +28,15 @@ class BaseRangesModel : public TableModel {
 public:
     BaseRangesModel() : TableModel("baseline") {}
 
+    enum { COL_RANGE = 1, NUM_COLUMNS };
+
+private:
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return gSession->baseline().ranges().count(); }
     int highlighted() const final { return 0; } // dummy
     void setHighlight(int row) final {}         // no need to select and highlight ranges
 
     QVariant data(const QModelIndex&, int) const;
-
-    enum { COL_RANGE = 1, NUM_COLUMNS };
 };
 
 QVariant BaseRangesModel::data(const QModelIndex& index, int role) const
@@ -77,9 +78,6 @@ QVariant BaseRangesModel::data(const QModelIndex& index, int role) const
 class BaseRangesView final : public TableView {
 public:
     BaseRangesView();
-private:
-    void currentChanged(const QModelIndex& current, const QModelIndex&) override final {
-        gotoCurrent(current); }
 };
 
 BaseRangesView::BaseRangesView()

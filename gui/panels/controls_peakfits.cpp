@@ -98,8 +98,6 @@ class PeaksView final : public TableView {
 public:
     PeaksView();
 private:
-    void currentChanged(const QModelIndex& current, const QModelIndex&) override final {
-        gotoCurrent(current); }
 };
 
 PeaksView::PeaksView()
