@@ -174,12 +174,14 @@ void Dataset::onFileChanged()
         cnt += file.numMeasurements();
     }
     updateClusters();
+    remakeAll("Dataset::onFileChanged");
 }
 
 void Dataset::onClusteringChanged()
 {
     updateClusters();
     highlight().reset();
+    remakeAll("Dataset::onClusteringChanged");
 }
 
 void Dataset::updateClusters()

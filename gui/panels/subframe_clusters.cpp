@@ -51,8 +51,6 @@ QVariant ActiveClustersModel::data(const QModelIndex& index, int role) const
     int col = index.column();
     switch (role) {
     case Qt::DisplayRole: {
-        if (row==0 && col==1)
-            qDebug() << "subframe Cluster: call to data(), meta#=" << gSession->metaSelectedCount();
         if (col==COL_NUMBER) {
             QString ret = QString::number(cluster.totalOffset()+1);
             if (cluster.count()>1)
@@ -145,6 +143,7 @@ void ActiveClustersView::onData()
 {
     setHeaderHidden(gSession->metaSelectedCount()==0);
     model_->refreshModel();
+    emit model_->layoutChanged();
     updateScroll();
 }
 

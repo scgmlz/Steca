@@ -54,8 +54,6 @@ QVariant MetabigtableModel::data(const QModelIndex& index, int role) const
             return activated(row) ? Qt::Checked : Qt::Unchecked;
         break;
     case Qt::DisplayRole:
-        if (row==0 && col==1)
-            qDebug() << "subframe Metadata: call to data()";
         switch (col) {
         case COL_TAG:
             return Metadata::attributeTag(row, false);

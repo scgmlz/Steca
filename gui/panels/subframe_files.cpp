@@ -49,8 +49,6 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const
         return {};
     const Datafile& file = gSession->dataset().fileAt(row);
     int col = index.column();
-    if (row==0 && col==1 && role==Qt::DisplayRole)
-        qDebug() << "subframe Files: call to data()";
     if (role==Qt::DisplayRole && col==2)
         return file.name();
     else if (role==Qt::ToolTipRole && col>=2)
