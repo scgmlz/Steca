@@ -28,8 +28,8 @@ public:
     enum { COL_CHECK = 1, COL_TAG, COL_VALUE, NUM_COLUMNS };
 
 private:
-    int highlighted() const final { return 0; }// gSession->dataset().highlight().clusterIndex(); }
-    void setHighlight(int i) final { ; } //gSession->dataset().highlight().setCluster(i); }
+    int highlighted() const final { return highlighted_; }
+    void setHighlight(int i) final { highlighted_ = i; }
     bool activated(int row) const { return gSession->metaIsSelected(row); }
     void setActivated(int row, bool on) { gSession->setMetaSelected(row, on); }
 
@@ -38,6 +38,8 @@ private:
 
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const { return {}; }
+
+    int highlighted_ {0};
 };
 
 QVariant MetabigtableModel::data(const QModelIndex& index, int role) const
@@ -64,6 +66,8 @@ QVariant MetabigtableModel::data(const QModelIndex& index, int role) const
             return highlight->avgMetadata().attributeStrValue(row);
         }
         break;
+    case Qt::BackgroundRole:
+        return QColor(Qt::white);
     }
     return {};
 }

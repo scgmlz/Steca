@@ -74,7 +74,6 @@ void CheckTableModel::onClicked(const QModelIndex& cell)
     int col = cell.column();
     if (col==1)
         activateAndLog(true, row, !activated(row));
-    remakeAll();
 }
 
 void CheckTableModel::activateAndLog(bool primaryCall, int row, bool on)
@@ -82,6 +81,7 @@ void CheckTableModel::activateAndLog(bool primaryCall, int row, bool on)
     setActivated(row, on);
     gConsole->log2(primaryCall,
                    name() + ( on ? " activate " : " deactivate ") + QString::number(row));
+    remakeAll();
 }
 
 
