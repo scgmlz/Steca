@@ -90,7 +90,7 @@ void ParamWrapper<T>::guiSetsVal(T val, bool userCall)
     if (userCall) {
         qDebug() << " -> " << val;
         postHook_(val);
-        gRoot->fullRemake("ParamWrapper");
+        gRoot->remakeAll("ParamWrapper");
     } else {
         qDebug() << " -> " << val << " (non-user call)";
     }

@@ -131,7 +131,7 @@ void Dataset::removeFile()
             qFatal("impossible case in Dataset::removeFile");
     } else
         highlight().clear(); // TODO or directly emit signal ?
-    gRoot->fullRemake("Dataset::removeFile");
+    gRoot->remakeAll("Dataset::removeFile");
 }
 
 void Dataset::addGivenFiles(const QStringList& filePaths)
@@ -174,14 +174,14 @@ void Dataset::onFileChanged()
         cnt += file.numMeasurements();
     }
     updateClusters();
-    gRoot->fullRemake("Dataset::onFileChanged");
+    gRoot->remakeAll("Dataset::onFileChanged");
 }
 
 void Dataset::onClusteringChanged()
 {
     updateClusters();
     highlight().reset();
-    gRoot->fullRemake("Dataset::onClusteringChanged");
+    gRoot->remakeAll("Dataset::onClusteringChanged");
 }
 
 void Dataset::updateClusters()

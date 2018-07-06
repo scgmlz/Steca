@@ -211,7 +211,7 @@ void MainWin::addFiles()
     } catch (Exception ex) {
         qWarning() << ex.msg();
     }
-    gRoot->fullRemake("MainWin::addFiles");
+    gRoot->remakeAll("MainWin::addFiles");
 }
 
 void MainWin::loadCorrFile()
@@ -230,7 +230,7 @@ void MainWin::loadCorrFile()
             qWarning() << ex.msg();
         }
     }
-    gRoot->fullRemake("MainWin::loadCorrFile");
+    gRoot->remakeAll("MainWin::loadCorrFile");
 }
 
 void MainWin::runFits()
