@@ -241,9 +241,9 @@ DataImageTab::DataImageTab()
         [=]() {
             const Cluster* cluster = gSession->dataset().highlight().cluster();
             int n = cluster ? cluster->count() : 1;
+            idxMeas_.setMaximum(n);
             if (n>1) {
                 idxMeas_.setEnabled(true);
-                idxMeas_.setMaximum(n);
                 idxMeas_.setToolTip(
                     "Number of measurement within the current group of " +
                     QString::number(n) + " measurements");

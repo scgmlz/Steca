@@ -28,7 +28,8 @@ public:
     QcrControl(QObject& object, const QString& name, const T val);
     ~QcrControl();
     void programaticallySetValue(T val);
-    virtual T getValue() const = 0;
+    T getValue() { remake(); return doGetValue(); }
+    virtual T doGetValue() const = 0;
     virtual void executeConsoleCommand(const QString& arg);
     ParamWrapper<T>* cell() { return cell_; }
 protected:

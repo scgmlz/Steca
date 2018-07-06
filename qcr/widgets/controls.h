@@ -64,7 +64,7 @@ public:
               const QString& iconFile="", const QKeySequence& shortcut = {});
     QcrToggle(const QString& name, ParamWrapper<bool>* cell, const QString& text,
               const QString& iconFile="", const QKeySequence& shortcut = {});
-    bool getValue() const final { return isChecked(); }
+    bool doGetValue() const final { return isChecked(); }
     void remake() final { remake_(); }
 private:
     void initToggle(const QString& iconFile, const QKeySequence& shortcut);
@@ -92,10 +92,9 @@ class QcrSpinBox : public QSpinBox, public QcrControl<int> {
 public:
     QcrSpinBox(int val, const QString& name, int ndigits, bool withDot = false,
                int min = INT_MIN, int max = INT_MAX, const QString& tooltip="");
-    QcrSpinBox(const QString& name, NumberWrapper<int>* cell, int ndigits, bool withDot = false,
-               int min = INT_MIN, int max = INT_MAX, const QString& tooltip="");
+    QcrSpinBox(const QString& name, NumberWrapper<int>* cell, int ndigits, bool withDot = false,int min = INT_MIN, int max = INT_MAX, const QString& tooltip="");
     void executeConsoleCommand(const QString&) override;
-    int getValue() const final { return value(); }
+    int doGetValue() const final { return value(); }
 signals:
     void valueReleased(int); //! Improving over valueChanged, do not signal intermediate states
 private:
@@ -118,7 +117,7 @@ public:
     QcrDoubleSpinBox(const QString& name, NumberWrapper<double>* cell, int ndigits,
                      double min = LLONG_MIN, double max = LLONG_MAX, const QString& tooltip="");
     void executeConsoleCommand(const QString&) override;
-    double getValue() const final { return value(); }
+    double doGetValue() const final { return value(); }
 signals:
     void valueReleased(double); //! Improving over valueChanged, do not signal intermediate states
 private:
@@ -137,7 +136,7 @@ class QcrCheckBox : public QCheckBox, public QcrControl<bool> {
 public:
     QcrCheckBox(const QString& name, const QString& text, bool val=false);
     QcrCheckBox(const QString& name, const QString& text, ParamWrapper<bool>* cell);
-    bool getValue() const final { return isChecked(); }
+    bool doGetValue() const final { return isChecked(); }
 private:
     void doSetValue(bool val) final { setChecked(val); }
     // hide some member functions of QCheckBox:
@@ -150,7 +149,7 @@ class QcrRadioButton : public QRadioButton, public QcrControl<bool> {
 public:
     QcrRadioButton(const QString& name, const QString& text, bool val=false);
     QcrRadioButton(const QString& name, const QString& text, ParamWrapper<bool>* cell);
-    bool getValue() const final { return isChecked(); }
+    bool doGetValue() const final { return isChecked(); }
 private:
     void doSetValue(bool val) final { setChecked(val); }
     // hide some member functions of QRadioButton:
@@ -162,7 +161,7 @@ private:
 class QcrComboBox : public QComboBox, public QcrControl<int> {
 public:
     QcrComboBox(const QString& name, const QStringList& items = {});
-    int getValue() const final { return currentIndex(); }
+    int doGetValue() const final { return currentIndex(); }
     void addItems(const QStringList& texts);
 private:
     void doSetValue(int val) final { setCurrentIndex(val); }
@@ -179,7 +178,7 @@ private:
 class QcrLineEdit : public QLineEdit, public QcrControl<QString> {
 public:
     QcrLineEdit(const QString& name, const QString& val = "");
-    QString getValue() const final { return text(); }
+    QString doGetValue() const final { return text(); }
 private:
     void doSetValue(QString val) final { setText(val); }
     // hide some member functions of QLineEdit:
@@ -191,7 +190,7 @@ private:
 class QcrTabWidget : public QTabWidget, public QcrControl<int> {
 public:
     QcrTabWidget(const QString& name);
-    int getValue() const final { return currentIndex(); }
+    int doGetValue() const final { return currentIndex(); }
     void addTab(QWidget* page, const QString& label);
 private:
     void doSetValue(int val) final { setCurrentIndex(val); }
