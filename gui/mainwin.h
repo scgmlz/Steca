@@ -40,7 +40,7 @@ public:
     QProgressBar progressBar {this};
 
 private:
-    void updateAbilities();
+    void refresh();
 
     void readSettings();
     void saveSettings() const;

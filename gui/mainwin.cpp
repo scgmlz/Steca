@@ -48,7 +48,6 @@ const QString dataFormats {"Data files (*.dat *.yaml *.mar*);;All files (*.*)"};
 
 MainWin::MainWin()
 {
-    qDebug() << "MainWin BEG c'tor";
     gGui = this;
     gRoot = this;
 
@@ -86,7 +85,6 @@ MainWin::MainWin()
 
     // initialize state
     readSettings();
-    updateAbilities();
 
     // TODO move this elsewhere
     triggers->removeFile.setRemake([=]() {
@@ -99,7 +97,9 @@ MainWin::MainWin()
             triggers->corrFile.setToolTip(text.toLower()); });
     toggles->enableCorr.setRemake([=]() {
             toggles->enableCorr.setEnabled(gSession->hasCorrFile()); });
-    qDebug() << "MainWin END c'tor";
+
+    // how to refresh
+    setRemake( [=]() { refresh(); } );
 }
 
 MainWin::~MainWin()
@@ -114,7 +114,7 @@ MainWin::~MainWin()
     gGui = nullptr;
 }
 
-void MainWin::updateAbilities()
+void MainWin::refresh()
 {
     bool hasFile = gSession->dataset().countFiles();
     bool hasPeak = gSession->peaks().count();
