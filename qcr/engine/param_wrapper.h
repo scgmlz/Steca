@@ -88,10 +88,10 @@ void ParamWrapper<T>::guiSetsVal(T val, bool userCall)
                strOp::to_ascii(val), strOp::to_ascii(coerce_(val)));
     value_ = val;
     if (userCall) {
-        qDebug() << " -> " << val;
+        // qDebug() << " -> " << val;
         hook_(val);
     } else {
-        qDebug() << " -> " << val << " (non-user call)";
+        ;// qDebug() << " -> " << val << " (non-user call)";
     }
 }
 
