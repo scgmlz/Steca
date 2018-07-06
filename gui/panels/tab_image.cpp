@@ -229,29 +229,33 @@ DataImageTab::DataImageTab()
     , btnShowBins_ {&gGui->toggles->showBins}
     , idxMeas_ {
         1, "idxMeas", 4, false, 1, INT_MAX,
-        "Number of measurement within the current group of measurements"}
-    , idxSlice_ {
-        "idxSlice", &gSession->gammaSelection().currSlice,
-        4, false, 1, INT_MAX, "Number of γ slice to be shown" }
+        "Index of measurement within the current group of measurements"}
     , idxTheta_ {
         "idxTheta", &gSession->thetaSelection().currArc,
-        4, false, 1, INT_MAX, "Number of 2θ bin to be shown" }
+        4, false, 1, INT_MAX, "Index of 2θ bin to be shown" }
+    , idxSlice_ {
+        "idxSlice", &gSession->gammaSelection().currSlice,
+        4, false, 1, INT_MAX, "Index of γ slice to be shown" }
 {
-    idxMeas_.setRemake(
-        [=]() {
+    idxMeas_.setRemake( [=]() {
             const Cluster* cluster = gSession->dataset().highlight().cluster();
             int n = cluster ? cluster->count() : 1;
             idxMeas_.setMaximum(n);
             if (n>1) {
                 idxMeas_.setEnabled(true);
                 idxMeas_.setToolTip(
-                    "Number of measurement within the current group of " +
+                    "Index of measurement within the current group of " +
                     QString::number(n) + " measurements");
             } else {
                 idxMeas_.setEnabled(false);
                 idxMeas_.setToolTip(
-                    "Number of measurement within the current group of measurements");
+                    "Index of measurement within the current group of measurements");
             }
+        } );
+    idxSlice_.setRemake( [=]() {
+            int n = gSession->gammaSelection().numSlices.val();
+            idxSlice_.setMaximum(n);
+            idxSlice_.setEnabled(n>1);
         } );
 
     // inbound connection
@@ -265,11 +269,11 @@ DataImageTab::DataImageTab()
     // layout
     box1_.addWidget(&btnShowBins_, Qt::AlignLeft);
 
-    boxIdx_.addWidget(new QLabel("image #"), 0, 0, Qt::AlignLeft);
+    boxIdx_.addWidget(new QLabel("idx (image)"), 0, 0, Qt::AlignLeft);
     boxIdx_.addWidget(&idxMeas_, 0, 1, Qt::AlignLeft);
-    boxIdx_.addWidget(new QLabel("ϑ bin #"), 1, 0, Qt::AlignLeft);
+    boxIdx_.addWidget(new QLabel("idx (ϑ)"), 1, 0, Qt::AlignLeft);
     boxIdx_.addWidget(&idxTheta_, 1, 1, Qt::AlignLeft);
-    boxIdx_.addWidget(new QLabel("γ slice #"), 2, 0, Qt::AlignLeft);
+    boxIdx_.addWidget(new QLabel("idx (γ)"), 2, 0, Qt::AlignLeft);
     boxIdx_.addWidget(&idxSlice_, 2, 1, Qt::AlignLeft);
     controls_.addStretch(100);
     controls_.addLayout(&boxIdx_);

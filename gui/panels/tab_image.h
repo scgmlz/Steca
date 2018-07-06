@@ -72,8 +72,8 @@ private:
     QPixmap pixmap() final;
     QcrIconToggleButton btnShowBins_;
     QcrSpinBox idxMeas_;
-    QcrSpinBox idxSlice_;
     QcrSpinBox idxTheta_;
+    QcrSpinBox idxSlice_;
     QLabel gammaRangeTotal_;
     QLabel gammaRangeSlice_;
     QLabel thetaRangeTotal_;
