@@ -61,9 +61,6 @@ public:
     int vertical() const { return top.val() + bottom.val(); }
     size2d marginSize() const;
     QJsonObject toJson() const;
-
-private:
-    void setAll(int);
 };
 
 

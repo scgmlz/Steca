@@ -92,6 +92,7 @@ private:
     QcrSpinBox cutTop_;
     QcrSpinBox cutRight_;
     QcrSpinBox cutBottom_;
+    void setCut(int);
 };
 
 CutControls::CutControls()
@@ -115,6 +116,22 @@ CutControls::CutControls()
     layout_.addWidget(&cutRight_, 1, 4);
     layout_.setColumnStretch(5, 1);
     setLayout(&layout_);
+
+    cutLeft_  .cell()->setHook( [=](int val){ setCut(val); } );
+    cutTop_   .cell()->setHook( [=](int val){ setCut(val); } );
+    cutRight_ .cell()->setHook( [=](int val){ setCut(val); } );
+    cutBottom_.cell()->setHook( [=](int val){ setCut(val); } );
+}
+
+void CutControls::setCut(int val)
+{
+    if ( gGui->toggles->linkCuts.getValue() ) {
+        cutLeft_  .programaticallySetValue(val);
+        cutTop_   .programaticallySetValue(val);
+        cutRight_ .programaticallySetValue(val);
+        cutBottom_.programaticallySetValue(val);
+    }
+    gRoot->remakeAll("setCut");
 }
 
 //  ***********************************************************************************************
