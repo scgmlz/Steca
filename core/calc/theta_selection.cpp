@@ -20,7 +20,7 @@
 ThetaSelection::ThetaSelection()
 {
 // TODO COERCE    currArc.setCoerce( [this](int i) { return qMax(0, qMin(i, numSlices_)); });
-// TODO HOOK    currArc.setPostHook( [this](int) { recomputeCache(); /* UNDER CONSTRUCTION */ });
+// TODO HOOK    currArc.setHook( [this](int) { recomputeCache(); /* UNDER CONSTRUCTION */ });
 }
 
 

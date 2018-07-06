@@ -20,8 +20,8 @@ GammaSelection::GammaSelection()
 {
     // TODO restore C<->human offset of 1 for current slice index?
 // TODO COERCE    currSlice.setCoerce( [this](int i) { return qMax(0, qMin(i, numSlices.val())); });
-// TODO COERCE    numSlices.setPostHook( [this](int) { currSlice.reCoerce(); });
-// TODO HOOK    currSlice.setPostHook( [this](int) { recomputeCache(); });
+// TODO COERCE    numSlices.setHook( [this](int) { currSlice.reCoerce(); });
+// TODO HOOK    currSlice.setHook( [this](int) { recomputeCache(); });
 }
 
 QJsonObject GammaSelection::toJson() const

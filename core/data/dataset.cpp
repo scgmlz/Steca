@@ -97,8 +97,8 @@ int HighlightedData::clusterIndex() const
 //! @class Dataset
 
 Dataset::Dataset() {
-    binning.       setPostHook( [this](int)  { onClusteringChanged(); } );
-    dropIncomplete.setPostHook( [this](bool) { onClusteringChanged(); } );
+    binning.       setHook( [this](int)  { onClusteringChanged(); } );
+    dropIncomplete.setHook( [this](bool) { onClusteringChanged(); } );
 }
 
 void Dataset::clear()

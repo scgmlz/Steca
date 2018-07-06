@@ -35,11 +35,11 @@ public:
     void setVal(T);
     T val() const { return value_; }
 
-    void setPostHook(std::function<void(T)> postHook) { postHook_ = postHook; }
+    void setHook(std::function<void(T)> hook) { hook_ = hook; }
 protected:
     T value_;
     std::function<T(T)> coerce_ {[](T val) { return val; }};
-    std::function<void(T)> postHook_ = [](T) {};
+    std::function<void(T)> hook_ = [](T) {};
 
     friend QcrControl<T>;
     void guiSetsVal(T, bool userCall=false);
@@ -89,7 +89,7 @@ void ParamWrapper<T>::guiSetsVal(T val, bool userCall)
     value_ = val;
     if (userCall) {
         qDebug() << " -> " << val;
-        postHook_(val);
+        hook_(val);
         gRoot->remakeAll("ParamWrapper");
     } else {
         qDebug() << " -> " << val << " (non-user call)";
