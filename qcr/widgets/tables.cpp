@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "tables.h"
-#include "qcr/engine/param_wrapper.h" // remakeAll
+#include "qcr/engine/param_wrapper.h" // gRoot->fullRemake
 #include "qcr/engine/console.h"
 #include "qcr/base/qcrexception.h"
 #include "qcr/base/debug.h"
@@ -80,7 +80,7 @@ void CheckTableModel::activateAndLog(bool primaryCall, int row, bool on)
     setActivated(row, on);
     gConsole->log2(primaryCall,
                    name() + ( on ? " activate " : " deactivate ") + QString::number(row));
-    remakeAll("CheckTableModel::activateAndLog");
+    gRoot->fullRemake("CheckTableModel::activateAndLog");
 }
 
 

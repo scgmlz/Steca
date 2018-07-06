@@ -53,7 +53,7 @@ QcrRoot::QcrRoot(QObject& object, const QString& name)
 
 void QcrRoot::fullRemake(const QString& whence)
 {
-    qDebug() << "remakeAll < " << whence;
+    qDebug() << "gRoot->fullRemake < " << whence;
     for (QWidget* w: object().findChildren<QWidget*>()) {
         if (QcrMixin* m = dynamic_cast<QcrMixin*>(w))
             m->remake();

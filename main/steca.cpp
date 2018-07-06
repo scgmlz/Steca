@@ -98,7 +98,7 @@ int main(int argc, char* argv[]) {
     Session session;
     auto* mainwin = new MainWin; // must be pointer, because it can be deleted by 'quit' trigger
     mainwin->show();
-    remakeAll("main/steca"); // depends on visbility, therefore must be invoked _after_ show()
+    gRoot->fullRemake("main/steca"); // depends on visbility, therefore must be invoked _after_ show()
     if (nonoptArgs.size())
         gConsole->call("@file " + nonoptArgs[0]);
     app.exec();

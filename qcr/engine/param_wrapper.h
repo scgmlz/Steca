@@ -17,11 +17,10 @@
 
 #include "qcr/base/debug.h"
 #include "qcr/base/string_ops.h"
+#include "qcr/engine/mixin.h"
 #include <QObject>
 #include <functional>
 #include <vector>
-
-void remakeAll(const QString& whence);
 
 template<class T>
 class QcrControl;
@@ -91,7 +90,7 @@ void ParamWrapper<T>::guiSetsVal(T val, bool userCall)
     if (userCall) {
         qDebug() << " -> " << val;
         postHook_(val);
-        remakeAll("ParamWrapper");
+        gRoot->fullRemake("ParamWrapper");
     } else {
         qDebug() << " -> " << val << " (non-user call)";
     }
