@@ -40,7 +40,7 @@ private:
 class QcrRoot : public QcrMixin {
 public:
     QcrRoot(QObject& object, const QString& name);
-    void fullRemake();
+    void fullRemake(const QString& whence);
 };
 
 //! Mix-in for QObject, enforcing a unique name, providing Console connection.

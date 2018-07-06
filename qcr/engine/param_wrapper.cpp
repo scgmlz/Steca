@@ -19,7 +19,6 @@
 // TODO RECONSIDER: move out of global namespace
 void remakeAll(const QString& whence)
 {
-    qDebug() << "remakeAll < " << whence;
     ASSERT(gRoot);
-    gRoot->fullRemake();
+    gRoot->fullRemake(whence);
 }
