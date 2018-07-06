@@ -41,10 +41,14 @@ private:
 };
 
 GeometryControls::GeometryControls()
-    : detDistance_  {"detDistance", &gSession->geometry().detectorDistance, 6}
-    , detPixelSize_ {"detPixelSize", &gSession->geometry().pixSize, 3}
-    , beamOffsetI_  {"beamOffsetI", &gSession->geometry().pixOffset[0], 3, true}
-    , beamOffsetJ_  {"beamOffsetJ", &gSession->geometry().pixOffset[1], 3, true}
+    : detDistance_  {"detDistance", &gSession->geometry().detectorDistance, 6, 1e1, 1e5,
+        "Distance from sample to detector, in mm"}
+    , detPixelSize_ {"detPixelSize", &gSession->geometry().pixSize, 3, 1e-1, 1e2,
+              "Side length of detector pixel square, in mm"}
+    , beamOffsetI_  {"beamOffsetI", &gSession->geometry().pixOffset[0], 3, true,
+              INT_MIN, INT_MAX, "Horizontal detector offset, in pixel units"}
+    , beamOffsetJ_  {"beamOffsetJ", &gSession->geometry().pixOffset[1], 3, true,
+              INT_MIN, INT_MAX, "Vertical detector offset, in pixel units"}
 {
     // layout
     mmGrid_.addWidget(new QLabel("det. distance"), 0, 0);
@@ -92,10 +96,14 @@ private:
 
 CutControls::CutControls()
     : link_      {&gGui->toggles->linkCuts}
-    , cutLeft_   {"cutLeft",   &gSession->imageCut().left,   3, false, 0}
-    , cutTop_    {"cutTop",    &gSession->imageCut().top,    3, false, 0}
-    , cutRight_  {"cutRight",  &gSession->imageCut().right,  3, false, 0}
-    , cutBottom_ {"cutBottom", &gSession->imageCut().bottom, 3, false, 0}
+    , cutLeft_   {"cutLeft",   &gSession->imageCut().left,   3, false, 0, INT_MAX,
+              "Number of pixels to be cut at the left"}
+    , cutTop_    {"cutTop",    &gSession->imageCut().top,    3, false, 0, INT_MAX,
+              "Number of pixels to be cut at the top"}
+    , cutRight_  {"cutRight",  &gSession->imageCut().right,  3, false, 0, INT_MAX,
+              "Number of pixels to be cut at the right"}
+    , cutBottom_ {"cutBottom", &gSession->imageCut().bottom, 3, false, 0, INT_MAX,
+              "Number of pixels to be cut at the bottom"}
 {
 
     // layout

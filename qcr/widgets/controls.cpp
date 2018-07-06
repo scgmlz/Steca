@@ -227,26 +227,31 @@ void QcrSpinBox::executeConsoleCommand(const QString& arg)
 //  ***********************************************************************************************
 //! @class QcrDoubleSpinBox
 
-QcrDoubleSpinBox::QcrDoubleSpinBox(const QString& _name, int ndigits, double min, double max)
+QcrDoubleSpinBox::QcrDoubleSpinBox(
+    const QString& _name, int ndigits, double min, double max, const QString& tooltip)
     : QcrControl<double> {*this, _name, 0.}
 {
-    initDoubleSpinBox(ndigits, min, max);
+    initDoubleSpinBox(ndigits, min, max, tooltip);
 }
 
 QcrDoubleSpinBox::QcrDoubleSpinBox(
-    const QString& _name, NumberWrapper<double>* cell, int ndigits, double min, double max)
+    const QString& _name, NumberWrapper<double>* cell, int ndigits, double min, double max,
+    const QString& tooltip)
     : QcrControl<double> {*this, _name, cell}
 {
-    initDoubleSpinBox(ndigits, min, max);
+    initDoubleSpinBox(ndigits, min, max, tooltip);
 }
 
-void QcrDoubleSpinBox::initDoubleSpinBox(int ndigits, double min = LLONG_MIN, double max = LLONG_MAX)
+void QcrDoubleSpinBox::initDoubleSpinBox(
+    int ndigits, double min, double max, const QString& tooltip)
 {
     strOp::setWidth(this, 2+ndigits, true);
     setDecimals(ndigits);
     ASSERT(min<=max);
     setMinimum(min);
     setMaximum(max);
+    if (tooltip!="")
+        setToolTip(tooltip);
     initControl();
     reportedValue_ = value();
     connect(this, &QDoubleSpinBox::editingFinished, this, &QcrDoubleSpinBox::reportChange);
