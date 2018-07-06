@@ -237,6 +237,22 @@ DataImageTab::DataImageTab()
         "idxTheta", &gSession->thetaSelection().currArc,
         4, false, 1, INT_MAX, "Number of 2θ bin to be shown" }
 {
+    idxMeas_.setRemake(
+        [=]() {
+            const Cluster* cluster = gSession->dataset().highlight().cluster();
+            int n = cluster ? cluster->count() : 1;
+            if (n>1) {
+                idxMeas_.setEnabled(true);
+                idxMeas_.setMaximum(n);
+                idxMeas_.setToolTip(
+                    "Number of measurement within the current group of " +
+                    QString::number(n) + " measurements");
+            } else {
+                idxMeas_.setEnabled(false);
+                idxMeas_.setToolTip(
+                    "Number of measurement within the current group of measurements");
+            }
+        } );
 
     // inbound connection
     /*
