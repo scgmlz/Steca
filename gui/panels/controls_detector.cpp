@@ -118,8 +118,6 @@ class ActiveClustersControls : public QWidget {
 public:
     ActiveClustersControls();
 private:
-    void fromCore();
-
     QHBoxLayout layout_;
     QcrSpinBox    combineMeasurements_;
     QcrToggle     dropIncompleteAction_;
@@ -145,13 +143,10 @@ ActiveClustersControls::ActiveClustersControls()
     setLayout(&layout_);
 
     //initialization
-    dropIncompleteAction_.setEnabled(false);
-    fromCore();
-}
-
-void ActiveClustersControls::fromCore()
-{
-    dropIncompleteAction_.setEnabled(gSession->dataset().hasIncomplete());
+    dropIncompleteAction_.setRemake([=](){
+            dropIncompleteAction_.setEnabled(gSession->dataset().hasIncomplete());
+        });
+    dropIncompleteAction_.remake();
 }
 
 //  ***********************************************************************************************
