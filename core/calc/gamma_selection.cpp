@@ -41,8 +41,13 @@ void GammaSelection::fromJson(const JsonObj& obj)
 //! Resets fullRange_ according to loaded data.
 void GammaSelection::onData()
 {
+    if (numSlices.val()>0) {
+        if (currSlice.val()>numSlices.val())
+            currSlice.setVal(numSlices.val());
+        else if (currSlice.val()<1)
+            currSlice.setVal(1);
+    }
     const Cluster* cluster = gSession->dataset().highlight().cluster();
-    qDebug() << "GammaSelection onData, highlighted cluster = " << cluster;
     if (!cluster)
         return fullRange_.invalidate();
     fullRange_ = cluster->rgeGma();
@@ -57,7 +62,7 @@ void GammaSelection::recomputeCache()
     else if (numSlices.val()==0)
         range_ = fullRange_;
     else
-        range_ = slice2range(currSlice.val());
+        range_ = slice2range(currSlice.val()-1);
 }
 
 void GammaSelection::setRange(const Range& r)

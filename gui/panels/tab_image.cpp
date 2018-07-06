@@ -174,6 +174,8 @@ QPixmap ImageTab::makePixmap(const Image& image)
 
 QPixmap ImageTab::makeOverlayPixmap(const Measurement* m)
 {
+    gSession->gammaSelection().onData();
+    gSession->thetaSelection().onData();
     QImage im = makeImage(m->image());
     const AngleMap& angleMap = m->angleMap();
     const Range& rgeGma = gSession->gammaSelection().range();
@@ -258,14 +260,19 @@ DataImageTab::DataImageTab()
         } );
     gammaRangeTotal_.setRemake( [=]() {
             const Cluster* cluster = gSession->dataset().highlight().cluster();
-            gammaRangeTotal_.setText(cluster ? cluster->rgeGmaFull().to_s()+" deg" : "");
+            gammaRangeTotal_.setText(cluster ? cluster->rgeGmaFull().to_s("deg") : "");
         } );
     gammaRangeSlice_.setRemake( [=]() {
-            gammaRangeSlice_.setText(gSession->gammaSelection().range().to_s()+" deg");
+            gSession->gammaSelection().onData();
+            gammaRangeSlice_.setText(gSession->gammaSelection().range().to_s("deg"));
         } );
     thetaRangeTotal_.setRemake( [=]() {
             const Cluster* cluster = gSession->dataset().highlight().cluster();
-            thetaRangeTotal_.setText(cluster ? cluster->rgeTth().to_s()+" deg" : "");
+            thetaRangeTotal_.setText(cluster ? cluster->rgeTth().to_s("deg") : "");
+        } );
+    thetaRangeBin_.setRemake( [=]() {
+            gSession->thetaSelection().onData();
+            thetaRangeBin_.setText(gSession->thetaSelection().range().to_s("deg"));
         } );
 
     // layout

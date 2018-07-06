@@ -40,7 +40,6 @@ void ThetaSelection::fromJson(const JsonObj& obj)
 void ThetaSelection::onData()
 {
     const Cluster* cluster = gSession->dataset().highlight().cluster();
-    qDebug() << "ThetaSelection onData, highlighted cluster = " << cluster;
     if (!cluster) {
         fullRange_.invalidate();
         numSlices_ = 0;
@@ -55,6 +54,9 @@ void ThetaSelection::recomputeCache()
 {
     if (!numSlices_)
         return;
-// TODO COERCE    currArc.reCoerce();
-    range_ = fullRange_.slice(currArc.val(), numSlices_);
+    if (currArc.val()>numSlices_)
+        currArc.setVal(numSlices_);
+    else if (currArc.val()<1)
+        currArc.setVal(1);
+    range_ = fullRange_.slice(currArc.val()-1, numSlices_);
 }

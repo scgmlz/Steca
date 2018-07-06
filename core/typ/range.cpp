@@ -93,9 +93,10 @@ Range Range::slice(int i, int n) const
     if (!isValid())
         THROW("BUG: Range::slice called for invalid range");
     if (n<1)
-        THROW("BUG: Range::slice called with invalid n");
+        THROW("BUG: Range::slice called with invalid n="+QString::number(n));
     if (i<0 || i>=n)
-        THROW("BUG  Range::slice called with invalid i");
+        THROW("BUG  Range::slice called with invalid i="
+              +QString::number(i)+" where n="+QString::number(n));
     double delta = width()/n;
     return Range(min+i*delta, min+(i+1)*delta);
 }
@@ -179,11 +180,14 @@ void Range::fromJson(const JsonObj& obj)
     max = obj.loadQreal("max");
 }
 
-QString Range::to_s(int precision, int digitsAfter) const
+QString Range::to_s(const QString& unit, int precision, int digitsAfter) const
 {
-    return QString("%1 .. %2")
+    return isValid()
+        ? QString("%1 .. %2 %3")
         .arg(min, precision, 'f', digitsAfter)
-        .arg(max, precision, 'f', digitsAfter);
+        .arg(max, precision, 'f', digitsAfter)
+        .arg(unit)
+        : "undefined";
 }
 
 //  ***********************************************************************************************

@@ -62,7 +62,7 @@ public:
     QJsonObject toJson() const;
     void fromJson(const JsonObj&);
 
-    QString to_s(int precision=5, int digitsAfter=2) const;
+    QString to_s(const QString& unit="", int precision=5, int digitsAfter=2) const;
 };
 
 //! A set of *sorted* *non-overlapping* ranges
