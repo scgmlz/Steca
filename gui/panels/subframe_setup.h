@@ -22,8 +22,6 @@
 class SubframeSetup : public QcrTabWidget {
 public:
     SubframeSetup();
-private:
-    void updateTabsAvailability();
 };
 
 #endif // SUBFRAME_SETUP_H

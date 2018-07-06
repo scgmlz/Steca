@@ -29,17 +29,14 @@ SubframeSetup::SubframeSetup()
     addTab(new ControlsPeakfits(), "Peakfits");
     addTab(new ControlsInterpolation(), "Interpol");
 
-    updateTabsAvailability();
-}
-
-void SubframeSetup::updateTabsAvailability()
-{
-    if (gSession->dataset().countFiles()) {
-        setTabEnabled(1, true);
-        setTabEnabled(2, true);
-    } else {
-        setTabEnabled(1, false);
-        setTabEnabled(2, false);
-        programaticallySetValue(0);
-    }
+    setRemake( [=]() {
+            if (gSession->dataset().countFiles()) {
+                setTabEnabled(1, true);
+                setTabEnabled(2, true);
+            } else {
+                setTabEnabled(1, false);
+                setTabEnabled(2, false);
+                programaticallySetValue(0);
+            }
+        } );
 }
