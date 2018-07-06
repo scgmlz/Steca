@@ -29,7 +29,7 @@
 
 QcrAction::QcrAction(const QString& text)
     : QAction(text, qApp)
-    , tooltip_(text.toLower())
+    , tooltip_(text)
 {}
 
 bool QcrAction::hasFocus()

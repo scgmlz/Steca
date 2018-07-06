@@ -29,7 +29,7 @@ public:
     QcrTrigger clearBackground {"clearBackground", "Clear background regions", ":/icon/clear"};
     QcrTrigger clearPeaks {"clearPeaks", "Clear peaks", ":/icon/clear"};
     QcrTrigger clearSession {"clearSession", "Clear session"};
-    QcrTrigger corrFile {"loadCorr", "Add correction file", ":/icon/add",
+    QcrTrigger corrFile {"loadCorr", "Add correction file...", ":/icon/add",
             Qt::SHIFT | Qt::CTRL | Qt::Key_O};
     QcrTrigger exportDfgram {"exportDfgram", "Export diffractogram(s)...", ":/icon/filesave" };
     QcrTrigger exportPolefig {"exportPolefig", "Export pole figure...", ":/icon/filesave" };
