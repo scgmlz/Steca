@@ -23,17 +23,17 @@
 
 class QcrMainWindow : public QMainWindow, public QcrRoot {
 public:
-    QcrMainWindow() : QcrRoot {*this, "mainwindow"} {}
+    QcrMainWindow() : QcrRoot{*this, "mainwindow"} {}
 };
 
 class QcrWidget : public QWidget, public QcrMixin {
 public:
-    QcrWidget(const QString& name) : QcrMixin {*this, name} {}
+    QcrWidget(const QString& name) : QcrMixin{*this, name} {}
 };
 
 class QcrDockWidget : public QDockWidget, public QcrMixin {
 public:
-    QcrDockWidget(const QString& name) : QcrMixin {*this, name} {}
+    QcrDockWidget(const QString& name) : QcrMixin{*this, name} {}
 };
 
 //! QLabel displaying an icon, with no associated action.
@@ -48,6 +48,11 @@ public:
     QcrLineDisplay() = delete;
     QcrLineDisplay(const QString& name, std::function<QString()> freshText);
     QcrLineDisplay(const QString& name, int ndigits, bool withDot);
+};
+
+class QcrLabel: public QLabel, public QcrMixin {
+public:
+    QcrLabel(const QString& name, const QString& text="") : QcrMixin{*this, name} { setText(text); }
 };
 
 #endif // VIEWS_H

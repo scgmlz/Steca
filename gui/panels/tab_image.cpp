@@ -178,8 +178,7 @@ QPixmap ImageTab::makeOverlayPixmap(const Measurement* m)
     const AngleMap& angleMap = m->angleMap();
     const Range& rgeGma = gSession->gammaSelection().range();
     const Range& rgeTth = gSession->thetaSelection().range();
-    const QSize& size = im.size();
-    for_ij (size.width(), size.height()) {
+    for_ij (im.size().width(), im.size().height()) {
         const ScatterDirection& a = angleMap.dirAt2(i, j);
         QColor color = im.pixel(i, j);
         if (rgeGma.contains(a.gma)) {
@@ -257,14 +256,17 @@ DataImageTab::DataImageTab()
             idxSlice_.setMaximum(n);
             idxSlice_.setEnabled(n>1);
         } );
-
-    // inbound connection
-    /*
-            const Measurement* measurement = gSession->dataset().highlight().measurement();
-            gammaRangeTotal_.setText(measurement->rgeGmaFull().to_s()+" deg");
+    gammaRangeTotal_.setRemake( [=]() {
+            const Cluster* cluster = gSession->dataset().highlight().cluster();
+            gammaRangeTotal_.setText(cluster ? cluster->rgeGmaFull().to_s()+" deg" : "");
+        } );
+    gammaRangeSlice_.setRemake( [=]() {
             gammaRangeSlice_.setText(gSession->gammaSelection().range().to_s()+" deg");
-            thetaRangeTotal_.setText(measurement->rgeTth().to_s()+" deg");
-    */
+        } );
+    thetaRangeTotal_.setRemake( [=]() {
+            const Cluster* cluster = gSession->dataset().highlight().cluster();
+            thetaRangeTotal_.setText(cluster ? cluster->rgeTth().to_s()+" deg" : "");
+        } );
 
     // layout
     box1_.addWidget(&btnShowBins_, Qt::AlignLeft);

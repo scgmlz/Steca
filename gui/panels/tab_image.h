@@ -15,9 +15,9 @@
 #ifndef TAB_IMAGE_H
 #define TAB_IMAGE_H
 
-#include "core/raw/image.h"
 #include "qcr/widgets/controls.h"
 #include "qcr/widgets/views.h"
+#include "core/raw/image.h"
 #include <QPainter>
 
 //! Displays a 2d detector image, and possibly some overlay. Used in ImageTab.
@@ -74,10 +74,10 @@ private:
     QcrSpinBox idxMeas_;
     QcrSpinBox idxTheta_;
     QcrSpinBox idxSlice_;
-    QLabel gammaRangeTotal_;
-    QLabel gammaRangeSlice_;
-    QLabel thetaRangeTotal_;
-    QLabel thetaRangeBin_;
+    QcrLabel gammaRangeTotal_{"gammaRangeTotal"};
+    QcrLabel gammaRangeSlice_{"gammaRangeSlice"};
+    QcrLabel thetaRangeTotal_{"thetaRangeTotal"};
+    QcrLabel thetaRangeBin_  {"thetaRangeBin"};
 };
 
 //! A tab for the correction image and associated controls.
