@@ -139,9 +139,11 @@ int TableView::mWidth() const
 
 void TableView::gotoCurrent(const QModelIndex& current)
 {
+    qDebug() << "goto current row=" << current.row() << ", highlighted=" << model_->highlighted();
     if (current.row()==model_->highlighted())
         return; // the following would prevent execution of "onClicked"
     model_->setHighlight(current.row());
+    model_->refreshModel(); // refreshes rendering upon arrow keys
     updateScroll();
 }
 
