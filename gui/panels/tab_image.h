@@ -43,7 +43,7 @@ public:
 protected:
     virtual QPixmap pixmap() = 0;
     QPixmap makePixmap(const Image&);
-    QPixmap makeOverlayPixmap(const class Measurement&);
+    QPixmap makeOverlayPixmap(const class Measurement*);
     QPixmap makeBlankPixmap();
     QImage makeImage(const Image&);
     ImageView imageView_;

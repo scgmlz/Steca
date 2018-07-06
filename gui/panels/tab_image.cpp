@@ -172,10 +172,10 @@ QPixmap ImageTab::makePixmap(const Image& image)
     return QPixmap::fromImage(im);
 }
 
-QPixmap ImageTab::makeOverlayPixmap(const Measurement& measurement)
+QPixmap ImageTab::makeOverlayPixmap(const Measurement* m)
 {
-    QImage im = makeImage(measurement.image());
-    const AngleMap& angleMap = measurement.angleMap();
+    QImage im = makeImage(m->image());
+    const AngleMap& angleMap = m->angleMap();
     const Range& rgeGma = gSession->gammaSelection().range();
     const Range& rgeTth = gSession->thetaSelection().range();
     const QSize& size = im.size();
@@ -303,7 +303,7 @@ QPixmap DataImageTab::pixmap()
     if (!m)
         return makeBlankPixmap();
     if (gGui->toggles->showBins.getValue())
-        return makeOverlayPixmap(*m);
+        return makeOverlayPixmap(m);
     return makePixmap(m->image());
 }
 
