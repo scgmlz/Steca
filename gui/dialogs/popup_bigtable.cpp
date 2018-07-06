@@ -13,8 +13,8 @@
 //  ***********************************************************************************************
 
 #include "popup_bigtable.h"
-#include "gui/view/bigtable.h"
 #include "gui/mainwin.h"
+#include "gui/view/bigtable.h"
 #include <QVBoxLayout>
 
 PopupBigtable::PopupBigtable()

@@ -13,11 +13,11 @@
 //  ***********************************************************************************************
 
 #include "tables.h"
-#include "qcr/engine/param_wrapper.h" // gRoot->remakeAll
-#include "qcr/engine/console.h"
-#include "qcr/base/qcrexception.h"
 #include "qcr/base/debug.h"
+#include "qcr/base/qcrexception.h"
 #include "qcr/base/string_ops.h"
+#include "qcr/engine/console.h"
+#include "qcr/engine/param_wrapper.h" // gRoot->remakeAll
 
 //  ***********************************************************************************************
 //! @class TableModel

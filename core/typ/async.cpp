@@ -14,8 +14,8 @@
 
 #include "core/typ/async.h"
 #include "qcr/base/debug.h"
-#include <QtWidgets/QProgressBar>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QProgressBar>
 
 TakesLongTime::TakesLongTime(const QString& taskName)
     : taskName_(taskName)

@@ -15,8 +15,8 @@
 //  ***********************************************************************************************
 
 #include "realpair.h"
-#include "qcr/base/debug.h"
 #include "core/def/comparators.h"
+#include "qcr/base/debug.h"
 
 int qpair::compare(const qpair& that) const
 {

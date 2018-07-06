@@ -12,9 +12,9 @@
 //
 //  ***********************************************************************************************
 
-#include "core/session.h"
-#include "core/loaders/loaders.h"
 #include "core/def/idiomatic_for.h"
+#include "core/loaders/loaders.h"
+#include "core/session.h"
 #include "qcr/base/debug.h"
 
 void Corrset::clear()

@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#include "core/session.h"
 #include "core/def/settings.h"
+#include "core/session.h"
 
 InterpolParams::InterpolParams()
 {

@@ -15,10 +15,10 @@
 //  ***********************************************************************************************
 
 #include "range.h"
-#include "qcr/base/debug.h"
 #include "core/def/comparators.h"
 #include "core/def/idiomatic_for.h"
 #include "core/typ/json.h"
+#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class Range

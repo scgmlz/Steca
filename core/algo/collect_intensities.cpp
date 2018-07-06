@@ -13,9 +13,9 @@
 //  ***********************************************************************************************
 
 #include "collect_intensities.h"
-#include "core/session.h"
 #include "core/def/idiomatic_for.h"
 #include "core/raw/angle_map.h"
+#include "core/session.h"
 #include "core/typ/async.h"
 #include "qcr/base/debug.h"
 #include <qmath.h>

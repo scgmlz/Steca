@@ -15,8 +15,8 @@
 #ifndef PEAK_H
 #define PEAK_H
 
-#include <memory>
 #include "core/fit/fit_fun.h"
+#include <memory>
 
 //! Wraps a PeakFunction (pimpl idiom)
 

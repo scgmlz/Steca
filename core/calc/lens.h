@@ -15,8 +15,8 @@
 #ifndef LENS_H
 #define LENS_H
 
-#include "core/typ/size2d.h"
 #include "core/typ/curve.h"
+#include "core/typ/size2d.h"
 
 class Image;
 

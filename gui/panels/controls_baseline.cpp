@@ -14,10 +14,10 @@
 
 #include "controls_baseline.h"
 #include "core/session.h"
-#include "qcr/widgets/tables.h"
+#include "gui/actions/triggers.h"
 #include "gui/mainwin.h"
 #include "gui/state.h"
-#include "gui/actions/triggers.h"
+#include "qcr/widgets/tables.h"
 
 //  ***********************************************************************************************
 //! @class BaseRangesModel, used in BaseRangesView (local scope)

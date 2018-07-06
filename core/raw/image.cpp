@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#include "core/raw/image.h"
 #include "core/def/idiomatic_for.h"
+#include "core/raw/image.h"
 #include "qcr/base/debug.h"
 
 Image::Image(const size2d& size, float val)

@@ -13,10 +13,10 @@
 //  ***********************************************************************************************
 
 #include "fit_methods.h"
-#include "qcr/base/debug.h"
+#include "LevMar/LM/levmar.h"
 #include "core/def/idiomatic_for.h"
 #include "core/typ/curve.h"
-#include "LevMar/LM/levmar.h"
+#include "qcr/base/debug.h"
 #include <qmath.h>
 
 void FitWrapper::fit(ParametricFunction& function, const Curve& curve)

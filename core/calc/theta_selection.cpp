@@ -12,9 +12,9 @@
 //
 //  ***********************************************************************************************
 
-#include "core/session.h"
 #include "core/algo/collect_intensities.h"
 #include "core/data/cluster.h"
+#include "core/session.h"
 #include "qcr/base/debug.h"
 
 ThetaSelection::ThetaSelection()

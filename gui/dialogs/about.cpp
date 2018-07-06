@@ -13,8 +13,8 @@
 //  ***********************************************************************************************
 
 #include "gui/dialogs/about.h"
-#include "manifest.h"
 #include "gui/mainwin.h"
+#include "manifest.h"
 #include <QApplication>
 #include <QDate>
 

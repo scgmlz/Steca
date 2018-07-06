@@ -13,18 +13,18 @@
 //  ***********************************************************************************************
 
 #include "triggers.h"
-#include "manifest.h"
 #include "core/session.h"
-#include "gui/mainwin.h"
 #include "gui/dialogs/about.h"
 #include "gui/dialogs/check_update.h"
-#include "gui/dialogs/export_dfgram.h"
 #include "gui/dialogs/export_bigtable.h"
+#include "gui/dialogs/export_dfgram.h"
 #include "gui/dialogs/export_diagram.h"
 #include "gui/dialogs/export_polefig.h"
 #include "gui/dialogs/popup_bigtable.h"
 #include "gui/dialogs/popup_diagram.h"
 #include "gui/dialogs/popup_polefig.h"
+#include "gui/mainwin.h"
+#include "manifest.h"
 #include <QDesktopServices>
 
 Triggers::Triggers()

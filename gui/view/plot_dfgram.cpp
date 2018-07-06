@@ -13,12 +13,12 @@
 //  ***********************************************************************************************
 
 #include "plot_dfgram.h"
-#include "qcr/engine/console.h"
 #include "core/algo/collect_intensities.h"
-#include "core/session.h"
 #include "core/def/idiomatic_for.h"
-#include "gui/state.h"
+#include "core/session.h"
 #include "gui/actions/toggles.h"
+#include "gui/state.h"
+#include "qcr/engine/console.h"
 
 //  ***********************************************************************************************
 //! @class PlotDfgramOverlay

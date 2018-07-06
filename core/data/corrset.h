@@ -15,8 +15,8 @@
 #ifndef CORRSET_H
 #define CORRSET_H
 
-#include "core/raw/rawfile.h"
 #include "core/raw/image.h"
+#include "core/raw/rawfile.h"
 #include <memory>
 
 //! A correction dataset, consisting of one Rawfile and associated settings.

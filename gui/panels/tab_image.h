@@ -15,9 +15,9 @@
 #ifndef TAB_IMAGE_H
 #define TAB_IMAGE_H
 
+#include "core/raw/image.h"
 #include "qcr/widgets/controls.h"
 #include "qcr/widgets/views.h"
-#include "core/raw/image.h"
 #include <QPainter>
 
 //! Displays a 2d detector image, and possibly some overlay. Used in ImageTab.

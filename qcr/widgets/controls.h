@@ -15,7 +15,6 @@
 #ifndef CONTROLS_H
 #define CONTROLS_H
 
-#include <QtGlobal>
 #include "qcr/engine/single_value.h"
 #include <QAction>
 #include <QCheckBox>
@@ -26,6 +25,7 @@
 #include <QRadioButton>
 #include <QSpinBox>
 #include <QToolButton>
+#include <QtGlobal>
 
 class QcrAction : public QAction {
 public:

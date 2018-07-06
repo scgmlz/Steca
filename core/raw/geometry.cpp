@@ -12,9 +12,9 @@
 //
 //  ***********************************************************************************************
 
-#include "core/session.h"
 #include "core/def/comparators.h"
 #include "core/def/settings.h"
+#include "core/session.h"
 #include "qcr/base/debug.h"
 #include <iostream> // for debugging
 

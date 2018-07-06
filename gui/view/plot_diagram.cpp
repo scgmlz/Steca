@@ -13,11 +13,11 @@
 //  ***********************************************************************************************
 
 #include "plot_diagram.h"
-#include "qcr/base/debug.h"
 #include "core/def/idiomatic_for.h"
 #include "core/session.h"
 #include "gui/mainwin.h"
 #include "gui/state.h"
+#include "qcr/base/debug.h"
 #include "qcr/widgets/controls.h"
 
 //  ***********************************************************************************************

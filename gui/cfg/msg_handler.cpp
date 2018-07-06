@@ -13,10 +13,10 @@
 //  ***********************************************************************************************
 
 #include "qcr/engine/console.h"
-#include <iostream>
-#include <QMessageBox>
 #include <QApplication>
+#include <QMessageBox>
 #include <QtGlobal> // no auto rm
+#include <iostream>
 
 #ifndef QT_NO_DEBUG
 #define context(ctx) " [" << ctx.function << "]"

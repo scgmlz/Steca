@@ -13,10 +13,10 @@
 //  ***********************************************************************************************
 
 #include "menus.h"
-#include "gui/mainwin.h"
 #include "gui/actions/image_trafo_actions.h"
-#include "gui/actions/triggers.h"
 #include "gui/actions/toggles.h"
+#include "gui/actions/triggers.h"
+#include "gui/mainwin.h"
 
 //! Initialize the menu bar.
 Menus::Menus(QMenuBar* mbar)

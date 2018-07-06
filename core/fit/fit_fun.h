@@ -16,10 +16,10 @@
 #define FIT_FUN_H
 
 #include "core/fit/parametric_function.h"
-#include "core/typ/singleton.h"
-#include "core/typ/registry.h"
 #include "core/typ/curve.h"
 #include "core/typ/realpair.h"
+#include "core/typ/registry.h"
+#include "core/typ/singleton.h"
 
 //! A polynomial, for fitting the background of a diffractogram
 

@@ -15,10 +15,10 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
-#include "qcr/engine/param_wrapper.h"
 #include "core/typ/angles.h"
-#include "core/typ/size2d.h"
 #include "core/typ/range.h"
+#include "core/typ/size2d.h"
+#include "qcr/engine/param_wrapper.h"
 #include <array>
 
 // TODO after removal of ImageKey: delete copy c'tors

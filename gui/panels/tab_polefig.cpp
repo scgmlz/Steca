@@ -15,9 +15,9 @@
 #include "tab_polefig.h"
 #include "core/session.h"
 #include "gui/actions/triggers.h"
-#include "gui/view/plot_polefig.h"
 #include "gui/mainwin.h"
 #include "gui/state.h"
+#include "gui/view/plot_polefig.h"
 
 
 PolefigTab::PolefigTab()

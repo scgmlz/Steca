@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#include "fastyamlloader.h"
 #include "core/raw/rawfile.h"
+#include "fastyamlloader.h"
 #include "qcr/base/debug.h"
 #include <algorithm>
 #include <functional>

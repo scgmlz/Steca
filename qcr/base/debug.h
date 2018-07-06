@@ -15,8 +15,8 @@
 #ifndef DEBUG_H
 #define DEBUG_H
 
-#include <QtGlobal> // protect
 #include <QtDebug>
+#include <QtGlobal> // protect
 
 // TRace:
 #define TR(what) { qDebug() << what; }

@@ -17,8 +17,8 @@
 
 #include "core/def/comparable.h"
 #include "core/typ/exception.h"
-#include <QtGlobal>
 #include <QJsonArray>
+#include <QtGlobal>
 #include <vector> // no auto rm
 
 class JsonObj;

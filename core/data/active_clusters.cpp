@@ -14,9 +14,9 @@
 
 #include "active_clusters.h"
 #include "core/algo/collect_intensities.h"
-#include "core/typ/async.h"
 #include "core/calc/lens.h"
 #include "core/data/cluster.h"
+#include "core/typ/async.h"
 #include "qcr/base/debug.h"
 
 ActiveClusters::ActiveClusters()

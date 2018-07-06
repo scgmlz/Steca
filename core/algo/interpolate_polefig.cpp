@@ -13,9 +13,9 @@
 //  ***********************************************************************************************
 
 #include "interpolate_polefig.h"
-#include "core/session.h"
-#include "core/def/idiomatic_for.h"
 #include "core/data/peak_info.h"
+#include "core/def/idiomatic_for.h"
+#include "core/session.h"
 #include "core/typ/async.h"
 #include "qcr/base/debug.h"
 #include <qmath.h>

@@ -13,9 +13,9 @@
 //  ***********************************************************************************************
 
 #include "fit_fun.h"
-#include "qcr/base/debug.h"
 #include "core/def/idiomatic_for.h"
 #include "core/fit/fit_methods.h"
+#include "qcr/base/debug.h"
 
 namespace {
 

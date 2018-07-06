@@ -13,8 +13,8 @@
 //  ***********************************************************************************************
 
 #include "popup_polefig.h"
-#include "gui/view/plot_polefig.h"
 #include "gui/mainwin.h"
+#include "gui/view/plot_polefig.h"
 
 PopupPolefig::PopupPolefig()
     : QcrModelessDialog(gGui, "polefig#")

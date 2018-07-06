@@ -15,17 +15,17 @@
 #ifndef SESSION_H
 #define SESSION_H
 
-#include "qcr/engine/param_wrapper.h"
 #include "core/calc/baseline.h"
-#include "core/calc/interpol_params.h"
 #include "core/calc/gamma_selection.h"
-#include "core/calc/theta_selection.h"
+#include "core/calc/image_transform.h"
+#include "core/calc/interpol_params.h"
 #include "core/calc/peak.h"
-#include "core/raw/geometry.h"
-#include "core/data/peak_info.h"
+#include "core/calc/theta_selection.h"
 #include "core/data/corrset.h"
 #include "core/data/dataset.h"
-#include "core/calc/image_transform.h"
+#include "core/data/peak_info.h"
+#include "core/raw/geometry.h"
+#include "qcr/engine/param_wrapper.h"
 
 extern class Session* gSession;
 

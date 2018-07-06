@@ -15,9 +15,9 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include <stack>
-#include <QTextStream>
 #include <QDateTime>
+#include <QTextStream>
+#include <stack>
 
 extern class Console* gConsole; //!< global
 

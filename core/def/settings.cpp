@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#include "qcr/base/debug.h"
 #include "core/def/settings.h"
+#include "qcr/base/debug.h"
 
 XSettings::XSettings(const QString& group)
 {

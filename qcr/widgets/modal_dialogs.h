@@ -15,9 +15,9 @@
 #ifndef DIALOGS_H
 #define DIALOGS_H
 
-#include <QtGlobal>
 #include "qcr/engine/mixin.h"
 #include <QFileDialog>
+#include <QtGlobal>
 
 //! Mix-in for modal dialogs.
 class QcrModal : public QcrSettable {

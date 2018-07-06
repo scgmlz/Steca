@@ -15,8 +15,8 @@
 #ifndef PLOT_OVERLAY_H
 #define PLOT_OVERLAY_H
 
-#include "core/typ/range.h"
 #include "QCustomPlot/qcustomplot.h"
+#include "core/typ/range.h"
 
 //! Listens to mouse events to select subranges of a plot.
 
