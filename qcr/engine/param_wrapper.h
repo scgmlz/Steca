@@ -39,7 +39,7 @@ public:
 protected:
     T value_;
     std::function<T(T)> coerce_ {[](T val) { return val; }};
-    std::function<void(T)> hook_ = [](T) {};
+    std::function<void(T)> hook_ = [](T) { gRoot->remakeAll("ParamWrapper"); };
 
     friend QcrControl<T>;
     void guiSetsVal(T, bool userCall=false);
@@ -90,7 +90,6 @@ void ParamWrapper<T>::guiSetsVal(T val, bool userCall)
     if (userCall) {
         qDebug() << " -> " << val;
         hook_(val);
-        gRoot->remakeAll("ParamWrapper");
     } else {
         qDebug() << " -> " << val << " (non-user call)";
     }
