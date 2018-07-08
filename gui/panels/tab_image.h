@@ -74,10 +74,10 @@ private:
     QcrSpinBox idxMeas_;
     QcrSpinBox idxTheta_;
     QcrSpinBox idxSlice_;
-    QcrLabel gammaRangeTotal_{"gammaRangeTotal"};
-    QcrLabel gammaRangeSlice_{"gammaRangeSlice"};
-    QcrLabel thetaRangeTotal_{"thetaRangeTotal"};
-    QcrLabel thetaRangeBin_  {"thetaRangeBin"};
+    QLabel gammaRangeTotal_{"gammaRangeTotal"};
+    QLabel gammaRangeSlice_{"gammaRangeSlice"};
+    QLabel thetaRangeTotal_{"thetaRangeTotal"};
+    QLabel thetaRangeBin_  {"thetaRangeBin"};
 };
 
 //! A tab for the correction image and associated controls.

@@ -50,9 +50,4 @@ public:
     QcrLineDisplay(const QString& name, int ndigits, bool withDot);
 };
 
-class QcrLabel: public QLabel, public QcrMixin {
-public:
-    QcrLabel(const QString& name, const QString& text="") : QcrMixin{*this, name} { setText(text); }
-};
-
 #endif // VIEWS_H
