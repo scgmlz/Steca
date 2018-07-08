@@ -238,11 +238,15 @@ DataImageTab::DataImageTab()
         "idxSlice", &gSession->gammaSelection().currSlice,
         4, false, 1, INT_MAX, "Index of γ slice to be shown" }
 {
-    idxMeas_.setRemake( [=]() {
+    setRemake( [=]() {
+            gSession->gammaSelection().onData();
+            gSession->thetaSelection().onData();
+
             const Cluster* cluster = gSession->dataset().highlight().cluster();
             int n = cluster ? cluster->count() : 1;
             idxMeas_.setMaximum(n);
             if (n>1) {
+                idxMeas_.setMinimum(n);
                 idxMeas_.setEnabled(true);
                 idxMeas_.setToolTip(
                     "Index of measurement within the current group of " +
@@ -252,27 +256,18 @@ DataImageTab::DataImageTab()
                 idxMeas_.setToolTip(
                     "Index of measurement within the current group of measurements");
             }
-        } );
-    idxSlice_.setRemake( [=]() {
-            int n = gSession->gammaSelection().numSlices.val();
-            idxSlice_.setMaximum(n);
-            idxSlice_.setEnabled(n>1);
-        } );
-    gammaRangeTotal_.setRemake( [=]() {
-            const Cluster* cluster = gSession->dataset().highlight().cluster();
+
+            int nGamma = gSession->gammaSelection().numSlices.val();
+            idxSlice_.setMaximum(nGamma);
+            idxSlice_.setEnabled(nGamma>1);
+
             gammaRangeTotal_.setText(cluster ? cluster->rgeGmaFull().to_s("deg") : "");
-        } );
-    gammaRangeSlice_.setRemake( [=]() {
-            gSession->gammaSelection().onData();
             gammaRangeSlice_.setText(gSession->gammaSelection().range().to_s("deg"));
-        } );
-    thetaRangeTotal_.setRemake( [=]() {
-            const Cluster* cluster = gSession->dataset().highlight().cluster();
+
             thetaRangeTotal_.setText(cluster ? cluster->rgeTth().to_s("deg") : "");
-        } );
-    thetaRangeBin_.setRemake( [=]() {
-            gSession->thetaSelection().onData();
             thetaRangeBin_.setText(gSession->thetaSelection().range().to_s("deg"));
+
+            render();
         } );
 
     // layout

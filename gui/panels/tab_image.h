@@ -41,6 +41,7 @@ public:
     ImageTab() = delete;
     ImageTab(const QString&);
 protected:
+    void render();
     virtual QPixmap pixmap() = 0;
     QPixmap makePixmap(const Image&);
     QPixmap makeOverlayPixmap(const class Measurement*);
@@ -51,7 +52,6 @@ protected:
     QVBoxLayout controls_;
     QHBoxLayout box1_;
 private:
-    void render();
     QcrIconToggleButton btnScale_;
     QcrIconToggleButton btnOverlay_;
 };
