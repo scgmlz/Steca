@@ -16,10 +16,11 @@
 #define CONTROLS_BASELINE_H
 
 #include "qcr/widgets/controls.h"
+#include "qcr/widgets/views.h"
 
 //! A widget with controls to change the baseline fitting.
 
-class ControlsBaseline : public QWidget {
+class ControlsBaseline : public QcrWidget {
 public:
     ControlsBaseline();
 private:

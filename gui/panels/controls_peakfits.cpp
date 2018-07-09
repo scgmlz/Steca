@@ -293,7 +293,8 @@ void ParamsView::onData()
 //! @class ControlsPeakfits
 
 ControlsPeakfits::ControlsPeakfits()
-    : comboReflType_ {"reflTyp", FunctionRegistry::instance()->keys()}
+    : QcrWidget{"peaks"}
+    , comboReflType_ {"reflTyp", FunctionRegistry::instance()->keys()}
 {
     // outbound connections
     connect(&gGui->triggers->addPeak, &QAction::triggered, [this]() {
@@ -318,9 +319,11 @@ ControlsPeakfits::ControlsPeakfits()
     box->addWidget(new RangeControl);
     box->addWidget(new ParamsView);
     box->addStretch(1000);
-
     setLayout(box);
-    update();
+
+    setRemake([this](){
+            gGui->triggers->removePeak.setEnabled(gSession->peaks().count());
+        });
 }
 
 void ControlsPeakfits::hideEvent(QHideEvent*)

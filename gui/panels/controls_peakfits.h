@@ -16,10 +16,11 @@
 #define CONTROLS_PEAKFITS_H
 
 #include "qcr/widgets/controls.h"
+#include "qcr/widgets/views.h"
 
 //! A widget with controls to view and change the detector geometry.
 
-class ControlsPeakfits : public QWidget {
+class ControlsPeakfits : public QcrWidget {
 public:
     ControlsPeakfits();
 private:
