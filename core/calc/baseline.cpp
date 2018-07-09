@@ -27,9 +27,9 @@ void Baseline::clear()
     ranges_.clear();
 }
 
-void Baseline::setRanges(const Ranges& rr)
+void Baseline::clearRanges()
 {
-    ranges_ = rr;
+    ranges_.clear();
 }
 
 void Baseline::addRange(const Range& r)

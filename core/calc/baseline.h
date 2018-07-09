@@ -24,7 +24,7 @@ class Baseline {
 public:
     void fromJson(const JsonObj obj);
     void clear();
-    void setRanges(const Ranges&);
+    void clearRanges();
     void addRange(const Range&);
     void removeRange(const Range&);
     void setPolynomDegree(int);
