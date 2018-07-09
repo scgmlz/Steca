@@ -38,6 +38,7 @@ void PlotDfgramOverlay::addRange(const Range& range)
             gConsole->log("peakRangeMax "+QString::number(range.max));
         }
     }
+    gRoot->remakeAll("PlotDfgramOverlay::addRange");
 }
 
 void PlotDfgramOverlay::subtractRange(const Range& range)
@@ -47,6 +48,7 @@ void PlotDfgramOverlay::subtractRange(const Range& range)
     } else if (gGui->state->editingPeakfits) {
         ; // do nothing
     }
+    gRoot->remakeAll("PlotDfgramOverlay::subtractRange");
 }
 
 bool PlotDfgramOverlay::addModeColor(QColor& color) const
@@ -198,6 +200,7 @@ void PlotDfgram::renderAll()
     clearItems();
 
     const Ranges& rs = gSession->baseline().ranges();
+    // qDebug() << "PlotDfgram::renderAll #bg-ranges=" << rs.count();
     for_i (rs.count())
         addBgItem(rs.at(i), {0x98, 0xfb, 0x98, 0x50}); // light green
     for_i (gSession->peaks().count()) {

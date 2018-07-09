@@ -28,12 +28,17 @@ TableModel::TableModel(const QString& name)
 
 void TableModel::refreshModel()
 {
-    if (rowCountCached_==-1 || rowCount()<rowCountCached_) {
-        // Redraws the entire table, and sets currentIndex to (0,0) [?].
+    if (rowCount()!=rowCountCached_) {
+        // Redraws the entire table.
         // Resets the currentIndex so that arrow keys will start from row 0.
+        // TODO? keep currentIndex if table is extended.
+        //qDebug() << "refresh table model " << name_ << ": full reset; rc=" << rowCount()
+        //         << "; cached=" << rowCountCached_;
         beginResetModel();
         endResetModel();
     } else {
+        //qDebug() << "refresh table model " << name_ << ": data changed; rc=" << rowCount()
+        //         << "; cached=" << rowCountCached_;
         emit dataChanged(createIndex(0,0),createIndex(rowCount(),columnCount()-1));
     }
     rowCountCached_ = rowCount();
@@ -139,7 +144,7 @@ int TableView::mWidth() const
 
 void TableView::gotoCurrent(const QModelIndex& current)
 {
-    qDebug() << "goto current row=" << current.row() << ", highlighted=" << model_->highlighted();
+    //qDebug() << "goto current row=" << current.row() << ", highlighted=" << model_->highlighted();
     if (current.row()==model_->highlighted())
         return; // the following would prevent execution of "onClicked"
     model_->setHighlight(current.row());
@@ -166,6 +171,7 @@ void TableView::updateScroll()
 
 void TableView::onData()
 {
+    // qDebug() << "TableView::onData";
     model_->refreshModel();
     updateScroll();
 }
