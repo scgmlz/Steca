@@ -110,17 +110,17 @@ PeaksView::PeaksView()
 
 //! A horizontal row with labels and spin boxes to view and change one peak fit range.
 
-class RangeControl : public QWidget {
+class RangeControl : public QcrWidget {
 public:
     RangeControl();
-    void onData();
 private:
     QcrDoubleSpinBox spinRangeMin_;
     QcrDoubleSpinBox spinRangeMax_;
 };
 
 RangeControl::RangeControl()
-    : spinRangeMin_ {"peakRangeMin", 6, 0., 89.9}
+    : QcrWidget("peakRange")
+    , spinRangeMin_ {"peakRangeMin", 6, 0., 89.9}
     , spinRangeMax_ {"peakRangeMax", 6, 0., 90.}
 {
     spinRangeMin_.setSingleStep(.1);
@@ -144,18 +144,15 @@ RangeControl::RangeControl()
     hb->addStretch();
     setLayout(hb);
 
-    onData();
-}
-
-void RangeControl::onData()
-{
-    Peak* peak = gSession->peaks().selectedPeak();
-    setEnabled(peak);
-    if (!peak)
-        return;
-    Range range = peak->range();
-    spinRangeMin_.programaticallySetValue(safeReal(range.min));
-    spinRangeMax_.programaticallySetValue(safeReal(range.max));
+    setRemake([this](){
+            Peak* peak = gSession->peaks().selectedPeak();
+            setEnabled(peak);
+            if (!peak)
+                return;
+            Range range = peak->range();
+            spinRangeMin_.programaticallySetValue(safeReal(range.min));
+            spinRangeMax_.programaticallySetValue(safeReal(range.max));
+        });
 }
 
 
