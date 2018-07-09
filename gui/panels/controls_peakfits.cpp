@@ -300,7 +300,8 @@ ControlsPeakfits::ControlsPeakfits()
     connect(&gGui->triggers->addPeak, &QAction::triggered, [this]() {
             gSession->peaks().add(comboReflType_.currentText()); });
     connect(&gGui->triggers->removePeak, &QAction::triggered, []() {
-            gSession->peaks().remove(); });
+            gSession->peaks().remove();
+            gRoot->remakeAll("removePeak"); });
     connect(&comboReflType_, _SLOT_(QComboBox,currentIndexChanged,const QString&),
             [](const QString& peakFunctionName) {
                 if (gSession->peaks().selectedPeak()) { // TODO rm this if

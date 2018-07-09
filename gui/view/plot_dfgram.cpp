@@ -205,7 +205,7 @@ void PlotDfgram::renderAll()
         addBgItem(rs.at(i), {0x98, 0xfb, 0x98, 0x50}); // light green
     for_i (gSession->peaks().count()) {
         addBgItem(gSession->peaks().at(i).range(), i==gSession->peaks().selectedIndex() ?
-                  QColor(0x87, 0xce, 0xfa, 0x70) : // medium blue
+                  QColor(0x00, 0xff, 0xff, 0x50) : // cyan
                   QColor(0x87, 0xce, 0xfa, 0x50)); // light blue
     }
 

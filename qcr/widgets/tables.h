@@ -28,6 +28,7 @@ public:
 
     void refreshModel(); // within rectangle plus one row
     virtual void onClicked(const QModelIndex& cell);
+    void setHighlightedCell(const QModelIndex& cell);
 
     int columnCount(const QModelIndex& /*unused*/) const { return columnCount(); }
     int rowCount(const QModelIndex& /*unused*/) const { return rowCount(); }
@@ -38,8 +39,6 @@ public:
     virtual int rowCount() const = 0;
     virtual int highlighted() const = 0;
     virtual void setHighlight(int i) = 0;
-protected:
-    void setHighlightedCell(const QModelIndex& cell);
 private:
     QString name_;
     int rowCountCached_ {-1};
@@ -74,8 +73,7 @@ protected:
     int mWidth() const;
     QString name_;
     TableModel* model_;
-    void currentChanged(const QModelIndex& current, const QModelIndex&) override final {
-        gotoCurrent(current); }
+    void currentChanged(const QModelIndex& current, const QModelIndex&) override final;
     void gotoCurrent(const QModelIndex&);
     void updateScroll();
     void highlight(bool primaryCall, int row);
