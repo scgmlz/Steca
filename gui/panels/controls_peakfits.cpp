@@ -19,12 +19,12 @@
 #include "gui/mainwin.h"
 #include "gui/state.h"
 #include "gui/actions/triggers.h"
+#include "gui/view/range_control.h"
 #include "qcr/base/debug.h"
 #define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 #include <QStackedWidget>
 
 namespace {
-double safeReal(double val) { return qIsFinite(val) ? val : 0.0; }
 QString safeRealText(double val) { return qIsFinite(val) ? QString::number(val) : ""; }
 } // local methods
 
@@ -104,56 +104,6 @@ PeaksView::PeaksView()
     : TableView(new PeaksModel())
 {
 }
-
-//  ***********************************************************************************************
-//! @class RangeControl (local scope)
-
-//! A horizontal row with labels and spin boxes to view and change one peak fit range.
-
-class RangeControl : public QcrWidget {
-public:
-    RangeControl();
-private:
-    QcrDoubleSpinBox spinRangeMin_;
-    QcrDoubleSpinBox spinRangeMax_;
-};
-
-RangeControl::RangeControl()
-    : QcrWidget("peakRange")
-    , spinRangeMin_ {name()+"Min", 6, 0., 89.9}
-    , spinRangeMax_ {name()+"Max", 6, 0., 90.}
-{
-    spinRangeMin_.setSingleStep(.1);
-    spinRangeMax_.setSingleStep(.1);
-
-    // outbound connections
-    connect(&spinRangeMin_, &QcrDoubleSpinBox::valueReleased, [this](double val) {
-            double antival = qMax(spinRangeMax_.getValue(), val);
-            gSession->peaks().selectedRange()->set(val, antival); });
-    connect(&spinRangeMax_, &QcrDoubleSpinBox::valueReleased, [this](double val) {
-            double antival = qMin(spinRangeMin_.getValue(), val);
-            gSession->peaks().selectedRange()->set(antival, val); });
-
-    // layout
-    auto hb = new QHBoxLayout();
-    hb->addWidget(new QLabel("range"));
-    hb->addWidget(&spinRangeMin_);
-    hb->addWidget(new QLabel(".."));
-    hb->addWidget(&spinRangeMax_);
-    hb->addWidget(new QLabel("deg"));
-    hb->addStretch();
-    setLayout(hb);
-
-    setRemake([this](){
-            const Range* range = gSession->peaks().selectedRange();
-            setEnabled(range);
-            if (!range)
-                return;
-            spinRangeMin_.programaticallySetValue(safeReal(range->min));
-            spinRangeMax_.programaticallySetValue(safeReal(range->max));
-        });
-}
-
 
 //  ***********************************************************************************************
 //! @class ParamsView and its dependences (local scope)
@@ -313,7 +263,8 @@ ControlsPeakfits::ControlsPeakfits()
     box->addLayout(&topControls_);
     box->addWidget(new PeaksView);
     box->addWidget(&comboReflType_);
-    box->addWidget(new RangeControl);
+    box->addWidget(new RangeControl("peak", []()->Range*{
+                return gSession->peaks().selectedRange(); }));
     box->addWidget(new ParamsView);
     box->addStretch(1000);
     setLayout(box);

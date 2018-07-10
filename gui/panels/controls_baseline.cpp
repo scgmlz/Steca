@@ -17,6 +17,7 @@
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"
 #include "gui/state.h"
+#include "gui/view/range_control.h"
 #include "qcr/widgets/tables.h"
 
 //  ***********************************************************************************************
@@ -100,6 +101,8 @@ ControlsBaseline::ControlsBaseline()
     box_.addLayout(&hb_);
 
     box_.addWidget(new BaseRangesView());
+    box_.addWidget(new RangeControl("base", []()->Range*{
+                return gSession->baseline().selectedRange(); }));
     box_.addStretch(1);
     setLayout(&box_);
 
