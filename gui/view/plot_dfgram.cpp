@@ -20,6 +20,17 @@
 #include "gui/state.h"
 #include "qcr/engine/console.h"
 
+namespace colors {
+QColor baseEdit{0x98, 0xfb, 0x98, 0x70}; // medium green
+QColor baseStd {0x98, 0xfb, 0x98, 0x50};
+QColor peakEmph{0x00, 0xff, 0xff, 0x50}; // cyan
+QColor peakStd {0x87, 0xce, 0xfa, 0x50}; // light blue
+QColor peakEdit{0x00, 0xff, 0xff, 0x30}; //
+QColor subtract{0xf8, 0xf8, 0xff, 0x90}; // almost white
+QColor pen     {0x21, 0xa1, 0x21, 0xff};
+QColor scatter {255, 0, 0};
+}
+
 //  ***********************************************************************************************
 //! @class PlotDfgramOverlay
 
@@ -54,10 +65,10 @@ void PlotDfgramOverlay::subtractRange(const Range& range)
 bool PlotDfgramOverlay::addModeColor(QColor& color) const
 {
     if        (gGui->state->editingBaseline) {
-        color = {0x98, 0xfb, 0x98, 0x70}; // medium green
+        color = colors::baseEdit;
         return true;
     } else if (gGui->state->editingPeakfits) {
-        color = {0x87, 0xce, 0xfa, 0x70}; // medium blue
+        color = colors::peakEdit;
         return true;
     }
     return false;
@@ -66,7 +77,7 @@ bool PlotDfgramOverlay::addModeColor(QColor& color) const
 bool PlotDfgramOverlay::subtractModeColor(QColor& color) const
 {
     if        (gGui->state->editingBaseline) {
-        color = {0xf8, 0xf8, 0xff, 0x90}; // almost white
+        color = colors::subtract;
         return true;
     }
     return false;
@@ -97,7 +108,7 @@ PlotDfgram::PlotDfgram(Dfgram& diffractogram)
 
     // graphs in the "main" layer; in the display order
     bgGraph_ = addGraph();
-    bgGraph_->setPen(QPen(QColor(0x21, 0xa1, 0x21, 0xff), 2));
+    bgGraph_->setPen(QPen(colors::pen, 2));
 
     dgramGraph_ = addGraph();
     dgramGraph_->setLineStyle(QCPGraph::LineStyle::lsNone);
@@ -108,7 +119,7 @@ PlotDfgram::PlotDfgram(Dfgram& diffractogram)
     dgramBgFittedGraph2_->setVisible(false);
     dgramBgFittedGraph2_->setLineStyle(QCPGraph::LineStyle::lsNone);
     dgramBgFittedGraph2_->setScatterStyle(
-        QCPScatterStyle(QCPScatterStyle::ScatterShape::ssDisc, QColor(255, 0, 0), 4));
+        QCPScatterStyle(QCPScatterStyle::ScatterShape::ssDisc, colors::scatter, 4));
 
     dgramBgFittedGraph_ = addGraph();
     dgramBgFittedGraph_->setPen(QPen(Qt::black, 2));
@@ -202,11 +213,10 @@ void PlotDfgram::renderAll()
     const Ranges& rs = gSession->baseline().ranges();
     // qDebug() << "PlotDfgram::renderAll #bg-ranges=" << rs.count();
     for_i (rs.count())
-        addBgItem(rs.at(i), {0x98, 0xfb, 0x98, 0x50}); // light green
+        addBgItem(rs.at(i), colors::baseStd); // light green
     for_i (gSession->peaks().count()) {
         addBgItem(gSession->peaks().at(i).range(), i==gSession->peaks().selectedIndex() ?
-                  QColor(0x00, 0xff, 0xff, 0x50) : // cyan
-                  QColor(0x87, 0xce, 0xfa, 0x50)); // light blue
+                  colors::peakEmph : colors::peakStd);
     }
 
     if (!gSession->dataset().highlight().cluster()) {

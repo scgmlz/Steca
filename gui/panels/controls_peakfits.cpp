@@ -120,8 +120,8 @@ private:
 
 RangeControl::RangeControl()
     : QcrWidget("peakRange")
-    , spinRangeMin_ {"peakRangeMin", 6, 0., 89.9}
-    , spinRangeMax_ {"peakRangeMax", 6, 0., 90.}
+    , spinRangeMin_ {name()+"Min", 6, 0., 89.9}
+    , spinRangeMax_ {name()+"Max", 6, 0., 90.}
 {
     spinRangeMin_.setSingleStep(.1);
     spinRangeMax_.setSingleStep(.1);
