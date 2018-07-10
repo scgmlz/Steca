@@ -33,9 +33,6 @@ Triggers::Triggers()
     connect(&about, AT, [](){ AboutBox().exec(); });
     connect(&addFiles, AT, []() { gGui->addFiles(); });
     connect(&checkUpdate, AT, []() { CheckUpdate _(gGui); });
-    connect(&clearBackground, AT, []() {
-            gSession->baseline().clearRanges();
-            gRoot->remakeAll("clearBackground"); });
     connect(&clearSession, AT, []() { gSession->clear(); });
     connect(&corrFile, AT, []() { gGui->loadCorrFile(); });
     connect(&exportDfgram, AT, [](){ ExportDfgram().exec(); });

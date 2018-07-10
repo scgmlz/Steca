@@ -75,6 +75,7 @@ public:
     int count() const { return ranges_.size(); }
 
     const Range& at(int i) const { return ranges_[i]; }
+    Range& at(int i) { return ranges_[i]; }
 
     bool add(const Range&); //!< collapses overlapping ranges; returns true if *this changed
     bool remove(const Range&); //!< removes (cuts out) a range; returns whether there was a change

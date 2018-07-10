@@ -44,6 +44,7 @@ public:
     QcrTrigger removeFile {"removeFile", "Remove highlighted file", ":/icon/rem",
             QKeySequence::Delete};
     QcrTrigger removePeak {"removePeak", "Remove peak", ":/icon/rem"};
+    QcrTrigger removeBaserange {"removeBaserange", "Remove baseline range", ":/icon/rem"};
     QcrTrigger saveSession {"saveSession", "Save session..."};
     QcrTrigger viewReset {"viewReset", "Reset"};
 };

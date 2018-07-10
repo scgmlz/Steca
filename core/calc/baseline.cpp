@@ -30,6 +30,7 @@ void Baseline::clear()
 void Baseline::clearRanges()
 {
     ranges_.clear();
+    selected_ = -1;
 }
 
 void Baseline::addRange(const Range& r)
@@ -40,6 +41,20 @@ void Baseline::addRange(const Range& r)
 void Baseline::removeRange(const Range& r)
 {
     ranges_.remove(r);
+}
+
+void Baseline::removeSelectedRange()
+{
+    ranges_.remove(*selectedRange());
+    selected_ -= 1;
+    if (selected<0 && ranges_.count())
+        selected_ = 0;
+}
+
+void Baseline::select(int i)
+{
+    ASSERT(i<ranges().count());
+    selected_ = i;
 }
 
 QJsonObject Baseline::toJson() const

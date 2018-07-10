@@ -34,8 +34,8 @@ public:
 private:
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return gSession->baseline().ranges().count(); }
-    int highlighted() const final { return 0; } // dummy
-    void setHighlight(int row) final {}         // no need to select and highlight ranges
+    int highlighted() const final { return gSession->baseline().selectedIndex(); }
+    void setHighlight(int row) final { gSession->baseline().select(row); }
 
     QVariant data(const QModelIndex&, int) const;
 };
@@ -64,6 +64,8 @@ QVariant BaseRangesModel::data(const QModelIndex& index, int role) const
         return QColor(Qt::black);
     }
     case Qt::BackgroundRole: {
+        if (row==highlighted())
+            return QColor(Qt::green);
         return QColor(Qt::white);
     }
     default:
@@ -97,6 +99,7 @@ ControlsBaseline::ControlsBaseline()
     hb_.addWidget(new QLabel("Pol. degree:"));
     hb_.addWidget(&spinDegree_);
     hb_.addStretch(1);
+    hb_.addWidget(new QcrIconTriggerButton(&gGui->triggers->removeBaserange));
     hb_.addWidget(new QcrIconTriggerButton(&gGui->triggers->clearBackground));
     box_.addLayout(&hb_);
 
@@ -105,6 +108,13 @@ ControlsBaseline::ControlsBaseline()
                 return gSession->baseline().selectedRange(); }));
     box_.addStretch(1);
     setLayout(&box_);
+
+    connect(&gGui->triggers->removeBaserange, &QAction::triggered, []() {
+            gSession->baseline().removeSelectedRange();
+            gRoot->remakeAll("clearBackground"); });
+    connect(&gGui->triggers->clearBackground, &QAction::triggered, []() {
+            gSession->baseline().clearRanges();
+            gRoot->remakeAll("clearBackground"); });
 
     setRemake([this](){
             gGui->triggers->clearBackground.setEnabled(gSession->baseline().ranges().count());

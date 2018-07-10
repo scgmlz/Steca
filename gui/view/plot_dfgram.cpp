@@ -21,11 +21,12 @@
 #include "qcr/engine/console.h"
 
 namespace colors {
-QColor baseEdit{0x98, 0xfb, 0x98, 0x70}; // medium green
-QColor baseStd {0x98, 0xfb, 0x98, 0x50};
+QColor baseEmph{0x00, 0xff, 0x00, 0x50}; // green
+QColor baseStd {0x87, 0xce, 0x87, 0x50}; // light green
+QColor baseEdit{0x00, 0xff, 0x00, 0x30}; // as Emph, but more transparent
 QColor peakEmph{0x00, 0xff, 0xff, 0x50}; // cyan
 QColor peakStd {0x87, 0xce, 0xfa, 0x50}; // light blue
-QColor peakEdit{0x00, 0xff, 0xff, 0x30}; //
+QColor peakEdit{0x00, 0xff, 0xff, 0x30}; // as Emph, but more transparent
 QColor subtract{0xf8, 0xf8, 0xff, 0x90}; // almost white
 QColor pen     {0x21, 0xa1, 0x21, 0xff};
 QColor scatter {255, 0, 0};
@@ -213,11 +214,11 @@ void PlotDfgram::renderAll()
     const Ranges& rs = gSession->baseline().ranges();
     // qDebug() << "PlotDfgram::renderAll #bg-ranges=" << rs.count();
     for_i (rs.count())
-        addBgItem(rs.at(i), colors::baseStd); // light green
-    for_i (gSession->peaks().count()) {
-        addBgItem(gSession->peaks().at(i).range(), i==gSession->peaks().selectedIndex() ?
-                  colors::peakEmph : colors::peakStd);
-    }
+        addBgItem(rs.at(i),
+                  i==gSession->baseline().selectedIndex() ? colors::baseEmph : colors::baseStd);
+    for_i (gSession->peaks().count())
+        addBgItem(gSession->peaks().at(i).range(),
+                  i==gSession->peaks().selectedIndex() ? colors::peakEmph : colors::peakStd);
 
     if (!gSession->dataset().highlight().cluster()) {
         plotEmpty();

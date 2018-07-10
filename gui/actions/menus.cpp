@@ -69,11 +69,11 @@ Menus::Menus(QMenuBar* mbar)
     dgram_ = actionsToMenu(
         "&Diffractogram",
         {   &toggles->showBackground,
+                &triggers->removeBaserange,
                 &triggers->clearBackground,
-                &triggers->clearPeaks,
                 separator(),
-                &triggers->addPeak,
                 &triggers->removePeak,
+                &triggers->clearPeaks,
                 separator(),
                 &toggles->combinedDfgram,
                 &toggles->fixedIntenDfgram,

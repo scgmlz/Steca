@@ -27,14 +27,20 @@ public:
     void clearRanges();
     void addRange(const Range&);
     void removeRange(const Range&);
-    void setPolynomDegree(int);
+    void removeSelectedRange();
+    void select(int i);
 
     QJsonObject toJson() const;
     const Ranges& ranges() const { return ranges_; }
     NumberWrapper<int> polynomDegree {0};
 
+    Range* selectedRange() {
+        return ranges_.count() ? &ranges_.at(selected_) : nullptr; }
+    int selectedIndex() { return selected_; }
+
 private:
     Ranges ranges_;
+    int selected_ {-1};
 };
 
 #endif // BASELINE_H
