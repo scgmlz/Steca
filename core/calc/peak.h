@@ -37,6 +37,7 @@ public:
     const PeakFunction& peakFunction() const;
     QString functionName() const { return peakFunction_->name(); }
     bool isRaw() const { return peakFunction_->isRaw(); }
+    Range& range() { return peakFunction_->range(); }
     const Range& range() const { return peakFunction_->range(); }
     JsonObj toJson() const;
 
@@ -62,8 +63,10 @@ public:
     QStringList names() const;
     QJsonArray toJson() const;
     Peak* selectedPeak() {
-        return 0<=selected_ && selected_<count() ? peaks_[selected_] : nullptr; };
-    int selectedIndex() { return selected_; };
+        return 0<=selected_ && selected_<count() ? peaks_[selected_] : nullptr; }
+    Range* selectedRange() {
+        return selectedPeak() ? &selectedPeak()->range() : nullptr; }
+    int selectedIndex() { return selected_; }
 
 private:
     void add(Peak* peak);

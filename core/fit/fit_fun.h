@@ -57,7 +57,7 @@ public:
     virtual void setGuessedFWHM(const float fwhm) { guessedFWHM_ = fwhm; }
 
     PeakFunction* clone() const;
-    const Range& range() const { return range_; }
+    Range& range() { return range_; }
     const qpair& guessedPeak() const { return guessedPeak_; }
     float guessedFWHM() const { return guessedFWHM_; }
     virtual qpair fittedPeak() const = 0;
