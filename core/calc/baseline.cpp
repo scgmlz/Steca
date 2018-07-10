@@ -47,7 +47,7 @@ void Baseline::removeSelectedRange()
 {
     ranges_.remove(*selectedRange());
     selected_ -= 1;
-    if (selected<0 && ranges_.count())
+    if (selected_<0 && ranges_.count())
         selected_ = 0;
 }
 
