@@ -28,7 +28,8 @@ public:
     void addRange(const Range&);
     void removeRange(const Range&);
     void removeSelectedRange();
-    void select(int i);
+    void selectRange(int i);
+    void selectRangeByValue(double x);
 
     QJsonObject toJson() const;
     const Ranges& ranges() const { return ranges_; }

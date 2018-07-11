@@ -35,7 +35,7 @@ private:
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return gSession->baseline().ranges().count(); }
     int highlighted() const final { return gSession->baseline().selectedIndex(); }
-    void setHighlight(int row) final { gSession->baseline().select(row); }
+    void setHighlight(int row) final { gSession->baseline().selectRange(row); }
 
     QVariant data(const QModelIndex&, int) const;
 };

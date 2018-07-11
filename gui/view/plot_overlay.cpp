@@ -59,11 +59,14 @@ void PlotOverlay::mouseReleaseEvent(QMouseEvent* e)
 {
     mouseDown_ = false;
     update();
-    double xmin = plot_.xAxis->pixelToCoord(mouseDownPos_);
-    double xmax = plot_.xAxis->pixelToCoord(cursorPos_);
-    Range range = Range::safeFrom(xmin, xmax);
+    double xold = plot_.xAxis->pixelToCoord(mouseDownPos_);
+    double xnew = plot_.xAxis->pixelToCoord(cursorPos_);
+    if (xnew == xold) { // clicked not moved
+        selectRange(xnew);
+        return;
+    }
     if      (e->button()==Qt::LeftButton)
-        addRange(range);
+        addRange(Range::safeFrom(xold, xnew));
 }
 
 void PlotOverlay::mouseMoveEvent(QMouseEvent* e)
@@ -85,14 +88,14 @@ void PlotOverlay::paintEvent(QPaintEvent*)
 
 void PlotOverlay::paintMousedZone()
 {
+    if (mouseButton_!=Qt::LeftButton)
+        return;
     QRect g = geometry();
     g.setLeft(qMin(mouseDownPos_, cursorPos_));
     g.setRight(qMax(mouseDownPos_, cursorPos_));
     QColor color;
-    if        (mouseButton_==Qt::LeftButton) {
-        if (!addModeColor(color))
-            return;
-    }
+    if (!addModeColor(color))
+        return;
     QPainter(this).fillRect(g, color);
 }
 

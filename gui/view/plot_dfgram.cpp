@@ -54,6 +54,18 @@ void PlotDfgramOverlay::addRange(const Range& range)
     gRoot->remakeAll("PlotDfgramOverlay::addRange");
 }
 
+//! Selects the range that contains pixel x.
+
+void PlotDfgramOverlay::selectRange(double x)
+{
+    if        (gGui->state->editingBaseline) {
+        gSession->baseline().selectRangeByValue(x);
+    } else if (gGui->state->editingPeakfits) {
+        ; // TODO
+    }
+    gRoot->remakeAll("PlotDfgramOverlay::selectRange");
+}
+
 bool PlotDfgramOverlay::addModeColor(QColor& color) const
 {
     if        (gGui->state->editingBaseline) {

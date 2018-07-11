@@ -51,10 +51,20 @@ void Baseline::removeSelectedRange()
         selected_ = 0;
 }
 
-void Baseline::select(int i)
+void Baseline::selectRange(int i)
 {
     ASSERT(i<ranges().count());
     selected_ = i;
+}
+
+void Baseline::selectRangeByValue(double x)
+{
+    for (int i=0; i<ranges().count(); ++i) {
+        if (ranges().at(i).contains(x)) {
+            selected_ = i;
+            return;
+        }
+    }
 }
 
 QJsonObject Baseline::toJson() const
