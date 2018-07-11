@@ -193,13 +193,13 @@ QString Range::to_s(const QString& unit, int precision, int digitsAfter) const
 //  ***********************************************************************************************
 //! @class Ranges
 
-bool Ranges::add(const Range& range)
+void Ranges::add(const Range& range)
 {
     std::vector<Range> newRanges;
     Range addRange = range;
     for (const Range& r : ranges_) {
         if (r.contains(range))
-            return false;
+            return;
         if (!range.contains(r)) {
             if (range.intersects(r))
                 addRange.extendBy(r);
@@ -210,7 +210,7 @@ bool Ranges::add(const Range& range)
     newRanges.push_back(addRange);
     ranges_ = newRanges;
     sort();
-    return true;
+    return;
 }
 
 bool Ranges::remove(const Range& removeRange)

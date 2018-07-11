@@ -219,36 +219,6 @@ static bool RANGES_EQ(Ranges const& rs1, Ranges const& rs2) {
     return true;
 }
 
-TEST(Ranges, Trivia) {
-    Ranges rs;
-    EXPECT_TRUE(rs.isEmpty());
-    EXPECT_TRUE(RANGES_EQ(rs, rs));
-    EXPECT_TRUE(RANGES_EQ(rs, Ranges()));
-
-    Range r1(0, 1), r2(1, 2), r3(2, 3), r4(3, 4);
-
-    EXPECT_TRUE(rs.add(r4));
-    EXPECT_FALSE(rs.add(r4));
-    EXPECT_TRUE(RANGES_EQ(rs, { { 3, 4 } }));
-
-    EXPECT_TRUE(rs.add(r1));
-    EXPECT_FALSE(rs.add(r1));
-    EXPECT_TRUE(RANGES_EQ(rs, { { 0, 1 }, { 3, 4 } }));
-
-    EXPECT_TRUE(rs.add(r2));
-    EXPECT_TRUE(RANGES_EQ(rs, { { 0, 2 }, { 3, 4 } }));
-
-    EXPECT_TRUE(rs.add(r3));
-    EXPECT_TRUE(RANGES_EQ(rs, { { 0, 4 } }));
-
-    EXPECT_TRUE(rs.remove(r2));
-    EXPECT_FALSE(rs.remove(r2));
-    EXPECT_TRUE(RANGES_EQ(rs, { { 0, 1 }, { 2, 4 } }));
-
-    rs.clear();
-    EXPECT_FALSE(rs.remove(r1));
-}
-
 TEST(Ranges, Json) {
     Ranges rs, rs1;
     rs.add(Range());
