@@ -24,18 +24,18 @@ SubframeSetup::SubframeSetup()
 {
     setTabPosition(QTabWidget::North);
 
-    addTab(new ControlsDetector(), "Detector");
-    addTab(new ControlsBaseline(), "Baseline");
-    addTab(new ControlsPeakfits(), "Peakfits");
-    addTab(new ControlsInterpolation(), "Interpol");
+    addTab(new ControlsDetector(),     "Detector"); idxDetector = 0;
+    addTab(new ControlsBaseline(),     "Baseline"); idxBaseline = 1;
+    addTab(new ControlsPeakfits(),     "Peakfits"); idxPeakfits = 2;
+    addTab(new ControlsInterpolation(),"Interpol"); idxInterpol = 3;
 
     setRemake( [=]() {
             if (gSession->dataset().countFiles()) {
-                setTabEnabled(1, true);
-                setTabEnabled(2, true);
+                setTabEnabled(idxBaseline, true);
+                setTabEnabled(idxPeakfits, true);
             } else {
-                setTabEnabled(1, false);
-                setTabEnabled(2, false);
+                setTabEnabled(idxBaseline, false);
+                setTabEnabled(idxPeakfits, false);
                 programaticallySetValue(0);
             }
         } );

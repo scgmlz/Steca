@@ -70,7 +70,6 @@ private:
     void initToggle(const QString& iconFile, const QKeySequence& shortcut);
     void doSetValue(bool val) final { setChecked(val); }
     // hide some member functions of QAction:
-    bool isChecked() const { return QAction::isChecked(); }
     void setChecked(bool val) { QAction::setChecked(val); }
 };
 
@@ -104,7 +103,6 @@ private:
     int reportedValue_;
     void doSetValue(int val) final { setValue(val); }
     // hide some member functions of QSpinBox:
-    int value() const { return QSpinBox::value(); }
     void setValue(int val) { QSpinBox::setValue(val); }
 };
 
@@ -127,7 +125,6 @@ private:
     double reportedValue_;
     void doSetValue(double val) final { setValue(val); }
     // hide some member functions of QDoubleSpinBox:
-    double value() const { return QDoubleSpinBox::value(); }
     void setValue(double val) { QDoubleSpinBox::setValue(val); }
 };
 
@@ -140,7 +137,6 @@ public:
 private:
     void doSetValue(bool val) final { setChecked(val); }
     // hide some member functions of QCheckBox:
-    bool isChecked() const { return QCheckBox::isChecked(); }
     void setChecked(bool val) { QCheckBox::setChecked(val); }
 };
 
@@ -153,7 +149,6 @@ public:
 private:
     void doSetValue(bool val) final { setChecked(val); }
     // hide some member functions of QRadioButton:
-    bool isChecked() const { return QRadioButton::isChecked(); }
     void setChecked(bool val) { QRadioButton::setChecked(val); }
 };
 
@@ -166,7 +161,6 @@ public:
 private:
     void doSetValue(int val) final { setCurrentIndex(val); }
     // hide some member functions of QComboBox:
-    int currentIndex() const { return QComboBox::currentIndex(); }
     void setCurrentIndex(int val) { QComboBox::setCurrentIndex(val); }
     void setCurrentText(const QString&) = delete;
     void setEditable() = delete; // stay with default: editable=false
@@ -182,7 +176,6 @@ public:
 private:
     void doSetValue(QString val) final { setText(val); }
     // hide some member functions of QLineEdit:
-    QString text() const { return QLineEdit::text(); }
     void setText(QString val) { QLineEdit::setText(val); }
 };
 
@@ -195,7 +188,6 @@ public:
 private:
     void doSetValue(int val) final { setCurrentIndex(val); }
     // hide some member functions of QTabWidget:
-    int currentIndex() const { return QTabWidget::currentIndex(); }
     void setCurrentIndex(int val);
     void setCurrentWidget(QWidget*) = delete;
 };

@@ -17,6 +17,7 @@
 #include "core/def/idiomatic_for.h"
 #include "core/session.h"
 #include "gui/actions/toggles.h"
+#include "gui/panels/subframe_setup.h"
 #include "gui/state.h"
 #include "qcr/engine/console.h"
 
@@ -213,6 +214,7 @@ void PlotDfgram::renderAll()
 
     const Ranges& rs = gSession->baseline().ranges();
     // qDebug() << "PlotDfgram::renderAll #bg-ranges=" << rs.count();
+    bool showingBaseline = gGui->setup()->currentIndex() == gGui->setup()->idxBaseline;
     for_i (rs.count())
         addBgItem(rs.at(i),
                   i==gSession->baseline().selectedIndex() ? colors::baseEmph : colors::baseStd);
