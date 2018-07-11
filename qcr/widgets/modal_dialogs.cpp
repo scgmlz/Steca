@@ -23,17 +23,14 @@
 //! @class QcrModal
 
 QcrModal::QcrModal(QObject& object, const QString& name)
-    : QcrSettable {object, "@push " + name}
+    : QcrSettable {object, "@push " + name, true}
 {
 }
 
 QcrModal::~QcrModal()
 {
-    qDebug() << "~QcrModal1";
     gConsole->log("@close");
-    qDebug() << "~QcrModal2";
     gConsole->call("@pop");
-    qDebug() << "~QcrModal3";
 }
 
 

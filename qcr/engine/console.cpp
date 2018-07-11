@@ -61,7 +61,6 @@ QString CommandRegistry::learn(const QString& name, QcrSettable* widget)
             idxEntry = ++(numberedEntry->second);
         ret.replace("#", QString::number(idxEntry));
     }
-    //qDebug() << "registry " << name_ << " learns " << ret;
     if (widgets_.find(ret)!=widgets_.end()) {
         QByteArray tmp = ret.toLatin1();
         qFatal("Duplicate widget registry entry '%s'", tmp.constData());
@@ -72,7 +71,6 @@ QString CommandRegistry::learn(const QString& name, QcrSettable* widget)
 
 void CommandRegistry::forget(const QString& name)
 {
-    qterr << "registry " << name_ << " going to forget " << name << "\n";
     auto it = widgets_.find(name);
     if (it==widgets_.end()) {
         QByteArray tmp1 = name.toLatin1();

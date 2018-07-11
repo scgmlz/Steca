@@ -34,10 +34,9 @@ void QcrMixin::remake()
 {
     if (const QWidget* w = dynamic_cast<const QWidget*>(&object())) {
         if (w->isVisible()) {
-            //qDebug() << "UPDATE WIDGET " << name();
             remake_();
         } else
-            ;//qDebug() << "IGNORE WIDGET " << name();
+            ;
     }
 }
 
@@ -63,6 +62,26 @@ void QcrRoot::remakeAll(const QString& whence)
 
 
 //  ***********************************************************************************************
+//! @class QcrSettable
+
+QcrSettable::QcrSettable(QObject& object, const QString& name, bool _modal)
+    : QcrMixin {object, gConsole->learn(name, this)}
+    , modal_(_modal)
+{}
+
+QcrSettable::~QcrSettable()
+{
+    if (!modal_)
+        gConsole->forget(name());
+}
+
+void QcrSettable::doLog(bool softwareCalled, const QString& msg)
+{
+    gConsole->log2(!softwareCalled, msg);
+}
+
+
+//  ***********************************************************************************************
 //! @class QcrModelessDialog
 
 QcrModelessDialog::QcrModelessDialog(QWidget* parent, const QString& name)
@@ -82,24 +101,4 @@ void QcrModelessDialog::executeConsoleCommand(const QString& arg)
     if (arg!="close")
         throw QcrException("Unexpected command in ModelessDialog "+name());
     close();
-}
-
-
-//  ***********************************************************************************************
-//! @class QcrSettable
-
-QcrSettable::QcrSettable(QObject& object, const QString& name)
-    : QcrMixin {object, gConsole->learn(name, this)}
-{}
-
-QcrSettable::~QcrSettable()
-{
-    qDebug() << "~QcrSettable1 " << name();
-    gConsole->forget(name());
-    qDebug() << "~QcrSettable2";
-}
-
-void QcrSettable::doLog(bool softwareCalled, const QString& msg)
-{
-    gConsole->log2(!softwareCalled, msg);
 }

@@ -48,9 +48,11 @@ class QcrSettable : public QcrMixin {
 public:
     virtual void executeConsoleCommand(const QString&) = 0;
 protected:
-    QcrSettable(QObject& object, const QString& name);
+    QcrSettable(QObject& object, const QString& name, bool _modal=false);
     ~QcrSettable();
     void doLog(bool softwareCalled, const QString& msg);
+private:
+    bool modal_;
 };
 
 //! A modeless (= persistent spawned popup) dialog with support for capture&replay.
