@@ -22,10 +22,9 @@
 
 class Peak {
 public:
-    Peak() = delete;
     Peak(const QString& functionName = "Raw");
 
-    static Peak* fromJson(const JsonObj&);
+    static Peak fromJson(const JsonObj&);
 
     void setPeakFunction(const QString&);
     void setRange(const Range&);
@@ -56,22 +55,22 @@ public:
     void remove();
     void select(int i);
 
-    const Peak& at(int i) const { return *peaks_.at(i); }
-    Peak& at(int i) { return *peaks_.at(i); }
+    const Peak& at(int i) const { return peaks_.at(i); }
+    Peak& at(int i) { return peaks_.at(i); }
 
     int count() const { return peaks_.size(); }
     QStringList names() const;
     QJsonArray toJson() const;
     Peak* selectedPeak() {
-        return 0<=selected_ && selected_<count() ? peaks_[selected_] : nullptr; }
+        return 0<=selected_ && selected_<count() ? &peaks_[selected_] : nullptr; }
     Range* selectedRange() {
         return selectedPeak() ? &selectedPeak()->range() : nullptr; }
     int selectedIndex() { return selected_; }
 
 private:
-    void add(Peak* peak);
+    void add(Peak&& peak);
     int selected_ {-1};
-    std::vector<Peak*> peaks_;
+    std::vector<Peak> peaks_;
 };
 
 #endif // PEAK_H

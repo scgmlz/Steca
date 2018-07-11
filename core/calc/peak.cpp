@@ -70,11 +70,11 @@ JsonObj Peak::toJson() const
     return peakFunction_->toJson();
 }
 
-Peak* Peak::fromJson(const JsonObj& obj)
+Peak Peak::fromJson(const JsonObj& obj)
 {
     QString functionName = obj.loadString("type");
-    Peak* ret = new Peak(functionName);
-    ret->peakFunction_->fromJson(obj); // may throw
+    Peak ret(functionName);
+    ret.peakFunction_->fromJson(obj); // may throw
     return ret;
 }
 
@@ -90,21 +90,18 @@ void Peaks::clear()
 
 void Peaks::add(const QString& functionName)
 {
-    Peak* peak(new Peak(functionName));
-    ASSERT(peak);
-    add(peak);
+    add({functionName});
 }
 
-void Peaks::add(Peak* peak)
+void Peaks::add(Peak&& peak)
 {
-    peaks_.push_back(peak);
+    peaks_.push_back(std::move(peak));
     selected_ = count()-1;
 }
 
 void Peaks::remove()
 {
     ASSERT(0<=selected_ && selected_<count());
-    delete peaks_[selected_];
     peaks_.erase(peaks_.begin()+selected_);
     if (selected_>=count())
         selected_ = count()-1;
@@ -122,7 +119,7 @@ QStringList Peaks::names() const
     for_i (gSession->peaks().count())
         ret.append(QStringLiteral("%1: %2")
                    .arg(i+1)
-                   .arg(peaks_[i]->functionName()));
+                   .arg(peaks_[i].functionName()));
     return ret;
 }
 
@@ -130,7 +127,7 @@ QJsonArray Peaks::toJson() const
 {
     QJsonArray ret;
     for (auto& peak : peaks_)
-        ret.append(peak->toJson());
+        ret.append(peak.toJson());
     return ret;
 }
 
