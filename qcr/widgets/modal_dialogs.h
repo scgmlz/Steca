@@ -19,7 +19,7 @@
 #include <QFileDialog>
 #include <QtGlobal>
 
-//! Mix-in for modal dialogs.
+//! Mix-in for modal (blocking) dialogs.
 class QcrModal : public QcrSettable {
 protected:
     QcrModal(QObject& object, const QString& name);
