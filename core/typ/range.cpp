@@ -215,23 +215,7 @@ void Ranges::add(const Range& range)
     }
 }
 
-void Ranges::remove(const Range& removeRange)
-{
-    std::vector<Range> newRanges;
-    for (const Range& r : ranges_) {
-        if (!r.intersect(removeRange).isEmpty()) {
-            if (r.min < removeRange.min)
-                newRanges.push_back(Range(r.min, removeRange.min));
-            if (r.max > removeRange.max)
-                newRanges.push_back(Range(removeRange.max, r.max));
-        } else {
-            newRanges.push_back(r);
-        }
-    }
-    ranges_ = newRanges;
-}
-
-void Ranges::removeSelectedRange()
+void Ranges::removeSelected()
 {
     ASSERT(0<=selected_ && selected_<count());
     ranges_.erase(ranges_.begin()+selected_);
@@ -255,18 +239,10 @@ void Ranges::selectByValue(double x)
     }
 }
 
-static bool lessThan(const Range& r1, const Range& r2)
-{
-    if (r1.min < r2.min)
-        return true;
-    if (r1.min > r2.min)
-        return false;
-    return r1.max < r2.max;
-}
-
 void Ranges::sort()
 {
-    std::sort(ranges_.begin(), ranges_.end(), lessThan);
+    std::sort(ranges_.begin(), ranges_.end(), [](const Range& r1, const Range& r2) {
+            return r1.min < r2.min; } );
 }
 
 QJsonArray Ranges::toJson() const

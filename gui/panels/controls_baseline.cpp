@@ -110,7 +110,7 @@ ControlsBaseline::ControlsBaseline()
     setLayout(&box_);
 
     connect(&gGui->triggers->removeBaserange, &QAction::triggered, []() {
-            gSession->baseline().ranges().removeSelectedRange();
+            gSession->baseline().ranges().removeSelected();
             gRoot->remakeAll("clearBackground"); });
     connect(&gGui->triggers->clearBackground, &QAction::triggered, []() {
             gSession->baseline().ranges().clear();
