@@ -59,7 +59,7 @@ void Peak::setPeakFunction(const QString& peakFunctionName)
     bool haveRange = (bool)peakFunction_;
     Range oldRange;
     if (haveRange)
-        oldRange = peakFunction_->range();
+        oldRange = peakFunction_->fitRange();
     peakFunction_.reset(FunctionRegistry::name2new(peakFunctionName));
     if (haveRange)
         peakFunction_->setRange(oldRange);
