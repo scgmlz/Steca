@@ -86,7 +86,7 @@ public:
     QJsonArray toJson() const;
     void fromJson(const QJsonArray&);
 
-    Range* selectedRange() { return count() ? &ranges_.at(selected_) : nullptr; }
+    Range* selectedRange() { return selected_==-1 || isEmpty() ? nullptr : &ranges_.at(selected_); }
     int selectedIndex() const { return selected_; }
 
 private:
