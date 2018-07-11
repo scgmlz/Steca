@@ -24,7 +24,7 @@ void Baseline::fromJson(const JsonObj obj)
 void Baseline::clear()
 {
     polynomDegree.setVal(0);
-    ranges_.clear();
+    clearRanges();
 }
 
 void Baseline::clearRanges()
