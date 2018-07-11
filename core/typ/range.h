@@ -78,7 +78,7 @@ public:
     Range& at(int i) { return ranges_[i]; }
 
     void add(const Range&); //!< collapses overlapping ranges; returns true if *this changed
-    bool remove(const Range&); //!< removes (cuts out) a range; returns whether there was a change
+    void remove(const Range&); //!< removes (cuts out) a range; returns whether there was a change
 
     QJsonArray toJson() const;
     void fromJson(const QJsonArray&);

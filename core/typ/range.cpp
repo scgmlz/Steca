@@ -210,17 +210,13 @@ void Ranges::add(const Range& range)
     newRanges.push_back(addRange);
     ranges_ = newRanges;
     sort();
-    return;
 }
 
-bool Ranges::remove(const Range& removeRange)
+void Ranges::remove(const Range& removeRange)
 {
     std::vector<Range> newRanges;
-    bool changed = false;
-
     for (const Range& r : ranges_) {
         if (!r.intersect(removeRange).isEmpty()) {
-            changed = true;
             if (r.min < removeRange.min)
                 newRanges.push_back(Range(r.min, removeRange.min));
             if (r.max > removeRange.max)
@@ -229,10 +225,7 @@ bool Ranges::remove(const Range& removeRange)
             newRanges.push_back(r);
         }
     }
-
-    if (changed)
-        ranges_ = newRanges;
-    return changed;
+    ranges_ = newRanges;
 }
 
 static bool lessThan(const Range& r1, const Range& r2)
