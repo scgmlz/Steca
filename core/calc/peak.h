@@ -68,7 +68,7 @@ public:
     int selectedIndex() { return selected_; }
 
 private:
-    void add(Peak&& peak);
+    void doAdd(Peak&& peak);
     int selected_ {-1};
     std::vector<Peak> peaks_;
 };

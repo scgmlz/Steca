@@ -90,10 +90,10 @@ void Peaks::clear()
 
 void Peaks::add(const QString& functionName)
 {
-    add({functionName});
+    doAdd({functionName});
 }
 
-void Peaks::add(Peak&& peak)
+void Peaks::doAdd(Peak&& peak)
 {
     peaks_.push_back(std::move(peak));
     selected_ = count()-1;
@@ -134,5 +134,5 @@ QJsonArray Peaks::toJson() const
 void Peaks::fromJson(const QJsonArray& arr)
 {
     for_i (arr.count())
-        add(Peak::fromJson(arr.at(i).toObject()));
+        doAdd(Peak::fromJson(arr.at(i).toObject()));
 }
