@@ -24,47 +24,7 @@ void Baseline::fromJson(const JsonObj obj)
 void Baseline::clear()
 {
     polynomDegree.setVal(0);
-    clearRanges();
-}
-
-void Baseline::clearRanges()
-{
-    ranges_.clear();
-    selected_ = -1;
-}
-
-void Baseline::addRange(const Range& r)
-{
-    ranges_.add(r);
-}
-
-void Baseline::removeRange(const Range& r)
-{
-    ranges_.remove(r);
-}
-
-void Baseline::removeSelectedRange()
-{
-    ranges_.remove(*selectedRange());
-    selected_ -= 1;
-    if (selected_<0 && ranges_.count())
-        selected_ = 0;
-}
-
-void Baseline::selectRange(int i)
-{
-    ASSERT(i<ranges().count());
-    selected_ = i;
-}
-
-void Baseline::selectRangeByValue(double x)
-{
-    for (int i=0; i<ranges().count(); ++i) {
-        if (ranges().at(i).contains(x)) {
-            selected_ = i;
-            return;
-        }
-    }
+    ranges().clear();
 }
 
 QJsonObject Baseline::toJson() const

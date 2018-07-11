@@ -193,6 +193,11 @@ QString Range::to_s(const QString& unit, int precision, int digitsAfter) const
 //  ***********************************************************************************************
 //! @class Ranges
 
+void Ranges::clear() {
+    ranges_.clear();
+    selected_ = -1;
+}
+
 void Ranges::add(const Range& range)
 {
     std::vector<Range> newRanges;
@@ -226,6 +231,29 @@ void Ranges::remove(const Range& removeRange)
         }
     }
     ranges_ = newRanges;
+}
+
+void Ranges::removeSelectedRange()
+{
+    remove(*selectedRange());
+    selected_ -= 1;
+    if (selected_<0 && count())
+        selected_ = 0;
+}
+
+void Ranges::select(int i)
+{
+    selected_ = i;
+}
+
+void Ranges::selectByValue(double x)
+{
+    for (int i=0; i<count(); ++i) {
+        if (at(i).contains(x)) {
+            selected_ = i;
+            return;
+        }
+    }
 }
 
 static bool lessThan(const Range& r1, const Range& r2)

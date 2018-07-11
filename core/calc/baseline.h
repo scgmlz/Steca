@@ -22,26 +22,18 @@
 
 class Baseline {
 public:
-    void fromJson(const JsonObj obj);
     void clear();
-    void clearRanges();
-    void addRange(const Range&);
-    void removeRange(const Range&);
-    void removeSelectedRange();
-    void selectRange(int i);
-    void selectRangeByValue(double x);
 
+    void fromJson(const JsonObj obj);
     QJsonObject toJson() const;
-    const Ranges& ranges() const { return ranges_; }
-    NumberWrapper<int> polynomDegree {0};
 
-    Range* selectedRange() {
-        return ranges_.count() ? &ranges_.at(selected_) : nullptr; }
-    int selectedIndex() { return selected_; }
+    const Ranges& ranges() const { return ranges_; }
+    Ranges& ranges() { return ranges_; }
+
+    NumberWrapper<int> polynomDegree {0};
 
 private:
     Ranges ranges_;
-    int selected_ {-1};
 };
 
 #endif // BASELINE_H

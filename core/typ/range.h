@@ -70,7 +70,7 @@ class Ranges {
 public:
     Ranges() {}
 
-    void clear() { ranges_.clear(); }
+    void clear();
     bool isEmpty() const { return ranges_.empty(); }
     int count() const { return ranges_.size(); }
 
@@ -79,13 +79,20 @@ public:
 
     void add(const Range&); //!< collapses overlapping ranges; returns true if *this changed
     void remove(const Range&); //!< removes (cuts out) a range; returns whether there was a change
+    void removeSelectedRange();
+    void select(int i);
+    void selectByValue(double x);
 
     QJsonArray toJson() const;
     void fromJson(const QJsonArray&);
 
+    Range* selectedRange() { return count() ? &ranges_.at(selected_) : nullptr; }
+    int selectedIndex() const { return selected_; }
+
 private:
     void sort();
     std::vector<Range> ranges_;
+    int selected_ {-1};
 };
 
 #endif // RANGE_H

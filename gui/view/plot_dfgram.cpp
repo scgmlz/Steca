@@ -43,7 +43,7 @@ PlotDfgramOverlay::PlotDfgramOverlay(PlotDfgram& parent)
 void PlotDfgramOverlay::addRange(const Range& range)
 {
     if        (gGui->state->editingBaseline) {
-        gSession->baseline().addRange(range);
+        gSession->baseline().ranges().add(range);
     } else if (gGui->state->editingPeakfits) {
         if (Peak* peak = gSession->peaks().selectedPeak()) {
             peak->setRange(range);
@@ -59,7 +59,7 @@ void PlotDfgramOverlay::addRange(const Range& range)
 void PlotDfgramOverlay::selectRange(double x)
 {
     if        (gGui->state->editingBaseline) {
-        gSession->baseline().selectRangeByValue(x);
+        gSession->baseline().ranges().selectByValue(x);
     } else if (gGui->state->editingPeakfits) {
         ; // TODO
     }
@@ -219,7 +219,7 @@ void PlotDfgram::renderAll()
     bool showingBaseline = gGui->setup()->currentIndex() == gGui->setup()->idxBaseline;
     for_i (rs.count())
         addBgItem(rs.at(i),
-                  showingBaseline && i==gSession->baseline().selectedIndex() ?
+                  showingBaseline && i==gSession->baseline().ranges().selectedIndex() ?
                   colors::baseEmph : colors::baseStd);
     for_i (gSession->peaks().count())
         addBgItem(gSession->peaks().at(i).range(),

@@ -34,8 +34,8 @@ public:
 private:
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return gSession->baseline().ranges().count(); }
-    int highlighted() const final { return gSession->baseline().selectedIndex(); }
-    void setHighlight(int row) final { gSession->baseline().selectRange(row); }
+    int highlighted() const final { return gSession->baseline().ranges().selectedIndex(); }
+    void setHighlight(int row) final { gSession->baseline().ranges().select(row); }
 
     QVariant data(const QModelIndex&, int) const;
 };
@@ -105,15 +105,15 @@ ControlsBaseline::ControlsBaseline()
 
     box_.addWidget(new BaseRangesView());
     box_.addWidget(new RangeControl("base", []()->Range*{
-                return gSession->baseline().selectedRange(); }));
+                return gSession->baseline().ranges().selectedRange(); }));
     box_.addStretch(1);
     setLayout(&box_);
 
     connect(&gGui->triggers->removeBaserange, &QAction::triggered, []() {
-            gSession->baseline().removeSelectedRange();
+            gSession->baseline().ranges().removeSelectedRange();
             gRoot->remakeAll("clearBackground"); });
     connect(&gGui->triggers->clearBackground, &QAction::triggered, []() {
-            gSession->baseline().clearRanges();
+            gSession->baseline().ranges().clear();
             gRoot->remakeAll("clearBackground"); });
 
     setRemake([this](){
