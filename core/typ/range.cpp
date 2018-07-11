@@ -198,23 +198,21 @@ void Ranges::clear() {
     selected_ = -1;
 }
 
+//! Adds given range to *this, and removes ranges from *this that intersect.
+
 void Ranges::add(const Range& range)
 {
-    std::vector<Range> newRanges;
-    Range addRange = range;
-    for (const Range& r : ranges_) {
-        if (r.contains(range))
+    ranges_.erase(std::remove_if(ranges_.begin(), ranges_.end(), [=](const Range& r) {
+                return r.intersects(range); }), ranges_.end());
+    ranges_.push_back(range);
+    sort();
+    // not elegant: find the newly added range
+    for (int i=0; i<count(); ++i) {
+        if (at(i).intersects(range)) {
+            selected_ = i;
             return;
-        if (!range.contains(r)) {
-            if (range.intersects(r))
-                addRange.extendBy(r);
-            else
-                newRanges.push_back(r);
         }
     }
-    newRanges.push_back(addRange);
-    ranges_ = newRanges;
-    sort();
 }
 
 void Ranges::remove(const Range& removeRange)
@@ -235,7 +233,8 @@ void Ranges::remove(const Range& removeRange)
 
 void Ranges::removeSelectedRange()
 {
-    remove(*selectedRange());
+    ASSERT(0<=selected_ && selected_<count());
+    ranges_.erase(ranges_.begin()+selected_);
     selected_ -= 1;
     if (selected_<0 && count())
         selected_ = 0;
