@@ -217,10 +217,12 @@ void PlotDfgram::renderAll()
     bool showingBaseline = gGui->setup()->currentIndex() == gGui->setup()->idxBaseline;
     for_i (rs.count())
         addBgItem(rs.at(i),
-                  i==gSession->baseline().selectedIndex() ? colors::baseEmph : colors::baseStd);
+                  showingBaseline && i==gSession->baseline().selectedIndex() ?
+                  colors::baseEmph : colors::baseStd);
     for_i (gSession->peaks().count())
         addBgItem(gSession->peaks().at(i).range(),
-                  i==gSession->peaks().selectedIndex() ? colors::peakEmph : colors::peakStd);
+                  !showingBaseline && i==gSession->peaks().selectedIndex() ?
+                  colors::peakEmph : colors::peakStd);
 
     if (!gSession->dataset().highlight().cluster()) {
         plotEmpty();
