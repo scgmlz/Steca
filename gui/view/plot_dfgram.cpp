@@ -54,16 +54,6 @@ void PlotDfgramOverlay::addRange(const Range& range)
     gRoot->remakeAll("PlotDfgramOverlay::addRange");
 }
 
-void PlotDfgramOverlay::subtractRange(const Range& range)
-{
-    if        (gGui->state->editingBaseline) {
-        gSession->baseline().removeRange(range);
-    } else if (gGui->state->editingPeakfits) {
-        ; // do nothing
-    }
-    gRoot->remakeAll("PlotDfgramOverlay::subtractRange");
-}
-
 bool PlotDfgramOverlay::addModeColor(QColor& color) const
 {
     if        (gGui->state->editingBaseline) {

@@ -64,8 +64,6 @@ void PlotOverlay::mouseReleaseEvent(QMouseEvent* e)
     Range range = Range::safeFrom(xmin, xmax);
     if      (e->button()==Qt::LeftButton)
         addRange(range);
-    else if (e->button()==Qt::RightButton)
-        subtractRange(range);
 }
 
 void PlotOverlay::mouseMoveEvent(QMouseEvent* e)
@@ -93,9 +91,6 @@ void PlotOverlay::paintMousedZone()
     QColor color;
     if        (mouseButton_==Qt::LeftButton) {
         if (!addModeColor(color))
-            return;
-    } else if (mouseButton_==Qt::RightButton) {
-        if (!subtractModeColor(color))
             return;
     }
     QPainter(this).fillRect(g, color);

@@ -29,7 +29,6 @@ public:
 
 private:
     void addRange(const Range&) final;
-    void subtractRange(const Range&) final;
     bool addModeColor(QColor&) const final;
     bool subtractModeColor(QColor&) const final;
 };

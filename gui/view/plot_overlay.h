@@ -28,7 +28,6 @@ public:
 
 protected:
     virtual void addRange(const Range&) = 0;
-    virtual void subtractRange(const Range&) = 0;
     virtual bool addModeColor(QColor&) const = 0;
     virtual bool subtractModeColor(QColor&) const = 0;
 
