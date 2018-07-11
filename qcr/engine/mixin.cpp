@@ -94,7 +94,9 @@ QcrSettable::QcrSettable(QObject& object, const QString& name)
 
 QcrSettable::~QcrSettable()
 {
+    qDebug() << "~QcrSettable1 " << name();
     gConsole->forget(name());
+    qDebug() << "~QcrSettable2";
 }
 
 void QcrSettable::doLog(bool softwareCalled, const QString& msg)

@@ -23,15 +23,17 @@
 //! @class QcrModal
 
 QcrModal::QcrModal(QObject& object, const QString& name)
-    : QcrSettable {object, name}
+    : QcrSettable {object, "@push " + name}
 {
-    gConsole->call("@push "+name);
 }
 
 QcrModal::~QcrModal()
 {
+    qDebug() << "~QcrModal1";
     gConsole->log("@close");
+    qDebug() << "~QcrModal2";
     gConsole->call("@pop");
+    qDebug() << "~QcrModal3";
 }
 
 
@@ -47,6 +49,7 @@ QcrDialog::QcrDialog(QWidget* parent, const QString& caption)
 
 QcrDialog::~QcrDialog()
 {
+    qDebug() << "~QcrDialog";
     gConsole->log("dlog closing");
 }
 
@@ -83,6 +86,7 @@ QcrFileDialog::QcrFileDialog(
 
 QcrFileDialog::~QcrFileDialog()
 {
+    qDebug() << "~QcrFileDialog";
     gConsole->log("fdia select "+selectedFiles().join(';'));
 }
 

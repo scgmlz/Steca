@@ -34,9 +34,6 @@ QString to_s(int);
 QString to_s(double);
 QString to_s(QString);
 
-template<typename T>
-const char* to_ascii(T val) { return to_s(val).toLatin1().constData(); };
-
 void splitOnce(const QString&, QString&, QString&);
 
 void setWidth(QWidget* w, int ndigits, bool withDot);

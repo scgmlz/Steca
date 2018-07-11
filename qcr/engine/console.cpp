@@ -28,6 +28,8 @@
 
 Console* gConsole; //!< global
 
+QTextStream qterr(stderr);
+
 //  ***********************************************************************************************
 //! @class CommandRegistry
 
@@ -60,19 +62,24 @@ QString CommandRegistry::learn(const QString& name, QcrSettable* widget)
         ret.replace("#", QString::number(idxEntry));
     }
     //qDebug() << "registry " << name_ << " learns " << ret;
-    if (widgets_.find(ret)!=widgets_.end())
-        qFatal("Duplicate widget registry entry '%s'", strOp::to_ascii(ret));
+    if (widgets_.find(ret)!=widgets_.end()) {
+        QByteArray tmp = ret.toLatin1();
+        qFatal("Duplicate widget registry entry '%s'", tmp.constData());
+    }
     widgets_[ret] = widget;
     return ret;
 }
 
 void CommandRegistry::forget(const QString& name)
 {
-    //qDebug() << "registry " << name_ << " forgets " << name;
+    qterr << "registry " << name_ << " going to forget " << name << "\n";
     auto it = widgets_.find(name);
-    if (it==widgets_.end())
+    if (it==widgets_.end()) {
+        QByteArray tmp1 = name.toLatin1();
+        QByteArray tmp2 = name_.toLatin1();
         qFatal("Cannot deregister, there is no entry '%s' in the widget registry '%s'",
-               strOp::to_ascii(name), strOp::to_ascii(name_));
+               tmp1.constData(), tmp2.constData());
+    }
     widgets_.erase(it);
 }
 
@@ -153,7 +160,6 @@ void Console::readFile(const QString& fName)
         if (line[0]=='[') {
             int i = line.indexOf(']');
             if (i==-1) {
-                QTextStream qterr(stderr);
                 qterr << "unbalanced '['\n";
                 return;
             }
@@ -193,7 +199,6 @@ void Console::call(const QString& line)
 
 Console::Result Console::exec(QString line)
 {
-    QTextStream qterr(stderr);
     if (line[0]=='#')
         return Result::ok; // comment => nothing to do
     QString cmd, arg;
@@ -201,20 +206,17 @@ Console::Result Console::exec(QString line)
     if (cmd[0]=='@') {
         log(line);
         if (cmd=="@ls") {
+            qterr << "registry " << registryStack_.top()->name() << " has commands:\n";
             registryStack_.top()->dump(qterr);
-        } else if (cmd=="@push") {
-            if (arg=="") {
-                qterr << "command @push needs argument <name>\n";
-                return Result::err;
-            }
-            registryStack_.push(new CommandRegistry(arg));
         } else if (cmd=="@pop") {
             if (registryStack_.empty()) {
                 qterr << "cannot pop: registry stack is empty\n";
                 return Result::err;
             }
+            qterr << "going to pop registry " << registryStack_.top()->name() << "\n";
             delete registryStack_.top();
             registryStack_.pop();
+            qterr << "top registry is now " << registryStack_.top()->name() << "\n";
         } else if (cmd=="@file") {
             readFile(arg);
         } else if (cmd=="@close") {
@@ -239,8 +241,21 @@ Console::Result Console::exec(QString line)
     return Result::err;
 }
 
-QString Console::learn(const QString& name, QcrSettable* widget)
+QString Console::learn(QString name, QcrSettable* widget)
 {
+    if (name[0]=='@') {
+        QStringList args = name.split(' ');
+        if (args.size()<2) {
+            QByteArray tmp = name.toLatin1();
+            qFatal("invalid @ construct in learn(%s)", tmp.constData());
+        }
+        if (args[0]!="@push") {
+            QByteArray tmp = name.toLatin1();
+            qFatal("invalid @ command in learn(%s)", tmp.constData());
+        }
+        name = args[1];
+        registryStack_.push(new CommandRegistry(name));
+    }
     return registry().learn(name, widget);
 }
 

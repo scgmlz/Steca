@@ -83,9 +83,12 @@ void ParamWrapper<T>::setVal(T val)
 template<class T>
 void ParamWrapper<T>::guiSetsVal(T val, bool userCall)
 {
-    if (coerce_(val) != val)
+    if (coerce_(val) != val) {
+        QByteArray tmp1 = strOp::to_s(val).toLatin1();
+        QByteArray tmp2 = strOp::to_s(coerce_(val)).toLatin1();
         qFatal("GUI delivered value %s that ought to be coerced to %s",
-               strOp::to_ascii(val), strOp::to_ascii(coerce_(val)));
+               tmp1.constData(), tmp2.constData());
+    }
     value_ = val;
     if (userCall) {
         // qDebug() << " -> " << val;
