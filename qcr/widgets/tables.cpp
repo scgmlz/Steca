@@ -32,24 +32,17 @@ void TableModel::refreshModel()
         // Redraws the entire table.
         // Resets the currentIndex so that arrow keys will start from row 0.
         // TODO? keep currentIndex if table is extended.
-        qDebug() << "TM::refresh " << name_ << ": full reset; rc=" << rowCount()
-                 << "; cached=" << rowCountCached_;
         beginResetModel();
         endResetModel();
     } else {
-        qDebug() << "TM::refresh " << name_ << ": data changed; rc=" << rowCount()
-                 << "; cached=" << rowCountCached_;
         emit dataChanged(createIndex(0,0),createIndex(rowCount(),columnCount()-1));
     }
     rowCountCached_ = rowCount();
-    qDebug() << "/TM::refresh " << name_;
 }
 
 void TableModel::onClicked(const QModelIndex& cell)
 {
-    qDebug() << "TM::onClicked";
     setHighlightedCell(cell);
-    qDebug() << "/TM::onClicked";
 }
 
 void TableModel::setHighlightedCell(const QModelIndex& cell)
@@ -77,7 +70,6 @@ void CheckTableModel::onActivated()
 
 void CheckTableModel::onClicked(const QModelIndex& cell)
 {
-    qDebug() << "CTM::onClicked";
     TableModel::setHighlightedCell(cell);
     int row = cell.row();
     int col = cell.column();
@@ -85,7 +77,6 @@ void CheckTableModel::onClicked(const QModelIndex& cell)
         activateAndLog(true, row, !activated(row));
         gRoot->remakeAll("CTM::onClicked/activate");
     }
-    qDebug() << "/CTM::onClicked";
 }
 
 void CheckTableModel::activateAndLog(bool primaryCall, int row, bool on)
@@ -145,9 +136,7 @@ int TableView::mWidth() const
 
 void TableView::currentChanged(const QModelIndex& current, const QModelIndex&)
 {
-    qDebug() << "TV::currentChanged " << name();
     gotoCurrent(current);
-    qDebug() << "/TV::currentChanged " << name();
 }
 
 //! Sets highlight when mouse or key action made an item current.
@@ -158,13 +147,11 @@ void TableView::currentChanged(const QModelIndex& current, const QModelIndex&)
 
 void TableView::gotoCurrent(const QModelIndex& current)
 {
-    qDebug() << "TV::gotoCurr " << name() << ", row=" << current.row() << ", highlighted=" << model_->highlighted();
     if (current.row()==model_->highlighted())
         return; // the following would prevent execution of "onClicked"
     model_->setHighlightedCell(current);
     model_->refreshModel(); // refreshes rendering upon arrow keys
     updateScroll();
-    qDebug() << "/TV::gotoCurr " << name();
 }
 
 //! Highlights one cluster. Called either from GUI > currentChanged [TODO? restore], or through Console command.
@@ -186,10 +173,8 @@ void TableView::updateScroll()
 
 void TableView::onData()
 {
-    qDebug() << "TV::onData " << name();
     model_->refreshModel();
     updateScroll();
-    qDebug() << "/TV::onData " << name();
 }
 
 
