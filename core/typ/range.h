@@ -74,7 +74,6 @@ public:
     int count() const { return ranges_.size(); }
 
     const Range& at(int i) const { return ranges_[i]; }
-    Range& at(int i) { return ranges_[i]; }
 
     void add(const Range&);
     void removeSelected();
