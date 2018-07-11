@@ -45,7 +45,6 @@ public:
     double min, max; // this is the range
 
     void set(double min, double max); //!< must be: min <= max
-    void safeSet(double, double); //!< will be set in the right order min/max
 
     static Range safeFrom(double, double); //!< safe factory
 

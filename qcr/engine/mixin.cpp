@@ -57,7 +57,7 @@ void QcrRoot::remakeAll(const QString& whence)
         if (QcrMixin* m = dynamic_cast<QcrMixin*>(w))
             m->remake();
     }
-    qDebug() << "/gRoot->remakeAll < " << whence;
+    // qDebug() << "/gRoot->remakeAll < " << whence;
 }
 
 

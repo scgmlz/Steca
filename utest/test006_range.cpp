@@ -83,11 +83,11 @@ TEST(Range, Safe) {
     RANGE_EQ(r, Range(2, 3));
     r = Range::safeFrom(3, 2);
     RANGE_EQ(r, Range(2, 3));
-    r.safeSet(3, 4);
+    r = Range::safeFrom(3, 4);
     RANGE_EQ(r, Range(3, 4));
-    r.safeSet(4, 3);
+    r = Range::safeFrom(4, 3);
     RANGE_EQ(r, Range(3, 4));
-    r.safeSet(+Q_INFINITY, -Q_INFINITY);
+    r = Range::safeFrom(+Q_INFINITY, -Q_INFINITY);
     RANGE_EQ(r, Range::infinite());
 }
 

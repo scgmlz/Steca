@@ -107,18 +107,11 @@ void Range::set(double min_, double max_) {
     ASSERT(!isValid() || min <= max);
 }
 
-void Range::safeSet(double v1, double v2)
-{
-    if (v1 > v2)
-        qSwap(v1, v2);
-    set(v1, v2);
-}
-
 Range Range::safeFrom(double v1, double v2)
 {
-    Range range;
-    range.safeSet(v1, v2);
-    return range;
+    if (v1<=v2)
+        return {v1, v2};
+    return {v2, v1};
 }
 
 void Range::extendBy(double val)
