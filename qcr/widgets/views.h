@@ -20,6 +20,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMainWindow>
+#include <QStackedWidget>
 
 class QcrMainWindow : public QMainWindow, public QcrRoot {
 public:
@@ -29,6 +30,11 @@ public:
 class QcrWidget : public QWidget, public QcrMixin {
 public:
     QcrWidget(const QString& name) : QcrMixin{*this, name} {}
+};
+
+class QcrStackedWidget : public QStackedWidget, public QcrMixin {
+public:
+    QcrStackedWidget(const QString& name) : QcrMixin{*this, name} {}
 };
 
 class QcrDockWidget : public QDockWidget, public QcrMixin {

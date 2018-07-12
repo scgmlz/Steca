@@ -22,7 +22,6 @@
 #include "gui/view/range_control.h"
 #include "qcr/base/debug.h"
 #define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
-#include <QStackedWidget>
 
 namespace {
 QString safeRealText(double val) { return qIsFinite(val) ? QString::number(val) : ""; }
@@ -110,9 +109,10 @@ PeaksView::PeaksView()
 
 //! Virtual base class for RawParamsView and FitParamsView.
 
-class AnyParamsView : public QWidget {
+class AnyParamsView : public QcrWidget {
 public:
-    AnyParamsView();
+    AnyParamsView() = delete;
+    AnyParamsView(const QString& name);
     virtual void updatePeakFun(const PeakFunction&);
 protected:
     QGridLayout grid_;
@@ -121,7 +121,8 @@ protected:
     QcrLineDisplay readFitFWHM_  {"fittedW", 6, true};
 };
 
-AnyParamsView::AnyParamsView()
+AnyParamsView::AnyParamsView(const QString& name)
+    : QcrWidget(name)
 {
     setLayout(&grid_);
 }
@@ -142,6 +143,7 @@ public:
 };
 
 RawParamsView::RawParamsView()
+    : AnyParamsView{"rawParamsView"}
 {
     grid_.addWidget(new QLabel(""), 0, 0);
 
@@ -172,6 +174,7 @@ private:
 };
 
 FitParamsView::FitParamsView()
+    : AnyParamsView{"fitParamsView"}
 {
     grid_.addWidget(new QLabel("guess"), 0, 1);
     grid_.addWidget(new QLabel("fitted"), 0, 2);
@@ -206,32 +209,29 @@ void FitParamsView::updatePeakFun(const PeakFunction& peakFun)
 
 //! Displays result of either raw data analysis or peak fit.
 
-class ParamsView : public QStackedWidget {
+class ParamsView : public QcrStackedWidget {
 public:
     ParamsView();
 private:
-    void onData();
     AnyParamsView* widgets_[2];
 };
 
 ParamsView::ParamsView()
+    : QcrStackedWidget{"paramView"}
 {
     addWidget(widgets_[0] = new RawParamsView());
     addWidget(widgets_[1] = new FitParamsView());
     widgets_[0]->show();
-    onData();
-}
-
-void ParamsView::onData()
-{
-    Peak* peak = gSession->peaks().selectedPeak();
-    setEnabled(peak);
-    if (!peak)
-        return;
-    const PeakFunction& peakFun = peak->peakFunction();
-    int i = peakFun.isRaw() ? 0 : 1;
-    widgets_[i]->updatePeakFun(peakFun);
-    setCurrentIndex(i);
+    setRemake( [=]() {
+            Peak* peak = gSession->peaks().selectedPeak();
+            setEnabled(peak);
+            if (!peak)
+                return;
+            const PeakFunction& peakFun = peak->peakFunction();
+            int i = peakFun.isRaw() ? 0 : 1;
+            widgets_[i]->updatePeakFun(peakFun);
+            setCurrentIndex(i);
+        } );
 }
 
 
