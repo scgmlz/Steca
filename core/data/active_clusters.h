@@ -41,7 +41,6 @@ public:
     Curve avgCurve() const;
 
     void invalidateAvgMutables() const;
-    PeakInfos rawFits(const class Peak& peak, class Progress* progress) const;
 
 private:
     void computeAvgCurve() const;
