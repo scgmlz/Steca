@@ -74,6 +74,7 @@ public:
     QJsonArray toJson() const;
 
 private:
+    void sort();
     void doAdd(Peak&& peak);
     int selected_ {-1};
     std::vector<Peak> peaks_;

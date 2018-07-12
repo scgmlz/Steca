@@ -95,12 +95,22 @@ void Peaks::clear()
 
 void Peaks::add(const Range& range)
 {
+    peaks_.erase(std::remove_if(peaks_.begin(), peaks_.end(), [=](const Peak& p) {
+                return p.range().intersects(range); }), peaks_.end());
     doAdd({range, defaultFunctionName});
+    // not elegant: find the newly added range
+    for (int i=0; i<count(); ++i) {
+        if (at(i).range().intersects(range)) {
+            selected_ = i;
+            return;
+        }
+    }
 }
 
 void Peaks::doAdd(Peak&& peak)
 {
     peaks_.push_back(std::move(peak));
+    sort();
     selected_ = count()-1;
 }
 
@@ -149,4 +159,10 @@ void Peaks::fromJson(const QJsonArray& arr)
 {
     for_i (arr.count())
         doAdd(Peak::fromJson(arr.at(i).toObject()));
+}
+
+void Peaks::sort()
+{
+    std::sort(peaks_.begin(), peaks_.end(), [](const Peak& p1, const Peak& p2) {
+            return p1.range().min < p2.range().min; } );
 }
