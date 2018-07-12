@@ -22,7 +22,10 @@
 
 class Peak {
 public:
-    Peak(const QString& functionName = "Raw");
+    Peak() = delete;
+    Peak(Peak&&) = default;
+    Peak& operator=(Peak&&) = default;
+    Peak(const Range& range, const QString& functionName = "Raw");
 
     static Peak fromJson(const JsonObj&);
 
@@ -49,23 +52,26 @@ private:
 
 class Peaks {
 public:
+    static QString defaultFunctionName;
+
     void clear();
     void fromJson(const QJsonArray& arr);
-    void add(const QString&);
-    void remove();
+    void add(const Range&);
+    void removeSelected();
     void select(int i);
+    void selectByValue(double x);
 
-    const Peak& at(int i) const { return peaks_.at(i); }
-    Peak& at(int i) { return peaks_.at(i); }
-
-    int count() const { return peaks_.size(); }
-    QStringList names() const;
-    QJsonArray toJson() const;
     Peak* selectedPeak() {
         return 0<=selected_ && selected_<count() ? &peaks_[selected_] : nullptr; }
     Range* selectedRange() {
         return selectedPeak() ? &selectedPeak()->range() : nullptr; }
+
+    int count() const { return peaks_.size(); }
+    const Peak& at(int i) const { return peaks_.at(i); }
+    Peak& at(int i) { return peaks_.at(i); }
     int selectedIndex() { return selected_; }
+    QStringList names() const;
+    QJsonArray toJson() const;
 
 private:
     void doAdd(Peak&& peak);

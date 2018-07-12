@@ -28,7 +28,6 @@ QColor baseEdit{0x00, 0xff, 0x00, 0x30}; // as Emph, but more transparent
 QColor peakEmph{0x00, 0xff, 0xff, 0x50}; // cyan
 QColor peakStd {0x87, 0xce, 0xfa, 0x50}; // light blue
 QColor peakEdit{0x00, 0xff, 0xff, 0x30}; // as Emph, but more transparent
-QColor subtract{0xf8, 0xf8, 0xff, 0x90}; // almost white
 QColor pen     {0x21, 0xa1, 0x21, 0xff};
 QColor scatter {255, 0, 0};
 }
@@ -42,15 +41,12 @@ PlotDfgramOverlay::PlotDfgramOverlay(PlotDfgram& parent)
 
 void PlotDfgramOverlay::addRange(const Range& range)
 {
-    if        (gGui->state->editingBaseline) {
+    if      (gGui->state->editingBaseline)
         gSession->baseline().ranges().add(range);
-    } else if (gGui->state->editingPeakfits) {
-        if (Peak* peak = gSession->peaks().selectedPeak()) {
-            peak->setRange(range);
-            gConsole->log("peakRangeMin "+QString::number(range.min));
-            gConsole->log("peakRangeMax "+QString::number(range.max));
-        }
-    }
+    else if (gGui->state->editingPeakfits)
+        gSession->peaks().add(range);
+    else
+        return;
     gRoot->remakeAll("PlotDfgramOverlay::addRange");
 }
 
@@ -58,11 +54,12 @@ void PlotDfgramOverlay::addRange(const Range& range)
 
 void PlotDfgramOverlay::selectRange(double x)
 {
-    if        (gGui->state->editingBaseline) {
+    if      (gGui->state->editingBaseline)
         gSession->baseline().ranges().selectByValue(x);
-    } else if (gGui->state->editingPeakfits) {
-        ; // TODO
-    }
+    else if (gGui->state->editingPeakfits)
+        gSession->peaks().selectByValue(x);
+    else
+        return;
     gRoot->remakeAll("PlotDfgramOverlay::selectRange");
 }
 
@@ -77,16 +74,6 @@ bool PlotDfgramOverlay::addModeColor(QColor& color) const
     }
     return false;
 }
-
-bool PlotDfgramOverlay::subtractModeColor(QColor& color) const
-{
-    if        (gGui->state->editingBaseline) {
-        color = colors::subtract;
-        return true;
-    }
-    return false;
-}
-
 
 //  ***********************************************************************************************
 //! @class PlotDfgram

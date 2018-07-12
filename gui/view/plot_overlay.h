@@ -30,7 +30,6 @@ protected:
     virtual void addRange(const Range&) = 0;
     virtual void selectRange(double x) = 0;
     virtual bool addModeColor(QColor&) const = 0;
-    virtual bool subtractModeColor(QColor&) const = 0;
 
     QCustomPlot& plot_;
 

@@ -67,24 +67,20 @@ public:
 //! A set of *sorted* *non-overlapping* ranges
 class Ranges {
 public:
-    Ranges() {}
-
     void clear();
-    bool isEmpty() const { return ranges_.empty(); }
-    int count() const { return ranges_.size(); }
-
-    const Range& at(int i) const { return ranges_[i]; }
-
+    void fromJson(const QJsonArray&);
     void add(const Range&);
     void removeSelected();
     void select(int i);
     void selectByValue(double x);
 
-    QJsonArray toJson() const;
-    void fromJson(const QJsonArray&);
-
     Range* selectedRange() { return selected_==-1 || isEmpty() ? nullptr : &ranges_.at(selected_); }
+
+    bool isEmpty() const { return ranges_.empty(); }
+    int count() const { return ranges_.size(); }
+    const Range& at(int i) const { return ranges_[i]; }
     int selectedIndex() const { return selected_; }
+    QJsonArray toJson() const;
 
 private:
     void sort();

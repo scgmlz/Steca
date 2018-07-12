@@ -16,9 +16,11 @@
 #include "core/session.h"
 #include "qcr/base/debug.h"
 
-Peak::Peak(const QString& functionName) : peakFunction_(nullptr)
+Peak::Peak(const Range& range, const QString& functionName)
+    : peakFunction_(nullptr)
 {
     setPeakFunction(functionName);
+    peakFunction_->setRange(range);
 }
 
 const PeakFunction& Peak::peakFunction() const
@@ -67,13 +69,15 @@ void Peak::setPeakFunction(const QString& peakFunctionName)
 
 JsonObj Peak::toJson() const
 {
-    return peakFunction_->toJson();
+    QJsonObject ret;
+    ret.insert("range", peakFunction_->fitRange().toJson() );
+    ret.insert("type", peakFunction_->toJson());
+    return ret;
 }
 
 Peak Peak::fromJson(const JsonObj& obj)
 {
-    QString functionName = obj.loadString("type");
-    Peak ret(functionName);
+    Peak ret{obj.loadRange("range"), obj.loadString("type")};
     ret.peakFunction_->fromJson(obj); // may throw
     return ret;
 }
@@ -82,15 +86,16 @@ Peak Peak::fromJson(const JsonObj& obj)
 //  ***********************************************************************************************
 //! @class Peaks
 
+QString Peaks::defaultFunctionName = "Raw"; // FunctionRegistry::instance()->keys()[0];
+
 void Peaks::clear()
 {
-    while (count())
-        remove();
+    peaks_.clear();
 }
 
-void Peaks::add(const QString& functionName)
+void Peaks::add(const Range& range)
 {
-    doAdd({functionName});
+    doAdd({range, defaultFunctionName});
 }
 
 void Peaks::doAdd(Peak&& peak)
@@ -99,7 +104,7 @@ void Peaks::doAdd(Peak&& peak)
     selected_ = count()-1;
 }
 
-void Peaks::remove()
+void Peaks::removeSelected()
 {
     ASSERT(0<=selected_ && selected_<count());
     peaks_.erase(peaks_.begin()+selected_);
@@ -109,8 +114,17 @@ void Peaks::remove()
 
 void Peaks::select(int i)
 {
-    ASSERT(i<count());
     selected_ = i;
+}
+
+void Peaks::selectByValue(double x)
+{
+    for (int i=0; i<count(); ++i) {
+        if (at(i).range().contains(x)) {
+            selected_ = i;
+            return;
+        }
+    }
 }
 
 QStringList Peaks::names() const

@@ -117,7 +117,6 @@ MainWin::~MainWin()
 void MainWin::refresh()
 {
     bool hasData = gSession->hasData();
-    qDebug() << "MAIN REFRESH hasData=" << hasData;
     bool hasPeak = gSession->peaks().count();
     bool hasBase = gSession->baseline().ranges().count();
     triggers->exportDfgram.setEnabled(hasData);

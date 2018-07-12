@@ -243,19 +243,19 @@ ControlsPeakfits::ControlsPeakfits()
     , comboReflType_ {"reflTyp", FunctionRegistry::instance()->keys()}
 {
     // outbound connections
-    connect(&gGui->triggers->peakAdd, &QAction::triggered, [this]() {
-            gSession->peaks().add(comboReflType_.currentText()); });
     connect(&gGui->triggers->peakRemove, &QAction::triggered, []() {
-            gSession->peaks().remove();
+            gSession->peaks().removeSelected();
             gRoot->remakeAll("removePeak"); });
     connect(&gGui->triggers->peaksClear, &QAction::triggered, []() {
             gSession->peaks().clear();
             gRoot->remakeAll("clearPeaks"); });
-    connect(&comboReflType_, _SLOT_(QComboBox,currentIndexChanged,const QString&),
-            [](const QString& peakFunctionName) {
-                if (gSession->peaks().selectedPeak()) { // TODO rm this if
-                    gSession->peaks().selectedPeak()->setPeakFunction(peakFunctionName);
-                } });
+
+    comboReflType_.cell()->setHook( [](int i) {
+            const QString& peakFunctionName = FunctionRegistry::instance()->keys()[i];
+            Peaks::defaultFunctionName = peakFunctionName;
+            if (gSession->peaks().selectedPeak())
+                gSession->peaks().selectedPeak()->setPeakFunction(peakFunctionName);
+        } );
 
     // layout
     topControls_.addStretch();

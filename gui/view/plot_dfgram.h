@@ -31,7 +31,6 @@ private:
     void addRange(const Range&) final;
     void selectRange(double x) final;
     bool addModeColor(QColor&) const final;
-    bool subtractModeColor(QColor&) const final;
 };
 
 
