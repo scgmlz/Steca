@@ -17,10 +17,18 @@
 #include "manifest.h"
 #include <QApplication>
 #include <QDate>
+#include <QLayout>
+#include <QDialogButtonBox>
 
 AboutBox::AboutBox()
     : QDialog(gGui, Qt::Dialog)
 {
+    QVBoxLayout vb_;
+    QHBoxLayout hb_;
+    QLabel logo_;
+    QLabel info_;
+    QDialogButtonBox dbbox_ {QDialogButtonBox::Ok };
+
     setWindowTitle(QString("About %1").arg(qApp->applicationName()));
 
     // vertical layout
