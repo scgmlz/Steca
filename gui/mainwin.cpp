@@ -116,6 +116,8 @@ MainWin::~MainWin()
 
 void MainWin::refresh()
 {
+    runFits();
+
     bool hasData = gSession->hasData();
     bool hasPeak = gSession->peaks().count();
     bool hasBase = gSession->baseline().ranges().count();
@@ -244,9 +246,12 @@ void MainWin::runFits()
         gSession->setInterpolatedPeakInfos({});
         return;
     }
+    qDebug() << "going to project";
     algo::projectActiveClusters(&gGui->progressBar);
+    qDebug() << "going to rawfit";
     algo::rawFits(&gGui->progressBar);
-    algo::interpolateInfos(&gGui->progressBar);
+    // algo::interpolateInfos(&gGui->progressBar);
+    qDebug() << "runFits() done";
 }
 
 void MainWin::runInterpolation()
