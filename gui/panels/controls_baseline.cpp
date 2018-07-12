@@ -99,8 +99,9 @@ ControlsBaseline::ControlsBaseline()
     hb_.addWidget(new QLabel("Pol. degree:"));
     hb_.addWidget(&spinDegree_);
     hb_.addStretch(1);
-    hb_.addWidget(new QcrIconTriggerButton(&gGui->triggers->removeBaserange));
-    hb_.addWidget(new QcrIconTriggerButton(&gGui->triggers->clearBackground));
+    hb_.addWidget(new QcrIconTriggerButton(&gGui->triggers->baserangeAdd));
+    hb_.addWidget(new QcrIconTriggerButton(&gGui->triggers->baserangeRemove));
+    hb_.addWidget(new QcrIconTriggerButton(&gGui->triggers->baserangesClear));
     box_.addLayout(&hb_);
 
     box_.addWidget(new BaseRangesView());
@@ -109,15 +110,17 @@ ControlsBaseline::ControlsBaseline()
     box_.addStretch(1);
     setLayout(&box_);
 
-    connect(&gGui->triggers->removeBaserange, &QAction::triggered, []() {
+    connect(&gGui->triggers->baserangeRemove, &QAction::triggered, []() {
             gSession->baseline().ranges().removeSelected();
             gRoot->remakeAll("clearBackground"); });
-    connect(&gGui->triggers->clearBackground, &QAction::triggered, []() {
+    connect(&gGui->triggers->baserangesClear, &QAction::triggered, []() {
             gSession->baseline().ranges().clear();
             gRoot->remakeAll("clearBackground"); });
 
     setRemake([this](){
-            gGui->triggers->clearBackground.setEnabled(gSession->baseline().ranges().count());
+            gGui->triggers->baserangeAdd   .setEnabled(gSession->hasData());
+            gGui->triggers->baserangeRemove.setEnabled(gSession->baseline().ranges().count());
+            gGui->triggers->baserangesClear.setEnabled(gSession->baseline().ranges().count());
         });
 }
 

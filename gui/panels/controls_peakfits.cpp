@@ -243,12 +243,12 @@ ControlsPeakfits::ControlsPeakfits()
     , comboReflType_ {"reflTyp", FunctionRegistry::instance()->keys()}
 {
     // outbound connections
-    connect(&gGui->triggers->addPeak, &QAction::triggered, [this]() {
+    connect(&gGui->triggers->peakAdd, &QAction::triggered, [this]() {
             gSession->peaks().add(comboReflType_.currentText()); });
-    connect(&gGui->triggers->removePeak, &QAction::triggered, []() {
+    connect(&gGui->triggers->peakRemove, &QAction::triggered, []() {
             gSession->peaks().remove();
             gRoot->remakeAll("removePeak"); });
-    connect(&gGui->triggers->clearPeaks, &QAction::triggered, []() {
+    connect(&gGui->triggers->peaksClear, &QAction::triggered, []() {
             gSession->peaks().clear();
             gRoot->remakeAll("clearPeaks"); });
     connect(&comboReflType_, _SLOT_(QComboBox,currentIndexChanged,const QString&),
@@ -259,9 +259,9 @@ ControlsPeakfits::ControlsPeakfits()
 
     // layout
     topControls_.addStretch();
-    topControls_.addWidget(new QcrIconTriggerButton(&gGui->triggers->addPeak));
-    topControls_.addWidget(new QcrIconTriggerButton(&gGui->triggers->removePeak));
-    topControls_.addWidget(new QcrIconTriggerButton(&gGui->triggers->clearPeaks));
+    topControls_.addWidget(new QcrIconTriggerButton(&gGui->triggers->peakAdd));
+    topControls_.addWidget(new QcrIconTriggerButton(&gGui->triggers->peakRemove));
+    topControls_.addWidget(new QcrIconTriggerButton(&gGui->triggers->peaksClear));
 
     auto* box = new QVBoxLayout;
     box->addLayout(&topControls_);
@@ -274,8 +274,9 @@ ControlsPeakfits::ControlsPeakfits()
     setLayout(box);
 
     setRemake([this](){
-            gGui->triggers->removePeak.setEnabled(gSession->peaks().count());
-            gGui->triggers->clearPeaks.setEnabled(gSession->peaks().count());
+            gGui->triggers->peakAdd   .setEnabled(gSession->hasData());
+            gGui->triggers->peakRemove.setEnabled(gSession->peaks().count());
+            gGui->triggers->peaksClear.setEnabled(gSession->peaks().count());
         });
 }
 

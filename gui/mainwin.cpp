@@ -118,9 +118,6 @@ void MainWin::refresh()
 {
     bool hasFile = gSession->dataset().countFiles();
     bool hasPeak = gSession->peaks().count();
-    bool hasBase = gSession->baseline().ranges().count();
-    triggers->removePeak.setEnabled(hasPeak);
-    triggers->clearBackground.setEnabled(hasBase);
     triggers->exportDfgram.setEnabled(hasFile);
     triggers->exportBigtable.setEnabled(hasFile && hasPeak);
     triggers->exportDiagram.setEnabled(hasFile && hasPeak);
