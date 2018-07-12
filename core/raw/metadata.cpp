@@ -236,10 +236,6 @@ Metadata Metadata::computeAverage(const std::vector<const Metadata*>& vec)
         ret.deltaMonitorCount += d->deltaMonitorCount;
         ret.deltaTime += d->deltaTime;
 
-        if (ret.monitorCount > d->monitorCount)
-            qWarning() << "decreasing monitor count in combined cluster";
-        if (ret.time > d->time)
-            qWarning() << "decreasing time in combined cluster";
         ret.monitorCount = d->monitorCount;
         ret.time = d->time;
     }
