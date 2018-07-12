@@ -32,10 +32,14 @@ RangeControl::RangeControl(const QString& _name, const std::function<Range*()>& 
     // outbound connections
     connect(&spinRangeMin_, &QcrDoubleSpinBox::valueReleased, [this](double val) {
             double antival = qMax(spinRangeMax_.getValue(), val);
-            selectRange_()->set(myRound(val), myRound(antival)); });
+            selectRange_()->set(myRound(val), myRound(antival));
+            gRoot->remakeAll("RangeControl/min");
+        });
     connect(&spinRangeMax_, &QcrDoubleSpinBox::valueReleased, [this](double val) {
             double antival = qMin(spinRangeMin_.getValue(), val);
-            selectRange_()->set(myRound(antival), myRound(val)); });
+            selectRange_()->set(myRound(antival), myRound(val));
+            gRoot->remakeAll("RangeControl/max");
+        });
 
     // layout
     auto hb = new QHBoxLayout();
