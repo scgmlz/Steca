@@ -26,7 +26,7 @@ public:
     QcrTrigger addFiles {"addFiles", "Add files...", ":/icon/add", Qt::CTRL | Qt::Key_O};
     QcrTrigger addPeak {"addPeak", "Add peak", ":/icon/add"};
     QcrTrigger checkUpdate {"checkUpdate", "Check for update"};
-    QcrTrigger clearBackground {"clearBackground", "Clear background regions", ":/icon/clear"};
+    QcrTrigger clearBackground {"clearBackground", "Clear baseline ranges", ":/icon/clear"};
     QcrTrigger clearPeaks {"clearPeaks", "Clear peaks", ":/icon/clear"};
     QcrTrigger clearSession {"clearSession", "Clear session"};
     QcrTrigger corrFile {"loadCorr", "Add correction file...", ":/icon/add",

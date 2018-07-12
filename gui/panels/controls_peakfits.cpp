@@ -248,6 +248,9 @@ ControlsPeakfits::ControlsPeakfits()
     connect(&gGui->triggers->removePeak, &QAction::triggered, []() {
             gSession->peaks().remove();
             gRoot->remakeAll("removePeak"); });
+    connect(&gGui->triggers->clearPeaks, &QAction::triggered, []() {
+            gSession->peaks().clear();
+            gRoot->remakeAll("clearPeaks"); });
     connect(&comboReflType_, _SLOT_(QComboBox,currentIndexChanged,const QString&),
             [](const QString& peakFunctionName) {
                 if (gSession->peaks().selectedPeak()) { // TODO rm this if
@@ -258,6 +261,7 @@ ControlsPeakfits::ControlsPeakfits()
     topControls_.addStretch();
     topControls_.addWidget(new QcrIconTriggerButton(&gGui->triggers->addPeak));
     topControls_.addWidget(new QcrIconTriggerButton(&gGui->triggers->removePeak));
+    topControls_.addWidget(new QcrIconTriggerButton(&gGui->triggers->clearPeaks));
 
     auto* box = new QVBoxLayout;
     box->addLayout(&topControls_);
@@ -271,6 +275,7 @@ ControlsPeakfits::ControlsPeakfits()
 
     setRemake([this](){
             gGui->triggers->removePeak.setEnabled(gSession->peaks().count());
+            gGui->triggers->clearPeaks.setEnabled(gSession->peaks().count());
         });
 }
 
