@@ -302,14 +302,14 @@ void PlotDfgram::calcPeaks()
     currReflIndex_ = 0;
 
     for_i (gSession->peaks().count()) {
-        Peak& r = gSession->peaks().at(i);
-        if (&r == gSession->peaks().selectedPeak())
+        Peak& peak = gSession->peaks().at(i);
+        if (&peak == gSession->peaks().selectedPeak())
             currReflIndex_ = i;
 
-        r.fit(dgramBgFitted_);
+        peak.subtractAndFit(dgramBgFitted_);
 
-        const Range& rge = r.range();
-        const PeakFunction& fun = r.peakFunction();
+        const Range& rge = peak.range();
+        const PeakFunction& fun = peak.peakFunction();
 
         Curve c;
         for_i (dgramBgFitted_.count()) {

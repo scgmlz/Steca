@@ -33,7 +33,7 @@ public:
     double y(double x, double const* parValues = nullptr) const final;
     double avgY(const Range&, double const* parValues = nullptr) const;
 
-    void fit(const Curve&, const Ranges&);
+    void polynomFit(const Curve&, const Ranges&);
     static Polynom fromFit(int degree, const Curve&, const Ranges&);
 
     JsonObj toJson() const final;
@@ -50,7 +50,7 @@ class PeakFunction : public ParametricFunction {
 public:
     PeakFunction();
 
-    virtual void doFit(const Curve&, const Range&);
+    virtual void doSubtractAndFit(const Curve&, const Range&);
     void fromJson(const JsonObj&);
     virtual void setRange(const Range& range) { range_ = range; }
     virtual void setGuessedPeak(const qpair& peak) { guessedPeak_ = peak; }

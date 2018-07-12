@@ -43,7 +43,7 @@ PeakInfo rawFit(const Cluster& cluster, int iGamma, Peak& peak)
     curve.subtract([f](double x) {return f.y(x);});
 
     // Fit the peak:
-    peak.fit(curve);
+    peak.subtractAndFit(curve);
     qpair fitresult = peakFunction->fittedPeak();
     if (!fitrange.contains(fitresult.x))
         return {metadata, alpha, beta, gammaSector};

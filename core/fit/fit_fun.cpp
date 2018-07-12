@@ -67,7 +67,7 @@ double Polynom::avgY(const Range& rgeX, double const* parValues) const
     return (1 / w) * (maqpair - minY);
 }
 
-void Polynom::fit(const Curve& curve, const Ranges& ranges)
+void Polynom::polynomFit(const Curve& curve, const Ranges& ranges)
 {
     FitWrapper().execFit(*this, curve.intersect(ranges));
 }
@@ -75,7 +75,7 @@ void Polynom::fit(const Curve& curve, const Ranges& ranges)
 Polynom Polynom::fromFit(int degree, const Curve& curve, const Ranges& ranges)
 {
     Polynom poly(degree);
-    poly.fit(curve, ranges);
+    poly.polynomFit(curve, ranges);
     return poly;
 }
 
@@ -93,7 +93,7 @@ PeakFunction::PeakFunction()
     : guessedPeak_(), guessedFWHM_(Q_QNAN)
 {}
 
-void PeakFunction::doFit(const Curve& curve, const Range& range)
+void PeakFunction::doSubtractAndFit(const Curve& curve, const Range& range)
 {
     const Curve c = prepareFit(curve, range);
     if (c.isEmpty())

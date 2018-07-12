@@ -34,7 +34,7 @@ public:
     void invalidateGuesses();
     void setGuessPeak(const qpair& peak);
     void setGuessFWHM(float fwhm);
-    void fit(const Curve&);
+    void subtractAndFit(const Curve&);
 
     const PeakFunction& peakFunction() const;
     QString functionName() const { return peakFunction_->name(); }

@@ -51,9 +51,9 @@ void Peak::setGuessFWHM(float fwhm)
     peakFunction_->setGuessedFWHM(fwhm);
 }
 
-void Peak::fit(const Curve& curve)
+void Peak::subtractAndFit(const Curve& curve)
 {
-    peakFunction_->doFit(curve, range());
+    peakFunction_->doSubtractAndFit(curve, range());
 }
 
 void Peak::setPeakFunction(const QString& peakFunctionName)
