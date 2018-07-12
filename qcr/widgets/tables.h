@@ -70,6 +70,7 @@ public:
     virtual void executeConsoleCommand(const QString&);
     virtual void onData();
 protected:
+    int dWidth() const;
     int mWidth() const;
     QString name_;
     TableModel* model_;

@@ -26,6 +26,7 @@
 class ActiveClustersModel : public CheckTableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
     ActiveClustersModel() : CheckTableModel("measurement") {}
+    int columnCount() const final { return COL_ATTRS + gSession->metaSelectedCount(); }
 
     enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
 
@@ -35,7 +36,6 @@ private:
     bool activated(int row) const { return gSession->dataset().clusterAt(row).isActivated(); }
     void setActivated(int row, bool on) { gSession->dataset().activateCluster(row, on); }
 
-    int columnCount() const final { return COL_ATTRS + gSession->metaSelectedCount(); }
     int rowCount() const final { return gSession->dataset().countClusters(); }
 
     QVariant data(const QModelIndex&, int) const final;
@@ -127,7 +127,6 @@ class ActiveClustersView : public CheckTableView { // < QTreeView < QAbstractIte
 public:
     ActiveClustersView();
 private:
-    int sizeHintForColumn(int) const override final;
     ActiveClustersModel* model() { return static_cast<ActiveClustersModel*>(model_); }
     void onData() override;
 };
@@ -142,19 +141,13 @@ ActiveClustersView::ActiveClustersView()
 void ActiveClustersView::onData()
 {
     setHeaderHidden(gSession->metaSelectedCount()==0);
+    setColumnWidth(0, 0);
+    setColumnWidth(1,  3*dWidth());
+    for (int i=2; i<model_->columnCount(); ++i)
+        setColumnWidth(i, 7.*dWidth());
     model_->refreshModel();
     emit model_->layoutChanged();
     updateScroll();
-}
-
-int ActiveClustersView::sizeHintForColumn(int col) const
-{
-    switch (col) {
-    case ActiveClustersModel::COL_CHECK: {
-        return 1.5*mWidth();
-    } default:
-        return 4.5*mWidth();
-    }
 }
 
 

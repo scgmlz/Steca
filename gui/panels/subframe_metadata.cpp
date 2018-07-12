@@ -63,7 +63,7 @@ QVariant MetabigtableModel::data(const QModelIndex& index, int role) const
                 return "-";
             return highlight->avgMetadata().attributeStrValue(row);
         }
-        break;
+        return "";
     case Qt::BackgroundRole:
         return QColor(Qt::white);
     }
@@ -80,23 +80,16 @@ class MetabigtableView : public CheckTableView {
 public:
     MetabigtableView();
 private:
-    int sizeHintForColumn(int) const final;
     MetabigtableModel* model() { return static_cast<MetabigtableModel*>(model_); }
 };
 
 MetabigtableView::MetabigtableView()
     : CheckTableView(new MetabigtableModel())
 {
-}
-
-int MetabigtableView::sizeHintForColumn(int col) const
-{
-    switch (col) {
-    case MetabigtableModel::COL_CHECK:
-        return 1.5*mWidth();
-    default:
-        return 4.5*mWidth();
-    }
+    setColumnWidth(0, 0);
+    setColumnWidth(1,  .5*mWidth());
+    setColumnWidth(2, 6. *mWidth());
+    setColumnWidth(3, 7.5*mWidth());
 }
 
 //  ***********************************************************************************************

@@ -127,6 +127,14 @@ void TableView::executeConsoleCommand(const QString& arg)
 
 #pragma GCC diagnostic pop
 
+//! Width of a digit
+int TableView::dWidth() const
+{
+    QFont f = font();
+    f.setBold(false);
+    return QFontMetrics(f).width('8');
+}
+
 int TableView::mWidth() const
 {
     QFont f = font();

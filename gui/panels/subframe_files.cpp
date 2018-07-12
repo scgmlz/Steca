@@ -77,23 +77,12 @@ class FilesView : public CheckTableView {
 public:
     FilesView();
 private:
-    int sizeHintForColumn(int) const final;
     FilesModel* model() { return static_cast<FilesModel*>(model_); }
 };
 
 FilesView::FilesView()
     : CheckTableView(new FilesModel())
 {
-}
-
-int FilesView::sizeHintForColumn(int col) const
-{
-    switch (col) {
-    case 1: {
-        return 1.5*mWidth();
-    } default:
-        return 10*mWidth();
-    }
 }
 
 
