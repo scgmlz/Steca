@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/dialogs/about.cpp
+//! @file      gui/dialogs/message_boxes.cpp
 //! @brief     Implements class AboutBox
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "gui/dialogs/about.h"
+#include "message_boxes.h"
 #include "gui/mainwin.h"
 #include "manifest.h"
 #include <QApplication>

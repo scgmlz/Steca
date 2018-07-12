@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/dialogs/about.h
+//! @file      gui/dialogs/message_boxes.h
 //! @brief     Defines class AboutBox
 //!
 //! @homepage  https://github.com/scgmlz/Steca

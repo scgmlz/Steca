@@ -14,7 +14,7 @@
 
 #include "triggers.h"
 #include "core/session.h"
-#include "gui/dialogs/about.h"
+#include "gui/dialogs/message_boxes.h"
 #include "gui/dialogs/check_update.h"
 #include "gui/dialogs/export_bigtable.h"
 #include "gui/dialogs/export_dfgram.h"
