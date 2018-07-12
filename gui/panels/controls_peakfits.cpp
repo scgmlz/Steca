@@ -255,6 +255,7 @@ ControlsPeakfits::ControlsPeakfits()
             Peaks::defaultFunctionName = peakFunctionName;
             if (gSession->peaks().selectedPeak())
                 gSession->peaks().selectedPeak()->setPeakFunction(peakFunctionName);
+            gRoot->remakeAll("reflType");
         } );
 
     // layout
