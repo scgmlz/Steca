@@ -116,12 +116,6 @@ ControlsBaseline::ControlsBaseline()
     connect(&gGui->triggers->baserangesClear, &QAction::triggered, []() {
             gSession->baseline().ranges().clear();
             gRoot->remakeAll("clearBackground"); });
-
-    setRemake([this](){
-            gGui->triggers->baserangeAdd   .setEnabled(gSession->hasData());
-            gGui->triggers->baserangeRemove.setEnabled(gSession->baseline().ranges().count());
-            gGui->triggers->baserangesClear.setEnabled(gSession->baseline().ranges().count());
-        });
 }
 
 void ControlsBaseline::hideEvent(QHideEvent*)

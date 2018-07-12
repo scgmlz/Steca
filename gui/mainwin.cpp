@@ -116,14 +116,22 @@ MainWin::~MainWin()
 
 void MainWin::refresh()
 {
-    bool hasFile = gSession->dataset().countFiles();
+    bool hasData = gSession->hasData();
+    qDebug() << "MAIN REFRESH hasData=" << hasData;
     bool hasPeak = gSession->peaks().count();
-    triggers->exportDfgram.setEnabled(hasFile);
-    triggers->exportBigtable.setEnabled(hasFile && hasPeak);
-    triggers->exportDiagram.setEnabled(hasFile && hasPeak);
-    menus_->export_->setEnabled(hasFile);
-    menus_->image_->setEnabled(hasFile);
-    menus_->dgram_->setEnabled(hasFile);
+    bool hasBase = gSession->baseline().ranges().count();
+    triggers->exportDfgram.setEnabled(hasData);
+    triggers->exportBigtable.setEnabled(hasData && hasPeak);
+    triggers->exportDiagram.setEnabled(hasData && hasPeak);
+    triggers->baserangeAdd   .setEnabled(hasData);
+    triggers->baserangeRemove.setEnabled(hasBase);
+    triggers->baserangesClear.setEnabled(hasBase);
+    triggers->peakAdd   .setEnabled(hasData);
+    triggers->peakRemove.setEnabled(hasPeak);
+    triggers->peaksClear.setEnabled(hasPeak);
+    menus_->export_->setEnabled(hasData);
+    menus_->image_->setEnabled(hasData);
+    menus_->dgram_->setEnabled(hasData);
 }
 
 

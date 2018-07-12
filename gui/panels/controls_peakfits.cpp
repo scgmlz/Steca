@@ -272,12 +272,6 @@ ControlsPeakfits::ControlsPeakfits()
     box->addWidget(new ParamsView);
     box->addStretch(1000);
     setLayout(box);
-
-    setRemake([this](){
-            gGui->triggers->peakAdd   .setEnabled(gSession->hasData());
-            gGui->triggers->peakRemove.setEnabled(gSession->peaks().count());
-            gGui->triggers->peaksClear.setEnabled(gSession->peaks().count());
-        });
 }
 
 void ControlsPeakfits::hideEvent(QHideEvent*)

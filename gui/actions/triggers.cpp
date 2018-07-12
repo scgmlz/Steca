@@ -31,6 +31,8 @@ Triggers::Triggers()
 {
 #define AT &QAction::triggered
     connect(&about, AT, [](){ AboutBox().exec(); });
+    connect(&baserangeAdd, &QAction::triggered, [](){ AddRangeBox("baseline").exec(); });
+    connect(&peakAdd, &QAction::triggered, [](){ AddRangeBox("peak").exec(); });
     connect(&addFiles, AT, []() { gGui->addFiles(); });
     connect(&checkUpdate, AT, []() { CheckUpdate _(gGui); });
     connect(&clearSession, AT, []() { gSession->clear(); });

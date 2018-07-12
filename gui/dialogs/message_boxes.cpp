@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/dialogs/message_boxes.cpp
-//! @brief     Implements class AboutBox
+//! @brief     Implements classes AboutBox, AddRangeBox
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -23,32 +23,32 @@
 AboutBox::AboutBox()
     : QDialog(gGui, Qt::Dialog)
 {
-    QVBoxLayout vb_;
-    QHBoxLayout hb_;
-    QLabel logo_;
-    QLabel info_;
-    QDialogButtonBox dbbox_ {QDialogButtonBox::Ok };
+    auto* vb = new QVBoxLayout;
+    auto* hb = new QHBoxLayout;
+    auto* logo = new QLabel;
+    auto* info = new QLabel;
+    auto* dbbox = new QDialogButtonBox{QDialogButtonBox::Ok};
 
     setWindowTitle(QString("About %1").arg(qApp->applicationName()));
 
     // vertical layout
-    setLayout(&vb_);
-    vb_.setSpacing(12);
-    vb_.setSizeConstraint(QLayout::SetFixedSize);
+    setLayout(vb);
+    vb->setSpacing(12);
+    vb->setSizeConstraint(QLayout::SetFixedSize);
 
     // logo and info
-    vb_.addLayout(&hb_);
-    hb_.setSpacing(12);
-    logo_.setPixmap(QPixmap(":/icon/retroStier")
+    vb->addLayout(hb);
+    hb->setSpacing(12);
+    logo->setPixmap(QPixmap(":/icon/retroStier")
                     .scaled(128, 128, Qt::KeepAspectRatio, Qt::SmoothTransformation));
-    hb_.addWidget(&logo_);
+    hb->addWidget(logo);
 
 #ifdef __x86_64__
     QString arch = "(64b)";
 #else
     QString arch = "";
 #endif
-    info_.setText(QString(
+    info->setText(QString(
 "<h4>%1 version %2 %3</h4>"
 "<p>%4</p>"
 "<p>Copyright: Forschungszentrum Jülich GmbH %5</p>"
@@ -68,15 +68,52 @@ AboutBox::AboutBox()
                       .arg(QDate::currentDate().toString("yyyy"))
                       .arg(STECA2_PAGES_URL)
         );
-    info_.setAlignment(Qt::AlignTop | Qt::AlignLeft);
-    info_.setOpenExternalLinks(true);
+    info->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    info->setOpenExternalLinks(true);
 #ifdef Q_OS_MAC
     // a smaller font (a hint found in Qt source code)
-    info_.setFont(QToolTip::font());
+    info->setFont(QToolTip::font());
 #endif
-    hb_.addWidget(&info_);
+    hb->addWidget(info);
 
-    vb_.addWidget(&dbbox_);
+    vb->addWidget(dbbox);
 
-    connect(&dbbox_, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(dbbox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+}
+
+
+AddRangeBox::AddRangeBox(const QString& genre)
+    : QDialog(gGui, Qt::Dialog)
+{
+    auto* vb = new QVBoxLayout;
+    auto* hb = new QHBoxLayout;
+    auto* info = new QLabel;
+    auto* dbbox = new QDialogButtonBox{QDialogButtonBox::Ok};
+
+    setWindowTitle("How to add a fit range");
+
+    // vertical layout
+    setLayout(vb);
+    vb->setSpacing(12);
+    vb->setSizeConstraint(QLayout::SetFixedSize);
+
+    vb->addLayout(hb);
+    hb->setSpacing(12);
+
+    info->setText(QString(
+"<p>To add a %1 fit range, mark it in the diffractogram:<br>"
+"Move the cursor over the selected range while keeping the left mouse button pressed.</p>")
+                      .arg(genre)
+        );
+    info->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    info->setOpenExternalLinks(true);
+#ifdef Q_OS_MAC
+    // a smaller font (a hint found in Qt source code)
+    info->setFont(QToolTip::font());
+#endif
+    hb->addWidget(info);
+
+    vb->addWidget(dbbox);
+
+    connect(dbbox, &QDialogButtonBox::accepted, this, &QDialog::accept);
 }
