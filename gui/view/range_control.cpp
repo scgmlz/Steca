@@ -13,15 +13,17 @@
 //  ***********************************************************************************************
 
 #include "range_control.h"
+#include <cmath>
 
 namespace {
 double safeReal(double val) { return qIsFinite(val) ? val : 0.0; }
+double myRound(double val) { return 0.1 * std::round(10*val); }
 }
 
 RangeControl::RangeControl(const QString& _name, const std::function<Range*()>& _selectRange)
     : QcrWidget(_name)
-    , spinRangeMin_ {name()+"Min", 6, 0., 89.9}
-    , spinRangeMax_ {name()+"Max", 6, 0., 90.}
+    , spinRangeMin_ {name()+"Min", 5, 2, 0., 89.9}
+    , spinRangeMax_ {name()+"Max", 5, 2, 0., 90.}
     , selectRange_(_selectRange)
 {
     spinRangeMin_.setSingleStep(.1);
@@ -30,10 +32,10 @@ RangeControl::RangeControl(const QString& _name, const std::function<Range*()>& 
     // outbound connections
     connect(&spinRangeMin_, &QcrDoubleSpinBox::valueReleased, [this](double val) {
             double antival = qMax(spinRangeMax_.getValue(), val);
-            selectRange_()->set(val, antival); });
+            selectRange_()->set(myRound(val), myRound(antival)); });
     connect(&spinRangeMax_, &QcrDoubleSpinBox::valueReleased, [this](double val) {
             double antival = qMin(spinRangeMin_.getValue(), val);
-            selectRange_()->set(antival, val); });
+            selectRange_()->set(myRound(antival), myRound(val)); });
 
     // layout
     auto hb = new QHBoxLayout();

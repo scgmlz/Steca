@@ -17,16 +17,16 @@
 
 ControlsInterpolation::ControlsInterpolation()
     : doInterpol_ {"doInterpol", "enabled", &gSession->interpol().enabled}
-    , stepAlpha_  {"stepAlpha",  &gSession->interpol().stepAlpha,  6, 1., 30.}
-    , stepBeta_   {"stepBeta",   &gSession->interpol().stepBeta,   6, 1., 30.}
-    , idwRadius_  {"idwRadius",  &gSession->interpol().idwRadius,  6, 0., 90.}
-    , avgAlphaMax_{"avgAlphaMax",&gSession->interpol().avgAlphaMax,6, 0., 90.}
-    , avgRadius_  {"avgRadius",  &gSession->interpol().avgRadius,  6, 0., 90.}
-    , threshold_  {"threshold",  &gSession->interpol().threshold,  6, 0, 100}
+    , stepAlpha_  {"stepAlpha",  &gSession->interpol().stepAlpha,  6, 2, 1., 30.}
+    , stepBeta_   {"stepBeta",   &gSession->interpol().stepBeta,   6, 2, 1., 30.}
+    , idwRadius_  {"idwRadius",  &gSession->interpol().idwRadius,  6, 2, 0., 90.}
+    , avgAlphaMax_{"avgAlphaMax",&gSession->interpol().avgAlphaMax,6, 2, 0., 90.}
+    , avgRadius_  {"avgRadius",  &gSession->interpol().avgRadius,  6, 2, 0., 90.}
+    , threshold_  {"threshold",  &gSession->interpol().threshold,  6, 2, 0, 100}
 {
     // layout
     auto* grid = new QGridLayout;
-    grid->addWidget(&doInterpol_,               0, 1);
+    grid->addWidget(&doInterpol_,              0, 1);
     grid->addWidget(new QLabel("step α"),      1, 0, Qt::AlignRight);
     grid->addWidget(&stepAlpha_,               1, 1);
     grid->addWidget(new QLabel("avg. α max"),  2, 0, Qt::AlignRight);

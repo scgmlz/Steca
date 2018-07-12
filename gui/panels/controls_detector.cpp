@@ -41,9 +41,9 @@ private:
 };
 
 GeometryControls::GeometryControls()
-    : detDistance_  {"detDistance", &gSession->geometry().detectorDistance, 6, 1e1, 1e5,
+    : detDistance_  {"detDistance", &gSession->geometry().detectorDistance, 6, 1, 1e1, 1e5,
         "Distance from sample to detector, in mm"}
-    , detPixelSize_ {"detPixelSize", &gSession->geometry().pixSize, 3, 1e-1, 1e2,
+    , detPixelSize_ {"detPixelSize", &gSession->geometry().pixSize, 3, 2, 1e-1, 1e2,
               "Side length of detector pixel square, in mm"}
     , beamOffsetI_  {"beamOffsetI", &gSession->geometry().pixOffset[0], 3, true,
               INT_MIN, INT_MAX, "Horizontal detector offset, in pixel units"}

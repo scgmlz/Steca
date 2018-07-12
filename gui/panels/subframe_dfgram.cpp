@@ -46,7 +46,7 @@ Dfgram::Dfgram()
     , comboNormType_ {"normTyp", {"none", "monitor", "Δ monitor", "time", "Δ time"}}
     , intenSum_ {"intenSum", "sum"}
     , intenAvg_ {"intenAvg", "avg ×", &gSession->intenScaledAvg}
-    , intenScale_ {"intenScale", &gSession->intenScale, 4, 0.001}
+    , intenScale_ {"intenScale", &gSession->intenScale, 5, 1, 0.001}
 {
     // initializations
     plot_ = new PlotDfgram(*this);

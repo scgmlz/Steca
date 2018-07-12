@@ -228,25 +228,26 @@ void QcrSpinBox::executeConsoleCommand(const QString& arg)
 //! @class QcrDoubleSpinBox
 
 QcrDoubleSpinBox::QcrDoubleSpinBox(
-    const QString& _name, int ndigits, double min, double max, const QString& tooltip)
+    const QString& _name, int nDigits, int nDecimals,
+    double min, double max, const QString& tooltip)
     : QcrControl<double> {*this, _name, 0.}
 {
-    initDoubleSpinBox(ndigits, min, max, tooltip);
+    initDoubleSpinBox(nDigits, nDecimals, min, max, tooltip);
 }
 
 QcrDoubleSpinBox::QcrDoubleSpinBox(
-    const QString& _name, NumberWrapper<double>* cell, int ndigits, double min, double max,
-    const QString& tooltip)
+    const QString& _name, NumberWrapper<double>* cell, int nDigits, int nDecimals,
+    double min, double max, const QString& tooltip)
     : QcrControl<double> {*this, _name, cell}
 {
-    initDoubleSpinBox(ndigits, min, max, tooltip);
+    initDoubleSpinBox(nDigits, nDecimals, min, max, tooltip);
 }
 
 void QcrDoubleSpinBox::initDoubleSpinBox(
-    int ndigits, double min, double max, const QString& tooltip)
+    int nDigits, int nDecimals, double min, double max, const QString& tooltip)
 {
-    strOp::setWidth(this, 2+ndigits, true);
-    setDecimals(ndigits);
+    strOp::setWidth(this, nDigits, true);
+    setDecimals(nDecimals);
     ASSERT(min<=max);
     setMinimum(min);
     setMaximum(max);

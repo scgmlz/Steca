@@ -110,16 +110,16 @@ private:
 class QcrDoubleSpinBox : public QDoubleSpinBox, public QcrControl<double> {
     Q_OBJECT
 public:
-    QcrDoubleSpinBox(const QString& name, int ndigits,
+    QcrDoubleSpinBox(const QString& name, int nDigits, int nDecimals,
                      double min = LLONG_MIN, double max = LLONG_MAX, const QString& tooltip="");
-    QcrDoubleSpinBox(const QString& name, NumberWrapper<double>* cell, int ndigits,
+    QcrDoubleSpinBox(const QString& name, NumberWrapper<double>* cell, int nDigits, int nDecimals,
                      double min = LLONG_MIN, double max = LLONG_MAX, const QString& tooltip="");
     void executeConsoleCommand(const QString&) override;
     double doGetValue() const final { return value(); }
 signals:
     void valueReleased(double); //! Improving over valueChanged, do not signal intermediate states
 private:
-    void initDoubleSpinBox(int ndigits, double min, double max, const QString& tooltip);
+    void initDoubleSpinBox(int nDigits, int nDecimals, double min, double max, const QString& tooltip);
     void mouseReleaseEvent(QMouseEvent*) override;
     void reportChange();
     double reportedValue_;
