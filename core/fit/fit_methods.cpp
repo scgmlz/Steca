@@ -19,7 +19,7 @@
 #include "qcr/base/debug.h"
 #include <qmath.h>
 
-void FitWrapper::fit(ParametricFunction& function, const Curve& curve)
+void FitWrapper::execFit(ParametricFunction& function, const Curve& curve)
 {
     if (curve.isEmpty())
         return;
@@ -39,7 +39,7 @@ void FitWrapper::fit(ParametricFunction& function, const Curve& curve)
         parMax[i] = par.allowedMax();
     }
 
-    fit_exec(
+    callFit(
         parValue.data(), parMin.data(), parMax.data(), parError.data(), parCount, curve.ys().data(),
         curve.count());
 
@@ -54,7 +54,7 @@ T* remove_const(T const* t)
     return const_cast<T*>(t);
 }
 
-void FitWrapper::fit_exec(
+void FitWrapper::callFit(
     double* params, // IO initial parameter estimates -> estimated solution
     double const* paramsLimitMin, // I
     double const* paramsLimitMax, // I

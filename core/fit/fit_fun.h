@@ -50,7 +50,7 @@ class PeakFunction : public ParametricFunction {
 public:
     PeakFunction();
 
-    void fit(const Curve& curve) { return doFit(curve, range_); }
+    virtual void doFit(const Curve&, const Range&);
     void fromJson(const JsonObj&);
     virtual void setRange(const Range& range) { range_ = range; }
     virtual void setGuessedPeak(const qpair& peak) { guessedPeak_ = peak; }
@@ -73,9 +73,6 @@ protected:
     Range range_;
     qpair guessedPeak_;
     float guessedFWHM_;
-
-private:
-    virtual void doFit(const Curve&, const Range&);
 };
 
 

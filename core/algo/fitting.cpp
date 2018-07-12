@@ -22,7 +22,7 @@
 namespace {
 
 //! Fits peak to the given gamma sector and constructs a PeakInfo.
-PeakInfo rawFit(const Cluster& cluster, int iGamma, const Peak& peak)
+PeakInfo rawFit(const Cluster& cluster, int iGamma, Peak& peak)
 {
     std::unique_ptr<PeakFunction> peakFunction( FunctionRegistry::clone(peak.peakFunction()) );
     const Range& fitrange = peakFunction->fitRange();
@@ -43,7 +43,7 @@ PeakInfo rawFit(const Cluster& cluster, int iGamma, const Peak& peak)
     curve.subtract([f](double x) {return f.y(x);});
 
     // Fit the peak:
-    peakFunction->fit(curve);
+    peak.fit(curve);
     qpair fitresult = peakFunction->fittedPeak();
     if (!fitrange.contains(fitresult.x))
         return {metadata, alpha, beta, gammaSector};

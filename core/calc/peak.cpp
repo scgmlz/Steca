@@ -53,7 +53,7 @@ void Peak::setGuessFWHM(float fwhm)
 
 void Peak::fit(const Curve& curve)
 {
-    peakFunction_->fit(curve);
+    peakFunction_->doFit(curve, range());
 }
 
 void Peak::setPeakFunction(const QString& peakFunctionName)

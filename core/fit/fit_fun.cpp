@@ -69,7 +69,7 @@ double Polynom::avgY(const Range& rgeX, double const* parValues) const
 
 void Polynom::fit(const Curve& curve, const Ranges& ranges)
 {
-    FitWrapper().fit(*this, curve.intersect(ranges));
+    FitWrapper().execFit(*this, curve.intersect(ranges));
 }
 
 Polynom Polynom::fromFit(int degree, const Curve& curve, const Ranges& ranges)
@@ -123,7 +123,7 @@ void PeakFunction::doFit(const Curve& curve, const Range& range)
     setGuessedPeak(qpair(peakTth, peakIntens));
     setGuessedFWHM(c.x(hmi2) - c.x(hmi1));
 
-    FitWrapper().fit(*this, c);
+    FitWrapper().execFit(*this, c);
 }
 
 Curve PeakFunction::prepareFit(const Curve& curve, const Range& range)

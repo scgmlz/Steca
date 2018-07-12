@@ -23,14 +23,14 @@
 
 class FitWrapper {
 public:
-    void fit(ParametricFunction&, const class Curve&);
+    void execFit(ParametricFunction&, const class Curve&);
 
 private:
     // these pointers are valid during fit() call
     ParametricFunction* function_;
     double const* xValues_;
 
-    void fit_exec(double*, double const*, double const*, double*, int, double const*, int);
+    void callFit(double*, double const*, double const*, double*, int, double const*, int);
 
     void callbackY(double*, double*, int, int, void*);
     void callbackJacobianLM(double*, double*, int, int, void*);
