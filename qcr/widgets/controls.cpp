@@ -178,7 +178,7 @@ QcrSpinBox::QcrSpinBox(int val, const QString& _name, int ndigits,
 }
 
 
-QcrSpinBox::QcrSpinBox(const QString& _name, NumberWrapper<int>* cell, int ndigits,
+QcrSpinBox::QcrSpinBox(const QString& _name, ParamWrapper<int>* cell, int ndigits,
                        bool withDot, int min, int max, const QString& tooltip)
     : QcrControl<int> {*this, _name, cell}
 {
@@ -236,7 +236,7 @@ QcrDoubleSpinBox::QcrDoubleSpinBox(
 }
 
 QcrDoubleSpinBox::QcrDoubleSpinBox(
-    const QString& _name, NumberWrapper<double>* cell, int nDigits, int nDecimals,
+    const QString& _name, ParamWrapper<double>* cell, int nDigits, int nDecimals,
     double min, double max, const QString& tooltip)
     : QcrControl<double> {*this, _name, cell}
 {

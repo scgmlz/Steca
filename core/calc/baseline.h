@@ -30,7 +30,7 @@ public:
     const Ranges& ranges() const { return ranges_; }
     Ranges& ranges() { return ranges_; }
 
-    NumberWrapper<int> polynomDegree {0};
+    ParamWrapper<int> polynomDegree {0};
 
 private:
     Ranges ranges_;

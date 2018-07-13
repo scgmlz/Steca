@@ -33,8 +33,8 @@ public:
     Range slice2range(int) const;
     double min() const { return range_.min; }
     double max() const { return range_.max; }
-    NumberWrapper<int> numSlices {1};
-    NumberWrapper<int> currSlice {1}; // counting from 1, for user convenience
+    ParamWrapper<int> numSlices {1};
+    ParamWrapper<int> currSlice {1}; // counting from 1, for user convenience
     QJsonObject toJson() const;
 
 private:

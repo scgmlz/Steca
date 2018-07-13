@@ -46,13 +46,6 @@ protected:
     std::function<void(T)> setGuiVal_ = [](T){};
 };
 
-//! Holds a single number.
-template<class T>
-class NumberWrapper : public ParamWrapper<T> {
-public:
-    NumberWrapper(T value) : ParamWrapper<T>{value} {}
-};
-
 //  ***********************************************************************************************
 //  class ParamWrapper implementation
 

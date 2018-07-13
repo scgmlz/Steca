@@ -92,7 +92,7 @@ public:
     const Cluster& clusterAt(int i) const;
     int offset(const Datafile& file) const { return file.offset_; }
 
-    NumberWrapper<int> binning {1};             //!< bin so many Measurement|s into one cluster
+    ParamWrapper<int> binning {1};             //!< bin so many Measurement|s into one cluster
     ParamWrapper<bool> dropIncomplete {false}; //!< drop Cluster|s with less than 'binning' members.
     bool hasIncomplete() const { return hasIncomplete_; }
 
