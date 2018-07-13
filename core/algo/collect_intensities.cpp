@@ -71,6 +71,7 @@ void projectMeasurement(
 
 } // namespace
 
+
 int algo::numTthBins(const std::vector<const Measurement*>& _members, const Range& _rgeTth)
 {
     const ImageCut& cut = gSession->imageCut();
@@ -80,6 +81,8 @@ int algo::numTthBins(const std::vector<const Measurement*>& _members, const Rang
     ASSERT(ret);
     return ret;
 }
+
+//! Computes and returns diffractogram for given image cluster and gamma range.
 
 Curve algo::projectCluster(const Sequence& cluster, const Range& rgeGma)
 {
@@ -113,6 +116,9 @@ Curve algo::projectCluster(const Sequence& cluster, const Range& rgeGma)
         ret.append(minTth + deltaTth * i, double(intens.at(i) * normFactor));
     return ret;
 }
+
+//! Computes diffractograms for all active clusters and all gamma sectors,
+//! and stores it in Cluster::curves_.
 
 void algo::projectActiveClusters(class QProgressBar* progressBar)
 {
