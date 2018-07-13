@@ -33,10 +33,11 @@ public:
     ParamWrapper(T value) : value_{value} {}
 
     void setVal(T);
+    void setHook(std::function<void(T)> hook) { hook_ = hook; }
+
     T val() const { return value_; }
 
-    void setHook(std::function<void(T)> hook) { hook_ = hook; }
-protected:
+private:
     T value_;
     std::function<T(T)> coerce_ {[](T val) { return val; }};
     std::function<void(T)> hook_ = [](T) { gRoot->remakeAll("ParamWrapper"); };
@@ -56,8 +57,6 @@ void ParamWrapper<T>::setVal(T val)
     if (newval!=val)
         qDebug() << "Value " << val << " corrected into " << newval;
     value_ = newval;
-    setGuiVal_(newval);
-    // qDebug() << " -> " << val << " -> " << newval <<  " (non-user call)";
 }
 
 template<class T>
@@ -70,12 +69,8 @@ void ParamWrapper<T>::guiSetsVal(T val, bool userCall)
                tmp1.constData(), tmp2.constData());
     }
     value_ = val;
-    if (userCall) {
-        // qDebug() << " -> " << val;
+    if (userCall)
         hook_(val);
-    } else {
-        ;// qDebug() << " -> " << val << " (non-user call)";
-    }
 }
 
 #endif // PARAM_WRAPPER_H
