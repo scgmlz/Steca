@@ -114,27 +114,21 @@ MainWin::~MainWin()
     gGui = nullptr;
 }
 
-void MainWin::refresh()
+//  ***********************************************************************************************
+//   reset / load / save
+//  ***********************************************************************************************
+
+void MainWin::viewReset()
 {
-    runFits();
-
-    bool hasData = gSession->hasData();
-    bool hasPeak = gSession->peaks().count();
-    bool hasBase = gSession->baseline().ranges().count();
-    triggers->exportDfgram.setEnabled(hasData);
-    triggers->exportBigtable.setEnabled(hasData && hasPeak);
-    triggers->exportDiagram.setEnabled(hasData && hasPeak);
-    triggers->baserangeAdd   .setEnabled(hasData);
-    triggers->baserangeRemove.setEnabled(hasBase);
-    triggers->baserangesClear.setEnabled(hasBase);
-    triggers->peakAdd   .setEnabled(hasData);
-    triggers->peakRemove.setEnabled(hasPeak);
-    triggers->peaksClear.setEnabled(hasPeak);
-    menus_->export_->setEnabled(hasData);
-    menus_->image_->setEnabled(hasData);
-    menus_->dgram_->setEnabled(hasData);
+    restoreState(initialState_);
+#ifndef Q_OS_OSX
+    toggles->fullScreen.programaticallySetValue(false);
+#endif
+    toggles->viewStatusbar.programaticallySetValue(true);
+    toggles->viewClusters.programaticallySetValue(true);
+    toggles->viewFiles.programaticallySetValue(true);
+    toggles->viewMetadata.programaticallySetValue(true);
 }
-
 
 //! Stores native defaults as initialState_, then reads from config file.
 void MainWin::readSettings()
@@ -151,18 +145,6 @@ void MainWin::saveSettings() const
     XSettings s("MainWin");
     s.setValue("geometry", saveGeometry()); // this mainwindow's widget geometry
     s.setValue("state", saveState()); // state of this mainwindow's toolbars and dockwidgets
-}
-
-void MainWin::viewReset()
-{
-    restoreState(initialState_);
-#ifndef Q_OS_OSX
-    toggles->fullScreen.programaticallySetValue(false);
-#endif
-    toggles->viewStatusbar.programaticallySetValue(true);
-    toggles->viewClusters.programaticallySetValue(true);
-    toggles->viewFiles.programaticallySetValue(true);
-    toggles->viewMetadata.programaticallySetValue(true);
 }
 
 void MainWin::loadSession()
@@ -204,6 +186,10 @@ void MainWin::saveSession()
         qWarning() << "Could not write session";
 }
 
+//  ***********************************************************************************************
+//   modal dialogs
+//  ***********************************************************************************************
+
 void MainWin::addFiles()
 {
     QStringList fileNames
@@ -237,6 +223,31 @@ void MainWin::loadCorrFile()
         }
     }
     gRoot->remakeAll("MainWin::loadCorrFile");
+}
+
+//  ***********************************************************************************************
+//   remake / compute
+//  ***********************************************************************************************
+
+void MainWin::refresh()
+{
+    runFits();
+
+    bool hasData = gSession->hasData();
+    bool hasPeak = gSession->peaks().count();
+    bool hasBase = gSession->baseline().ranges().count();
+    triggers->exportDfgram.setEnabled(hasData);
+    triggers->exportBigtable.setEnabled(hasData && hasPeak);
+    triggers->exportDiagram.setEnabled(hasData && hasPeak);
+    triggers->baserangeAdd   .setEnabled(hasData);
+    triggers->baserangeRemove.setEnabled(hasBase);
+    triggers->baserangesClear.setEnabled(hasBase);
+    triggers->peakAdd   .setEnabled(hasData);
+    triggers->peakRemove.setEnabled(hasPeak);
+    triggers->peaksClear.setEnabled(hasPeak);
+    menus_->export_->setEnabled(hasData);
+    menus_->image_->setEnabled(hasData);
+    menus_->dgram_->setEnabled(hasData);
 }
 
 void MainWin::runFits()
