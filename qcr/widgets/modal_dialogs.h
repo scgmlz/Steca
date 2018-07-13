@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef DIALOGS_H
-#define DIALOGS_H
+#ifndef MODAL_DIALOGS_H
+#define MODAL_DIALOGS_H
 
 #include "qcr/engine/mixin.h"
 #include <QFileDialog>
@@ -45,4 +45,4 @@ public:
     void executeConsoleCommand(const QString&) override;
 };
 
-#endif // DIALOGS_H
+#endif // MODAL_DIALOGS_H
