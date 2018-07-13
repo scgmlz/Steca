@@ -101,7 +101,7 @@ void PeakFunction::doSubtractAndFit(const Curve& curve, const Range& range)
 
     //  if (!guessedPeak().isValid()) {  // calculate guesses // TODO caching
     //  temporarily disabled, until it works correctly
-    const int peakIndex = c.maqpairindex();
+    const int peakIndex = c.idxMax();
     const double peakTth = c.x(peakIndex);
     const double peakIntens = c.y(peakIndex);
 

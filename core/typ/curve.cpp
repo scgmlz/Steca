@@ -93,7 +93,7 @@ void Curve::subtract(const std::function<double(double)>& func)
         ys_[i] -= func(xs_.at(i));
 }
 
-int Curve::maqpairindex() const
+int Curve::idxMax() const
 {
     if (isEmpty())
         return 0;
