@@ -88,6 +88,7 @@ const Range& ActiveClusters::rgeFixedInten(bool trans, bool cut) const
     return rgeFixedInten_;
 }
 
+//! Returns cached avgCurve_; recomputes if empty.
 Curve ActiveClusters::avgCurve() const
 {
     if (avgCurve_.isEmpty()) {
@@ -105,7 +106,7 @@ void ActiveClusters::invalidateAvgMutables() const
     avgCurve_.clear();
 }
 
-//! Computed cached avgCurve_.
+//! Computes cached avgCurve_.
 void ActiveClusters::computeAvgCurve() const
 {
     std::vector<const Measurement*> group;
