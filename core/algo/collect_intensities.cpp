@@ -21,6 +21,7 @@
 #include <qmath.h>
 
 namespace {
+
 //! Increments intens and counts.
 void projectMeasurement(
     std::vector<float>& intens, std::vector<int>& counts,

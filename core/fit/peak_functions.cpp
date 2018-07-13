@@ -16,7 +16,7 @@
 #include "core/fit/fit_fun.h"
 #include <qmath.h>
 
-namespace { // file scope
+namespace {
 
 //  ***********************************************************************************************
 //! @class Raw
@@ -589,7 +589,7 @@ float PseudoVoigt2::fwhmError() const
     return float(parameters_.at(parSIGMA).error() + parameters_.at(parGAMMA).error());
 }
 
-} // local methods
+} // namespace
 
 //  ***********************************************************************************************
 //!  Register peak functions
