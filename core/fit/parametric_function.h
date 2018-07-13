@@ -24,18 +24,16 @@ class FitParameter final {
 public:
     FitParameter();
 
-    double value() const { return value_; }
-    double error() const { return error_; }
-
-    double allowedMin() const;
-    double allowedMax() const;
-    void setAllowedRange(double min, double max);
-
+    void fromJson(const JsonObj&);
     void setValue(double value, double error);
     void reset();
+    void setAllowedRange(double min, double max);
 
     JsonObj toJson() const;
-    void fromJson(const JsonObj&);
+    double value() const { return value_; }
+    double error() const { return error_; }
+    double allowedMin() const;
+    double allowedMax() const;
 
 private:
     double value_, error_;
@@ -55,14 +53,13 @@ public:
     virtual double dy(double x, int parIndex, double const* parValues = nullptr) const = 0;
 
 public:
+    virtual void fromJson(const JsonObj&);
     void setParameterCount(int);
-    int parameterCount() const;
+    virtual void reset();
     FitParameter& parameterAt(int);
 
-    virtual void reset();
-
     virtual JsonObj toJson() const;
-    virtual void fromJson(const JsonObj&);
+    int parameterCount() const;
     virtual QString name() const = 0;
 
 protected:

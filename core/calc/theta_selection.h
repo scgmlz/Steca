@@ -27,8 +27,8 @@ public:
     void fromJson(const JsonObj& obj);
     void onData();
 
-    const Range& range() const { return range_; }
     QJsonObject toJson() const;
+    const Range& range() const { return range_; }
 
     ParamWrapper<int> currArc {1}; // counting from 1, for user convenience
 

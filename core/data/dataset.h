@@ -50,6 +50,7 @@ class HighlightedData {
 public:
     HighlightedData() = default;
     HighlightedData(const HighlightedData&) = delete;
+
     void clear();
     void unset();
     void setFile(int);
@@ -73,32 +74,27 @@ public:
     Dataset();
     Dataset(const Dataset&) = delete;
 
-    // Accessor methods
-    HighlightedData& highlight() { return highlight_; }
-    const HighlightedData& highlight() const { return highlight_; }
-
-    // Modifying methods:
-    void clear();
     void fromJson(const JsonObj& obj);
+    void clear();
     void addGivenFiles(const QStringList& filePaths);
     void removeFile();
     void activateCluster(int index, bool on);
     void setFileActivation(int index, bool on);
 
-    // Const methods:
+    HighlightedData& highlight() { return highlight_; }
+    const HighlightedData& highlight() const { return highlight_; }
+
+    QJsonObject toJson() const;
     int countFiles() const { return files_.size(); }
     int countClusters() const { return allClusters_.size(); }
     const Datafile& fileAt(int i) const;
     const Cluster& clusterAt(int i) const;
     int offset(const Datafile& file) const { return file.offset_; }
-
-    ParamWrapper<int> binning {1};             //!< bin so many Measurement|s into one cluster
-    ParamWrapper<bool> dropIncomplete {false}; //!< drop Cluster|s with less than 'binning' members.
     bool hasIncomplete() const { return hasIncomplete_; }
-
     const ActiveClusters& activeClusters() const { return activeClusters_; }
 
-    QJsonObject toJson() const;
+    ParamWrapper<int> binning {1};             //!< bin so many Measurement|s into one cluster
+    ParamWrapper<bool> dropIncomplete {false}; //!< drop Clusters with less than 'binning' members.
 
 private:
     std::vector<Datafile> files_; //!< loaded Datafile|s only live here

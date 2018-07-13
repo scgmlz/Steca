@@ -31,16 +31,16 @@ public:
         MIRROR_ROTATE_3 = MIRROR | ROTATE_3,
     } val;
 
-    // clamps val appropriately
+    //! clamps val appropriately
     ImageTransform(int val = ROTATE_0);
 
-    // adds/removes the mirror flag
+    //! adds/removes the mirror flag
     ImageTransform mirror(bool on) const;
 
-    // rotates only; keeps the mirror flag
+    //! rotates only; keeps the mirror flag
     ImageTransform rotateTo(const ImageTransform&) const;
 
-    // rotates by one quarter-turn
+    //! rotates by one quarter-turn
     ImageTransform nextRotate() const;
 
     bool isTransposed() const { return 0 != (val & 1); }

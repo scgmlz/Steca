@@ -25,22 +25,21 @@
 
 class Corrset {
 public:
-    // Modifying methods:
-    void clear();
     void fromJson(const JsonObj& obj);
+    void clear();
+    void clearIntens() { normalizer_.release(); }
     void removeFile();
     void loadFile(const QString& filePath);
-    ParamWrapper<bool> enabled {true};
-    void clearIntens() { normalizer_.release(); }
 
-    // Lookup methods
+    QJsonObject toJson() const;
     const Rawfile& raw() const { return *raw_; }
     bool hasFile() const { return raw_.get(); }
     QString fileName() const { return hasFile() ? raw_->fileName() : ""; }
     bool hasNANs() const { return hasNANs_; }
     const Image& image() const { return *corrImage_; }
     const Image* normalizer() const;
-    QJsonObject toJson() const;
+
+    ParamWrapper<bool> enabled {true};
 
 private:
     void onCorr();

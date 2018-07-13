@@ -32,14 +32,15 @@ public:
     Geometry();
     COMPARABLE(const Geometry&);
 
-    void fromSettings();
     void fromJson(const JsonObj& obj);
+    void fromSettings();
+
+    QJsonObject toJson() const;
+    void toSettings() const;
 
     ParamWrapper<double> detectorDistance {DEF_DETECTOR_DISTANCE};
     ParamWrapper<double> pixSize          {DEF_DETECTOR_PIXEL_SIZE};
     std::array<ParamWrapper<int>,2>    pixOffset {0, 0};
-    void toSettings() const;
-    QJsonObject toJson() const;
 };
 
 
@@ -49,18 +50,18 @@ public:
     ImageCut() {}
     COMPARABLE(const ImageCut&);
 
-    ParamWrapper<int> left {0};
-    ParamWrapper<int> right {0};
-    ParamWrapper<int> top {0};
-    ParamWrapper<int> bottom {0};
-
-    void clear();
     void fromJson(const JsonObj& obj);
+    void clear();
 
     int horiz() const { return left.val() + right.val(); }
     int vertical() const { return top.val() + bottom.val(); }
     size2d marginSize() const;
     QJsonObject toJson() const;
+
+    ParamWrapper<int> left {0};
+    ParamWrapper<int> right {0};
+    ParamWrapper<int> top {0};
+    ParamWrapper<int> bottom {0};
 };
 
 

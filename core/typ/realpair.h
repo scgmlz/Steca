@@ -20,20 +20,19 @@
 
 //! 2D point, reals
 class qpair {
-    public:
-
-    double x, y;
+public:
+    COMPARABLE(const qpair&);
 
     qpair() { invalidate(); }
     qpair(double x_, double y_) : x(x_), y(y_) {}
 
-    COMPARABLE(const qpair&);
-
+    void fromJson(const class JsonObj&);
     void invalidate(); // x,y <- Q_QNAN
-    bool isValid() const { return !qIsNaN(x) && !qIsNaN(y); }
 
     QJsonObject toJson() const;
-    void fromJson(const class JsonObj&);
+    bool isValid() const { return !qIsNaN(x) && !qIsNaN(y); }
+
+    double x, y;
 };
 
 #endif // REALPAIR_H

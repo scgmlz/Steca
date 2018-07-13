@@ -36,11 +36,12 @@ public:
     void setGuessFWHM(float fwhm);
     void subtractAndFit(const Curve&);
 
+    Range& range() { return peakFunction_->fitRange(); }
+    const Range& range() const { return peakFunction_->fitRange(); }
+
     const PeakFunction& peakFunction() const;
     QString functionName() const { return peakFunction_->name(); }
     bool isRaw() const { return peakFunction_->isRaw(); }
-    Range& range() { return peakFunction_->fitRange(); }
-    const Range& range() const { return peakFunction_->fitRange(); }
     JsonObj toJson() const;
 
 private:

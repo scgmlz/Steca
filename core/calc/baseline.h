@@ -22,13 +22,13 @@
 
 class Baseline {
 public:
+    void fromJson(const JsonObj obj);
     void clear();
 
-    void fromJson(const JsonObj obj);
-    QJsonObject toJson() const;
-
-    const Ranges& ranges() const { return ranges_; }
     Ranges& ranges() { return ranges_; }
+    const Ranges& ranges() const { return ranges_; }
+
+    QJsonObject toJson() const;
 
     ParamWrapper<int> polynomDegree {0};
 

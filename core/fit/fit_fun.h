@@ -37,8 +37,8 @@ public:
     static Polynom fromFit(int degree, const Curve&, const Ranges&);
 
     JsonObj toJson() const final;
-
     QString name() const final { return "polynom"; }
+
 private:
     double dy(double x, int parIndex, double const* parValues = nullptr) const final;
 };
@@ -50,21 +50,22 @@ class PeakFunction : public ParametricFunction {
 public:
     PeakFunction();
 
-    virtual void doSubtractAndFit(const Curve&, const Range&);
     void fromJson(const JsonObj&);
+    Range& fitRange() { return range_; }
+
+    virtual void doSubtractAndFit(const Curve&, const Range&);
     virtual void setRange(const Range& range) { range_ = range; }
     virtual void setGuessedPeak(const qpair& peak) { guessedPeak_ = peak; }
     virtual void setGuessedFWHM(const float fwhm) { guessedFWHM_ = fwhm; }
 
+    JsonObj toJson() const final;
     PeakFunction* clone() const;
-    Range& fitRange() { return range_; }
     const qpair& guessedPeak() const { return guessedPeak_; }
     float guessedFWHM() const { return guessedFWHM_; }
     virtual qpair fittedPeak() const = 0;
     virtual float fittedFWHM() const = 0;
     virtual qpair peakError() const = 0;
     virtual float fwhmError() const = 0;
-    JsonObj toJson() const final;
     virtual bool isRaw() const { return false; } //!< overwritten in class Raw, obviously
 
 protected:

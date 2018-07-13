@@ -29,46 +29,38 @@ public:
     Range(); //!< invalid (NaN)
     Range(double min, double max);
     Range(const std::vector<double>&);
-
-    static Range infinite(); //!< factory: -inf .. +inf
-
     COMPARABLE(const Range&)
 
+    static Range infinite(); //!< factory: -inf .. +inf
+    static Range safeFrom(double, double); //!< safe factory
+
+    void fromJson(const JsonObj&);
     void invalidate(); //!< make invalid
+    void extendBy(double); //!< extend to include the number
+    void extendBy(const Range&); //!< extend to include the range
+    void set(double min, double max); //!< must be: min <= max
+
+    QJsonObject toJson() const;
     bool isValid() const; //!< is not NaN
     bool isEmpty() const; //!< is invalid or empty
-
     double width() const;
     double center() const;
     Range slice(int i, int n) const;
-
-    double min, max; // this is the range
-
-    void set(double min, double max); //!< must be: min <= max
-
-    static Range safeFrom(double, double); //!< safe factory
-
-    void extendBy(double); //!< extend to include the number
-    void extendBy(const Range&); //!< extend to include the range
-
     bool contains(double) const;
     bool contains(const Range&) const;
     bool intersects(const Range&) const;
     Range intersect(const Range&) const;
-
     double bound(double) const; //!< limit the number to the interval, as qBound would
-
-    QJsonObject toJson() const;
-    void fromJson(const JsonObj&);
-
     QString to_s(const QString& unit="", int precision=5, int digitsAfter=2) const;
+
+    double min, max; // this is the range
 };
 
 //! A set of *sorted* *non-overlapping* ranges
 class Ranges {
 public:
-    void clear();
     void fromJson(const QJsonArray&);
+    void clear();
     void add(const Range&);
     void removeSelected();
     void select(int i);
@@ -76,11 +68,11 @@ public:
 
     Range* selectedRange() { return selected_==-1 || isEmpty() ? nullptr : &ranges_.at(selected_); }
 
+    QJsonArray toJson() const;
     bool isEmpty() const { return ranges_.empty(); }
     int count() const { return ranges_.size(); }
     const Range& at(int i) const { return ranges_[i]; }
     int selectedIndex() const { return selected_; }
-    QJsonArray toJson() const;
 
 private:
     void sort();

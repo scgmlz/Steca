@@ -25,17 +25,17 @@ public:
     GammaSelection();
 
     void fromJson(const JsonObj& obj);
+    void setRange(const Range&);
     void onData();
 
-    void setRange(const Range&);
-
+    QJsonObject toJson() const;
     const Range& range() const { return range_; }
     Range slice2range(int) const;
     double min() const { return range_.min; }
     double max() const { return range_.max; }
+
     ParamWrapper<int> numSlices {1};
     ParamWrapper<int> currSlice {1}; // counting from 1, for user convenience
-    QJsonObject toJson() const;
 
 private:
     void recomputeCache();
