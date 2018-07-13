@@ -85,7 +85,6 @@ void QcrControl<T>::initControl()
                name().toLatin1().constData(),
                strOp::to_s(givenValue).toLatin1().constData(),
                strOp::to_s(reportedValue_).toLatin1().constData());
-    cell_->setGuiVal_ = [this](T val){programaticallySetValue(val);};
     doLog(true, "initControl "+name()+" "+strOp::to_s(reportedValue_));
 }
 
@@ -114,9 +113,6 @@ void QcrControl<T>::onChangedValue(bool hasFocus, T val)
     // not sure whether we want to get rid of hasFocus; perform some tests:
     if (hasFocus && softwareCalling_)
         qDebug() << "UNEXPECTED in "+name()+" hasFocus && softwareCalling_";
-    //if (!hasFocus && !softwareCalling_)
-    //    qDebug() << "UNDESIRABLE in "+name()+" !hasFocus && !softwareCalling_";
-    // <= seems unavoidable in QTabWidget tab selection
 
     reportedValue_ = val;
     cell_->guiSetsVal(val, userCall);

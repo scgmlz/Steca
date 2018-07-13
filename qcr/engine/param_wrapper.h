@@ -44,7 +44,6 @@ private:
 
     friend QcrControl<T>;
     void guiSetsVal(T, bool userCall=false);
-    std::function<void(T)> setGuiVal_ = [](T){};
 };
 
 //  ***********************************************************************************************
