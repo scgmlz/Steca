@@ -201,8 +201,8 @@ void PlotDfgram::renderAll()
 {
     clearItems();
 
+    // Render colored background areas to indicate baseline and peak fit ranges.
     const Ranges& rs = gSession->baseline().ranges();
-    // qDebug() << "PlotDfgram::renderAll #bg-ranges=" << rs.count();
     bool showingBaseline = gGui->setup()->currentIndex() == gGui->setup()->idxBaseline;
     for_i (rs.count())
         addBgItem(rs.at(i),
