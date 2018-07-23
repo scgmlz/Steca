@@ -51,7 +51,7 @@ AngleMap::AngleMap(const ImageKey& key)
     : size_(key.size)
     , arrAngles_(key.size.count())
 {
-    qDebug() << "AngleMap: core computation";
+    qDebug() << "AngleMap";
     // compute angles:
     //    detector center is at vec{d} = (d_x, 0, )
     //    detector pixel (i,j) is at vec{b}
@@ -74,7 +74,6 @@ AngleMap::AngleMap(const ImageKey& key)
             arrAngles_[pointToIndex(i, j)] = {tth.toDeg(), gma.toDeg()};
         }
     }
-    qDebug() << "AngleMap: core computation done";
 
     const ImageCut& cut = key.cut;
     ASSERT(size_.w > cut.horiz());
@@ -82,7 +81,6 @@ AngleMap::AngleMap(const ImageKey& key)
     const int countAfterCut = (size_.w - cut.horiz()) * (size_.h - cut.vertical());
     ASSERT(countAfterCut > 0);
 
-    qDebug() << "AngleMap: compute ranges";
     // compute ranges rgeTth_, rgeGma_, rgeGmaFull_, and arrays gmas_, gmaIndexes_:
     rgeTth_.invalidate();
     rgeGma_.invalidate();
@@ -107,7 +105,6 @@ AngleMap::AngleMap(const ImageKey& key)
     qDebug() << "AngleMap: found full range " << rgeGmaFull_.to_s();
     qDebug() << "AngleMap: found theta range " << rgeTth_.to_s();
 
-    qDebug() << "AngleMap: compute indices";
     // compute indices of sorted gmas_:
     std::vector<int> is(countAfterCut);
     for_i (is.size())
@@ -116,7 +113,7 @@ AngleMap::AngleMap(const ImageKey& key)
     // empirically, stable_sort seems to be faster than sort
     std::stable_sort(is.begin(), is.end(), [this](int i1, int i2) {
             return gmas_.at(i1) < gmas_.at(i2); });
-    qDebug() << "AngleMap: /sort";
+    qDebug() << "AngleMap: sort/";
     // sort gmas_:
     std::vector<deg> gv(countAfterCut);
     for_i (countAfterCut)
@@ -127,7 +124,7 @@ AngleMap::AngleMap(const ImageKey& key)
     for_i (countAfterCut)
         uv[i] = gmaIndexes_.at(is.at(i));
     gmaIndexes_ = std::move(uv);
-    qDebug() << "AngleMap: compute indices done";
+    qDebug() << "AngleMap/";
 }
 
 void AngleMap::getGmaIndexes(
