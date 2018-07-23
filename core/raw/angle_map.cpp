@@ -88,8 +88,9 @@ AngleMap::AngleMap(const ImageKey& key)
     gmas_.resize(countAfterCut);
     gmaIndexes_.resize(countAfterCut);
     int gi = 0;
-    for (int i = cut.left.val(), iEnd = size_.w - cut.right.val(); i < iEnd; ++i) {
-        for (int j = cut.top.val(), jEnd = size_.h - cut.bottom.val(); j < jEnd; ++j) {
+    for (int j = cut.top.val(), jEnd = size_.h - cut.bottom.val(); j < jEnd; ++j) {
+        for (int i = cut.left.val(), iEnd = size_.w - cut.right.val(); i < iEnd; ++i) {
+            // (loop order j-i results in faster stable_sort than order i-j)
             const ScatterDirection& dir = arrAngles_[pointToIndex(i, j)];
             gmas_[gi] = dir.gma;
             gmaIndexes_[gi] = pointToIndex(i, j);
