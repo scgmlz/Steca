@@ -66,5 +66,9 @@ const AngleMap& Measurement::angleMap() const
     static Cached<ImageKey,AngleMap> cache__; // one cache across all instances of Measurement
     auto* key = new ImageKey(midTth());
     return cache__.update(key, [key](){
-            qDebug() << "recompute angle map"; return new AngleMap(*key);});
+            qDebug() << "recompute angle map";
+            auto ret = new AngleMap(*key);
+            qDebug() << "/recompute angle map";
+            return ret;
+        });
 }

@@ -113,18 +113,17 @@ AngleMap::AngleMap(const ImageKey& key)
     std::vector<int> is(countWithoutCut);
     for_i (is.size())
         is[i] = i;
-    std::sort(is.begin(), is.end(), [this](int i1, int i2) {
-        return gmas_.at(i1) < gmas_.at(i2); });
+    std::sort(is.begin(), is.end(), [this](int i1, int i2) { return gmas_.at(i1) < gmas_.at(i2); });
     // sort gmas_:
     std::vector<deg> gv(countWithoutCut);
     for_i (countWithoutCut)
         gv[i] = gmas_.at(is.at(i));
-    gmas_ = gv;
+    gmas_ = std::move(gv);
     // sort gmaIndexes_:
     std::vector<int> uv(countWithoutCut);
     for_i (countWithoutCut)
         uv[i] = gmaIndexes_.at(is.at(i));
-    gmaIndexes_ = uv;
+    gmaIndexes_ = std::move(uv);
     qDebug() << "AngleMap: compute indices done";
 }
 
