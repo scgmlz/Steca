@@ -33,7 +33,6 @@ public:
     int position() const { return position_; }
     const Metadata& metadata() const { return metadata_; }
 
-    deg midTth() const;
 
     double monitorCount() const;
     double deltaMonitorCount() const;
@@ -59,6 +58,7 @@ private:
     const int position_; //! position in file_
     Metadata metadata_;
     std::unique_ptr<Image> image_;
+    deg midTth() const;
 };
 
 #endif // MEASUREMENT_H

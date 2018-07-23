@@ -71,7 +71,7 @@ AngleMap::AngleMap(const ImageKey& key)
             const double b_r = sqrt(b_x2 + b_y * b_y);
             const rad gma = atan2(b_y, b_x);
             const rad tth = atan2(b_r, b_z);
-            arrAngles_[pointToIndex(i, j)] = ScatterDirection(tth.toDeg(), gma.toDeg());
+            arrAngles_[pointToIndex(i, j)] = {tth.toDeg(), gma.toDeg()};
         }
     }
     qDebug() << "AngleMap: core computation done";
@@ -79,23 +79,22 @@ AngleMap::AngleMap(const ImageKey& key)
     const ImageCut& cut = key.cut;
     ASSERT(size_.w > cut.horiz());
     ASSERT(size_.h > cut.vertical());
-    const int countWithoutCut =
-        (size_.w - cut.horiz()) * (size_.h - cut.vertical());
-    ASSERT(countWithoutCut > 0);
+    const int countAfterCut = (size_.w - cut.horiz()) * (size_.h - cut.vertical());
+    ASSERT(countAfterCut > 0);
 
     qDebug() << "AngleMap: compute ranges";
     // compute ranges rgeTth_, rgeGma_, rgeGmaFull_, and arrays gmas_, gmaIndexes_:
     rgeTth_.invalidate();
     rgeGma_.invalidate();
     rgeGmaFull_.invalidate();
-    gmas_.resize(countWithoutCut);
-    gmaIndexes_.resize(countWithoutCut);
+    gmas_.resize(countAfterCut);
+    gmaIndexes_.resize(countAfterCut);
     int gi = 0;
     for (int i = cut.left.val(), iEnd = size_.w - cut.right.val(); i < iEnd; ++i) {
         for (int j = cut.top.val(), jEnd = size_.h - cut.bottom.val(); j < jEnd; ++j) {
             const ScatterDirection& dir = arrAngles_[pointToIndex(i, j)];
             gmas_[gi] = dir.gma;
-            gmaIndexes_[gi] = i + j * size_.w;
+            gmaIndexes_[gi] = pointToIndex(i, j);
             ++gi;
             rgeTth_.extendBy(dir.tth);
             rgeGmaFull_.extendBy(dir.gma);
@@ -110,18 +109,18 @@ AngleMap::AngleMap(const ImageKey& key)
 
     qDebug() << "AngleMap: compute indices";
     // compute indices of sorted gmas_:
-    std::vector<int> is(countWithoutCut);
+    std::vector<int> is(countAfterCut);
     for_i (is.size())
         is[i] = i;
     std::sort(is.begin(), is.end(), [this](int i1, int i2) { return gmas_.at(i1) < gmas_.at(i2); });
     // sort gmas_:
-    std::vector<deg> gv(countWithoutCut);
-    for_i (countWithoutCut)
+    std::vector<deg> gv(countAfterCut);
+    for_i (countAfterCut)
         gv[i] = gmas_.at(is.at(i));
     gmas_ = std::move(gv);
     // sort gmaIndexes_:
-    std::vector<int> uv(countWithoutCut);
-    for_i (countWithoutCut)
+    std::vector<int> uv(countAfterCut);
+    for_i (countAfterCut)
         uv[i] = gmaIndexes_.at(is.at(i));
     gmaIndexes_ = std::move(uv);
     qDebug() << "AngleMap: compute indices done";
