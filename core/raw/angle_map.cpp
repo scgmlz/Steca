@@ -112,7 +112,11 @@ AngleMap::AngleMap(const ImageKey& key)
     std::vector<int> is(countAfterCut);
     for_i (is.size())
         is[i] = i;
-    std::sort(is.begin(), is.end(), [this](int i1, int i2) { return gmas_.at(i1) < gmas_.at(i2); });
+    qDebug() << "AngleMap: sort";
+    // empirically, stable_sort seems to be faster than sort
+    std::stable_sort(is.begin(), is.end(), [this](int i1, int i2) {
+            return gmas_.at(i1) < gmas_.at(i2); });
+    qDebug() << "AngleMap: /sort";
     // sort gmas_:
     std::vector<deg> gv(countAfterCut);
     for_i (countAfterCut)
