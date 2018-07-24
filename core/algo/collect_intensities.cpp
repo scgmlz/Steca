@@ -122,6 +122,7 @@ Curve algo::projectCluster(const Sequence& cluster, const Range& rgeGma)
 
 void algo::projectActiveClusters(class QProgressBar* progressBar)
 {
+    qDebug() << "projectActives";
     const ActiveClusters& seq = gSession->activeClusters();
     Progress progress(progressBar, "project intensities", seq.size());
     int nGamma = qMax(1, gSession->gammaSelection().numSlices.val());
@@ -132,4 +133,5 @@ void algo::projectActiveClusters(class QProgressBar* progressBar)
             cluster->setCurve(i, projectCluster(*cluster, gammaSector));
         }
     }
+    qDebug() << "projectActives/";
 }
