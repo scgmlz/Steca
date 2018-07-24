@@ -75,21 +75,4 @@ public:
     deg gma;
 };
 
-
-//! Holds geometry parameters that define a mapping of image coordinates onto (gamma,2theta).
-
-//! Needed for caching such coordinate maps.
-class ImageKey {
-public:
-    ImageKey(deg midTth);
-
-    COMPARABLE(const ImageKey&);
-
-    const Geometry geometry;
-    const size2d size;
-    const ImageCut cut;
-    const int midPixX, midPixY;
-    const deg midTth;
-};
-
 #endif // GEOMETRY_H

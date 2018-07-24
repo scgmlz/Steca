@@ -149,29 +149,3 @@ size2d ImageCut::marginSize() const
 ScatterDirection::ScatterDirection() : ScatterDirection(0, 0) {}
 
 ScatterDirection::ScatterDirection(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
-
-
-//  ***********************************************************************************************
-//! @class ImageKey
-
-ImageKey::ImageKey(deg midTth_)
-    : geometry(gSession->geometry())
-    , size(gSession->imageSize())
-    , cut(gSession->imageCut())
-    , midPixX(size.w/2 + geometry.pixOffset[0].val())
-    , midPixY(size.h/2 + geometry.pixOffset[1].val())
-    , midTth(midTth_)
-{}
-
-int ImageKey::compare(const ImageKey& that) const
-{
-    RET_COMPARE_COMPARABLE(geometry)
-    RET_COMPARE_COMPARABLE(size)
-    RET_COMPARE_COMPARABLE(cut)
-    RET_COMPARE_VALUE(midPixX)
-    RET_COMPARE_VALUE(midPixY)
-    RET_COMPARE_VALUE(midTth)
-    return 0;
-}
-
-EQ_NE_OPERATOR(ImageKey)
