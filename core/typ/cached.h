@@ -19,6 +19,7 @@
 template<class Key, class Value>
 class Cached {
 public:
+    //! Returns updated value. Takes ownership of argument key.
     const Value& update(Key* key, std::function<Value*()>recompute) {
         if (!value_ || *key!=*key_) {
             value_.reset(recompute());
