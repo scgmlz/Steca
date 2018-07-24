@@ -18,11 +18,6 @@
 #include "qcr/base/debug.h"
 #include <iostream> // for debugging
 
-#define RET_COMPARE_COMPARABLE(o)            \
-    for (int cmp = o.compare(that.o); cmp;)  \
-        return cmp;
-
-
 //  ***********************************************************************************************
 //! @class Geometry
 
@@ -78,16 +73,6 @@ QJsonObject Geometry::toJson() const
     };
 }
 
-int Geometry::compare(const Geometry& that) const
-{
-    RET_COMPARE_VALUE(detectorDistance.val())
-    RET_COMPARE_VALUE(pixSize.val())
-    RET_COMPARE_VALUE(pixOffset[0].val())
-    RET_COMPARE_VALUE(pixOffset[1].val())
-    return 0;
-}
-
-EQ_NE_OPERATOR(Geometry)
 
 //  ***********************************************************************************************
 //! @class ImageCut
@@ -125,17 +110,6 @@ QJsonObject ImageCut::toJson() const
         { "bottom", bottom.val() },
     };
 }
-
-int ImageCut::compare(const ImageCut& that) const
-{
-    RET_COMPARE_VALUE(left.val())
-        RET_COMPARE_VALUE(top.val())
-        RET_COMPARE_VALUE(right.val())
-        RET_COMPARE_VALUE(bottom.val())
-    return 0;
-}
-
-EQ_NE_OPERATOR(ImageCut)
 
 size2d ImageCut::marginSize() const
 {

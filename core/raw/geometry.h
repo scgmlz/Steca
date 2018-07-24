@@ -30,7 +30,6 @@ public:
     static double const DEF_DETECTOR_PIXEL_SIZE;
 
     Geometry();
-    COMPARABLE(const Geometry&);
 
     void fromJson(const JsonObj& obj);
     void fromSettings();
@@ -48,7 +47,6 @@ public:
 class ImageCut {
 public:
     ImageCut();
-    COMPARABLE(const ImageCut&);
 
     void fromJson(const JsonObj& obj);
     void clear();

@@ -28,11 +28,12 @@ struct size2d {
 
     int count() const { return w * h; }
 
-    COMPARABLE(const size2d&)
-
     friend size2d operator-(const size2d& s1, const size2d& s2);
 
     size2d transposed() const { return size2d(h, w); }
+
+    bool operator==(const size2d& other) const { return w==other.w && h==other.h; }
+    bool operator!=(const size2d& other) const { return !(*this==other); }
 };
 
 

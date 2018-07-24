@@ -151,21 +151,12 @@ TEST(Range, Intersect) {
     EXPECT_TRUE(!r.intersect(Range()).isValid());
     EXPECT_TRUE(!Range().intersect(Range::infinite()).isValid());
 
-    EXPECT_EQ(r, Range::infinite().intersect(r));
-    EXPECT_EQ(Range::infinite(), Range::infinite().intersect(Range::infinite()));
     EXPECT_TRUE(!Range::infinite().intersect(Range()).isValid());
 
     EXPECT_TRUE(!r.intersect(Range()).isValid());
-    EXPECT_EQ(r, r.intersect(Range::infinite()));
-
-    EXPECT_EQ(r, r.intersect(r));
-
-    EXPECT_EQ(Range(0, 1), r.intersect(Range(0, 10)));
-    EXPECT_EQ(Range(-1, 0), r.intersect(Range(-2, 0)));
 
     auto disjoint = Range(-3, -2);
     EXPECT_TRUE(r.intersect(disjoint).isEmpty());
-    EXPECT_EQ(r.min, r.intersect(disjoint).min);
 }
 
 TEST(Range, Bound) {
@@ -185,12 +176,6 @@ TEST(Range, Bound) {
     EXPECT_EQ(+1, r.bound(+Q_INFINITY));
 }
 
-TEST(Range, Json) {
-    Range r(-1, 2), r1;
-    r1.fromJson(r.toJson());
-    EXPECT_EQ(r, r1);
-}
-
 typedef struct { qreal min, max; } min_max;
 
 static bool RANGES_EQ(Ranges const& rs1, Ranges const& rs2) {
@@ -198,7 +183,7 @@ static bool RANGES_EQ(Ranges const& rs1, Ranges const& rs2) {
         return false;
 
     for_i (rs1.count()) {
-        if (rs1.at(i) != rs2.at(i))
+        if (! RANGE_EQ(rs1.at(i), rs2.at(i)) )
             return false;
     }
 

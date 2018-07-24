@@ -15,7 +15,6 @@
 //  ***********************************************************************************************
 
 #include "range.h"
-#include "core/def/comparators.h"
 #include "core/def/idiomatic_for.h"
 #include "core/typ/json.h"
 #include "qcr/base/debug.h"
@@ -52,16 +51,6 @@ Range Range::infinite()
 {
     return Range(-Q_INFINITY, +Q_INFINITY);
 }
-
-int Range::compare(const Range& that) const
-{
-    ASSERT(isValid() && that.isValid());
-    RET_COMPARE_VALUE(min)
-    RET_COMPARE_VALUE(max)
-    return 0;
-}
-
-VALID_EQ_NE_OPERATOR(Range)
 
 void Range::invalidate()
 {

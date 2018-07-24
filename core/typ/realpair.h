@@ -15,13 +15,11 @@
 #ifndef REALPAIR_H
 #define REALPAIR_H
 
-#include "core/def/comparable.h"
 #include "core/typ/json.h"
 
 //! 2D point, reals
 class qpair {
 public:
-    COMPARABLE(const qpair&);
 
     qpair() { invalidate(); }
     qpair(double x_, double y_) : x(x_), y(y_) {}

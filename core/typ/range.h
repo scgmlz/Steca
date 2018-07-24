@@ -15,7 +15,6 @@
 #ifndef RANGE_H
 #define RANGE_H
 
-#include "core/def/comparable.h"
 #include "core/typ/exception.h"
 #include <QJsonArray>
 #include <QtGlobal>
@@ -29,7 +28,6 @@ public:
     Range(); //!< invalid (NaN)
     Range(double min, double max);
     Range(const std::vector<double>&);
-    COMPARABLE(const Range&)
 
     static Range infinite(); //!< factory: -inf .. +inf
     static Range safeFrom(double, double); //!< safe factory

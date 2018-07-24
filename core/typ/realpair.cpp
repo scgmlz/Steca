@@ -18,16 +18,6 @@
 #include "core/def/comparators.h"
 #include "qcr/base/debug.h"
 
-int qpair::compare(const qpair& that) const
-{
-    ASSERT(isValid() && that.isValid());
-    RET_COMPARE_VALUE(x)
-    RET_COMPARE_VALUE(y)
-    return 0;
-}
-
-VALID_EQ_NE_OPERATOR(qpair)
-
 void qpair::invalidate()
 {
     x = y = Q_QNAN;
