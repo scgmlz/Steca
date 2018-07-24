@@ -117,6 +117,9 @@ public:
     ParamWrapper<bool> intenScaledAvg {true}; // if not, summed
     ParamWrapper<double> intenScale {1};
 
+signals:
+    void sigDetector();      //!< detector geometry has changed
+
 private:
     // with reference accessor methods:
     Dataset dataset_;

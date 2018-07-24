@@ -35,6 +35,8 @@ Geometry::Geometry()
     // TODO restore constraints?
     // detectorDistance_ = qMin(qMax(detectorDistance, 10.), 9999.);
     // pixSize_ = qMin(qMax(pixSize, .1), 9.9);
+
+    detectorDistance.setHook( [](double) { emit gSession->sigDetector(); } );
 }
 
 void Geometry::fromSettings()
