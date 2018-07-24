@@ -15,6 +15,18 @@
 #ifndef CACHED_H
 #define CACHED_H
 
+//! Cached object.
+template<class T>
+class Cached {
+public:
+    void invalidate() { valid_ = false; }
+    const T& get() const { if (!valid_) recompute(); return cached_; }
+private:
+    void recompute() { cached_.recompute(); valid_ = true; }
+    T cached_;
+    bool valid_ {false};
+};
+
 //! Caches a value until the key changes.
 template<class Key, class Value>
 class Keyed {
