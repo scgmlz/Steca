@@ -17,7 +17,7 @@
 
 //! Caches a value until the key changes.
 template<class Key, class Value>
-class Cached {
+class Keyed {
 public:
     //! Returns updated value. Takes ownership of argument key.
     const Value& update(Key* key, std::function<Value*()>recompute) {
