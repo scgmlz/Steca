@@ -51,22 +51,4 @@ private:
     K key_;
 };
 
-//! Caches a value until the key changes.
-template<class Key, class Value>
-class Keyed {
-public:
-    //! Returns updated value. Takes ownership of argument key.
-    const Value& update(Key* key, std::function<Value*()>recompute) {
-        if (!value_ || *key!=*key_) {
-            value_.reset(recompute());
-            key_.reset(key);
-        } else
-            delete key;
-        return *value_;
-    }
-private:
-    std::unique_ptr<Value> value_;
-    std::unique_ptr<Key> key_;
-};
-
 #endif // CACHED_H

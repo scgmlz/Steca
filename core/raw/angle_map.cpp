@@ -48,9 +48,9 @@ static int upperBound(const std::vector<deg>& vec, deg x, int i1, int i2)
 } // local methods
 
 void AngleMap::recompute(const deg tth)
-    : size_(gSession->imageSize())
-    , arrAngles_{size_.count()}
 {
+    size_ = gSession->imageSize();
+    arrAngles_.resize(size_.count());
     const Geometry& geo = gSession->geometry();
     qDebug() << "AngleMap";
     // compute angles:
@@ -62,8 +62,8 @@ void AngleMap::recompute(const deg tth)
     const double d_z = geo.detectorDistance.val();
     const double b_x1 = d_z * s;
     const double b_z1 = d_z * c;
-    int midPixX = size_.w/2 + geometry.pixOffset[0].val();
-    int midPixY = size_.h/2 + geometry.pixOffset[1].val();
+    int midPixX = size_.w/2 + geo.pixOffset[0].val();
+    int midPixY = size_.h/2 + geo.pixOffset[1].val();
     for_int (i, size_.w) {
         const double d_x = (i - midPixX) * geo.pixSize.val();
         const double b_x = b_x1 + d_x * c;

@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "measurement.h"
+#include "core/session.h"
 #include "core/raw/angle_map.h"
 #include "core/typ/cached.h"
 #include "qcr/base/debug.h"
@@ -63,7 +64,5 @@ deg Measurement::chi() const { return metadata_.motorChi; }
 
 const AngleMap& Measurement::angleMap() const
 {
-    static Keyed<ImageKey,AngleMap> cache__; // one cache across all instances of Measurement
-    auto* key = new ImageKey(midTth());
-    return cache__.update(key, [key](){ return new AngleMap(*key); });
+    return gSession->angleMap(midTth());
 }
