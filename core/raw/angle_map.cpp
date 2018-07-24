@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "angle_map.h"
+#include "core/session.h"
 #include "core/def/idiomatic_for.h"
 #include "qcr/base/debug.h"
 #include <qmath.h>
@@ -46,28 +47,30 @@ static int upperBound(const std::vector<deg>& vec, deg x, int i1, int i2)
 
 } // local methods
 
-
-AngleMap::AngleMap(const ImageKey& key)
-    : size_(key.size)
-    , arrAngles_(key.size.count())
+void AngleMap::recompute(const deg tth)
+    : size_(gSession->imageSize())
+    , arrAngles_{size_.count()}
 {
+    const Geometry& geo = gSession->geometry();
     qDebug() << "AngleMap";
     // compute angles:
     //    detector center is at vec{d} = (d_x, 0, )
     //    detector pixel (i,j) is at vec{b}
-    const double t = key.midTth.toRad();
+    const double t = tth.toRad();
     const double c = cos(t);
     const double s = sin(t);
-    const double d_z = key.geometry.detectorDistance.val();
+    const double d_z = geo.detectorDistance.val();
     const double b_x1 = d_z * s;
     const double b_z1 = d_z * c;
+    int midPixX = size_.w/2 + geometry.pixOffset[0].val();
+    int midPixY = size_.h/2 + geometry.pixOffset[1].val();
     for_int (i, size_.w) {
-        const double d_x = (i - key.midPixX) * key.geometry.pixSize.val();
+        const double d_x = (i - midPixX) * geo.pixSize.val();
         const double b_x = b_x1 + d_x * c;
         const double b_z = b_z1 - d_x * s;
         const double b_x2 = b_x * b_x;
         for_int (j, size_.h) {
-            const double b_y = (key.midPixY - j) * key.geometry.pixSize.val(); // == d_y
+            const double b_y = (midPixY - j) * geo.pixSize.val(); // == d_y
             const double b_r = sqrt(b_x2 + b_y * b_y);
             const rad gma = atan2(b_y, b_x);
             const rad tth = atan2(b_r, b_z);
@@ -75,7 +78,7 @@ AngleMap::AngleMap(const ImageKey& key)
         }
     }
 
-    const ImageCut& cut = key.cut;
+    const ImageCut& cut = gSession->imageCut();
     ASSERT(size_.w > cut.horiz());
     ASSERT(size_.h > cut.vertical());
     const int countAfterCut = (size_.w - cut.horiz()) * (size_.h - cut.vertical());
@@ -98,7 +101,7 @@ AngleMap::AngleMap(const ImageKey& key)
             rgeTth_.extendBy(dir.tth);
             rgeGmaFull_.extendBy(dir.gma);
             // TODO URGENT: THIS IS WRONG: seems correct only for tth<=90deg
-            if (dir.tth >= key.midTth)
+            if (dir.tth >= tth)
                 rgeGma_.extendBy(dir.gma); // gma range at mid tth
         }
     }

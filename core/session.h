@@ -24,7 +24,9 @@
 #include "core/data/corrset.h"
 #include "core/data/dataset.h"
 #include "core/data/peak_info.h"
+#include "core/raw/angle_map.h"
 #include "core/raw/geometry.h"
+#include "core/typ/cached.h"
 #include "qcr/engine/param_wrapper.h"
 
 extern class Session* gSession;
@@ -78,6 +80,8 @@ public:
 
     InterpolParams& interpol() { return interpolParams_; }
     const InterpolParams& interpol() const { return interpolParams_; }
+
+    const AngleMap& angleMap(const deg tth) { return angleMap_.get(tth); }
 
     const PeakInfos& directPeakInfos() const { return directPeakInfos_; }
     const PeakInfos& interpolatedPeakInfos() const { return interpolatedPeakInfos_; }
@@ -140,6 +144,7 @@ private:
     std::vector<bool> metaSelection_; //!< true if meta datum is to be displayed
     std::vector<int> metaInfoNums_; //!< indices of metadata items selected for display
     size2d imageSize_; //!< All images must have this same size
+    KeyedCache<AngleMap, deg> angleMap_;
 };
 
 #endif // SESSION_H

@@ -22,8 +22,7 @@
 
 class AngleMap {
 public:
-    AngleMap() = delete;
-    AngleMap(const ImageKey&);
+    void recompute(const deg tth);
 
     const ScatterDirection& dirAt1(int i) const { return arrAngles_[i]; }
     const ScatterDirection& dirAt2(int ix, int iy) const { return dirAt1(pointToIndex(ix, iy)); }

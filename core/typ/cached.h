@@ -20,23 +20,34 @@ template<typename T>
 class Cached {
 public:
     void invalidate() { valid_ = false; }
-    virtual const T& get() const { if (!valid_) recompute(); return cached_; }
-protected:
-    void recompute() { cached_.recompute(); valid_ = true; }
+    const T& get() {
+        if (!valid_) {
+            cached_.recompute();
+            valid_ = true;
+        }
+        return cached_;
+    }
+private:
     T cached_;
     bool valid_ {false};
 };
 
 //! Cached object with key.
 template<typename T, typename K>
-class KeyedCache : public Cached<T> {
+class KeyedCache {
 public:
-    const T& get() const override = delete;
-    const T& get(const K& key) const {
-        if (!Cached<T>::valid_ || key!=key_) {
-            Cached<T>::recompute(); key = key_; }
-        return Cached<T>::cached_; }
+    void invalidate() { valid_ = false; }
+    const T& get(const K key) {
+        if (!valid_ || key!=key_) {
+            cached_.recompute(key);
+            valid_ = true;
+            key_ = key;
+        }
+        return cached_;
+    }
 private:
+    T cached_;
+    bool valid_ {false};
     K key_;
 };
 
