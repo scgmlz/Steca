@@ -15,8 +15,6 @@
 #ifndef SIZE2D_H
 #define SIZE2D_H
 
-#include "core/def/comparable.h"
-
 //! Geometry of a rectangle
 struct size2d {
     int w, h;

@@ -28,15 +28,4 @@
     if (v1 > v2)                                                                  \
         return +1;
 
-#define EQ_NE_OPERATOR(T)                                                         \
-    bool T::operator==(const T& that) const { return 0 == compare(that); }        \
-    bool T::operator!=(const T& that) const { return 0 != compare(that); }
-
-#define VALID_EQ_NE_OPERATOR(T)                                                   \
-    bool T::operator==(const T& that) const {                                     \
-        return isValid() && that.isValid() && 0 == compare(that);                 \
-    }                                                                             \
-    bool T::operator!=(const T& that) const {                                     \
-       return isValid() && that.isValid() && 0 != compare(that); }
-
 #endif // COMPARATORS_H
