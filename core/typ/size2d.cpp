@@ -13,7 +13,6 @@
 //  ***********************************************************************************************
 
 #include "size2d.h"
-#include "core/def/comparators.h"
 #include <QtGlobal> // qMax
 
 size2d operator-(const size2d& s1, const size2d& s2)

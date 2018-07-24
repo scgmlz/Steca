@@ -13,7 +13,6 @@
 //  ***********************************************************************************************
 
 #include "variant.h"
-#include "core/def/comparators.h"
 #include <QDate>
 
 bool isNumeric(const QVariant& v)
@@ -35,7 +34,13 @@ bool isNumeric(const QVariant& v)
     }
 }
 
-#define IMPL_CMP(name, toType)                                                                     \
+#define RET_COMPARE_VALUE2(v1, v2)                                                \
+    if (v1 < v2)                                                                  \
+        return -1;                                                                \
+    if (v1 > v2)                                                                  \
+        return +1;
+
+#define IMPL_CMP(name, toType)                                          \
     int name(const QVariant& v1, const QVariant& v2) {                                             \
         auto val1 = v1.toType(), val2 = v2.toType();                                               \
         RET_COMPARE_VALUE2(val1, val2)                                                             \

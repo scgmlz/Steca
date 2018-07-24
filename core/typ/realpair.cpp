@@ -15,7 +15,6 @@
 //  ***********************************************************************************************
 
 #include "realpair.h"
-#include "core/def/comparators.h"
 #include "qcr/base/debug.h"
 
 void qpair::invalidate()
