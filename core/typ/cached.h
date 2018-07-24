@@ -16,15 +16,28 @@
 #define CACHED_H
 
 //! Cached object.
-template<class T>
+template<typename T>
 class Cached {
 public:
     void invalidate() { valid_ = false; }
-    const T& get() const { if (!valid_) recompute(); return cached_; }
-private:
+    virtual const T& get() const { if (!valid_) recompute(); return cached_; }
+protected:
     void recompute() { cached_.recompute(); valid_ = true; }
     T cached_;
     bool valid_ {false};
+};
+
+//! Cached object with key.
+template<typename T, typename K>
+class KeyedCache : public Cached<T> {
+public:
+    const T& get() const override = delete;
+    const T& get(const K& key) const {
+        if (!Cached<T>::valid_ || key!=key_) {
+            Cached<T>::recompute(); key = key_; }
+        return Cached<T>::cached_; }
+private:
+    K key_;
 };
 
 //! Caches a value until the key changes.
