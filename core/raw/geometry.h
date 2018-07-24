@@ -47,7 +47,7 @@ public:
 //! Image cut (margins)
 class ImageCut {
 public:
-    ImageCut() {}
+    ImageCut();
     COMPARABLE(const ImageCut&);
 
     void fromJson(const JsonObj& obj);

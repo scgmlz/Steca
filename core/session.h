@@ -42,7 +42,8 @@ enum class eNorm {
 //! One instance of this class coexists with the main window. It is accessible from everywhere
 //! through the global pointer gSession.
 
-class Session {
+class Session : public QObject {
+    Q_OBJECT
 public:
     Session();
     ~Session();

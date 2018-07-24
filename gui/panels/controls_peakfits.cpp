@@ -250,6 +250,7 @@ ControlsPeakfits::ControlsPeakfits()
             gSession->peaks().clear();
             gRoot->remakeAll("clearPeaks"); });
 
+    // TODO move this to core
     comboReflType_.cell()->setHook( [](int i) {
             const QString& peakFunctionName = FunctionRegistry::instance()->keys()[i];
             Peaks::defaultFunctionName = peakFunctionName;

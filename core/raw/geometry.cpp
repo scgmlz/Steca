@@ -37,6 +37,9 @@ Geometry::Geometry()
     // pixSize_ = qMin(qMax(pixSize, .1), 9.9);
 
     detectorDistance.setHook( [](double) { emit gSession->sigDetector(); } );
+    pixSize         .setHook( [](double) { emit gSession->sigDetector(); } );
+    pixOffset[0]    .setHook( [](int   ) { emit gSession->sigDetector(); } );
+    pixOffset[1]    .setHook( [](int   ) { emit gSession->sigDetector(); } );
 }
 
 void Geometry::fromSettings()
@@ -88,6 +91,14 @@ EQ_NE_OPERATOR(Geometry)
 
 //  ***********************************************************************************************
 //! @class ImageCut
+
+ImageCut::ImageCut()
+{
+    left  .setHook( [](int   ) { emit gSession->sigDetector(); } );
+    right .setHook( [](int   ) { emit gSession->sigDetector(); } );
+    top   .setHook( [](int   ) { emit gSession->sigDetector(); } );
+    bottom.setHook( [](int   ) { emit gSession->sigDetector(); } );
+}
 
 void ImageCut::clear()
 {

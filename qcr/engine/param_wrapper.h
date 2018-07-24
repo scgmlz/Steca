@@ -39,7 +39,6 @@ public:
 
 private:
     T value_;
-    std::function<T(T)> coerce_ {[](T val) { return val; }};
     std::function<void(T)> hook_ = [](T) { gRoot->remakeAll("ParamWrapper"); };
 
     friend QcrControl<T>;
@@ -52,23 +51,14 @@ private:
 template<class T>
 void ParamWrapper<T>::setVal(T val)
 {
-    T newval = coerce_(val);
-    if (newval!=val)
-        qDebug() << "Value " << val << " corrected into " << newval;
-    value_ = newval;
+    value_ = val;
 }
 
 template<class T>
 void ParamWrapper<T>::guiSetsVal(T val, bool userCall)
 {
-    if (coerce_(val) != val) {
-        QByteArray tmp1 = strOp::to_s(val).toLatin1();
-        QByteArray tmp2 = strOp::to_s(coerce_(val)).toLatin1();
-        qFatal("GUI delivered value %s that ought to be coerced to %s",
-               tmp1.constData(), tmp2.constData());
-    }
     value_ = val;
-    if (userCall)
+    if (userCall) // to prevent circular calls; TODO simplify
         hook_(val);
 }
 

@@ -117,10 +117,10 @@ CutControls::CutControls()
     layout_.setColumnStretch(5, 1);
     setLayout(&layout_);
 
-    cutLeft_  .cell()->setHook( [=](int val){ setCut(val); } );
-    cutTop_   .cell()->setHook( [=](int val){ setCut(val); } );
-    cutRight_ .cell()->setHook( [=](int val){ setCut(val); } );
-    cutBottom_.cell()->setHook( [=](int val){ setCut(val); } );
+    cutLeft_  .setGuiHook( [=](int& val){ setCut(val); } );
+    cutTop_   .setGuiHook( [=](int& val){ setCut(val); } );
+    cutRight_ .setGuiHook( [=](int& val){ setCut(val); } );
+    cutBottom_.setGuiHook( [=](int& val){ setCut(val); } );
 }
 
 void CutControls::setCut(int val)

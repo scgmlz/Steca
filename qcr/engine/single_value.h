@@ -29,6 +29,7 @@ public:
     ~QcrControl();
     void programaticallySetValue(T val);
     T getValue() { remake(); return doGetValue(); }
+    void setGuiHook(std::function<void(T&)> hook) { hook_ = hook; }
     virtual T doGetValue() const = 0;
     virtual void executeConsoleCommand(const QString& arg);
     ParamWrapper<T>* cell() { return cell_; }
@@ -38,6 +39,7 @@ protected:
     bool softwareCalling_ {false}; // make it private again ??
     ParamWrapper<T>* cell_ {nullptr};
 private:
+    std::function<void(T&)> hook_ = [](T&) {};
     virtual void doSetValue(T) = 0;
     T reportedValue_;
     bool ownsItsCell_ {false};
@@ -105,6 +107,7 @@ void QcrControl<T>::executeConsoleCommand(const QString& arg)
 template<class T>
 void QcrControl<T>::onChangedValue(bool hasFocus, T val)
 {
+    hook_(val);
     if (val==reportedValue_)
         return; // nothing to do
     bool userCall = hasFocus || !softwareCalling_;
