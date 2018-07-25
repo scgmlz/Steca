@@ -40,7 +40,8 @@ private:
     friend class HighlightedData;
     Rawfile raw_; //!< owned by this
     int index_; //!< index in files_
-    std::vector<Cluster*> clusters_; //!< back links to Cluster|s made from this
+    std::vector<Cluster*> clusters_; //!< back links to Cluster|s made from this,
+                                     //!< set by Dataset::updateClusters
 };
 
 
