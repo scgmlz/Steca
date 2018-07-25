@@ -24,7 +24,7 @@ ActiveClusters::ActiveClusters()
     invalidateAvgMutables();
 }
 
-void ActiveClusters::appendHere(const Cluster* cluster)
+void ActiveClusters::appendHere(Cluster* cluster)
 {
     // can be added only once
     clusters_.push_back(cluster);

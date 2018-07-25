@@ -112,7 +112,6 @@ public:
     // const methods:
     QByteArray serializeSession() const;
 
-
     bool hasData() const { return dataset().countFiles(); }
     bool hasCorrFile() const { return corrset().hasFile(); }
     const ActiveClusters& activeClusters() const { return dataset().activeClusters(); }
@@ -124,6 +123,7 @@ public:
 
 signals:
     void sigDetector();      //!< detector geometry has changed
+    void sigNGamma();        //!< gamma slicing has changed
 
 private:
     // with reference accessor methods:

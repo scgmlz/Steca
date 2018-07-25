@@ -53,7 +53,7 @@ public:
     void fromJson(const JsonObj&);
     Range& fitRange() { return range_; }
 
-    virtual void doSubtractAndFit(const Curve&, const Range&);
+    virtual void doFit(const Curve&, const Range&);
     virtual void setRange(const Range& range) { range_ = range; }
     virtual void setGuessedPeak(const qpair& peak) { guessedPeak_ = peak; }
     virtual void setGuessedFWHM(const float fwhm) { guessedFWHM_ = fwhm; }

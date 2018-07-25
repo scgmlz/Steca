@@ -306,7 +306,7 @@ void PlotDfgram::calcPeaks()
         if (&peak == gSession->peaks().selectedPeak())
             currReflIndex_ = i;
 
-        peak.subtractAndFit(dgramBgFitted_);
+        peak.fit(dgramBgFitted_);
 
         const Range& rge = peak.range();
         const PeakFunction& fun = peak.peakFunction();

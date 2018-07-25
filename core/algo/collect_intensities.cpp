@@ -116,22 +116,3 @@ Curve algo::projectCluster(const Sequence& cluster, const Range& rgeGma)
         ret.append(minTth + deltaTth * i, double(intens.at(i) * normFactor));
     return ret;
 }
-
-//! Computes diffractograms for all active clusters and all gamma sectors,
-//! and stores it in Cluster::curves_.
-
-void algo::projectActiveClusters(class QProgressBar* progressBar)
-{
-    qDebug() << "projectActives";
-    const ActiveClusters& seq = gSession->activeClusters();
-    Progress progress(progressBar, "project intensities", seq.size());
-    int nGamma = qMax(1, gSession->gammaSelection().numSlices.val());
-    for (const Cluster* cluster : seq.clusters()) {
-        progress.step();
-        for_i (nGamma) {
-            const Range gammaSector = gSession->gammaSelection().slice2range(i);
-            cluster->setCurve(i, projectCluster(*cluster, gammaSector));
-        }
-    }
-    qDebug() << "projectActives/";
-}

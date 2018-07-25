@@ -22,6 +22,7 @@ GammaSelection::GammaSelection()
 // TODO COERCE    currSlice.setCoerce( [this](int i) { return qMax(0, qMin(i, numSlices.val())); });
 // TODO COERCE    numSlices.setHook( [this](int) { currSlice.reCoerce(); });
 // TODO HOOK    currSlice.setHook( [this](int) { recomputeCache(); });
+    numSlices.setHook( [](int) { emit gSession->sigNGamma(); gRoot->remakeAll("nGamma"); } );
 }
 
 QJsonObject GammaSelection::toJson() const

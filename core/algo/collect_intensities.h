@@ -31,7 +31,6 @@ namespace algo {
 
 int numTthBins(const std::vector<const Measurement*>&, const Range&);
 Curve projectCluster(const Sequence&, const Range&);
-void projectActiveClusters(QProgressBar*);
 
 } // namespace algo
 

@@ -34,7 +34,7 @@ public:
     void invalidateGuesses();
     void setGuessPeak(const qpair& peak);
     void setGuessFWHM(float fwhm);
-    void subtractAndFit(const Curve&);
+    void fit(const Curve&);
 
     Range& range() { return peakFunction_->fitRange(); }
     const Range& range() const { return peakFunction_->fitRange(); }

@@ -27,9 +27,9 @@ class ActiveClusters {
 public:
     ActiveClusters();
 
-    void appendHere(const Cluster*);
+    void appendHere(Cluster*);
 
-    const std::vector<const Cluster*>& clusters() const { return clusters_; }
+    const std::vector<Cluster*>& clusters() const { return clusters_; }
     int size() const { return clusters_.size(); }
     size2d imageSize() const;
     double avgMonitorCount() const;
@@ -46,7 +46,7 @@ private:
     void computeAvgCurve() const;
     double calcAvgMutable(double (Cluster::*avgFct)() const) const;
 
-    std::vector<const Cluster*> clusters_;
+    std::vector<Cluster*> clusters_;
 
     // computed on demand (NaNs or emptiness indicate yet unknown values)
     mutable double avgMonitorCount_;

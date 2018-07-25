@@ -114,11 +114,22 @@ Cluster::Cluster(
     const std::vector<const Measurement*>& measurements,
     const class Datafile& file, const int index, const int offset)
     : Sequence(measurements)
+    , curves(gSession->gammaSelection().numSlices.val())
     , file_(file)
     , index_(index)
     , offset_(offset)
     , activated_(true)
-{}
+{
+    QObject::connect(gSession, &Session::sigNGamma, [this]() {
+            curves.clear();
+            curves.resize(gSession->gammaSelection().numSlices.val());
+        });
+
+    QObject::connect(gSession, &Session::sigDetector, [this]() {
+            for(Cached<Curve>& c: curves)
+                c.invalidate();
+        });
+}
 
 //! note: the caller must emit sigActivated
 void Cluster::setActivated(bool on)
@@ -136,21 +147,4 @@ int Cluster::totalOffset() const
 bool Cluster::isIncomplete() const
 {
     return count()<gSession->dataset().binning.val();
-}
-
-void Cluster::setCurve(int i, Curve&& c) const
-{
-    if (i<0 || i>curves_.size())
-        qFatal("Cluster::setCurve called with invalid i");
-    if (i<curves_.size())
-        curves_[i] = std::move(c);
-    else
-        curves_.push_back(std::move(c));
-}
-
-const Curve& Cluster::curve(int i) const
-{
-    if (i<0 || i>=curves_.size())
-        qFatal("Cluster::curve called with invalid i");
-    return curves_[i];
 }

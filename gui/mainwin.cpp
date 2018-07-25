@@ -258,8 +258,6 @@ void MainWin::runFits()
         return;
     }
     qDebug() << "going to project";
-    algo::projectActiveClusters(&gGui->progressBar);
-    qDebug() << "going to rawfit";
     algo::rawFits(&gGui->progressBar);
     // algo::interpolateInfos(&gGui->progressBar);
     qDebug() << "runFits() done";

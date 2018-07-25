@@ -93,7 +93,7 @@ PeakFunction::PeakFunction()
     : guessedPeak_(), guessedFWHM_(Q_QNAN)
 {}
 
-void PeakFunction::doSubtractAndFit(const Curve& curve, const Range& range)
+void PeakFunction::doFit(const Curve& curve, const Range& range)
 {
     const Curve c = prepareFit(curve, range);
     if (c.isEmpty())

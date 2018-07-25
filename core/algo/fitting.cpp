@@ -22,7 +22,7 @@
 namespace {
 
 //! Fits peak to the given gamma sector and constructs a PeakInfo.
-PeakInfo rawFit(const Cluster& cluster, int iGamma, Peak& peak)
+PeakInfo rawFit(Cluster& cluster, int iGamma, Peak& peak)
 {
     std::unique_ptr<PeakFunction> peakFunction( FunctionRegistry::clone(peak.peakFunction()) );
     const Range& fitrange = peakFunction->fitRange();
@@ -38,12 +38,12 @@ PeakInfo rawFit(const Cluster& cluster, int iGamma, Peak& peak)
     auto& baseline = gSession->baseline();
 
     // Diffractogram minus fitted background:
-    Curve curve = cluster.curve(iGamma);
+    const Curve& curve = cluster.curves.at(iGamma).get();
     const Polynom f = Polynom::fromFit(baseline.polynomDegree.val(), curve, baseline.ranges());
-    curve.subtract([f](double x) {return f.y(x);});
+    const Curve curve2 = curve.subtract([f](double x) {return f.y(x);});
 
     // Fit the peak:
-    peak.subtractAndFit(curve);
+    peak.fit(curve2);
     qpair fitresult = peakFunction->fittedPeak();
     if (!fitrange.contains(fitresult.x))
         return {metadata, alpha, beta, gammaSector};
@@ -78,7 +78,7 @@ void algo::rawFits(class QProgressBar* progressBar)
     const ActiveClusters& seq = gSession->activeClusters();
     Progress progress(progressBar, "peak fitting", seq.size());
     int nGamma = qMax(1, gSession->gammaSelection().numSlices.val());
-    for (const Cluster* cluster : seq.clusters()) {
+    for (Cluster* cluster : seq.clusters()) {
         progress.step();
         for_i (nGamma) {
             PeakInfo refInfo = rawFit(*cluster, i, *peak);

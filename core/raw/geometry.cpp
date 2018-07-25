@@ -30,10 +30,10 @@ Geometry::Geometry()
     // detectorDistance_ = qMin(qMax(detectorDistance, 10.), 9999.);
     // pixSize_ = qMin(qMax(pixSize, .1), 9.9);
 
-    detectorDistance.setHook( [](double) { emit gSession->sigDetector(); } );
-    pixSize         .setHook( [](double) { emit gSession->sigDetector(); } );
-    pixOffset[0]    .setHook( [](int   ) { emit gSession->sigDetector(); } );
-    pixOffset[1]    .setHook( [](int   ) { emit gSession->sigDetector(); } );
+    detectorDistance.setHook([](double){ emit gSession->sigDetector(); gRoot->remakeAll("geo"); } );
+    pixSize         .setHook([](double){ emit gSession->sigDetector(); gRoot->remakeAll("geo"); } );
+    pixOffset[0]    .setHook([](int   ){ emit gSession->sigDetector(); gRoot->remakeAll("geo"); } );
+    pixOffset[1]    .setHook([](int   ){ emit gSession->sigDetector(); gRoot->remakeAll("geo"); } );
 }
 
 void Geometry::fromSettings()
@@ -78,10 +78,10 @@ QJsonObject Geometry::toJson() const
 
 ImageCut::ImageCut()
 {
-    left  .setHook( [](int   ) { emit gSession->sigDetector(); } );
-    right .setHook( [](int   ) { emit gSession->sigDetector(); } );
-    top   .setHook( [](int   ) { emit gSession->sigDetector(); } );
-    bottom.setHook( [](int   ) { emit gSession->sigDetector(); } );
+    left  .setHook( [](int   ) { emit gSession->sigDetector(); gRoot->remakeAll("cut"); } );
+    right .setHook( [](int   ) { emit gSession->sigDetector(); gRoot->remakeAll("cut"); } );
+    top   .setHook( [](int   ) { emit gSession->sigDetector(); gRoot->remakeAll("cut"); } );
+    bottom.setHook( [](int   ) { emit gSession->sigDetector(); gRoot->remakeAll("cut"); } );
 }
 
 void ImageCut::clear()

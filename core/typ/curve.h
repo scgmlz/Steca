@@ -23,8 +23,8 @@
 class Curve {
 public:
     void clear();
+    void recompute() { qFatal("NONSENSE"); }
     void append(double x, double y);
-    void subtract(const std::function<double(double)>& func);
 
     bool isEmpty() const;
     int count() const;
@@ -42,6 +42,7 @@ public:
 
     Curve intersect(const Range&) const;
     Curve intersect(const Ranges&) const;
+    Curve subtract(const std::function<double(double)>& func) const;
 
     int idxMax() const; //!< the index of the maximum y value
 

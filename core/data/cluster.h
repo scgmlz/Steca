@@ -15,6 +15,7 @@
 #ifndef CLUSTER_H
 #define CLUSTER_H
 
+#include "core/typ/cached.h"
 #include "core/raw/measurement.h"
 class Curve;
 
@@ -78,15 +79,14 @@ public:
     int totalOffset() const;
     bool isIncomplete() const;
     bool isActivated() const { return activated_; }
-    void setCurve(int, Curve&&) const;
-    const Curve& curve(int) const;
+
+    std::vector<Cached<Curve>> curves; //! One Curve per gamma section
 
 private:
     const class Datafile& file_;
     const int index_; //!< index in total list of Cluster|s
     const int offset_; //!< index of first Measurement in file_
     bool activated_ {true}; //!< checked in list, selected for use
-    mutable std::vector<Curve> curves_;
 };
 
 #endif // CLUSTER_H
