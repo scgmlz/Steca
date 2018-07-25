@@ -67,7 +67,7 @@ public:
     TableView() = delete;
     TableView(TableModel*);
 
-    virtual void executeConsoleCommand(const QString&);
+    void executeConsoleCommand(const QString&) override;
     virtual void onData();
 protected:
     int dWidth() const;

@@ -22,7 +22,7 @@ ControlsInterpolation::ControlsInterpolation()
     , idwRadius_  {"idwRadius",  &gSession->interpol().idwRadius,  6, 2, 0., 90.}
     , avgAlphaMax_{"avgAlphaMax",&gSession->interpol().avgAlphaMax,6, 2, 0., 90.}
     , avgRadius_  {"avgRadius",  &gSession->interpol().avgRadius,  6, 2, 0., 90.}
-    , threshold_  {"threshold",  &gSession->interpol().threshold,  6, 2, 0, 100}
+    , threshold_  {"threshold",  &gSession->interpol().threshold,  6, true, 0, 100}
 {
     // layout
     auto* grid = new QGridLayout;
