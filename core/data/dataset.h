@@ -53,7 +53,6 @@ public:
     HighlightedData(const HighlightedData&) = delete;
 
     void clear();
-    void unset();
     void setFile(int);
     void setCluster(int);
     void reset();

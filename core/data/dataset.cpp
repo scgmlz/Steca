@@ -45,12 +45,6 @@ void HighlightedData::clear()
     current_ = nullptr;
 }
 
-//! temporarily clear, don't emit signal
-void HighlightedData::unset()
-{
-    current_ = nullptr;
-}
-
 void HighlightedData::setFile(int i)
 {
     if (i<0)
@@ -115,7 +109,7 @@ void Dataset::clear()
 void Dataset::removeFile()
 {
     int i = highlight().fileIndex();
-    highlight().unset(); // to avoid conflicts; will be reset below
+    highlight().clear();
     files_.erase(files_.begin()+i);
     onFileChanged();
     gSession->updateImageSize();
@@ -129,15 +123,14 @@ void Dataset::removeFile()
             highlight().setFile(i-1);
         else
             qFatal("impossible case in Dataset::removeFile");
-    } else
-        highlight().clear(); // TODO or directly emit signal ?
+    }
     gRoot->remakeAll("Dataset::removeFile");
 }
 
 void Dataset::addGivenFiles(const QStringList& filePaths)
 {
     int i = highlight().fileIndex();
-    highlight().unset(); // to avoid conflicts; will be reset below
+    highlight().clear();
     for (const QString& path: filePaths) {
         if (path.isEmpty() || hasFile(path))
             continue;
