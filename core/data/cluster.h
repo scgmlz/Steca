@@ -80,13 +80,14 @@ public:
     bool isIncomplete() const;
     bool isActivated() const { return activated_; }
 
-    std::vector<Cached<Curve>> curves; //! One Curve per gamma section
+    CachingVector<Curve, [this](int i, int n)->Curve{return segmentalDfgram(i, n);}> curves; //! One Curve per gamma section
 
 private:
     const class Datafile& file_;
     const int index_; //!< index in total list of Cluster|s
     const int offset_; //!< index of first Measurement in file_
     bool activated_ {true}; //!< checked in list, selected for use
+    Curve segmentalDfgram(int, int);
 };
 
 #endif // CLUSTER_H

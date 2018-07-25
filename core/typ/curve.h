@@ -53,6 +53,6 @@ private:
     Range rgeX_, rgeY_;
 };
 
-typedef std::vector<Curve> curve_vec;
+typedef std::vector<Curve> curve_vec; // TODO rm
 
 #endif // CURVE_H

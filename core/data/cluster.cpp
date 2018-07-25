@@ -121,13 +121,11 @@ Cluster::Cluster(
     , activated_(true)
 {
     QObject::connect(gSession, &Session::sigNGamma, [this]() {
-            curves.clear();
             curves.resize(gSession->gammaSelection().numSlices.val());
         });
 
     QObject::connect(gSession, &Session::sigDetector, [this]() {
-            for(Cached<Curve>& c: curves)
-                c.invalidate();
+            curves.invalidate();
         });
 }
 
