@@ -110,7 +110,6 @@ void ExportDfgram::save()
         close();
     } catch(Exception& ex) {
         qWarning() << "Could not save:\n" << ex.msg() << "\n";
-        gSession->clear();
     }
 }
 
