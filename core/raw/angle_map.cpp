@@ -47,7 +47,7 @@ static int upperBound(const std::vector<deg>& vec, deg x, int i1, int i2)
 
 } // local methods
 
-void AngleMap::recompute(const deg tth)
+AngleMap::AngleMap(const deg tth)
 {
     size_ = gSession->imageSize();
     arrAngles_.resize(size_.count());

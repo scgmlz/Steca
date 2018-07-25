@@ -15,6 +15,8 @@
 #ifndef CACHED_H
 #define CACHED_H
 
+#include <memory>
+
 //! Cached object.
 template<typename T>
 class Cached {
@@ -36,18 +38,16 @@ private:
 template<typename T, typename K>
 class KeyedCache {
 public:
-    void invalidate() { valid_ = false; }
+    void invalidate() { cached_.release(); }
     const T& get(const K key) {
-        if (!valid_ || key!=key_) {
-            cached_.recompute(key);
-            valid_ = true;
+        if (!cached_ || key!=key_) {
+            cached_ = std::make_unique<T>(T(key));
             key_ = key;
         }
-        return cached_;
+        return *cached_;
     }
 private:
-    T cached_;
-    bool valid_ {false};
+    std::unique_ptr<T> cached_;
     K key_;
 };
 
