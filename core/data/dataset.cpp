@@ -103,27 +103,24 @@ void Dataset::clear()
     onFileChanged();
     gSession->updateImageSize();
     gSession->imageCut().clear();
+    gRoot->remakeAll("Dataset::clearFiles");
     qDebug() << "Dataset::clear/";
 }
 
 void Dataset::removeFile()
 {
     int i = highlight().fileIndex();
-    highlight().clear();
     files_.erase(files_.begin()+i);
-    onFileChanged();
-    gSession->updateImageSize();
     if (files_.empty())
-        gSession->imageCut().clear();
-    if (countFiles()) {
-        // reset highlight, which was temporarily unset at the beginning of this function
-        if (i<countFiles())
-            highlight().setFile(i);
-        else if (i>0)
-            highlight().setFile(i-1);
-        else
-            qFatal("impossible case in Dataset::removeFile");
-    }
+        return clear();
+    onFileChanged();
+    // reset highlight, which was temporarily unset at the beginning of this function
+    if (i<countFiles())
+        highlight().setFile(i);
+    else if (i>0)
+        highlight().setFile(i-1);
+    else
+        qFatal("impossible case in Dataset::removeFile");
     gRoot->remakeAll("Dataset::removeFile");
 }
 
