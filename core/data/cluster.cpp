@@ -114,12 +114,15 @@ Cluster::Cluster(
     const std::vector<const Measurement*>& measurements,
     const class Datafile& file, const int index, const int offset)
     : Sequence(measurements)
-    , curves(gSession->gammaSelection().numSlices.val())
+    , gSectors(this)
     , file_(file)
     , index_(index)
     , offset_(offset)
     , activated_(true)
 {
+/*
+    nGamma =  gSession->gammaSelection().numSlices.val());
+
     QObject::connect(gSession, &Session::sigNGamma, [this]() {
             curves.resize(gSession->gammaSelection().numSlices.val());
         });
@@ -127,6 +130,7 @@ Cluster::Cluster(
     QObject::connect(gSession, &Session::sigDetector, [this]() {
             curves.invalidate();
         });
+*/
 }
 
 //! note: the caller must emit sigActivated
@@ -144,5 +148,5 @@ int Cluster::totalOffset() const
 
 bool Cluster::isIncomplete() const
 {
-    return count()<gSession->dataset().binning.val();
+    return count() < gSession->dataset().binning.val();
 }

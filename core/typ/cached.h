@@ -71,21 +71,26 @@ private:
 };
 
 //! Vector of individually cached objects.
-template<typename T, T(*recompute)(int, int)>
+template<typename Owner, typename T>
 class CachingVector {
 public:
     CachingVector() = delete;
-    CachingVector(int n) : data_(n) {}
-    void invalidate() { for (auto& c: data_) c.invalidate(); }
+    CachingVector(Owner* o) : owner_(o) {}
     void resize(int n) {
         if (n==data_.size())
             return;
         data_.clear();
-        data_.resize(n);
+        for (int i=0; i<n; ++i)
+            data_.push_back(T(owner_, i, n));
     }
-    const T& get(int i) { return data_.at(i).get(i); }
+    const T& get(int i, int n) {
+        if (n!=data_.size())
+            resize(n);
+        return data_.at(i);
+    }
 private:
-    std::vector<CachedElement<T,recompute>> data_;
+    Owner* owner_;
+    std::vector<T> data_;
 };
 
 #endif // CACHED_H

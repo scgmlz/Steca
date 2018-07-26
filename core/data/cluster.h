@@ -61,6 +61,17 @@ private:
     Metadata computeAvgMetadata() const;
 };
 
+class Cluster;
+
+class GammaSector {
+public:
+    GammaSector() = delete;
+    GammaSector(Cluster* owner, int i, int n);
+private:
+    Cluster* owner;
+    int i_;
+    int n_;
+};
 
 //! A group of one or more Measurement's, with associated information.
 
@@ -80,7 +91,7 @@ public:
     bool isIncomplete() const;
     bool isActivated() const { return activated_; }
 
-    CachingVector<Curve, [this](int i, int n)->Curve{return segmentalDfgram(i, n);}> curves; //! One Curve per gamma section
+    CachingVector<Cluster, GammaSector> gSectors; //! One Curve per gamma section
 
 private:
     const class Datafile& file_;
