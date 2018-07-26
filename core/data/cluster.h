@@ -62,16 +62,21 @@ private:
 };
 
 class Cluster;
+class GammaSector;
+
+Curve recomputeSectorDfgram(const GammaSector* gSector);
 
 class GammaSector {
 public:
     GammaSector() = delete;
-    GammaSector(Cluster* owner, int i, int n);
-private:
-    Cluster* owner_;
+    GammaSector(const Cluster* const o, int i, int n);
+
+    CachedElement<GammaSector, Curve, recomputeSectorDfgram> curve;
+    const Cluster* const owningCluster_;
     int i_;
     int n_;
-    CachedElement<Curve> curve_;
+private:
+    friend Curve recomputeSectorDfgram(const GammaSector* const gSector);
 };
 
 //! A group of one or more Measurement's, with associated information.

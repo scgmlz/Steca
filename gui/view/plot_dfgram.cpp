@@ -275,9 +275,14 @@ void PlotDfgram::calcDfgram()
         return;
     if (gGui->toggles->combinedDfgram.getValue())
         dgram_ = gSession->activeClusters().avgCurve();
-    else
-        dgram_ = algo::projectCluster(*gSession->dataset().highlight().cluster(),
-                                      gSession->gammaSelection().range());
+    else {
+        Cluster* cluster = gSession->dataset().highlight().cluster();
+        auto& gSector = cluster->gSectors.get(
+            gSession->gammaSelection().currSlice.val()-1,
+            gSession->gammaSelection().numSlices.val()
+            );
+        dgram_ = gSector.curve.get();
+    }
 }
 
 void PlotDfgram::calcBackground()

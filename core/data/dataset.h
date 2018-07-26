@@ -58,12 +58,13 @@ public:
     void reset();
 
     const Cluster* cluster() const { return current_; }
+    Cluster* cluster() { return current_; }
     int clusterIndex() const;
     const Datafile* file() const;
     int fileIndex() const;
 
 private:
-    const Cluster* current_ { nullptr };
+    Cluster* current_ { nullptr };
 };
 
 
@@ -87,8 +88,9 @@ public:
     QJsonObject toJson() const;
     int countFiles() const { return files_.size(); }
     int countClusters() const { return allClusters_.size(); }
-    const Datafile& fileAt(int i) const;
-    const Cluster& clusterAt(int i) const;
+    const Datafile& fileAt(int i) const { return files_.at(i); }
+    const Cluster& clusterAt(int i) const { return *allClusters_.at(i); }
+    Cluster& clusterAt(int i) { return *allClusters_.at(i); }
     int offset(const Datafile& file) const { return file.offset_; }
     bool hasIncomplete() const { return hasIncomplete_; }
     const ActiveClusters& activeClusters() const { return activeClusters_; }

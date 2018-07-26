@@ -206,18 +206,6 @@ void Dataset::updateActiveClusters()
     }
 }
 
-const Datafile& Dataset::fileAt(int i) const
-{
-    ASSERT(0<=i && i<countFiles());
-    return files_[i];
-}
-
-const Cluster& Dataset::clusterAt(int i) const
-{
-    ASSERT(0<=i && i<countClusters());
-    return *allClusters_[i];
-}
-
 QJsonObject Dataset::toJson() const
 {
     QJsonObject ret;

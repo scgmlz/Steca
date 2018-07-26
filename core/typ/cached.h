@@ -15,6 +15,7 @@
 #ifndef CACHED_H
 #define CACHED_H
 
+#include "qcr/base/debug.h" // TMP
 #include <functional>
 #include <memory>
 #include <vector>
@@ -54,21 +55,25 @@ private:
 };
 
 //! Element of CachingVector.
-template<typename T>
+template<typename Owner, typename E, E(*recompute)(const Owner* const)>
 class CachedElement {
 public:
     CachedElement() = delete;
-    CachedElement(std::function<T()> recompute) : recompute_(recompute) {}
+    CachedElement(const Owner* const o) : owner_(o) { info("CE::CE"); }
     void invalidate() { cached_.release(); }
-    const T& get() {
+    void info(const char* where) {
+        qDebug() << where << "i,n=" << owner_->i_ << owner_->n_ << ", owner=" << owner_ <<", this=" << this <<", this->owner=" << this->owner_; }
+    E& get() {
+        info("CE::get");
         if (!cached_) {
-            cached_ = std::make_unique<T>(recompute_());
+            qDebug() << "CE recompute";
+            cached_ = std::make_unique<E>(recompute(owner_));
         }
         return *cached_;
     }
 private:
-    std::function<T()> recompute_;
-    std::unique_ptr<T> cached_;
+    const Owner* const owner_;
+    std::unique_ptr<E> cached_;
 };
 
 //! Vector of individually cached objects.
@@ -76,21 +81,31 @@ template<typename Owner, typename T>
 class CachingVector {
 public:
     CachingVector() = delete;
-    CachingVector(Owner* o) : owner_(o) {}
+    CachingVector(const Owner* const o) : owner_(o) {}
     void resize(int n) {
+        qDebug() << "CachingVector resize " << n;
         if (n==data_.size())
             return;
         data_.clear();
         for (int i=0; i<n; ++i)
             data_.push_back(T(owner_, i, n));
+        for (int i=0; i<n; ++i) {
+            qDebug() << "CachingVector resize result[" <<i<<"]" << ": i,n="
+                     << data_.at(i).i_
+                     << data_.at(i).n_;
+            data_.at(i).curve.info("DEB/resize");
+        }
     }
-    const T& get(int i, int n) {
+    T& get(int i, int n) {
+        qDebug() << "CachingVector::get/0 " << i << " of " << n;
         if (n!=data_.size())
             resize(n);
+        qDebug() << "CachingVector::get/1 " << i << " of " << n;
+        data_.at(i).curve.info("DEB/get");
         return data_.at(i);
     }
 private:
-    Owner* owner_;
+    const Owner* const owner_;
     std::vector<T> data_;
 };
 
