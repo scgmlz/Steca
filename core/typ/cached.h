@@ -15,6 +15,7 @@
 #ifndef CACHED_H
 #define CACHED_H
 
+#include <functional>
 #include <memory>
 #include <vector>
 
@@ -53,21 +54,21 @@ private:
 };
 
 //! Element of CachingVector.
-template<typename T, T(*recompute)(int, int)>
+template<typename T>
 class CachedElement {
 public:
+    CachedElement() = delete;
+    CachedElement(std::function<T()> recompute) : recompute_(recompute) {}
     void invalidate() { cached_.release(); }
-    const T& get(const int i, const int n) {
-        if (!cached_ || i!=i_ || n!=n_) {
-            cached_ = std::make_unique<T>(recompute(i,n));
-            i_ = i;
-            n_ = n;
+    const T& get() {
+        if (!cached_) {
+            cached_ = std::make_unique<T>(recompute_());
         }
         return *cached_;
     }
 private:
+    std::function<T()> recompute_;
     std::unique_ptr<T> cached_;
-    int i_, n_;
 };
 
 //! Vector of individually cached objects.

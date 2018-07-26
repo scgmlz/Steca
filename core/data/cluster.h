@@ -68,9 +68,10 @@ public:
     GammaSector() = delete;
     GammaSector(Cluster* owner, int i, int n);
 private:
-    Cluster* owner;
+    Cluster* owner_;
     int i_;
     int n_;
+    CachedElement<Curve> curve_;
 };
 
 //! A group of one or more Measurement's, with associated information.
@@ -90,6 +91,7 @@ public:
     int totalOffset() const;
     bool isIncomplete() const;
     bool isActivated() const { return activated_; }
+    Curve segmentalDfgram(int, int) const;
 
     CachingVector<Cluster, GammaSector> gSectors; //! One Curve per gamma section
 
@@ -98,7 +100,6 @@ private:
     const int index_; //!< index in total list of Cluster|s
     const int offset_; //!< index of first Measurement in file_
     bool activated_ {true}; //!< checked in list, selected for use
-    Curve segmentalDfgram(int, int);
 };
 
 #endif // CLUSTER_H

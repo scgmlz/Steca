@@ -14,6 +14,7 @@
 
 #include "cluster.h"
 #include "core/session.h"
+#include "core/algo/collect_intensities.h"
 #include "qcr/base/debug.h"
 #include <qmath.h>
 
@@ -108,6 +109,17 @@ double Sequence::normFactor() const
 }
 
 //  ***********************************************************************************************
+//! @class GammaSector
+
+GammaSector::GammaSector(Cluster* owner, int i, int n)
+    : owner_(owner)
+    , i_(i)
+    , n_(n)
+    , curve_([=]()->Curve {return owner_->segmentalDfgram(i_, n_);})
+{
+}
+
+//  ***********************************************************************************************
 //! @class Cluster
 
 Cluster::Cluster(
@@ -149,4 +161,10 @@ int Cluster::totalOffset() const
 bool Cluster::isIncomplete() const
 {
     return count() < gSession->dataset().binning.val();
+}
+
+Curve Cluster::segmentalDfgram(int i, int n) const
+{
+    ASSERT(n == gSession->gammaSelection().numSlices.val());
+    return algo::projectCluster(*this, gSession->gammaSelection().slice2range(i));
 }
