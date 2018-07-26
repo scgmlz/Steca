@@ -105,19 +105,19 @@ AngleMap::AngleMap(const deg tth)
                 rgeGma_.extendBy(dir.gma); // gma range at mid tth
         }
     }
-    qDebug() << "AngleMap: found gamma range " << rgeGma_.to_s();
-    qDebug() << "AngleMap: found full range " << rgeGmaFull_.to_s();
-    qDebug() << "AngleMap: found theta range " << rgeTth_.to_s();
+    //qDebug() << "AngleMap: found gamma range " << rgeGma_.to_s();
+    //qDebug() << "AngleMap: found full range " << rgeGmaFull_.to_s();
+    //qDebug() << "AngleMap: found theta range " << rgeTth_.to_s();
 
     // compute indices of sorted gmas_:
     std::vector<int> is(countAfterCut);
     for_i (is.size())
         is[i] = i;
-    qDebug() << "AngleMap: sort";
+    //qDebug() << "AngleMap: sort";
     // empirically, stable_sort seems to be faster than sort
     std::stable_sort(is.begin(), is.end(), [this](int i1, int i2) {
             return gmas_.at(i1) < gmas_.at(i2); });
-    qDebug() << "AngleMap: sort/";
+    //qDebug() << "AngleMap: sort/";
     // sort gmas_:
     std::vector<deg> gv(countAfterCut);
     for_i (countAfterCut)
@@ -128,7 +128,7 @@ AngleMap::AngleMap(const deg tth)
     for_i (countAfterCut)
         uv[i] = gmaIndexes_.at(is.at(i));
     gmaIndexes_ = std::move(uv);
-    qDebug() << "AngleMap/";
+    //qDebug() << "AngleMap/";
 }
 
 void AngleMap::getGmaIndexes(
