@@ -171,5 +171,5 @@ bool Cluster::isIncomplete() const
 Curve Cluster::segmentalDfgram(int i, int n) const
 {
     ASSERT(n == gSession->gammaSelection().numSlices.val());
-    return algo::projectCluster(*this, gSession->gammaSelection().slice2range(i));
+    return algo::projectCluster(*this, rgeGma().slice(i,n));
 }

@@ -30,17 +30,17 @@ public:
 
     QJsonObject toJson() const;
     const Range& range() const { return range_; }
-    Range slice2range(int) const;
-    double min() const { return range_.min; }
-    double max() const { return range_.max; }
+    Range slice2range(int) const; // TODO NOW rm
+    double min() const { return range_.min; }// TODO NOW rm
+    double max() const { return range_.max; }// TODO NOW rm
 
     ParamWrapper<int> numSlices {1};
     ParamWrapper<int> currSlice {1}; // counting from 1, for user convenience
 
 private:
-    void recomputeCache();
-    Range fullRange_;
-    Range range_;
+    void recomputeCache();// TODO NOW rm
+    Range fullRange_;// TODO NOW rm
+    Range range_;// TODO NOW rm
 };
 
 #endif // GAMMA_SELECTION_H
