@@ -17,14 +17,14 @@
 
 XSettings::XSettings(const QString& group)
 {
-    qDebug() << "XSettings BEG " << group;
+    // qDebug() << "XSettings BEG " << group;
     beginGroup(group);
 }
 
 XSettings::~XSettings()
 {
     endGroup();
-    qDebug() << "XSettings END";
+    // qDebug() << "XSettings END";
 }
 
 bool XSettings::readBool(const QString& key, bool def)

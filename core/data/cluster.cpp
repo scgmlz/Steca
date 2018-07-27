@@ -117,6 +117,7 @@ GammaSector::GammaSector(const Cluster* const o, int i, int n)
     , i_(i)
     , n_(n)
 {
+    QObject::connect(gSession, &Session::sigDetector, [this]() { curve.invalidate(); });
 }
 
 Curve recomputeSectorDfgram(const GammaSector* const gSector)
@@ -137,17 +138,9 @@ Cluster::Cluster(
     , offset_(offset)
     , activated_(true)
 {
-/*
-    nGamma =  gSession->gammaSelection().numSlices.val());
-
     QObject::connect(gSession, &Session::sigNGamma, [this]() {
-            curves.resize(gSession->gammaSelection().numSlices.val());
+            gSectors.resize(gSession->gammaSelection().numSlices.val());
         });
-
-    QObject::connect(gSession, &Session::sigDetector, [this]() {
-            curves.invalidate();
-        });
-*/
 }
 
 //! note: the caller must emit sigActivated
