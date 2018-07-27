@@ -61,7 +61,7 @@ public:
     CachedElement() = delete;
     CachedElement(const Owner* const o) : owner_(o) {}
     CachedElement(const CachedElement&) = delete;
-    void invalidate() { qDebug() << "INVALIDATE!"; cached_.reset(nullptr); qDebug() << "INVALIDATED"; }
+    void invalidate() { qDebug() << "INVALIDATE!"<<&*cached_; cached_.reset(nullptr); qDebug() << "INVALIDATED"; }
     E& get() {
         qDebug() << "GET1";
         if (!cached_)
@@ -85,17 +85,19 @@ public:
         if (n==data_.size())
             return;
         data_.clear();
-        for (int i=0; i<n; ++i)
-            data_.push_back(T(owner_, i, n));
+        for (int i=0; i<n; ++i) {
+            qDebug() << "RESIZE" << i;
+            data_.push_back(std::make_unique<T>(T(owner_, i, n)));
+        }
     }
     T& get(int i, int n) {
         if (n!=data_.size())
             resize(n);
-        return data_.at(i);
+        return *data_.at(i);
     }
 private:
     const Owner* const owner_;
-    std::vector<T> data_;
+    std::vector<std::unique_ptr<T>> data_;
 };
 
 #endif // CACHED_H

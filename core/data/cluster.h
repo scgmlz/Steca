@@ -72,7 +72,8 @@ public:
     GammaSector(const Cluster* const o, int i, int n);
     GammaSector(const GammaSector& rhs) = delete;
     GammaSector(GammaSector&& rhs)
-        : curve(this), owningCluster_(rhs.owningCluster_), i_(rhs.i_), n_(rhs.n_) {}
+        : curve(this), owningCluster_(rhs.owningCluster_), i_(rhs.i_), n_(rhs.n_) {
+        qDebug() << "MOVING GS";}
 
     CachedElement<GammaSector, Curve, recomputeSectorDfgram> curve;
     const Cluster* const owningCluster_;
