@@ -72,8 +72,7 @@ public:
     GammaSector(const Cluster* const o, int i, int n);
     GammaSector(const GammaSector& rhs) = delete;
     GammaSector(GammaSector&& rhs)
-        : curve(std::move(rhs.curve)), owningCluster_(rhs.owningCluster_), i_(rhs.i_), n_(rhs.n_) {
-        curve.updateOwner(this); }
+        : curve(this), owningCluster_(rhs.owningCluster_), i_(rhs.i_), n_(rhs.n_) {}
 
     CachedElement<GammaSector, Curve, recomputeSectorDfgram> curve;
     const Cluster* const owningCluster_;

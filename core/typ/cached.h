@@ -61,8 +61,6 @@ public:
     CachedElement() = delete;
     CachedElement(const Owner* const o) : owner_(o) {}
     CachedElement(const CachedElement&) = delete;
-    CachedElement(CachedElement&& rhs) = default; //must be followed by call of updateOwner
-    void updateOwner(const Owner* const o) { owner_ = o; }
     void invalidate() { qDebug() << "INVALIDATE!"; cached_.reset(nullptr); qDebug() << "INVALIDATED"; }
     E& get() {
         qDebug() << "GET1";
@@ -72,7 +70,7 @@ public:
         return *cached_;
     }
 private:
-    const Owner* owner_;
+    const Owner* const owner_;
     std::unique_ptr<E> cached_;
 };
 
