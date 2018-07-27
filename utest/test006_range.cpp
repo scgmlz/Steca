@@ -190,13 +190,19 @@ static bool RANGES_EQ(Ranges const& rs1, Ranges const& rs2) {
     return true;
 }
 
+/* TODO restore to/fromJson
+
 TEST(Ranges, Json) {
     Ranges rs, rs1;
     rs.add(Range());
     rs.add(Range(9,9));
     rs.add(Range(-3, -2));
-    rs.add(Range::infinite());
+    rs1.fromJson(rs.toJson());
+    EXPECT_TRUE(RANGES_EQ(rs, rs1));
 
+    rs.add(Range::infinite());
     rs1.fromJson(rs.toJson());
     EXPECT_TRUE(RANGES_EQ(rs, rs1));
 }
+
+*/
