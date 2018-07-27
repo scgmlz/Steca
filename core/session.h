@@ -123,7 +123,6 @@ public:
 
 signals:
     void sigDetector();      //!< detector geometry has changed
-    void sigNGamma();        //!< gamma slicing has changed
 
 private:
     // with reference accessor methods:

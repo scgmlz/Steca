@@ -60,14 +60,19 @@ class CachedElement {
 public:
     CachedElement() = delete;
     CachedElement(const Owner* const o) : owner_(o) {}
-    void invalidate() { cached_.release(); }
+    CachedElement(const CachedElement&) = delete;
+    CachedElement(CachedElement&& rhs) = default; //must be followed by call of updateOwner
+    void updateOwner(const Owner* const o) { owner_ = o; }
+    void invalidate() { qDebug() << "INVALIDATE!"; cached_.reset(nullptr); qDebug() << "INVALIDATED"; }
     E& get() {
+        qDebug() << "GET1";
         if (!cached_)
             cached_ = std::make_unique<E>(recompute(owner_));
+        qDebug() << "GET2        -> "<<&*cached_;
         return *cached_;
     }
 private:
-    const Owner* const owner_;
+    const Owner* owner_;
     std::unique_ptr<E> cached_;
 };
 
@@ -77,6 +82,7 @@ class CachingVector {
 public:
     CachingVector() = delete;
     CachingVector(const Owner* const o) : owner_(o) {}
+    CachingVector(const CachingVector&) = delete;
     void resize(int n) {
         if (n==data_.size())
             return;
