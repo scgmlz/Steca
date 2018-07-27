@@ -117,12 +117,10 @@ GammaSector::GammaSector(const Cluster* const o, int i, int n)
     , i_(i)
     , n_(n)
 {
-    qDebug()<<"GammaSector("<<i<<","<<n<<") created at address" << this << ", i,n="<<i_<<","<<n_;
 }
 
 Curve recomputeSectorDfgram(const GammaSector* const gSector)
 {
-    qDebug()<<"recomputeSectorDfgram("<<gSector->i_<<","<<gSector->n_<<") with gSector" <<gSector;
     return gSector->owningCluster_->segmentalDfgram(gSector->i_, gSector->n_);
 }
 
@@ -172,8 +170,6 @@ bool Cluster::isIncomplete() const
 
 Curve Cluster::segmentalDfgram(int i, int n) const
 {
-    qDebug() << "Cluster::segmentalDfgram(" << i << "," << n << ") while expecting n="
-             << gSession->gammaSelection().numSlices.val();
     ASSERT(n == gSession->gammaSelection().numSlices.val());
     return algo::projectCluster(*this, gSession->gammaSelection().slice2range(i));
 }

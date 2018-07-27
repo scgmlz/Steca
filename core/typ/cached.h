@@ -59,16 +59,11 @@ template<typename Owner, typename E, E(*recompute)(const Owner* const)>
 class CachedElement {
 public:
     CachedElement() = delete;
-    CachedElement(const Owner* const o) : owner_(o) { info("CE::CE"); }
+    CachedElement(const Owner* const o) : owner_(o) {}
     void invalidate() { cached_.release(); }
-    void info(const char* where) {
-        qDebug() << where << "i,n=" << owner_->i_ << owner_->n_ << ", owner=" << owner_ <<", this=" << this <<", this->owner=" << this->owner_; }
     E& get() {
-        info("CE::get");
-        if (!cached_) {
-            qDebug() << "CE recompute";
+        if (!cached_)
             cached_ = std::make_unique<E>(recompute(owner_));
-        }
         return *cached_;
     }
 private:
@@ -83,25 +78,15 @@ public:
     CachingVector() = delete;
     CachingVector(const Owner* const o) : owner_(o) {}
     void resize(int n) {
-        qDebug() << "CachingVector resize " << n;
         if (n==data_.size())
             return;
         data_.clear();
         for (int i=0; i<n; ++i)
             data_.push_back(T(owner_, i, n));
-        for (int i=0; i<n; ++i) {
-            qDebug() << "CachingVector resize result[" <<i<<"]" << ": i,n="
-                     << data_.at(i).i_
-                     << data_.at(i).n_;
-            data_.at(i).curve.info("DEB/resize");
-        }
     }
     T& get(int i, int n) {
-        qDebug() << "CachingVector::get/0 " << i << " of " << n;
         if (n!=data_.size())
             resize(n);
-        qDebug() << "CachingVector::get/1 " << i << " of " << n;
-        data_.at(i).curve.info("DEB/get");
         return data_.at(i);
     }
 private:
