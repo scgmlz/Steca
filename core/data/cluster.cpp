@@ -117,7 +117,7 @@ GammaSector::GammaSector(const Cluster* const o, int i, int n)
     , i_(i)
     , n_(n)
 {
-    QObject::connect(gSession, &Session::sigDetector, [this]() { qDebug() << "GS: curve invalidate";  curve.invalidate(); });
+    QObject::connect(gSession, &Session::sigDetector, [this]() { qDebug() << "GS: curve invalidate";  qDebug() << "... cache at" << &*curve.cached_; curve.invalidate(); });
 }
 
 Curve recomputeSectorDfgram(const GammaSector* const gSector)

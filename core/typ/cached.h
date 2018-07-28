@@ -59,20 +59,20 @@ template<typename Owner, typename E, E(*recompute)(const Owner* const)>
 class CachedElement {
 public:
     CachedElement() = delete;
-    CachedElement(const Owner* const o) : owner_(o) {}
+    CachedElement(const Owner* const o) : owner_(o) { qDebug() << "CREATED CE at"<<this<<"with cache at"<<&*cached_; }
     CachedElement(const CachedElement&) = delete;
-    void invalidate() { qDebug() << "INVALIDATE!"<<&*cached_; cached_.reset(nullptr); qDebug() << "INVALIDATED"; }
+    void invalidate() { qDebug() << "INVALIDATE "<<this<<"with cache at"<<&*cached_; cached_.reset(nullptr); qDebug() << "INVALIDATED"; }
     E& get() {
-        qDebug() << "GET1";
+        qDebug() << "GET" << this;
         if (!cached_)
             cached_ = std::make_unique<E>(recompute(owner_));
-        qDebug() << "GET2        -> "<<&*cached_;
+        qDebug() << "GET.. with cache at"<<&*cached_;
         return *cached_;
     }
-    void swapPayload(CachedElement& rhs) { cached_.swap(rhs.cached_); }
+    void swapPayload(CachedElement& rhs) { qDebug() << "SWAP FROM" << this <<"with cache at"<<&*cached_; cached_.swap(rhs.cached_); qDebug() << "SWAP TO  "<< this <<"with cache at"<<&*cached_; }
+    std::unique_ptr<E> cached_; // TODO make private again
 private:
     const Owner* const owner_;
-    std::unique_ptr<E> cached_;
 };
 
 //! Vector of individually cached objects.
@@ -92,8 +92,10 @@ public:
         }
     }
     T& get(int i, int n) {
+        qDebug() << "GET VEC ELE of"<<i;
         if (n!=data_.size())
             resize(n);
+        qDebug() << "GET VEC ELE... at"<<&*data_.at(i);
         return *data_.at(i);
     }
 private:

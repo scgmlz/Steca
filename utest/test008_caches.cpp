@@ -49,4 +49,7 @@ TEST(Caches, Move) {
     Entry e2;
     e2.cache.swapPayload(e.cache);
     EXPECT_EQ(11, e2.cache.get().x);
+    EXPECT_EQ(12, e.cache.get().x);
+    EXPECT_EQ(11, e2.cache.get().x);
+    EXPECT_EQ(12, e.cache.get().x);
 }
