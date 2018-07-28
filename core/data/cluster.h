@@ -73,7 +73,7 @@ public:
     GammaSector(const GammaSector& rhs) = delete;
     GammaSector(GammaSector&& rhs)
         : curve(this), owningCluster_(rhs.owningCluster_), i_(rhs.i_), n_(rhs.n_) {
-        qDebug() << "MOVING GS";}
+        qDebug() << "MOVING GS"; curve.swapPayload(rhs.curve); }
 
     CachedElement<GammaSector, Curve, recomputeSectorDfgram> curve;
     const Cluster* const owningCluster_;

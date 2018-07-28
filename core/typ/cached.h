@@ -69,6 +69,7 @@ public:
         qDebug() << "GET2        -> "<<&*cached_;
         return *cached_;
     }
+    void swapPayload(CachedElement& rhs) { cached_.swap(rhs.cached_); }
 private:
     const Owner* const owner_;
     std::unique_ptr<E> cached_;
