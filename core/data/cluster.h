@@ -75,6 +75,8 @@ public:
         : curve(this), owningCluster_(rhs.owningCluster_), i_(rhs.i_), n_(rhs.n_) {
         qDebug() << "MOVING GS"; curve.swapPayload(rhs.curve); }
 
+    void init();
+
     CachedElement<GammaSector, Curve, recomputeSectorDfgram> curve;
     const Cluster* const owningCluster_;
     int i_;

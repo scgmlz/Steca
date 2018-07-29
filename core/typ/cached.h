@@ -89,6 +89,7 @@ public:
         for (int i=0; i<n; ++i) {
             qDebug() << "RESIZE" << i;
             data_.push_back(std::make_unique<T>(T(owner_, i, n)));
+            data_.back()->init();
         }
     }
     T& get(int i, int n) {
