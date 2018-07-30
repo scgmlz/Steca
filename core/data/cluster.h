@@ -79,8 +79,8 @@ public:
 
     const Curve& curve() { return cachedCurve.get(); }
 
-    CachedPayload<GammaSector, Curve, recomputeSectorDfgram> cachedCurve;
 private:
+    CachedPayload<GammaSector, Curve, recomputeSectorDfgram> cachedCurve;
     const Cluster* const owningCluster_;
     int i_;
     int n_;
