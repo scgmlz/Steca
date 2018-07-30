@@ -274,7 +274,7 @@ void PlotDfgram::calcDfgram()
     if (!gSession->hasData())
         return;
     if (gGui->toggles->combinedDfgram.getValue())
-        dgram_ = gSession->activeClusters().avgCurve();
+        dgram_ = gSession->dataset().activeClusters().avgCurve();
     else {
         Cluster* cluster = gSession->dataset().highlight().cluster();
         ASSERT(cluster);

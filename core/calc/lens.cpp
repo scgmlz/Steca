@@ -88,7 +88,7 @@ float ImageLens::imageInten(int i, int j) const
 const Range& ImageLens::rgeInten(bool fixed) const
 {
     if (fixed)
-        return gSession->activeClusters().rgeFixedInten(trans_, cut_);
+        return gSession->dataset().activeClusters().rgeFixedInten(trans_, cut_);
     if (!rgeInten_.isValid()) {
         size2d sz = imgSize();
         for_ij (sz.h, sz.w)

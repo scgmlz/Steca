@@ -114,7 +114,6 @@ public:
 
     bool hasData() const { return dataset().countFiles(); }
     bool hasCorrFile() const { return corrset().hasFile(); }
-    const ActiveClusters& activeClusters() const { return dataset().activeClusters(); }
 
     size2d imageSize() const;
 
