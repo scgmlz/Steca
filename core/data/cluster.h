@@ -69,7 +69,7 @@ Curve recomputeSectorDfgram(const GammaSector* gSector);
 class GammaSector {
 public:
     GammaSector() = delete;
-    GammaSector(const Cluster* const o, int i, int n);
+    GammaSector(const Cluster* const o, int i, int n) : owningCluster_(o), i_(i), n_(n) {}
     GammaSector(const GammaSector& rhs) = delete;
     GammaSector(GammaSector&& rhs)
         : cachedCurve_(this, rhs.cachedCurve_)

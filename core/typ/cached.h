@@ -60,19 +60,20 @@ private:
 template<typename Owner, typename E, E(*recompute)(const Owner* const)>
 class CachedPayload {
 public:
-    CachedPayload() = delete;
-    CachedPayload(const Owner* const o) : owner_(o) {}
+    CachedPayload() = default;
     CachedPayload(const Owner* const o, CachedPayload& c) : owner_(o) { payload_.swap(c.payload_); }
     CachedPayload(const CachedPayload&) = delete;
     void invalidate() { payload_.reset(nullptr); }
     E& get() {
+        if (!owner_)
+            qFatal("CachedPayload::get called before owner was set; missing Payload::init()?");
         if (!payload_)
             payload_ = std::make_unique<E>(recompute(owner_));
         return *payload_;
     }
 private:
     std::unique_ptr<E> payload_;
-    const Owner* const owner_;
+    const Owner* const owner_ {nullptr};
 };
 
 

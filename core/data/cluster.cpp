@@ -111,14 +111,6 @@ double Sequence::normFactor() const
 //  ***********************************************************************************************
 //! @class GammaSector
 
-GammaSector::GammaSector(const Cluster* const o, int i, int n)
-    : cachedCurve_(this)
-    , owningCluster_(o)
-    , i_(i)
-    , n_(n)
-{
-}
-
 void GammaSector::init()
 {
     QObject::connect(gSession, &Session::sigDetector, [this]() { cachedCurve_.invalidate(); });
@@ -126,8 +118,7 @@ void GammaSector::init()
 
 Curve recomputeSectorDfgram(const GammaSector* const gSector)
 {
-    if (gSector->i_<4)
-        qDebug() << "recompute dfgram" << gSector->owningCluster_->index() << "for sector i,n =" << gSector->i_ << gSector->n_;
+    // qDebug() << "recompute dfgram" << gSector->owningCluster_->index() << "for sector i,n =" << gSector->i_ << gSector->n_;
     return gSector->owningCluster_->segmentalDfgram(gSector->i_, gSector->n_);
 }
 
