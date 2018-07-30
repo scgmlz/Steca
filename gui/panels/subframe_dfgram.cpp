@@ -20,14 +20,14 @@
 #define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 
 //  ***********************************************************************************************
-//! @class Dfgram (local scope)
+//! @class DfPanel (local scope)
 
 //! A diffractogram display, with associated controls, for use in SubframeDfgram.
 
-class Dfgram : public QcrWidget {
+class DfPanel : public QcrWidget {
 public:
-    Dfgram();
-    Dfgram(const Dfgram&) = delete;
+    DfPanel();
+    DfPanel(const DfPanel&) = delete;
 private:
     void onNormChanged();
     void onHighlight();
@@ -41,7 +41,7 @@ private:
 };
 
 
-Dfgram::Dfgram()
+DfPanel::DfPanel()
     : QcrWidget {"dfgram"}
     , comboNormType_ {"normTyp", {"none", "monitor", "Δ monitor", "time", "Δ time"}}
     , intenSum_ {"intenSum", "sum"}
@@ -49,7 +49,7 @@ Dfgram::Dfgram()
     , intenScale_ {"intenScale", &gSession->intenScale, 5, 1, 0.001}
 {
     // initializations
-    plot_ = new PlotDfgram(*this);
+    plot_ = new PlotDfgram();
     intenAvg_.programaticallySetValue(true);
 
     // internal connections
@@ -88,7 +88,7 @@ Dfgram::Dfgram()
     setRemake([this]() {plot_->renderAll();});
 }
 
-void Dfgram::onNormChanged()
+void DfPanel::onNormChanged()
 {
     intenScale_.programaticallySetValue(gSession->intenScale.val()); // TODO own signal
     if (gSession->intenScaledAvg.val())
@@ -98,7 +98,7 @@ void Dfgram::onNormChanged()
     plot_->renderAll();
 }
 
-void Dfgram::onHighlight() // TODO currently unused
+void DfPanel::onHighlight() // TODO currently unused
 {
     actZoom_.programaticallySetValue(false);
     plot_->renderAll();
@@ -111,5 +111,5 @@ SubframeDfgram::SubframeDfgram()
     : QcrTabWidget {"dfgramTabs"}
 {
     setTabPosition(QTabWidget::North);
-    addTab(new Dfgram, "Diffractogram");
+    addTab(new DfPanel, "Diffractogram");
 }

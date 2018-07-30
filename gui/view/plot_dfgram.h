@@ -38,7 +38,7 @@ private:
 
 class PlotDfgram : public QCustomPlot {
 public:
-    PlotDfgram(class Dfgram&);
+    PlotDfgram();
     PlotDfgram(const PlotDfgram&) = delete;
 
     void plotEmpty();
@@ -50,8 +50,6 @@ private:
     void addBgItem(const Range&, const QColor&);
     void resizeEvent(QResizeEvent*);
     void onPeakData();
-
-    Dfgram& diffractogram_;
 
     QCPGraph *bgGraph_;
     QCPGraph *dgramGraph_;

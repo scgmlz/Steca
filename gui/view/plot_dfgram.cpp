@@ -78,9 +78,8 @@ bool PlotDfgramOverlay::addModeColor(QColor& color) const
 //  ***********************************************************************************************
 //! @class PlotDfgram
 
-PlotDfgram::PlotDfgram(Dfgram& diffractogram)
-    : diffractogram_(diffractogram)
-    , overlay_(new PlotDfgramOverlay(*this))
+PlotDfgram::PlotDfgram()
+    : overlay_(new PlotDfgramOverlay(*this))
 {
     QCPAxisRect* ar = axisRect();
 
