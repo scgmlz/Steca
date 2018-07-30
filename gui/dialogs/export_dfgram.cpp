@@ -149,14 +149,16 @@ void ExportDfgram::saveAll(bool oneFile)
                 existingFiles << QFileInfo(currPath).fileName();
         }
         if (existingFiles.size() &&
-            !file_dialog::confirmOverwrite(existingFiles.size()>1 ? "Files exist" : "File exists", this, existingFiles.join(", ")))
+            !file_dialog::confirmOverwrite(existingFiles.size()>1 ?
+                                           "Files exist" : "File exists",
+                                           this, existingFiles.join(", ")))
             return;
     }
     Progress progress(&fileField_->progressBar, "save diffractograms", expt.size());
     int picNum = 0;
     int fileNum = 0;
     int nSlices = gSession->gammaSelection().numSlices.val();
-    for (const Cluster* cluster : expt.clusters()) {
+    for (Cluster* cluster : expt.clusters()) {
         ++picNum;
         progress.step();
         for (int i=0; i<qMax(1,nSlices); ++i) {
@@ -169,8 +171,7 @@ void ExportDfgram::saveAll(bool oneFile)
             }
             ASSERT(stream);
             const Range gmaStripe = gSession->gammaSelection().slice2range(i);
-            const Curve& curve = algo::projectCluster(*cluster, gmaStripe);
-            ASSERT(!curve.isEmpty());
+            const Curve& curve = cluster->gSectors.get(i, nSlices).curve.get();
             *stream << "Picture Nr: " << picNum << '\n';
             if (nSlices > 1)
                 *stream << "Gamma slice Nr: " << i+1 << '\n';
