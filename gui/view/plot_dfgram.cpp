@@ -277,11 +277,8 @@ void PlotDfgram::calcDfgram()
         dgram_ = gSession->activeClusters().avgCurve();
     else {
         Cluster* cluster = gSession->dataset().highlight().cluster();
-        auto& gSector = cluster->gSectors.get(
-            gSession->gammaSelection().currSlice.val()-1,
-            gSession->gammaSelection().numSlices.val()
-            );
-        dgram_ = gSector.curve.get();
+        ASSERT(cluster);
+        dgram_ = cluster->currentGammaSector().curve.get();
     }
 }
 

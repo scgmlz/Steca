@@ -31,6 +31,8 @@ namespace {
 void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
                 const Range& rgeGma, const QString& separator)
 {
+    if (curve.isEmpty())
+        qFatal("curve is empty");
     ASSERT(rgeGma.isValid());
     const Metadata& md = cluster->avgMetadata();
     stream << "Comment: " << md.comment << '\n';
@@ -119,11 +121,9 @@ void ExportDfgram::saveCurrent()
     if (!file)
         return;
     QTextStream stream(file);
-    const Cluster* cluster = gSession->dataset().highlight().cluster();
+    Cluster* cluster = gSession->dataset().highlight().cluster();
     ASSERT(cluster);
-    const Curve& curve = algo::projectCluster(*cluster, cluster->rgeGma());
-    if (curve.isEmpty())
-        qFatal("curve is empty");
+    const Curve& curve = cluster->currentGammaSector().curve.get();
     writeCurve(stream, curve, cluster, cluster->rgeGma(), fileField_->separator());
 }
 

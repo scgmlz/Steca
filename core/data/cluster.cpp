@@ -168,3 +168,10 @@ Curve Cluster::segmentalDfgram(int i, int n) const
     ASSERT(n == gSession->gammaSelection().numSlices.val());
     return algo::projectCluster(*this, rgeGma().slice(i,n));
 }
+
+GammaSector& Cluster::currentGammaSector()
+{
+    return gSectors.get(
+        gSession->gammaSelection().currSlice.val()-1,
+        gSession->gammaSelection().numSlices.val()    );
+}

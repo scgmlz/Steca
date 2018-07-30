@@ -105,6 +105,7 @@ public:
     Curve segmentalDfgram(int, int) const;
 
     CachingVector<Cluster, GammaSector> gSectors; //! One Curve per gamma section
+    GammaSector& currentGammaSector();
 
 private:
     const class Datafile& file_;
