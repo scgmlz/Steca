@@ -31,34 +31,40 @@ void ActiveClusters::appendHere(Cluster* cluster)
     invalidateAvgMutables();
 }
 
+#define ACTIVE_AVG(target, what_function)                     \
+    if (qIsNaN(avgMonitorCount_)) {                           \
+        double sum = 0;                                       \
+        int cnt = 0;                                          \
+        for (Cluster const* cluster : clusters_) {            \
+            double avg = 0;                                   \
+            for (const Measurement* one : cluster->members()) \
+                avg += one->what_function();                  \
+            sum += avg;                                       \
+            cnt += cluster->count();                          \
+        }                                                     \
+        target = sum/cnt;                                     \
+        qDebug() << "recomputed" << #target << ":" << target; \
+    }                                                         \
+    return target;
+
 double ActiveClusters::avgMonitorCount() const
 {
-    if (qIsNaN(avgMonitorCount_)) {
-        avgMonitorCount_ = calcAvgMutable(&Cluster::avgMonitorCount);
-        qDebug() << "recomputed avgMonitorCount: " << avgMonitorCount_;
-    }
-    return avgMonitorCount_;
+    ACTIVE_AVG(avgMonitorCount_, monitorCount);
 }
 
 double ActiveClusters::avgDeltaMonitorCount() const
 {
-    if (qIsNaN(avgDeltaMonitorCount_))
-        avgDeltaMonitorCount_ = calcAvgMutable(&Cluster::avgDeltaMonitorCount);
-    return avgDeltaMonitorCount_;
+    ACTIVE_AVG(avgDeltaMonitorCount_, deltaMonitorCount);
 }
 
 double ActiveClusters::avgTime() const
 {
-    if (qIsNaN(avgTime_))
-        avgTime_ = calcAvgMutable(&Cluster::avgTime);
-    return avgTime_;
+    ACTIVE_AVG(avgTime_, time);
 }
 
 double ActiveClusters::avgDeltaTime() const
 {
-    if (qIsNaN(avgDeltaTime_))
-        avgDeltaTime_ = calcAvgMutable(&Cluster::avgDeltaTime);
-    return avgDeltaTime_;
+    ACTIVE_AVG(avgDeltaTime_, deltaTime);
 }
 
 const Range& ActiveClusters::rgeGma() const
@@ -107,15 +113,4 @@ void ActiveClusters::computeAvgCurve() const
             group.push_back(one);
     const Sequence seq(group);
     avgCurve_ = algo::projectCluster(seq, seq.rgeGma());
-}
-
-double ActiveClusters::calcAvgMutable(double (Cluster::*avgFct)() const) const
-{
-    double sum = 0;
-    int cnt = 0;
-    for (Cluster const* cluster : clusters_) {
-        sum += ((*cluster).*avgFct)() * cluster->count();
-        cnt += cluster->count();
-    }
-    return sum/cnt;
 }

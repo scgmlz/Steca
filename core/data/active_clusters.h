@@ -31,10 +31,12 @@ public:
 
     const std::vector<Cluster*>& clusters() const { return clusters_; }
     int size() const { return clusters_.size(); }
+
     double avgMonitorCount() const;
     double avgDeltaMonitorCount() const;
     double avgTime() const;
     double avgDeltaTime() const;
+
     const Range& rgeGma() const;
     const Range& rgeFixedInten(bool trans, bool cut) const;
     Curve avgCurve() const;
@@ -43,7 +45,6 @@ public:
 
 private:
     void computeAvgCurve() const;
-    double calcAvgMutable(double (Cluster::*avgFct)() const) const;
 
     std::vector<Cluster*> clusters_;
 
