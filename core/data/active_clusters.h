@@ -31,7 +31,6 @@ public:
 
     const std::vector<Cluster*>& clusters() const { return clusters_; }
     int size() const { return clusters_.size(); }
-    size2d imageSize() const;
     double avgMonitorCount() const;
     double avgDeltaMonitorCount() const;
     double avgTime() const;

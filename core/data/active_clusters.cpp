@@ -31,14 +31,6 @@ void ActiveClusters::appendHere(Cluster* cluster)
     invalidateAvgMutables();
 }
 
-size2d ActiveClusters::imageSize() const
-{
-    if (clusters_.empty())
-        return size2d(0, 0);
-    // all images have the same size; simply take the first one
-    return clusters_.front()->imageSize();
-}
-
 double ActiveClusters::avgMonitorCount() const
 {
     if (qIsNaN(avgMonitorCount_)) {
