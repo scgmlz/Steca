@@ -121,12 +121,12 @@ GammaSector::GammaSector(const Cluster* const o, int i, int n)
 
 void GammaSector::init()
 {
-    QObject::connect(gSession, &Session::sigDetector, [this]() { qDebug() << "GS: curve invalidate";  qDebug() << "... cache at" << &*curve.cached_; curve.invalidate(); });
+    QObject::connect(gSession, &Session::sigDetector, [this]() { curve.invalidate(); });
 }
 
 Curve recomputeSectorDfgram(const GammaSector* const gSector)
 {
-    qDebug() << "recompute dfgram" << gSector->owningCluster_->index() << "for sector i,n =" << gSector->i_ << gSector->n_;
+    // qDebug() << "recompute dfgram" << gSector->owningCluster_->index() << "for sector i,n =" << gSector->i_ << gSector->n_;
     return gSector->owningCluster_->segmentalDfgram(gSector->i_, gSector->n_);
 }
 
