@@ -16,8 +16,9 @@
 #define CLUSTER_H
 
 #include "core/typ/cached.h"
+#include "core/typ/dfgram.h"
 #include "core/raw/measurement.h"
-class Curve;
+class Dfgram;
 
 //! A group of one or more Measurement|s.
 
@@ -65,7 +66,7 @@ private:
 class Cluster;
 class GammaSector;
 
-Curve recomputeSectorDfgram(const GammaSector* gSector);
+Dfgram recomputeSectorDfgram(const GammaSector* gSector);
 
 class GammaSector {
 public:
@@ -73,21 +74,22 @@ public:
     GammaSector(const Cluster* const o, int i, int n) : owningCluster_(o), i_(i), n_(n) {}
     GammaSector(const GammaSector& rhs) = delete;
     GammaSector(GammaSector&& rhs)
-        : cachedCurve_(this, rhs.cachedCurve_)
+        : cachedDfgram_(this, rhs.cachedDfgram_)
         , owningCluster_(rhs.owningCluster_)
         , i_(rhs.i_), n_(rhs.n_)
     {}
 
     void init();
 
-    const Curve& curve() const { return cachedCurve_.get(); }
+    const Dfgram& dfgram() const { return cachedDfgram_.get(); }
+    const Curve& curve() const { return cachedDfgram_.get().curve; }
 
 private:
-    CachedPayload<GammaSector, Curve, recomputeSectorDfgram> cachedCurve_;
+    CachedPayload<GammaSector, Dfgram, recomputeSectorDfgram> cachedDfgram_;
     const Cluster* const owningCluster_;
     int i_;
     int n_;
-    friend Curve recomputeSectorDfgram(const GammaSector* const gSector);
+    friend Dfgram recomputeSectorDfgram(const GammaSector* const gSector);
 };
 
 //! A group of one or more Measurement's, with associated information.
@@ -107,9 +109,9 @@ public:
     int totalOffset() const;
     bool isIncomplete() const;
     bool isActivated() const { return activated_; }
-    Curve segmentalDfgram(int, int) const;
+    Dfgram segmentalDfgram(int, int) const;
 
-    CachingVector<Cluster, GammaSector> gSectors; //! One Curve per gamma section
+    CachingVector<Cluster, GammaSector> gSectors; //! One Dfgram per gamma section
     GammaSector& currentGammaSector() const;
 
 private:

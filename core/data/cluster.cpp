@@ -114,10 +114,10 @@ double Sequence::normFactor() const
 
 void GammaSector::init()
 {
-    QObject::connect(gSession, &Session::sigDetector, [this]() { cachedCurve_.invalidate(); });
+    QObject::connect(gSession, &Session::sigDetector, [this]() { cachedDfgram_.invalidate(); });
 }
 
-Curve recomputeSectorDfgram(const GammaSector* const gSector)
+Dfgram recomputeSectorDfgram(const GammaSector* const gSector)
 {
     // qDebug() << "recompute dfgram" << gSector->owningCluster_->index() << "for sector i,n =" << gSector->i_ << gSector->n_;
     return gSector->owningCluster_->segmentalDfgram(gSector->i_, gSector->n_);
@@ -156,10 +156,10 @@ bool Cluster::isIncomplete() const
     return count() < gSession->dataset().binning.val();
 }
 
-Curve Cluster::segmentalDfgram(int i, int n) const
+Dfgram Cluster::segmentalDfgram(int i, int n) const
 {
     ASSERT(n == gSession->gammaSelection().numSlices.val());
-    return algo::projectCluster(*this, rgeGma().slice(i,n));
+    return Dfgram(algo::projectCluster(*this, rgeGma().slice(i,n)));
 }
 
 GammaSector& Cluster::currentGammaSector() const
