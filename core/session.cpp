@@ -35,10 +35,7 @@ Session::Session()
     geometry().fromSettings();
     interpol().fromSettings();
 
-    connect(this, &Session::sigDetector, [this]() {
-            angleMap_.invalidate();
-            qDebug()<<"SIG DETECTOR";
-        });
+    connect(this, &Session::sigDetector, [this]() { angleMap_.invalidate(); });
 }
 
 Session::~Session()

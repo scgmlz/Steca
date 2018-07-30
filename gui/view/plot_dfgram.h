@@ -53,15 +53,21 @@ private:
 
     Dfgram& diffractogram_;
 
-    QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *dgramBgFittedGraph2_, *guesses_,
-        *fits_;
+    QCPGraph *bgGraph_;
+    QCPGraph *dgramGraph_;
+    QCPGraph *dgramBgFittedGraph_;
+    QCPGraph *dgramBgFittedGraph2_;
+    QCPGraph *guesses_;
+    QCPGraph *fits_;
     std::vector<QCPGraph*> reflGraph_;
     PlotDfgramOverlay* overlay_;
 
     void calcDfgram();
     void calcBackground();
     void calcPeaks();
-    Curve dgram_, dgramBgFitted_, bg_;
+    Curve dgram_;
+    Curve dgramBgFitted_;
+    Curve bg_;
     curve_vec refls_;
     int currReflIndex_ {0};
 };
