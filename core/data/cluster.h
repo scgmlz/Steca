@@ -72,8 +72,10 @@ public:
     GammaSector(const Cluster* const o, int i, int n);
     GammaSector(const GammaSector& rhs) = delete;
     GammaSector(GammaSector&& rhs)
-        : cachedCurve_(this), owningCluster_(rhs.owningCluster_), i_(rhs.i_), n_(rhs.n_) {
-        cachedCurve_.swapPayload(rhs.cachedCurve_); }
+        : cachedCurve_(this, rhs.cachedCurve_)
+        , owningCluster_(rhs.owningCluster_)
+        , i_(rhs.i_), n_(rhs.n_)
+    {}
 
     void init();
 

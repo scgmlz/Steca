@@ -39,17 +39,3 @@ TEST(Caches, OneLevel) {
 
     EXPECT_EQ(6, e.cache.get().x);
 }
-
-TEST(Caches, Move) {
-    xx = 11;
-
-    Entry e;
-    EXPECT_EQ(11, e.cache.get().x);
-
-    Entry e2;
-    e2.cache.swapPayload(e.cache);
-    EXPECT_EQ(11, e2.cache.get().x);
-    EXPECT_EQ(12, e.cache.get().x);
-    EXPECT_EQ(11, e2.cache.get().x);
-    EXPECT_EQ(12, e.cache.get().x);
-}

@@ -37,6 +37,7 @@ private:
     bool valid_ {false};
 };
 
+
 //! Cached object with key.
 template<typename T, typename K>
 class KeyedCache {
@@ -54,12 +55,14 @@ private:
     K key_;
 };
 
+
 //! Element of CachingVector.
 template<typename Owner, typename E, E(*recompute)(const Owner* const)>
 class CachedPayload {
 public:
     CachedPayload() = delete;
     CachedPayload(const Owner* const o) : owner_(o) {}
+    CachedPayload(const Owner* const o, CachedPayload& c) : owner_(o) { payload_.swap(c.payload_); }
     CachedPayload(const CachedPayload&) = delete;
     void invalidate() { payload_.reset(nullptr); }
     E& get() {
@@ -67,11 +70,11 @@ public:
             payload_ = std::make_unique<E>(recompute(owner_));
         return *payload_;
     }
-    void swapPayload(CachedPayload& rhs) { payload_.swap(rhs.payload_); }
 private:
     std::unique_ptr<E> payload_;
     const Owner* const owner_;
 };
+
 
 //! Vector of individually cached objects.
 template<typename Owner, typename T>
