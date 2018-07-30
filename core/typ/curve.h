@@ -27,7 +27,6 @@ public:
 
     bool isEmpty() const;
     int count() const;
-    bool isOrdered() const;
 
     // access to underlying data vectors
     const std::vector<double>& xs() const { return xs_; }

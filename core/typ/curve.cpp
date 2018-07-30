@@ -35,13 +35,10 @@ int Curve::count() const
     return xs_.size();
 }
 
-bool Curve::isOrdered() const
-{
-    return std::is_sorted(xs_.cbegin(), xs_.cend());
-}
-
 void Curve::append(double x, double y)
 {
+    if (!xs_.empty() && x<=xs_.back())
+        qFatal("diffractogram data are not ordered");
     xs_.push_back(x);
     ys_.push_back(y);
     rgeX_.extendBy(x);
@@ -52,7 +49,6 @@ Curve Curve::intersect(const Range& range) const
 {
     if (range.isEmpty())
         return {};
-    ASSERT(isOrdered());
     Curve ret;
     int xi = 0;
     const int cnt = count();
@@ -72,7 +68,6 @@ Curve Curve::intersect(const Range& range) const
 Curve Curve::intersect(const Ranges& ranges) const
 {
     Curve ret;
-    ASSERT(isOrdered());
     int xi = 0, cnt = count();
     for_i (ranges.count()) {
         const Range& range = ranges.at(i);
