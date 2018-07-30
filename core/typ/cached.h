@@ -56,20 +56,20 @@ private:
 
 //! Element of CachingVector.
 template<typename Owner, typename E, E(*recompute)(const Owner* const)>
-class CachedElement {
+class CachedPayload {
 public:
-    CachedElement() = delete;
-    CachedElement(const Owner* const o) : owner_(o) {}
-    CachedElement(const CachedElement&) = delete;
-    void invalidate() { cached_.reset(nullptr); }
+    CachedPayload() = delete;
+    CachedPayload(const Owner* const o) : owner_(o) {}
+    CachedPayload(const CachedPayload&) = delete;
+    void invalidate() { payload_.reset(nullptr); }
     E& get() {
-        if (!cached_)
-            cached_ = std::make_unique<E>(recompute(owner_));
-        return *cached_;
+        if (!payload_)
+            payload_ = std::make_unique<E>(recompute(owner_));
+        return *payload_;
     }
-    void swapPayload(CachedElement& rhs) { cached_.swap(rhs.cached_); }
-    std::unique_ptr<E> cached_; // TODO make private again
+    void swapPayload(CachedPayload& rhs) { payload_.swap(rhs.payload_); }
 private:
+    std::unique_ptr<E> payload_;
     const Owner* const owner_;
 };
 

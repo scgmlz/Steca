@@ -18,7 +18,7 @@ Payload recompute1(const Entry* const e)
 
 class Entry {
 public:
-    CachedElement<Entry, Payload, recompute1> cache {this};
+    CachedPayload<Entry, Payload, recompute1> cache {this};
 private:
     friend Payload recompute1(const Entry* const e);
 };

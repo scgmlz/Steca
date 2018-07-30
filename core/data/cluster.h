@@ -77,7 +77,7 @@ public:
 
     void init();
 
-    CachedElement<GammaSector, Curve, recomputeSectorDfgram> curve;
+    CachedPayload<GammaSector, Curve, recomputeSectorDfgram> curve;
     const Cluster* const owningCluster_;
     int i_;
     int n_;
