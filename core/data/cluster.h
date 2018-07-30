@@ -79,7 +79,7 @@ public:
 
     void init();
 
-    const Curve& curve() { return cachedCurve_.get(); }
+    const Curve& curve() const { return cachedCurve_.get(); }
 
 private:
     CachedPayload<GammaSector, Curve, recomputeSectorDfgram> cachedCurve_;
@@ -109,7 +109,7 @@ public:
     Curve segmentalDfgram(int, int) const;
 
     CachingVector<Cluster, GammaSector> gSectors; //! One Curve per gamma section
-    GammaSector& currentGammaSector();
+    GammaSector& currentGammaSector() const;
 
 private:
     const class Datafile& file_;

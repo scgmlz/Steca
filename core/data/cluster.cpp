@@ -161,7 +161,7 @@ Curve Cluster::segmentalDfgram(int i, int n) const
     return algo::projectCluster(*this, rgeGma().slice(i,n));
 }
 
-GammaSector& Cluster::currentGammaSector()
+GammaSector& Cluster::currentGammaSector() const
 {
     return gSectors.get(
         gSession->gammaSelection().currSlice.val()-1,

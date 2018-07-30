@@ -64,7 +64,7 @@ public:
     CachedPayload(const Owner* const o, CachedPayload& c) : owner_(o) { payload_.swap(c.payload_); }
     CachedPayload(const CachedPayload&) = delete;
     void invalidate() { payload_.reset(nullptr); }
-    E& get() {
+    E& get() const {
         if (!owner_)
             qFatal("CachedPayload::get called before owner was set; missing Payload::init()?");
         if (!payload_)
@@ -72,7 +72,7 @@ public:
         return *payload_;
     }
 private:
-    std::unique_ptr<E> payload_;
+    mutable std::unique_ptr<E> payload_;
     const Owner* const owner_ {nullptr};
 };
 
@@ -84,7 +84,7 @@ public:
     CachingVector() = delete;
     CachingVector(const Owner* const o) : owner_(o) {}
     CachingVector(const CachingVector&) = delete;
-    void resize(int n) {
+    void resize(int n) const {
         if (n==data_.size())
             return;
         data_.clear();
@@ -93,14 +93,14 @@ public:
             data_.back()->init();
         }
     }
-    T& get(int i, int n) {
+    T& get(int i, int n) const {
         if (n!=data_.size())
             resize(n);
         return *data_.at(i);
     }
 private:
     const Owner* const owner_;
-    std::vector<std::unique_ptr<T>> data_;
+    mutable std::vector<std::unique_ptr<T>> data_;
 };
 
 #endif // CACHED_H
