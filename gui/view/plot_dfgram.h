@@ -66,7 +66,7 @@ private:
     Curve dgram_;
     Curve dgramBgFitted_;
     Curve bg_;
-    curve_vec refls_;
+    std::vector<Curve> refls_;
     int currReflIndex_ {0};
 };
 

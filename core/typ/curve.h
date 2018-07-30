@@ -23,7 +23,6 @@
 class Curve {
 public:
     void clear();
-    void recompute() { qFatal("NONSENSE"); }
     void append(double x, double y);
 
     bool isEmpty() const;
@@ -52,7 +51,5 @@ private:
     std::vector<double> xs_, ys_;
     Range rgeX_, rgeY_;
 };
-
-typedef std::vector<Curve> curve_vec; // TODO rm
 
 #endif // CURVE_H
