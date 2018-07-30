@@ -72,16 +72,18 @@ public:
     GammaSector(const Cluster* const o, int i, int n);
     GammaSector(const GammaSector& rhs) = delete;
     GammaSector(GammaSector&& rhs)
-        : curve(this), owningCluster_(rhs.owningCluster_), i_(rhs.i_), n_(rhs.n_) {
-        curve.swapPayload(rhs.curve); }
+        : cachedCurve(this), owningCluster_(rhs.owningCluster_), i_(rhs.i_), n_(rhs.n_) {
+        cachedCurve.swapPayload(rhs.cachedCurve); }
 
     void init();
 
-    CachedPayload<GammaSector, Curve, recomputeSectorDfgram> curve;
+    const Curve& curve() { return cachedCurve.get(); }
+
+    CachedPayload<GammaSector, Curve, recomputeSectorDfgram> cachedCurve;
+private:
     const Cluster* const owningCluster_;
     int i_;
     int n_;
-private:
     friend Curve recomputeSectorDfgram(const GammaSector* const gSector);
 };
 
