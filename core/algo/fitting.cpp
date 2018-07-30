@@ -75,7 +75,7 @@ void algo::rawFits(class QProgressBar* progressBar)
         qFatal("algo::rawFits called while no peak is selected");
 
     PeakInfos tmp;
-    const ActiveClusters& seq = gSession->dataset().activeClusters();
+    const ActiveClusters& seq = gSession->activeClusters();
     Progress progress(progressBar, "peak fitting", seq.size());
     int nGamma = qMax(1, gSession->gammaSelection().numSlices.val());
     for (Cluster* cluster : seq.clusters()) {

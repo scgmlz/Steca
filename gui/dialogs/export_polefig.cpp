@@ -148,7 +148,7 @@ void ExportPolefig::saveCurrent()
 /*
 void ExportPolefig::saveAll(bool oneFile)
 {
-    const ActiveClusters& expt = gSession->dataset().activeClusters();
+    const ActiveClusters& expt = gSession->activeClusters();
     // In one-file mode, start output stream; in multi-file mode, only do prepations.
     QString path = fileField_->path(true, !oneFile);
     if (path.isEmpty())

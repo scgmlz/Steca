@@ -80,7 +80,7 @@ size2d Sequence::imageSize() const
 double Sequence::normFactor() const
 {
     double num = 1, den = 1; // numerator, denominator
-    const ActiveClusters& seq = gSession->dataset().activeClusters();
+    const ActiveClusters& seq = gSession->activeClusters();
 
     switch (gSession->normMode()) {
     case eNorm::MONITOR:
