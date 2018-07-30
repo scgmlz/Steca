@@ -199,11 +199,7 @@ void Dataset::updateClusters()
 
 void Dataset::updateActiveClusters()
 {
-    activeClusters_ = {};
-    for (const auto& cluster : allClusters_) {
-        if (cluster->isActivated())
-            activeClusters_.appendHere(cluster.get());
-    }
+    activeClusters_.reset(allClusters_);
 }
 
 QJsonObject Dataset::toJson() const

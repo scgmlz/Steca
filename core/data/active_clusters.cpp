@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "active_clusters.h"
+#include "core/session.h"
 #include "core/algo/collect_intensities.h"
 #include "core/calc/lens.h"
 #include "core/data/cluster.h"
@@ -20,15 +21,21 @@
 #include "qcr/base/debug.h"
 
 ActiveClusters::ActiveClusters()
+    : avgCurve(this)
 {
     invalidateAvgMutables();
 }
 
-void ActiveClusters::appendHere(Cluster* cluster)
+void ActiveClusters::reset(std::vector<std::unique_ptr<Cluster>>& allClusters)
 {
-    // can be added only once
-    clusters_.push_back(cluster);
+    clusters_.clear();
+    for (const auto& pCluster : allClusters) {
+        if (pCluster->isActivated())
+            clusters_.push_back(pCluster.get());
+    }
     invalidateAvgMutables();
+    avgCurve.invalidate();
+    QObject::connect(gSession, &Session::sigDetector, [=]() { avgCurve.invalidate(); });
 }
 
 #define ACTIVE_AVG(target, what_function)                     \
@@ -36,10 +43,8 @@ void ActiveClusters::appendHere(Cluster* cluster)
         double sum = 0;                                       \
         int cnt = 0;                                          \
         for (Cluster const* cluster : clusters_) {            \
-            double avg = 0;                                   \
             for (const Measurement* one : cluster->members()) \
-                avg += one->what_function();                  \
-            sum += avg;                                       \
+                sum += one->what_function();                  \
             cnt += cluster->count();                          \
         }                                                     \
         target = sum/cnt;                                     \
@@ -86,16 +91,6 @@ const Range& ActiveClusters::rgeFixedInten(bool trans, bool cut) const
     return rgeFixedInten_;
 }
 
-//! Returns cached avgCurve_; recomputes if empty.
-Curve ActiveClusters::avgCurve() const
-{
-    if (avgCurve_.isEmpty()) {
-        TakesLongTime __("avgCurve");
-        computeAvgCurve();
-    }
-    return avgCurve_;
-}
-
 void ActiveClusters::invalidateAvgMutables() const
 {
     avgMonitorCount_ = avgDeltaMonitorCount_ = avgDeltaTime_ = Q_QNAN;
@@ -105,12 +100,15 @@ void ActiveClusters::invalidateAvgMutables() const
 }
 
 //! Computes cached avgCurve_.
-void ActiveClusters::computeAvgCurve() const
+Curve computeAvgCurve(const ActiveClusters*const ac)
 {
+    TakesLongTime __("computeAvgCurve");
+    // flatten Cluster-Measurement hierarchy into one Sequence
     std::vector<const Measurement*> group;
-    for (Cluster const* cluster : clusters_)
+    for (Cluster const* cluster : ac->clusters())
         for (const Measurement* one: cluster->members())
             group.push_back(one);
     const Sequence seq(group);
-    avgCurve_ = algo::projectCluster(seq, seq.rgeGma());
+    // then compute the dfgram
+    return algo::projectCluster(seq, seq.rgeGma());
 }

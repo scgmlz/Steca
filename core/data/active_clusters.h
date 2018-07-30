@@ -15,9 +15,13 @@
 #ifndef ACTIVE_CLUSTERS_H
 #define ACTIVE_CLUSTERS_H
 
+#include "core/typ/cached.h"
 #include "core/typ/curve.h"
 
 class Cluster;
+class ActiveClusters;
+
+Curve computeAvgCurve(const ActiveClusters*const);
 
 //! The list of activated Cluster|s, and cached averages
 
@@ -25,7 +29,7 @@ class ActiveClusters {
 public:
     ActiveClusters();
 
-    void appendHere(Cluster*);
+    void reset(std::vector<std::unique_ptr<Cluster>>& allClusters);
 
     const std::vector<Cluster*>& clusters() const { return clusters_; }
     int size() const { return clusters_.size(); }
@@ -37,16 +41,15 @@ public:
 
     const Range& rgeGma() const;
     const Range& rgeFixedInten(bool trans, bool cut) const;
-    Curve avgCurve() const;
 
     void invalidateAvgMutables() const;
 
-private:
-    void computeAvgCurve() const;
+    CachedPayload<ActiveClusters, Curve, computeAvgCurve> avgCurve;
 
+private:
     std::vector<Cluster*> clusters_;
 
-    // computed on demand (NaNs or emptiness indicate yet unknown values)
+    // computed on demand (NaNs or emptiness indicate yet unknown values) // TODO use cached.h
     mutable double avgMonitorCount_;
     mutable double avgDeltaMonitorCount_;
     mutable double avgTime_;
