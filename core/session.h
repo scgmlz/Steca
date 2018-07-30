@@ -112,10 +112,12 @@ public:
     // const methods:
     QByteArray serializeSession() const;
 
+    size2d imageSize() const;
+
+    // const abbreviations to member member calls
     bool hasData() const { return dataset().countFiles(); }
     bool hasCorrFile() const { return corrset().hasFile(); }
-
-    size2d imageSize() const;
+    const ActiveClusters& activeClusters() const { return dataset().activeClusters(); }
 
     ParamWrapper<bool> intenScaledAvg {true}; // if not, summed
     ParamWrapper<double> intenScale {1};
