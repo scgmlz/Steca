@@ -126,7 +126,7 @@ void GammaSector::init()
 
 Curve recomputeSectorDfgram(const GammaSector* const gSector)
 {
-    qDebug() << "recompute sector dfgram for i,n =" << gSector->i_ << gSector->n_;
+    qDebug() << "recompute dfgram" << gSector->owningCluster_->index() << "for sector i,n =" << gSector->i_ << gSector->n_;
     return gSector->owningCluster_->segmentalDfgram(gSector->i_, gSector->n_);
 }
 

@@ -46,8 +46,6 @@ QcrDialog::QcrDialog(QWidget* parent, const QString& caption)
 
 QcrDialog::~QcrDialog()
 {
-    qDebug() << "~QcrDialog";
-    gConsole->log("dlog closing");
 }
 
 int QcrDialog::exec()
@@ -83,7 +81,6 @@ QcrFileDialog::QcrFileDialog(
 
 QcrFileDialog::~QcrFileDialog()
 {
-    qDebug() << "~QcrFileDialog";
     gConsole->log("fdia select "+selectedFiles().join(';'));
 }
 

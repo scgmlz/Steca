@@ -37,6 +37,7 @@ QTextStream qterr(stderr);
 class CommandRegistry {
 public:
     CommandRegistry() = delete;
+    CommandRegistry(const CommandRegistry&) = delete;
     CommandRegistry(const QString& _name) : name_(_name) {}
     QString learn(const QString&, QcrSettable*);
     void forget(const QString&);
@@ -51,6 +52,7 @@ private:
 
 QString CommandRegistry::learn(const QString& name, QcrSettable* widget)
 {
+    // qterr << "Registry " << name_ << " learns '" << name << "'\n"; qterr.flush();
     QString ret = name;
     if (ret.contains("#")) {
         auto numberedEntry = numberedEntries_.find(name);
@@ -71,6 +73,7 @@ QString CommandRegistry::learn(const QString& name, QcrSettable* widget)
 
 void CommandRegistry::forget(const QString& name)
 {
+    // qterr << "Registry " << name_ << " forgets '" << name << "'\n"; qterr.flush();
     auto it = widgets_.find(name);
     if (it==widgets_.end()) {
         QByteArray tmp1 = name.toLatin1();
@@ -94,6 +97,7 @@ void CommandRegistry::dump(QTextStream& stream)
     stream << "commands:\n";
     for (auto it: widgets_)
         stream << " " << it.first << "\n";
+    stream.flush();
 }
 
 //  ***********************************************************************************************
@@ -158,7 +162,7 @@ void Console::readFile(const QString& fName)
         if (line[0]=='[') {
             int i = line.indexOf(']');
             if (i==-1) {
-                qterr << "unbalanced '['\n";
+                qterr << "unbalanced '['\n"; qterr.flush();
                 return;
             }
             line = line.mid(i+1);
@@ -205,36 +209,39 @@ Console::Result Console::exec(QString line)
         log(line);
         if (cmd=="@ls") {
             qterr << "registry " << registryStack_.top()->name() << " has commands:\n";
+            qterr.flush();
             registryStack_.top()->dump(qterr);
         } else if (cmd=="@pop") {
             if (registryStack_.empty()) {
-                qterr << "cannot pop: registry stack is empty\n";
+                qterr << "cannot pop: registry stack is empty\n"; qterr.flush();
                 return Result::err;
             }
             qterr << "going to pop registry " << registryStack_.top()->name() << "\n";
+            qterr.flush();
             delete registryStack_.top();
             registryStack_.pop();
             qterr << "top registry is now " << registryStack_.top()->name() << "\n";
+            qterr.flush();
         } else if (cmd=="@file") {
             readFile(arg);
         } else if (cmd=="@close") {
             return Result::suspend;
         } else {
-            qterr << "@ command " << cmd << " not known\n";
+            qterr << "@ command " << cmd << " not known\n"; qterr.flush();
             return Result::err;
         }
         return Result::ok;
     }
     QcrSettable* f = registry().find(cmd);
     if (!f) {
-        qterr << "Command '" << cmd << "' not found\n";
+        qterr << "Command '" << cmd << "' not found\n"; qterr.flush();
         return Result::err;
     }
     try {
         f->executeConsoleCommand(arg); // execute command
         return Result::ok;
     } catch (QcrException &ex) {
-        qterr << "Command '" << line << "' failed:\n" << ex.msg() << "\n";
+        qterr << "Command '" << line << "' failed:\n" << ex.msg() << "\n"; qterr.flush();
     }
     return Result::err;
 }

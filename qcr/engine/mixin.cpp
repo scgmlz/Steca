@@ -72,8 +72,12 @@ QcrSettable::QcrSettable(QObject& object, const QString& name, bool _modal)
 
 QcrSettable::~QcrSettable()
 {
-    if (!modal_)
+    /* TODO ???
+    if (!modal_) {
+        qDebug() << "~QcrSettable calling forget " << name();
         gConsole->forget(name());
+    }
+    */
 }
 
 void QcrSettable::doLog(bool softwareCalled, const QString& msg)
@@ -83,7 +87,7 @@ void QcrSettable::doLog(bool softwareCalled, const QString& msg)
 
 
 //  ***********************************************************************************************
-//! @class QcrModelessDialog
+//! @class QcrModelessDialog (= persistent spawned popup)
 
 QcrModelessDialog::QcrModelessDialog(QWidget* parent, const QString& name)
     : QDialog {parent}
