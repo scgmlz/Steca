@@ -47,14 +47,15 @@ public:
     double normFactor() const;
 
     const Metadata& avgMetadata() const { return metadata_; }
+
+    size2d imageSize() const;
+
+private:
     double avgMonitorCount() const;
     double avgDeltaMonitorCount() const;
     double avgTime() const;
     double avgDeltaTime() const;
 
-    size2d imageSize() const;
-
-private:
     const std::vector<const Measurement*> members_; //!< points to Dataset:vec<Datafile>:vec<M'ments>
     const Metadata metadata_; //!< averaged Metadata
 
