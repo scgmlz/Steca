@@ -24,17 +24,18 @@
 template<typename T>
 class Cached {
 public:
-    void invalidate() { valid_ = false; }
-    const T& get() {
-        if (!valid_) {
-            cached_.recompute();
-            valid_ = true;
-        }
-        return cached_;
+    Cached() = delete;
+    Cached(const Cached&) = delete;
+    Cached(std::function<T(void)> f) : remake_(f) {}
+    void invalidate() const { cached_.release(); }
+    const T& get() const {
+        if (!cached_)
+            cached_.reset( std::move(new T{remake_()}) );
+        return *cached_;
     }
 private:
-    T cached_;
-    bool valid_ {false};
+    mutable std::unique_ptr<T> cached_;
+    const std::function<T(void)> remake_;
 };
 
 
@@ -42,39 +43,17 @@ private:
 template<typename T, typename K>
 class KeyedCache {
 public:
-    void invalidate() { cached_.release(); }
-    const T& get(const K key) {
+    void invalidate() const { cached_.release(); }
+    const T& get(const K key) const {
         if (!cached_ || key!=key_) {
-            cached_ = std::make_unique<T>(T(key));
+            cached_.reset( std::move(new T(key)) );
             key_ = key;
         }
         return *cached_;
     }
 private:
-    std::unique_ptr<T> cached_;
-    K key_;
-};
-
-
-//! Element of CachingVector.
-template<typename Owner, typename E, E(*recompute)(const Owner* const)>
-class CachedPayload {
-public:
-    CachedPayload() = default;
-    CachedPayload(const Owner* const o) : owner_(o) {}
-    CachedPayload(const Owner* const o, CachedPayload& c) : owner_(o) { payload_.swap(c.payload_); }
-    CachedPayload(const CachedPayload&) = delete;
-    void invalidate() { payload_.reset(nullptr); }
-    E& get() const {
-        if (!owner_)
-            qFatal("CachedPayload::get called before owner was set; missing Payload::init()?");
-        if (!payload_)
-            payload_ = std::make_unique<E>(recompute(owner_));
-        return *payload_;
-    }
-private:
-    mutable std::unique_ptr<E> payload_;
-    const Owner* const owner_ {nullptr};
+    mutable std::unique_ptr<T> cached_;
+    mutable K key_;
 };
 
 
@@ -100,10 +79,8 @@ private:
         if (n==data_.size())
             return;
         data_.clear();
-        for (int i=0; i<n; ++i) {
-            data_.push_back(std::make_unique<T>(T(this, i)));
-            data_.back()->init();
-        }
+        for (int i=0; i<n; ++i)
+            data_.push_back(std::unique_ptr<T>(std::move(new T(this, i))));
     }
     const std::function<int()> nFct_;
     mutable std::vector<std::unique_ptr<T>> data_;

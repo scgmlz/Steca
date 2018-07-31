@@ -20,12 +20,6 @@
 #include "core/typ/async.h"
 #include "qcr/base/debug.h"
 
-ActiveClusters::ActiveClusters()
-    : avgCurve(this)
-{
-    invalidateAvgMutables();
-}
-
 void ActiveClusters::reset(std::vector<std::unique_ptr<Cluster>>& allClusters)
 {
     clusters_.clear();

@@ -27,7 +27,10 @@ Curve computeAvgCurve(const ActiveClusters*const);
 
 class ActiveClusters {
 public:
-    ActiveClusters();
+    ActiveClusters()
+        : avgCurve( [this]()->Curve{ return computeAvgCurve(this); } )
+        { invalidateAvgMutables(); }
+    ActiveClusters(const ActiveClusters&) = delete;
 
     void reset(std::vector<std::unique_ptr<Cluster>>& allClusters);
 
@@ -44,7 +47,7 @@ public:
 
     void invalidateAvgMutables() const;
 
-    CachedPayload<ActiveClusters, Curve, computeAvgCurve> avgCurve;
+    Cached<Curve> avgCurve;
 
 private:
     std::vector<Cluster*> clusters_;

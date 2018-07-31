@@ -9,18 +9,9 @@ public:
 
 static int xx;
 
-class Entry;
-
-Payload recompute1(const Entry* const e)
-{
-    return xx++;
-}
-
 class Entry {
 public:
-    CachedPayload<Entry, Payload, recompute1> cache;
-private:
-    friend Payload recompute1(const Entry* const e);
+    Cached<Payload> cache{ []()->Payload{ return {xx++}; } };
 };
 
 TEST(Caches, OneLevel) {
