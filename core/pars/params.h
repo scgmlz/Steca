@@ -32,6 +32,8 @@ enum class eNorm {
 
 class Params {
 public:
+    void clear() { *this = {}; }
+
     Detector             detector;
     ImageTransform       imageTransform;
     ImageCut             imageCut;

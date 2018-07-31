@@ -59,10 +59,7 @@ void Session::clear()
     baseline_.clear();
     peaks_.clear();
 
-    normMode_ = eNorm::NONE;
-
-    params.intenScaledAvg.setVal(true);
-    params.intenScale.setVal(1);
+    params.clear();
 }
 
 void Session::sessionFromJson(const QByteArray& json)
