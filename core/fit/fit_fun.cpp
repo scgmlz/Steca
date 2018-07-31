@@ -18,7 +18,7 @@
 
 namespace {
 
-//! Compute a low power with an exponent of type int
+//! Computes a low integer power of x.
 static double pow_n(double x, int n)
 {
     double ret = 1;
