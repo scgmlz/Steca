@@ -49,8 +49,8 @@ void HighlightedData::setFile(int i)
 {
     if (i<0)
         return clear();
-    ASSERT(i<gSession->dataset().countFiles());
-    setCluster(gSession->dataset().fileAt(i).clusters_[0]->index());
+    ASSERT(i<gSession->dataset.countFiles());
+    setCluster(gSession->dataset.fileAt(i).clusters_[0]->index());
     ASSERT(i==current_->file().index_);
 }
 
@@ -58,13 +58,13 @@ void HighlightedData::setCluster(int i)
 {
     if (i<0)
         return clear();
-    ASSERT(i<gSession->dataset().countClusters());
-    current_ = &gSession->dataset().clusterAt(i);
+    ASSERT(i<gSession->dataset.countClusters());
+    current_ = &gSession->dataset.clusterAt(i);
 }
 
 void HighlightedData::reset()
 {
-    if (!gSession->dataset().countClusters())
+    if (!gSession->dataset.countClusters())
         return clear();
     setCluster(0);
 }

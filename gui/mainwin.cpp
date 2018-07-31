@@ -88,7 +88,7 @@ MainWin::MainWin()
 
     // TODO move this elsewhere
     triggers->removeFile.setRemake([=]() {
-            triggers->removeFile.setEnabled(gSession->dataset().countFiles()); });
+            triggers->removeFile.setEnabled(gSession->dataset.countFiles()); });
     triggers->corrFile.setRemake([=]() {
             bool hasCorr = gSession->hasCorrFile();
             triggers->corrFile.setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
@@ -199,7 +199,7 @@ void MainWin::addFiles()
         return;
     TakesLongTime __("addFiles");
     try {
-        gSession->dataset().addGivenFiles(fileNames);
+        gSession->dataset.addGivenFiles(fileNames);
     } catch (Exception ex) {
         qWarning() << ex.msg();
     }

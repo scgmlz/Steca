@@ -156,7 +156,7 @@ int Cluster::totalOffset() const
 
 bool Cluster::isIncomplete() const
 {
-    return count() < gSession->dataset().binning.val();
+    return count() < gSession->dataset.binning.val();
 }
 
 Dfgram Cluster::segmentalDfgram(int i) const

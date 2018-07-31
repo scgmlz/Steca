@@ -54,7 +54,7 @@ const PeakInfos& Session::peakInfos() const
 
 void Session::clear()
 {
-    dataset_.clear();
+    dataset.clear();
     corrset_.clear();
     baseline_.clear();
     peaks_.clear();
@@ -77,7 +77,7 @@ void Session::sessionFromJson(const QByteArray& json)
 
     JsonObj top(doc.object());
 
-    dataset().fromJson(top.loadObj("dataset"));
+    dataset.fromJson(top.loadObj("dataset"));
     corrset().fromJson(top.loadObj("corrset"));
     peaks().fromJson(top.loadArr("peaks"));
     baseline().fromJson(top.loadObj("baseline"));
@@ -97,7 +97,7 @@ QByteArray Session::serializeSession() const
 {
     QJsonObject top;
 
-    top.insert("dataset", dataset().toJson());
+    top.insert("dataset", dataset.toJson());
     top.insert("corrset", corrset().toJson());
     top.insert("peaks", peaks().toJson());
     top.insert("baseline", baseline().toJson());
@@ -127,7 +127,7 @@ void Session::setMetaSelected(int idx, bool on)
 
 void Session::updateImageSize()
 {
-    if (0 == dataset().countFiles() && !corrset().hasFile())
+    if (0 == dataset.countFiles() && !corrset().hasFile())
         imageSize_ = size2d(0, 0);
 }
 

@@ -173,7 +173,7 @@ void PlotDfgram::onPeakData()
     guesses_->clearData();
     fits_->clearData();
 
-    if (peak && gSession->dataset().highlight().cluster()) {
+    if (peak && gSession->dataset.highlight().cluster()) {
         const PeakFunction& fun = peak->peakFunction();
 
         const qpair gp = fun.guessedPeak();
@@ -212,7 +212,7 @@ void PlotDfgram::renderAll()
                   !showingBaseline && i==gSession->peaks().selectedIndex() ?
                   colors::peakEmph : colors::peakStd);
 
-    if (!gSession->dataset().highlight().cluster()) {
+    if (!gSession->dataset.highlight().cluster()) {
         plotEmpty();
         return;
     }
@@ -227,7 +227,7 @@ void PlotDfgram::renderAll()
     const Range& tthRange = curve0_.rgeX();
     Range intenRange;
     if (gGui->toggles->fixedIntenDfgram.getValue()) {
-        intenRange = gSession->dataset().highlight().cluster()->rgeInten();
+        intenRange = gSession->dataset.highlight().cluster()->rgeInten();
     } else {
         intenRange = dgramBgFitted_.rgeY();
         intenRange.extendBy(curve0_.rgeY());
@@ -276,7 +276,7 @@ void PlotDfgram::calcDfgram()
     if (gGui->toggles->combinedDfgram.getValue())
         curve0_ = gSession->activeClusters().avgDfgram.get().curve;
     else {
-        Cluster* cluster = gSession->dataset().highlight().cluster();
+        Cluster* cluster = gSession->dataset.highlight().cluster();
         ASSERT(cluster);
         curve0_ = cluster->currentGammaSector().curve();
     }

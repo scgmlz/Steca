@@ -31,12 +31,12 @@ public:
     enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
 
 private:
-    int highlighted() const final { return gSession->dataset().highlight().clusterIndex(); }
-    void setHighlight(int row) final { gSession->dataset().highlight().setCluster(row); }
-    bool activated(int row) const { return gSession->dataset().clusterAt(row).isActivated(); }
-    void setActivated(int row, bool on) { gSession->dataset().activateCluster(row, on); }
+    int highlighted() const final { return gSession->dataset.highlight().clusterIndex(); }
+    void setHighlight(int row) final { gSession->dataset.highlight().setCluster(row); }
+    bool activated(int row) const { return gSession->dataset.clusterAt(row).isActivated(); }
+    void setActivated(int row, bool on) { gSession->dataset.activateCluster(row, on); }
 
-    int rowCount() const final { return gSession->dataset().countClusters(); }
+    int rowCount() const final { return gSession->dataset.countClusters(); }
 
     QVariant data(const QModelIndex&, int) const final;
     QVariant headerData(int, Qt::Orientation, int) const final;
@@ -47,7 +47,7 @@ QVariant ActiveClustersModel::data(const QModelIndex& index, int role) const
     int row = index.row();
     if (row < 0 || row >= rowCount())
         return {};
-    const Cluster& cluster = gSession->dataset().clusterAt(row);
+    const Cluster& cluster = gSession->dataset.clusterAt(row);
     int col = index.column();
     switch (role) {
     case Qt::DisplayRole: {
@@ -80,7 +80,7 @@ QVariant ActiveClustersModel::data(const QModelIndex& index, int role) const
         if (cluster.isIncomplete())
             ret += QString("\nThis cluster has only %1 elements, while the binning factor is %2.")
                 .arg(cluster.count())
-                .arg(gSession->dataset().binning.val());
+                .arg(gSession->dataset.binning.val());
         return ret;
     }
     case Qt::ForegroundRole: {

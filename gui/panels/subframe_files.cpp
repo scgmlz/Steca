@@ -31,13 +31,13 @@ public:
     FilesModel() : CheckTableModel("datafiles") {}
 
 private:
-    int highlighted() const final { return gSession->dataset().highlight().fileIndex(); }
-    void setHighlight(int i) final { gSession->dataset().highlight().setFile(i); }
-    bool activated(int i) const { return gSession->dataset().fileAt(i).activated() == Qt::Checked; }
-    void setActivated(int i, bool on) { gSession->dataset().setFileActivation(i, on); }
+    int highlighted() const final { return gSession->dataset.highlight().fileIndex(); }
+    void setHighlight(int i) final { gSession->dataset.highlight().setFile(i); }
+    bool activated(int i) const { return gSession->dataset.fileAt(i).activated() == Qt::Checked; }
+    void setActivated(int i, bool on) { gSession->dataset.setFileActivation(i, on); }
 
     int columnCount() const final { return 3; }
-    int rowCount() const final { return gSession->dataset().countFiles(); }
+    int rowCount() const final { return gSession->dataset.countFiles(); }
     QVariant data(const QModelIndex&, int) const final;
 };
 
@@ -47,7 +47,7 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const
     const int row = index.row();
     if (row < 0 || row >= rowCount())
         return {};
-    const Datafile& file = gSession->dataset().fileAt(row);
+    const Datafile& file = gSession->dataset.fileAt(row);
     int col = index.column();
     if (role==Qt::DisplayRole && col==2)
         return file.name();
@@ -55,8 +55,8 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const
         return QString("File %1\ncontains %2 measurements.here numbered %3 to %4")
             .arg(file.name())
             .arg(file.numMeasurements())
-            .arg(gSession->dataset().offset(file)+1)
-            .arg(gSession->dataset().offset(file)+file.numMeasurements());
+            .arg(gSession->dataset.offset(file)+1)
+            .arg(gSession->dataset.offset(file)+file.numMeasurements());
     else if (role==Qt::CheckStateRole && col==1)
         return file.activated();
     else if (role==Qt::BackgroundRole) {

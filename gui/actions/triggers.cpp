@@ -44,7 +44,7 @@ Triggers::Triggers()
     connect(&loadSession, AT, []() { gGui->loadSession(); });
     connect(&online, AT, []() { QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
     connect(&quit, AT, []() { gGui->deleteLater(); });
-    connect(&removeFile, AT, []() { gSession->dataset().removeFile(); });
+    connect(&removeFile, AT, []() { gSession->dataset.removeFile(); });
     connect(&saveSession, AT, []() { gGui->saveSession(); });
     connect(&spawnDiagram, AT, [](){ new PopupDiagram(); });
     connect(&spawnTable, AT, [](){ new PopupBigtable(); });

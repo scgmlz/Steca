@@ -136,7 +136,7 @@ void ExportPolefig::saveCurrent()
     if (!file)
         return;
     QTextStream stream(file);
-    const Cluster* cluster = gSession->dataset().highlight().cluster();
+    const Cluster* cluster = gSession->dataset.highlight().cluster();
     ASSERT(cluster);
     const Curve& curve = algo::projectCluster(*cluster, cluster->rgeGma());
     if (curve.isEmpty())

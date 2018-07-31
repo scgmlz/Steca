@@ -151,10 +151,10 @@ private:
 
 ActiveClustersControls::ActiveClustersControls()
     : combineMeasurements_ {
-        "combineMeasurements", &gSession->dataset().binning, 3, false, 1, 999,
+        "combineMeasurements", &gSession->dataset.binning, 3, false, 1, 999,
         "Combine this number of measurements into one group"}
     , dropIncompleteAction_ {
-        "dropIncomplete", &gSession->dataset().dropIncomplete,
+        "dropIncomplete", &gSession->dataset.dropIncomplete,
         "Drop measurement groups that do not have the full number of members",
         ":/icon/dropIncomplete" }
     , dropIncompleteButton_ { &dropIncompleteAction_ }
@@ -169,7 +169,7 @@ ActiveClustersControls::ActiveClustersControls()
 
     //initialization
     dropIncompleteAction_.setRemake([=](){
-            dropIncompleteAction_.setEnabled(gSession->dataset().hasIncomplete());
+            dropIncompleteAction_.setEnabled(gSession->dataset.hasIncomplete());
         });
     dropIncompleteAction_.remake();
 }

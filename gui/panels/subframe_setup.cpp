@@ -30,7 +30,7 @@ SubframeSetup::SubframeSetup()
     addTab(new ControlsInterpolation(),"Interpol"); idxInterpol = 3;
 
     setRemake( [=]() {
-            if (gSession->dataset().countFiles()) {
+            if (gSession->dataset.countFiles()) {
                 setTabEnabled(idxBaseline, true);
                 setTabEnabled(idxPeakfits, true);
             } else {

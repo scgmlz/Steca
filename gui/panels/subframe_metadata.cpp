@@ -58,7 +58,7 @@ QVariant MetabigtableModel::data(const QModelIndex& index, int role) const
         case COL_TAG:
             return Metadata::attributeTag(row, false);
         case COL_VALUE:
-            const Cluster* highlight = gSession->dataset().highlight().cluster();
+            const Cluster* highlight = gSession->dataset.highlight().cluster();
             if (!highlight)
                 return "-";
             return highlight->avgMetadata().attributeStrValue(row);

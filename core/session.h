@@ -52,9 +52,6 @@ public:
     Session(const Session&) = delete;
 
     // accessor methods:
-    Dataset& dataset() { return dataset_; }
-    const Dataset& dataset() const { return dataset_; }
-
     Corrset& corrset() { return corrset_; }
     const Corrset& corrset() const { return corrset_; }
 
@@ -115,9 +112,11 @@ public:
     size2d imageSize() const;
 
     // const abbreviations to member member calls
-    bool hasData() const { return dataset().countFiles(); }
+    bool hasData() const { return dataset.countFiles(); }
     bool hasCorrFile() const { return corrset().hasFile(); }
-    const ActiveClusters& activeClusters() const { return dataset().activeClusters(); }
+    const ActiveClusters& activeClusters() const { return dataset.activeClusters(); }
+
+    Dataset dataset;
 
     ParamWrapper<bool> intenScaledAvg {true}; // if not, summed
     ParamWrapper<double> intenScale {1};
@@ -127,13 +126,13 @@ signals:
 
 private:
     // with reference accessor methods:
-    Dataset dataset_;
-    Corrset corrset_;
-    Peaks peaks_;
-    Baseline baseline_;
     Geometry geometry_;
+    Corrset corrset_;
+    size2d imageSize_; //!< All images must have this same size
     ImageCut imageCut_;
     ImageTransform imageTransform_;
+    Peaks peaks_;
+    Baseline baseline_;
     GammaSelection gammaSelection_;
     ThetaSelection thetaSelection_;
     InterpolParams interpolParams_;
@@ -143,7 +142,6 @@ private:
     // others
     std::vector<bool> metaSelection_; //!< true if meta datum is to be displayed
     std::vector<int> metaInfoNums_; //!< indices of metadata items selected for display
-    size2d imageSize_; //!< All images must have this same size
     KeyedCache<AngleMap, deg> angleMap_;
 };
 

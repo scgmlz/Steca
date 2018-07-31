@@ -48,7 +48,7 @@ void GammaSelection::onData()
         else if (currSlice.val()<1)
             currSlice.setVal(1);
     }
-    const Cluster* cluster = gSession->dataset().highlight().cluster();
+    const Cluster* cluster = gSession->dataset.highlight().cluster();
     if (!cluster)
         return fullRange_.invalidate();
     fullRange_ = cluster->rgeGma();
