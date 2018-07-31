@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/calc/gamma_selection.cpp
+//! @file      core/data/gamma_selection.cpp
 //! @brief     Implements GammaSelection
 //!
 //! @homepage  https://github.com/scgmlz/Steca

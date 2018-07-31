@@ -16,7 +16,7 @@
 #define SESSION_H
 
 #include "core/calc/baseline.h"
-#include "core/calc/gamma_selection.h"
+#include "core/data/gamma_selection.h"
 #include "core/calc/image_transform.h"
 #include "core/calc/interpol_params.h"
 #include "core/calc/peak.h"
