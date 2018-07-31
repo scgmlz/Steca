@@ -14,7 +14,6 @@
 
 #include "angle_map.h"
 #include "core/session.h"
-#include "core/def/idiomatic_for.h"
 #include "qcr/base/debug.h"
 #include <qmath.h>
 #include <iostream> // for debugging
@@ -64,12 +63,12 @@ AngleMap::AngleMap(const deg tth)
     const double b_z1 = d_z * c;
     int midPixX = size_.w/2 + geo.pixOffset[0].val();
     int midPixY = size_.h/2 + geo.pixOffset[1].val();
-    for_int (i, size_.w) {
+    for (int i=0; i<size_.w; ++i) {
         const double d_x = (i - midPixX) * geo.pixSize.val();
         const double b_x = b_x1 + d_x * c;
         const double b_z = b_z1 - d_x * s;
         const double b_x2 = b_x * b_x;
-        for_int (j, size_.h) {
+        for (int j=0; j<size_.h; ++j) {
             const double b_y = (midPixY - j) * geo.pixSize.val(); // == d_y
             const double b_r = sqrt(b_x2 + b_y * b_y);
             const rad gma = atan2(b_y, b_x);
@@ -111,7 +110,7 @@ AngleMap::AngleMap(const deg tth)
 
     // compute indices of sorted gmas_:
     std::vector<int> is(countAfterCut);
-    for_i (is.size())
+    for (int i=0; i<is.size(); ++i)
         is[i] = i;
     //qDebug() << "AngleMap: sort";
     // empirically, stable_sort seems to be faster than sort
@@ -120,12 +119,12 @@ AngleMap::AngleMap(const deg tth)
     //qDebug() << "AngleMap: sort/";
     // sort gmas_:
     std::vector<deg> gv(countAfterCut);
-    for_i (countAfterCut)
+    for (int i=0; i<countAfterCut; ++i)
         gv[i] = gmas_.at(is.at(i));
     gmas_ = std::move(gv);
     // sort gmaIndexes_:
     std::vector<int> uv(countAfterCut);
-    for_i (countAfterCut)
+    for (int i=0; i<countAfterCut; ++i)
         uv[i] = gmaIndexes_.at(is.at(i));
     gmaIndexes_ = std::move(uv);
     //qDebug() << "AngleMap/";
