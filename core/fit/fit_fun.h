@@ -26,13 +26,12 @@
 // TODO use Legendre polynomials on rescaled interval to provide an easy approximation of the average.
 class Polynom : public ParametricFunction {
 public:
-    Polynom(int _degree) { setParameterCount(_degree + 1); }
-
     double y(double x, double const* parValues = nullptr) const final;
 
     static Polynom fromFit(int degree, const Curve&, const Ranges&);
 
 private:
+    Polynom(int _degree) { setParameterCount(_degree + 1); } // only called by fromFit
     double dy(double x, int parIndex, double const* parValues = nullptr) const final;
 };
 

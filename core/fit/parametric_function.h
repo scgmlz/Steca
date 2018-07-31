@@ -40,7 +40,6 @@ private:
 
 class ParametricFunction {
 public:
-
     virtual ~ParametricFunction() {}
 
     //! evaluate the function y = f(x), with given (parValues) or own parameters
