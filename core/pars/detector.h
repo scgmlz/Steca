@@ -15,7 +15,7 @@
 #ifndef GEOMETRY_H
 #define GEOMETRY_H
 
-#include "core/typ/angles.h"
+#include "core/aux/angles.h"
 #include "core/typ/range.h"
 #include "core/typ/size2d.h"
 #include "qcr/engine/param_wrapper.h"
