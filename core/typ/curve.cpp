@@ -13,7 +13,6 @@
 //  ***********************************************************************************************
 
 #include "curve.h"
-#include "core/def/idiomatic_for.h"
 #include "qcr/base/debug.h"
 
 void Curve::clear()
@@ -69,7 +68,7 @@ Curve Curve::intersect(const Ranges& ranges) const
 {
     Curve ret;
     int xi = 0, cnt = count();
-    for_i (ranges.count()) {
+    for (int i=0; i<ranges.count(); ++i) {
         const Range& range = ranges.at(i);
         while (xi < cnt && xs_.at(xi) < range.min)
             ++xi;
@@ -85,7 +84,7 @@ Curve Curve::intersect(const Ranges& ranges) const
 Curve Curve::subtract(const std::function<double(double)>& func) const
 {
     Curve ret = *this;
-    for_i (count())
+    for (int i=0; i<count(); ++i)
         ret.ys_[i] = ys_[i] - func(xs_.at(i));
     return ret;
 }
@@ -96,7 +95,7 @@ int Curve::idxMax() const
         return 0;
     double yMax = ys_.front();
     int ret = 0;
-    for_i (count()) {
+    for (int i=0; i<count(); ++i) {
         const double y = ys_.at(i);
         if (y > yMax) {
             yMax = y;
@@ -109,7 +108,7 @@ int Curve::idxMax() const
 double Curve::sumY() const
 {
     double ret = 0;
-    for_i (count())
-        ret += ys_.at(i);
+    for (double yy: ys_)
+        ret += yy;
     return ret;
 }

@@ -16,7 +16,6 @@
 
 #include "range.h"
 #include "core/aux/exception.h"
-#include "core/def/idiomatic_for.h"
 #include "core/typ/json.h"
 #include "qcr/base/debug.h"
 
@@ -238,9 +237,9 @@ QJsonArray Ranges::toJson() const
 
 void Ranges::fromJson(const QJsonArray& arr)
 {
-    for_i (arr.count()) {
+    for (const auto& ele: arr) {
         Range range;
-        range.fromJson(arr.at(i).toObject());
+        range.fromJson(ele.toObject());
         ranges_.push_back(range);
     }
 }
