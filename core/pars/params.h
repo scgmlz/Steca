@@ -17,14 +17,17 @@
 
 #include "core/pars/detector.h"
 #include "core/pars/image_transform.h"
+#include "qcr/engine/param_wrapper.h"
 
 //! Global user-selected parameters
 
 class Params {
 public:
-    Detector       detector;
-    ImageTransform imageTransform;
-    ImageCut       imageCut;
+    Detector             detector;
+    ImageTransform       imageTransform;
+    ImageCut             imageCut;
+    ParamWrapper<bool>   intenScaledAvg {true}; // if not, summed
+    ParamWrapper<double> intenScale {1};
 };
 
 #endif // PARAMS_H

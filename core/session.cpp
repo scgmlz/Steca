@@ -35,7 +35,7 @@ Session::Session()
     params.detector.fromSettings();
     interpol().fromSettings();
 
-    connect(this, &Session::sigParams.Detector, [this]() { angleMap_.invalidate(); });
+    connect(this, &Session::sigDetector, [this]() { angleMap_.invalidate(); });
 }
 
 Session::~Session()
@@ -143,7 +143,7 @@ void Session::setImageSize(const size2d& size)
 
 size2d Session::imageSize() const
 {
-    return imageTransform.isTransposed() ? imageSize_.transposed() : imageSize_;
+    return params.imageTransform.isTransposed() ? imageSize_.transposed() : imageSize_;
 }
 
 void Session::setNormMode(eNorm normMode)

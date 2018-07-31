@@ -51,11 +51,11 @@ void ImageTrafoActions::setImageRotate(const ImageTransform& rot)
 
     rotateImage.setIcon(QIcon(rotateIconFile));
     mirrorImage.setIcon(QIcon(mirrorIconFile));
-    gSession->setImageTransformRotate(rot);
+    gSession->params.imageTransform.rotateTo(rot);
 }
 
 void ImageTrafoActions::setImageMirror(bool on)
 {
     mirrorImage.programaticallySetValue(on);
-    gSession->setImageTransformMirror(on);
+    gSession->params.imageTransform.mirror(on);
 }

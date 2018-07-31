@@ -27,7 +27,6 @@
 #include "core/raw/angle_map.h"
 #include "core/pars/detector.h"
 #include "core/typ/cached.h"
-#include "qcr/engine/param_wrapper.h"
 
 extern class Session* gSession;
 
@@ -107,8 +106,6 @@ public:
     Dataset dataset;
     Corrset corrset;
 
-    ParamWrapper<bool> intenScaledAvg {true}; // if not, summed
-    ParamWrapper<double> intenScale {1};
 
 signals:
     void sigDetector();      //!< detector detector has changed
