@@ -12,7 +12,6 @@
 //
 //  ***********************************************************************************************
 
-#include "core/def/idiomatic_for.h"
 #include "core/session.h"
 #include "qcr/base/debug.h"
 
@@ -76,8 +75,7 @@ JsonObj Peak::toJson() const
 
 Peak Peak::fromJson(const JsonObj& obj)
 {
-    Peak ret{obj.loadRange("range"), obj.loadString("type")};
-    return ret;
+    return {obj.loadRange("range"), obj.loadString("type")};
 }
 
 
@@ -120,11 +118,6 @@ void Peaks::removeSelected()
         selected_ = count()-1;
 }
 
-void Peaks::select(int i)
-{
-    selected_ = i;
-}
-
 void Peaks::selectByValue(double x)
 {
     for (int i=0; i<count(); ++i) {
@@ -138,7 +131,7 @@ void Peaks::selectByValue(double x)
 QStringList Peaks::names() const
 {
     QStringList ret;
-    for_i (gSession->peaks.count())
+    for (int i=0; i<gSession->peaks.count(); ++i)
         ret.append(QStringLiteral("%1: %2")
                    .arg(i+1)
                    .arg(peaks_[i].functionName()));
@@ -155,8 +148,8 @@ QJsonArray Peaks::toJson() const
 
 void Peaks::fromJson(const QJsonArray& arr)
 {
-    for_i (arr.count())
-        doAdd(Peak::fromJson(arr.at(i).toObject()));
+    for (const auto& ele: arr)
+        doAdd(Peak::fromJson(ele.toObject()));
 }
 
 void Peaks::sort()

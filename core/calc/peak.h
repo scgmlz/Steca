@@ -59,7 +59,7 @@ public:
     void fromJson(const QJsonArray& arr);
     void add(const Range&);
     void removeSelected();
-    void select(int i);
+    void select(int i) { selected_ = i; }
     void selectByValue(double x);
 
     Peak* selectedPeak() {
