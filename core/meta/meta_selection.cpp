@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/raw/meta_selection.cpp
+//! @file      core/meta/meta_selection.cpp
 //! @brief     Implements class MetaSelection
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/raw/meta_selection.h"
+#include "core/meta/meta_selection.h"
 #include "core/meta/metadata.h"
 
 MetaSelection::MetaSelection()
