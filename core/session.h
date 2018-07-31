@@ -25,7 +25,7 @@
 #include "core/data/dataset.h"
 #include "core/data/peak_info.h"
 #include "core/raw/angle_map.h"
-#include "core/raw/geometry.h"
+#include "core/pars/geometry.h"
 #include "core/typ/cached.h"
 #include "qcr/engine/param_wrapper.h"
 

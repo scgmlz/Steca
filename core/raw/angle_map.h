@@ -15,7 +15,7 @@
 #ifndef ANGLE_MAP_H
 #define ANGLE_MAP_H
 
-#include "core/raw/geometry.h"
+#include "core/pars/geometry.h"
 #include <QSharedPointer> // no auto rm
 
 //! Holds (gamma, 2theta) for all pixels in a detector image, and caches sorted gamma values.
