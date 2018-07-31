@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/calc/theta_selection.h
+//! @file      core/data/theta_selection.h
 //! @brief     Defines ThetaSelection
 //!
 //! @homepage  https://github.com/scgmlz/Steca

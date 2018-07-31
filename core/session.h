@@ -20,7 +20,7 @@
 #include "core/calc/image_transform.h"
 #include "core/calc/interpol_params.h"
 #include "core/calc/peak.h"
-#include "core/calc/theta_selection.h"
+#include "core/data/theta_selection.h"
 #include "core/data/corrset.h"
 #include "core/data/dataset.h"
 #include "core/data/peak_info.h"
