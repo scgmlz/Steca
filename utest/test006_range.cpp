@@ -6,7 +6,7 @@
 
 static bool RANGE_EQ(Range const& r1, Range const& r2) {
     return r1.min == r2.min && r1.max == r2.max;
-}
+    }
 
 TEST(Range, Trivia) {
     Range r0;
