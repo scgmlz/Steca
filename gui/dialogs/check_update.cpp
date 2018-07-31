@@ -19,6 +19,8 @@
 #include <QNetworkReply>
 #include <QStringBuilder> // for ".." % ..
 
+//! Queries whether there is a new version of this software, and shows message box.
+
 CheckUpdate::CheckUpdate(QWidget* parent)
 {
     QNetworkRequest req;

@@ -66,8 +66,7 @@ private:
 };
 
 
-//! Element of vector Cluster::gSectors, holds a diffractogram extracted from a given Cluster
-//! in a given gamma range.
+//! Element of vector Cluster::gSectors, holds diffractogram for given Cluster and gamma range.
 
 class GammaSector {
 public:

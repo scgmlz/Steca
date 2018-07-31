@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/dialogs/file_dialog.cpp
-//! @brief     Implements functions queryImportFileName(s), queryExportFileName, queryDirectory in ns file_dialog
+//! @brief     Implements functions in namespace file_dialog
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -21,12 +21,10 @@
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
 
-//  ***********************************************************************************************
-//! @class OpenFileProxyModel (local scope)
-
 namespace {
 
-//! ??, for use in queryImportFileNames.
+//  ***********************************************************************************************
+//! @class OpenFileProxyModel for local use in queryImportFileNames.
 
 class OpenFileProxyModel : public QSortFilterProxyModel {
 public:
@@ -67,14 +65,9 @@ QVariant OpenFileProxyModel::data(const QModelIndex& idx, int role) const
     return QSortFilterProxyModel::data(idx, role);
 }
 
-} // namespace
-
 //  ***********************************************************************************************
-//! @class FileDialog (local scope)
+//! @class FileDialog for local use in Steca file dialogs. Manages default directory.
 
-namespace {
-
-//! Base class for all Steca file dialogs. Manages default directory.
 class FileDialog : public QcrFileDialog {
 public:
     FileDialog(QWidget*, const QString&, QDir&, const QString& filter = QString());
