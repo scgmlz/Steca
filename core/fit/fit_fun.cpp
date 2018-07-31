@@ -22,10 +22,10 @@ namespace {
 //! Compute a low power with an exponent of type int
 static double pow_n(double x, int n)
 {
-    double val = 1;
+    double ret = 1;
     while (n-- > 0)
-        val *= x;
-    return val;
+        ret *= x;
+    return ret;
 }
 
 } // namespace
@@ -35,12 +35,12 @@ static double pow_n(double x, int n)
 
 double Polynom::y(double x, double const* parValues) const
 {
-    double val = 0, xPow = 1;
+    double ret = 0, xPow = 1;
     for_i (parameters_.size()) {
-        val += parValue(i, parValues) * xPow;
+        ret += parValue(i, parValues) * xPow;
         xPow *= x;
     }
-    return val;
+    return ret;
 }
 
 double Polynom::dy(double x, int i, double const*) const
