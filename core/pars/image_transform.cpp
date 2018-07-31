@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/calc/image_transform.cpp
+//! @file      core/pars/image_transform.cpp
 //! @brief     Implements class ImageTransform
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/calc/image_transform.h"
+#include "core/pars/image_transform.h"
 
 ImageTransform::ImageTransform(int val_)
     : val(eTransform(val_ & 7))
