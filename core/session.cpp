@@ -32,15 +32,15 @@ Session::Session()
 
     register_peak_functions();
 
-    detector.fromSettings();
+    params.detector.fromSettings();
     interpol().fromSettings();
 
-    connect(this, &Session::sigDetector, [this]() { angleMap_.invalidate(); });
+    connect(this, &Session::sigParams.Detector, [this]() { angleMap_.invalidate(); });
 }
 
 Session::~Session()
 {
-    detector.toSettings();
+    params.detector.toSettings();
     interpol().toSettings();
 }
 
@@ -85,8 +85,8 @@ void Session::sessionFromJson(const QByteArray& json)
     intenScaledAvg.setVal(top.loadBool("average intensity?", true));
     intenScale.setVal(top.loadPreal("intensity scale", 1));
 
-    detector.fromJson(top.loadObj("detector"));
-    imageCut.fromJson(top.loadObj("cut"));
+    params.detector.fromJson(top.loadObj("params.detector"));
+    params.imageCut.fromJson(top.loadObj("cut"));
     gammaSelection().fromJson(top.loadObj("gamma selection"));
     thetaSelection().fromJson(top.loadObj("theta selection"));
 
@@ -107,8 +107,8 @@ QByteArray Session::serializeSession() const
     top.insert("average intensity?", intenScaledAvg.val());
     top.insert("intensity scale", double_to_json((double)intenScale.val()));
     // TODO serialize image rotation and mirror
-    top.insert("detector", detector.toJson());
-    top.insert("cut", imageCut.toJson());
+    top.insert("params.detector", params.detector.toJson());
+    top.insert("cut", params.imageCut.toJson());
     top.insert("gamma selection", gammaSelection().toJson());
     top.insert("theta selection", thetaSelection().toJson());
 
@@ -143,7 +143,7 @@ void Session::setImageSize(const size2d& size)
 
 size2d Session::imageSize() const
 {
-    return imageTransform_.isTransposed() ? imageSize_.transposed() : imageSize_;
+    return imageTransform.isTransposed() ? imageSize_.transposed() : imageSize_;
 }
 
 void Session::setNormMode(eNorm normMode)
