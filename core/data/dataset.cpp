@@ -102,7 +102,7 @@ void Dataset::clear()
     files_.clear();
     onFileChanged();
     gSession->updateImageSize();
-    gSession->imageCut().clear();
+    gSession->imageCut.clear();
     gRoot->remakeAll("Dataset::clearFiles");
     qDebug() << "Dataset::clear/";
 }

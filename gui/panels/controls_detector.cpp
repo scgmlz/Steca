@@ -97,13 +97,13 @@ private:
 
 CutControls::CutControls()
     : link_      {&gGui->toggles->linkCuts}
-    , cutLeft_   {"cutLeft",   &gSession->imageCut().left,   3, false, 0, INT_MAX,
+    , cutLeft_   {"cutLeft",   &gSession->imageCut.left,   3, false, 0, INT_MAX,
               "Number of pixels to be cut at the left"}
-    , cutTop_    {"cutTop",    &gSession->imageCut().top,    3, false, 0, INT_MAX,
+    , cutTop_    {"cutTop",    &gSession->imageCut.top,    3, false, 0, INT_MAX,
               "Number of pixels to be cut at the top"}
-    , cutRight_  {"cutRight",  &gSession->imageCut().right,  3, false, 0, INT_MAX,
+    , cutRight_  {"cutRight",  &gSession->imageCut.right,  3, false, 0, INT_MAX,
               "Number of pixels to be cut at the right"}
-    , cutBottom_ {"cutBottom", &gSession->imageCut().bottom, 3, false, 0, INT_MAX,
+    , cutBottom_ {"cutBottom", &gSession->imageCut.bottom, 3, false, 0, INT_MAX,
               "Number of pixels to be cut at the bottom"}
 {
 

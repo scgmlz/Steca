@@ -60,11 +60,11 @@ void Corrset::calcNormalizer() const
     hasNANs_ = false;
 
     ASSERT(corrImage_.get());
-    size2d size = corrImage_->size() - gSession->imageCut().marginSize();
+    size2d size = corrImage_->size() - gSession->imageCut.marginSize();
     ASSERT(!size.isEmpty());
 
     int w = size.w, h = size.h;
-    int di = gSession->imageCut().left.val(), dj = gSession->imageCut().top.val();
+    int di = gSession->imageCut.left.val(), dj = gSession->imageCut.top.val();
 
     double sum = 0;
     for_ij (w, h)

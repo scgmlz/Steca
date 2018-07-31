@@ -31,7 +31,7 @@ size2d ImageLens::imgSize() const
     if (trans_ && gSession->imageTransform().isTransposed())
         ret = ret.transposed();
     if (cut_)
-        ret = ret - gSession->imageCut().marginSize();
+        ret = ret - gSession->imageCut.marginSize();
     return ret;
 }
 
@@ -68,8 +68,8 @@ void ImageLens::doTrans(int& x, int& y) const
 
 void ImageLens::doCut(int& i, int& j) const
 {
-    i += gSession->imageCut().left.val();
-    j += gSession->imageCut().top.val();
+    i += gSession->imageCut.left.val();
+    j += gSession->imageCut.top.val();
 }
 
 

@@ -108,7 +108,7 @@ void ImageView::paintEvent(QPaintEvent*)
         p.setPen(Qt::lightGray);
 
         // cut
-        const ImageCut& cut = gSession->imageCut();
+        const ImageCut& cut = gSession->imageCut;
         const QRect r = rect.adjusted(-1, -1, 0, 0)
                       .adjusted(
                           qRound(scale_ * cut.left.val()), qRound(scale_ * cut.top.val()),

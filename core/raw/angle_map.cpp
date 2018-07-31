@@ -78,7 +78,7 @@ AngleMap::AngleMap(const deg tth)
         }
     }
 
-    const ImageCut& cut = gSession->imageCut();
+    const ImageCut& cut = gSession->imageCut;
     ASSERT(size_.w > cut.horiz());
     ASSERT(size_.h > cut.vertical());
     const int countAfterCut = (size_.w - cut.horiz()) * (size_.h - cut.vertical());
