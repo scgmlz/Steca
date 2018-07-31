@@ -84,19 +84,19 @@ double Sequence::normFactor() const
 
     switch (gSession->normMode()) {
     case eNorm::MONITOR:
-        num = all.grandAvgMonitorCount();
+        num = all.grandAvgMonitorCount.get();
         den = avgMonitorCount();
         break;
     case eNorm::DELTA_MONITOR:
-        num = all.grandAvgDeltaMonitorCount();
+        num = all.grandAvgDeltaMonitorCount.get();
         den = avgDeltaMonitorCount();
         break;
     case eNorm::TIME:
-        num = all.grandAvgTime();
+        num = all.grandAvgTime.get();
         den = avgTime();
         break;
     case eNorm::DELTA_TIME:
-        num = all.grandAvgDeltaTime();
+        num = all.grandAvgDeltaTime.get();
         den = avgDeltaTime();
         break;
     case eNorm::NONE:

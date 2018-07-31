@@ -17,6 +17,7 @@
 
 #include "core/typ/cached.h"
 #include "core/typ/curve.h"
+#include "core/raw/measurement.h"
 
 class Cluster;
 class ActiveClusters;
@@ -37,10 +38,18 @@ public:
     const std::vector<Cluster*>& clusters() const { return clusters_; }
     int size() const { return clusters_.size(); }
 
-    double grandAvgMonitorCount() const;
-    double grandAvgDeltaMonitorCount() const;
-    double grandAvgTime() const;
-    double grandAvgDeltaTime() const;
+    Cached<double> grandAvgMonitorCount {[this]()->double{
+            return recomputeAvg([](const Measurement* one){
+                    return one->monitorCount();});} };
+    Cached<double> grandAvgDeltaMonitorCount {[this]()->double{
+            return recomputeAvg([](const Measurement* one){
+                    return one->deltaMonitorCount();});} };
+    Cached<double> grandAvgTime {[this]()->double{
+            return recomputeAvg([](const Measurement* one){
+                    return one->time();});} };
+    Cached<double> grandAvgDeltaTime {[this]()->double{
+            return recomputeAvg([](const Measurement* one){
+                    return one->deltaTime();});} };
 
     const Range& rgeGma() const;
     const Range& rgeFixedInten(bool trans, bool cut) const;
@@ -51,12 +60,8 @@ public:
 
 private:
     std::vector<Cluster*> clusters_;
-
+    double recomputeAvg(std::function<double(const Measurement*)>);
     // computed on demand (NaNs or emptiness indicate yet unknown values) // TODO use cached.h
-    mutable double avgMonitorCount_;
-    mutable double avgDeltaMonitorCount_;
-    mutable double avgTime_;
-    mutable double avgDeltaTime_;
     mutable Range rgeFixedInten_;
     mutable Range rgeGma_;
     mutable Curve avgCurve_;

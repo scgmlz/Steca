@@ -32,38 +32,16 @@ void ActiveClusters::reset(std::vector<std::unique_ptr<Cluster>>& allClusters)
     QObject::connect(gSession, &Session::sigDetector, [=]() { avgCurve.invalidate(); });
 }
 
-#define ACTIVE_AVG(target, what_function)                     \
-    if (qIsNaN(avgMonitorCount_)) {                           \
-        double sum = 0;                                       \
-        int cnt = 0;                                          \
-        for (Cluster const* cluster : clusters_) {            \
-            for (const Measurement* one : cluster->members()) \
-                sum += one->what_function();                  \
-            cnt += cluster->count();                          \
-        }                                                     \
-        target = sum/cnt;                                     \
-        qDebug() << "recomputed" << #target << ":" << target; \
-    }                                                         \
-    return target;
-
-double ActiveClusters::grandAvgMonitorCount() const
+double ActiveClusters::recomputeAvg(std::function<double(const Measurement*)> f)
 {
-    ACTIVE_AVG(avgMonitorCount_, monitorCount);
-}
-
-double ActiveClusters::grandAvgDeltaMonitorCount() const
-{
-    ACTIVE_AVG(avgDeltaMonitorCount_, deltaMonitorCount);
-}
-
-double ActiveClusters::grandAvgTime() const
-{
-    ACTIVE_AVG(avgTime_, time);
-}
-
-double ActiveClusters::grandAvgDeltaTime() const
-{
-    ACTIVE_AVG(avgDeltaTime_, deltaTime);
+    double sum = 0;
+    int cnt = 0;
+    for (Cluster const* cluster : clusters_) {
+        for (const Measurement* one : cluster->members())
+            sum += f(one);
+        cnt += cluster->count();
+    }
+    return sum/cnt;
 }
 
 const Range& ActiveClusters::rgeGma() const
@@ -87,7 +65,10 @@ const Range& ActiveClusters::rgeFixedInten(bool trans, bool cut) const
 
 void ActiveClusters::invalidateAvgMutables() const
 {
-    avgMonitorCount_ = avgDeltaMonitorCount_ = avgDeltaTime_ = Q_QNAN;
+    grandAvgMonitorCount     .invalidate();
+    grandAvgDeltaMonitorCount.invalidate();
+    grandAvgTime             .invalidate();
+    grandAvgDeltaTime        .invalidate();
     rgeFixedInten_.invalidate();
     rgeGma_.invalidate();
     avgCurve_.clear();
