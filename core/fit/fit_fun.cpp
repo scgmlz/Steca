@@ -63,7 +63,6 @@ Polynom Polynom::fromFit(int degree, const Curve& curve, const Ranges& ranges)
 JsonObj Polynom::toJson() const
 {
     JsonObj ret = ParametricFunction::toJson();
-    ret.insert("type", name());
     return ret;
 }
 

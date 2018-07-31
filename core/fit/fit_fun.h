@@ -36,7 +36,6 @@ public:
     static Polynom fromFit(int degree, const Curve&, const Ranges&);
 
     JsonObj toJson() const final;
-    QString name() const final { return "polynom"; }
 
 private:
     double dy(double x, int parIndex, double const* parValues = nullptr) const final;
@@ -66,6 +65,7 @@ public:
     virtual qpair peakError() const = 0;
     virtual float fwhmError() const = 0;
     virtual bool isRaw() const { return false; } //!< overwritten in class Raw, obviously
+    virtual QString name() const = 0;
 
 protected:
     Curve prepareFit(const Curve&, const Range&);

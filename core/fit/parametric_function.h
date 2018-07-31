@@ -60,7 +60,6 @@ public:
 
     virtual JsonObj toJson() const;
     int parameterCount() const;
-    virtual QString name() const = 0;
 
 protected:
     double parValue(int parIndex, double const* parValues) const;
