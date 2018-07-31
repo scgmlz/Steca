@@ -23,9 +23,10 @@
 
 //! A polynomial, for fitting the background of a diffractogram
 
+// TODO use Legendre polynomials on rescaled interval to provide an easy approximation of the average.
 class Polynom : public ParametricFunction {
 public:
-    Polynom(int _degree = 0) { setParameterCount(_degree + 1); }
+    Polynom(int _degree) { setParameterCount(_degree + 1); }
 
     double y(double x, double const* parValues = nullptr) const final;
 
