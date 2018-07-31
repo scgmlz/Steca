@@ -15,7 +15,7 @@
 #ifndef SESSION_H
 #define SESSION_H
 
-#include "core/calc/baseline.h"
+#include "core/pars/baseline.h"
 #include "core/data/gamma_selection.h"
 #include "core/pars/params.h"
 #include "core/calc/peak.h"

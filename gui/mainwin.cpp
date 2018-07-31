@@ -235,7 +235,7 @@ void MainWin::refresh()
 
     bool hasData = gSession->hasData();
     bool hasPeak = gSession->peaks.count();
-    bool hasBase = gSession->baseline.ranges().count();
+    bool hasBase = gSession->baseline.ranges.count();
     triggers->exportDfgram.setEnabled(hasData);
     triggers->exportBigtable.setEnabled(hasData && hasPeak);
     triggers->exportDiagram.setEnabled(hasData && hasPeak);

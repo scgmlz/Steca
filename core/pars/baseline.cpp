@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/calc/baseline.cpp
+//! @file      core/pars/baseline.cpp
 //! @brief     Implements class Baseline
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -17,20 +17,20 @@
 
 void Baseline::fromJson(const JsonObj obj)
 {
-    ranges_.fromJson(obj.loadArr("ranges"));
+    ranges.fromJson(obj.loadArr("ranges"));
     polynomDegree.setVal(obj.loadUint("polynom degree"));
 }
 
 void Baseline::clear()
 {
+    ranges.clear();
     polynomDegree.setVal(0);
-    ranges().clear();
 }
 
 QJsonObject Baseline::toJson() const
 {
     QJsonObject ret;
+    ret.insert("ranges", ranges.toJson());
     ret.insert("polynom degree", polynomDegree.val());
-    ret.insert("ranges", ranges().toJson());
     return ret;
 }

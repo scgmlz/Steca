@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/calc/baseline.h
+//! @file      core/pars/baseline.h
 //! @brief     Defines class Baseline
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -25,15 +25,10 @@ public:
     void fromJson(const JsonObj obj);
     void clear();
 
-    Ranges& ranges() { return ranges_; }
-    const Ranges& ranges() const { return ranges_; }
-
     QJsonObject toJson() const;
 
+    Ranges ranges;
     ParamWrapper<int> polynomDegree {0};
-
-private:
-    Ranges ranges_;
 };
 
 #endif // BASELINE_H

@@ -39,7 +39,7 @@ PeakInfo rawFit(Cluster& cluster, int iGamma, Peak& peak)
 
     // Diffractogram minus fitted background:
     const Curve& curve = {}; // TODO NOW cluster.gSector.get(iGamma)...
-    const Polynom f = Polynom::fromFit(baseline.polynomDegree.val(), curve, baseline.ranges());
+    const Polynom f = Polynom::fromFit(baseline.polynomDegree.val(), curve, baseline.ranges);
     const Curve curve2 = curve.subtract([f](double x) {return f.y(x);});
 
     // Fit the peak:
