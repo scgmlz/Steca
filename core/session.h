@@ -17,7 +17,7 @@
 
 #include "core/calc/baseline.h"
 #include "core/data/gamma_selection.h"
-#include "core/pars/image_transform.h"
+#include "core/pars/params.h"
 #include "core/calc/interpol_params.h"
 #include "core/calc/peak.h"
 #include "core/data/theta_selection.h"
@@ -58,11 +58,6 @@ public:
     Baseline& baseline() { return baseline_; }
     const Baseline& baseline() const { return baseline_; }
 
-    ImageCut& imageCut() { return imageCut_; }
-    const ImageCut& imageCut() const { return imageCut_; }
-
-    const ImageTransform& imageTransform() const { return imageTransform_; }
-
     GammaSelection& gammaSelection() { return gammaSelection_; }
     const GammaSelection& gammaSelection() const { return gammaSelection_; }
 
@@ -95,10 +90,8 @@ public:
     void setInterpolatedPeakInfos(PeakInfos&& val) {
         interpolatedPeakInfos_ = std::move(val); }
 
-    void setImageTransformMirror(bool);
-    void setImageTransformRotate(const ImageTransform&);
     void updateImageSize(); //!< Clears image size if session has no files
-    void setImageSize(const size2d&); //!< Ensures same size for all images
+    void setImageSize(const size2d&); //!< Also ensures same size for all images
 
     // const methods:
     QByteArray serializeSession() const;
@@ -110,7 +103,7 @@ public:
     bool hasCorrFile() const { return corrset.hasFile(); }
     const ActiveClusters& activeClusters() const { return dataset.activeClusters(); }
 
-    Detector detector;
+    Params  params;
     Dataset dataset;
     Corrset corrset;
 
@@ -123,8 +116,6 @@ signals:
 private:
     // with reference accessor methods:
     size2d imageSize_; //!< All images must have this same size
-    ImageCut imageCut_;
-    ImageTransform imageTransform_;
     Peaks peaks_;
     Baseline baseline_;
     GammaSelection gammaSelection_;

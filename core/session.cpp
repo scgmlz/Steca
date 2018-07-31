@@ -146,16 +146,6 @@ size2d Session::imageSize() const
     return imageTransform_.isTransposed() ? imageSize_.transposed() : imageSize_;
 }
 
-void Session::setImageTransformMirror(bool on)
-{
-    imageTransform_ = imageTransform_.mirror(on);
-}
-
-void Session::setImageTransformRotate(const ImageTransform& rot)
-{
-    imageTransform_ = imageTransform_.rotateTo(rot);
-}
-
 void Session::setNormMode(eNorm normMode)
 {
     normMode_ = normMode;
