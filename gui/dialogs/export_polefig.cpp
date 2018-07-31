@@ -77,7 +77,7 @@ ExportPolefig::ExportPolefig()
         exportMulti_.setEnabled(false);
         exportCombi_.setEnabled(false);
     }
-    bool interpolated = gSession->interpolParams.enabled.val();
+    bool interpolated = gSession->params.interpolParams.enabled.val();
     gridOriginal_.programaticallySetValue(!interpolated);
     gridInterpol_.setEnabled(interpolated);
     gridInterpol_.programaticallySetValue(interpolated);
