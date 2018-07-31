@@ -16,13 +16,13 @@
 #include "core/session.h"
 
 ControlsInterpolation::ControlsInterpolation()
-    : doInterpol_ {"doInterpol", "enabled", &gSession->interpol().enabled}
-    , stepAlpha_  {"stepAlpha",  &gSession->interpol().stepAlpha,  6, 2, 1., 30.}
-    , stepBeta_   {"stepBeta",   &gSession->interpol().stepBeta,   6, 2, 1., 30.}
-    , idwRadius_  {"idwRadius",  &gSession->interpol().idwRadius,  6, 2, 0., 90.}
-    , avgAlphaMax_{"avgAlphaMax",&gSession->interpol().avgAlphaMax,6, 2, 0., 90.}
-    , avgRadius_  {"avgRadius",  &gSession->interpol().avgRadius,  6, 2, 0., 90.}
-    , threshold_  {"threshold",  &gSession->interpol().threshold,  6, true, 0, 100}
+    : doInterpol_ {"doInterpol", "enabled", &gSession->interpolParams.enabled}
+    , stepAlpha_  {"stepAlpha",  &gSession->interpolParams.stepAlpha,  6, 2, 1., 30.}
+    , stepBeta_   {"stepBeta",   &gSession->interpolParams.stepBeta,   6, 2, 1., 30.}
+    , idwRadius_  {"idwRadius",  &gSession->interpolParams.idwRadius,  6, 2, 0., 90.}
+    , avgAlphaMax_{"avgAlphaMax",&gSession->interpolParams.avgAlphaMax,6, 2, 0., 90.}
+    , avgRadius_  {"avgRadius",  &gSession->interpolParams.avgRadius,  6, 2, 0., 90.}
+    , threshold_  {"threshold",  &gSession->interpolParams.threshold,  6, true, 0, 100}
 {
     // layout
     auto* grid = new QGridLayout;
@@ -49,7 +49,7 @@ ControlsInterpolation::ControlsInterpolation()
 
 void ControlsInterpolation::fromCore()
 {
-    bool on = gSession->interpol().enabled.val();
+    bool on = gSession->interpolParams.enabled.val();
     stepAlpha_  .setEnabled(on);
     stepBeta_   .setEnabled(on);
     idwRadius_  .setEnabled(on);

@@ -250,18 +250,18 @@ itf_t interpolateValues(deg searchRadius, const PeakInfos& infos, deg alpha, deg
 //! Interpolates infos to equidistant grid in alpha and beta.
 void algo::interpolateInfos(QProgressBar* progressBar)
 {
-    if (!gSession->interpol().enabled.val()) {
+    if (!gSession->interpolParams.enabled.val()) {
         gSession->setInterpolatedPeakInfos({});
         return;
     }
     qDebug() << "interpolation began";
 
-    double stepAlpha   = gSession->interpol().stepAlpha.val();
-    double stepBeta    = gSession->interpol().stepBeta.val();
-    double idwRadius   = gSession->interpol().idwRadius.val();
-    double avgAlphaMax = gSession->interpol().avgAlphaMax.val();
-    double avgRadius   = gSession->interpol().avgRadius.val();
-    int    threshold   = gSession->interpol().threshold.val();
+    double stepAlpha   = gSession->interpolParams.stepAlpha.val();
+    double stepBeta    = gSession->interpolParams.stepBeta.val();
+    double idwRadius   = gSession->interpolParams.idwRadius.val();
+    double avgAlphaMax = gSession->interpolParams.avgAlphaMax.val();
+    double avgRadius   = gSession->interpolParams.avgRadius.val();
+    int    threshold   = gSession->interpolParams.threshold.val();
 
     // Two interpolation methods are used here:
     // If grid point alpha <= averagingAlphaMax, points within averagingRadius

@@ -33,7 +33,7 @@ Session::Session()
     register_peak_functions();
 
     params.detector.fromSettings();
-    interpol().fromSettings();
+    interpolParams.fromSettings();
 
     connect(this, &Session::sigDetector, [this]() { angleMap_.invalidate(); });
 }
@@ -41,12 +41,12 @@ Session::Session()
 Session::~Session()
 {
     params.detector.toSettings();
-    interpol().toSettings();
+    interpolParams.toSettings();
 }
 
 const PeakInfos& Session::peakInfos() const
 {
-    if (interpol().enabled.val())
+    if (interpolParams.enabled.val())
         return interpolatedPeakInfos_;
     else
         return directPeakInfos_;
