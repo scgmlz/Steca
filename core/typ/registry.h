@@ -10,6 +10,7 @@
 #ifndef REGISTRY_H
 #define REGISTRY_H
 
+#include "core/aux/exception.h"
 #include <QMap>        // no auto rm
 #include <QStringList> // no auto rm
 

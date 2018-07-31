@@ -190,12 +190,7 @@ struct FILEContainer {
     //Container() : value_(new T()) { }
     FILEContainer(FILE* file) : value_(file) { }
     ~FILEContainer() { fclose(value_); }
-    FILE* operator *() {
-        if (value_ == nullptr) {
-            THROW("value is nullptr, but should be initialized")
-        }
-        return value_;
-    }
+    FILE* operator *();
 private:
     FILE* value_;
 };

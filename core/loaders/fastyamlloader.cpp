@@ -178,4 +178,10 @@ const YamlNode loadYamlFast(const std::string& filePath) {
     return result;
 }
 
-} // namespace load
+FILE* FILEContainer::operator *() {
+    if (value_ == nullptr)
+        THROW("value is nullptr, but should be initialized");
+    return value_;
+}
+
+} // namespace loadYAML
