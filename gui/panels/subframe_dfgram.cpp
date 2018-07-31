@@ -45,8 +45,8 @@ DfPanel::DfPanel()
     : QcrWidget {"dfgram"}
     , comboNormType_ {"normTyp", {"none", "monitor", "Δ monitor", "time", "Δ time"}}
     , intenSum_ {"intenSum", "sum"}
-    , intenAvg_ {"intenAvg", "avg ×", &gSession->intenScaledAvg}
-    , intenScale_ {"intenScale", &gSession->intenScale, 5, 1, 0.001}
+    , intenAvg_ {"intenAvg", "avg ×", &gSession->params.intenScaledAvg}
+    , intenScale_ {"intenScale", &gSession->params.intenScale, 5, 1, 0.001}
 {
     // initializations
     plot_ = new PlotDfgram();
@@ -90,8 +90,8 @@ DfPanel::DfPanel()
 
 void DfPanel::onNormChanged()
 {
-    intenScale_.programaticallySetValue(gSession->intenScale.val()); // TODO own signal
-    if (gSession->intenScaledAvg.val())
+    intenScale_.programaticallySetValue(gSession->params.intenScale.val()); // TODO own signal
+    if (gSession->params.intenScaledAvg.val())
         intenAvg_.programaticallySetValue(true);
     else
         intenSum_.programaticallySetValue(true);

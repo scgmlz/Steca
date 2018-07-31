@@ -30,14 +30,6 @@
 
 extern class Session* gSession;
 
-enum class eNorm {
-    NONE,
-    MONITOR,
-    DELTA_MONITOR,
-    TIME,
-    DELTA_TIME,
-};
-
 //! Companion of MainWin and MainWin, holds data and data-related settings.
 
 //! One instance of this class coexists with the main window. It is accessible from everywhere
@@ -72,9 +64,6 @@ public:
     const PeakInfos& interpolatedPeakInfos() const { return interpolatedPeakInfos_; }
     const PeakInfos& peakInfos() const;
 
-    void setNormMode(eNorm);
-    eNorm normMode() const { return normMode_; }
-
     void setMetaSelected(int, bool);
     bool metaIsSelected(int i) const { return metaSelection_[i]; }
     int metaSelectedCount() const { return metaInfoNums_.size(); }
@@ -106,7 +95,6 @@ public:
     Dataset dataset;
     Corrset corrset;
 
-
 signals:
     void sigDetector();      //!< detector detector has changed
 
@@ -120,7 +108,6 @@ private:
     InterpolParams interpolParams_;
     PeakInfos directPeakInfos_;
     PeakInfos interpolatedPeakInfos_;
-    eNorm normMode_ {eNorm::NONE};
     // others
     std::vector<bool> metaSelection_; //!< true if meta datum is to be displayed
     std::vector<int> metaInfoNums_; //!< indices of metadata items selected for display

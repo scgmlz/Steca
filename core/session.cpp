@@ -61,8 +61,8 @@ void Session::clear()
 
     normMode_ = eNorm::NONE;
 
-    intenScaledAvg.setVal(true);
-    intenScale.setVal(1);
+    params.intenScaledAvg.setVal(true);
+    params.intenScale.setVal(1);
 }
 
 void Session::sessionFromJson(const QByteArray& json)
@@ -82,8 +82,8 @@ void Session::sessionFromJson(const QByteArray& json)
     peaks().fromJson(top.loadArr("peaks"));
     baseline().fromJson(top.loadObj("baseline"));
 
-    intenScaledAvg.setVal(top.loadBool("average intensity?", true));
-    intenScale.setVal(top.loadPreal("intensity scale", 1));
+    params.intenScaledAvg.setVal(top.loadBool("average intensity?", true));
+    params.intenScale.setVal(top.loadPreal("intensity scale", 1));
 
     params.detector.fromJson(top.loadObj("params.detector"));
     params.imageCut.fromJson(top.loadObj("cut"));
@@ -104,8 +104,8 @@ QByteArray Session::serializeSession() const
 
     // TODO serialize metaSelection_
 
-    top.insert("average intensity?", intenScaledAvg.val());
-    top.insert("intensity scale", double_to_json((double)intenScale.val()));
+    top.insert("average intensity?", params.intenScaledAvg.val());
+    top.insert("intensity scale", double_to_json((double)params.intenScale.val()));
     // TODO serialize image rotation and mirror
     top.insert("params.detector", params.detector.toJson());
     top.insert("cut", params.imageCut.toJson());

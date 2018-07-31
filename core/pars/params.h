@@ -19,6 +19,15 @@
 #include "core/pars/image_transform.h"
 #include "qcr/engine/param_wrapper.h"
 
+enum class eNorm {
+    NONE,
+    MONITOR,
+    DELTA_MONITOR,
+    TIME,
+    DELTA_TIME,
+};
+
+
 //! Global user-selected parameters
 
 class Params {
@@ -28,6 +37,7 @@ public:
     ImageCut             imageCut;
     ParamWrapper<bool>   intenScaledAvg {true}; // if not, summed
     ParamWrapper<double> intenScale {1};
+    eNorm                normMode_ {eNorm::NONE};
 };
 
 #endif // PARAMS_H
