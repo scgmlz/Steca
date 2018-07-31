@@ -18,7 +18,7 @@
 #include "core/fit/parametric_function.h"
 #include "core/typ/curve.h"
 #include "core/typ/realpair.h"
-#include "core/typ/registry.h"
+#include "core/fit/registry.h"
 #include "core/fit/singleton.h"
 
 //! A polynomial, for fitting the background of a diffractogram
