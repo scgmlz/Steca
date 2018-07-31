@@ -32,7 +32,7 @@ Session::Session()
 
     register_peak_functions();
 
-    geometry().fromSettings();
+    geometry.fromSettings();
     interpol().fromSettings();
 
     connect(this, &Session::sigDetector, [this]() { angleMap_.invalidate(); });
@@ -40,7 +40,7 @@ Session::Session()
 
 Session::~Session()
 {
-    geometry().toSettings();
+    geometry.toSettings();
     interpol().toSettings();
 }
 
@@ -55,7 +55,7 @@ const PeakInfos& Session::peakInfos() const
 void Session::clear()
 {
     dataset.clear();
-    corrset_.clear();
+    corrset.clear();
     baseline_.clear();
     peaks_.clear();
 
@@ -78,14 +78,14 @@ void Session::sessionFromJson(const QByteArray& json)
     JsonObj top(doc.object());
 
     dataset.fromJson(top.loadObj("dataset"));
-    corrset().fromJson(top.loadObj("corrset"));
+    corrset.fromJson(top.loadObj("corrset"));
     peaks().fromJson(top.loadArr("peaks"));
     baseline().fromJson(top.loadObj("baseline"));
 
     intenScaledAvg.setVal(top.loadBool("average intensity?", true));
     intenScale.setVal(top.loadPreal("intensity scale", 1));
 
-    geometry().fromJson(top.loadObj("detector"));
+    geometry.fromJson(top.loadObj("detector"));
     imageCut().fromJson(top.loadObj("cut"));
     gammaSelection().fromJson(top.loadObj("gamma selection"));
     thetaSelection().fromJson(top.loadObj("theta selection"));
@@ -98,7 +98,7 @@ QByteArray Session::serializeSession() const
     QJsonObject top;
 
     top.insert("dataset", dataset.toJson());
-    top.insert("corrset", corrset().toJson());
+    top.insert("corrset", corrset.toJson());
     top.insert("peaks", peaks().toJson());
     top.insert("baseline", baseline().toJson());
 
@@ -107,7 +107,7 @@ QByteArray Session::serializeSession() const
     top.insert("average intensity?", intenScaledAvg.val());
     top.insert("intensity scale", double_to_json((double)intenScale.val()));
     // TODO serialize image rotation and mirror
-    top.insert("detector", geometry().toJson());
+    top.insert("detector", geometry.toJson());
     top.insert("cut", imageCut().toJson());
     top.insert("gamma selection", gammaSelection().toJson());
     top.insert("theta selection", thetaSelection().toJson());
@@ -127,7 +127,7 @@ void Session::setMetaSelected(int idx, bool on)
 
 void Session::updateImageSize()
 {
-    if (0 == dataset.countFiles() && !corrset().hasFile())
+    if (0 == dataset.countFiles() && !corrset.hasFile())
         imageSize_ = size2d(0, 0);
 }
 

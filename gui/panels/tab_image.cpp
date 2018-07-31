@@ -123,8 +123,8 @@ void ImageView::paintEvent(QPaintEvent*)
         const int rw = rr - rl;
 
         // cross
-        const int x = qRound(rcx + scale_ * gSession->geometry().pixOffset[0].val());
-        const int y = qRound(rcy + scale_ * gSession->geometry().pixOffset[1].val());
+        const int x = qRound(rcx + scale_ * gSession->geometry.pixOffset[0].val());
+        const int y = qRound(rcy + scale_ * gSession->geometry.pixOffset[1].val());
         p.drawLine(x, rt, x, rb);
         p.drawLine(rl, y, rr, y);
 
@@ -162,7 +162,7 @@ ImageTab::ImageTab(const QString& name)
 
 void ImageTab::render()
 {
-    gSession->corrset().clearIntens(); // trigger redisplay // TODO move this to more appriate place
+    gSession->corrset.clearIntens(); // trigger redisplay // TODO move this to more appriate place
     imageView_.setPixmap(pixmap());
 }
 
@@ -330,7 +330,7 @@ CorrImageTab::CorrImageTab()
 
 QPixmap CorrImageTab::pixmap()
 {
-    if (!gSession->corrset().hasFile())
+    if (!gSession->corrset.hasFile())
         return makeBlankPixmap();
-    return makePixmap(gSession->corrset().image());
+    return makePixmap(gSession->corrset.image());
 }

@@ -20,7 +20,7 @@
 #include <QStatusBar>
 
 Toggles::Toggles()
-    : enableCorr {"enableCorr", &gSession->corrset().enabled,
+    : enableCorr {"enableCorr", &gSession->corrset.enabled,
         "Enable correction file", ":/icon/useCorrection"}
 {
 #define AT &QAction::toggled

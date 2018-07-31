@@ -33,5 +33,5 @@ Mainframe::Mainframe()
     addTab((diagramTab_ = new DiagramTab), "Diagram");
     addTab((polefigTab_ = new PolefigTab), "Polefig");
 
-    setRemake( [=]() { setTabEnabled(1, gSession->corrset().hasFile()); } );
+    setRemake( [=]() { setTabEnabled(1, gSession->corrset.hasFile()); } );
 }

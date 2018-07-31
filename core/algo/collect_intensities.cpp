@@ -42,7 +42,7 @@ void projectMeasurement(
 
     ASSERT(deltaTth > 0);
 
-    auto* normalizer = gSession->corrset().normalizer();
+    auto* normalizer = gSession->corrset.normalizer();
 
     // TODO: MOST TIME IS SPENT HERE => OPTIMIZE !
     for (int i = gmaIndexMin; i < gmaIndexMax; ++i) {

@@ -51,7 +51,7 @@ AngleMap::AngleMap(const deg tth)
 {
     size_ = gSession->imageSize();
     arrAngles_.resize(size_.count());
-    const Geometry& geo = gSession->geometry();
+    const Geometry& geo = gSession->geometry;
     qDebug() << "AngleMap";
     // compute angles:
     //    detector center is at vec{d} = (d_x, 0, )

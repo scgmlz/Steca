@@ -104,7 +104,7 @@ SubframeFiles::SubframeFiles()
     dataControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->removeFile));
 
     auto* corrFileView = new QcrLineDisplay {"corrFile", []()->QString {
-            return gSession->corrset().fileName(); }};
+            return gSession->corrset.fileName(); }};
 
     auto* corrControls = new QHBoxLayout;
     corrControls->addWidget(corrFileView);

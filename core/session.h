@@ -52,17 +52,11 @@ public:
     Session(const Session&) = delete;
 
     // accessor methods:
-    Corrset& corrset() { return corrset_; }
-    const Corrset& corrset() const { return corrset_; }
-
     Peaks& peaks() { return peaks_; }
     const Peaks& peaks() const { return peaks_; }
 
     Baseline& baseline() { return baseline_; }
     const Baseline& baseline() const { return baseline_; }
-
-    Geometry& geometry() { return geometry_; }
-    const Geometry& geometry() const { return geometry_; }
 
     ImageCut& imageCut() { return imageCut_; }
     const ImageCut& imageCut() const { return imageCut_; }
@@ -113,10 +107,12 @@ public:
 
     // const abbreviations to member member calls
     bool hasData() const { return dataset.countFiles(); }
-    bool hasCorrFile() const { return corrset().hasFile(); }
+    bool hasCorrFile() const { return corrset.hasFile(); }
     const ActiveClusters& activeClusters() const { return dataset.activeClusters(); }
 
+    Geometry geometry;
     Dataset dataset;
+    Corrset corrset;
 
     ParamWrapper<bool> intenScaledAvg {true}; // if not, summed
     ParamWrapper<double> intenScale {1};
@@ -126,8 +122,6 @@ signals:
 
 private:
     // with reference accessor methods:
-    Geometry geometry_;
-    Corrset corrset_;
     size2d imageSize_; //!< All images must have this same size
     ImageCut imageCut_;
     ImageTransform imageTransform_;

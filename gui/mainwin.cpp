@@ -209,15 +209,15 @@ void MainWin::addFiles()
 void MainWin::loadCorrFile()
 {
     // TODO catch THROW's
-    if (gSession->corrset().hasFile()) {
-        gSession->corrset().removeFile();
+    if (gSession->corrset.hasFile()) {
+        gSession->corrset.removeFile();
     } else {
         QString fileName = file_dialog::queryImportFileName(
             this, "Set correction file", dataDir_, dataFormats);
         if (fileName.isEmpty())
             return;
         try {
-            gSession->corrset().loadFile(fileName);
+            gSession->corrset.loadFile(fileName);
         } catch (Exception ex) {
             qWarning() << ex.msg();
         }
