@@ -14,6 +14,7 @@
 
 #include "parametric_function.h"
 #include "core/def/idiomatic_for.h"
+#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class FitParameter
@@ -24,19 +25,14 @@ FitParameter::FitParameter()
     , range_(Range::infinite())
 {}
 
-double FitParameter::allowedMin() const
-{
-    return range_.isValid() ? range_.min : value_;
-}
-
-double FitParameter::allowedMax() const
-{
-    return range_.isValid() ? range_.max : value_;
-}
-
 void FitParameter::setAllowedRange(double min, double max)
 {
     range_.set(min, max);
+}
+
+const Range& FitParameter::range() const {
+    ASSERT (range_.isValid());
+    return range_;
 }
 
 void FitParameter::setValue(double value, double error)
@@ -79,17 +75,15 @@ int ParametricFunction::parameterCount() const
     return parameters_.size();
 }
 
-FitParameter& ParametricFunction::parameterAt(int i)
+FitParameter& ParametricFunction::parameterAt(int ip)
 {
-    return parameters_[i];
+    return parameters_[ip];
 }
 
 void ParametricFunction::reset()
 {
-    for_i (parameters_.size()) {
-        auto& p = parameters_[i];
+    for (auto& p: parameters_)
         p.reset();
-    }
 }
 
 JsonObj ParametricFunction::toJson() const
@@ -107,16 +101,16 @@ void ParametricFunction::fromJson(const JsonObj& obj)
     QJsonArray params = obj.loadArr("parameters");
     int parCount = params.count();
     setParameterCount(parCount);
-    for_i (parCount)
-        parameters_[i].fromJson(params.at(i).toObject());
+    for (int ip=0; ip<parCount; ++ip)
+        parameters_[ip].fromJson(params.at(ip).toObject());
 }
 
-double ParametricFunction::parValue(int i, double const* parValues) const
+double ParametricFunction::parValue(int ip, double const* parValues) const
 {
-    return parValues ? parValues[i] : parameters_.at(i).value();
+    return parValues ? parValues[ip] : parameters_.at(ip).value();
 }
 
-void ParametricFunction::setParValue(int i, double val)
+void ParametricFunction::setParValue(int ip, double val)
 {
-    parameters_[i].setValue(val, 0);
+    parameters_[ip].setValue(val, 0);
 }

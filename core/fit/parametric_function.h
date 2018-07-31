@@ -32,8 +32,7 @@ public:
     JsonObj toJson() const;
     double value() const { return value_; }
     double error() const { return error_; }
-    double allowedMin() const;
-    double allowedMax() const;
+    const Range& range() const;
 
 private:
     double value_, error_;
