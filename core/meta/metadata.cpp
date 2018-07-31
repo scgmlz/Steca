@@ -13,7 +13,6 @@
 //  ***********************************************************************************************
 
 #include "metadata.h"
-#include "core/def/idiomatic_for.h"
 #include "qcr/base/debug.h"
 
 // metadata attributes
@@ -189,7 +188,7 @@ QVariant Metadata::attributeValue(int i) const
 std::vector<QVariant> Metadata::attributeValues() const
 {
     std::vector<QVariant> attrs;
-    for_i (int(eAttr::NUM_ALL_ATTRIBUTES))
+    for (int i=0; i<int(eAttr::NUM_ALL_ATTRIBUTES); ++i)
         attrs.push_back(attributeValue(i));
     return attrs;
 }
