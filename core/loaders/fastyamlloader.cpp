@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "fastyamlloader.h"
-#include "core/typ/exception.h"
+#include "core/aux/exception.h"
 #include <yaml.h>
 #include <QMap>
 #include <sstream>

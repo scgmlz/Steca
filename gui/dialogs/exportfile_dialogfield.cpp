@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "exportfile_dialogfield.h"
-#include "core/typ/exception.h"
+#include "core/aux/exception.h"
 #include "gui/dialogs/file_dialog.h"
 #include "qcr/base/debug.h"
 #include <QGroupBox>

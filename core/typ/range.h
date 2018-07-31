@@ -15,7 +15,7 @@
 #ifndef RANGE_H
 #define RANGE_H
 
-#include "core/typ/exception.h"
+#include "core/aux/exception.h"
 #include <QJsonArray>
 #include <QtGlobal>
 #include <vector> // no auto rm
