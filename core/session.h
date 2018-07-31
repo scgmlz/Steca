@@ -41,12 +41,6 @@ public:
     Session(const Session&) = delete;
 
     // accessor methods:
-    Peaks& peaks() { return peaks_; }
-    const Peaks& peaks() const { return peaks_; }
-
-    Baseline& baseline() { return baseline_; }
-    const Baseline& baseline() const { return baseline_; }
-
     const AngleMap& angleMap(const deg tth) { return angleMap_.get(tth); }
 
     const PeakInfos& directPeakInfos() const { return directPeakInfos_; }
@@ -80,6 +74,8 @@ public:
     Params  params;
     GammaSelection gammaSelection;
     ThetaSelection thetaSelection;
+    Baseline baseline;
+    Peaks peaks;
 
 signals:
     void sigDetector();      //!< detector detector has changed
@@ -87,8 +83,6 @@ signals:
 private:
     // with reference accessor methods:
     size2d imageSize_; //!< All images must have this same size
-    Peaks peaks_;
-    Baseline baseline_;
     PeakInfos directPeakInfos_;
     PeakInfos interpolatedPeakInfos_;
     // others
