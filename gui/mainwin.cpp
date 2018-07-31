@@ -136,14 +136,14 @@ void MainWin::readSettings()
     if (initialState_.isEmpty())
         initialState_ = saveState();
     XSettings s("MainWin");
-    restoreDetector(s.value("detector").toByteArray());
+    restoreGeometry(s.value("geometry").toByteArray());
     restoreState(s.value("state").toByteArray());
 }
 
 void MainWin::saveSettings() const
 {
     XSettings s("MainWin");
-    s.setValue("detector", saveDetector()); // this mainwindow's widget detector
+    s.setValue("geometry", saveGeometry()); // this mainwindow's widget geometry
     s.setValue("state", saveState()); // state of this mainwindow's toolbars and dockwidgets
 }
 

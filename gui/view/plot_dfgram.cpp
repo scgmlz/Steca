@@ -164,7 +164,7 @@ void PlotDfgram::resizeEvent(QResizeEvent* e)
 {
     QCustomPlot::resizeEvent(e);
     const QSize size = e->size();
-    overlay_->setDetector(0, 0, size.width(), size.height());
+    overlay_->setGeometry(0, 0, size.width(), size.height());
 }
 
 void PlotDfgram::onPeakData()
