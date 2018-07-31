@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/def/settings.h"
+#include "core/typ/settings.h"
 #include "core/session.h"
 
 InterpolParams::InterpolParams()

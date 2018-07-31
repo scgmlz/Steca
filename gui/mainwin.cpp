@@ -16,7 +16,7 @@
 #include "core/algo/collect_intensities.h"
 #include "core/algo/fitting.h"
 #include "core/algo/interpolate_polefig.h"
-#include "core/def/settings.h"
+#include "core/typ/settings.h"
 #include "core/session.h"
 #include "core/typ/async.h"
 #include "gui/actions/image_trafo_actions.h"
