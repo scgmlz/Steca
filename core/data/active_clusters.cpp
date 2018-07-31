@@ -15,7 +15,7 @@
 #include "active_clusters.h"
 #include "core/session.h"
 #include "core/algo/collect_intensities.h"
-#include "core/calc/lens.h"
+#include "core/data/lens.h"
 #include "core/data/cluster.h"
 #include "core/aux/async.h"
 #include "qcr/base/debug.h"

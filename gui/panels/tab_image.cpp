@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "tab_image.h"
-#include "core/calc/lens.h"
+#include "core/data/lens.h"
 #include "core/def/idiomatic_for.h"
 #include "core/raw/angle_map.h"
 #include "core/session.h"
