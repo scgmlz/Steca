@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/typ/settings.h"
+#include "core/aux/settings.h"
 #include "core/session.h"
 #include "qcr/base/debug.h"
 #include <iostream> // for debugging
