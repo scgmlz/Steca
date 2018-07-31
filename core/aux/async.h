@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/typ/async.h
+//! @file      core/aux/async.h
 //! @brief     Defines classes TakesLongTime and Progress
 //!
 //! @homepage  https://github.com/scgmlz/Steca

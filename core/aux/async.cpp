@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/typ/async.cpp
+//! @file      core/aux/async.cpp
 //! @brief     Implements classes TakesLongTime and Progress
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/typ/async.h"
+#include "core/aux/async.h"
 #include "qcr/base/debug.h"
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QProgressBar>

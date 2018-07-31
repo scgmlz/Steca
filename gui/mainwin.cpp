@@ -18,7 +18,7 @@
 #include "core/algo/interpolate_polefig.h"
 #include "core/aux/settings.h"
 #include "core/session.h"
-#include "core/typ/async.h"
+#include "core/aux/async.h"
 #include "gui/actions/image_trafo_actions.h"
 #include "gui/actions/menus.h"
 #include "gui/actions/toggles.h"

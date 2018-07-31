@@ -17,7 +17,7 @@
 #include "core/algo/collect_intensities.h"
 #include "core/calc/lens.h"
 #include "core/data/cluster.h"
-#include "core/typ/async.h"
+#include "core/aux/async.h"
 #include "qcr/base/debug.h"
 
 void ActiveClusters::reset(std::vector<std::unique_ptr<Cluster>>& allClusters)
