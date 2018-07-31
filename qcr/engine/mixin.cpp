@@ -67,18 +67,7 @@ void QcrRoot::remakeAll(const QString& whence)
 
 QcrSettable::QcrSettable(QObject& object, const QString& name, bool _modal)
     : QcrMixin {object, gConsole->learn(name, this)}
-    , modal_(_modal)
 {}
-
-QcrSettable::~QcrSettable()
-{
-    /* TODO ???
-    if (!modal_) {
-        qDebug() << "~QcrSettable calling forget " << name();
-        gConsole->forget(name());
-    }
-    */
-}
 
 void QcrSettable::doLog(bool softwareCalled, const QString& msg)
 {
