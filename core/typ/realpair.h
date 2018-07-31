@@ -15,7 +15,7 @@
 #ifndef REALPAIR_H
 #define REALPAIR_H
 
-#include "core/typ/json.h"
+#include "core/aux/json.h"
 
 //! 2D point, reals
 class qpair {

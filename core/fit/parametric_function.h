@@ -15,7 +15,7 @@
 #ifndef PARAMETRIC_FUNCTION_H
 #define PARAMETRIC_FUNCTION_H
 
-#include "core/typ/json.h"
+#include "core/aux/json.h"
 #include "core/typ/range.h"
 
 //! Parameter value, error, and allowed range for ParametricFunction
