@@ -71,11 +71,12 @@ Dfgram recomputeSectorDfgram(const GammaSector* gSector);
 class GammaSector {
 public:
     GammaSector() = delete;
-    GammaSector(const Cluster* const o, int i) : owningCluster_(o), i_(i) {}
+    GammaSector(const CachingVector<Cluster, GammaSector>* const v, int i)
+        : owningVector_(v), i_(i) {}
     GammaSector(const GammaSector& rhs) = delete;
     GammaSector(GammaSector&& rhs)
         : cachedDfgram_(this, rhs.cachedDfgram_)
-        , owningCluster_(rhs.owningCluster_)
+        , owningVector_(rhs.owningVector_)
         , i_(rhs.i_)
     {}
 
@@ -86,7 +87,7 @@ public:
 
 private:
     CachedPayload<GammaSector, Dfgram, recomputeSectorDfgram> cachedDfgram_;
-    const Cluster* const owningCluster_;
+    const CachingVector<Cluster, GammaSector>* const owningVector_;
     int i_;
     friend Dfgram recomputeSectorDfgram(const GammaSector* const gSector);
 };

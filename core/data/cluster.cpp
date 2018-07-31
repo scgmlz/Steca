@@ -114,13 +114,14 @@ double Sequence::normFactor() const
 
 void GammaSector::init()
 {
-    QObject::connect(gSession, &Session::sigDetector, [this]() { cachedDfgram_.invalidate(); });
+    QObject::connect(gSession, &Session::sigDetector,
+                     [this]() { cachedDfgram_.invalidate(); });
 }
 
 Dfgram recomputeSectorDfgram(const GammaSector* const gSector)
 {
     // qDebug() << "recompute dfgram" << gSector->owningCluster_->index() << "for sector i,n =" << gSector->i_ << gSector->n_;
-    return gSector->owningCluster_->segmentalDfgram(gSector->i_);
+    return gSector->owningVector_->owner->segmentalDfgram(gSector->i_);
 }
 
 //  ***********************************************************************************************
