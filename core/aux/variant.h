@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/typ/variant.h
+//! @file      core/aux/variant.h
 //! @brief     Defines helper functions related to QVariant
 //!
 //! @homepage  https://github.com/scgmlz/Steca

@@ -16,7 +16,7 @@
 #define METADATA_H
 
 #include "core/typ/angles.h"
-#include "core/typ/variant.h"
+#include "core/aux/variant.h"
 
 //! The meta data associated with one Measurement.
 
