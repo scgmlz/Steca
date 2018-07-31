@@ -18,6 +18,7 @@
 #include "core/pars/detector.h"
 #include "core/pars/image_transform.h"
 #include "core/pars/interpol_params.h"
+#include "core/pars/meta_selection.h"
 #include "qcr/engine/param_wrapper.h"
 
 enum class eNorm {
@@ -27,7 +28,6 @@ enum class eNorm {
     TIME,
     DELTA_TIME,
 };
-
 
 //! Global user-selected parameters
 
@@ -42,6 +42,7 @@ public:
     ParamWrapper<bool>   intenScaledAvg {true}; // if not, summed
     ParamWrapper<double> intenScale {1};
     eNorm                normMode {eNorm::NONE};
+    MetaSelection        metaSelection;
 };
 
 #endif // PARAMS_H

@@ -24,7 +24,6 @@
 #include "core/data/dataset.h"
 #include "core/data/peak_info.h"
 #include "core/raw/angle_map.h"
-#include "core/pars/detector.h"
 #include "core/typ/cached.h"
 
 extern class Session* gSession;
@@ -59,11 +58,6 @@ public:
     const PeakInfos& directPeakInfos() const { return directPeakInfos_; }
     const PeakInfos& interpolatedPeakInfos() const { return interpolatedPeakInfos_; }
     const PeakInfos& peakInfos() const;
-
-    void setMetaSelected(int, bool);
-    bool metaIsSelected(int i) const { return metaSelection_[i]; }
-    int metaSelectedCount() const { return metaInfoNums_.size(); }
-    int metaSelectedAt(int i) const { return metaInfoNums_.at(i); }
 
     // modifying methods:
     void clear();
@@ -104,8 +98,6 @@ private:
     PeakInfos directPeakInfos_;
     PeakInfos interpolatedPeakInfos_;
     // others
-    std::vector<bool> metaSelection_; //!< true if meta datum is to be displayed
-    std::vector<int> metaInfoNums_; //!< indices of metadata items selected for display
     KeyedCache<AngleMap, deg> angleMap_;
 };
 

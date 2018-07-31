@@ -26,7 +26,7 @@
 class ActiveClustersModel : public CheckTableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
     ActiveClustersModel() : CheckTableModel("measurement") {}
-    int columnCount() const final { return COL_ATTRS + gSession->metaSelectedCount(); }
+    int columnCount() const final { return COL_ATTRS + gSession->params.metaSelection.count(); }
 
     enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
 
@@ -56,8 +56,9 @@ QVariant ActiveClustersModel::data(const QModelIndex& index, int role) const
             if (cluster.count()>1)
                 ret += "-" + QString::number(cluster.totalOffset()+cluster.count());
             return ret;
-        } else if (col>=COL_ATTRS && col < COL_ATTRS+gSession->metaSelectedCount()) {
-            return cluster.avgMetadata().attributeStrValue(gSession->metaSelectedAt(col-COL_ATTRS));
+        } else if (col>=COL_ATTRS && col < COL_ATTRS+gSession->params.metaSelection.count()) {
+            return cluster.avgMetadata().attributeStrValue(
+                gSession->params.metaSelection.at(col-COL_ATTRS));
         } else
             return {};
     }
@@ -112,8 +113,8 @@ QVariant ActiveClustersModel::headerData(int col, Qt::Orientation ori, int role)
         return {};
     if (col==COL_NUMBER)
         return "#";
-    else if (col>=COL_ATTRS && col < COL_ATTRS+gSession->metaSelectedCount())
-        return Metadata::attributeTag(gSession->metaSelectedAt(col-COL_ATTRS), false);
+    else if (col>=COL_ATTRS && col < COL_ATTRS+gSession->params.metaSelection.count())
+        return Metadata::attributeTag(gSession->params.metaSelection.at(col-COL_ATTRS), false);
     return {};
 }
 
@@ -140,7 +141,7 @@ ActiveClustersView::ActiveClustersView()
 
 void ActiveClustersView::onData()
 {
-    setHeaderHidden(gSession->metaSelectedCount()==0);
+    setHeaderHidden(gSession->params.metaSelection.count()==0);
     setColumnWidth(0, 0);
     setColumnWidth(1,  3*dWidth());
     for (int i=2; i<model_->columnCount(); ++i)

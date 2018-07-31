@@ -26,7 +26,6 @@
 Session* gSession; //!< global, for data handling
 
 Session::Session()
-    : metaSelection_( std::vector<bool>(Metadata::size(), false) )
 {
     gSession = this;
 
@@ -110,16 +109,6 @@ QByteArray Session::serializeSession() const
     top.insert("theta selection", thetaSelection().toJson());
 
     return QJsonDocument(top).toJson();
-}
-
-void Session::setMetaSelected(int idx, bool on)
-{
-    metaSelection_[idx] = on;
-    // alternative representation:
-    metaInfoNums_.clear();
-    for_i (Metadata::size())
-        if (metaSelection_[i])
-            metaInfoNums_.push_back(i);
 }
 
 void Session::updateImageSize()
