@@ -16,7 +16,7 @@
 
 #include "range.h"
 #include "core/def/idiomatic_for.h"
-#include "core/aux/json.h"
+#include "core/typ/json.h"
 #include "qcr/base/debug.h"
 
 //  ***********************************************************************************************

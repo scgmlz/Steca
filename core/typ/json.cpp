@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/aux/json.cpp
+//! @file      core/typ/json.cpp
 //! @brief     Implements function double_to_json and class JsonObj
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/aux/json.h"
+#include "core/typ/json.h"
 #include "core/typ/range.h"
 #include <QStringList> // needed under Travis
 

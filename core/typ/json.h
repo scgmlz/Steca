@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/aux/json.h
+//! @file      core/typ/json.h
 //! @brief     Defines class JsonObj
 //!
 //! @homepage  https://github.com/scgmlz/Steca
