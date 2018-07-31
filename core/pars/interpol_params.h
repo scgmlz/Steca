@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/calc/interpol_params.h
+//! @file      core/pars/interpol_params.h
 //! @brief     Defines InterpolParams
 //!
 //! @homepage  https://github.com/scgmlz/Steca

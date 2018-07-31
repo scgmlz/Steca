@@ -17,7 +17,7 @@
 
 #include "core/pars/detector.h"
 #include "core/pars/image_transform.h"
-#include "core/calc/interpol_params.h"
+#include "core/pars/interpol_params.h"
 #include "qcr/engine/param_wrapper.h"
 
 enum class eNorm {
