@@ -15,7 +15,7 @@
 #ifndef PEAK_INFO_H
 #define PEAK_INFO_H
 
-#include "core/raw/metadata.h"
+#include "core/meta/metadata.h"
 #include "core/typ/range.h"
 
 //! Metadata, peak fit results, and pole figure angles.

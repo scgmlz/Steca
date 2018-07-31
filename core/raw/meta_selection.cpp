@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/raw/meta_selection.h"
-#include "core/raw/metadata.h"
+#include "core/meta/metadata.h"
 
 MetaSelection::MetaSelection()
     : metaSelection_ (Metadata::size(), false)
