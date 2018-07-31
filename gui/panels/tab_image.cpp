@@ -246,7 +246,7 @@ DataImageTab::DataImageTab()
             int n = cluster ? cluster->count() : 1;
             idxMeas_.setMaximum(n);
             if (n>1) {
-                idxMeas_.setMinimum(n);
+                idxMeas_.setMinimum(1);
                 idxMeas_.setEnabled(true);
                 idxMeas_.setToolTip(
                     "Index of measurement within the current group of " +
