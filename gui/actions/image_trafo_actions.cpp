@@ -20,7 +20,7 @@ ImageTrafoActions::ImageTrafoActions()
 {
     connect(&mirrorImage, &QAction::toggled, [this](bool on) { setImageMirror(on); });
     connect(&rotateImage, &QAction::triggered, [this]() { setImageRotate(
-                gSession->imageTransform().nextRotate()); });
+                gSession->params.imageTransform().nextRotate()); });
 }
 
 void ImageTrafoActions::setImageRotate(const ImageTransform& rot)

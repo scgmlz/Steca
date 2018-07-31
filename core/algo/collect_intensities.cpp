@@ -74,7 +74,7 @@ void projectMeasurement(
 
 int algo::numTthBins(const std::vector<const Measurement*>& _members, const Range& _rgeTth)
 {
-    const ImageCut& cut = gSession->imageCut;
+    const ImageCut& cut = gSession->params.imageCut;
     int ret = gSession->imageSize().w - cut.horiz(); // number of horizontal pixels
     if (_members.size()>1) // for combined cluster, increase ret
         ret = ret * _rgeTth.width() / _members.front()->rgeTth().width();

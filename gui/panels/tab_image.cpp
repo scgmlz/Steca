@@ -108,7 +108,7 @@ void ImageView::paintEvent(QPaintEvent*)
         p.setPen(Qt::lightGray);
 
         // cut
-        const ImageCut& cut = gSession->imageCut;
+        const ImageCut& cut = gSession->params.imageCut;
         const QRect r = rect.adjusted(-1, -1, 0, 0)
                       .adjusted(
                           qRound(scale_ * cut.left.val()), qRound(scale_ * cut.top.val()),
@@ -123,8 +123,8 @@ void ImageView::paintEvent(QPaintEvent*)
         const int rw = rr - rl;
 
         // cross
-        const int x = qRound(rcx + scale_ * gSession->detector.pixOffset[0].val());
-        const int y = qRound(rcy + scale_ * gSession->detector.pixOffset[1].val());
+        const int x = qRound(rcx + scale_ * gSession->params.detector.pixOffset[0].val());
+        const int y = qRound(rcy + scale_ * gSession->params.detector.pixOffset[1].val());
         p.drawLine(x, rt, x, rb);
         p.drawLine(rl, y, rr, y);
 

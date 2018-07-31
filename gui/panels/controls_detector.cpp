@@ -41,13 +41,13 @@ private:
 };
 
 DetectorControls::DetectorControls()
-    : detDistance_  {"detDistance", &gSession->detector.detectorDistance, 6, 1, 1e1, 1e5,
+    : detDistance_  {"detDistance", &gSession->params.detector.detectorDistance, 6, 1, 1e1, 1e5,
         "Distance from sample to detector, in mm"}
-    , detPixelSize_ {"detPixelSize", &gSession->detector.pixSize, 3, 2, 1e-1, 1e2,
+    , detPixelSize_ {"detPixelSize", &gSession->params.detector.pixSize, 3, 2, 1e-1, 1e2,
               "Side length of detector pixel square, in mm"}
-    , beamOffsetI_  {"beamOffsetI", &gSession->detector.pixOffset[0], 3, true,
+    , beamOffsetI_  {"beamOffsetI", &gSession->params.detector.pixOffset[0], 3, true,
               INT_MIN, INT_MAX, "Horizontal detector offset, in pixel units"}
-    , beamOffsetJ_  {"beamOffsetJ", &gSession->detector.pixOffset[1], 3, true,
+    , beamOffsetJ_  {"beamOffsetJ", &gSession->params.detector.pixOffset[1], 3, true,
               INT_MIN, INT_MAX, "Vertical detector offset, in pixel units"}
 {
     // layout
@@ -97,13 +97,13 @@ private:
 
 CutControls::CutControls()
     : link_      {&gGui->toggles->linkCuts}
-    , cutLeft_   {"cutLeft",   &gSession->imageCut.left,   3, false, 0, INT_MAX,
+    , cutLeft_   {"cutLeft",   &gSession->params.imageCut.left,   3, false, 0, INT_MAX,
               "Number of pixels to be cut at the left"}
-    , cutTop_    {"cutTop",    &gSession->imageCut.top,    3, false, 0, INT_MAX,
+    , cutTop_    {"cutTop",    &gSession->params.imageCut.top,    3, false, 0, INT_MAX,
               "Number of pixels to be cut at the top"}
-    , cutRight_  {"cutRight",  &gSession->imageCut.right,  3, false, 0, INT_MAX,
+    , cutRight_  {"cutRight",  &gSession->params.imageCut.right,  3, false, 0, INT_MAX,
               "Number of pixels to be cut at the right"}
-    , cutBottom_ {"cutBottom", &gSession->imageCut.bottom, 3, false, 0, INT_MAX,
+    , cutBottom_ {"cutBottom", &gSession->params.imageCut.bottom, 3, false, 0, INT_MAX,
               "Number of pixels to be cut at the bottom"}
 {
 

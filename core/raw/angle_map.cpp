@@ -51,7 +51,7 @@ AngleMap::AngleMap(const deg tth)
 {
     size_ = gSession->imageSize();
     arrAngles_.resize(size_.count());
-    const Detector& geo = gSession->detector;
+    const Detector& geo = gSession->params.detector;
     qDebug() << "AngleMap";
     // compute angles:
     //    detector center is at vec{d} = (d_x, 0, )
@@ -78,7 +78,7 @@ AngleMap::AngleMap(const deg tth)
         }
     }
 
-    const ImageCut& cut = gSession->imageCut;
+    const ImageCut& cut = gSession->params.imageCut;
     ASSERT(size_.w > cut.horiz());
     ASSERT(size_.h > cut.vertical());
     const int countAfterCut = (size_.w - cut.horiz()) * (size_.h - cut.vertical());

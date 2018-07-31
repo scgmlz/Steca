@@ -28,10 +28,10 @@ ImageLens::ImageLens(const Image& image, bool trans, bool cut)
 size2d ImageLens::imgSize() const
 {
     size2d ret = image_.size();
-    if (trans_ && gSession->imageTransform().isTransposed())
+    if (trans_ && gSession->params.imageTransform().isTransposed())
         ret = ret.transposed();
     if (cut_)
-        ret = ret - gSession->imageCut.marginSize();
+        ret = ret - gSession->params.imageCut.marginSize();
     return ret;
 }
 
@@ -41,7 +41,7 @@ void ImageLens::doTrans(int& x, int& y) const
     int w = s.w;
     int h = s.h;
 
-    switch (gSession->imageTransform().val) {
+    switch (gSession->params.imageTransform().val) {
     case ImageTransform::ROTATE_0: break;
     case ImageTransform::ROTATE_1:
         qSwap(x, y);
@@ -68,8 +68,8 @@ void ImageLens::doTrans(int& x, int& y) const
 
 void ImageLens::doCut(int& i, int& j) const
 {
-    i += gSession->imageCut.left.val();
-    j += gSession->imageCut.top.val();
+    i += gSession->params.imageCut.left.val();
+    j += gSession->params.imageCut.top.val();
 }
 
 
