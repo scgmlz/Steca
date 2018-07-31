@@ -28,7 +28,7 @@ public:
     QJsonObject toJson() const;
 
     Ranges ranges;
-    ParamWrapper<int> polynomDegree {0};
+    ParamWrapper<int> polynomDegree {2};
 };
 
 #endif // BASELINE_H

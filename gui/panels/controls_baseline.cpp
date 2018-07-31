@@ -93,7 +93,7 @@ BaseRangesView::BaseRangesView()
 
 ControlsBaseline::ControlsBaseline()
     : QcrWidget{"baseline"}
-    , spinDegree_ {2, "degree", 4, false, 0, 4,
+    , spinDegree_ {"degree", &gSession->baseline.polynomDegree, 4, false, 0, 4,
               "Degree of the polynomial used to fit the baseline"}
 {
     hb_.addWidget(new QLabel("Pol. degree:"));
