@@ -142,8 +142,3 @@ size2d Session::imageSize() const
 {
     return params.imageTransform.isTransposed() ? imageSize_.transposed() : imageSize_;
 }
-
-void Session::setNormMode(eNorm normMode)
-{
-    normMode_ = normMode;
-}

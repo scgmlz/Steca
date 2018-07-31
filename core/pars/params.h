@@ -39,7 +39,7 @@ public:
     ImageCut             imageCut;
     ParamWrapper<bool>   intenScaledAvg {true}; // if not, summed
     ParamWrapper<double> intenScale {1};
-    eNorm                normMode_ {eNorm::NONE};
+    eNorm                normMode {eNorm::NONE};
 };
 
 #endif // PARAMS_H

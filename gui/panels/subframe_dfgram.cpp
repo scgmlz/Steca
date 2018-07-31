@@ -61,7 +61,7 @@ DfPanel::DfPanel()
 
     // outbound connections
     connect(&comboNormType_, _SLOT_(QComboBox,currentIndexChanged,int), [](int index) {
-            gSession->setNormMode(eNorm(index)); });
+            gSession->params.normMode = (eNorm)index; });
 
     // layout
     auto* hb = new QHBoxLayout;

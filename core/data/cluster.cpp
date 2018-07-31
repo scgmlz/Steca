@@ -82,7 +82,7 @@ double Sequence::normFactor() const
     double num = 1, den = 1; // numerator, denominator
     const ActiveClusters& all = gSession->activeClusters();
 
-    switch (gSession->normMode()) {
+    switch (gSession->params.normMode) {
     case eNorm::MONITOR:
         num = all.grandAvgMonitorCount.get();
         den = avgMonitorCount();
