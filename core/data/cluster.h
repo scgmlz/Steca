@@ -16,7 +16,7 @@
 #define CLUSTER_H
 
 #include "core/typ/cached.h"
-#include "core/typ/dfgram.h"
+#include "core/data/dfgram.h"
 #include "core/raw/measurement.h"
 
 class Dfgram;

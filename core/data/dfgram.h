@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/typ/dfgram.h
+//! @file      core/data/dfgram.h
 //! @brief     Defines class Dfgram
 //!
 //! @homepage  https://github.com/scgmlz/Steca
