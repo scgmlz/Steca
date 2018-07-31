@@ -35,7 +35,7 @@ PeakInfo rawFit(Cluster& cluster, int iGamma, Peak& peak)
     if (fitrange.isEmpty())
         return {metadata, alpha, beta, gammaSector};
 
-    auto& baseline = gSession->baseline();
+    auto& baseline = gSession->baseline;
 
     // Diffractogram minus fitted background:
     const Curve& curve = {}; // TODO NOW cluster.gSector.get(iGamma)...
@@ -68,9 +68,9 @@ PeakInfo rawFit(Cluster& cluster, int iGamma, Peak& peak)
 
 void algo::rawFits(class QProgressBar* progressBar)
 {
-    if (!gSession->peaks().count())
+    if (!gSession->peaks.count())
         qFatal("algo::rawFits called before peak is defined");
-    Peak* peak = gSession->peaks().selectedPeak();
+    Peak* peak = gSession->peaks.selectedPeak();
     if (!peak)
         qFatal("algo::rawFits called while no peak is selected");
 

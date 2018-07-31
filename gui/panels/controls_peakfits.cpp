@@ -37,9 +37,9 @@ public:
     PeaksModel() : TableModel("peaks") {}
 
     int columnCount() const final { return NUM_COLUMNS; }
-    int rowCount() const final { return gSession->peaks().count(); }
-    int highlighted() const final { return gSession->peaks().selectedIndex(); }
-    void setHighlight(int row) final { gSession->peaks().select(row); }
+    int rowCount() const final { return gSession->peaks.count(); }
+    int highlighted() const final { return gSession->peaks.selectedIndex(); }
+    void setHighlight(int row) final { gSession->peaks.select(row); }
 
     QVariant data(const QModelIndex&, int) const;
 
@@ -51,7 +51,7 @@ QVariant PeaksModel::data(const QModelIndex& index, int role) const
     int row = index.row();
     if (row < 0 || rowCount() <= row)
         return {};
-    const Peak& peak = gSession->peaks().at(row);
+    const Peak& peak = gSession->peaks.at(row);
     switch (role) {
     case Qt::DisplayRole: {
         int col = index.column();
@@ -223,7 +223,7 @@ ParamsView::ParamsView()
     addWidget(widgets_[1] = new FitParamsView());
     widgets_[0]->show();
     setRemake( [=]() {
-            Peak* peak = gSession->peaks().selectedPeak();
+            Peak* peak = gSession->peaks.selectedPeak();
             setEnabled(peak);
             if (!peak)
                 return;
@@ -244,18 +244,18 @@ ControlsPeakfits::ControlsPeakfits()
 {
     // outbound connections
     connect(&gGui->triggers->peakRemove, &QAction::triggered, []() {
-            gSession->peaks().removeSelected();
+            gSession->peaks.removeSelected();
             gRoot->remakeAll("removePeak"); });
     connect(&gGui->triggers->peaksClear, &QAction::triggered, []() {
-            gSession->peaks().clear();
+            gSession->peaks.clear();
             gRoot->remakeAll("clearPeaks"); });
 
     // TODO move this to core
     comboReflType_.cell()->setHook( [](int i) {
             const QString& peakFunctionName = FunctionRegistry::instance()->keys()[i];
             Peaks::defaultFunctionName = peakFunctionName;
-            if (gSession->peaks().selectedPeak())
-                gSession->peaks().selectedPeak()->setPeakFunction(peakFunctionName);
+            if (gSession->peaks.selectedPeak())
+                gSession->peaks.selectedPeak()->setPeakFunction(peakFunctionName);
             gRoot->remakeAll("reflType");
         } );
 
@@ -270,7 +270,7 @@ ControlsPeakfits::ControlsPeakfits()
     box->addWidget(new PeaksView);
     box->addWidget(&comboReflType_);
     box->addWidget(new RangeControl("peak", []()->Range*{
-                return gSession->peaks().selectedRange(); }));
+                return gSession->peaks.selectedRange(); }));
     box->addWidget(new ParamsView);
     box->addStretch(1000);
     setLayout(box);

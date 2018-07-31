@@ -234,8 +234,8 @@ void MainWin::refresh()
     runFits();
 
     bool hasData = gSession->hasData();
-    bool hasPeak = gSession->peaks().count();
-    bool hasBase = gSession->baseline().ranges().count();
+    bool hasPeak = gSession->peaks.count();
+    bool hasBase = gSession->baseline.ranges().count();
     triggers->exportDfgram.setEnabled(hasData);
     triggers->exportBigtable.setEnabled(hasData && hasPeak);
     triggers->exportDiagram.setEnabled(hasData && hasPeak);
@@ -252,7 +252,7 @@ void MainWin::refresh()
 
 void MainWin::runFits()
 {
-    if (!gSession->peaks().count()) {
+    if (!gSession->peaks.count()) {
         gSession->setDirectPeakInfos({});
         gSession->setInterpolatedPeakInfos({});
         return;

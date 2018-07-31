@@ -70,7 +70,7 @@ void writePeakInfo(QTextStream& stream, bool interpolated, const QString& separa
 ExportPolefig::ExportPolefig()
     : QcrDialog(gGui, "Export Polefigure")
 {
-    if (false && gSession->peaks().count()>1) { // TODO restore once peak fits are cached
+    if (false && gSession->peaks.count()>1) { // TODO restore once peak fits are cached
         exportCombi_.programaticallySetValue(true);
     } else {
         exportCurrent_.programaticallySetValue(true);

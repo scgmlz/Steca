@@ -19,7 +19,6 @@
 
 #include "qcr/base/debug.h"
 #include "core/session.h"
-#include "core/def/idiomatic_for.h"
 #include "core/fit/peak_functions.h"
 #include <QJsonDocument>
 
@@ -55,8 +54,8 @@ void Session::clear()
 {
     dataset.clear();
     corrset.clear();
-    baseline_.clear();
-    peaks_.clear();
+    baseline.clear();
+    peaks.clear();
 
     params.clear();
 }
@@ -75,8 +74,8 @@ void Session::sessionFromJson(const QByteArray& json)
 
     dataset.fromJson(top.loadObj("dataset"));
     corrset.fromJson(top.loadObj("corrset"));
-    peaks().fromJson(top.loadArr("peaks"));
-    baseline().fromJson(top.loadObj("baseline"));
+    peaks.fromJson(top.loadArr("peaks"));
+    baseline.fromJson(top.loadObj("baseline"));
 
     params.intenScaledAvg.setVal(top.loadBool("average intensity?", true));
     params.intenScale.setVal(top.loadPreal("intensity scale", 1));
@@ -95,8 +94,8 @@ QByteArray Session::serializeSession() const
 
     top.insert("dataset", dataset.toJson());
     top.insert("corrset", corrset.toJson());
-    top.insert("peaks", peaks().toJson());
-    top.insert("baseline", baseline().toJson());
+    top.insert("peaks", peaks.toJson());
+    top.insert("baseline", baseline.toJson());
 
     // TODO serialize metaSelection_
 

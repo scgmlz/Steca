@@ -140,7 +140,7 @@ void Peaks::selectByValue(double x)
 QStringList Peaks::names() const
 {
     QStringList ret;
-    for_i (gSession->peaks().count())
+    for_i (gSession->peaks.count())
         ret.append(QStringLiteral("%1: %2")
                    .arg(i+1)
                    .arg(peaks_[i].functionName()));

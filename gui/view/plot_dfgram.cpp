@@ -42,9 +42,9 @@ PlotDfgramOverlay::PlotDfgramOverlay(PlotDfgram& parent)
 void PlotDfgramOverlay::addRange(const Range& range)
 {
     if      (gGui->state->editingBaseline)
-        gSession->baseline().ranges().add(range);
+        gSession->baseline.ranges().add(range);
     else if (gGui->state->editingPeakfits)
-        gSession->peaks().add(range);
+        gSession->peaks.add(range);
     else
         return;
     gRoot->remakeAll("PlotDfgramOverlay::addRange");
@@ -55,9 +55,9 @@ void PlotDfgramOverlay::addRange(const Range& range)
 void PlotDfgramOverlay::selectRange(double x)
 {
     if      (gGui->state->editingBaseline)
-        gSession->baseline().ranges().selectByValue(x);
+        gSession->baseline.ranges().selectByValue(x);
     else if (gGui->state->editingPeakfits)
-        gSession->peaks().selectByValue(x);
+        gSession->peaks.selectByValue(x);
     else
         return;
     gRoot->remakeAll("PlotDfgramOverlay::selectRange");
@@ -169,7 +169,7 @@ void PlotDfgram::resizeEvent(QResizeEvent* e)
 
 void PlotDfgram::onPeakData()
 {
-    Peak* peak = gSession->peaks().selectedPeak();
+    Peak* peak = gSession->peaks.selectedPeak();
     guesses_->clearData();
     fits_->clearData();
 
@@ -201,15 +201,15 @@ void PlotDfgram::renderAll()
     clearItems();
 
     // Render colored background areas to indicate baseline and peak fit ranges.
-    const Ranges& rs = gSession->baseline().ranges();
+    const Ranges& rs = gSession->baseline.ranges();
     bool showingBaseline = gGui->setup()->currentIndex() == gGui->setup()->idxBaseline;
     for_i (rs.count())
         addBgItem(rs.at(i),
-                  showingBaseline && i==gSession->baseline().ranges().selectedIndex() ?
+                  showingBaseline && i==gSession->baseline.ranges().selectedIndex() ?
                   colors::baseEmph : colors::baseStd);
-    for_i (gSession->peaks().count())
-        addBgItem(gSession->peaks().at(i).range(),
-                  !showingBaseline && i==gSession->peaks().selectedIndex() ?
+    for_i (gSession->peaks.count())
+        addBgItem(gSession->peaks.at(i).range(),
+                  !showingBaseline && i==gSession->peaks.selectedIndex() ?
                   colors::peakEmph : colors::peakStd);
 
     if (!gSession->dataset.highlight().cluster()) {
@@ -288,7 +288,7 @@ void PlotDfgram::calcBackground()
     dgramBgFitted_.clear();
 
     const Polynom& bgPolynom = Polynom::fromFit(
-        gSession->baseline().polynomDegree.val(), curve0_, gSession->baseline().ranges());
+        gSession->baseline.polynomDegree.val(), curve0_, gSession->baseline.ranges());
         // TODO bundle this code line which similarly appears in at least one other place
 
     for_i (curve0_.count()) {
@@ -303,9 +303,9 @@ void PlotDfgram::calcPeaks()
     refls_.clear();
     currReflIndex_ = 0;
 
-    for_i (gSession->peaks().count()) {
-        Peak& peak = gSession->peaks().at(i);
-        if (&peak == gSession->peaks().selectedPeak())
+    for_i (gSession->peaks.count()) {
+        Peak& peak = gSession->peaks.at(i);
+        if (&peak == gSession->peaks.selectedPeak())
             currReflIndex_ = i;
 
         peak.fit(dgramBgFitted_);
