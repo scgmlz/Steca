@@ -27,7 +27,7 @@ PeakInfo rawFit(Cluster& cluster, int iGamma, Peak& peak)
     std::unique_ptr<PeakFunction> peakFunction( FunctionRegistry::clone(peak.peakFunction()) );
     const Range& fitrange = peakFunction->fitRange();
     const Metadata* metadata = &cluster.avgMetadata();
-    const Range gammaSector = gSession->gammaSelection().slice2range(iGamma);
+    const Range gammaSector = gSession->gammaSelection.slice2range(iGamma);
     deg alpha, beta;
     // TODO (MATH) use fitted tth center, not center of given fit range
     algo::calculateAlphaBeta(alpha, beta, fitrange.center(), gammaSector.center(),
@@ -77,7 +77,7 @@ void algo::rawFits(class QProgressBar* progressBar)
     PeakInfos tmp;
     const ActiveClusters& seq = gSession->activeClusters();
     Progress progress(progressBar, "peak fitting", seq.size());
-    int nGamma = qMax(1, gSession->gammaSelection().numSlices.val());
+    int nGamma = qMax(1, gSession->gammaSelection.numSlices.val());
     for (Cluster* cluster : seq.clusters()) {
         progress.step();
         for_i (nGamma) {

@@ -47,12 +47,6 @@ public:
     Baseline& baseline() { return baseline_; }
     const Baseline& baseline() const { return baseline_; }
 
-    GammaSelection& gammaSelection() { return gammaSelection_; }
-    const GammaSelection& gammaSelection() const { return gammaSelection_; }
-
-    ThetaSelection& thetaSelection() { return thetaSelection_; }
-    const ThetaSelection& thetaSelection() const { return thetaSelection_; }
-
     const AngleMap& angleMap(const deg tth) { return angleMap_.get(tth); }
 
     const PeakInfos& directPeakInfos() const { return directPeakInfos_; }
@@ -81,9 +75,11 @@ public:
     bool hasCorrFile() const { return corrset.hasFile(); }
     const ActiveClusters& activeClusters() const { return dataset.activeClusters(); }
 
-    Params  params;
     Dataset dataset;
     Corrset corrset;
+    Params  params;
+    GammaSelection gammaSelection;
+    ThetaSelection thetaSelection;
 
 signals:
     void sigDetector();      //!< detector detector has changed
@@ -93,8 +89,6 @@ private:
     size2d imageSize_; //!< All images must have this same size
     Peaks peaks_;
     Baseline baseline_;
-    GammaSelection gammaSelection_;
-    ThetaSelection thetaSelection_;
     PeakInfos directPeakInfos_;
     PeakInfos interpolatedPeakInfos_;
     // others

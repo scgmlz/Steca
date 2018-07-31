@@ -176,7 +176,7 @@ void ExportPolefig::saveAll(bool oneFile)
     Progress progress(&fileField_->progressBar, "save diffractograms", expt.size());
     int picNum = 0;
     int fileNum = 0;
-    int nSlices = gSession->gammaSelection().numSlices();
+    int nSlices = gSession->gammaSelection.numSlices();
     for (const Cluster* cluster : expt.clusters()) {
         ++picNum;
         progress.step();
@@ -189,7 +189,7 @@ void ExportPolefig::saveAll(bool oneFile)
                 stream = new QTextStream(file);
             }
             ASSERT(stream);
-            const Range gmaStripe = gSession->gammaSelection().slice2range(i);
+            const Range gmaStripe = gSession->gammaSelection.slice2range(i);
             const Curve& curve = cluster->toCurve(gmaStripe);
             ASSERT(!curve.isEmpty());
             *stream << "Picture Nr: " << picNum << '\n';

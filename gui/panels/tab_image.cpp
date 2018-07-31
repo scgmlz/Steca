@@ -174,12 +174,12 @@ QPixmap ImageTab::makePixmap(const Image& image)
 
 QPixmap ImageTab::makeOverlayPixmap(const Measurement* m)
 {
-    gSession->gammaSelection().onData();
-    gSession->thetaSelection().onData();
+    gSession->gammaSelection.onData();
+    gSession->thetaSelection.onData();
     QImage im = makeImage(m->image());
     const AngleMap& angleMap = m->angleMap();
-    const Range& rgeGma = gSession->gammaSelection().range();
-    const Range& rgeTth = gSession->thetaSelection().range();
+    const Range& rgeGma = gSession->gammaSelection.range();
+    const Range& rgeTth = gSession->thetaSelection.range();
     for_ij (im.size().width(), im.size().height()) {
         const ScatterDirection& a = angleMap.dirAt2(i, j);
         QColor color = im.pixel(i, j);
@@ -232,15 +232,15 @@ DataImageTab::DataImageTab()
         1, "idxMeas", 4, false, 1, INT_MAX,
         "Index of measurement within the current group of measurements"}
     , idxTheta_ {
-        "idxTheta", &gSession->thetaSelection().currArc,
+        "idxTheta", &gSession->thetaSelection.currArc,
         4, false, 1, INT_MAX, "Index of 2θ bin to be shown" }
     , idxSlice_ {
-        "idxSlice", &gSession->gammaSelection().currSlice,
+        "idxSlice", &gSession->gammaSelection.currSlice,
         4, false, 1, INT_MAX, "Index of γ slice to be shown" }
 {
     setRemake( [=]() {
-            gSession->gammaSelection().onData();
-            gSession->thetaSelection().onData();
+            gSession->gammaSelection.onData();
+            gSession->thetaSelection.onData();
 
             const Cluster* cluster = gSession->dataset.highlight().cluster();
             int n = cluster ? cluster->count() : 1;
@@ -257,15 +257,15 @@ DataImageTab::DataImageTab()
                     "Index of measurement within the current group of measurements");
             }
 
-            int nGamma = gSession->gammaSelection().numSlices.val();
+            int nGamma = gSession->gammaSelection.numSlices.val();
             idxSlice_.setMaximum(nGamma);
             idxSlice_.setEnabled(nGamma>1);
 
             gammaRangeTotal_.setText(cluster ? cluster->rgeGmaFull().to_s("deg") : "");
-            gammaRangeSlice_.setText(gSession->gammaSelection().range().to_s("deg"));
+            gammaRangeSlice_.setText(gSession->gammaSelection.range().to_s("deg"));
 
             thetaRangeTotal_.setText(cluster ? cluster->rgeTth().to_s("deg") : "");
-            thetaRangeBin_.setText(gSession->thetaSelection().range().to_s("deg"));
+            thetaRangeBin_.setText(gSession->thetaSelection.range().to_s("deg"));
 
             render();
         } );

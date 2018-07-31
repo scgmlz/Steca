@@ -83,8 +83,8 @@ void Session::sessionFromJson(const QByteArray& json)
 
     params.detector.fromJson(top.loadObj("params.detector"));
     params.imageCut.fromJson(top.loadObj("cut"));
-    gammaSelection().fromJson(top.loadObj("gamma selection"));
-    thetaSelection().fromJson(top.loadObj("theta selection"));
+    gammaSelection.fromJson(top.loadObj("gamma selection"));
+    thetaSelection.fromJson(top.loadObj("theta selection"));
 
     TR("installed session from file");
 }
@@ -105,8 +105,8 @@ QByteArray Session::serializeSession() const
     // TODO serialize image rotation and mirror
     top.insert("params.detector", params.detector.toJson());
     top.insert("cut", params.imageCut.toJson());
-    top.insert("gamma selection", gammaSelection().toJson());
-    top.insert("theta selection", thetaSelection().toJson());
+    top.insert("gamma selection", gammaSelection.toJson());
+    top.insert("theta selection", thetaSelection.toJson());
 
     return QJsonDocument(top).toJson();
 }

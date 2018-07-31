@@ -190,7 +190,7 @@ private:
 GammaControls::GammaControls()
 {
     numSlices_ = new QcrSpinBox {
-        "numSlices", &gSession->gammaSelection().numSlices, 2, false, 0, INT_MAX,
+        "numSlices", &gSession->gammaSelection.numSlices, 2, false, 0, INT_MAX,
         "Number of γ slices (0: no slicing, take entire image)" };
 
     // layout
