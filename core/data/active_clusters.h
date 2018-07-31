@@ -37,10 +37,10 @@ public:
     const std::vector<Cluster*>& clusters() const { return clusters_; }
     int size() const { return clusters_.size(); }
 
-    double avgMonitorCount() const;
-    double avgDeltaMonitorCount() const;
-    double avgTime() const;
-    double avgDeltaTime() const;
+    double grandAvgMonitorCount() const;
+    double grandAvgDeltaMonitorCount() const;
+    double grandAvgTime() const;
+    double grandAvgDeltaTime() const;
 
     const Range& rgeGma() const;
     const Range& rgeFixedInten(bool trans, bool cut) const;

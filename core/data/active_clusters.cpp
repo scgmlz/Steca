@@ -46,22 +46,22 @@ void ActiveClusters::reset(std::vector<std::unique_ptr<Cluster>>& allClusters)
     }                                                         \
     return target;
 
-double ActiveClusters::avgMonitorCount() const
+double ActiveClusters::grandAvgMonitorCount() const
 {
     ACTIVE_AVG(avgMonitorCount_, monitorCount);
 }
 
-double ActiveClusters::avgDeltaMonitorCount() const
+double ActiveClusters::grandAvgDeltaMonitorCount() const
 {
     ACTIVE_AVG(avgDeltaMonitorCount_, deltaMonitorCount);
 }
 
-double ActiveClusters::avgTime() const
+double ActiveClusters::grandAvgTime() const
 {
     ACTIVE_AVG(avgTime_, time);
 }
 
-double ActiveClusters::avgDeltaTime() const
+double ActiveClusters::grandAvgDeltaTime() const
 {
     ACTIVE_AVG(avgDeltaTime_, deltaTime);
 }
