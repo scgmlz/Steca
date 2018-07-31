@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/fit/parametric_function.cpp
-//! @brief     Implements class ParametricFunction
+//! @brief     Implements classes FitParameter, ParametricFunction
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)

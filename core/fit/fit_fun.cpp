@@ -13,7 +13,6 @@
 //  ***********************************************************************************************
 
 #include "fit_fun.h"
-#include "core/def/idiomatic_for.h"
 #include "core/fit/fit_methods.h"
 #include "qcr/base/debug.h"
 
@@ -36,7 +35,7 @@ static double pow_n(double x, int n)
 double Polynom::y(double x, double const* parValues) const
 {
     double ret = 0, xPow = 1;
-    for_i (parameters_.size()) {
+    for (int i=0; i<parameters_.size(); ++i) {
         ret += parValue(i, parValues) * xPow;
         xPow *= x;
     }
@@ -48,16 +47,11 @@ double Polynom::dy(double x, int i, double const*) const
     return pow_n(x, i);
 }
 
-void Polynom::polynomFit(const Curve& curve, const Ranges& ranges)
-{
-    FitWrapper().execFit(*this, curve.intersect(ranges));
-}
-
 Polynom Polynom::fromFit(int degree, const Curve& curve, const Ranges& ranges)
 {
-    Polynom poly(degree);
-    poly.polynomFit(curve, ranges);
-    return poly;
+    Polynom p(degree);
+    FitWrapper().execFit(p, curve.intersect(ranges));
+    return p;
 }
 
 JsonObj Polynom::toJson() const

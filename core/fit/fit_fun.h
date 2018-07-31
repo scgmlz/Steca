@@ -32,7 +32,6 @@ public:
 
     double y(double x, double const* parValues = nullptr) const final;
 
-    void polynomFit(const Curve&, const Ranges&);
     static Polynom fromFit(int degree, const Curve&, const Ranges&);
 
     JsonObj toJson() const final;
