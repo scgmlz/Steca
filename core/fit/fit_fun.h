@@ -34,8 +34,6 @@ public:
 
     static Polynom fromFit(int degree, const Curve&, const Ranges&);
 
-    JsonObj toJson() const final;
-
 private:
     double dy(double x, int parIndex, double const* parValues = nullptr) const final;
 };
@@ -47,7 +45,6 @@ class PeakFunction : public ParametricFunction {
 public:
     PeakFunction();
 
-    void fromJson(const JsonObj&);
     Range& fitRange() { return range_; }
 
     virtual void doFit(const Curve&, const Range&);
@@ -55,7 +52,6 @@ public:
     virtual void setGuessedPeak(const qpair& peak) { guessedPeak_ = peak; }
     virtual void setGuessedFWHM(const float fwhm) { guessedFWHM_ = fwhm; }
 
-    JsonObj toJson() const final;
     PeakFunction* clone() const;
     const qpair& guessedPeak() const { return guessedPeak_; }
     float guessedFWHM() const { return guessedFWHM_; }

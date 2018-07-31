@@ -47,19 +47,6 @@ void FitParameter::reset()
     error_ = 0;
 }
 
-JsonObj FitParameter::toJson() const
-{
-    JsonObj ret;
-    ret.insert("value", double_to_json(value_));
-    ret.insert("range", range_.toJson());
-    return ret;
-}
-
-void FitParameter::fromJson(const JsonObj& obj)
-{
-    value_ = obj.loadQreal("value");
-    range_ = obj.loadRange("range");
-}
 
 //  ***********************************************************************************************
 //! @class ParametricFunction
@@ -84,25 +71,6 @@ void ParametricFunction::reset()
 {
     for (auto& p: parameters_)
         p.reset();
-}
-
-JsonObj ParametricFunction::toJson() const
-{
-    QJsonArray params;
-    for (const FitParameter& param : parameters_)
-        params.append(param.toJson());
-    JsonObj ret;
-    ret.insert("parameters", params);
-    return ret;
-}
-
-void ParametricFunction::fromJson(const JsonObj& obj)
-{
-    QJsonArray params = obj.loadArr("parameters");
-    int parCount = params.count();
-    setParameterCount(parCount);
-    for (int ip=0; ip<parCount; ++ip)
-        parameters_[ip].fromJson(params.at(ip).toObject());
 }
 
 double ParametricFunction::parValue(int ip, double const* parValues) const

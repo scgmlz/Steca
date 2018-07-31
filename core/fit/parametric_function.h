@@ -15,7 +15,6 @@
 #ifndef PARAMETRIC_FUNCTION_H
 #define PARAMETRIC_FUNCTION_H
 
-#include "core/typ/json.h"
 #include "core/typ/range.h"
 
 //! Parameter value, error, and allowed range for ParametricFunction
@@ -24,12 +23,10 @@ class FitParameter final {
 public:
     FitParameter();
 
-    void fromJson(const JsonObj&);
     void setValue(double value, double error);
     void reset();
     void setAllowedRange(double min, double max);
 
-    JsonObj toJson() const;
     double value() const { return value_; }
     double error() const { return error_; }
     const Range& range() const;
@@ -52,17 +49,17 @@ public:
     virtual double dy(double x, int parIndex, double const* parValues = nullptr) const = 0;
 
 public:
-    virtual void fromJson(const JsonObj&);
     void setParameterCount(int);
     virtual void reset();
     FitParameter& parameterAt(int);
 
-    virtual JsonObj toJson() const;
     int parameterCount() const;
 
 protected:
-    double parValue(int parIndex, double const* parValues) const;
     void setParValue(int parIndex, double val);
+
+    double parValue(int parIndex, double const* parValues) const;
+
     std::vector<FitParameter> parameters_;
 };
 

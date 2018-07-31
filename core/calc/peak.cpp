@@ -71,14 +71,12 @@ JsonObj Peak::toJson() const
 {
     QJsonObject ret;
     ret.insert("range", peakFunction_->fitRange().toJson() );
-    ret.insert("type", peakFunction_->toJson());
     return ret;
 }
 
 Peak Peak::fromJson(const JsonObj& obj)
 {
     Peak ret{obj.loadRange("range"), obj.loadString("type")};
-    ret.peakFunction_->fromJson(obj); // may throw
     return ret;
 }
 

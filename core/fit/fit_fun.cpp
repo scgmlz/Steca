@@ -54,12 +54,6 @@ Polynom Polynom::fromFit(int degree, const Curve& curve, const Ranges& ranges)
     return p;
 }
 
-JsonObj Polynom::toJson() const
-{
-    JsonObj ret = ParametricFunction::toJson();
-    return ret;
-}
-
 //  ***********************************************************************************************
 //! @class PeakFunction
 
@@ -106,23 +100,6 @@ Curve PeakFunction::prepareFit(const Curve& curve, const Range& range)
     return curve.intersect(range);
 }
 
-JsonObj PeakFunction::toJson() const
-{
-    JsonObj ret = ParametricFunction::toJson();
-    ret.insert("range", range_.toJson());
-    ret.insert("guessed peak", guessedPeak_.toJson());
-    ret.insert("guessed fwhm", double_to_json(guessedFWHM_));
-    ret.insert("type", name());
-    return ret;
-}
-
-void PeakFunction::fromJson(const JsonObj& obj)
-{
-    ParametricFunction::fromJson(obj);
-    range_ = obj.loadRange("range");
-    guessedPeak_.fromJson(obj.loadObj("guessed peak"));
-    guessedFWHM_ = obj.loadQreal("guessed fwhm");
-}
 
 //  ***********************************************************************************************
 //  FunctionRegistry
