@@ -17,6 +17,7 @@
 
 #include "core/pars/detector.h"
 #include "core/pars/image_transform.h"
+#include "core/calc/interpol_params.h"
 #include "qcr/engine/param_wrapper.h"
 
 enum class eNorm {
@@ -37,6 +38,7 @@ public:
     Detector             detector;
     ImageTransform       imageTransform;
     ImageCut             imageCut;
+    InterpolParams       interpolParams;
     ParamWrapper<bool>   intenScaledAvg {true}; // if not, summed
     ParamWrapper<double> intenScale {1};
     eNorm                normMode {eNorm::NONE};

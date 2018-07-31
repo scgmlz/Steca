@@ -18,7 +18,6 @@
 #include "core/calc/baseline.h"
 #include "core/data/gamma_selection.h"
 #include "core/pars/params.h"
-#include "core/calc/interpol_params.h"
 #include "core/calc/peak.h"
 #include "core/data/theta_selection.h"
 #include "core/data/corrset.h"
@@ -54,9 +53,6 @@ public:
 
     ThetaSelection& thetaSelection() { return thetaSelection_; }
     const ThetaSelection& thetaSelection() const { return thetaSelection_; }
-
-    InterpolParams& interpol() { return interpolParams_; }
-    const InterpolParams& interpol() const { return interpolParams_; }
 
     const AngleMap& angleMap(const deg tth) { return angleMap_.get(tth); }
 
@@ -105,7 +101,6 @@ private:
     Baseline baseline_;
     GammaSelection gammaSelection_;
     ThetaSelection thetaSelection_;
-    InterpolParams interpolParams_;
     PeakInfos directPeakInfos_;
     PeakInfos interpolatedPeakInfos_;
     // others
