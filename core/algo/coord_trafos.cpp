@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "coord_trafos.h"
-#include "core/typ/matrix.h"
+#include "core/algo/matrix.h"
 #include <qmath.h>
 
 //! Calculates the polefigure coordinates alpha and beta with regards to
