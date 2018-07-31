@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/mainframe.cpp
-//! @brief     Implements class SubframeImage
+//! @brief     Implements class Mainframe
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -33,7 +33,5 @@ Mainframe::Mainframe()
     addTab((diagramTab_ = new DiagramTab), "Diagram");
     addTab((polefigTab_ = new PolefigTab), "Polefig");
 
-    setRemake( [=]() {
-            setTabEnabled(1, gSession->corrset().hasFile());
-        } );
+    setRemake( [=]() { setTabEnabled(1, gSession->corrset().hasFile()); } );
 }

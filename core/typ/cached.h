@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/typ/cached.h
-//! @brief     Defines class CACHED
+//! @brief     Defines class templates Cached, KeyedCache, CachingVector
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
