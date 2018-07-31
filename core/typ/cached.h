@@ -83,24 +83,29 @@ template<typename Owner, typename T>
 class CachingVector {
 public:
     CachingVector() = delete;
-    CachingVector(const Owner* const o) : owner_(o) {}
+    CachingVector(const Owner* const o, const std::function<int()> nf) : owner_(o), nFct_(nf) {}
     CachingVector(const CachingVector&) = delete;
-    void resize(int n) const {
+    T& get(int i) const {
+        resize();
+        return *data_.at(i);
+    }
+    int size() const {
+        resize();
+        return data_.size();
+    }
+private:
+    void resize() const {
+        int n = nFct_();
         if (n==data_.size())
             return;
         data_.clear();
         for (int i=0; i<n; ++i) {
-            data_.push_back(std::make_unique<T>(T(owner_, i, n)));
+            data_.push_back(std::make_unique<T>(T(owner_, i)));
             data_.back()->init();
         }
     }
-    T& get(int i, int n) const {
-        if (n!=data_.size())
-            resize(n);
-        return *data_.at(i);
-    }
-private:
     const Owner* const owner_;
+    const std::function<int()> nFct_;
     mutable std::vector<std::unique_ptr<T>> data_;
 };
 

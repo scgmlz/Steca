@@ -120,7 +120,7 @@ void GammaSector::init()
 Dfgram recomputeSectorDfgram(const GammaSector* const gSector)
 {
     // qDebug() << "recompute dfgram" << gSector->owningCluster_->index() << "for sector i,n =" << gSector->i_ << gSector->n_;
-    return gSector->owningCluster_->segmentalDfgram(gSector->i_, gSector->n_);
+    return gSector->owningCluster_->segmentalDfgram(gSector->i_);
 }
 
 //  ***********************************************************************************************
@@ -130,7 +130,7 @@ Cluster::Cluster(
     const std::vector<const Measurement*>& measurements,
     const class Datafile& file, const int index, const int offset)
     : Sequence(measurements)
-    , gSectors(this)
+    , gSectors(this, []()->int{return gSession->gammaSelection().numSlices.val();})
     , file_(file)
     , index_(index)
     , offset_(offset)
@@ -156,15 +156,12 @@ bool Cluster::isIncomplete() const
     return count() < gSession->dataset().binning.val();
 }
 
-Dfgram Cluster::segmentalDfgram(int i, int n) const
+Dfgram Cluster::segmentalDfgram(int i) const
 {
-    ASSERT(n == gSession->gammaSelection().numSlices.val());
-    return Dfgram(algo::projectCluster(*this, rgeGma().slice(i,n)));
+    return Dfgram(algo::projectCluster(*this, rgeGma().slice(i,gSectors.size())));
 }
 
 GammaSector& Cluster::currentGammaSector() const
 {
-    return gSectors.get(
-        gSession->gammaSelection().currSlice.val()-1,
-        gSession->gammaSelection().numSlices.val()    );
+    return gSectors.get(gSession->gammaSelection().currSlice.val()-1);
 }

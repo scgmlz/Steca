@@ -171,7 +171,7 @@ void ExportDfgram::saveAll(bool oneFile)
             }
             ASSERT(stream);
             const Range gmaStripe = gSession->gammaSelection().slice2range(i);
-            const Curve& curve = cluster->gSectors.get(i, nSlices).curve();
+            const Curve& curve = cluster->gSectors.get(i).curve();
             *stream << "Picture Nr: " << picNum << '\n';
             if (nSlices > 1)
                 *stream << "Gamma slice Nr: " << i+1 << '\n';
