@@ -15,7 +15,7 @@
 #ifndef SIZE2D_H
 #define SIZE2D_H
 
-//! Geometry of a rectangle
+//! Detector of a rectangle
 struct size2d {
     int w, h;
 

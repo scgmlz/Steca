@@ -25,7 +25,7 @@
 #include "core/data/dataset.h"
 #include "core/data/peak_info.h"
 #include "core/raw/angle_map.h"
-#include "core/pars/geometry.h"
+#include "core/pars/detector.h"
 #include "core/typ/cached.h"
 #include "qcr/engine/param_wrapper.h"
 
@@ -110,7 +110,7 @@ public:
     bool hasCorrFile() const { return corrset.hasFile(); }
     const ActiveClusters& activeClusters() const { return dataset.activeClusters(); }
 
-    Geometry geometry;
+    Detector detector;
     Dataset dataset;
     Corrset corrset;
 
@@ -118,7 +118,7 @@ public:
     ParamWrapper<double> intenScale {1};
 
 signals:
-    void sigDetector();      //!< detector geometry has changed
+    void sigDetector();      //!< detector detector has changed
 
 private:
     // with reference accessor methods:

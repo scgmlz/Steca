@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/pars/geometry.cpp
-//! @brief     Implements classes Geometry, ImageCut, ScatterDirection, ImageKey
+//! @file      core/pars/detector.cpp
+//! @brief     Implements classes Detector, ImageCut, ScatterDirection, ImageKey
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -18,13 +18,13 @@
 #include <iostream> // for debugging
 
 //  ***********************************************************************************************
-//! @class Geometry
+//! @class Detector
 
-// StressSpec standard geometry:
-double const Geometry::DEF_DETECTOR_DISTANCE = 1035;
-double const Geometry::DEF_DETECTOR_PIXEL_SIZE = 1;
+// StressSpec standard detector:
+double const Detector::DEF_DETECTOR_DISTANCE = 1035;
+double const Detector::DEF_DETECTOR_PIXEL_SIZE = 1;
 
-Geometry::Geometry()
+Detector::Detector()
 {
     // TODO restore constraints?
     // detectorDistance_ = qMin(qMax(detectorDistance, 10.), 9999.);
@@ -36,25 +36,25 @@ Geometry::Geometry()
     pixOffset[1]    .setHook([](int   ){ emit gSession->sigDetector(); gRoot->remakeAll("geo"); } );
 }
 
-void Geometry::fromSettings()
+void Detector::fromSettings()
 {
-    XSettings s("DetectorGeometry");
+    XSettings s("DetectorDetector");
     detectorDistance.setVal(s.readReal("detectorDistance", DEF_DETECTOR_DISTANCE));
     pixSize         .setVal(s.readReal("pixelSize", DEF_DETECTOR_PIXEL_SIZE));
     pixOffset[0]    .setVal(s.readInt("offsetX", 0));
     pixOffset[1]    .setVal(s.readInt("offsetY", 0));
 }
 
-void Geometry::toSettings() const
+void Detector::toSettings() const
 {
-    XSettings s("DetectorGeometry");
+    XSettings s("DetectorDetector");
     s.setValue("detectorDistance", detectorDistance.val());
     s.setValue("pixelSize", pixSize.val());
     s.setValue("offsetX", pixOffset[0].val());
     s.setValue("offsetY", pixOffset[1].val());
 }
 
-void Geometry::fromJson(const JsonObj& obj)
+void Detector::fromJson(const JsonObj& obj)
 {
     detectorDistance.setVal(obj.loadPreal("distance"));
     pixSize.         setVal(obj.loadPreal("pixel size"));
@@ -62,7 +62,7 @@ void Geometry::fromJson(const JsonObj& obj)
     pixOffset[1]    .setVal(obj.loadPint ("beam offset Y"));
 }
 
-QJsonObject Geometry::toJson() const
+QJsonObject Detector::toJson() const
 {
     return {
         { "distance", QJsonValue(detectorDistance.val()) },

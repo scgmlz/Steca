@@ -17,7 +17,7 @@
 
 #include <QSettings>
 
-//! Used to save and retrieve the main window geometry, and certain parameter settings.
+//! Used to save and retrieve the main window detector, and certain parameter settings.
 
 class XSettings : public QSettings {
 public:

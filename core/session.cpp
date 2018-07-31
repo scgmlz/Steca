@@ -32,7 +32,7 @@ Session::Session()
 
     register_peak_functions();
 
-    geometry.fromSettings();
+    detector.fromSettings();
     interpol().fromSettings();
 
     connect(this, &Session::sigDetector, [this]() { angleMap_.invalidate(); });
@@ -40,7 +40,7 @@ Session::Session()
 
 Session::~Session()
 {
-    geometry.toSettings();
+    detector.toSettings();
     interpol().toSettings();
 }
 
@@ -85,7 +85,7 @@ void Session::sessionFromJson(const QByteArray& json)
     intenScaledAvg.setVal(top.loadBool("average intensity?", true));
     intenScale.setVal(top.loadPreal("intensity scale", 1));
 
-    geometry.fromJson(top.loadObj("detector"));
+    detector.fromJson(top.loadObj("detector"));
     imageCut().fromJson(top.loadObj("cut"));
     gammaSelection().fromJson(top.loadObj("gamma selection"));
     thetaSelection().fromJson(top.loadObj("theta selection"));
@@ -107,7 +107,7 @@ QByteArray Session::serializeSession() const
     top.insert("average intensity?", intenScaledAvg.val());
     top.insert("intensity scale", double_to_json((double)intenScale.val()));
     // TODO serialize image rotation and mirror
-    top.insert("detector", geometry.toJson());
+    top.insert("detector", detector.toJson());
     top.insert("cut", imageCut().toJson());
     top.insert("gamma selection", gammaSelection().toJson());
     top.insert("theta selection", thetaSelection().toJson());

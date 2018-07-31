@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/pars/geometry.h
-//! @brief     Defines classes Geometry, ImageCut, ScatterDirection, ImageKey
+//! @file      core/pars/detector.h
+//! @brief     Defines classes Detector, ImageCut, ScatterDirection, ImageKey
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -23,13 +23,13 @@
 
 // TODO after removal of ImageKey: delete copy c'tors
 
-//! Detector geometry.
-class Geometry {
+//! Detector detector.
+class Detector {
 public:
     static double const DEF_DETECTOR_DISTANCE;
     static double const DEF_DETECTOR_PIXEL_SIZE;
 
-    Geometry();
+    Detector();
 
     void fromJson(const JsonObj& obj);
     void fromSettings();
