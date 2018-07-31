@@ -114,8 +114,10 @@ double Sequence::normFactor() const
 
 void GammaSector::init()
 {
+    const auto*const v = owningVector_;
+    const int i = i_;
     QObject::connect(gSession, &Session::sigDetector,
-                     [this]() { cachedDfgram_.invalidate(); });
+                     [v, i]() { v->get(i).cachedDfgram_.invalidate(); });
 }
 
 Dfgram recomputeSectorDfgram(const GammaSector* const gSector)
