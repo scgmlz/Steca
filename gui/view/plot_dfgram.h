@@ -63,7 +63,7 @@ private:
     void calcDfgram();
     void calcBackground();
     void calcPeaks();
-    Curve dgram_;
+    Curve curve0_;
     Curve dgramBgFitted_;
     Curve bg_;
     std::vector<Curve> refls_;

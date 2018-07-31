@@ -16,7 +16,7 @@
 #define ACTIVE_CLUSTERS_H
 
 #include "core/typ/cached.h"
-#include "core/typ/curve.h"
+#include "core/typ/dfgram.h"
 #include "core/raw/measurement.h"
 
 class Cluster;
@@ -29,7 +29,7 @@ Curve computeAvgCurve(const ActiveClusters*const);
 class ActiveClusters {
 public:
     ActiveClusters()
-        : avgCurve( [this]()->Curve{ return computeAvgCurve(this); } )
+        : avgDfgram( [this]()->Dfgram{ return Dfgram(computeAvgCurve(this)); } )
         { invalidateAvgMutables(); }
     ActiveClusters(const ActiveClusters&) = delete;
 
@@ -56,7 +56,7 @@ public:
 
     void invalidateAvgMutables() const;
 
-    Cached<Curve> avgCurve;
+    Cached<Dfgram> avgDfgram;
 
 private:
     std::vector<Cluster*> clusters_;
@@ -64,7 +64,6 @@ private:
     // computed on demand (NaNs or emptiness indicate yet unknown values) // TODO use cached.h
     mutable Range rgeFixedInten_;
     mutable Range rgeGma_;
-    mutable Curve avgCurve_;
 };
 
 #endif // ACTIVE_CLUSTERS_H

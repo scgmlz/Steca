@@ -28,8 +28,7 @@ void ActiveClusters::reset(std::vector<std::unique_ptr<Cluster>>& allClusters)
             clusters_.push_back(pCluster.get());
     }
     invalidateAvgMutables();
-    avgCurve.invalidate();
-    QObject::connect(gSession, &Session::sigDetector, [=]() { avgCurve.invalidate(); });
+    QObject::connect(gSession, &Session::sigDetector, [=]() { avgDfgram.invalidate(); });
 }
 
 double ActiveClusters::recomputeAvg(std::function<double(const Measurement*)> f)
@@ -65,16 +64,16 @@ const Range& ActiveClusters::rgeFixedInten(bool trans, bool cut) const
 
 void ActiveClusters::invalidateAvgMutables() const
 {
+    avgDfgram.invalidate();
     grandAvgMonitorCount     .invalidate();
     grandAvgDeltaMonitorCount.invalidate();
     grandAvgTime             .invalidate();
     grandAvgDeltaTime        .invalidate();
     rgeFixedInten_.invalidate();
     rgeGma_.invalidate();
-    avgCurve_.clear();
 }
 
-//! Computes cached avgCurve_.
+//! Computes curve .
 Curve computeAvgCurve(const ActiveClusters*const ac)
 {
     TakesLongTime __("computeAvgCurve");

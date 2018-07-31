@@ -18,7 +18,9 @@
 #include "core/typ/cached.h"
 #include "core/typ/dfgram.h"
 #include "core/raw/measurement.h"
+
 class Dfgram;
+class Cluster;
 
 //! A group of one or more Measurement|s.
 
@@ -63,10 +65,9 @@ private:
     Metadata computeAvgMetadata() const;
 };
 
-class Cluster;
-class GammaSector;
 
-Dfgram recomputeSectorDfgram(const GammaSector* gSector);
+//! Element of vector Cluster::gSectors, holds a diffractogram extracted from a given Cluster
+//! in a given gamma range.
 
 class GammaSector {
 public:
@@ -89,6 +90,9 @@ private:
     int i_;
     friend Dfgram recomputeSectorDfgram(const GammaSector* const gSector);
 };
+
+Dfgram recomputeSectorDfgram(const GammaSector* gSector);
+
 
 //! A group of one or more Measurement's, with associated information.
 

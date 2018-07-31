@@ -217,20 +217,20 @@ void PlotDfgram::renderAll()
         return;
     }
     calcDfgram();
-    if (dgram_.isEmpty()) {
+    if (curve0_.isEmpty()) {
         plotEmpty();
         return;
     }
     calcBackground();
     calcPeaks();
 
-    const Range& tthRange = dgram_.rgeX();
+    const Range& tthRange = curve0_.rgeX();
     Range intenRange;
     if (gGui->toggles->fixedIntenDfgram.getValue()) {
         intenRange = gSession->dataset().highlight().cluster()->rgeInten();
     } else {
         intenRange = dgramBgFitted_.rgeY();
-        intenRange.extendBy(dgram_.rgeY());
+        intenRange.extendBy(curve0_.rgeY());
     }
 
     xAxis->setRange(tthRange.min, tthRange.max);
@@ -245,8 +245,8 @@ void PlotDfgram::renderAll()
     else
         bgGraph_->clearData();
 
-    dgramGraph_->setData(QVector<double>::fromStdVector(dgram_.xs()),
-                         QVector<double>::fromStdVector(dgram_.ys()));
+    dgramGraph_->setData(QVector<double>::fromStdVector(curve0_.xs()),
+                         QVector<double>::fromStdVector(curve0_.ys()));
     dgramBgFittedGraph_->setData(QVector<double>::fromStdVector(dgramBgFitted_.xs()),
                                  QVector<double>::fromStdVector(dgramBgFitted_.ys()));
     dgramBgFittedGraph2_->setData(QVector<double>::fromStdVector(dgramBgFitted_.xs()),
@@ -269,15 +269,16 @@ void PlotDfgram::renderAll()
 
 void PlotDfgram::calcDfgram()
 {
-    dgram_.clear();
+    // TODO convert curve_0 into a reference
+    curve0_.clear();
     if (!gSession->hasData())
         return;
     if (gGui->toggles->combinedDfgram.getValue())
-        dgram_ = gSession->activeClusters().avgCurve.get();
+        curve0_ = gSession->activeClusters().avgDfgram.get().curve;
     else {
         Cluster* cluster = gSession->dataset().highlight().cluster();
         ASSERT(cluster);
-        dgram_ = cluster->currentGammaSector().curve();
+        curve0_ = cluster->currentGammaSector().curve();
     }
 }
 
@@ -287,13 +288,13 @@ void PlotDfgram::calcBackground()
     dgramBgFitted_.clear();
 
     const Polynom& bgPolynom = Polynom::fromFit(
-        gSession->baseline().polynomDegree.val(), dgram_, gSession->baseline().ranges());
+        gSession->baseline().polynomDegree.val(), curve0_, gSession->baseline().ranges());
         // TODO bundle this code line which similarly appears in at least one other place
 
-    for_i (dgram_.count()) {
-        double x = dgram_.x(i), y = bgPolynom.y(x);
+    for_i (curve0_.count()) {
+        double x = curve0_.x(i), y = bgPolynom.y(x);
         bg_.append(x, y);
-        dgramBgFitted_.append(x, dgram_.y(i) - y);
+        dgramBgFitted_.append(x, curve0_.y(i) - y);
     }
 }
 
