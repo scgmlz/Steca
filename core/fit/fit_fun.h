@@ -31,7 +31,6 @@ public:
     void setDegree(int _degree) { setParameterCount(_degree + 1); }
 
     double y(double x, double const* parValues = nullptr) const final;
-    double avgY(const Range&, double const* parValues = nullptr) const;
 
     void polynomFit(const Curve&, const Ranges&);
     static Polynom fromFit(int degree, const Curve&, const Ranges&);

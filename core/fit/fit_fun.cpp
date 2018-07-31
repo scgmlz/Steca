@@ -48,25 +48,6 @@ double Polynom::dy(double x, int i, double const*) const
     return pow_n(x, i);
 }
 
-// REVIEW
-double Polynom::avgY(const Range& rgeX, double const* parValues) const
-{
-    ASSERT(rgeX.isValid());
-
-    double w = rgeX.width();
-    if (w <= 0)
-        return y(rgeX.min, parValues);
-
-    double minY = 0, maqpair = 0, minPow = 1, maxPow = 1;
-    for_i (parameters_.size()) {
-        double facY = parValue(i, parValues) / (i + 1);
-        minY += facY * (minPow *= rgeX.min);
-        maqpair += facY * (maxPow *= rgeX.max);
-    }
-
-    return (1 / w) * (maqpair - minY);
-}
-
 void Polynom::polynomFit(const Curve& curve, const Ranges& ranges)
 {
     FitWrapper().execFit(*this, curve.intersect(ranges));
