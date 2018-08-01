@@ -72,7 +72,7 @@ private:
 };
 
 
-//! A list of PeakInfo's
+//! A list of PeakInfo's, associated with _one_ Bragg peak and different orientations alpha,beta.
 
 class PeakInfos {
 public:

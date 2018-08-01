@@ -32,7 +32,6 @@ public:
     qpair peakError() const;
     float fwhmError() const;
 
-    void setRange(const Range&);
     void fit(const Curve&, const Range&);
 
     QString name() const final { return "Raw"; }
@@ -42,7 +41,7 @@ private:
     double y(double x, double const* parValues = nullptr) const final;
     double dy(double x, int parIndex, double const* parValues = nullptr) const final;
     Curve fittedCurve_; // saved from fitting
-    void prepareY();
+    Range range_;
 
     mutable int x_count_;
     mutable double dx_;
@@ -85,20 +84,11 @@ float Raw::fwhmError() const
     return 0;
 }
 
-void Raw::setRange(const Range& range)
-{
-    PeakFunction::setRange(range);
-    prepareY();
-}
-
 void Raw::fit(const Curve& curve, const Range& range)
 {
-    fittedCurve_ = prepareFit(curve, range); // do no more than this
-    prepareY();
-}
+    range_ = range;
+    fittedCurve_ = curve.intersect(range);
 
-void Raw::prepareY()
-{
     if (range_.isEmpty() || fittedCurve_.isEmpty()) {
         x_count_ = 0;
         dx_ = 0;

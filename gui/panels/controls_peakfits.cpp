@@ -96,7 +96,6 @@ QVariant PeaksModel::data(const QModelIndex& index, int role) const
 class PeaksView final : public TableView {
 public:
     PeaksView();
-private:
 };
 
 PeaksView::PeaksView()
