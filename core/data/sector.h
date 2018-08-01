@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/data/sector.h
-//! @brief     Defines class GammaSector
+//! @brief     Defines class Sector
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -20,18 +20,18 @@
 
 class Cluster;
 
-//! Element of vector Cluster::gSectors, holds diffractogram for given Cluster and gamma range.
+//! Element of vector Cluster::sectors, holds diffractogram for given Cluster and gamma range.
 
-class GammaSector {
+class Sector {
 public:
-    GammaSector() = delete;
-    GammaSector(const CachingVector<Cluster, GammaSector>* const v, int i)
+    Sector() = delete;
+    Sector(const CachingVector<Cluster, Sector>* const v, int i)
         : cachedDfgram_( [v,i]()->Dfgram{return recomputeSectorDfgram(&v->get(i));} )
         , owningVector_(v)
         , i_(i)
         { init(); }
-    GammaSector(const GammaSector& rhs) = delete;
-    GammaSector(GammaSector&& rhs) = default;
+    Sector(const Sector& rhs) = delete;
+    Sector(Sector&& rhs) = default;
     void init();
 
     const Dfgram& dfgram() const { return cachedDfgram_.get(); }
@@ -39,11 +39,11 @@ public:
 
 private:
     Kached<Dfgram> cachedDfgram_;
-    const CachingVector<Cluster, GammaSector>* const owningVector_;
+    const CachingVector<Cluster, Sector>* const owningVector_;
     int i_;
-    friend Dfgram recomputeSectorDfgram(const GammaSector* const gSector);
+    friend Dfgram recomputeSectorDfgram(const Sector* const sector);
 };
 
-Dfgram recomputeSectorDfgram(const GammaSector* gSector);
+Dfgram recomputeSectorDfgram(const Sector* sector);
 
 #endif // GAMMA_SECTOR_H

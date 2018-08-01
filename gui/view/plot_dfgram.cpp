@@ -278,7 +278,7 @@ void PlotDfgram::calcDfgram()
     else {
         Cluster* cluster = gSession->dataset.highlight().cluster();
         ASSERT(cluster);
-        curve0_ = cluster->currentGammaSector().curve();
+        curve0_ = cluster->currentSector().curve();
     }
 }
 

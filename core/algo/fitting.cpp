@@ -27,18 +27,18 @@ PeakInfo rawFit(Cluster& cluster, int iGamma, Peak& peak)
     std::unique_ptr<PeakFunction> peakFunction( FunctionRegistry::clone(peak.peakFunction()) );
     const Range& fitrange = peakFunction->fitRange();
     const Metadata* metadata = &cluster.avgMetadata();
-    const Range gammaSector = gSession->gammaSelection.slice2range(iGamma);
+    const Range sector = gSession->gammaSelection.slice2range(iGamma);
     deg alpha, beta;
     // TODO (MATH) use fitted tth center, not center of given fit range
-    algo::calculateAlphaBeta(alpha, beta, fitrange.center(), gammaSector.center(),
+    algo::calculateAlphaBeta(alpha, beta, fitrange.center(), sector.center(),
                              cluster.chi(), cluster.omg(), cluster.phi());
     if (fitrange.isEmpty())
-        return {metadata, alpha, beta, gammaSector};
+        return {metadata, alpha, beta, sector};
 
     auto& baseline = gSession->baseline;
 
     // Diffractogram minus fitted background:
-    const Curve& curve = {}; // TODO NOW cluster.gSector.get(iGamma)...
+    const Curve& curve = {}; // TODO NOW cluster.sector.get(iGamma)...
     const Polynom f = Polynom::fromFit(baseline.polynomDegree.val(), curve, baseline.ranges);
     const Curve curve2 = curve.subtract([f](double x) {return f.y(x);});
 
@@ -46,12 +46,12 @@ PeakInfo rawFit(Cluster& cluster, int iGamma, Peak& peak)
     peak.fit(curve2);
     qpair fitresult = peakFunction->fittedPeak();
     if (!fitrange.contains(fitresult.x))
-        return {metadata, alpha, beta, gammaSector};
+        return {metadata, alpha, beta, sector};
 
     float fwhm = peakFunction->fittedFWHM();
     qpair peakError = peakFunction->peakError();
     float fwhmError = peakFunction->fwhmError();
-    return {metadata, alpha, beta, gammaSector, float(fitresult.y), float(peakError.y),
+    return {metadata, alpha, beta, sector, float(fitresult.y), float(peakError.y),
             deg(fitresult.x), deg(peakError.x), float(fwhm), float(fwhmError)};
 }
 
@@ -60,7 +60,7 @@ PeakInfo rawFit(Cluster& cluster, int iGamma, Peak& peak)
 
 //! Gathers PeakInfos from Datasets.
 
-//! Either uses the whole gamma range of the cluster (if gammaSector is invalid),
+//! Either uses the whole gamma range of the cluster (if sector is invalid),
 //!  or user limits the range.
 //! Even though the betaStep of the equidistant polefigure grid is needed here,
 //!  the returned infos won't be on the grid.

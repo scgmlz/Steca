@@ -85,8 +85,8 @@ public:
     bool isActivated() const { return activated_; }
     Dfgram segmentalDfgram(int) const;
 
-    CachingVector<Cluster, GammaSector> gSectors; //! One Dfgram per gamma section
-    GammaSector& currentGammaSector() const;
+    CachingVector<Cluster, Sector> sectors; //! One Dfgram per gamma section
+    Sector& currentSector() const;
 
 private:
     const class Datafile& file_;

@@ -117,7 +117,7 @@ Cluster::Cluster(
     const std::vector<const Measurement*>& measurements,
     const class Datafile& file, const int index, const int offset)
     : Sequence(measurements)
-    , gSectors(this, []()->int{return gSession->gammaSelection.numSlices.val();})
+    , sectors(this, []()->int{return gSession->gammaSelection.numSlices.val();})
     , file_(file)
     , index_(index)
     , offset_(offset)
@@ -145,10 +145,10 @@ bool Cluster::isIncomplete() const
 
 Dfgram Cluster::segmentalDfgram(int i) const
 {
-    return Dfgram(algo::projectCluster(*this, rgeGma().slice(i,gSectors.size())));
+    return Dfgram(algo::projectCluster(*this, rgeGma().slice(i,sectors.size())));
 }
 
-GammaSector& Cluster::currentGammaSector() const
+Sector& Cluster::currentSector() const
 {
-    return gSectors.get(gSession->gammaSelection.currSlice.val()-1);
+    return sectors.get(gSession->gammaSelection.currSlice.val()-1);
 }
