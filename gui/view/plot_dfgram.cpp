@@ -14,7 +14,6 @@
 
 #include "plot_dfgram.h"
 #include "core/algo/collect_intensities.h"
-#include "core/def/idiomatic_for.h"
 #include "core/session.h"
 #include "gui/actions/toggles.h"
 #include "gui/panels/subframe_setup.h" // gGui->setup()
@@ -204,13 +203,13 @@ void PlotDfgram::renderAll()
     // Render colored background areas to indicate baseline and peak fit ranges.
     const Ranges& rs = gSession->baseline.ranges;
     bool showingBaseline = gGui->setup()->currentIndex() == gGui->setup()->idxBaseline;
-    for_i (rs.count())
-        addBgItem(rs.at(i),
-                  showingBaseline && i==gSession->baseline.ranges.selectedIndex() ?
+    for (int jR=0; jR<rs.count(); ++jR)
+        addBgItem(rs.at(jR),
+                  showingBaseline && jR==gSession->baseline.ranges.selectedIndex() ?
                   colors::baseEmph : colors::baseStd);
-    for_i (gSession->peaks.count())
-        addBgItem(gSession->peaks.at(i).range(),
-                  !showingBaseline && i==gSession->peaks.selectedIndex() ?
+    for (int jP=0; jP<gSession->peaks.count(); ++jP)
+        addBgItem(gSession->peaks.at(jP).range(),
+                  !showingBaseline && jP==gSession->peaks.selectedIndex() ?
                   colors::peakEmph : colors::peakStd);
 
     if (!gSession->hasData() || !gSession->dataset.highlight().cluster()) {
@@ -228,27 +227,13 @@ void PlotDfgram::renderAll()
     ASSERT(!dfgram->curve.isEmpty());
 
     // retrieve background
-    const Curve& bg            = dfgram->getBgAsCurve();
+    const Curve& bg           = dfgram->getBgAsCurve();
     const Curve& curveMinusBg = dfgram->getCurveMinusBg();
 
     // calculate peaks
-    std::vector<Curve> peakFits;
-
-    for_i (gSession->peaks.count()) {
-        Peak& peak = gSession->peaks.at(i);
-        peak.fit(curveMinusBg);
-
-        const Range& rge = peak.range();
-        const PeakFunction& fun = peak.peakFunction();
-
-        Curve c;
-        for_i (curveMinusBg.count()) {
-            double x = curveMinusBg.x(i);
-            if (rge.contains(x))
-                c.append(x, fun.y(x));
-        }
-        peakFits.push_back(c);
-    }
+    std::vector<Curve> fitCurves;
+    for (int jP=0; jP<gSession->peaks.count(); ++jP)
+        fitCurves.push_back(dfgram->getPeakAsCurve(jP));
 
     const Range& tthRange = dfgram->curve.rgeX();
     Range intenRange;
@@ -281,11 +266,11 @@ void PlotDfgram::renderAll()
     clearReflLayer();
     setCurrentLayer("refl");
 
-    for_i (peakFits.size()) {
-        const Curve& r = peakFits.at(i);
+    for (int jP=0; jP<fitCurves.size(); ++jP) {
+        const Curve& r = fitCurves.at(jP);
         QCPGraph* graph = addGraph();
         reflGraph_.push_back(graph);
-        graph->setPen(QPen(Qt::green, i == gSession->peaks.selectedIndex() ? 2 : 1));
+        graph->setPen(QPen(Qt::green, jP == gSession->peaks.selectedIndex() ? 2 : 1));
         graph->setData(QVector<double>::fromStdVector(r.xs()),
                        QVector<double>::fromStdVector(r.ys()));
     }

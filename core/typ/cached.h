@@ -58,6 +58,37 @@ private:
     const std::function<T(const Parent*)> remake_;
 };
 
+//! Vector of individually cached objects. Experimental version.
+template<typename Parent, typename T>
+class KachingVector {
+public:
+    KachingVector() = delete;
+    KachingVector(const std::function<int()> nFct, const std::function<T(const Parent*,int)> rFct)
+        : nFct_(nFct), remake_(rFct) {}
+    KachingVector(const KachingVector&) = delete;
+    KachingVector(KachingVector&&) = default; // TODO rm after removal of CachingVector
+    T& get(const Parent* parent, int i) const {
+        resize(parent);
+        return data_.at(i);
+    }
+    int size(const Parent* parent) const {
+        resize(parent);
+        return data_.size();
+    }
+private:
+    void resize(const Parent* parent) const {
+        int n = nFct_();
+        if (n==data_.size())
+            return;
+        data_.clear();
+        for (int i=0; i<n; ++i)
+            data_.push_back(remake_(parent,i));
+    }
+    const std::function<int()> nFct_;
+const std::function<T(const Parent*,int)> remake_;
+    mutable std::vector<T> data_;
+};
+
 
 //! Cached object with key.
 template<typename T, typename K>

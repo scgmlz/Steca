@@ -46,8 +46,28 @@ Curve computeCurveMinusBg(const Dfgram* parent)
     return ret;
 }
 
+Curve computePeakAsCurve(const Dfgram* parent, int jP)
+{
+    Peak& peak = gSession->peaks.at(jP);
+    const Curve& curveMinusBg = parent->getCurveMinusBg();
+    peak.fit(curveMinusBg);
+    const Range& rge = peak.range();
+    const PeakFunction& fun = peak.peakFunction();
+    Curve ret;
+    for (int i=0; i<curveMinusBg.count(); ++i) {
+        double x = curveMinusBg.x(i);
+        if (rge.contains(x))
+            ret.append(x, fun.y(x));
+    }
+    return ret;
+}
+
 Dfgram::Dfgram(Curve&& c)
     : curve(std::move(c))
+    , peaksAsCurve( []()->int {return gSession->peaks.count();},
+                    [](const Dfgram*, int jP)->Kached<Dfgram,Curve> {
+                        return Kached<Dfgram,Curve>([jP](const Dfgram* parent)->Curve{
+                                return computePeakAsCurve(parent, jP); }); })
 {
     QObject::connect(gSession, &Session::sigBaseline, [this](){bgFit.invalidate();});
 }
