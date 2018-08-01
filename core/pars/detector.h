@@ -39,7 +39,7 @@ public:
 
     ParamWrapper<double> detectorDistance {DEF_DETECTOR_DISTANCE};
     ParamWrapper<double> pixSize          {DEF_DETECTOR_PIXEL_SIZE};
-    std::array<ParamWrapper<int>,2>    pixOffset {0, 0};
+    std::array<ParamWrapper<int>,2> pixOffset {{0, 0}};
 };
 
 
