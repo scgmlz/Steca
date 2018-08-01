@@ -22,6 +22,30 @@ Polynom computeBgFit(const Dfgram* parent)
         gSession->baseline.polynomDegree.val(), parent->curve, gSession->baseline.ranges);
 }
 
+Curve computeBgAsCurve(const Dfgram* parent)
+{
+    if (!gSession->baseline.ranges.count())
+        return {};
+    Curve ret;
+    const Polynom& bgFit = parent->getBgFit();
+    for (int i=0; i<parent->curve.count(); ++i) {
+        double x = parent->curve.x(i);
+        ret.append(x, bgFit.y(x));
+    }
+    return ret;
+}
+
+Curve computeCurveMinusBg(const Dfgram* parent)
+{
+    if (!gSession->baseline.ranges.count())
+        return parent->curve; // no bg defined
+    Curve ret;
+    const Curve& bg = parent->getBgAsCurve();
+    for (int i=0; i<parent->curve.count(); ++i)
+        ret.append(parent->curve.x(i), parent->curve.y(i)-bg.y(i));
+    return ret;
+}
+
 Dfgram::Dfgram(Curve&& c)
     : curve(std::move(c))
 {

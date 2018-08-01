@@ -232,20 +232,9 @@ void PlotDfgram::renderAll()
     }
     ASSERT(!dfgram->curve.isEmpty());
 
-    // calculate background
-    bg_.clear();
-
-    if (gSession->baseline.ranges.count()) {
-        const Polynom& bgPolynom = dfgram->getBgFit();
-        dgramBgFitted_.clear();
-        for_i (dfgram->curve.count()) {
-            double x = dfgram->curve.x(i);
-            double y = bgPolynom.y(x);
-            bg_.append(x, y);
-            dgramBgFitted_.append(x, dfgram->curve.y(i) - y);
-        }
-    } else
-        dgramBgFitted_ = dfgram->curve;
+    // retrieve background
+    const Curve& bg_            = dfgram->getBgAsCurve();
+    const Curve& dgramBgFitted_ = dfgram->getCurveMinusBg();
 
     // calculate peaks
     refls_.clear();
