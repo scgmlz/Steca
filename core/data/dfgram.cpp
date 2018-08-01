@@ -65,9 +65,8 @@ Curve computePeakAsCurve(const Dfgram* parent, int jP)
 Dfgram::Dfgram(Curve&& c)
     : curve(std::move(c))
     , peaksAsCurve( []()->int {return gSession->peaks.count();},
-                    [](const Dfgram*, int jP)->Kached<Dfgram,Curve> {
-                        return Kached<Dfgram,Curve>([jP](const Dfgram* parent)->Curve{
-                                return computePeakAsCurve(parent, jP); }); })
+                    [](const Dfgram* parent, int jP)->Curve{
+                        return computePeakAsCurve(parent, jP); } )
 {
     QObject::connect(gSession, &Session::sigBaseline, [this](){bgFit.invalidate();});
 }

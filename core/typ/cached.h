@@ -85,7 +85,7 @@ private:
             data_.push_back(remake_(parent,i));
     }
     const std::function<int()> nFct_;
-const std::function<T(const Parent*,int)> remake_;
+    const std::function<T(const Parent*,int)> remake_;
     mutable std::vector<T> data_;
 };
 
@@ -98,7 +98,8 @@ public:
                       const std::function<T(const Parent*,int)> rFct)
         : KachingVector<Parent, Kached<Parent,T>>(
             nFct,
-            [rFct](const Parent*, int i)->Kached<Parent,T> { return Kached<Parent,T>(rFct); })
+            [rFct](const Parent* p, int i) {
+                return Kached<Parent,T>([rFct,i](const Parent* p)->T{ return rFct(p,i); }); } )
     {}
     T& getget(const Parent* parent, int i) const { return get(parent,i).get(); }
 };

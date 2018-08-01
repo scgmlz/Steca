@@ -42,7 +42,7 @@ private:
     mutable Kached<Dfgram,Polynom> bgFit        {&computeBgFit};
     mutable Kached<Dfgram,Curve>   bgAsCurve    {&computeBgAsCurve};
     mutable Kached<Dfgram,Curve>   curveMinusBg {&computeCurveMinusBg};
-    mutable KachingVector<Dfgram,Kached<Dfgram,Curve>> peaksAsCurve;
+    mutable SelfKachingVector<Dfgram,Curve> peaksAsCurve;
 };
 
 #endif // DFGRAM_H
