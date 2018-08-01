@@ -56,7 +56,7 @@ public:
 
     void invalidateAvgMutables() const;
 
-    Cached<Dfgram> avgDfgram;
+    Kached<Dfgram> avgDfgram;
 
 private:
     std::vector<Cluster*> clusters_;

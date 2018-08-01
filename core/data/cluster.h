@@ -84,7 +84,7 @@ public:
     const Curve& curve() const { return cachedDfgram_.get().curve; }
 
 private:
-    Cached<Dfgram> cachedDfgram_;
+    Kached<Dfgram> cachedDfgram_;
     const CachingVector<Cluster, GammaSector>* const owningVector_;
     int i_;
     friend Dfgram recomputeSectorDfgram(const GammaSector* const gSector);

@@ -20,13 +20,32 @@
 #include <memory>
 #include <vector>
 
-//! Cached object.
+//! Cached object. Simple version.
 template<typename T>
 class Cached {
 public:
     Cached() = delete;
     Cached(std::function<T(void)> f) : remake_(f) {}
     Cached(const Cached&) = delete;
+    void invalidate() const { cached_.release(); }
+    const T& get() const {
+        if (!cached_)
+            cached_.reset( std::move(new T{remake_()}) );
+        return *cached_;
+    }
+private:
+    mutable std::unique_ptr<T> cached_;
+    const std::function<T(void)> remake_;
+};
+
+
+//! Cached object. Experimental version.
+template<typename T>
+class Kached {
+public:
+    Kached() = delete;
+    Kached(std::function<T(void)> f) : remake_(f) {}
+    Kached(const Kached&) = delete;
     void invalidate() const { cached_.release(); }
     const T& get() const {
         if (!cached_)
