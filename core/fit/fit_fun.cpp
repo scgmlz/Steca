@@ -36,7 +36,7 @@ double Polynom::y(double x, double const* parValues) const
 {
     double ret = 0, xPow = 1;
     for (int i=0; i<parameters_.size(); ++i) {
-        ret += parValue(i, parValues) * xPow;
+        ret += parValues[i] * xPow;
         xPow *= x;
     }
     return ret;

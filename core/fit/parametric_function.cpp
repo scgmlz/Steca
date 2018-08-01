@@ -52,8 +52,7 @@ void FitParameter::reset()
 
 void ParametricFunction::setParameterCount(int count)
 {
-    parameters_.resize(count);
-    std::fill(parameters_.begin(), parameters_.end(), FitParameter());
+    parameters_.resize(count, FitParameter());
 }
 
 int ParametricFunction::parameterCount() const
