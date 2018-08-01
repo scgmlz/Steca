@@ -15,7 +15,7 @@
 #ifndef PLOT_DFGRAM_H
 #define PLOT_DFGRAM_H
 
-#include "core/typ/curve.h"
+#include "core/data/dfgram.h"
 #include "gui/mainwin.h" // for eFittingTab
 #include "gui/view/plot_overlay.h"
 
@@ -60,10 +60,6 @@ private:
     std::vector<QCPGraph*> reflGraph_;
     PlotDfgramOverlay* overlay_;
 
-    void calcDfgram();
-    void calcBackground();
-    void calcPeaks();
-    Curve curve0_;
     Curve dgramBgFitted_;
     Curve bg_;
     std::vector<Curve> refls_;

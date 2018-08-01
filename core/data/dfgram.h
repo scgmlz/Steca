@@ -29,9 +29,10 @@ public:
     Dfgram(Curve&& c) : curve(std::move(c)) {}
     Dfgram(const Dfgram&) = delete;
     Dfgram(Dfgram&&) = default;
-    Curve curve;
-    Kached<Dfgram,Polynom> bgFit {&computeBgFit};
+    const Curve curve;
+    const Polynom& getBgFit() const { return bgFit.get(this); }
 private:
+    mutable Kached<Dfgram,Polynom> bgFit {&computeBgFit};
 };
 
 #endif // DFGRAM_H
