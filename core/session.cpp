@@ -19,7 +19,6 @@
 
 #include "qcr/base/debug.h"
 #include "core/session.h"
-#include "core/fit/peak_functions.h"
 #include <QJsonDocument>
 
 Session* gSession; //!< global, for data handling
@@ -27,8 +26,6 @@ Session* gSession; //!< global, for data handling
 Session::Session()
 {
     gSession = this;
-
-    register_peak_functions();
 
     params.detector.fromSettings();
     params.interpolParams.fromSettings();

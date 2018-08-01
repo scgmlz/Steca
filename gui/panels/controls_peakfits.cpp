@@ -240,7 +240,7 @@ ParamsView::ParamsView()
 
 ControlsPeakfits::ControlsPeakfits()
     : QcrWidget{"peaks"}
-    , comboReflType_ {"reflTyp", FunctionRegistry::instance()->keys()}
+    , comboReflType_ {"reflTyp", gSession->functionRegistry.keys()}
 {
     // outbound connections
     connect(&gGui->triggers->peakRemove, &QAction::triggered, []() {
@@ -252,7 +252,7 @@ ControlsPeakfits::ControlsPeakfits()
 
     // TODO move this to core
     comboReflType_.cell()->setHook( [](int i) {
-            const QString& peakFunctionName = FunctionRegistry::instance()->keys()[i];
+            const QString& peakFunctionName = gSession->functionRegistry.keys()[i];
             Peaks::defaultFunctionName = peakFunctionName;
             if (gSession->peaks.selectedPeak())
                 gSession->peaks.selectedPeak()->setPeakFunction(peakFunctionName);

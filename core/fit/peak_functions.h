@@ -15,6 +15,18 @@
 #ifndef PEAK_FUNCTIONS_H
 #define PEAK_FUNCTIONS_H
 
-void register_peak_functions();
+#include "core/fit/registry.h"
+
+typedef class PeakFunction* (*initializer_type)();
+
+//! Holds initializers for all available peak functions.
+
+class FunctionRegistry : public IRegistry<initializer_type> {
+public:
+    FunctionRegistry();
+    void register_fct(const initializer_type f);
+    PeakFunction* name2new(const QString&);
+    PeakFunction* clone(const PeakFunction& old);
+};
 
 #endif // PEAK_FUNCTIONS_H

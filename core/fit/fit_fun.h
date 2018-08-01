@@ -18,8 +18,6 @@
 #include "core/fit/parametric_function.h"
 #include "core/typ/curve.h"
 #include "core/typ/realpair.h"
-#include "core/fit/registry.h"
-#include "core/fit/singleton.h"
 
 //! A polynomial, for fitting the background of a diffractogram
 
@@ -66,18 +64,6 @@ protected:
     Range range_;
     qpair guessedPeak_;
     float guessedFWHM_;
-};
-
-
-typedef class PeakFunction* (*initializer_type)();
-
-//! Holds initializers for all available peak functions.
-
-class FunctionRegistry : public IRegistry<initializer_type>, public ISingleton<FunctionRegistry> {
-public:
-    void register_fct(const initializer_type f);
-    static PeakFunction* name2new(const QString&);
-    static PeakFunction* clone(const PeakFunction& old);
 };
 
 #endif // FIT_FUN_H

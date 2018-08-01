@@ -591,16 +591,35 @@ float PseudoVoigt2::fwhmError() const
 
 } // namespace
 
-//  ***********************************************************************************************
-//!  Register peak functions
-//  ***********************************************************************************************
 
-void register_peak_functions()
+//  ***********************************************************************************************
+//  FunctionRegistry
+
+void FunctionRegistry::register_fct(const initializer_type f)
 {
-    auto G = FunctionRegistry::instance();
-    G->register_fct([]()->PeakFunction*{return new Raw();});
-    G->register_fct([]()->PeakFunction*{return new Gaussian();});
-    G->register_fct([]()->PeakFunction*{return new Lorentzian();});
-    G->register_fct([]()->PeakFunction*{return new PseudoVoigt1();});
-    G->register_fct([]()->PeakFunction*{return new PseudoVoigt2();});
+    PeakFunction* tmp = f(); // implicit 'new'
+    register_item(tmp->name(), f);
+    delete tmp;
+}
+
+PeakFunction* FunctionRegistry::name2new(const QString& peakFunctionName)
+{
+    initializer_type make_new = find_or_fail(peakFunctionName);
+    return make_new();
+}
+
+PeakFunction* FunctionRegistry::clone(const PeakFunction& old)
+{
+    PeakFunction* ret = name2new(old.name());
+    *ret = old;
+    return ret;
+}
+
+FunctionRegistry::FunctionRegistry()
+{
+    register_fct([]()->PeakFunction*{return new Raw();});
+    register_fct([]()->PeakFunction*{return new Gaussian();});
+    register_fct([]()->PeakFunction*{return new Lorentzian();});
+    register_fct([]()->PeakFunction*{return new PseudoVoigt1();});
+    register_fct([]()->PeakFunction*{return new PseudoVoigt2();});
 }

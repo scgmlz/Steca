@@ -24,7 +24,8 @@ namespace {
 //! Fits peak to the given gamma gRange and constructs a PeakInfo.
 PeakInfo rawFit(Cluster& cluster, int iGamma, Peak& peak)
 {
-    std::unique_ptr<PeakFunction> peakFunction( FunctionRegistry::clone(peak.peakFunction()) );
+    std::unique_ptr<PeakFunction> peakFunction(
+        gSession->functionRegistry.clone(peak.peakFunction()) );
     const Range& fitrange = peakFunction->fitRange();
     const Metadata* metadata = &cluster.avgMetadata();
     const Range gRange = gSession->gammaSelection.slice2range(iGamma);

@@ -234,15 +234,18 @@ void PlotDfgram::renderAll()
 
     // calculate background
     bg_.clear();
-    dgramBgFitted_.clear();
 
-    const Polynom& bgPolynom = dfgram->getBgFit();
-
-    for_i (dfgram->curve.count()) {
-        double x = dfgram->curve.x(i), y = bgPolynom.y(x);
-        bg_.append(x, y);
-        dgramBgFitted_.append(x, dfgram->curve.y(i) - y);
-    }
+    if (gSession->baseline.ranges.count()) {
+        const Polynom& bgPolynom = dfgram->getBgFit();
+        dgramBgFitted_.clear();
+        for_i (dfgram->curve.count()) {
+            double x = dfgram->curve.x(i);
+            double y = bgPolynom.y(x);
+            bg_.append(x, y);
+            dgramBgFitted_.append(x, dfgram->curve.y(i) - y);
+        }
+    } else
+        dgramBgFitted_ = dfgram->curve;
 
     // calculate peaks
     refls_.clear();
@@ -282,7 +285,7 @@ void PlotDfgram::renderAll()
     xAxis->setVisible(true);
     yAxis->setVisible(true);
 
-    if (gGui->toggles->showBackground.getValue())
+    if (gGui->toggles->showBackground.getValue() && !bg_.isEmpty())
         bgGraph_->setData(QVector<double>::fromStdVector(bg_.xs()),
                           QVector<double>::fromStdVector(bg_.ys()));
     else

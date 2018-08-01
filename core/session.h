@@ -23,6 +23,7 @@
 #include "core/data/corrset.h"
 #include "core/data/dataset.h"
 #include "core/data/peak_info.h"
+#include "core/fit/peak_functions.h"
 #include "core/raw/angle_map.h"
 #include "core/typ/cached.h"
 
@@ -76,6 +77,7 @@ public:
     ThetaSelection thetaSelection;
     Baseline baseline;
     Peaks peaks;
+    FunctionRegistry functionRegistry;
 
 signals:
     void sigDetector();      //!< detector detector has changed

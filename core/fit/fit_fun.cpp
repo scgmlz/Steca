@@ -36,7 +36,9 @@ double Polynom::y(double x, double const* parValues) const
 {
     double ret = 0, xPow = 1;
     for (int i=0; i<parameters_.size(); ++i) {
-        ret += parValues[i] * xPow;
+        ret += parValue(i, parValues) * xPow;
+           // outside the fit routine, functions y(x) are called with parValues==nullptr;
+           // therefore we need 'parValue' to access either 'parValues' or 'parameters_'.
         xPow *= x;
     }
     return ret;
@@ -49,6 +51,8 @@ double Polynom::dy(double x, int i, double const*) const
 
 Polynom Polynom::fromFit(int degree, const Curve& curve, const Ranges& ranges)
 {
+    ASSERT(curve.count()>0);
+    ASSERT(ranges.count()>0);
     Polynom p(degree);
     FitWrapper().execFit(p, curve.intersect(ranges));
     return p;
@@ -98,28 +102,4 @@ Curve PeakFunction::prepareFit(const Curve& curve, const Range& range)
 {
     reset();
     return curve.intersect(range);
-}
-
-
-//  ***********************************************************************************************
-//  FunctionRegistry
-
-void FunctionRegistry::register_fct(const initializer_type f)
-{
-    PeakFunction* tmp = f(); // implicit 'new'
-    register_item(tmp->name(), f);
-    delete tmp;
-}
-
-PeakFunction* FunctionRegistry::name2new(const QString& peakFunctionName)
-{
-    initializer_type make_new = instance()->find_or_fail(peakFunctionName);
-    return make_new();
-}
-
-PeakFunction* FunctionRegistry::clone(const PeakFunction& old)
-{
-    PeakFunction* ret = name2new(old.name());
-    *ret = old;
-    return ret;
 }

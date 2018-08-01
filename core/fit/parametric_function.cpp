@@ -56,6 +56,8 @@ void ParametricFunction::reset()
         p.reset();
 }
 
+// outside the fit routine, functions y(x) are called with parValues==nullptr
+
 double ParametricFunction::parValue(int ip, double const* parValues) const
 {
     return parValues ? parValues[ip] : parameters_.at(ip).value();
