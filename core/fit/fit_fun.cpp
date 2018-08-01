@@ -51,6 +51,7 @@ double Polynom::dy(double x, int i, double const*) const
 
 Polynom Polynom::fromFit(int degree, const Curve& curve, const Ranges& ranges)
 {
+    qDebug() << "polynomial fit";
     ASSERT(curve.count()>0);
     ASSERT(ranges.count()>0);
     Polynom p(degree);
@@ -67,6 +68,7 @@ PeakFunction::PeakFunction()
 
 void PeakFunction::doFit(const Curve& curve, const Range& range)
 {
+    qDebug() << "peak fit over range" << range.to_s();
     const Curve c = prepareFit(curve, range);
     if (c.isEmpty())
         return;

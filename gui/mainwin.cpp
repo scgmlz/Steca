@@ -231,8 +231,6 @@ void MainWin::loadCorrFile()
 
 void MainWin::refresh()
 {
-    runFits();
-
     bool hasData = gSession->hasData();
     bool hasPeak = gSession->peaks.count();
     bool hasBase = gSession->baseline.ranges.count();
@@ -250,6 +248,7 @@ void MainWin::refresh()
     menus_->dgram_->setEnabled(hasData);
 }
 
+/*
 void MainWin::runFits()
 {
     if (!gSession->peaks.count()) {
@@ -257,13 +256,12 @@ void MainWin::runFits()
         gSession->setInterpolatedPeakInfos({});
         return;
     }
-    qDebug() << "going to project";
     algo::rawFits(&gGui->progressBar);
     // algo::interpolateInfos(&gGui->progressBar);
-    qDebug() << "runFits() done";
 }
 
 void MainWin::runInterpolation()
 {
     algo::interpolateInfos(&gGui->progressBar);
 }
+*/

@@ -21,6 +21,7 @@
 
 namespace {
 
+/*
 //! Fits peak to the given gamma gRange and constructs a PeakInfo.
 PeakInfo rawFit(Cluster& cluster, int iGamma, Peak& peak)
 {
@@ -55,7 +56,7 @@ PeakInfo rawFit(Cluster& cluster, int iGamma, Peak& peak)
     return {metadata, alpha, beta, gRange, float(fitresult.y), float(peakError.y),
             deg(fitresult.x), deg(peakError.x), float(fwhm), float(fwhmError)};
 }
-
+*/
 } // namespace
 
 
@@ -66,7 +67,7 @@ PeakInfo rawFit(Cluster& cluster, int iGamma, Peak& peak)
 //! Even though the betaStep of the equidistant polefigure grid is needed here,
 //!  the returned infos won't be on the grid.
 //! TODO? gammaStep separately?
-
+/*
 void algo::rawFits(class QProgressBar* progressBar)
 {
     if (!gSession->peaks.count())
@@ -89,3 +90,4 @@ void algo::rawFits(class QProgressBar* progressBar)
     }
     gSession->setDirectPeakInfos(std::move(tmp));
 }
+*/
