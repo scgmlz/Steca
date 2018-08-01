@@ -46,6 +46,7 @@ public:
     Kached() = delete;
     Kached(std::function<T(const Parent*)> f) : remake_(f) {}
     Kached(const Kached&) = delete;
+    Kached(Kached&&) = default;
     void invalidate() const { cached_.release(); }
     const T& get(const Parent* parent) const {
         if (!cached_)

@@ -30,7 +30,7 @@ public:
     Dfgram(const Dfgram&) = delete;
     Dfgram(Dfgram&&) = default;
     Curve curve;
-    //Kached<Dfgram,Polynom> bgFit {&computeBgFit};
+    Kached<Dfgram,Polynom> bgFit {&computeBgFit};
 private:
 };
 
