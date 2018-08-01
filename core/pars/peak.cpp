@@ -128,16 +128,6 @@ void Peaks::selectByValue(double x)
     }
 }
 
-QStringList Peaks::names() const
-{
-    QStringList ret;
-    for (int i=0; i<gSession->peaks.count(); ++i)
-        ret.append(QStringLiteral("%1: %2")
-                   .arg(i+1)
-                   .arg(peaks_[i].functionName()));
-    return ret;
-}
-
 QJsonArray Peaks::toJson() const
 {
     QJsonArray ret;

@@ -69,7 +69,6 @@ public:
     const Peak& at(int i) const { return peaks_.at(i); }
     Peak& at(int i) { return peaks_.at(i); }
     int selectedIndex() { return selected_; }
-    QStringList names() const;
     QJsonArray toJson() const;
 
 private:
