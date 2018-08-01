@@ -29,7 +29,7 @@ public:
         : cachedDfgram_( [v,i]()->Dfgram{return recomputeSectorDfgram(&v->get(i));} )
         , owningVector_(v)
         , i_(i)
-        { init(); }
+        { init(); } // TODO try with Kached::get(parent) instead
     Sector(const Sector& rhs) = delete;
     Sector(Sector&& rhs) = default;
     void init();

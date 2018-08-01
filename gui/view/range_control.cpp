@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "range_control.h"
+#include "core/session.h"
 #include <cmath>
 
 namespace {

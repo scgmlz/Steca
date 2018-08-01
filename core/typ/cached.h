@@ -103,7 +103,7 @@ private:
             data_.push_back(std::unique_ptr<T>((new T(this, i))));
     }
     const std::function<int()> nFct_;
-    mutable std::vector<std::unique_ptr<T>> data_;
+    mutable std::vector<std::unique_ptr<T>> data_; // TODO try w/o unique_ptr
 };
 
 #endif // CACHED_H
