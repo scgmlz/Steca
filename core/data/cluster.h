@@ -16,11 +16,11 @@
 #define CLUSTER_H
 
 #include "core/typ/cached.h"
-#include "core/data/dfgram.h"
+#include "core/data/gamma_sector.h"
 #include "core/raw/measurement.h"
 
-class Dfgram;
 class Cluster;
+class Dfgram;
 
 //! A group of one or more Measurement|s.
 
@@ -64,33 +64,6 @@ private:
 
     Metadata computeAvgMetadata() const;
 };
-
-
-//! Element of vector Cluster::gSectors, holds diffractogram for given Cluster and gamma range.
-
-class GammaSector {
-public:
-    GammaSector() = delete;
-    GammaSector(const CachingVector<Cluster, GammaSector>* const v, int i)
-        : cachedDfgram_( [v,i]()->Dfgram{return recomputeSectorDfgram(&v->get(i));} )
-        , owningVector_(v)
-        , i_(i)
-        { init(); }
-    GammaSector(const GammaSector& rhs) = delete;
-    GammaSector(GammaSector&& rhs) = default;
-    void init();
-
-    const Dfgram& dfgram() const { return cachedDfgram_.get(); }
-    const Curve& curve() const { return cachedDfgram_.get().curve; }
-
-private:
-    Kached<Dfgram> cachedDfgram_;
-    const CachingVector<Cluster, GammaSector>* const owningVector_;
-    int i_;
-    friend Dfgram recomputeSectorDfgram(const GammaSector* const gSector);
-};
-
-Dfgram recomputeSectorDfgram(const GammaSector* gSector);
 
 
 //! A group of one or more Measurement's, with associated information.

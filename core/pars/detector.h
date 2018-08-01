@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef GEOMETRY_H
-#define GEOMETRY_H
+#ifndef DETECTOR_H
+#define DETECTOR_H
 
 #include "core/aux/angles.h"
 #include "core/typ/range.h"
@@ -73,4 +73,4 @@ public:
     deg gma;
 };
 
-#endif // GEOMETRY_H
+#endif // DETECTOR_H
