@@ -17,7 +17,7 @@
 #include "core/def/idiomatic_for.h"
 #include "core/session.h"
 #include "gui/actions/toggles.h"
-#include "gui/panels/subframe_setup.h"
+#include "gui/panels/subframe_setup.h" // gGui->setup()
 #include "gui/state.h"
 #include "qcr/engine/console.h"
 

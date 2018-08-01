@@ -27,9 +27,9 @@ public:
     Dfgram(const Dfgram&) = delete;
     Dfgram(Dfgram&&) = default;
     Curve curve;
-    //Kached<Polynom> bgFit;
+    // Kached<Polynom> bgFit {&computeBgFit};
 private:
-    Polynom bgPolynom();
+    Polynom computeBgFit();
 };
 
 #endif // DFGRAM_H

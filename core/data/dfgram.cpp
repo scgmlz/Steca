@@ -15,7 +15,7 @@
 #include "core/data/dfgram.h"
 #include "core/session.h"
 
-Polynom Dfgram::bgPolynom()
+Polynom Dfgram::computeBgFit()
 {
     return Polynom::fromFit(
         gSession->baseline.polynomDegree.val(), curve, gSession->baseline.ranges);
