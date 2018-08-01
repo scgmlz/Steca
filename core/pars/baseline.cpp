@@ -15,6 +15,11 @@
 #include "core/session.h"
 #include "qcr/base/debug.h"
 
+Baseline::Baseline()
+{
+    polynomDegree.setHook( [](int){ emit gSession->sigBaseline(); gRoot->remakeAll("bg.deg"); } );
+}
+
 void Baseline::fromJson(const JsonObj obj)
 {
     ranges.fromJson(obj.loadArr("ranges"));

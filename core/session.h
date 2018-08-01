@@ -79,6 +79,7 @@ public:
 
 signals:
     void sigDetector();      //!< detector detector has changed
+    void sigBaseline();      //!< settings for baseline fit have changed
 
 private:
     // with reference accessor methods:

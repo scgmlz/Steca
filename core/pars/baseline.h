@@ -22,6 +22,7 @@
 
 class Baseline {
 public:
+    Baseline();
     void fromJson(const JsonObj obj);
     void clear();
 
