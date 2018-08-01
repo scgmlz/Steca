@@ -15,6 +15,8 @@
 #ifndef DFGRAM_H
 #define DFGRAM_H
 
+#include "core/fit/fit_fun.h"
+#include "core/typ/cached.h"
 #include "core/typ/curve.h"
 
 //! A curve, and associated fit parameters
@@ -22,7 +24,10 @@
 class Dfgram {
 public:
     Dfgram(Curve&& c) : curve(std::move(c)) {}
+    Dfgram(const Dfgram&) = delete;
+    Dfgram(Dfgram&&) = default;
     Curve curve;
+//    Kached<Polynom> bgFit;
 private:
 };
 

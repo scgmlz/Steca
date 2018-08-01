@@ -23,8 +23,6 @@
 class Peak {
 public:
     Peak() = delete;
-    Peak(Peak&&) = default;
-    Peak& operator=(Peak&&) = default;
     Peak(const Range& range, const QString& functionName = "Raw");
 
     static Peak fromJson(const JsonObj&);

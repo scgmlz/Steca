@@ -25,9 +25,6 @@
 class Datafile {
 public:
     Datafile() = delete;
-    Datafile(const Datafile&) = delete;
-    Datafile(Datafile&&) = default;
-    Datafile& operator=(Datafile&&) = default;
     Datafile(Rawfile&& raw) : raw_(std::move(raw)) {}
 
     int numMeasurements() const { return raw_.numMeasurements(); }
