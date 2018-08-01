@@ -59,9 +59,6 @@ private:
     QCPGraph *fits_;
     std::vector<QCPGraph*> reflGraph_;
     PlotDfgramOverlay* overlay_;
-
-    std::vector<Curve> refls_;
-    int currReflIndex_ {0};
 };
 
 #endif // PLOT_DFGRAM_H

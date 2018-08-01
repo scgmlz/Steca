@@ -213,12 +213,7 @@ void PlotDfgram::renderAll()
                   !showingBaseline && i==gSession->peaks.selectedIndex() ?
                   colors::peakEmph : colors::peakStd);
 
-    if (!gSession->dataset.highlight().cluster()) {
-        plotEmpty();
-        return;
-    }
-    if (!gSession->hasData()) {
-        return;
+    if (!gSession->hasData() || !gSession->dataset.highlight().cluster()) {
         plotEmpty();
         return;
     }
@@ -233,30 +228,26 @@ void PlotDfgram::renderAll()
     ASSERT(!dfgram->curve.isEmpty());
 
     // retrieve background
-    const Curve& bg_            = dfgram->getBgAsCurve();
-    const Curve& dgramBgFitted_ = dfgram->getCurveMinusBg();
+    const Curve& bg            = dfgram->getBgAsCurve();
+    const Curve& curveMinusBg = dfgram->getCurveMinusBg();
 
     // calculate peaks
-    refls_.clear();
-    currReflIndex_ = 0;
+    std::vector<Curve> peakFits;
 
     for_i (gSession->peaks.count()) {
         Peak& peak = gSession->peaks.at(i);
-        if (&peak == gSession->peaks.selectedPeak())
-            currReflIndex_ = i;
-
-        peak.fit(dgramBgFitted_);
+        peak.fit(curveMinusBg);
 
         const Range& rge = peak.range();
         const PeakFunction& fun = peak.peakFunction();
 
         Curve c;
-        for_i (dgramBgFitted_.count()) {
-            double x = dgramBgFitted_.x(i);
+        for_i (curveMinusBg.count()) {
+            double x = curveMinusBg.x(i);
             if (rge.contains(x))
                 c.append(x, fun.y(x));
         }
-        refls_.push_back(c);
+        peakFits.push_back(c);
     }
 
     const Range& tthRange = dfgram->curve.rgeX();
@@ -264,7 +255,7 @@ void PlotDfgram::renderAll()
     if (gGui->toggles->fixedIntenDfgram.getValue()) {
         intenRange = gSession->dataset.highlight().cluster()->rgeInten();
     } else {
-        intenRange = dgramBgFitted_.rgeY();
+        intenRange = curveMinusBg.rgeY();
         intenRange.extendBy(dfgram->curve.rgeY());
     }
 
@@ -274,27 +265,27 @@ void PlotDfgram::renderAll()
     xAxis->setVisible(true);
     yAxis->setVisible(true);
 
-    if (gGui->toggles->showBackground.getValue() && !bg_.isEmpty())
-        bgGraph_->setData(QVector<double>::fromStdVector(bg_.xs()),
-                          QVector<double>::fromStdVector(bg_.ys()));
+    if (gGui->toggles->showBackground.getValue() && !bg.isEmpty())
+        bgGraph_->setData(QVector<double>::fromStdVector(bg.xs()),
+                          QVector<double>::fromStdVector(bg.ys()));
     else
         bgGraph_->clearData();
 
     dgramGraph_->setData(QVector<double>::fromStdVector(dfgram->curve.xs()),
                          QVector<double>::fromStdVector(dfgram->curve.ys()));
-    dgramBgFittedGraph_->setData(QVector<double>::fromStdVector(dgramBgFitted_.xs()),
-                                 QVector<double>::fromStdVector(dgramBgFitted_.ys()));
-    dgramBgFittedGraph2_->setData(QVector<double>::fromStdVector(dgramBgFitted_.xs()),
-                                  QVector<double>::fromStdVector(dgramBgFitted_.ys()));
+    dgramBgFittedGraph_->setData(QVector<double>::fromStdVector(curveMinusBg.xs()),
+                                 QVector<double>::fromStdVector(curveMinusBg.ys()));
+    dgramBgFittedGraph2_->setData(QVector<double>::fromStdVector(curveMinusBg.xs()),
+                                  QVector<double>::fromStdVector(curveMinusBg.ys()));
 
     clearReflLayer();
     setCurrentLayer("refl");
 
-    for_i (refls_.size()) {
-        const Curve& r = refls_.at(i);
+    for_i (peakFits.size()) {
+        const Curve& r = peakFits.at(i);
         QCPGraph* graph = addGraph();
         reflGraph_.push_back(graph);
-        graph->setPen(QPen(Qt::green, i == currReflIndex_ ? 2 : 1));
+        graph->setPen(QPen(Qt::green, i == gSession->peaks.selectedIndex() ? 2 : 1));
         graph->setData(QVector<double>::fromStdVector(r.xs()),
                        QVector<double>::fromStdVector(r.ys()));
     }
