@@ -18,7 +18,7 @@
 #include "core/pars/baseline.h"
 #include "core/data/gamma_selection.h"
 #include "core/pars/params.h"
-#include "core/calc/peak.h"
+#include "core/pars/peak.h"
 #include "core/data/theta_selection.h"
 #include "core/data/corrset.h"
 #include "core/data/dataset.h"

@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/calc/peak.h
+//! @file      core/pars/peak.h
 //! @brief     Defines classes Peak and Peaks
 //!
 //! @homepage  https://github.com/scgmlz/Steca
