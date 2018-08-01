@@ -15,8 +15,8 @@
 #include "core/data/dfgram.h"
 #include "core/session.h"
 
-Polynom Dfgram::computeBgFit()
+Polynom computeBgFit(const Dfgram* parent)
 {
     return Polynom::fromFit(
-        gSession->baseline.polynomDegree.val(), curve, gSession->baseline.ranges);
+        gSession->baseline.polynomDegree.val(), parent->curve, gSession->baseline.ranges);
 }

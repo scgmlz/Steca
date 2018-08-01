@@ -19,6 +19,9 @@
 #include "core/typ/cached.h"
 #include "core/typ/curve.h"
 
+class Dfgram;
+Polynom computeBgFit(const Dfgram*);
+
 //! A curve, and associated fit parameters
 
 class Dfgram {
@@ -27,9 +30,8 @@ public:
     Dfgram(const Dfgram&) = delete;
     Dfgram(Dfgram&&) = default;
     Curve curve;
-    // Kached<Polynom> bgFit {&computeBgFit};
+    //Kached<Dfgram,Polynom> bgFit {&computeBgFit};
 private:
-    Polynom computeBgFit();
 };
 
 #endif // DFGRAM_H

@@ -40,21 +40,21 @@ private:
 
 
 //! Cached object. Experimental version.
-template<typename T>
+template<typename Parent, typename T>
 class Kached {
 public:
     Kached() = delete;
-    Kached(std::function<T(void)> f) : remake_(f) {}
+    Kached(std::function<T(const Parent*)> f) : remake_(f) {}
     Kached(const Kached&) = delete;
     void invalidate() const { cached_.release(); }
-    const T& get() const {
+    const T& get(const Parent* parent) const {
         if (!cached_)
-            cached_.reset( std::move(new T{remake_()}) );
+            cached_.reset( std::move(new T{remake_(parent)}) );
         return *cached_;
     }
 private:
     mutable std::unique_ptr<T> cached_;
-    const std::function<T(void)> remake_;
+    const std::function<T(const Parent*)> remake_;
 };
 
 
