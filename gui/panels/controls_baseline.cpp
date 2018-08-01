@@ -112,9 +112,11 @@ ControlsBaseline::ControlsBaseline()
 
     connect(&gGui->triggers->baserangeRemove, &QAction::triggered, []() {
             gSession->baseline.ranges.removeSelected();
+            emit gSession->sigBaseline();
             gRoot->remakeAll("clearBackground"); });
     connect(&gGui->triggers->baserangesClear, &QAction::triggered, []() {
             gSession->baseline.ranges.clear();
+            emit gSession->sigBaseline();
             gRoot->remakeAll("clearBackground"); });
 }
 

@@ -14,9 +14,16 @@
 
 #include "core/data/dfgram.h"
 #include "core/session.h"
+#include "core/fit/fit_fun.h"
 
 Polynom computeBgFit(const Dfgram* parent)
 {
     return Polynom::fromFit(
         gSession->baseline.polynomDegree.val(), parent->curve, gSession->baseline.ranges);
+}
+
+Dfgram::Dfgram(Curve&& c)
+    : curve(std::move(c))
+{
+    QObject::connect(gSession, &Session::sigBaseline, [this](){bgFit.invalidate();});
 }

@@ -28,7 +28,7 @@ public:
 
     QJsonObject toJson() const;
 
-    Ranges ranges;
+    Ranges ranges; // don't forget to emit sigBaseline after each change
     ParamWrapper<int> polynomDegree {2};
 };
 

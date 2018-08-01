@@ -15,18 +15,18 @@
 #ifndef DFGRAM_H
 #define DFGRAM_H
 
-#include "core/fit/fit_fun.h" // TODO mv to cpp
 #include "core/typ/cached.h"
 #include "core/typ/curve.h"
 
 class Dfgram;
+class Polynom;
 Polynom computeBgFit(const Dfgram*);
 
 //! A curve, and associated fit parameters
 
 class Dfgram {
 public:
-    Dfgram(Curve&& c) : curve(std::move(c)) {}
+    Dfgram(Curve&& c);
     Dfgram(const Dfgram&) = delete;
     Dfgram(Dfgram&&) = default;
     const Curve curve;
