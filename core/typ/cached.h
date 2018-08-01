@@ -25,8 +25,8 @@ template<typename T>
 class Cached {
 public:
     Cached() = delete;
-    Cached(const Cached&) = delete;
     Cached(std::function<T(void)> f) : remake_(f) {}
+    Cached(const Cached&) = delete;
     void invalidate() const { cached_.release(); }
     const T& get() const {
         if (!cached_)
