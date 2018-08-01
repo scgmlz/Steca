@@ -49,12 +49,15 @@ public:
     Kached(Kached&&) = default;
     void invalidate() const { cached_.release(); }
     const T& get(const Parent* parent) const {
-        if (!cached_)
+        if (!cached_ || parent!=parent_) {
             cached_.reset( std::move(new T{remake_(parent)}) );
+            parent_ = parent;
+        }
         return *cached_;
     }
 private:
     mutable std::unique_ptr<T> cached_;
+    mutable Parent* parent_ {nullptr};
     const std::function<T(const Parent*)> remake_;
 };
 
@@ -100,7 +103,7 @@ private:
             return;
         data_.clear();
         for (int i=0; i<n; ++i)
-            data_.push_back(std::unique_ptr<T>(std::move(new T(this, i))));
+            data_.push_back(std::unique_ptr<T>((new T(this, i))));
     }
     const std::function<int()> nFct_;
     mutable std::vector<std::unique_ptr<T>> data_;
