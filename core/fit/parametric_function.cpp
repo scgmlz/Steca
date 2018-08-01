@@ -50,21 +50,6 @@ void FitParameter::reset()
 //  ***********************************************************************************************
 //! @class ParametricFunction
 
-void ParametricFunction::setParameterCount(int count)
-{
-    parameters_.resize(count, FitParameter());
-}
-
-int ParametricFunction::parameterCount() const
-{
-    return parameters_.size();
-}
-
-FitParameter& ParametricFunction::parameterAt(int ip)
-{
-    return parameters_[ip];
-}
-
 void ParametricFunction::reset()
 {
     for (auto& p: parameters_)
@@ -74,9 +59,4 @@ void ParametricFunction::reset()
 double ParametricFunction::parValue(int ip, double const* parValues) const
 {
     return parValues ? parValues[ip] : parameters_.at(ip).value();
-}
-
-void ParametricFunction::setParValue(int ip, double val)
-{
-    parameters_[ip].setValue(val, 0);
 }

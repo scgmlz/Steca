@@ -47,15 +47,14 @@ public:
     //! partial derivative / parameter, with given (parValues) or own parameters
     virtual double dy(double x, int parIndex, double const* parValues = nullptr) const = 0;
 
-public:
-    void setParameterCount(int);
+    void setParameterCount(int n) { parameters_.resize(n, {}); }
     virtual void reset();
-    FitParameter& parameterAt(int);
+    FitParameter& parameterAt(int ip) { return parameters_[ip]; }
 
-    int parameterCount() const;
+    int parameterCount() const { return parameters_.size(); }
 
 protected:
-    void setParValue(int parIndex, double val);
+    void setParValue(int ip, double val) {parameters_[ip].setValue(val, 0); }
 
     double parValue(int parIndex, double const* parValues) const;
 
