@@ -58,7 +58,7 @@ private:
     const std::function<T(const Parent*)> remake_;
 };
 
-//! Vector of individually cached objects. Experimental version.
+//! Caching vector. Vector elements are recomputed when vector size changes. Experimental version.
 template<typename Parent, typename T>
 class KachingVector {
 public:
@@ -89,6 +89,19 @@ const std::function<T(const Parent*,int)> remake_;
     mutable std::vector<T> data_;
 };
 
+//! Caching vector of cached objects.
+template<typename Parent, typename T>
+class SelfKachingVector : public KachingVector<Parent, Kached<Parent,T>> {
+public:
+    SelfKachingVector() = delete;
+    SelfKachingVector(const std::function<int()> nFct,
+                      const std::function<T(const Parent*,int)> rFct)
+        : KachingVector<Parent, Kached<Parent,T>>(
+            nFct,
+            [rFct](const Parent*, int i)->Kached<Parent,T> { return Kached<Parent,T>(rFct); })
+    {}
+    T& getget(const Parent* parent, int i) const { return get(parent,i).get(); }
+};
 
 //! Cached object with key.
 template<typename T, typename K>
