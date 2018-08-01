@@ -15,11 +15,11 @@
 #include "core/session.h"
 #include "qcr/base/debug.h"
 
-Peak::Peak(const Range& range, const QString& functionName)
-    : peakFunction_(nullptr)
+Peak::Peak(const Range& r, const QString& functionName)
+    : range_(r)
+    , peakFunction_(nullptr)
 {
     setPeakFunction(functionName);
-    peakFunction_->setRange(range);
 }
 
 const PeakFunction& Peak::peakFunction() const
@@ -28,9 +28,9 @@ const PeakFunction& Peak::peakFunction() const
     return *peakFunction_;
 }
 
-void Peak::setRange(const Range& range)
+void Peak::setRange(const Range& r)
 {
-    peakFunction_->setRange(range);
+    range_ = r;
     invalidateGuesses();
 }
 
@@ -52,24 +52,18 @@ void Peak::setGuessFWHM(float fwhm)
 
 void Peak::fit(const Curve& curve)
 {
-    peakFunction_->doFit(curve, range());
+    peakFunction_->doFit(curve, range_);
 }
 
 void Peak::setPeakFunction(const QString& peakFunctionName)
 {
-    bool haveRange = (bool)peakFunction_;
-    Range oldRange;
-    if (haveRange)
-        oldRange = peakFunction_->fitRange();
     peakFunction_.reset(gSession->functionRegistry.name2new(peakFunctionName));
-    if (haveRange)
-        peakFunction_->setRange(oldRange);
 }
 
 JsonObj Peak::toJson() const
 {
     QJsonObject ret;
-    ret.insert("range", peakFunction_->fitRange().toJson() );
+    ret.insert("range", range_.toJson() );
     return ret;
 }
 

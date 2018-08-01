@@ -18,7 +18,7 @@
 #include "core/fit/fit_fun.h"
 #include <memory>
 
-//! Wraps a PeakFunction (pimpl idiom)
+//! Global settings (range, function type) for one Bragg peak.
 
 class Peak {
 public:
@@ -34,8 +34,8 @@ public:
     void setGuessFWHM(float fwhm);
     void fit(const Curve&);
 
-    Range& range() { return peakFunction_->fitRange(); }
-    const Range& range() const { return peakFunction_->fitRange(); }
+    Range& range() { return range_; }
+    const Range& range() const { return range_; }
 
     const PeakFunction& peakFunction() const;
     QString functionName() const { return peakFunction_->name(); }
@@ -43,6 +43,7 @@ public:
     JsonObj toJson() const;
 
 private:
+    Range range_;
     std::unique_ptr<PeakFunction> peakFunction_; //!< pimpl (pointer to implementation)
 };
 
