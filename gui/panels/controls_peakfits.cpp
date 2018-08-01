@@ -128,6 +128,7 @@ AnyParamsView::AnyParamsView(const QString& name)
 
 void AnyParamsView::updatePeakFun(const PeakFunction& peakFun)
 {
+    qDebug() << "AnyParamsView::updatePeakFun";
     const qpair& fittedPeak = peakFun.fittedPeak();
     readFitPeakX_.setText(safeRealText(fittedPeak.x));
     readFitPeakY_.setText(safeRealText(fittedPeak.y));
@@ -198,6 +199,7 @@ FitParamsView::FitParamsView()
 void FitParamsView::updatePeakFun(const PeakFunction& peakFun)
 {
     AnyParamsView::updatePeakFun(peakFun);
+    qDebug() << "FitParamsView::updatePeakFun";
 
     const qpair& guessedPeak = peakFun.guessedPeak();
     spinGuessPeakX_.setText(safeRealText(guessedPeak.x));
@@ -222,12 +224,14 @@ ParamsView::ParamsView()
     addWidget(widgets_[1] = new FitParamsView());
     widgets_[0]->show();
     setRemake( [=]() {
+            qDebug() << "remake ParamsView";
             Peak* peak = gSession->peaks.selectedPeak();
-            setEnabled(peak);
+            setEnabled(peak!=nullptr);
             if (!peak)
                 return;
             const PeakFunction& peakFun = peak->peakFunction();
             int i = peakFun.isRaw() ? 0 : 1;
+            qDebug() << "remake ParamsView, i =" << i;
             widgets_[i]->updatePeakFun(peakFun);
             setCurrentIndex(i);
         } );

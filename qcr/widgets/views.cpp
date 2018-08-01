@@ -31,7 +31,8 @@ QcrLineDisplay::QcrLineDisplay(const QString& name, std::function<QString()> fre
 }
 
 QcrLineDisplay::QcrLineDisplay(const QString& name, int ndigits, bool withDot)
-    : QcrLineDisplay {name, []()->QString{return "???";}}
+    : QcrMixin {*this, name}
 {
     strOp::setWidth(this, ndigits, withDot);
+    setText("???");
 }
