@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/data/gamma_sector.h
+//! @file      core/data/sector.h
 //! @brief     Defines class GammaSector
 //!
 //! @homepage  https://github.com/scgmlz/Steca

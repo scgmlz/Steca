@@ -16,7 +16,7 @@
 #define CLUSTER_H
 
 #include "core/typ/cached.h"
-#include "core/data/gamma_sector.h"
+#include "core/data/sector.h"
 #include "core/raw/measurement.h"
 
 class Cluster;
