@@ -82,6 +82,8 @@ public:
 signals:
     void sigDetector();      //!< detector detector has changed
     void sigBaseline();      //!< settings for baseline fit have changed
+    void sigPeaks();         //!< a peak has been added or removed
+    void sigPeakPars(int);   //!< settings for one peak fit have changed
 
 private:
     // with reference accessor methods:
