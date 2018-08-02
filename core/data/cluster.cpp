@@ -134,6 +134,7 @@ Cluster::Cluster(
     , offset_(offset)
     , activated_(true)
 {
+    QObject::connect(gSession, &Session::sigDetector, [this]() { dfgrams.invalidate(); });
 }
 
 //! note: the caller must emit sigActivated

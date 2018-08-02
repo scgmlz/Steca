@@ -75,6 +75,9 @@ public:
         resize(parent);
         return data_.size();
     }
+    void invalidate() const {
+        data_.clear();
+    }
 private:
     void resize(const Parent* parent) const {
         int n = nFct_();
