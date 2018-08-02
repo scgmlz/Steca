@@ -125,34 +125,4 @@ private:
     mutable K key_;
 };
 
-
-//! Vector of individually cached objects.
-template<typename Owner, typename T>
-class CachingVector {
-public:
-    CachingVector() = delete;
-    CachingVector(const Owner* const o, const std::function<int()> nf) : owner(o), nFct_(nf) {}
-    CachingVector(const CachingVector&) = delete;
-    T& get(int i) const {
-        resize();
-        return *data_.at(i);
-    }
-    int size() const {
-        resize();
-        return data_.size();
-    }
-    const Owner* const owner;
-private:
-    void resize() const {
-        int n = nFct_();
-        if (n==data_.size())
-            return;
-        data_.clear();
-        for (int i=0; i<n; ++i)
-            data_.push_back(std::unique_ptr<T>((new T(this, i))));
-    }
-    const std::function<int()> nFct_;
-    mutable std::vector<std::unique_ptr<T>> data_; // TODO try w/o unique_ptr
-};
-
 #endif // CACHED_H
