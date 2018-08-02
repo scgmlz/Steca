@@ -75,7 +75,7 @@ public:
             const class Datafile& file, const int index, const int offset);
     Cluster(const Cluster&) = delete;
 
-    void setActivated(bool on);
+    void setActivated(bool on) { activated_ = on; }
 
     const class Datafile& file() const { return file_; }
     int index() const { return index_; }

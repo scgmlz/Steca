@@ -137,14 +137,6 @@ Cluster::Cluster(
     QObject::connect(gSession, &Session::sigDetector, [this]() { dfgrams.invalidate(); });
 }
 
-//! note: the caller must emit sigActivated
-void Cluster::setActivated(bool on)
-{
-    if (on==activated_)
-        return;
-    activated_ = on;
-}
-
 int Cluster::totalOffset() const
 {
     return file_.offset_ + offset();
