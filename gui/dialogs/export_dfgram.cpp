@@ -123,7 +123,7 @@ void ExportDfgram::saveCurrent()
     QTextStream stream(file);
     Cluster* cluster = gSession->dataset.highlight().cluster();
     ASSERT(cluster);
-    const Curve& curve = cluster->currentSector().curve();
+    const Curve& curve = cluster->currentDfgram().curve;
     writeCurve(stream, curve, cluster, cluster->rgeGma(), fileField_->separator());
 }
 
@@ -171,7 +171,7 @@ void ExportDfgram::saveAll(bool oneFile)
             }
             ASSERT(stream);
             const Range gmaStripe = gSession->gammaSelection.slice2range(i);
-            const Curve& curve = cluster->sectors.get(i).curve();
+            const Curve& curve = cluster->dfgrams.getget(cluster,i).curve;
             *stream << "Picture Nr: " << picNum << '\n';
             if (nSlices > 1)
                 *stream << "Gamma slice Nr: " << i+1 << '\n';

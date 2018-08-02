@@ -113,11 +113,21 @@ double Sequence::normFactor() const
 //  ***********************************************************************************************
 //! @class Cluster
 
+namespace {
+Dfgram computeSectorDfgram(const Cluster* const parent, const int jS)
+{
+    qDebug() << "recompute dfgram" << parent->index() << "for sector " << jS;
+    return Dfgram(algo::projectCluster(*parent, gSession->gammaSelection.slice2range(jS)));
+}
+} //namespace
+
 Cluster::Cluster(
     const std::vector<const Measurement*>& measurements,
     const class Datafile& file, const int index, const int offset)
     : Sequence(measurements)
-    , sectors(this, []()->int{return gSession->gammaSelection.numSlices.val();})
+    , dfgrams([]()->int{return gSession->gammaSelection.numSlices.val();},
+              [](const Cluster* parent, int jS)->Dfgram{
+                  return computeSectorDfgram(parent, jS); })
     , file_(file)
     , index_(index)
     , offset_(offset)
@@ -143,12 +153,7 @@ bool Cluster::isIncomplete() const
     return count() < gSession->dataset.binning.val();
 }
 
-Dfgram Cluster::segmentalDfgram(int i) const
+const Dfgram& Cluster::currentDfgram() const
 {
-    return Dfgram(algo::projectCluster(*this, rgeGma().slice(i,sectors.size())));
-}
-
-Sector& Cluster::currentSector() const
-{
-    return sectors.get(gSession->gammaSelection.currSlice.val()-1);
+    return dfgrams.getget(this, gSession->gammaSelection.currSlice.val()-1);
 }

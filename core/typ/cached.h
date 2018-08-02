@@ -67,7 +67,7 @@ public:
         : nFct_(nFct), remake_(rFct) {}
     KachingVector(const KachingVector&) = delete;
     KachingVector(KachingVector&&) = default; // TODO rm after removal of CachingVector
-    T& get(const Parent* parent, int i) const {
+    const T& get(const Parent* parent, int i) const {
         resize(parent);
         return data_.at(i);
     }
@@ -92,16 +92,17 @@ private:
 //! Caching vector of cached objects.
 template<typename Parent, typename T>
 class SelfKachingVector : public KachingVector<Parent, Kached<Parent,T>> {
+    using Base = KachingVector<Parent, Kached<Parent,T>>;
 public:
     SelfKachingVector() = delete;
     SelfKachingVector(const std::function<int()> nFct,
                       const std::function<T(const Parent*,int)> rFct)
-        : KachingVector<Parent, Kached<Parent,T>>(
+        : Base(
             nFct,
             [rFct](const Parent* p, int i) {
                 return Kached<Parent,T>([rFct,i](const Parent* p)->T{ return rFct(p,i); }); } )
     {}
-    T& getget(const Parent* parent, int i) const { return get(parent,i).get(); }
+    const T& getget(const Parent* parent, int i) const { return Base::get(parent,i).get(parent); }
 };
 
 //! Cached object with key.

@@ -16,7 +16,7 @@
 #define CLUSTER_H
 
 #include "core/typ/cached.h"
-#include "core/data/sector.h"
+#include "core/data/dfgram.h"
 #include "core/raw/measurement.h"
 
 class Cluster;
@@ -71,9 +71,9 @@ private:
 class Cluster : public Sequence {
 public:
     Cluster() = delete;
-    Cluster(const Cluster&) = delete;
     Cluster(const std::vector<const Measurement*>& measurements,
             const class Datafile& file, const int index, const int offset);
+    Cluster(const Cluster&) = delete;
 
     void setActivated(bool on);
 
@@ -83,10 +83,9 @@ public:
     int totalOffset() const;
     bool isIncomplete() const;
     bool isActivated() const { return activated_; }
-    Dfgram segmentalDfgram(int) const;
 
-    CachingVector<Cluster, Sector> sectors; //! One Dfgram per gamma section
-    Sector& currentSector() const;
+    SelfKachingVector<Cluster,Dfgram> dfgrams; //! One Dfgram per gamma section
+    const Dfgram& currentDfgram() const;
 
 private:
     const class Datafile& file_;

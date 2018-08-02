@@ -222,7 +222,7 @@ void PlotDfgram::renderAll()
     else {
         Cluster* cluster = gSession->dataset.highlight().cluster();
         ASSERT(cluster);
-        dfgram = &cluster->currentSector().dfgram();
+        dfgram = &cluster->currentDfgram();
     }
     ASSERT(!dfgram->curve.isEmpty());
 
