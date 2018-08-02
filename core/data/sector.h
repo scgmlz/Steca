@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef GAMMA_SECTOR_H
-#define GAMMA_SECTOR_H
+#ifndef SECTOR_H
+#define SECTOR_H
 
 #include "core/typ/cached.h"
 #include "core/data/dfgram.h"
@@ -46,4 +46,4 @@ private:
 
 Dfgram recomputeSectorDfgram(const Sector* sector);
 
-#endif // GAMMA_SECTOR_H
+#endif // SECTOR_H
