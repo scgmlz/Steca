@@ -20,7 +20,7 @@
 #include <memory>
 #include <vector>
 
-//! Cached object. Simple version.
+//! Simple cached object.
 template<typename T>
 class Cached {
 public:
@@ -39,7 +39,7 @@ private:
 };
 
 
-//! Cached object. Experimental version.
+//! Cached object with parent-dependent remake.
 template<typename Parent, typename T>
 class Kached {
 public:
@@ -58,7 +58,7 @@ private:
     const std::function<T(const Parent*)> remake_;
 };
 
-//! Caching vector. Vector elements are recomputed when vector size changes. Experimental version.
+//! Caching vector. Vector elements are recomputed when vector size changes.
 template<typename Parent, typename T>
 class KachingVector {
 public:
