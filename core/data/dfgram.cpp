@@ -83,3 +83,13 @@ void Dfgram::invalidateBg() const
     bgAsCurve_.invalidate();
     curveMinusBg_.invalidate();
 }
+
+void Dfgram::invalidatePeaks() const
+{
+    peaksAsCurve_.invalidate();
+}
+
+void Dfgram::invalidatePeakPars(int) const // TODO refine
+{
+    peaksAsCurve_.invalidate();
+}
