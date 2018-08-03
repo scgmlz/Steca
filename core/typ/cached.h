@@ -109,8 +109,11 @@ public:
                 return Kached<Parent,T>([rFct,i](const Parent* p)->T{ return rFct(p,i); }); } )
     {}
     const T& getget(const Parent* parent, int i) const { return Base::get(parent,i).get(parent); }
-    const T* getgetif(const Parent* parent, int i) const {
-        return Base::get(parent,i).getif(parent); }
+    void forAllValids(const Parent* parent, std::function<void(const T& t)> f) const {
+        for (int i=0; i<Base::size(parent); ++i)
+            if (const T* d = Base::get(parent,i).getif(parent))
+                f(*d);
+            }
 };
 
 //! Cached object with key.
