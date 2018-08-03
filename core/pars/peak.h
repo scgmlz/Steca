@@ -34,7 +34,7 @@ public:
     void setGuessFWHM(float fwhm);
     void fit(const Curve&);
 
-    Range& range() { return range_; }
+    Range& range() { return range_; } // TODO rm: need setRange to emit sigPeakPars
     const Range& range() const { return range_; }
 
     const PeakFunction& peakFunction() const;
