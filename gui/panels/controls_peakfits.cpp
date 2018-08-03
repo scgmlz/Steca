@@ -222,7 +222,7 @@ ParamsView::ParamsView()
     addWidget(widgets_[1] = new FitParamsView());
     widgets_[0]->show();
     setRemake( [=]() {
-            Peak* peak = gSession->peaks.selectedPeak();
+            const Peak* peak = gSession->peaks.selectedPeak();
             setEnabled(peak!=nullptr);
             if (!peak)
                 return;

@@ -169,7 +169,7 @@ void PlotDfgram::resizeEvent(QResizeEvent* e)
 
 void PlotDfgram::onPeakData()
 {
-    Peak* peak = gSession->peaks.selectedPeak();
+    const Peak* peak = gSession->peaks.selectedPeak();
     guesses_->clearData();
     fits_->clearData();
 

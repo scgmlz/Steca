@@ -206,7 +206,7 @@ void PeakInfos::get4(const int idxX, const int idxY,
 
     using eReflAttr = PeakInfo::eReflAttr;
     eReflAttr ye = (eReflAttr) idxY;
-    Peak* peak = gSession->peaks.selectedPeak();
+    const Peak* peak = gSession->peaks.selectedPeak();
     if (peak
         && !peak->isRaw()
         && (ye==eReflAttr::INTEN || ye==eReflAttr::TTH || ye==eReflAttr::FWHM)) {
