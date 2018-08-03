@@ -136,8 +136,11 @@ Cluster::Cluster(
 {
     QObject::connect(gSession, &Session::sigDetector, [this]() { dfgrams.invalidate(); });
     QObject::connect(gSession, &Session::sigBaseline, [this](){
-            for (int jS=0; jS<dfgrams.size(this); ++jS)
-                dfgrams.get(this,jS).invalidate(); });
+            for (int jS=0; jS<dfgrams.size(this); ++jS) {
+                const Dfgram* d = dfgrams.getgetif(this,jS);
+                if (d)
+                    d->invalidateBg();
+            } });
 }
 
 int Cluster::totalOffset() const

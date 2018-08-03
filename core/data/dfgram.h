@@ -28,16 +28,19 @@ public:
     Dfgram(Curve&& c);
     Dfgram(const Dfgram&) = delete;
     Dfgram(Dfgram&&) = default;
+
+    void invalidateBg() const;
+
     const Curve curve; // not cached here because recompute depends on context (sector vs avg)
-    const Polynom& getBgFit     () const { return bgFit.get(this); }
-    const Curve& getBgAsCurve   () const { return bgAsCurve.get(this); }
-    const Curve& getCurveMinusBg() const { return curveMinusBg.get(this); }
-    const Curve& getPeakAsCurve (int jP) const { return peaksAsCurve.get(this,jP).get(this); }
+    const Polynom& getBgFit     () const { return bgFit_.get(this); }
+    const Curve& getBgAsCurve   () const { return bgAsCurve_.get(this); }
+    const Curve& getCurveMinusBg() const { return curveMinusBg_.get(this); }
+    const Curve& getPeakAsCurve (int jP) const { return peaksAsCurve_.get(this,jP).get(this); }
 private:
-    mutable Kached<Dfgram,Polynom> bgFit;
-    mutable Kached<Dfgram,Curve>   bgAsCurve;
-    mutable Kached<Dfgram,Curve>   curveMinusBg;
-    mutable SelfKachingVector<Dfgram,Curve> peaksAsCurve;
+    mutable Kached<Dfgram,Polynom> bgFit_;
+    mutable Kached<Dfgram,Curve>   bgAsCurve_;
+    mutable Kached<Dfgram,Curve>   curveMinusBg_;
+    mutable SelfKachingVector<Dfgram,Curve> peaksAsCurve_;
 };
 
 #endif // DFGRAM_H

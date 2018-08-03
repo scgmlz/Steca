@@ -67,12 +67,19 @@ Curve computePeakAsCurve(const Dfgram* parent, int jP)
 } // namespace
 
 Dfgram::Dfgram(Curve&& c)
-    : curve        {std::move(c)}
-    , bgFit        {&computeBgFit}
-    , bgAsCurve    {&computeBgAsCurve}
-    , curveMinusBg {&computeCurveMinusBg}
-    , peaksAsCurve {[]()->int {return gSession->peaks.count();},
+    : curve         {std::move(c)}
+    , bgFit_        {&computeBgFit}
+    , bgAsCurve_    {&computeBgAsCurve}
+    , curveMinusBg_ {&computeCurveMinusBg}
+    , peaksAsCurve_ {[]()->int {return gSession->peaks.count();},
               [](const Dfgram* parent, int jP)->Curve{
                   return computePeakAsCurve(parent, jP); } }
 {
+}
+
+void Dfgram::invalidateBg() const
+{
+    bgFit_.invalidate();
+    bgAsCurve_.invalidate();
+    curveMinusBg_.invalidate();
 }

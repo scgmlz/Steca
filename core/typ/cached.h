@@ -53,6 +53,9 @@ public:
             cached_.reset( std::move(new T{remake_(parent)}) );
         return *cached_;
     }
+    const T* getif(const Parent* parent) const {
+        return cached_ ? &*cached_ : nullptr;
+    }
 private:
     mutable std::unique_ptr<T> cached_;
     const std::function<T(const Parent*)> remake_;
@@ -106,6 +109,8 @@ public:
                 return Kached<Parent,T>([rFct,i](const Parent* p)->T{ return rFct(p,i); }); } )
     {}
     const T& getget(const Parent* parent, int i) const { return Base::get(parent,i).get(parent); }
+    const T* getgetif(const Parent* parent, int i) const {
+        return Base::get(parent,i).getif(parent); }
 };
 
 //! Cached object with key.
