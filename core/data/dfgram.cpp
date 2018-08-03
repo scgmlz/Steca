@@ -16,6 +16,8 @@
 #include "core/session.h"
 #include "core/fit/fit_fun.h"
 
+namespace {
+
 Polynom computeBgFit(const Dfgram* parent)
 {
     return Polynom::fromFit(
@@ -62,11 +64,16 @@ Curve computePeakAsCurve(const Dfgram* parent, int jP)
     return ret;
 }
 
+} // namespace
+
 Dfgram::Dfgram(Curve&& c)
-    : curve(std::move(c))
-    , peaksAsCurve( []()->int {return gSession->peaks.count();},
-                    [](const Dfgram* parent, int jP)->Curve{
-                        return computePeakAsCurve(parent, jP); } )
+    : curve        {std::move(c)}
+    , bgFit        {&computeBgFit}
+    , bgAsCurve    {&computeBgAsCurve}
+    , curveMinusBg {&computeCurveMinusBg}
+    , peaksAsCurve {[]()->int {return gSession->peaks.count();},
+              [](const Dfgram* parent, int jP)->Curve{
+                  return computePeakAsCurve(parent, jP); } }
 {
     QObject::connect(gSession, &Session::sigBaseline, [this](){bgFit.invalidate();});
 }

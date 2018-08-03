@@ -21,11 +21,6 @@
 class Dfgram;
 class Polynom;
 
-Polynom computeBgFit(const Dfgram*);
-Curve   computeBgAsCurve   (const Dfgram*);
-Curve   computeCurveMinusBg(const Dfgram*);
-Curve   computePeakAsCurve (const Dfgram*, int);
-
 //! A curve, and associated fit parameters
 
 class Dfgram {
@@ -34,14 +29,14 @@ public:
     Dfgram(const Dfgram&) = delete;
     Dfgram(Dfgram&&) = default;
     const Curve curve;
-    const Polynom& getBgFit () const      { return bgFit.get(this); }
+    const Polynom& getBgFit     () const { return bgFit.get(this); }
     const Curve& getBgAsCurve   () const { return bgAsCurve.get(this); }
     const Curve& getCurveMinusBg() const { return curveMinusBg.get(this); }
     const Curve& getPeakAsCurve (int jP) const { return peaksAsCurve.get(this,jP).get(this); }
 private:
-    mutable Kached<Dfgram,Polynom> bgFit        {&computeBgFit};
-    mutable Kached<Dfgram,Curve>   bgAsCurve    {&computeBgAsCurve};
-    mutable Kached<Dfgram,Curve>   curveMinusBg {&computeCurveMinusBg};
+    mutable Kached<Dfgram,Polynom> bgFit;
+    mutable Kached<Dfgram,Curve>   bgAsCurve;
+    mutable Kached<Dfgram,Curve>   curveMinusBg;
     mutable SelfKachingVector<Dfgram,Curve> peaksAsCurve;
 };
 
