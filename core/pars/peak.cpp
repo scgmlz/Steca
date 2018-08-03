@@ -32,6 +32,7 @@ void Peak::setRange(const Range& r)
 {
     range_ = r;
     invalidateGuesses();
+    emit gSession->sigPeaks(); // TODO PeakPars(index())
 }
 
 void Peak::invalidateGuesses()
@@ -58,6 +59,7 @@ void Peak::fit(const Curve& curve)
 void Peak::setPeakFunction(const QString& peakFunctionName)
 {
     peakFunction_.reset(gSession->functionRegistry.name2new(peakFunctionName));
+    emit gSession->sigPeaks(); // TODO PeakPars(index())
 }
 
 JsonObj Peak::toJson() const
@@ -70,6 +72,7 @@ JsonObj Peak::toJson() const
 Peak Peak::fromJson(const JsonObj& obj)
 {
     return {obj.loadRange("range"), obj.loadString("type")};
+    emit gSession->sigPeaks(); // TODO PeakPars(index())
 }
 
 
@@ -81,6 +84,7 @@ QString Peaks::defaultFunctionName = "Raw"; // FunctionRegistry::instance()->key
 void Peaks::clear()
 {
     peaks_.clear();
+    emit gSession->sigPeaks();
 }
 
 void Peaks::add(const Range& range)
@@ -95,6 +99,7 @@ void Peaks::add(const Range& range)
             return;
         }
     }
+    emit gSession->sigPeaks();
 }
 
 void Peaks::doAdd(Peak&& peak)
@@ -110,6 +115,7 @@ void Peaks::removeSelected()
     peaks_.erase(peaks_.begin()+selected_);
     if (selected_>=count())
         selected_ = count()-1;
+    emit gSession->sigPeaks();
 }
 
 void Peaks::selectByValue(double x)
@@ -134,6 +140,7 @@ void Peaks::fromJson(const QJsonArray& arr)
 {
     for (const auto& ele: arr)
         doAdd(Peak::fromJson(ele.toObject()));
+    emit gSession->sigPeaks();
 }
 
 void Peaks::sort()

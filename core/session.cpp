@@ -51,9 +51,8 @@ void Session::clear()
 {
     dataset.clear();
     corrset.clear();
-    baseline.clear(); emit sigBaseline();
+    baseline.clear();
     peaks.clear();
-
     params.clear();
 }
 
@@ -72,7 +71,7 @@ void Session::sessionFromJson(const QByteArray& json)
     dataset.fromJson(top.loadObj("dataset"));
     corrset.fromJson(top.loadObj("corrset"));
     peaks.fromJson(top.loadArr("peaks"));
-    baseline.fromJson(top.loadObj("baseline")); emit sigBaseline();
+    baseline.fromJson(top.loadObj("baseline"));
 
     params.intenScaledAvg.setVal(top.loadBool("average intensity?", true));
     params.intenScale.setVal(top.loadPreal("intensity scale", 1));
