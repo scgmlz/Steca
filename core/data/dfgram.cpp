@@ -75,5 +75,4 @@ Dfgram::Dfgram(Curve&& c)
               [](const Dfgram* parent, int jP)->Curve{
                   return computePeakAsCurve(parent, jP); } }
 {
-    QObject::connect(gSession, &Session::sigBaseline, [this](){bgFit.invalidate();});
 }

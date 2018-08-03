@@ -135,6 +135,9 @@ Cluster::Cluster(
     , activated_(true)
 {
     QObject::connect(gSession, &Session::sigDetector, [this]() { dfgrams.invalidate(); });
+    QObject::connect(gSession, &Session::sigBaseline, [this](){
+            for (int jS=0; jS<dfgrams.size(this); ++jS)
+                dfgrams.get(this,jS).invalidate(); });
 }
 
 int Cluster::totalOffset() const
