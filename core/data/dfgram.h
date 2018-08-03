@@ -21,14 +21,14 @@
 class Dfgram;
 class Polynom;
 
-//! A curve, and associated fit parameters
+//! A curve, and associated fit parameters.
 
 class Dfgram {
 public:
     Dfgram(Curve&& c);
     Dfgram(const Dfgram&) = delete;
     Dfgram(Dfgram&&) = default;
-    const Curve curve;
+    const Curve curve; // not cached here because recompute depends on context (sector vs avg)
     const Polynom& getBgFit     () const { return bgFit.get(this); }
     const Curve& getBgAsCurve   () const { return bgAsCurve.get(this); }
     const Curve& getCurveMinusBg() const { return curveMinusBg.get(this); }
