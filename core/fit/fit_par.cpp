@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/fit/parametric_function.cpp
-//! @brief     Implements classes FitParameter, ParametricFunction
+//! @file      core/fit/fit_par.cpp
+//! @brief     Implements class FitParameter
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "parametric_function.h"
+#include "core/fit/fit_par.h"
 #include "qcr/base/debug.h"
 
 //  ***********************************************************************************************

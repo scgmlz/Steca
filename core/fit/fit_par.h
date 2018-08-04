@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/fit/parametric_function.h
+//! @file      core/fit/fit_par.h
 //! @brief     Defines classes FitParameter
 //!
 //! @homepage  https://github.com/scgmlz/Steca

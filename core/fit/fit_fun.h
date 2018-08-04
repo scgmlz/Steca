@@ -15,7 +15,7 @@
 #ifndef FIT_FUN_H
 #define FIT_FUN_H
 
-#include "core/fit/parametric_function.h"
+#include "core/fit/fit_par.h"
 #include "core/typ/curve.h"
 #include "core/typ/realpair.h"
 
