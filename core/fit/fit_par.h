@@ -17,9 +17,9 @@
 
 #include "core/typ/range.h"
 
-//! Parameter value, error, and allowed range for ParametricFunction
+//! One fit parameter, with value, error, and allowed range.
 
-class FitParameter final {
+class FitParameter {
 public:
     FitParameter();
 
