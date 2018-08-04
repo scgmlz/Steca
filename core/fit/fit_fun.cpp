@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/fit/fit_fun.cpp
-//! @brief     Implements classes Polynom and PeakFunction, and FunctionRegistry
+//! @brief     Implements classes ParametricFunction, Polynom, PeakFunction
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -28,6 +28,22 @@ static double pow_n(double x, int n)
 }
 
 } // namespace
+
+//  ***********************************************************************************************
+//! @class ParametricFunction
+
+void ParametricFunction::reset()
+{
+    for (auto& p: parameters_)
+        p.reset();
+}
+
+// outside the fit routine, functions y(x) are called with parValues==nullptr
+
+double ParametricFunction::parValue(int ip, double const* parValues) const
+{
+    return parValues ? parValues[ip] : parameters_.at(ip).value();
+}
 
 //  ***********************************************************************************************
 //! @class Polynom

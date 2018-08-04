@@ -45,20 +45,3 @@ void FitParameter::reset()
     value_ = range_.bound(0);
     error_ = 0;
 }
-
-
-//  ***********************************************************************************************
-//! @class ParametricFunction
-
-void ParametricFunction::reset()
-{
-    for (auto& p: parameters_)
-        p.reset();
-}
-
-// outside the fit routine, functions y(x) are called with parValues==nullptr
-
-double ParametricFunction::parValue(int ip, double const* parValues) const
-{
-    return parValues ? parValues[ip] : parameters_.at(ip).value();
-}
