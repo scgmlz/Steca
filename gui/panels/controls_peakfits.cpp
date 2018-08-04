@@ -175,7 +175,7 @@ private:
 FitParamsView::FitParamsView()
     : AnyParamsView{"fitParamsView"}
 {
-    grid_.addWidget(new QLabel("guess"), 0, 1);
+    grid_.addWidget(new QLabel("direct"), 0, 1);
     grid_.addWidget(new QLabel("fitted"), 0, 2);
 
     grid_.addWidget(new QLabel("centre"), 1, 0);
@@ -199,10 +199,13 @@ void FitParamsView::updatePeakFun(const PeakFunction& peakFun)
 {
     AnyParamsView::updatePeakFun(peakFun);
 
-    const qpair& guessedPeak = peakFun.guessedPeak();
-    spinGuessPeakX_.setText(safeRealText(guessedPeak.x));
-    spinGuessPeakY_.setText(safeRealText(guessedPeak.y));
-    spinGuessFWHM_.setText(safeRealText(peakFun.guessedFWHM()));
+    const Cluster* cluster = gSession->dataset.highlight().cluster();
+    ASSERT(cluster);
+    int jP = gSession->peaks.selectedIndex();
+    const RawOutcome& outcome = cluster->currentDfgram().getRawOutcome(jP);
+    spinGuessPeakX_.setText(safeRealText(outcome.getCenter()));
+    spinGuessPeakY_.setText(safeRealText(outcome.getIntensity()));
+    spinGuessFWHM_.setText(safeRealText(outcome.getFwhm()));
 }
 
 

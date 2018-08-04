@@ -27,14 +27,15 @@ RawOutcome::RawOutcome(const Curve& curve)
     ASSERT(n>0);
     intensity_ = 0;
     center_ = 0;
-    double stdv_ = 0; // TODO compute stdv in one pass
+    double stdv = 0; // TODO compute stdv in one pass
     for (int i=0; i<n; ++i) {
         double x = curve.x(i);
         double y = curve.y(i);
         intensity_ += y;
         center_ += x*y;
-        stdv_ += x*x*y;
+        stdv += x*x*y;
     }
     center_ /= intensity_;
-    stdv_ = sqrt( stdv_/intensity_ - center_*center_ );
+    stdv = sqrt( stdv/intensity_ - center_*center_ );
+    fwhm_ = sqrt(2*log(2))*stdv; // TODO verify conversion
 }

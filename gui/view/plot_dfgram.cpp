@@ -216,11 +216,12 @@ void PlotDfgram::renderAll()
         plotEmpty();
         return;
     }
+    // TODO NOW move the following to session
     const Dfgram* dfgram;
     if (gGui->toggles->combinedDfgram.getValue())
         dfgram = &gSession->activeClusters().avgDfgram.get();
     else {
-        Cluster* cluster = gSession->dataset.highlight().cluster();
+        const Cluster* cluster = gSession->dataset.highlight().cluster();
         ASSERT(cluster);
         dfgram = &cluster->currentDfgram();
     }
