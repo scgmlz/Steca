@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef PARAMETRIC_FUNCTION_H
-#define PARAMETRIC_FUNCTION_H
+#ifndef FIT_PAR_H
+#define FIT_PAR_H
 
 #include "core/typ/range.h"
 
@@ -36,4 +36,4 @@ private:
     Range range_; //!< allowed range of values
 };
 
-#endif // PARAMETRIC_FUNCTION_H
+#endif // FIT_PAR_H
