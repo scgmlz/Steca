@@ -121,7 +121,7 @@ void ExportDfgram::saveCurrent()
     if (!file)
         return;
     QTextStream stream(file);
-    Cluster* cluster = gSession->dataset.highlight().cluster();
+    const Cluster* cluster = gSession->dataset.highlight().cluster();
     ASSERT(cluster);
     const Curve& curve = cluster->currentDfgram().curve;
     writeCurve(stream, curve, cluster, cluster->rgeGma(), fileField_->separator());
