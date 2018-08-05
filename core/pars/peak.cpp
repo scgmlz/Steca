@@ -79,7 +79,7 @@ Peak Peak::fromJson(const JsonObj& obj)
 //  ***********************************************************************************************
 //! @class Peaks
 
-QString Peaks::defaultFunctionName = "Raw"; // FunctionRegistry::instance()->keys()[0];
+QString Peaks::defaultFunctionName = "Gaussian";
 
 void Peaks::clear()
 {

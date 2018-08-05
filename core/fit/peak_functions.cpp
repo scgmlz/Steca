@@ -19,89 +19,6 @@
 namespace {
 
 //  ***********************************************************************************************
-//! @class Raw
-
-//! Peak analysis without fitting
-
-class Raw : public PeakFunction {
-public:
-
-    qpair fittedPeak() const;
-    float fittedFWHM() const;
-
-    qpair peakError() const;
-    float fwhmError() const;
-
-    void fit(const Curve&, const Range&);
-
-    QString name() const final { return "Raw"; }
-    bool isRaw() const final { return true; }
-
-private:
-    double y(double x, double const* parValues = nullptr) const final;
-    double dy(double x, int parIndex, double const* parValues = nullptr) const final;
-    Curve fittedCurve_; // saved from fitting
-    Range range_;
-
-    mutable int x_count_;
-    mutable double dx_;
-    mutable double sum_y_;
-};
-
-double Raw::y(double x, double const* /*parValues*/) const
-{
-    if (!x_count_ || !range_.contains(x))
-        return 0;
-
-    int i = qBound(0, qFloor((x - range_.min) / dx_), x_count_ - 1);
-    return fittedCurve_.y(i);
-}
-
-double Raw::dy(double, int, double const*) const
-{
-    return 0; // fake
-}
-
-qpair Raw::fittedPeak() const
-{
-    if (qIsNaN(sum_y_))
-        fittedCurve_.count();
-    return qpair(range_.center(), sum_y_);
-}
-
-float Raw::fittedFWHM() const
-{
-    return float(range_.width()); // kind-of
-}
-
-qpair Raw::peakError() const
-{
-    return qpair(0, 0);
-}
-
-float Raw::fwhmError() const
-{
-    return 0;
-}
-
-void Raw::fit(const Curve& curve, const Range& range)
-{
-    range_ = range;
-    fittedCurve_ = curve.intersect(range);
-
-    if (range_.isEmpty() || fittedCurve_.isEmpty()) {
-        x_count_ = 0;
-        dx_ = 0;
-        sum_y_ = Q_QNAN;
-    } else {
-        x_count_ = fittedCurve_.count();
-        dx_ = range_.width() / x_count_;
-        sum_y_ = fittedCurve_.sumY();
-    }
-}
-
-
-//  ***********************************************************************************************
 //! @class Gaussian
 
 //! to fit peak with a Gaussian
@@ -607,7 +524,6 @@ PeakFunction* FunctionRegistry::clone(const PeakFunction& old)
 
 FunctionRegistry::FunctionRegistry()
 {
-    register_fct([]()->PeakFunction*{return new Raw();});
     register_fct([]()->PeakFunction*{return new Gaussian();});
     register_fct([]()->PeakFunction*{return new Lorentzian();});
     register_fct([]()->PeakFunction*{return new PseudoVoigt1();});
