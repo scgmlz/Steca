@@ -199,7 +199,7 @@ void FitParamsView::updatePeakFun(const PeakFunction& peakFun)
 {
     AnyParamsView::updatePeakFun(peakFun);
 
-    const Cluster* cluster = gSession->dataset.highlight().cluster();
+    const Cluster* cluster = gSession->highlightedCluster().cluster();
     ASSERT(cluster);
     int jP = gSession->peaks.selectedIndex();
     const RawOutcome& outcome = cluster->currentDfgram().getRawOutcome(jP);

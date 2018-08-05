@@ -31,7 +31,7 @@ public:
     FilesModel() : CheckTableModel("datafiles") {}
 
 private:
-    int highlighted() const final { return gSession->dataset.highlight().fileIndex(); }
+    int highlighted() const final { return gSession->highlightedCluster().fileIndex(); }
     void onHighlight(int i) final { gSession->dataset.highlight().setFile(i); }
     bool activated(int i) const { return gSession->dataset.fileAt(i).activated() == Qt::Checked; }
     void setActivated(int i, bool on) { gSession->dataset.setFileActivation(i, on); }

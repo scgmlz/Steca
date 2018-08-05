@@ -31,7 +31,7 @@ public:
     enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
 
 private:
-    int highlighted() const final { return gSession->dataset.highlight().clusterIndex(); }
+    int highlighted() const final { return gSession->highlightedCluster().clusterIndex(); }
     void onHighlight(int row) final { gSession->dataset.highlight().setCluster(row); }
     bool activated(int row) const { return gSession->dataset.clusterAt(row).isActivated(); }
     void setActivated(int row, bool on) { gSession->dataset.activateCluster(row, on); }

@@ -68,7 +68,9 @@ public:
     // const abbreviations to member member calls
     bool hasData() const { return dataset.countFiles(); }
     bool hasCorrFile() const { return corrset.hasFile(); }
+
     const ActiveClusters& activeClusters() const { return dataset.activeClusters(); }
+    const HighlightedData& highlightedCluster() const { return dataset.highlight(); }
 
     Dataset dataset;
     Corrset corrset;
