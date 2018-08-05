@@ -104,135 +104,69 @@ PeaksView::PeaksView()
 }
 
 //  ***********************************************************************************************
-//! @class ParamsView and its dependences (local scope)
+//! @class PeakfitOutcomeView (local scope)
 
-//! Virtual base class for RawParamsView and FitParamsView.
+//! Displays outcome of raw analysis and fit of current peak for current dfgram.
 
-class AnyParamsView : public QcrWidget {
+class PeakfitOutcomeView : public QcrWidget {
 public:
-    AnyParamsView() = delete;
-    AnyParamsView(const QString& name);
-    virtual void updatePeakFun(const PeakFunction&);
-protected:
-    QGridLayout grid_;
-    QcrLineDisplay readFitPeakX_ {"fittedX", 6, true};
-    QcrLineDisplay readFitPeakY_ {"fittedY", 6, true};
-    QcrLineDisplay readFitFWHM_  {"fittedW", 6, true};
-};
-
-AnyParamsView::AnyParamsView(const QString& name)
-    : QcrWidget(name)
-{
-    setLayout(&grid_);
-}
-
-void AnyParamsView::updatePeakFun(const PeakFunction& peakFun)
-{
-    const qpair& fittedPeak = peakFun.fittedPeak();
-    readFitPeakX_.setText(safeRealText(fittedPeak.x));
-    readFitPeakY_.setText(safeRealText(fittedPeak.y));
-    readFitFWHM_.setText(safeRealText(peakFun.fittedFWHM()));
-}
-
-//! Displays outcome of raw data analysis.
-
-class RawParamsView : public AnyParamsView {
-public:
-    RawParamsView();
-};
-
-RawParamsView::RawParamsView()
-    : AnyParamsView{"rawParamsView"}
-{
-    grid_.addWidget(new QLabel(""), 0, 0);
-
-    grid_.addWidget(new QLabel("centre"), 1, 0);
-    grid_.addWidget(&readFitPeakX_, 1, 2);
-    grid_.addWidget(new QLabel("deg"), 1, 3);
-
-    grid_.addWidget(new QLabel("fwhm"), 2, 0);
-    grid_.addWidget(&readFitFWHM_, 2, 2);
-    grid_.addWidget(new QLabel("deg"), 2, 3);
-
-    grid_.addWidget(new QLabel("intens"), 3, 0);
-    grid_.addWidget(&readFitPeakY_, 3, 2);
-
-    grid_.setColumnStretch(4, 1);
-}
-
-//! Displays outcome of peak fit.
-
-class FitParamsView : public AnyParamsView {
-public:
-    FitParamsView();
-    virtual void updatePeakFun(const PeakFunction&);
+    PeakfitOutcomeView();
 private:
-    QcrLineDisplay spinGuessPeakX_ {"guessedX", 6, true};
-    QcrLineDisplay spinGuessPeakY_ {"guessedY", 6, true};
-    QcrLineDisplay spinGuessFWHM_  {"guessedW", 6, true};
+    QcrLineDisplay showFitOutcomeX_ {"fittedX", 6, true};
+    QcrLineDisplay showFitOutcomeD_  {"fittedD", 6, true};
+    QcrLineDisplay showFitOutcomeY_ {"fittedY", 6, true};
+    QcrLineDisplay showRawOutcomeX_ {"rawX", 6, true};
+    QcrLineDisplay showRawOutcomeY_ {"rawY", 6, true};
+    QcrLineDisplay showRawOutcomeD_  {"rawD", 6, true};
 };
 
-FitParamsView::FitParamsView()
-    : AnyParamsView{"fitParamsView"}
+PeakfitOutcomeView::PeakfitOutcomeView()
+    : QcrWidget("peakfitOutcomeView")
 {
-    grid_.addWidget(new QLabel("direct"), 0, 1);
-    grid_.addWidget(new QLabel("fitted"), 0, 2);
+    auto* grid = new QGridLayout;
+    grid->addWidget(new QLabel("direct"), 0, 1);
+    grid->addWidget(new QLabel("fitted"), 0, 2);
 
-    grid_.addWidget(new QLabel("centre"), 1, 0);
-    grid_.addWidget(&spinGuessPeakX_, 1, 1);
-    grid_.addWidget(&readFitPeakX_, 1, 2);
-    grid_.addWidget(new QLabel("deg"), 1, 3);
+    grid->addWidget(new QLabel("centre"), 1, 0);
+    grid->addWidget(&showRawOutcomeX_, 1, 1);
+    grid->addWidget(&showFitOutcomeX_, 1, 2);
+    grid->addWidget(new QLabel("deg"), 1, 3);
 
-    grid_.addWidget(new QLabel("fwhm"), 2, 0);
-    grid_.addWidget(&spinGuessFWHM_, 2, 1);
-    grid_.addWidget(&readFitFWHM_, 2, 2);
-    grid_.addWidget(new QLabel("deg"), 2, 3);
+    grid->addWidget(new QLabel("fwhm"), 2, 0);
+    grid->addWidget(&showRawOutcomeD_, 2, 1);
+    grid->addWidget(&showFitOutcomeD_, 2, 2);
+    grid->addWidget(new QLabel("deg"), 2, 3);
 
-    grid_.addWidget(new QLabel("intens"), 3, 0);
-    grid_.addWidget(&spinGuessPeakY_, 3, 1);
-    grid_.addWidget(&readFitPeakY_, 3, 2);
+    grid->addWidget(new QLabel("intens"), 3, 0);
+    grid->addWidget(&showRawOutcomeY_, 3, 1);
+    grid->addWidget(&showFitOutcomeY_, 3, 2);
 
-    grid_.setColumnStretch(4, 1);
-}
+    grid->setColumnStretch(4, 1);
+    setLayout(grid);
 
-void FitParamsView::updatePeakFun(const PeakFunction& peakFun)
-{
-    AnyParamsView::updatePeakFun(peakFun);
-
-    const Cluster* cluster = gSession->highlightedCluster().cluster();
-    ASSERT(cluster);
-    int jP = gSession->peaks.selectedIndex();
-    const RawOutcome& outcome = cluster->currentDfgram().getRawOutcome(jP);
-    spinGuessPeakX_.setText(safeRealText(outcome.getCenter()));
-    spinGuessPeakY_.setText(safeRealText(outcome.getIntensity()));
-    spinGuessFWHM_.setText(safeRealText(outcome.getFwhm()));
-}
-
-
-//! Displays result of either raw data analysis or peak fit.
-
-class ParamsView : public QcrStackedWidget {
-public:
-    ParamsView();
-private:
-    AnyParamsView* widgets_[2];
-};
-
-ParamsView::ParamsView()
-    : QcrStackedWidget{"paramView"}
-{
-    addWidget(widgets_[0] = new RawParamsView());
-    addWidget(widgets_[1] = new FitParamsView());
-    widgets_[0]->show();
     setRemake( [=]() {
             const Peak* peak = gSession->peaks.selectedPeak();
-            setEnabled(peak!=nullptr);
-            if (!peak)
+
+            const Cluster* cluster = gSession->highlightedCluster().cluster();
+            ASSERT(cluster);
+            int jP = gSession->peaks.selectedIndex();
+            const RawOutcome& outcome = cluster->currentDfgram().getRawOutcome(jP);
+            showRawOutcomeX_.setText(safeRealText(outcome.getCenter()));
+            showRawOutcomeD_.setText(safeRealText(outcome.getFwhm()));
+            showRawOutcomeY_.setText(safeRealText(outcome.getIntensity()));
+
+            showFitOutcomeX_.setEnabled(peak!=nullptr);
+            showFitOutcomeD_.setEnabled(peak!=nullptr);
+            showFitOutcomeY_.setEnabled(peak!=nullptr);
+            if (!peak) {
+                showFitOutcomeX_.setText("");
+                showFitOutcomeD_.setText("");
+                showFitOutcomeY_.setText("");
                 return;
-            const PeakFunction& peakFun = peak->peakFunction();
-            int i = peakFun.isRaw() ? 0 : 1;
-            widgets_[i]->updatePeakFun(peakFun);
-            setCurrentIndex(i);
+            }
+            showFitOutcomeX_.setText(safeRealText(outcome.getCenter()));
+            showFitOutcomeD_.setText(safeRealText(outcome.getFwhm()));
+            showFitOutcomeY_.setText(safeRealText(outcome.getIntensity()));
         } );
 }
 
@@ -273,7 +207,7 @@ ControlsPeakfits::ControlsPeakfits()
     box->addWidget(&comboReflType_);
     box->addWidget(new RangeControl("peak", []()->Range*{
                 return gSession->peaks.selectedRange(); }));
-    box->addWidget(new ParamsView);
+    box->addWidget(new PeakfitOutcomeView);
     box->addStretch(1000);
     setLayout(box);
 }
