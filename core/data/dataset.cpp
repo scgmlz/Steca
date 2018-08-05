@@ -98,7 +98,7 @@ Dataset::Dataset() {
 void Dataset::clear()
 {
     qDebug() << "Dataset::clear";
-    highlight().clear();
+    highlight_.clear();
     files_.clear();
     onFileChanged();
     gSession->updateImageSize();
@@ -109,16 +109,16 @@ void Dataset::clear()
 
 void Dataset::removeFile()
 {
-    int i = highlight().fileIndex();
+    int i = highlight_.fileIndex();
     files_.erase(files_.begin()+i);
     if (files_.empty())
         return clear();
     onFileChanged();
     // reset highlight, which was temporarily unset at the beginning of this function
     if (i<countFiles())
-        highlight().setFile(i);
+        highlight_.setFile(i);
     else if (i>0)
-        highlight().setFile(i-1);
+        highlight_.setFile(i-1);
     else
         qFatal("impossible case in Dataset::removeFile");
     gRoot->remakeAll("Dataset::removeFile");
@@ -126,8 +126,8 @@ void Dataset::removeFile()
 
 void Dataset::addGivenFiles(const QStringList& filePaths)
 {
-    int i = highlight().fileIndex();
-    highlight().clear();
+    int i = highlight_.fileIndex();
+    highlight_.clear();
     for (const QString& path: filePaths) {
         if (path.isEmpty() || hasFile(path))
             continue;
@@ -137,7 +137,7 @@ void Dataset::addGivenFiles(const QStringList& filePaths)
         onFileChanged();
     }
     if (countFiles())
-        highlight().setFile( i<0 ? 0 : i );
+        highlight_.setFile( i<0 ? 0 : i );
 }
 
 void Dataset::activateCluster(int index, bool on)
@@ -170,7 +170,7 @@ void Dataset::onFileChanged()
 void Dataset::onClusteringChanged()
 {
     updateClusters();
-    highlight().reset();
+    highlight_.reset();
     gRoot->remakeAll("Dataset::onClusteringChanged");
 }
 
