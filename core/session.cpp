@@ -27,16 +27,7 @@ Session::Session()
 {
     gSession = this;
 
-    params.detector.fromSettings();
-    params.interpolParams.fromSettings();
-
     connect(this, &Session::sigDetector, [this]() { angleMap_.invalidate(); });
-}
-
-Session::~Session()
-{
-    params.detector.toSettings();
-    params.interpolParams.toSettings();
 }
 
 const PeakInfos& Session::peakInfos() const

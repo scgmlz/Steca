@@ -38,7 +38,6 @@ class Session : public QObject {
     Q_OBJECT
 public:
     Session();
-    ~Session();
     Session(const Session&) = delete;
 
     // accessor methods:

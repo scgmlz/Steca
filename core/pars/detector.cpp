@@ -26,6 +26,13 @@ double const Detector::DEF_DETECTOR_PIXEL_SIZE = 1;
 
 Detector::Detector()
 {
+    // from settings:
+    XSettings s("DetectorDetector");
+    detectorDistance.setVal(s.readReal("detectorDistance", DEF_DETECTOR_DISTANCE));
+    pixSize         .setVal(s.readReal("pixelSize", DEF_DETECTOR_PIXEL_SIZE));
+    pixOffset[0]    .setVal(s.readInt("offsetX", 0));
+    pixOffset[1]    .setVal(s.readInt("offsetY", 0));
+
     // TODO restore constraints?
     // detectorDistance_ = qMin(qMax(detectorDistance, 10.), 9999.);
     // pixSize_ = qMin(qMax(pixSize, .1), 9.9);
@@ -36,17 +43,9 @@ Detector::Detector()
     pixOffset[1]    .setHook([](int   ){ emit gSession->sigDetector(); gRoot->remakeAll("geo"); } );
 }
 
-void Detector::fromSettings()
+Detector::~Detector()
 {
-    XSettings s("DetectorDetector");
-    detectorDistance.setVal(s.readReal("detectorDistance", DEF_DETECTOR_DISTANCE));
-    pixSize         .setVal(s.readReal("pixelSize", DEF_DETECTOR_PIXEL_SIZE));
-    pixOffset[0]    .setVal(s.readInt("offsetX", 0));
-    pixOffset[1]    .setVal(s.readInt("offsetY", 0));
-}
-
-void Detector::toSettings() const
-{
+    // to settings
     XSettings s("DetectorDetector");
     s.setValue("detectorDistance", detectorDistance.val());
     s.setValue("pixelSize", pixSize.val());

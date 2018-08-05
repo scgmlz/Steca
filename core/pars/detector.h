@@ -30,12 +30,11 @@ public:
     static double const DEF_DETECTOR_PIXEL_SIZE;
 
     Detector();
+    ~Detector();
 
     void fromJson(const JsonObj& obj);
-    void fromSettings();
 
     QJsonObject toJson() const;
-    void toSettings() const;
 
     ParamWrapper<double> detectorDistance {DEF_DETECTOR_DISTANCE};
     ParamWrapper<double> pixSize          {DEF_DETECTOR_PIXEL_SIZE};

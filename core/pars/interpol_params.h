@@ -23,12 +23,11 @@
 class InterpolParams {
 public:
     InterpolParams();
+    ~InterpolParams();
 
     void fromJson(const JsonObj& obj);
-    void fromSettings();
 
     QJsonObject toJson() const;
-    void toSettings() const;
 
     ParamWrapper<bool>   enabled     {false};
     ParamWrapper<double> stepAlpha   {5.};

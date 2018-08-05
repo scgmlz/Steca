@@ -17,6 +17,16 @@
 
 InterpolParams::InterpolParams()
 {
+    // from settings:
+    XSettings s("interpolation parameters");
+    { bool   val; s.getBool("enabled", val);    enabled.setVal(val); }
+    { double val; s.getReal("step alpha", val); stepAlpha.setVal(val); }
+    { double val; s.getReal("step beta", val);  stepBeta.setVal(val); }
+    { double val; s.getReal("idw radius", val); idwRadius.setVal(val); }
+    { double val; s.getReal("alpha max", val);  avgAlphaMax.setVal(val); }
+    { double val; s.getReal("avg radius", val); avgRadius.setVal(val); }
+    { int    val; s.getInt ("threshold", val);  threshold.setVal(val); }
+
 /* TODO do we want to duplicate these constraints (the are also imposed in the GUI)
 void InterpolParams::setStepAlpha(double val) {
     stepAlpha_ = qMax(0., qMin(val, 90.)); }
@@ -35,20 +45,9 @@ void InterpolParams::setThreshold(int val) {
 */
 }
 
-void InterpolParams::fromSettings()
+InterpolParams::~InterpolParams()
 {
-    XSettings s("interpolation parameters");
-    { bool   val; s.getBool("enabled", val);    enabled.setVal(val); }
-    { double val; s.getReal("step alpha", val); stepAlpha.setVal(val); }
-    { double val; s.getReal("step beta", val);  stepBeta.setVal(val); }
-    { double val; s.getReal("idw radius", val); idwRadius.setVal(val); }
-    { double val; s.getReal("alpha max", val);  avgAlphaMax.setVal(val); }
-    { double val; s.getReal("avg radius", val); avgRadius.setVal(val); }
-    { int    val; s.getInt ("threshold", val);  threshold.setVal(val); }
-}
-
-void InterpolParams::toSettings() const
-{
+    // to settings:
     XSettings s("interpolation parameters");
     s.setValue("enabled",    enabled.val());
     s.setValue("step alpha", stepAlpha.val());
