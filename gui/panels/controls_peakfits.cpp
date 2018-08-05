@@ -113,6 +113,8 @@ public:
     PeakfitOutcomeView();
 private:
     void remake();
+    void enableRaw(bool);
+    void enableFit(bool);
     QcrLineDisplay showFitOutcomeX_ {"fittedX", 6, true};
     QcrLineDisplay showFitOutcomeD_  {"fittedD", 6, true};
     QcrLineDisplay showFitOutcomeY_ {"fittedY", 6, true};
@@ -152,40 +154,41 @@ void PeakfitOutcomeView::remake()
 {
     const Peak* peak = gSession->peaks.selectedPeak();
     const Cluster* cluster = gSession->highlightedCluster().cluster();
-    if (!peak || !cluster) {
-        showRawOutcomeX_.setEnabled(false);
-        showRawOutcomeD_.setEnabled(false);
-        showRawOutcomeY_.setEnabled(false);
-        showFitOutcomeX_.setEnabled(false);
-        showFitOutcomeD_.setEnabled(false);
-        showFitOutcomeY_.setEnabled(false);
-        showRawOutcomeX_.setText("");
-        showRawOutcomeD_.setText("");
-        showRawOutcomeY_.setText("");
-        showFitOutcomeX_.setText("");
-        showFitOutcomeD_.setText("");
-        showFitOutcomeY_.setText("");
+    bool proceed = peak && cluster;
+    enableRaw(proceed);
+    enableFit(proceed && !peak->isRaw());
+    if (!proceed)
         return;
-    }
 
     int jP = gSession->peaks.selectedIndex();
     const RawOutcome& outcome = cluster->currentDfgram().getRawOutcome(jP);
     showRawOutcomeX_.setText(safeRealText(outcome.getCenter()));
     showRawOutcomeD_.setText(safeRealText(outcome.getFwhm()));
     showRawOutcomeY_.setText(safeRealText(outcome.getIntensity()));
+}
 
-    showFitOutcomeX_.setEnabled(peak!=nullptr);
-    showFitOutcomeD_.setEnabled(peak!=nullptr);
-    showFitOutcomeY_.setEnabled(peak!=nullptr);
-    if (!peak) {
+void PeakfitOutcomeView::enableRaw(bool on)
+{
+    showRawOutcomeX_.setEnabled(on);
+    showRawOutcomeD_.setEnabled(on);
+    showRawOutcomeY_.setEnabled(on);
+    if (!on) {
+        showRawOutcomeX_.setText("");
+        showRawOutcomeD_.setText("");
+        showRawOutcomeY_.setText("");
+    }
+}
+
+void PeakfitOutcomeView::enableFit(bool on)
+{
+    showFitOutcomeX_.setEnabled(on);
+    showFitOutcomeD_.setEnabled(on);
+    showFitOutcomeY_.setEnabled(on);
+    if (!on) {
         showFitOutcomeX_.setText("");
         showFitOutcomeD_.setText("");
         showFitOutcomeY_.setText("");
-        return;
     }
-    showFitOutcomeX_.setText(safeRealText(outcome.getCenter()));
-    showFitOutcomeD_.setText(safeRealText(outcome.getFwhm()));
-    showFitOutcomeY_.setText(safeRealText(outcome.getIntensity()));
 }
 
 //  ***********************************************************************************************
