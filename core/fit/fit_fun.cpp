@@ -15,7 +15,14 @@
 #include "fit_fun.h"
 #include "core/typ/curve.h"
 #include "core/fit/fit_methods.h"
+#include "core/fit/raw_outcome.h"
 #include "qcr/base/debug.h"
+
+// TODO move to peak computation
+#include "core/aux/exception.h"
+#include <cmath>
+
+#define SQR(x) (x)*(x)
 
 namespace {
 
@@ -78,3 +85,49 @@ Polynom Polynom::fromFit(int degree, const Curve& curve, const Ranges& ranges)
 
 //  ***********************************************************************************************
 //! @class PeakFunction
+
+PeakFunction::PeakFunction(const QString& functionName, const RawOutcome& rawOutcome)
+{
+    // Gaussian
+    parameters_.resize(3);
+    parameters_[0].setValue(rawOutcome.getCenter(),0);
+    parameters_[1].setValue(rawOutcome.getFwhm() / sqrt(8*log(2)),0);
+    parameters_[2].setValue(rawOutcome.getIntensity(),0);
+}
+
+double PeakFunction::y(double x, double const* parValues) const
+{
+    // Gaussian
+    double center = parValue(0, parValues);
+    double stdv = parValue(1, parValues);
+    double inten = parValue(2, parValues);
+    return inten*exp(-SQR(x-center)/(2*SQR(stdv)));
+}
+
+double PeakFunction::dy(double x, int i, double const* parValues) const
+{
+    // Gaussian
+    double center = parValue(0, parValues);
+    double stdv = parValue(1, parValues);
+    double inten = parValue(2, parValues);
+    switch (i) {
+    case 0:
+        return inten*exp(-SQR(x-center)/(2*SQR(stdv)))*(x-center)/SQR(stdv);
+    case 1:
+        return exp(-SQR(x-center)/(2*SQR(stdv)));
+    case 2:
+        return inten*exp(-SQR(x-center)/(2*SQR(stdv)))*SQR(x-center)/stdv/stdv/stdv;
+    default:
+        THROW("impossible case");
+    }
+}
+
+PeakFunction PeakFunction::fromFit(
+    const QString& functionName, const Curve& curve, const RawOutcome& rawOutcome)
+{
+    qDebug() << "peak fit";
+    ASSERT(curve.count()>0);
+    PeakFunction p(functionName, rawOutcome);
+    FitWrapper().execFit(p, curve);
+    return p;
+}

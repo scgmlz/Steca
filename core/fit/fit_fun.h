@@ -67,10 +67,10 @@ private:
 
 class PeakFunction : public ParametricFunction {
 public:
-    PeakFunction(const QString& kind, const Curve&, const RawOutcome&);
+    PeakFunction(const QString& functionName, const RawOutcome&);
     double y(double x, double const* parValues = nullptr) const final;
 
-    static PeakFunction fromFit(const QString& kind, const Curve&, const RawOutcome&);
+    static PeakFunction fromFit(const QString& functionName, const Curve&, const RawOutcome&);
 
 private:
     double dy(double x, int parIndex, double const* parValues = nullptr) const final;
