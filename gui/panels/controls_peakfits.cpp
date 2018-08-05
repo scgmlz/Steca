@@ -112,6 +112,7 @@ class PeakfitOutcomeView : public QcrWidget {
 public:
     PeakfitOutcomeView();
 private:
+    void remake();
     QcrLineDisplay showFitOutcomeX_ {"fittedX", 6, true};
     QcrLineDisplay showFitOutcomeD_  {"fittedD", 6, true};
     QcrLineDisplay showFitOutcomeY_ {"fittedY", 6, true};
@@ -144,32 +145,48 @@ PeakfitOutcomeView::PeakfitOutcomeView()
     grid->setColumnStretch(4, 1);
     setLayout(grid);
 
-    setRemake( [=]() {
-            const Peak* peak = gSession->peaks.selectedPeak();
-
-            const Cluster* cluster = gSession->highlightedCluster().cluster();
-            ASSERT(cluster);
-            int jP = gSession->peaks.selectedIndex();
-            const RawOutcome& outcome = cluster->currentDfgram().getRawOutcome(jP);
-            showRawOutcomeX_.setText(safeRealText(outcome.getCenter()));
-            showRawOutcomeD_.setText(safeRealText(outcome.getFwhm()));
-            showRawOutcomeY_.setText(safeRealText(outcome.getIntensity()));
-
-            showFitOutcomeX_.setEnabled(peak!=nullptr);
-            showFitOutcomeD_.setEnabled(peak!=nullptr);
-            showFitOutcomeY_.setEnabled(peak!=nullptr);
-            if (!peak) {
-                showFitOutcomeX_.setText("");
-                showFitOutcomeD_.setText("");
-                showFitOutcomeY_.setText("");
-                return;
-            }
-            showFitOutcomeX_.setText(safeRealText(outcome.getCenter()));
-            showFitOutcomeD_.setText(safeRealText(outcome.getFwhm()));
-            showFitOutcomeY_.setText(safeRealText(outcome.getIntensity()));
-        } );
+    setRemake( [this]() { remake(); } );
 }
 
+void PeakfitOutcomeView::remake()
+{
+    const Peak* peak = gSession->peaks.selectedPeak();
+    const Cluster* cluster = gSession->highlightedCluster().cluster();
+    if (!peak || !cluster) {
+        showRawOutcomeX_.setEnabled(false);
+        showRawOutcomeD_.setEnabled(false);
+        showRawOutcomeY_.setEnabled(false);
+        showFitOutcomeX_.setEnabled(false);
+        showFitOutcomeD_.setEnabled(false);
+        showFitOutcomeY_.setEnabled(false);
+        showRawOutcomeX_.setText("");
+        showRawOutcomeD_.setText("");
+        showRawOutcomeY_.setText("");
+        showFitOutcomeX_.setText("");
+        showFitOutcomeD_.setText("");
+        showFitOutcomeY_.setText("");
+        return;
+    }
+
+    int jP = gSession->peaks.selectedIndex();
+    const RawOutcome& outcome = cluster->currentDfgram().getRawOutcome(jP);
+    showRawOutcomeX_.setText(safeRealText(outcome.getCenter()));
+    showRawOutcomeD_.setText(safeRealText(outcome.getFwhm()));
+    showRawOutcomeY_.setText(safeRealText(outcome.getIntensity()));
+
+    showFitOutcomeX_.setEnabled(peak!=nullptr);
+    showFitOutcomeD_.setEnabled(peak!=nullptr);
+    showFitOutcomeY_.setEnabled(peak!=nullptr);
+    if (!peak) {
+        showFitOutcomeX_.setText("");
+        showFitOutcomeD_.setText("");
+        showFitOutcomeY_.setText("");
+        return;
+    }
+    showFitOutcomeX_.setText(safeRealText(outcome.getCenter()));
+    showFitOutcomeD_.setText(safeRealText(outcome.getFwhm()));
+    showFitOutcomeY_.setText(safeRealText(outcome.getIntensity()));
+}
 
 //  ***********************************************************************************************
 //! @class ControlsPeakfits
