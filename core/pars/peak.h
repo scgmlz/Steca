@@ -16,35 +16,30 @@
 #define PEAK_H
 
 #include "core/fit/fit_fun.h"
-#include <memory>
 
 //! Global settings (range, function type) for one Bragg peak.
 
 class Peak {
 public:
-    Peak() = delete;
-    Peak(const Range& range, const QString& functionName = "Raw");
-
-    static Peak fromJson(const JsonObj&);
+    Peak(const Range& range, const QString& functionName = "Gaussian");
 
     void setPeakFunction(const QString&);
     void setRange(const Range&);
-    void invalidateGuesses();
-    void setGuessPeak(const qpair& peak);
-    void setGuessFWHM(float fwhm);
-    void fit(const Curve&);
 
     Range& range() { return range_; } // TODO rm: need setRange to emit sigPeakPars
     const Range& range() const { return range_; }
 
-    const PeakFunction& peakFunction() const;
-    QString functionName() const { return peakFunction_->name(); }
-    bool isRaw() const { return peakFunction_->isRaw(); }
+    //const PeakFunction& peakFunction() const;
+    QString functionName() const { return functionName_; }
+    bool isRaw() const { return functionName_=="Raw"; }
     JsonObj toJson() const;
+
+    static Peak fromJson(const JsonObj&);
+    static const QStringList keys;
 
 private:
     Range range_;
-    std::unique_ptr<PeakFunction> peakFunction_; //!< pimpl (pointer to implementation)
+    QString functionName_;
 };
 
 

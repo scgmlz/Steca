@@ -55,13 +55,19 @@ RawOutcome computeRawOutcome(const Dfgram* parent, int jP)
     return RawOutcome(peakCurve);
 }
 
+PeakFunction computePeakFit(const Dfgram* parent, int jP)
+{
+    Peak& peak = gSession->peaks.at(jP);
+    return PeakFunction::fromFit(
+        peak.functionName(), parent->getCurveMinusBg(), parent->getRawOutcome(jP));
+}
+
 Curve computePeakAsCurve(const Dfgram* parent, int jP)
 {
     Peak& peak = gSession->peaks.at(jP);
     const Curve& curveMinusBg = parent->getCurveMinusBg();
-    peak.fit(curveMinusBg);
+    const PeakFunction& fun = parent->getPeakFit(jP);
     const Range& rge = peak.range();
-    const PeakFunction& fun = peak.peakFunction();
     Curve ret;
     for (int i=0; i<curveMinusBg.count(); ++i) {
         double x = curveMinusBg.x(i);
@@ -81,6 +87,9 @@ Dfgram::Dfgram(Curve&& c)
     , rawOutcomes_ {[]()->int {return gSession->peaks.count();},
               [](const Dfgram* parent, int jP)->RawOutcome{
                   return computeRawOutcome(parent, jP); } }
+    , peakFits_ {[]()->int {return gSession->peaks.count();},
+              [](const Dfgram* parent, int jP)->PeakFunction{
+                  return computePeakFit(parent, jP); } }
     , peaksAsCurve_ {[]()->int {return gSession->peaks.count();},
               [](const Dfgram* parent, int jP)->Curve{
                   return computePeakAsCurve(parent, jP); } }
@@ -97,11 +106,13 @@ void Dfgram::invalidateBg() const
 void Dfgram::invalidatePeaks() const
 {
     rawOutcomes_.invalidate();
+    peakFits_.invalidate();
     peaksAsCurve_.invalidate();
 }
 
 void Dfgram::invalidatePeakPars(int) const // TODO restrict to peak jP
 {
     rawOutcomes_.invalidate();
+    peakFits_.invalidate();
     peaksAsCurve_.invalidate();
 }

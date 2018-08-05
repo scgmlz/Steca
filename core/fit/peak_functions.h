@@ -15,6 +15,7 @@
 #ifndef PEAK_FUNCTIONS_H
 #define PEAK_FUNCTIONS_H
 
+/*
 #include "core/fit/registry.h"
 
 typedef class PeakFunction* (*initializer_type)();
@@ -28,5 +29,6 @@ public:
     PeakFunction* name2new(const QString&);
     PeakFunction* clone(const PeakFunction& old);
 };
+*/
 
 #endif // PEAK_FUNCTIONS_H

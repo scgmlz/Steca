@@ -78,7 +78,6 @@ public:
     ThetaSelection thetaSelection;
     Baseline baseline;
     Peaks peaks;
-    FunctionRegistry functionRegistry;
 
 signals:
     void sigDetector();      //!< detector detector has changed

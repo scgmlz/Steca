@@ -15,50 +15,31 @@
 #include "core/session.h"
 #include "qcr/base/debug.h"
 
+const QStringList Peak::keys = { "Raw", "Gaussian", "Lorentzian" };
+
 Peak::Peak(const Range& r, const QString& functionName)
     : range_(r)
-    , peakFunction_(nullptr)
+    , functionName_(functionName)
 {
-    setPeakFunction(functionName);
+    // TODO NOW setPeakFunction(functionName);
 }
 
+/*
 const PeakFunction& Peak::peakFunction() const
 {
     ASSERT(peakFunction_);
     return *peakFunction_;
-}
+}*/
 
 void Peak::setRange(const Range& r)
 {
     range_ = r;
-    invalidateGuesses();
     emit gSession->sigPeaks(); // TODO PeakPars(index())
-}
-
-void Peak::invalidateGuesses()
-{
-    peakFunction_->setGuessedPeak(qpair());
-    peakFunction_->setGuessedFWHM(Q_QNAN);
-}
-
-void Peak::setGuessPeak(const qpair& peak)
-{
-    peakFunction_->setGuessedPeak(peak);
-}
-
-void Peak::setGuessFWHM(float fwhm)
-{
-    peakFunction_->setGuessedFWHM(fwhm);
-}
-
-void Peak::fit(const Curve& curve)
-{
-    peakFunction_->doFit(curve, range_);
 }
 
 void Peak::setPeakFunction(const QString& peakFunctionName)
 {
-    peakFunction_.reset(gSession->functionRegistry.name2new(peakFunctionName));
+    // peakFunction_.reset(gSession->functionRegistry.name2new(peakFunctionName));
     emit gSession->sigPeaks(); // TODO PeakPars(index())
 }
 

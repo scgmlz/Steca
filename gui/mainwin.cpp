@@ -12,13 +12,14 @@
 //
 //  ***********************************************************************************************
 
-#include "mainwin.h"
+#include "gui/mainwin.h"
 #include "core/algo/collect_intensities.h"
 #include "core/algo/fitting.h"
 #include "core/algo/interpolate_polefig.h"
+#include "core/aux/async.h"
+#include "core/aux/exception.h"
 #include "core/aux/settings.h"
 #include "core/session.h"
-#include "core/aux/async.h"
 #include "gui/actions/image_trafo_actions.h"
 #include "gui/actions/menus.h"
 #include "gui/actions/toggles.h"

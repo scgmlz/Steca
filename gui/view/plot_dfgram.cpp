@@ -174,6 +174,9 @@ void PlotDfgram::onPeakData()
     fits_->clearData();
 
     if (peak && gSession->highlightedCluster().cluster()) {
+        ; // TODO restore ?
+        // plot marks at peak center and at half maximum
+        /*
         const PeakFunction& fun = peak->peakFunction();
 
         const qpair gp = fun.guessedPeak();
@@ -190,7 +193,7 @@ void PlotDfgram::onPeakData()
             double fw2 = fun.fittedFWHM() / 2;
             fits_->addData(fp.x - fw2, fp.y / 2);
             fits_->addData(fp.x + fw2, fp.y / 2);
-        }
+        }*/
     }
     renderAll();
 }

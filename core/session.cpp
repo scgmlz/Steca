@@ -18,6 +18,7 @@
 #endif
 
 #include "qcr/base/debug.h"
+#include "core/aux/exception.h"
 #include "core/session.h"
 #include <QJsonDocument>
 

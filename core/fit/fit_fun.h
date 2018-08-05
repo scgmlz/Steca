@@ -20,6 +20,7 @@
 #include "core/typ/realpair.h"
 
 class Curve;
+class RawOutcome;
 
 //! Abstract function with parameters
 
@@ -66,28 +67,13 @@ private:
 
 class PeakFunction : public ParametricFunction {
 public:
-    PeakFunction();
-//    PeakFunction(const QString& kind, const Curve&, const RawOutcome&);
+    PeakFunction(const QString& kind, const Curve&, const RawOutcome&);
+    double y(double x, double const* parValues = nullptr) const final;
 
-    virtual void doFit(const Curve&, const Range&);
-    virtual void setGuessedPeak(const qpair& peak) { guessedPeak_ = peak; }
-    virtual void setGuessedFWHM(const float fwhm) { guessedFWHM_ = fwhm; }
+    static PeakFunction fromFit(const QString& kind, const Curve&, const RawOutcome&);
 
-    PeakFunction* clone() const;
-    const qpair& guessedPeak() const { return guessedPeak_; }
-    float guessedFWHM() const { return guessedFWHM_; }
-    virtual qpair fittedPeak() const = 0;
-    virtual float fittedFWHM() const = 0;
-    virtual qpair peakError() const = 0;
-    virtual float fwhmError() const = 0;
-    virtual bool isRaw() const { return false; } //!< overwritten in class Raw, obviously
-    virtual QString name() const = 0;
-
-protected:
-    Curve prepareFit(const Curve&, const Range&);
-
-    qpair guessedPeak_;
-    float guessedFWHM_;
+private:
+    double dy(double x, int parIndex, double const* parValues = nullptr) const final;
 };
 
 #endif // FIT_FUN_H

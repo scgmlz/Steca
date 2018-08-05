@@ -16,6 +16,7 @@
 #include "core/fit/fit_fun.h"
 #include <qmath.h>
 
+/*
 namespace {
 
 //  ***********************************************************************************************
@@ -529,3 +530,4 @@ FunctionRegistry::FunctionRegistry()
     register_fct([]()->PeakFunction*{return new PseudoVoigt1();});
     register_fct([]()->PeakFunction*{return new PseudoVoigt2();});
 }
+*/

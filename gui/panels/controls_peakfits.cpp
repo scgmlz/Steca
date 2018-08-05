@@ -196,7 +196,7 @@ void PeakfitOutcomeView::enableFit(bool on)
 
 ControlsPeakfits::ControlsPeakfits()
     : QcrWidget{"peaks"}
-    , comboReflType_ {"reflTyp", gSession->functionRegistry.keys()}
+    , comboReflType_ {"reflTyp", Peak::keys}
 {
     // outbound connections
     connect(&gGui->triggers->peakRemove, &QAction::triggered, []() {
@@ -208,7 +208,7 @@ ControlsPeakfits::ControlsPeakfits()
 
     // TODO move this to core
     comboReflType_.cell()->setHook( [](int i) {
-            const QString& peakFunctionName = gSession->functionRegistry.keys()[i];
+            const QString& peakFunctionName = Peak::keys[i];
             Peaks::defaultFunctionName = peakFunctionName;
             if (gSession->peaks.selectedPeak())
                 gSession->peaks.selectedPeak()->setPeakFunction(peakFunctionName);
