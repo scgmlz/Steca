@@ -16,8 +16,10 @@
 #define FIT_FUN_H
 
 #include "core/fit/fit_par.h"
-#include "core/typ/curve.h"
+//#include "core/typ/curve.h"
 #include "core/typ/realpair.h"
+
+class Curve;
 
 //! Abstract function with parameters
 
@@ -65,6 +67,7 @@ private:
 class PeakFunction : public ParametricFunction {
 public:
     PeakFunction();
+//    PeakFunction(const QString& kind, const Curve&, const RawOutcome&);
 
     virtual void doFit(const Curve&, const Range&);
     virtual void setGuessedPeak(const qpair& peak) { guessedPeak_ = peak; }

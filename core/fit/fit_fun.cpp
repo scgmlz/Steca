@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "fit_fun.h"
+#include "core/typ/curve.h"
 #include "core/fit/fit_methods.h"
 #include "qcr/base/debug.h"
 
