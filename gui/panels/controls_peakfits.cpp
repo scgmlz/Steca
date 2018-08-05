@@ -39,7 +39,7 @@ public:
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return gSession->peaks.count(); }
     int highlighted() const final { return gSession->peaks.selectedIndex(); }
-    void setHighlight(int row) final { gSession->peaks.select(row); }
+    void onHighlight(int row) final { gSession->peaks.select(row); }
 
     QVariant data(const QModelIndex&, int) const;
 

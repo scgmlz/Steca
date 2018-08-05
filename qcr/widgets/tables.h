@@ -38,7 +38,7 @@ public:
     virtual int columnCount() const = 0;
     virtual int rowCount() const = 0;
     virtual int highlighted() const = 0;
-    virtual void setHighlight(int i) = 0;
+    virtual void onHighlight(int i) = 0;
 private:
     QString name_;
     int rowCountCached_ {-1};

@@ -50,7 +50,7 @@ void TableModel::setHighlightedCell(const QModelIndex& cell)
     int row = cell.row();
     if (row < 0 || row >= rowCount())
         return;
-    setHighlight(row);
+    onHighlight(row);
     gConsole->log(name() + " highlight " + QString::number(row));
     gRoot->remakeAll("TM::setHighlightedCell");
 }
@@ -122,7 +122,7 @@ void TableView::executeConsoleCommand(const QString& arg)
         throw QcrException("Unexpected command '"+cmd+"' in TableModel "+name());
     if (cmdarg=="")
         throw QcrException("Missing argument to command 'highlight'");
-    model_->setHighlight(strOp::to_i(cmdarg));
+    model_->onHighlight(strOp::to_i(cmdarg));
 }
 
 #pragma GCC diagnostic pop
@@ -168,7 +168,7 @@ void TableView::highlight(bool primaryCall, int row)
     if (row==model_->highlighted())
         return; // the following would prevent execution of "onClicked"
     gConsole->log2(primaryCall, name()+".highlight="+QString::number(row));
-    model_->setHighlight(row);
+    model_->onHighlight(row);
     updateScroll();
 }
 

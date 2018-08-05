@@ -32,7 +32,7 @@ public:
 
 private:
     int highlighted() const final { return gSession->dataset.highlight().clusterIndex(); }
-    void setHighlight(int row) final { gSession->dataset.highlight().setCluster(row); }
+    void onHighlight(int row) final { gSession->dataset.highlight().setCluster(row); }
     bool activated(int row) const { return gSession->dataset.clusterAt(row).isActivated(); }
     void setActivated(int row, bool on) { gSession->dataset.activateCluster(row, on); }
 

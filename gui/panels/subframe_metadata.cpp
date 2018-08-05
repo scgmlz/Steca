@@ -29,7 +29,7 @@ public:
 
 private:
     int highlighted() const final { return highlighted_; }
-    void setHighlight(int i) final { highlighted_ = i; }
+    void onHighlight(int i) final { highlighted_ = i; }
     bool activated(int row) const { return gSession->params.metaSelection.isSelected(row); }
     void setActivated(int row, bool on) { gSession->params.metaSelection.set(row, on); }
 

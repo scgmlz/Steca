@@ -29,7 +29,7 @@ public:
     void onColumnMove(int from, int to);
     void setSortColumn(int);
     void sortData();
-    void setHighlight(int i) final { ; }        // unused
+    void onHighlight(int i) final { ; }        // unused
 
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const;
