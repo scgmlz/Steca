@@ -23,10 +23,9 @@
 void ActiveClusters::reset(std::vector<std::unique_ptr<Cluster>>& allClusters)
 {
     clusters_.clear();
-    for (const auto& pCluster : allClusters) {
+    for (const auto& pCluster : allClusters)
         if (pCluster->isActivated())
             clusters_.push_back(pCluster.get());
-    }
     invalidateAvgMutables();
     QObject::connect(gSession, &Session::sigDetector, [=]() { avgDfgram.invalidate(); });
 }
@@ -35,7 +34,7 @@ double ActiveClusters::recomputeAvg(std::function<double(const Measurement*)> f)
 {
     double sum = 0;
     int cnt = 0;
-    for (Cluster const* cluster : clusters_) {
+    for (const Cluster* cluster : clusters_) {
         for (const Measurement* one : cluster->members())
             sum += f(one);
         cnt += cluster->count();
@@ -79,7 +78,7 @@ Curve computeAvgCurve(const ActiveClusters*const ac)
     TakesLongTime __("computeAvgCurve");
     // flatten Cluster-Measurement hierarchy into one Sequence
     std::vector<const Measurement*> group;
-    for (Cluster const* cluster : ac->clusters())
+    for (const Cluster* cluster : ac->clusters())
         for (const Measurement* one: cluster->members())
             group.push_back(one);
     const Sequence seq(group);

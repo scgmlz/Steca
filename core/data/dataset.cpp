@@ -69,16 +69,9 @@ void HighlightedData::reset()
     setCluster(0);
 }
 
-const Datafile* HighlightedData::file() const
-{
-    if (!current_)
-        return nullptr;
-    return &current_->file();
-}
-
 int HighlightedData::fileIndex() const
 {
-    return current_ ? file()->index_ : -1;
+    return current_ ? current_->file().index_ : -1;
 }
 
 int HighlightedData::clusterIndex() const

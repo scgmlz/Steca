@@ -57,7 +57,6 @@ public:
     const Cluster* cluster() const { return current_; }
     Cluster* cluster() { return current_; }
     int clusterIndex() const;
-    const Datafile* file() const;
     int fileIndex() const;
 
 private:
