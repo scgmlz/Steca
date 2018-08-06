@@ -19,6 +19,7 @@
 #include "gui/mainwin.h"
 #include "gui/state.h"
 #include "gui/actions/triggers.h"
+#include "gui/actions/toggles.h"
 #include "gui/view/range_control.h"
 #include "qcr/base/debug.h"
 #define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
@@ -101,8 +102,7 @@ public:
     PeakfitOutcomeView();
 private:
     void remake();
-    void enableRaw(bool);
-    void enableFit(bool);
+    void enable(bool haveRaw, bool haveFit);
     QcrLineDisplay showFitOutcomeX_ {"fittedX", 10, true};
     QcrLineDisplay showFitOutcomeD_ {"fittedD", 10, true};
     QcrLineDisplay showFitOutcomeY_ {"fittedY", 10, true};
@@ -141,45 +141,51 @@ PeakfitOutcomeView::PeakfitOutcomeView()
 void PeakfitOutcomeView::remake()
 {
     const Peak* peak = gSession->peaks.selectedPeak();
-    const Cluster* cluster = gSession->highlightedCluster().cluster();
-    bool proceed = peak && cluster;
-    enableRaw(proceed);
-    enableFit(proceed && !peak->isRaw());
-    if (!proceed)
-        return;
+    if (!peak)
+        return enable(false, false);
+
+    const Dfgram* dfgram;
+    if (gGui->toggles->combinedDfgram.getValue()) {
+        if (!gSession->activeClusters.clusters.get().size())
+            return enable(false, false);
+        dfgram = &gSession->activeClusters.avgDfgram.get();
+    } else {
+        const Cluster* cluster = gSession->highlightedCluster().cluster();
+        if (!cluster)
+            return enable(false, false);
+        dfgram = &cluster->currentDfgram();
+    }
 
     int jP = gSession->peaks.selectedIndex();
-    const RawOutcome& outcome = cluster->currentDfgram().getRawOutcome(jP);
+    const RawOutcome& outcome = dfgram->getRawOutcome(jP);
     showRawOutcomeX_.setText(safeRealText(outcome.getCenter()));
     showRawOutcomeD_.setText(safeRealText(outcome.getFwhm()));
     showRawOutcomeY_.setText(safeRealText(outcome.getIntensity()));
 
     if (peak->isRaw())
-        return;
-    const PeakFunction& peakFit = cluster->currentDfgram().getPeakFit(jP);
+        return enable(true, false);
+    const PeakFunction& peakFit = dfgram->getPeakFit(jP);
     showFitOutcomeX_.setText(par2text(peakFit.getCenter()));
     showFitOutcomeD_.setText(par2text(peakFit.getFwhm()));
     showFitOutcomeY_.setText(par2text(peakFit.getIntensity()));
+    enable(true, true);
 }
 
-void PeakfitOutcomeView::enableRaw(bool on)
+void PeakfitOutcomeView::enable(bool haveRaw, bool haveFit)
 {
-    showRawOutcomeX_.setEnabled(on);
-    showRawOutcomeD_.setEnabled(on);
-    showRawOutcomeY_.setEnabled(on);
-    if (!on) {
+    showRawOutcomeX_.setEnabled(haveRaw);
+    showRawOutcomeD_.setEnabled(haveRaw);
+    showRawOutcomeY_.setEnabled(haveRaw);
+    if (!haveRaw) {
         showRawOutcomeX_.setText("");
         showRawOutcomeD_.setText("");
         showRawOutcomeY_.setText("");
     }
-}
 
-void PeakfitOutcomeView::enableFit(bool on)
-{
-    showFitOutcomeX_.setEnabled(on);
-    showFitOutcomeD_.setEnabled(on);
-    showFitOutcomeY_.setEnabled(on);
-    if (!on) {
+    showFitOutcomeX_.setEnabled(haveFit);
+    showFitOutcomeD_.setEnabled(haveFit);
+    showFitOutcomeY_.setEnabled(haveFit);
+    if (!haveFit) {
         showFitOutcomeX_.setText("");
         showFitOutcomeD_.setText("");
         showFitOutcomeY_.setText("");
