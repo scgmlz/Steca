@@ -29,7 +29,7 @@ public:
 private:
     void update();
 
-    PeakInfos rs_;
+    const PeakInfos& rs_;
     void paintEvent(QPaintEvent*);
 
     QPointF p(deg alpha, deg beta) const;

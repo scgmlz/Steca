@@ -44,7 +44,7 @@ template<typename Parent, typename T>
 class Kached {
 public:
     Kached() = delete;
-    Kached(std::function<T(const Parent*)> f) : remake_(f) {}
+    Kached(std::function<T&&(const Parent*)> f) : remake_(f) {}
     Kached(const Kached&) = delete;
     Kached(Kached&&) = default;
     void invalidate() const { cached_.release(); }
@@ -56,7 +56,7 @@ public:
     const T* getif(const Parent* parent) const { return cached_ ? &*cached_ : nullptr; }
 private:
     mutable std::unique_ptr<T> cached_;
-    const std::function<T(const Parent*)> remake_;
+    const std::function<T&&(const Parent*)> remake_;
 };
 
 //! Caching vector. Vector elements are recomputed when vector size changes.
@@ -64,7 +64,7 @@ template<typename Parent, typename T>
 class KachingVector {
 public:
     KachingVector() = delete;
-    KachingVector(const std::function<int()> nFct, const std::function<T(const Parent*,int)> rFct)
+    KachingVector(const std::function<int()> nFct, const std::function<T&&(const Parent*,int)> rFct)
         : nFct_(nFct), remake_(rFct) {}
     KachingVector(const KachingVector&) = delete;
     KachingVector(KachingVector&&) = default; // TODO rm after removal of CachingVector
@@ -86,10 +86,10 @@ private:
             return;
         data_.clear();
         for (int i=0; i<n; ++i)
-            data_.push_back(remake_(parent,i));
+            data_.push_back(std::move(remake_(parent,i)));
     }
     const std::function<int()> nFct_;
-    const std::function<T(const Parent*,int)> remake_;
+    const std::function<T&&(const Parent*,int)> remake_;
     mutable std::vector<T> data_;
 };
 
@@ -100,11 +100,11 @@ class SelfKachingVector : public KachingVector<Parent, Kached<Parent,T>> {
 public:
     SelfKachingVector() = delete;
     SelfKachingVector(const std::function<int()> nFct,
-                      const std::function<T(const Parent*,int)> rFct)
+                      const std::function<T&&(const Parent*,int)> rFct)
         : Base(
             nFct,
             [rFct](const Parent* p, int i) {
-                return Kached<Parent,T>([rFct,i](const Parent* p)->T{ return rFct(p,i); }); } )
+                return std::move(Kached<Parent,T>([rFct,i](const Parent* p)->T&&{ return std::move(rFct(p,i)); })); } )
     {}
     const T& getget(const Parent* parent, int i) const { return Base::get(parent,i).get(parent); }
     void forAllValids(const Parent* parent, std::function<void(const T& t)> f) const {

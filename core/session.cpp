@@ -49,6 +49,7 @@ void Session::onPeaks() const
     for (auto const& pCluster: dataset.allClusters)
         pCluster->dfgrams.forAllValids(
             pCluster.get(), [](const Dfgram& d){d.invalidatePeaks();});
+    allPeaks.invalidateAll();
 }
 
 void Session::onPeakPars(int jP) const
@@ -56,10 +57,12 @@ void Session::onPeakPars(int jP) const
     for (auto const& pCluster: dataset.allClusters)
         pCluster->dfgrams.forAllValids(
             pCluster.get(), [jP](const Dfgram& d){d.invalidatePeakPars(jP);});
+    allPeaks.invalidateAt(jP);
 }
 
 void Session::onInterpol() const
 {
+    allPeaks.invalidateInterpolated();
 }
 
 //! Removes all data, sets all parameters to their defaults. No need to invalidate caches?

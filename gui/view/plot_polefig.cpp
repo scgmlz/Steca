@@ -36,13 +36,14 @@ PlotPolefig::PlotPolefig()
     : flat_(false)
     , alphaMax_(90)
     , avgAlphaMax_(0)
+    , rs_ (gSession->allPeaks.currentPeaks())
 {
     update();
 }
 
 void PlotPolefig::refresh()
 {
-    rs_ = gSession->allPeaks.peakInfos();
+    // TODO URGENT rs_ = gSession->allPeaks.currentPeaks();
     flat_ = gGui->state->polefigShowGridPts->checkState();
     update();
 }

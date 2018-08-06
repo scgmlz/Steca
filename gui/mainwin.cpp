@@ -248,21 +248,3 @@ void MainWin::refresh()
     menus_->image_->setEnabled(hasData);
     menus_->dgram_->setEnabled(hasData);
 }
-
-/*
-void MainWin::runFits()
-{
-    if (!gSession->peaks.count()) {
-        gSession->setDirectPeakInfos({});
-        gSession->setInterpolatedPeakInfos({});
-        return;
-    }
-    algo::rawFits(&gGui->progressBar);
-    // algo::interpolateInfos(&gGui->progressBar);
-}
-
-void MainWin::runInterpolation()
-{
-    algo::interpolateInfos(&gGui->progressBar);
-}
-*/

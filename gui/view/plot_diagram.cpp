@@ -44,7 +44,7 @@ void PlotDiagram::refresh()
     const int yi = int(gGui->state->diagramY->getValue());
 
     std::vector<double> xs, ys, ysLow, ysHig;
-    gSession->allPeaks.peakInfos().get4(xi, yi, xs, ys, ysLow, ysHig);
+    gSession->allPeaks.currentPeaks().get4(xi, yi, xs, ys, ysLow, ysHig);
 
     if (!xs.size())
         return erase();

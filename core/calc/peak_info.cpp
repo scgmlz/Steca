@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/def/idiomatic_for.h"
+#include "core/algo/interpolate_polefig.h"
 #include "core/session.h"
 #include "qcr/base/debug.h"
 
@@ -26,7 +26,7 @@ static void sortColumns(std::vector<double>& xs, std::vector<double>& ys, std::v
     int count = xs.size();
 
     is.resize(count);
-    for_i (count)
+    for (int i=0; i<count; ++i)
         is[i] = i;
 
     std::sort(is.begin(), is.end(), [&xs, &ys](int i1, int i2) {
@@ -40,11 +40,11 @@ static void sortColumns(std::vector<double>& xs, std::vector<double>& ys, std::v
 
     std::vector<double> r(count);
 
-    for_i (count)
+    for (int i=0; i<count; ++i)
         r[i] = xs.at(is.at(i));
     xs = r;
 
-    for_i (count)
+    for (int i=0; i<count; ++i)
         r[i] = ys.at(is.at(i));
     ys = r;
 }
@@ -97,7 +97,7 @@ PeakInfo::PeakInfo(deg alpha, deg beta)
 QStringList PeakInfo::dataTags(bool out)
 {
     QStringList ret;
-    for_i (int(eReflAttr::NUM_REFL_ATTR))
+    for (int i=0; i<int(eReflAttr::NUM_REFL_ATTR); ++i)
         ret.append(reflStringTag(i, out));
     ret.append(Metadata::attributeTags(out));
     return ret;
@@ -161,7 +161,7 @@ void PeakInfos::get4(const int idxX, const int idxY,
     xs.resize(n);
     ys.resize(n);
 
-    for_i (n) {
+    for (int i=0; i<n; ++i) {
         const std::vector<QVariant> row = peaks_.at(i).data();
         xs[i] = row.at(idxX).toDouble();
         ys[i] = row.at(idxY).toDouble();
@@ -178,7 +178,7 @@ void PeakInfos::get4(const int idxX, const int idxY,
         && (ye==eReflAttr::INTEN || ye==eReflAttr::TTH || ye==eReflAttr::FWHM)) {
         ysLow.resize(n);
         ysHig.resize(n);
-        for_i (n) {
+        for (int i=0; i<n; ++i) {
             const std::vector<QVariant> row = peaks_.at(is.at(i)).data();
             double sigma = row.at(idxY+1).toDouble(); // SIGMA_X has tag position of X plus 1
             double y = ys.at(i);
@@ -195,10 +195,55 @@ void PeakInfos::get4(const int idxX, const int idxY,
 //  ***********************************************************************************************
 //! @class AllPeaks
 
-const PeakInfos& AllPeaks::peakInfos() const
+namespace {
+
+PeakInfos&& computeDirectPeakInfos(int jP)
 {
-    if (gSession->params.interpolParams.enabled.val())
-        return interpolatedPeakInfos_;
-    else
-        return directPeakInfos_;
+    return std::move(PeakInfos{}); // TODO NOW
+}
+
+} // namespace
+
+AllPeaks::AllPeaks()
+    : direct {[]()->int{return gSession->peaks.count();},
+        [](const AllPeaks*, int jP)->PeakInfos&&{
+            return std::move(computeDirectPeakInfos(jP)); }}
+    , interpolated {[]()->int{return gSession->peaks.count();},
+        [](const AllPeaks* parent, int jP)->PeakInfos&&{
+            return std::move(algo::interpolateInfos(parent->direct.getget(parent,jP))); }}
+{}
+
+void AllPeaks::invalidateAll() const
+{
+    direct      .invalidate();
+    interpolated.invalidate();
+}
+
+void AllPeaks::invalidateAt(int jP) const
+{
+    direct      .get(this,jP).invalidate();
+    interpolated.get(this,jP).invalidate();
+}
+
+void AllPeaks::invalidateInterpolated() const
+{
+    interpolated.invalidate();
+}
+
+const PeakInfos& AllPeaks::currentDirect() const
+{
+    int jP = gSession->peaks.selectedIndex();
+    return direct.getget(this,jP);
+}
+
+const PeakInfos& AllPeaks::currentInterpolated() const
+{
+    int jP = gSession->peaks.selectedIndex();
+    return interpolated.getget(this,jP);
+}
+
+const PeakInfos& AllPeaks::currentPeaks() const
+{
+    return gSession->params.interpolParams.enabled.val() ?
+        currentInterpolated() : currentDirect();
 }

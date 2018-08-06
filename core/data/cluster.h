@@ -84,7 +84,7 @@ public:
     bool isIncomplete() const;
     bool isActivated() const { return activated_; }
 
-    SelfKachingVector<Cluster,Dfgram> dfgrams; //! One Dfgram per gamma section
+    mutable SelfKachingVector<Cluster,Dfgram> dfgrams; //! One Dfgram per gamma section
     const Dfgram& currentDfgram() const;
 
 private:

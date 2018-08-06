@@ -16,6 +16,7 @@
 #define PEAK_INFO_H
 
 #include "core/meta/metadata.h"
+#include "core/typ/cached.h"
 #include "core/typ/range.h"
 
 //! Metadata, peak fit results, and pole figure angles.
@@ -78,6 +79,7 @@ class PeakInfos {
 public:
     PeakInfos() {}
     PeakInfos(const PeakInfos&) = delete;
+    PeakInfos(PeakInfos&&) = default;
 
     void appendPeak(PeakInfo&&);
 
@@ -93,19 +95,15 @@ private:
 
 class AllPeaks {
 public:
-    // accessor methods:
-    const PeakInfos& directPeakInfos() const { return directPeakInfos_; }
-    const PeakInfos& interpolatedPeakInfos() const { return interpolatedPeakInfos_; }
-    const PeakInfos& peakInfos() const;
-
-    void setDirectPeakInfos(PeakInfos&& val) {
-        directPeakInfos_ = std::move(val); }
-    void setInterpolatedPeakInfos(PeakInfos&& val) {
-        interpolatedPeakInfos_ = std::move(val); }
-
-private:
-    PeakInfos directPeakInfos_;
-    PeakInfos interpolatedPeakInfos_;
+    AllPeaks();
+    const PeakInfos& currentDirect() const;
+    const PeakInfos& currentInterpolated() const;
+    const PeakInfos& currentPeaks() const;
+    void invalidateAll() const;
+    void invalidateAt(int) const;
+    void invalidateInterpolated() const;
+    mutable SelfKachingVector<AllPeaks,PeakInfos> direct;
+    mutable SelfKachingVector<AllPeaks,PeakInfos> interpolated;
 };
 
 #endif // PEAK_INFO_H
