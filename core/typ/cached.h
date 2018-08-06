@@ -25,17 +25,17 @@ template<typename T>
 class Cached {
 public:
     Cached() = delete;
-    Cached(std::function<T(void)> f) : remake_(f) {}
+    Cached(std::function<T&&(void)> f) : remake_(f) {}
     Cached(const Cached&) = delete;
     void invalidate() const { cached_.release(); }
     const T& get() const {
         if (!cached_)
-            cached_.reset( std::move(new T{remake_()}) );
+            cached_.reset( new T{remake_()} );
         return *cached_;
     }
 private:
     mutable std::unique_ptr<T> cached_;
-    const std::function<T(void)> remake_;
+    const std::function<T&&(void)> remake_;
 };
 
 
@@ -50,10 +50,10 @@ public:
     void invalidate() const { cached_.release(); }
     const T& get(const Parent* parent) const {
         if (!cached_)
-            cached_.reset( std::move(new T{remake_(parent)}) );
+            cached_.reset( new T{remake_(parent)} );
         return *cached_;
     }
-    const T* getif(const Parent* parent) const { return cached_ ? &*cached_ : nullptr; }
+    const T* getif(const Parent* parent) const { return cached_ ? cached_.get() : nullptr; }
 private:
     mutable std::unique_ptr<T> cached_;
     const std::function<T&&(const Parent*)> remake_;
@@ -86,7 +86,7 @@ private:
             return;
         data_.clear();
         for (int i=0; i<n; ++i)
-            data_.push_back(std::move(remake_(parent,i)));
+            data_.push_back(remake_(parent,i));
     }
     const std::function<int()> nFct_;
     const std::function<T&&(const Parent*,int)> remake_;
@@ -104,14 +104,15 @@ public:
         : Base(
             nFct,
             [rFct](const Parent* p, int i) {
-                return std::move(Kached<Parent,T>([rFct,i](const Parent* p)->T&&{ return std::move(rFct(p,i)); })); } )
+                return Kached<Parent,T>([rFct,i](const Parent* p)->T&&{
+                        return rFct(p,i); }); } )
     {}
     const T& getget(const Parent* parent, int i) const { return Base::get(parent,i).get(parent); }
     void forAllValids(const Parent* parent, std::function<void(const T& t)> f) const {
         for (int i=0; i<Base::size(parent); ++i)
             if (const T* d = Base::get(parent,i).getif(parent))
                 f(*d);
-            }
+    }
 };
 
 //! Cached object with key.
@@ -121,7 +122,7 @@ public:
     void invalidate() const { cached_.release(); }
     const T& get(const K key) const {
         if (!cached_ || key!=key_) {
-            cached_.reset( std::move(new T(key)) );
+            cached_.reset( new T(key) );
             key_ = key;
         }
         return *cached_;
