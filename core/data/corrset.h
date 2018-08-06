@@ -17,6 +17,7 @@
 
 #include "core/raw/image.h"
 #include "core/raw/rawfile.h"
+#include "qcr/engine/param_wrapper.h"
 #include <memory>
 
 //! A correction dataset, consisting of one Rawfile and associated settings.

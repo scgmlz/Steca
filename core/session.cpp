@@ -17,9 +17,9 @@
 #error needs exception handling
 #endif
 
-#include "qcr/base/debug.h"
-#include "core/aux/exception.h"
 #include "core/session.h"
+#include "core/aux/exception.h"
+#include "qcr/base/debug.h"
 #include <QJsonDocument>
 
 Session* gSession; //!< global, for data handling
