@@ -69,7 +69,9 @@ class PeakFunction : public ParametricFunction {
 public:
     PeakFunction(const QString& functionName, const RawOutcome&);
     double y(double x, double const* parValues = nullptr) const final;
-
+    const FitParameter& getCenter() const;
+    const FitParameter getFwhm() const;
+    const FitParameter& getIntensity() const;
     static PeakFunction fromFit(const QString& functionName, const Curve&, const RawOutcome&);
 
 private:

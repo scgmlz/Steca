@@ -23,6 +23,7 @@ SubframeSetup::SubframeSetup()
     : QcrTabWidget {"setupTabs"}
 {
     setTabPosition(QTabWidget::North);
+    setMinimumSize(270,320);
 
     addTab(new ControlsDetector(),     "Detector"); idxDetector = 0;
     addTab(new ControlsBaseline(),     "Baseline"); idxBaseline = 1;

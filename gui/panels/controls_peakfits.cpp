@@ -25,6 +25,8 @@
 
 namespace {
 QString safeRealText(double val) { return qIsFinite(val) ? QString::number(val) : ""; }
+QString par2text(const FitParameter& par) {
+    return safeRealText(par.value()) + "+-" + safeRealText(par.error()); }
 } // local methods
 
 //  ***********************************************************************************************
@@ -100,9 +102,9 @@ private:
     void remake();
     void enableRaw(bool);
     void enableFit(bool);
-    QcrLineDisplay showFitOutcomeX_ {"fittedX", 6, true};
-    QcrLineDisplay showFitOutcomeD_  {"fittedD", 6, true};
-    QcrLineDisplay showFitOutcomeY_ {"fittedY", 6, true};
+    QcrLineDisplay showFitOutcomeX_ {"fittedX", 14, true};
+    QcrLineDisplay showFitOutcomeD_ {"fittedD", 14, true};
+    QcrLineDisplay showFitOutcomeY_ {"fittedY", 14, true};
     QcrLineDisplay showRawOutcomeX_ {"rawX", 6, true};
     QcrLineDisplay showRawOutcomeY_ {"rawY", 6, true};
     QcrLineDisplay showRawOutcomeD_  {"rawD", 6, true};
@@ -150,6 +152,13 @@ void PeakfitOutcomeView::remake()
     showRawOutcomeX_.setText(safeRealText(outcome.getCenter()));
     showRawOutcomeD_.setText(safeRealText(outcome.getFwhm()));
     showRawOutcomeY_.setText(safeRealText(outcome.getIntensity()));
+
+    if (peak->isRaw())
+        return;
+    const PeakFunction& peakFit = cluster->currentDfgram().getPeakFit(jP);
+    showFitOutcomeX_.setText(par2text(peakFit.getCenter()));
+    showFitOutcomeD_.setText(par2text(peakFit.getFwhm()));
+    showFitOutcomeY_.setText(par2text(peakFit.getIntensity()));
 }
 
 void PeakfitOutcomeView::enableRaw(bool on)

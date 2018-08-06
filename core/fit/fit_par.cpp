@@ -18,9 +18,9 @@
 //  ***********************************************************************************************
 //! @class FitParameter
 
-FitParameter::FitParameter()
-    : value_(0)
-    , error_(0)
+FitParameter::FitParameter(double value, double error)
+    : value_(value)
+    , error_(error)
     , range_(Range::infinite())
 {}
 

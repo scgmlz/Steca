@@ -95,6 +95,11 @@ PeakFunction::PeakFunction(const QString& functionName, const RawOutcome& rawOut
     parameters_[2].setValue(rawOutcome.getIntensity(),0);
 }
 
+const FitParameter& PeakFunction::getCenter() const { return parameters_[0]; }
+const FitParameter PeakFunction::getFwhm() const { return
+        FitParameter(parameters_[1].value()*sqrt(8*log(2)),parameters_[1].error()*sqrt(8*log(2))); }
+const FitParameter& PeakFunction::getIntensity() const { return parameters_[2]; }
+
 double PeakFunction::y(double x, double const* parValues) const
 {
     // Gaussian
