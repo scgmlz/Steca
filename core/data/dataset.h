@@ -103,7 +103,7 @@ private:
 
     HighlightedData highlight_; //!< wraps pointer to highlighted Datafile and Cluster
 
-    ActiveClusters activeClusters_; //!< active clusters
+    ActiveClusters activeClusters_; //!< active clusters // TODO: move up, and kache
 
     void onFileChanged();
     void onClusteringChanged();
