@@ -24,7 +24,8 @@
 #define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 
 namespace {
-QString safeRealText(double val) { return qIsFinite(val) ? QString::number(val) : ""; }
+QString safeRealText(double val, int prec=4) {
+    return qIsFinite(val) ? QString::number(val, 'g', prec) : "NaN"; }
 QString par2text(const FitParameter& par) {
     return safeRealText(par.value()) + "+-" + safeRealText(par.error()); }
 } // local methods
@@ -102,12 +103,12 @@ private:
     void remake();
     void enableRaw(bool);
     void enableFit(bool);
-    QcrLineDisplay showFitOutcomeX_ {"fittedX", 14, true};
-    QcrLineDisplay showFitOutcomeD_ {"fittedD", 14, true};
-    QcrLineDisplay showFitOutcomeY_ {"fittedY", 14, true};
-    QcrLineDisplay showRawOutcomeX_ {"rawX", 6, true};
-    QcrLineDisplay showRawOutcomeY_ {"rawY", 6, true};
-    QcrLineDisplay showRawOutcomeD_  {"rawD", 6, true};
+    QcrLineDisplay showFitOutcomeX_ {"fittedX", 12, true};
+    QcrLineDisplay showFitOutcomeD_ {"fittedD", 12, true};
+    QcrLineDisplay showFitOutcomeY_ {"fittedY", 12, true};
+    QcrLineDisplay showRawOutcomeX_ {"rawX", 5, true};
+    QcrLineDisplay showRawOutcomeY_ {"rawY", 5, true};
+    QcrLineDisplay showRawOutcomeD_  {"rawD", 5, true};
 };
 
 PeakfitOutcomeView::PeakfitOutcomeView()
