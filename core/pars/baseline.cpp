@@ -17,21 +17,21 @@
 
 Baseline::Baseline()
 {
-    polynomDegree.setHook( [](int){ emit gSession->sigBaseline(); gRoot->remakeAll("bg.deg"); } );
+    polynomDegree.setHook( [](int){ gSession->onBaseline(); gRoot->remakeAll("bg.deg"); } );
 }
 
 void Baseline::fromJson(const JsonObj obj)
 {
     ranges.fromJson(obj.loadArr("ranges"));
     polynomDegree.setVal(obj.loadUint("polynom degree"));
-    emit gSession->sigBaseline();
+    gSession->onBaseline();
 }
 
 void Baseline::clear()
 {
     ranges.clear();
     polynomDegree.setVal(0);
-    emit gSession->sigBaseline();
+    gSession->onBaseline();
 }
 
 QJsonObject Baseline::toJson() const

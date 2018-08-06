@@ -27,11 +27,38 @@ Session* gSession; //!< global, for data handling
 Session::Session()
 {
     gSession = this;
+}
 
-    connect(this, &Session::sigDetector, [this]() {
-            angleMap.invalidate();
-            activeClusters.avgDfgram.invalidate();
-        });
+void Session::onDetector()
+{
+    angleMap.invalidate();
+    activeClusters.avgDfgram.invalidate();
+}
+
+void Session::onBaseline()
+{
+}
+
+void Session::onPeaks()
+{
+}
+
+void Session::onPeakPars(int jP)
+{
+}
+
+/* TODO NOW
+    QObject::connect(gSession, &Session::sigDetector, [this]() { dfgrams.invalidate(); });
+    QObject::connect(gSession, &Session::sigBaseline, [this](){
+            dfgrams.forAllValids( this, [](const Dfgram& d){ d.invalidateBg(); } ); });
+    QObject::connect(gSession, &Session::sigPeaks, [this](){
+            dfgrams.forAllValids( this, [](const Dfgram& d){ d.invalidatePeaks(); } ); });
+    QObject::connect(gSession, &Session::sigPeakPars, [this](int jP){
+            dfgrams.forAllValids( this, [jP](const Dfgram& d){ d.invalidatePeakPars(jP); } ); });
+*/
+
+void Session::onInterpol()
+{
 }
 
 //! Removes all data, sets all parameters to their defaults. No need to invalidate caches?

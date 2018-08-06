@@ -132,15 +132,7 @@ Cluster::Cluster(
     , index_(index)
     , offset_(offset)
     , activated_(true)
-{
-    QObject::connect(gSession, &Session::sigDetector, [this]() { dfgrams.invalidate(); });
-    QObject::connect(gSession, &Session::sigBaseline, [this](){
-            dfgrams.forAllValids( this, [](const Dfgram& d){ d.invalidateBg(); } ); });
-    QObject::connect(gSession, &Session::sigPeaks, [this](){
-            dfgrams.forAllValids( this, [](const Dfgram& d){ d.invalidatePeaks(); } ); });
-    QObject::connect(gSession, &Session::sigPeakPars, [this](int jP){
-            dfgrams.forAllValids( this, [jP](const Dfgram& d){ d.invalidatePeakPars(jP); } ); });
-}
+{}
 
 int Cluster::totalOffset() const
 {
