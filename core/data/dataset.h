@@ -89,7 +89,6 @@ public:
     Cluster& clusterAt(int i) { return *allClusters_.at(i); }
     int offset(const Datafile& file) const { return file.offset_; }
     bool hasIncomplete() const { return hasIncomplete_; }
-    const ActiveClusters& activeClusters() const { return activeClusters_; }
     std::vector<Cluster*> activeClustersList() const;
 
     ParamWrapper<int> binning {1};             //!< bin so many Measurement|s into one cluster
@@ -103,8 +102,6 @@ private:
     bool hasIncomplete_; //!< current binning does result in at least one incomplete cluster
 
     HighlightedData highlight_; //!< wraps pointer to highlighted Datafile and Cluster
-
-    ActiveClusters activeClusters_; //!< active clusters // TODO: move up, and kache
 
     void onFileChanged();
     void onClusteringChanged();

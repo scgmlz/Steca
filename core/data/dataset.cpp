@@ -136,7 +136,7 @@ void Dataset::addGivenFiles(const QStringList& filePaths)
 void Dataset::activateCluster(int index, bool on)
 {
     allClusters_.at(index)->setActivated(on);
-    updateActiveClusters();
+    gSession->activeClusters.invalidate();
 }
 
 void Dataset::setFileActivation(int index, bool on)
@@ -144,7 +144,7 @@ void Dataset::setFileActivation(int index, bool on)
     const Datafile& fil = fileAt(index);
     for (Cluster* cluster : fil.clusters_)
         cluster->setActivated(on);
-    updateActiveClusters();
+    gSession->activeClusters.invalidate();
 }
 
 void Dataset::onFileChanged()
@@ -187,7 +187,7 @@ void Dataset::updateClusters()
             allClusters_.push_back(std::move(cluster));
         }
     }
-    updateActiveClusters();
+    gSession->activeClusters.invalidate();
 }
 
 //! Returns list of activated clusters.
@@ -198,12 +198,6 @@ std::vector<Cluster*> Dataset::activeClustersList() const
         if (pCluster->isActivated())
             ret.push_back(pCluster.get());
     return ret;
-}
-
-
-void Dataset::updateActiveClusters()
-{
-    activeClusters_.invalidate();
 }
 
 QJsonObject Dataset::toJson() const
