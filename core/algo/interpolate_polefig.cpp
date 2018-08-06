@@ -250,7 +250,7 @@ itf_t interpolateValues(deg searchRadius, const PeakInfos& infos, deg alpha, deg
 void algo::interpolateInfos(QProgressBar* progressBar)
 {
     if (!gSession->params.interpolParams.enabled.val()) {
-        gSession->setInterpolatedPeakInfos({});
+        gSession->allPeaks.setInterpolatedPeakInfos({});
         return;
     }
     qDebug() << "interpolation began";
@@ -275,7 +275,7 @@ void algo::interpolateInfos(QProgressBar* progressBar)
     int numBetas = qRound(360. / stepBeta);
 
     PeakInfos tmp; // Output data.
-    const PeakInfos& infos = gSession->directPeakInfos();
+    const PeakInfos& infos = gSession->allPeaks.directPeakInfos();
 
     Progress progress(progressBar, "interpolation", numAlphas * numBetas); // TODO check number + 1?
 
@@ -335,6 +335,6 @@ void algo::interpolateInfos(QProgressBar* progressBar)
         }
     }
 
-    gSession->setInterpolatedPeakInfos(std::move(tmp));
+    gSession->allPeaks.setInterpolatedPeakInfos(std::move(tmp));
     qDebug() << "interpolation ended";
 }

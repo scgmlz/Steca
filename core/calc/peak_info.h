@@ -90,4 +90,22 @@ private:
     std::vector<PeakInfo> peaks_;
 };
 
+
+class AllPeaks {
+public:
+    // accessor methods:
+    const PeakInfos& directPeakInfos() const { return directPeakInfos_; }
+    const PeakInfos& interpolatedPeakInfos() const { return interpolatedPeakInfos_; }
+    const PeakInfos& peakInfos() const;
+
+    void setDirectPeakInfos(PeakInfos&& val) {
+        directPeakInfos_ = std::move(val); }
+    void setInterpolatedPeakInfos(PeakInfos&& val) {
+        interpolatedPeakInfos_ = std::move(val); }
+
+private:
+    PeakInfos directPeakInfos_;
+    PeakInfos interpolatedPeakInfos_;
+};
+
 #endif // PEAK_INFO_H

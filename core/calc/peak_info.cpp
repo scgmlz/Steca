@@ -190,3 +190,15 @@ void PeakInfos::get4(const int idxX, const int idxY,
         ysHig.resize(0);
     }
 }
+
+
+//  ***********************************************************************************************
+//! @class AllPeaks
+
+const PeakInfos& AllPeaks::peakInfos() const
+{
+    if (gSession->params.interpolParams.enabled.val())
+        return interpolatedPeakInfos_;
+    else
+        return directPeakInfos_;
+}

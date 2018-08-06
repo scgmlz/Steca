@@ -42,7 +42,7 @@ PlotPolefig::PlotPolefig()
 
 void PlotPolefig::refresh()
 {
-    rs_ = gSession->peakInfos();
+    rs_ = gSession->allPeaks.peakInfos();
     flat_ = gGui->state->polefigShowGridPts->checkState();
     update();
 }

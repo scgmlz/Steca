@@ -34,21 +34,14 @@ Session::Session()
         });
 }
 
-const PeakInfos& Session::peakInfos() const
-{
-    if (params.interpolParams.enabled.val())
-        return interpolatedPeakInfos_;
-    else
-        return directPeakInfos_;
-}
-
+//! Removes all data, sets all parameters to their defaults. No need to invalidate caches?
 void Session::clear()
 {
     dataset.clear();
     corrset.clear();
+    params.clear();
     baseline.clear();
     peaks.clear();
-    params.clear();
 }
 
 void Session::sessionFromJson(const QByteArray& json)

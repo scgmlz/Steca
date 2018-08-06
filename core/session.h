@@ -41,26 +41,15 @@ public:
     Session();
     Session(const Session&) = delete;
 
-    // accessor methods:
-    const PeakInfos& directPeakInfos() const { return directPeakInfos_; }
-    const PeakInfos& interpolatedPeakInfos() const { return interpolatedPeakInfos_; }
-    const PeakInfos& peakInfos() const;
-
     // modifying methods:
     void clear();
     void sessionFromJson(const QByteArray&);
-
-    void setDirectPeakInfos(PeakInfos&& val) {
-        directPeakInfos_ = std::move(val); }
-    void setInterpolatedPeakInfos(PeakInfos&& val) {
-        interpolatedPeakInfos_ = std::move(val); }
 
     void updateImageSize(); //!< Clears image size if session has no files
     void setImageSize(const size2d&); //!< Also ensures same size for all images
 
     // const methods:
-    QByteArray serializeSession() const;
-
+    QByteArray serializeSession() const; // TODO rename toJson
     size2d imageSize() const;
 
     // const abbreviations to member member calls
@@ -70,13 +59,14 @@ public:
 
     Dataset dataset;
     Corrset corrset;
-    ActiveClusters activeClusters;
     Params  params;
-    KeyedCache<AngleMap, deg> angleMap;
     GammaSelection gammaSelection;
     ThetaSelection thetaSelection;
     Baseline baseline;
     Peaks peaks;
+    ActiveClusters activeClusters;
+    KeyedCache<AngleMap, deg> angleMap;
+    AllPeaks allPeaks;
 
 signals:
     void sigDetector();      //!< detector detector has changed
@@ -85,11 +75,7 @@ signals:
     void sigPeakPars(int);   //!< settings for one peak fit have changed
 
 private:
-    // with reference accessor methods:
     size2d imageSize_; //!< All images must have this same size
-    PeakInfos directPeakInfos_;
-    PeakInfos interpolatedPeakInfos_;
-    // others
 };
 
 #endif // SESSION_H
