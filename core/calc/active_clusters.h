@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/data/active_clusters.h
+//! @file      core/calc/active_clusters.h
 //! @brief     Defines class ActiveClusters
 //!
 //! @homepage  https://github.com/scgmlz/Steca

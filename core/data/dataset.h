@@ -15,7 +15,7 @@
 #ifndef DATASET_H
 #define DATASET_H
 
-#include "core/data/active_clusters.h"
+#include "core/calc/active_clusters.h"
 #include "core/data/cluster.h"
 #include "qcr/engine/param_wrapper.h"
 #include <memory>
