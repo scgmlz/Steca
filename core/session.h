@@ -62,16 +62,16 @@ public:
     bool hasCorrFile() const { return corrset.hasFile(); }
     const HighlightedData& highlightedCluster() const { return dataset.highlight(); }
 
-    Dataset dataset;
-    Corrset corrset;
-    Params  params;
-    GammaSelection gammaSelection;
-    ThetaSelection thetaSelection;
-    Baseline baseline;
-    Peaks peaks;
-    ActiveClusters activeClusters;
-    KeyedCache<AngleMap, deg> angleMap;
-    AllPeaks allPeaks;
+    Dataset dataset;                    //!< raw data files with sample detector images
+    Corrset corrset;                    //!< raw data files with standard sample image
+    Params  params;                     //!< global parameters like detector geometry, ...
+    GammaSelection gammaSelection; // TODO reconsider
+    ThetaSelection thetaSelection; // TODO reconsider
+    Baseline baseline;                  //!< ranges and other parameters for baseline fitting
+    Peaks peaks;                        //!< ranges and other parameters for Bragg peak fitting
+    ActiveClusters activeClusters;      //!< list of all clusters except the unselected ones
+    KeyedCache<AngleMap, deg> angleMap; //!< to accelerate the projection image->dfgram
+    AllPeaks allPeaks;                  //!< all the outcome of peak raw analysis or fitting
 
 private:
     size2d imageSize_; //!< All images must have this same size
