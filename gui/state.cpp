@@ -13,8 +13,7 @@
 //  ***********************************************************************************************
 
 #include "state.h"
-#include "core/calc/peak_info.h"
-#include "core/def/idiomatic_for.h"
+#include "core/calc/peak_info.h" // dataTags
 #include "qcr/widgets/controls.h"
 #include <QDebug>
 
@@ -27,7 +26,7 @@ GuiState::GuiState()
 
     // initialize
     QStringList tags = PeakInfo::dataTags(false);
-    for_i (Metadata::numAttributes(false) - Metadata::numAttributes(true))
+    for (int i=0; i< (Metadata::numAttributes(false) - Metadata::numAttributes(true)); ++i)
         tags.removeLast(); // remove all tags that are not numbers
     // qDebug() << "diagram tags: " << tags.join(" ");
     diagramX->addItems(tags);
