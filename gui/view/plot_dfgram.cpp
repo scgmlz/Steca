@@ -18,6 +18,7 @@
 #include "gui/actions/toggles.h"
 #include "gui/panels/subframe_setup.h" // gGui->setup()
 #include "gui/state.h"
+#include "gui/mainwin.h"
 #include "qcr/engine/console.h"
 
 namespace colors {

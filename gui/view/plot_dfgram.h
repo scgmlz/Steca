@@ -16,7 +16,6 @@
 #define PLOT_DFGRAM_H
 
 #include "core/data/dfgram.h"
-#include "gui/mainwin.h" // for eFittingTab
 #include "gui/view/plot_overlay.h"
 
 //! Listens to mouse events to select subranges of a PlotDfgram.

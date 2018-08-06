@@ -17,6 +17,8 @@
 #include "gui/actions/toggles.h"
 #include "gui/actions/triggers.h"
 #include "gui/view/plot_dfgram.h"
+#include "gui/mainwin.h"
+
 #define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 
 //  ***********************************************************************************************
