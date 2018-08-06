@@ -76,9 +76,7 @@ ActiveClusters::ActiveClusters()
         return recomputeAvg([](const Measurement* one){return one->time();});}}
     , grandAvgDeltaTime {[this]()->double{
         return recomputeAvg([](const Measurement* one){return one->deltaTime();});}}
-{
-    QObject::connect(gSession, &Session::sigDetector, [=]() { avgDfgram.invalidate(); });
-}
+{}
 
 //! Internally used to compute grand averages of monitor, time, etc
 double ActiveClusters::recomputeAvg(std::function<double(const Measurement*)> f)

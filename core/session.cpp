@@ -28,7 +28,10 @@ Session::Session()
 {
     gSession = this;
 
-    connect(this, &Session::sigDetector, [this]() { angleMap_.invalidate(); });
+    connect(this, &Session::sigDetector, [this]() {
+            angleMap_.invalidate();
+            activeClusters.avgDfgram.invalidate();
+        });
 }
 
 const PeakInfos& Session::peakInfos() const

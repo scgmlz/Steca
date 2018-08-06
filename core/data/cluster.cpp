@@ -80,23 +80,22 @@ size2d Sequence::imageSize() const
 double Sequence::normFactor() const
 {
     double num = 1, den = 1; // numerator, denominator
-    const ActiveClusters& all = gSession->activeClusters();
 
     switch (gSession->params.normMode) {
     case eNorm::MONITOR:
-        num = all.grandAvgMonitorCount.get();
+        num = gSession->activeClusters.grandAvgMonitorCount.get();
         den = avgMonitorCount();
         break;
     case eNorm::DELTA_MONITOR:
-        num = all.grandAvgDeltaMonitorCount.get();
+        num = gSession->activeClusters.grandAvgDeltaMonitorCount.get();
         den = avgDeltaMonitorCount();
         break;
     case eNorm::TIME:
-        num = all.grandAvgTime.get();
+        num = gSession->activeClusters.grandAvgTime.get();
         den = avgTime();
         break;
     case eNorm::DELTA_TIME:
-        num = all.grandAvgDeltaTime.get();
+        num = gSession->activeClusters.grandAvgDeltaTime.get();
         den = avgDeltaTime();
         break;
     case eNorm::NONE:

@@ -193,7 +193,7 @@ void PlotDfgram::renderAll()
     // TODO NOW move the following to session
     const Dfgram* dfgram;
     if (gGui->toggles->combinedDfgram.getValue())
-        dfgram = &gSession->activeClusters().avgDfgram.get();
+        dfgram = &gSession->activeClusters.avgDfgram.get();
     else {
         const Cluster* cluster = gSession->highlightedCluster().cluster();
         ASSERT(cluster);

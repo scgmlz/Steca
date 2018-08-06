@@ -130,13 +130,12 @@ void ExportDfgram::saveCurrent()
 
 void ExportDfgram::saveAll(bool oneFile)
 {
-    const ActiveClusters& expt = gSession->activeClusters();
     // In one-file mode, start output stream; in multi-file mode, only do prepations.
     QString path = fileField_->path(true, !oneFile);
     if (path.isEmpty())
         return;
     QTextStream* stream = nullptr;
-    int nClusters = expt.clusters.get().size();
+    int nClusters = gSession->activeClusters.clusters.get().size();
     ASSERT(nClusters>0);
     if (oneFile) {
         QFile* file = fileField_->file();
@@ -161,7 +160,7 @@ void ExportDfgram::saveAll(bool oneFile)
     int picNum = 0;
     int fileNum = 0;
     int nSlices = gSession->gammaSelection.numSlices.val();
-    for (Cluster* cluster : expt.clusters.get()) {
+    for (Cluster* cluster : gSession->activeClusters.clusters.get()) {
         ++picNum;
         progress.step();
         for (int i=0; i<qMax(1,nSlices); ++i) {
