@@ -26,14 +26,14 @@
 namespace {
 
 struct itf_t {
-    itf_t() : itf_t(float(Q_QNAN), deg(Q_QNAN), float(Q_QNAN)) {}
-    itf_t(float _inten, deg _tth, float _fwhm) : inten(_inten), tth(_tth), fwhm(_fwhm) {}
+    itf_t() : itf_t(Q_QNAN, deg(Q_QNAN), Q_QNAN) {}
+    itf_t(double _inten, deg _tth, double _fwhm) : inten(_inten), tth(_tth), fwhm(_fwhm) {}
 
     void operator+=(const itf_t&); // used once to compute average
 
-    float inten;
+    double inten;
     deg tth;
-    float fwhm;
+    double fwhm;
 };
 
 void itf_t::operator+=(const itf_t& that)
@@ -195,9 +195,9 @@ itf_t inverseDistanceWeighing(const std::vector<double>& distances, const std::v
         fwhm += in->fwhm() * d;
     }
 
-    return { float(height/inverseDistanceSum),
+    return { double(height/inverseDistanceSum),
             deg(offset/inverseDistanceSum),
-            float(fwhm/inverseDistanceSum) };
+            double(fwhm/inverseDistanceSum) };
 }
 
 // Interpolates peak infos to a single point using idw.
@@ -315,8 +315,8 @@ void algo::interpolateInfos(QProgressBar* progressBar)
                         avg += itfs.at(i);
 
                     tmp.appendPeak(PeakInfo(alpha, beta, infos.peaks().front().rgeGma(),
-                                        avg.inten / n, float(Q_QNAN),
-                        avg.tth / n, deg(Q_QNAN), avg.fwhm / n, float(Q_QNAN)));
+                                        avg.inten / n, Q_QNAN,
+                        avg.tth / n, deg(Q_QNAN), avg.fwhm / n, Q_QNAN));
                     continue;
                 }
 
@@ -331,7 +331,7 @@ void algo::interpolateInfos(QProgressBar* progressBar)
             itf_t itf = interpolateValues(idwRadius, infos, alpha, beta);
             tmp.appendPeak(PeakInfo(
                            alpha, beta, infos.peaks().front().rgeGma(), itf.inten,
-                           float(Q_QNAN), itf.tth, deg(Q_QNAN), itf.fwhm, float(Q_QNAN)));
+                           Q_QNAN, itf.tth, deg(Q_QNAN), itf.fwhm, Q_QNAN));
         }
     }
 
