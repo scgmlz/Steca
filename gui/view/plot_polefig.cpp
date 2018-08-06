@@ -36,14 +36,13 @@ PlotPolefig::PlotPolefig()
     : flat_(false)
     , alphaMax_(90)
     , avgAlphaMax_(0)
-    , rs_ (gSession->allPeaks.currentPeaks())
 {
     update();
 }
 
 void PlotPolefig::refresh()
 {
-    // TODO URGENT rs_ = gSession->allPeaks.currentPeaks();
+    rs_ = &gSession->allPeaks.currentPeaks();
     flat_ = gGui->state->polefigShowGridPts->checkState();
     update();
 }
@@ -117,7 +116,7 @@ void PlotPolefig::paintGrid()
 void PlotPolefig::paintPoints()
 {
     double rgeMax = 0;
-    for (const PeakInfo& r : rs_.peaks())
+    for (const PeakInfo& r : rs_->peaks())
         rgeMax = std::max(rgeMax, r.inten());
 
     /*
@@ -133,7 +132,7 @@ The 'flat_' flag is controlled by the check box that is in the corner of the pol
 NaNs (intensities) do not occur in computed points, only in interpolated points,
 when interpolation fails.
     */
-    for (const PeakInfo& r : rs_.peaks()) {
+    for (const PeakInfo& r : rs_->peaks()) {
         double inten = r.inten();
         if (!qIsFinite(inten)) // nan comes from interpolation
             continue;
