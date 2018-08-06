@@ -82,10 +82,7 @@ public:
 
     QJsonObject toJson() const;
     int countFiles() const { return files_.size(); }
-    int countClusters() const { return allClusters_.size(); }
     const Datafile& fileAt(int i) const { return files_.at(i); }
-    const Cluster& clusterAt(int i) const { return *allClusters_.at(i); }
-    Cluster& clusterAt(int i) { return *allClusters_.at(i); }
     int offset(const Datafile& file) const { return file.offset_; }
     bool hasIncomplete() const { return hasIncomplete_; }
     std::vector<Cluster*> activeClustersList() const;
@@ -93,9 +90,9 @@ public:
     ParamWrapper<int> binning {1};             //!< bin so many Measurement|s into one cluster
     ParamWrapper<bool> dropIncomplete {false}; //!< drop Clusters with less than 'binning' members.
 
+    std::vector<std::unique_ptr<Cluster>> allClusters; //!< all Cluster|s are owned by this
 private:
     std::vector<Datafile> files_; //!< loaded Datafile|s only live here
-    std::vector<std::unique_ptr<Cluster>> allClusters_; //!< all Cluster|s are owned by this
     // leave this a unique_ptr because other vectors backlink through Cluster* pointers
 
     bool hasIncomplete_; //!< current binning does result in at least one incomplete cluster

@@ -169,7 +169,7 @@ void Dataset::onClusteringChanged()
 
 void Dataset::updateClusters()
 {
-    allClusters_.clear();
+    allClusters.clear();
     hasIncomplete_ = false;
     for (Datafile& file : files_) {
         file.clusters_.clear();
@@ -182,9 +182,9 @@ void Dataset::updateClusters()
             std::vector<const Measurement*> group;
             for (int ii=i; ii<file.numMeasurements() && ii<i+binning.val(); ii++)
                 group.push_back(file.raw_.measurements().at(ii));
-            std::unique_ptr<Cluster> cluster(new Cluster(group, file, allClusters_.size(), i));
+            std::unique_ptr<Cluster> cluster(new Cluster(group, file, allClusters.size(), i));
             file.clusters_.push_back(cluster.get());
-            allClusters_.push_back(std::move(cluster));
+            allClusters.push_back(std::move(cluster));
         }
     }
     gSession->activeClusters.invalidate();
@@ -194,7 +194,7 @@ void Dataset::updateClusters()
 std::vector<Cluster*> Dataset::activeClustersList() const
 {
     std::vector<Cluster*> ret;
-    for (const auto& pCluster : allClusters_)
+    for (const auto& pCluster : allClusters)
         if (pCluster->isActivated())
             ret.push_back(pCluster.get());
     return ret;
