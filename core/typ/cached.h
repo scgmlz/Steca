@@ -53,9 +53,7 @@ public:
             cached_.reset( std::move(new T{remake_(parent)}) );
         return *cached_;
     }
-    const T* getif(const Parent* parent) const {
-        return cached_ ? &*cached_ : nullptr;
-    }
+    const T* getif(const Parent* parent) const { return cached_ ? &*cached_ : nullptr; }
 private:
     mutable std::unique_ptr<T> cached_;
     const std::function<T(const Parent*)> remake_;

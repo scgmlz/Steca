@@ -90,6 +90,7 @@ public:
     int offset(const Datafile& file) const { return file.offset_; }
     bool hasIncomplete() const { return hasIncomplete_; }
     const ActiveClusters& activeClusters() const { return activeClusters_; }
+    std::vector<Cluster*> activeClustersList() const;
 
     ParamWrapper<int> binning {1};             //!< bin so many Measurement|s into one cluster
     ParamWrapper<bool> dropIncomplete {false}; //!< drop Clusters with less than 'binning' members.

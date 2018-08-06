@@ -16,11 +16,11 @@
 #define ACTIVE_CLUSTERS_H
 
 #include "core/typ/cached.h"
-#include "core/data/dfgram.h"
-#include "core/raw/measurement.h"
 
 class Cluster;
-class ActiveClusters;
+class Dfgram;
+class Measurement;
+class Range;
 
 //! The list of activated Cluster|s, and cached averages
 
@@ -29,37 +29,20 @@ public:
     ActiveClusters();
     ActiveClusters(const ActiveClusters&) = delete;
 
-    void reset(std::vector<std::unique_ptr<Cluster>>& allClusters);
+    void invalidate() const;
+    void invalidateAvg() const;
 
-    const std::vector<Cluster*>& clusters() const { return clusters_; }
-    int size() const { return clusters_.size(); }
-
-    Cached<double> grandAvgMonitorCount {[this]()->double{
-            return recomputeAvg([](const Measurement* one){
-                    return one->monitorCount();});} };
-    Cached<double> grandAvgDeltaMonitorCount {[this]()->double{
-            return recomputeAvg([](const Measurement* one){
-                    return one->deltaMonitorCount();});} };
-    Cached<double> grandAvgTime {[this]()->double{
-            return recomputeAvg([](const Measurement* one){
-                    return one->time();});} };
-    Cached<double> grandAvgDeltaTime {[this]()->double{
-            return recomputeAvg([](const Measurement* one){
-                    return one->deltaTime();});} };
-
-    const Range& rgeGma() const;
-    const Range& rgeFixedInten(bool trans, bool cut) const;
-
-    void invalidateAvgMutables() const;
-
+    Cached<std::vector<Cluster*>> clusters;
     Cached<Dfgram> avgDfgram;
+    Cached<Range> rgeGma;
+    Cached<Range> rgeFixedInten;
+    Cached<double> grandAvgMonitorCount;
+    Cached<double> grandAvgDeltaMonitorCount;
+    Cached<double> grandAvgTime;
+    Cached<double> grandAvgDeltaTime;
 
 private:
-    std::vector<Cluster*> clusters_;
-    double recomputeAvg(std::function<double(const Measurement*)>);
-    // computed on demand (NaNs or emptiness indicate yet unknown values) // TODO use cached.h
-    mutable Range rgeFixedInten_;
-    mutable Range rgeGma_;
+    double recomputeAvg(std::function<double(const Measurement*)> f);
 };
 
 #endif // ACTIVE_CLUSTERS_H

@@ -12,23 +12,25 @@
 //
 //  ***********************************************************************************************
 
-#include "active_clusters.h"
-#include "core/session.h"
+#include "core/data/active_clusters.h"
 #include "core/algo/collect_intensities.h"
-#include "core/data/lens.h"
-#include "core/data/cluster.h"
 #include "core/aux/async.h"
+#include "core/data/cluster.h"
+#include "core/data/dfgram.h"
+#include "core/data/lens.h"
+#include "core/raw/measurement.h"
+#include "core/session.h"
 #include "qcr/base/debug.h"
 
 namespace {
 
-//! Computes curve .
+//! Computes average diffractogram.
 Curve computeAvgCurve(const ActiveClusters*const ac)
 {
     TakesLongTime __("computeAvgCurve");
     // flatten Cluster-Measurement hierarchy into one Sequence
     std::vector<const Measurement*> group;
-    for (const Cluster* cluster : ac->clusters())
+    for (const Cluster* cluster : ac->clusters.get())
         for (const Measurement* one: cluster->members())
             group.push_back(one);
     const Sequence seq(group);
@@ -36,29 +38,54 @@ Curve computeAvgCurve(const ActiveClusters*const ac)
     return algo::projectCluster(seq, seq.rgeGma());
 }
 
-} // namespace
-
-ActiveClusters::ActiveClusters()
-    : avgDfgram( [this]()->Dfgram{ return Dfgram(computeAvgCurve(this)); } )
+Range computeRgeGma(const ActiveClusters*const ac)
 {
-    invalidateAvgMutables();
+    Range ret;
+    for (const Cluster* cluster : ac->clusters.get())
+        ret.extendBy(cluster->rgeGma());
+    return ret;
 }
 
-void ActiveClusters::reset(std::vector<std::unique_ptr<Cluster>>& allClusters)
+Range computeRgeFixedInten(const ActiveClusters*const ac)
 {
-    clusters_.clear();
-    for (const auto& pCluster : allClusters)
-        if (pCluster->isActivated())
-            clusters_.push_back(pCluster.get());
-    invalidateAvgMutables();
+    bool trans = false; bool cut = false; // TODO restore (broken after d97148958)
+    Range ret;
+    TakesLongTime __("rgeFixedInten");
+    for (const Cluster* cluster : ac->clusters.get())
+        for (const Measurement* one : cluster->members())
+            ret.extendBy(ImageLens(one->image(), trans, cut).rgeInten(false));
+    return ret;
+}
+
+} // namespace
+
+
+ActiveClusters::ActiveClusters()
+    : clusters {[]()->std::vector<Cluster*>{return gSession->dataset.activeClustersList();}}
+    , avgDfgram {[this]()->Dfgram{
+        return Dfgram(computeAvgCurve(this));}}
+    , rgeGma {[this]()->Range{
+        return computeRgeGma(this);}}
+    , rgeFixedInten {[this]()->Range{
+        return computeRgeFixedInten(this);}}
+    , grandAvgMonitorCount {[this]()->double{
+        return recomputeAvg([](const Measurement* one){return one->monitorCount();});}}
+    , grandAvgDeltaMonitorCount {[this]()->double{
+        return recomputeAvg([](const Measurement* one){return one->deltaMonitorCount();});}}
+    , grandAvgTime {[this]()->double{
+        return recomputeAvg([](const Measurement* one){return one->time();});}}
+    , grandAvgDeltaTime {[this]()->double{
+        return recomputeAvg([](const Measurement* one){return one->deltaTime();});}}
+{
     QObject::connect(gSession, &Session::sigDetector, [=]() { avgDfgram.invalidate(); });
 }
 
+//! Internally used to compute grand averages of monitor, time, etc
 double ActiveClusters::recomputeAvg(std::function<double(const Measurement*)> f)
 {
     double sum = 0;
     int cnt = 0;
-    for (const Cluster* cluster : clusters_) {
+    for (const Cluster* cluster : clusters.get()) {
         for (const Measurement* one : cluster->members())
             sum += f(one);
         cnt += cluster->count();
@@ -66,32 +93,19 @@ double ActiveClusters::recomputeAvg(std::function<double(const Measurement*)> f)
     return sum/cnt;
 }
 
-const Range& ActiveClusters::rgeGma() const
+void ActiveClusters::invalidate() const
 {
-    if (!rgeGma_.isValid())
-        for (const Cluster* cluster : clusters_)
-            rgeGma_.extendBy(cluster->rgeGma());
-    return rgeGma_;
+    clusters.invalidate();
+    grandAvgMonitorCount.invalidate();
+    grandAvgDeltaMonitorCount.invalidate();
+    grandAvgTime.invalidate();
+    grandAvgDeltaTime.invalidate();
+    invalidateAvg();
 }
 
-const Range& ActiveClusters::rgeFixedInten(bool trans, bool cut) const
-{
-    if (!rgeFixedInten_.isValid()) {
-        TakesLongTime __("rgeFixedInten");
-        for (const Cluster* cluster : clusters_)
-            for (const Measurement* one : cluster->members())
-                rgeFixedInten_.extendBy(ImageLens(one->image(), trans, cut).rgeInten(false));
-    }
-    return rgeFixedInten_;
-}
-
-void ActiveClusters::invalidateAvgMutables() const
+void ActiveClusters::invalidateAvg() const
 {
     avgDfgram.invalidate();
-    grandAvgMonitorCount     .invalidate();
-    grandAvgDeltaMonitorCount.invalidate();
-    grandAvgTime             .invalidate();
-    grandAvgDeltaTime        .invalidate();
-    rgeFixedInten_.invalidate();
-    rgeGma_.invalidate();
+    rgeFixedInten.invalidate();
+    rgeGma.invalidate();
 }

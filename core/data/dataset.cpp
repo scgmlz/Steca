@@ -190,9 +190,20 @@ void Dataset::updateClusters()
     updateActiveClusters();
 }
 
+//! Returns list of activated clusters.
+std::vector<Cluster*> Dataset::activeClustersList() const
+{
+    std::vector<Cluster*> ret;
+    for (const auto& pCluster : allClusters_)
+        if (pCluster->isActivated())
+            ret.push_back(pCluster.get());
+    return ret;
+}
+
+
 void Dataset::updateActiveClusters()
 {
-    activeClusters_.reset(allClusters_);
+    activeClusters_.invalidate();
 }
 
 QJsonObject Dataset::toJson() const

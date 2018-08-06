@@ -41,12 +41,12 @@ void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
     stream << "Gamma range min: " << rgeGma.min << '\n';
     stream << "Gamma range max: " << rgeGma.max << '\n';
 
-    for_i (Metadata::numAttributes(true))
+    for (int i=0; i<Metadata::numAttributes(true); ++i)
         stream << Metadata::attributeTag(i, true) << ": "
                << md.attributeValue(i).toDouble() << '\n';
 
     stream << "Tth" << separator << "Intensity" << '\n';
-    for_i (curve.xs().size())
+    for (int i=0; i<curve.xs().size(); ++i)
         stream << curve.x(i) << separator << curve.y(i) << '\n';
 
     stream.flush(); // not sure whether we need this
@@ -136,6 +136,8 @@ void ExportDfgram::saveAll(bool oneFile)
     if (path.isEmpty())
         return;
     QTextStream* stream = nullptr;
+    int nClusters = expt.clusters.get().size();
+    ASSERT(nClusters>0);
     if (oneFile) {
         QFile* file = fileField_->file();
         if (!file)
@@ -144,8 +146,8 @@ void ExportDfgram::saveAll(bool oneFile)
     } else {
         // check whether any of the numbered files already exists
         QStringList existingFiles;
-        for_i (expt.size()) {
-            QString currPath = numberedName(path, i, expt.size()+1);
+        for (int i=0; i<nClusters; ++i) {
+            QString currPath = numberedName(path, i, nClusters+1);
             if (QFile(currPath).exists())
                 existingFiles << QFileInfo(currPath).fileName();
         }
@@ -155,16 +157,16 @@ void ExportDfgram::saveAll(bool oneFile)
                                            this, existingFiles.join(", ")))
             return;
     }
-    Progress progress(&fileField_->progressBar, "save diffractograms", expt.size());
+    Progress progress(&fileField_->progressBar, "save diffractograms", nClusters);
     int picNum = 0;
     int fileNum = 0;
     int nSlices = gSession->gammaSelection.numSlices.val();
-    for (Cluster* cluster : expt.clusters()) {
+    for (Cluster* cluster : expt.clusters.get()) {
         ++picNum;
         progress.step();
         for (int i=0; i<qMax(1,nSlices); ++i) {
             if (!oneFile) {
-                QFile* file = new QFile(numberedName(path, ++fileNum, expt.size()+1));
+                QFile* file = new QFile(numberedName(path, ++fileNum, nClusters+1));
                 if (!file->open(QIODevice::WriteOnly | QIODevice::Text))
                     THROW("Cannot open file for writing: " + path);
                 delete stream;
