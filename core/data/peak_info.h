@@ -52,12 +52,12 @@ public:
     deg alpha() const { return alpha_; }
     deg beta() const { return beta_; }
     Range rgeGma() const { return rgeGma_; }
-    float inten() const { return inten_; }
-    float intenError() const { return intenError_; }
+    double inten() const { return inten_; }
+    double intenError() const { return intenError_; }
     deg tth() const { return tth_; }
     deg tthError() const { return tthError_; }
-    float fwhm() const { return fwhm_; }
-    float fwhmError() const { return fwhmError_; }
+    double fwhm() const { return fwhm_; }
+    double fwhmError() const { return fwhmError_; }
     std::vector<QVariant> data() const;
 
 private:

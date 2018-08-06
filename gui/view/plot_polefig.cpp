@@ -20,7 +20,7 @@
 namespace {
 
 //! Color map for polefigure: shades of blue.
-QColor intenGraph(float inten, float maxInten) {
+QColor intenGraph(double inten, double maxInten) {
     if (!qIsFinite(inten) || qIsNaN(maxInten) || maxInten <= 0)
         return { qRgb(0x00, 0x00, 0x00) };
 
