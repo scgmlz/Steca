@@ -15,7 +15,7 @@
 #ifndef TAB_DIAGRAM_H
 #define TAB_DIAGRAM_H
 
-#include "core/data/peak_info.h"
+#include "core/calc/peak_info.h"
 #include <QWidget>
 
 //! Mainframe tab to plot a pair of fit results or metadata, with associated controls.

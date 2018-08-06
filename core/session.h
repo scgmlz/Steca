@@ -22,7 +22,7 @@
 #include "core/data/theta_selection.h"
 #include "core/data/corrset.h"
 #include "core/data/dataset.h"
-#include "core/data/peak_info.h"
+#include "core/calc/peak_info.h"
 #include "core/fit/peak_functions.h"
 #include "core/raw/angle_map.h"
 #include "core/typ/cached.h"

@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/data/peak_info.cpp
+//! @file      core/calc/peak_info.cpp
 //! @brief     Implements classes PeakInfo, PeakInfos
 //!
 //! @homepage  https://github.com/scgmlz/Steca

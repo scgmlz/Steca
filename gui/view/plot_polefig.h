@@ -16,7 +16,7 @@
 #define PLOT_POLEFIG_H
 
 #include "QCustomPlot/qcustomplot.h"
-#include "core/data/peak_info.h"
+#include "core/calc/peak_info.h"
 #include "qcr/widgets/controls.h"
 
 //! Tab in PoleFiguresFrame, to display the pole figure.

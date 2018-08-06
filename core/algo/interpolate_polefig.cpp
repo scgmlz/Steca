@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "interpolate_polefig.h"
-#include "core/data/peak_info.h"
+#include "core/calc/peak_info.h"
 #include "core/session.h"
 #include "core/aux/async.h"
 #include "qcr/base/debug.h"
