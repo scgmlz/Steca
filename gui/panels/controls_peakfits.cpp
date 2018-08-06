@@ -28,9 +28,9 @@ QString safeRealText(double val) { return qIsFinite(val) ? QString::number(val) 
 } // local methods
 
 //  ***********************************************************************************************
-//! @class PeaksModel, used in PeaksView (local scope)
+//! @class PeaksModel (local scope)
 
-//! Model for PeaksView.
+//! Model for table of peaks.
 
 class PeaksModel : public TableModel {
 public:
@@ -87,21 +87,6 @@ QVariant PeaksModel::data(const QModelIndex& index, int role) const
     }
 }
 
-
-//  ***********************************************************************************************
-//! @class PeaksView (local scope)
-
-//! List view of user-defined Bragg peaks.
-
-class PeaksView final : public TableView {
-public:
-    PeaksView();
-};
-
-PeaksView::PeaksView()
-    : TableView(new PeaksModel())
-{
-}
 
 //  ***********************************************************************************************
 //! @class PeakfitOutcomeView (local scope)
@@ -223,7 +208,7 @@ ControlsPeakfits::ControlsPeakfits()
 
     auto* box = new QVBoxLayout;
     box->addLayout(&topControls_);
-    box->addWidget(new PeaksView);
+    box->addWidget(new TableView(new PeaksModel()));
     box->addWidget(&comboReflType_);
     box->addWidget(new RangeControl("peak", []()->Range*{
                 return gSession->peaks.selectedRange(); }));
