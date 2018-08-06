@@ -151,30 +151,6 @@ QString const PeakInfo::reflStringTag(int attr, bool out)
 void PeakInfos::appendPeak(PeakInfo&& info)
 {
     peaks_.push_back(std::move(info));
-    clearCache();
-}
-
-float PeakInfos::averageInten() const
-{
-    if (qIsNaN(avgInten_)) {
-        avgInten_ = 0;
-        int cnt = 0;
-        for (auto& info : peaks_) {
-            double inten = info.inten();
-            if (qIsFinite(inten)) {
-                avgInten_ += inten;
-                ++cnt;
-            }
-        }
-        if (cnt)
-            avgInten_ /= cnt;
-    }
-    return avgInten_;
-}
-
-void PeakInfos::clearCache()
-{
-    avgInten_ = float(Q_QNAN);
 }
 
 void PeakInfos::get4(const int idxX, const int idxY,

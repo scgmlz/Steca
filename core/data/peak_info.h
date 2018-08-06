@@ -76,21 +76,18 @@ private:
 
 class PeakInfos {
 public:
-    PeakInfos() { clearCache(); }
+    PeakInfos() {}
     PeakInfos(const PeakInfos&) = delete;
 
     void appendPeak(PeakInfo&&);
 
     const std::vector<PeakInfo>& peaks() const { return peaks_; }
-    float averageInten() const;
     void get4(const int idxX, const int idxY,
               std::vector<double>& xs, std::vector<double>& ys,
               std::vector<double>& ysLow, std::vector<double>& ysHig) const;
 
 private:
-    void clearCache();
     std::vector<PeakInfo> peaks_;
-    mutable float avgInten_;
 };
 
 #endif // PEAK_INFO_H
