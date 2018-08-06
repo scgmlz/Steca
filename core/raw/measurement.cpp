@@ -64,5 +64,5 @@ deg Measurement::chi() const { return metadata_.motorChi; }
 
 const AngleMap& Measurement::angleMap() const
 {
-    return gSession->angleMap(midTth());
+    return gSession->angleMap.get(midTth());
 }

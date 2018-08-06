@@ -29,7 +29,7 @@ Session::Session()
     gSession = this;
 
     connect(this, &Session::sigDetector, [this]() {
-            angleMap_.invalidate();
+            angleMap.invalidate();
             activeClusters.avgDfgram.invalidate();
         });
 }

@@ -41,8 +41,6 @@ public:
     Session(const Session&) = delete;
 
     // accessor methods:
-    const AngleMap& angleMap(const deg tth) { return angleMap_.get(tth); }
-
     const PeakInfos& directPeakInfos() const { return directPeakInfos_; }
     const PeakInfos& interpolatedPeakInfos() const { return interpolatedPeakInfos_; }
     const PeakInfos& peakInfos() const;
@@ -67,13 +65,13 @@ public:
     // const abbreviations to member member calls
     bool hasData() const { return dataset.countFiles(); }
     bool hasCorrFile() const { return corrset.hasFile(); }
-
     const HighlightedData& highlightedCluster() const { return dataset.highlight(); }
 
     Dataset dataset;
     Corrset corrset;
     ActiveClusters activeClusters;
     Params  params;
+    KeyedCache<AngleMap, deg> angleMap;
     GammaSelection gammaSelection;
     ThetaSelection thetaSelection;
     Baseline baseline;
@@ -91,7 +89,6 @@ private:
     PeakInfos directPeakInfos_;
     PeakInfos interpolatedPeakInfos_;
     // others
-    KeyedCache<AngleMap, deg> angleMap_;
 };
 
 #endif // SESSION_H
