@@ -123,6 +123,7 @@ double PeakFunction::dy(double x, int i, double const* parValues) const
     default:
         THROW("impossible case");
     }
+    // TODO provide unit test to check derivatives
 }
 
 PeakFunction PeakFunction::fromFit(

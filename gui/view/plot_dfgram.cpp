@@ -25,9 +25,9 @@ namespace colors {
 QColor baseEmph{0x00, 0xff, 0x00, 0x50}; // green
 QColor baseStd {0x87, 0xce, 0x87, 0x50}; // light green
 QColor baseEdit{0x00, 0xff, 0x00, 0x30}; // as Emph, but more transparent
-QColor peakEmph{0x00, 0xff, 0xff, 0x50}; // cyan
+QColor peakEdit{0x00, 0xff, 0xff, 0x50}; // cyan
 QColor peakStd {0x87, 0xce, 0xfa, 0x50}; // light blue
-QColor peakEdit{0x00, 0xff, 0xff, 0x30}; // as Emph, but more transparent
+QColor peakFit {0x00, 0x00, 0xff, 0xff}; // blue
 QColor pen     {0x21, 0xa1, 0x21, 0xff};
 QColor scatter {255, 0, 0};
 }
@@ -184,7 +184,7 @@ void PlotDfgram::renderAll()
     for (int jP=0; jP<gSession->peaks.count(); ++jP)
         addBgItem(gSession->peaks.at(jP).range(),
                   !showingBaseline && jP==gSession->peaks.selectedIndex() ?
-                  colors::peakEmph : colors::peakStd);
+                  colors::peakEdit : colors::peakStd);
 
     if (!gSession->hasData() || !gSession->highlightedCluster().cluster()) {
         plotEmpty();
@@ -245,7 +245,7 @@ void PlotDfgram::renderAll()
         const Curve& r = fitCurves.at(jP);
         QCPGraph* graph = addGraph();
         reflGraph_.push_back(graph);
-        graph->setPen(QPen(Qt::green, jP == gSession->peaks.selectedIndex() ? 2 : 1));
+        graph->setPen(QPen(colors::peakFit, 2));
         graph->setData(QVector<double>::fromStdVector(r.xs()),
                        QVector<double>::fromStdVector(r.ys()));
     }
