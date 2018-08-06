@@ -33,29 +33,27 @@ void Session::onDetector()
 {
     angleMap.invalidate();
     activeClusters.avgDfgram.invalidate();
+    for (auto cluster: dataset.allClusters)
+        cluster->dfgrams.invalidate();
 }
 
 void Session::onBaseline()
 {
+    for (auto* cluster: dataset.allClusters)
+        cluster->dfgrams.forAllValids(cluster, [](const Dfgram& d){d.invalidateBg();});
 }
 
 void Session::onPeaks()
 {
+    for (auto* cluster: dataset.allClusters)
+        cluster->dfgrams.forAllValids(cluster, [](const Dfgram& d){d.invalidatePeaks();});
 }
 
 void Session::onPeakPars(int jP)
 {
+    for (auto* cluster: dataset.allClusters)
+        cluster->dfgrams.forAllValids(cluster, [jP](const Dfgram& d){d.invalidatePeakPars(jP);});
 }
-
-/* TODO NOW
-    QObject::connect(gSession, &Session::sigDetector, [this]() { dfgrams.invalidate(); });
-    QObject::connect(gSession, &Session::sigBaseline, [this](){
-            dfgrams.forAllValids( this, [](const Dfgram& d){ d.invalidateBg(); } ); });
-    QObject::connect(gSession, &Session::sigPeaks, [this](){
-            dfgrams.forAllValids( this, [](const Dfgram& d){ d.invalidatePeaks(); } ); });
-    QObject::connect(gSession, &Session::sigPeakPars, [this](int jP){
-            dfgrams.forAllValids( this, [jP](const Dfgram& d){ d.invalidatePeakPars(jP); } ); });
-*/
 
 void Session::onInterpol()
 {
