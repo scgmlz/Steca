@@ -115,13 +115,14 @@ double PeakFunction::dy(double x, int i, double const* parValues) const
     double center = parValue(0, parValues);
     double stdv = parValue(1, parValues);
     double inten = parValue(2, parValues);
+    double g = exp(-SQR(x-center)/(2*SQR(stdv)));
     switch (i) {
     case 0:
-        return inten*exp(-SQR(x-center)/(2*SQR(stdv)))*(x-center)/SQR(stdv);
+        return inten*g*(x-center)/SQR(stdv);
     case 1:
-        return exp(-SQR(x-center)/(2*SQR(stdv)));
+        return inten*g*SQR(x-center)/stdv/stdv/stdv;
     case 2:
-        return inten*exp(-SQR(x-center)/(2*SQR(stdv)))*SQR(x-center)/stdv/stdv/stdv;
+        return g;
     default:
         THROW("impossible case");
     }

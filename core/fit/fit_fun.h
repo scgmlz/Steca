@@ -16,8 +16,6 @@
 #define FIT_FUN_H
 
 #include "core/fit/fit_par.h"
-//#include "core/typ/curve.h"
-#include "core/typ/realpair.h"
 
 class Curve;
 class RawOutcome;
