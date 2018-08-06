@@ -15,7 +15,6 @@
 #include "fitting.h"
 #include "core/algo/coord_trafos.h"
 #include "core/data/cluster.h"
-#include "core/def/idiomatic_for.h"
 #include "core/session.h"
 #include "core/aux/async.h"
 
@@ -82,7 +81,7 @@ void algo::rawFits(class QProgressBar* progressBar)
     int nGamma = qMax(1, gSession->gammaSelection.numSlices.val());
     for (Cluster* cluster : seq.clusters()) {
         progress.step();
-        for_i (nGamma) {
+        for (int i=0; i<nGamma; ++i) {
             PeakInfo refInfo = rawFit(*cluster, i, *peak);
             if (!qIsNaN(refInfo.inten()))
                 tmp.append(std::move(refInfo));

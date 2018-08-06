@@ -14,7 +14,6 @@
 
 #include "interpolate_polefig.h"
 #include "core/data/peak_info.h"
-#include "core/def/idiomatic_for.h"
 #include "core/session.h"
 #include "core/aux/async.h"
 #include "qcr/base/debug.h"
@@ -154,7 +153,7 @@ void searchInQuadrants(
         deg deltaAlpha = info.alpha() - alpha;
         // "Distance" between grid point and current info.
         deg d = angle(alpha, info.alpha(), deltaBeta);
-        for_i (quadrants.size()) {
+        for (int i=0; i<quadrants.size(); ++i) {
             if (inQuadrant(quadrants.at(i), deltaAlpha, deltaBeta)) {
                 if (d >= distances.at(i))
                     continue;
@@ -175,7 +174,7 @@ itf_t inverseDistanceWeighing(const std::vector<double>& distances, const std::v
     if (!(infos.size() == N)) qFatal("infos size should be 4");
     std::vector<double> inverseDistances(N);
     double inverseDistanceSum = 0;
-    for_i (NUM_QUADRANTS) {
+    for (int i=0; i<N; ++i) {
         if (distances.at(i) == .0) {
             // Points coincide; no need to interpolate.
             const PeakInfo* in = infos.at(i);
@@ -188,7 +187,7 @@ itf_t inverseDistanceWeighing(const std::vector<double>& distances, const std::v
     double offset = 0;
     double height = 0;
     double fwhm = 0;
-    for_i (N) {
+    for (int i=0; i<N; ++i) {
         const PeakInfo* in = infos.at(i);
         double d = inverseDistances.at(i);
         offset += in->tth() * d;
@@ -210,7 +209,7 @@ itf_t interpolateValues(deg searchRadius, const PeakInfos& infos, deg alpha, deg
         allQuadrants(), alpha, beta, searchRadius, infos, interpolationInfos, distances);
     // Check that infos were found in all quadrants.
     int numQuadrantsOk = 0;
-    for_i (NUM_QUADRANTS) {
+    for (int i=0; i<NUM_QUADRANTS; ++i) {
         if (interpolationInfos.at(i)) {
             ++numQuadrantsOk;
             continue;
@@ -280,15 +279,15 @@ void algo::interpolateInfos(QProgressBar* progressBar)
 
     Progress progress(progressBar, "interpolation", numAlphas * numBetas); // TODO check number + 1?
 
-    for_int (i, numAlphas + 1) { // TODO why + 1 ?
+    for (int i=0; i<numAlphas+1; ++i) { // TODO why + 1 ?
         deg const alpha = i * stepAlpha;
-        for_int (j, numBetas) {
+        for (int j=0; j<numBetas; ++j) {
             deg const beta = j * stepBeta;
 
             progress.step();
 
             if (infos.peaks().empty()) {
-                tmp.append(PeakInfo(alpha, beta));
+                tmp.appendPeak(PeakInfo(alpha, beta));
                 continue;
             }
 
@@ -312,10 +311,10 @@ void algo::interpolateInfos(QProgressBar* progressBar)
                     ASSERT(iBegin < iEnd);
                     int n = iEnd - iBegin;
 
-                    for (int i = iBegin; i < iEnd; ++i)
+                    for (int i=iBegin; i<iEnd; ++i)
                         avg += itfs.at(i);
 
-                    tmp.append(PeakInfo(alpha, beta, infos.peaks().front().rgeGma(),
+                    tmp.appendPeak(PeakInfo(alpha, beta, infos.peaks().front().rgeGma(),
                                         avg.inten / n, float(Q_QNAN),
                         avg.tth / n, deg(Q_QNAN), avg.fwhm / n, float(Q_QNAN)));
                     continue;
@@ -323,14 +322,14 @@ void algo::interpolateInfos(QProgressBar* progressBar)
 
                 if (qIsNaN(idwRadius)) {
                     // Don't fall back to idw, just add an unmeasured info.
-                    tmp.append(PeakInfo(alpha, beta));
+                    tmp.appendPeak(PeakInfo(alpha, beta));
                     continue;
                 }
             }
 
             // Use idw, if alpha > avgAlphaMax OR averaging failed (too small avgRadius?).
             itf_t itf = interpolateValues(idwRadius, infos, alpha, beta);
-            tmp.append(PeakInfo(
+            tmp.appendPeak(PeakInfo(
                            alpha, beta, infos.peaks().front().rgeGma(), itf.inten,
                            float(Q_QNAN), itf.tth, deg(Q_QNAN), itf.fwhm, float(Q_QNAN)));
         }

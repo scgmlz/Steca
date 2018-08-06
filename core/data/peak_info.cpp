@@ -148,7 +148,7 @@ QString const PeakInfo::reflStringTag(int attr, bool out)
 //  ***********************************************************************************************
 //! @class PeakInfos
 
-void PeakInfos::append(PeakInfo&& info)
+void PeakInfos::appendPeak(PeakInfo&& info)
 {
     peaks_.push_back(std::move(info));
     clearCache();

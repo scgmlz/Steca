@@ -79,7 +79,7 @@ public:
     PeakInfos() { clearCache(); }
     PeakInfos(const PeakInfos&) = delete;
 
-    void append(PeakInfo&&);
+    void appendPeak(PeakInfo&&);
 
     const std::vector<PeakInfo>& peaks() const { return peaks_; }
     float averageInten() const;

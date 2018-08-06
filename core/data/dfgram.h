@@ -42,6 +42,7 @@ public:
     const RawOutcome& getRawOutcome (int jP) const { return rawOutcomes_.get(this,jP).get(this); }
     const PeakFunction& getPeakFit  (int jP) const { return peakFits_.get(this,jP).get(this); }
     const Curve& getPeakAsCurve (int jP) const { return peaksAsCurve_.get(this,jP).get(this); }
+
 private:
     mutable Kached<Dfgram,Polynom> bgFit_;
     mutable Kached<Dfgram,Curve>   bgAsCurve_;
