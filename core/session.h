@@ -35,8 +35,7 @@ extern class Session* gSession;
 //! One instance of this class coexists with the main window. It is accessible from everywhere
 //! through the global pointer gSession.
 
-class Session : public QObject {
-    Q_OBJECT
+class Session {
 public:
     Session();
     Session(const Session&) = delete;
@@ -47,6 +46,12 @@ public:
 
     void updateImageSize(); //!< Clears image size if session has no files
     void setImageSize(const size2d&); //!< Also ensures same size for all images
+
+    void onDetector();      //!< detector detector has changed
+    void onBaseline();      //!< settings for baseline fit have changed
+    void onPeaks();         //!< a peak has been added or removed
+    void onPeakPars(int);   //!< settings for one peak fit have changed
+    void onInterpol();      //!< interpolation control parameters have changed
 
     // const methods:
     QByteArray serializeSession() const; // TODO rename toJson
@@ -67,12 +72,6 @@ public:
     ActiveClusters activeClusters;
     KeyedCache<AngleMap, deg> angleMap;
     AllPeaks allPeaks;
-
-signals:
-    void sigDetector();      //!< detector detector has changed
-    void sigBaseline();      //!< settings for baseline fit have changed
-    void sigPeaks();         //!< a peak has been added or removed
-    void sigPeakPars(int);   //!< settings for one peak fit have changed
 
 private:
     size2d imageSize_; //!< All images must have this same size
