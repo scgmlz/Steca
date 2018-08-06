@@ -98,13 +98,16 @@ Dfgram::Dfgram(Curve&& c)
 
 void Dfgram::invalidateBg() const
 {
+    qDebug() << "invalidateBg";
     bgFit_.invalidate();
     bgAsCurve_.invalidate();
     curveMinusBg_.invalidate();
+    invalidatePeaks();
 }
 
 void Dfgram::invalidatePeaks() const
 {
+    qDebug() << "invalidatePeaks";
     rawOutcomes_.invalidate();
     peakFits_.invalidate();
     peaksAsCurve_.invalidate();
@@ -112,7 +115,5 @@ void Dfgram::invalidatePeaks() const
 
 void Dfgram::invalidatePeakPars(int) const // TODO restrict to peak jP
 {
-    rawOutcomes_.invalidate();
-    peakFits_.invalidate();
-    peaksAsCurve_.invalidate();
+    invalidatePeaks();
 }

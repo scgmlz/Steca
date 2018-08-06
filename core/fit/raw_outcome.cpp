@@ -38,5 +38,5 @@ RawOutcome::RawOutcome(const Curve& curve)
     center_ /= intensity_;
     stdv = sqrt( stdv/intensity_ - center_*center_ );
     fwhm_ = sqrt(8*log(2))*stdv;
-    intensity_ /= curve.rgeX().width(); // TODO correct
+    intensity_ *= curve.rgeX().width() / curve.count();
 }

@@ -24,7 +24,6 @@ public:
     FitParameter(double value=0, double error=0);
 
     void setValue(double value, double error); // TODO rm ?
-    void reset(); // TODO rm
     void setAllowedRange(double min, double max);
 
     double value() const { return value_; }

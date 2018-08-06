@@ -20,6 +20,7 @@
 
 // TODO move to peak computation
 #include "core/aux/exception.h"
+
 #include <cmath>
 
 #define SQR(x) (x)*(x)
@@ -39,12 +40,6 @@ static double pow_n(double x, int n)
 
 //  ***********************************************************************************************
 //! @class ParametricFunction
-
-void ParametricFunction::reset()
-{
-    for (auto& p: parameters_)
-        p.reset();
-}
 
 // outside the fit routine, functions y(x) are called with parValues==nullptr
 
@@ -100,13 +95,15 @@ const FitParameter PeakFunction::getFwhm() const { return
         FitParameter(parameters_[1].value()*sqrt(8*log(2)),parameters_[1].error()*sqrt(8*log(2))); }
 const FitParameter& PeakFunction::getIntensity() const { return parameters_[2]; }
 
+const double prefac = 1 / sqrt(2*M_PI);
+
 double PeakFunction::y(double x, double const* parValues) const
 {
     // Gaussian
     double center = parValue(0, parValues);
     double stdv = parValue(1, parValues);
     double inten = parValue(2, parValues);
-    return inten*exp(-SQR(x-center)/(2*SQR(stdv)));
+    return inten*prefac/stdv*exp(-SQR(x-center)/(2*SQR(stdv)));
 }
 
 double PeakFunction::dy(double x, int i, double const* parValues) const
@@ -118,11 +115,11 @@ double PeakFunction::dy(double x, int i, double const* parValues) const
     double g = exp(-SQR(x-center)/(2*SQR(stdv)));
     switch (i) {
     case 0:
-        return inten*g*(x-center)/SQR(stdv);
+        return inten*prefac/stdv*g*(x-center)/SQR(stdv);
     case 1:
-        return inten*g*SQR(x-center)/stdv/stdv/stdv;
+        return inten*prefac/stdv*g*(SQR((x-center)/stdv)-1)/stdv;
     case 2:
-        return g;
+        return prefac/stdv*g;
     default:
         THROW("impossible case");
     }

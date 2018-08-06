@@ -32,7 +32,6 @@ public:
     virtual double dy(double x, int parIndex, double const* parValues = nullptr) const = 0;
 
     void setParameterCount(int n) { parameters_.resize(n, {}); }
-    virtual void reset();
     FitParameter& parameterAt(int ip) { return parameters_[ip]; }
 
     int parameterCount() const { return parameters_.size(); }

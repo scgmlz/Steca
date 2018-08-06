@@ -46,6 +46,7 @@ void PlotDfgramOverlay::addRange(const Range& range)
         emit gSession->sigBaseline();
     } else if (gGui->state->editingPeakfits) {
         gSession->peaks.add(range);
+        emit gSession->sigPeaks();
     } else
         return;
     gRoot->remakeAll("PlotDfgramOverlay::addRange");

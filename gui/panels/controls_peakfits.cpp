@@ -195,9 +195,11 @@ ControlsPeakfits::ControlsPeakfits()
     // outbound connections
     connect(&gGui->triggers->peakRemove, &QAction::triggered, []() {
             gSession->peaks.removeSelected();
+            emit gSession->sigPeaks();
             gRoot->remakeAll("removePeak"); });
     connect(&gGui->triggers->peaksClear, &QAction::triggered, []() {
             gSession->peaks.clear();
+            emit gSession->sigPeaks();
             gRoot->remakeAll("clearPeaks"); });
 
     // TODO move this to core
@@ -206,6 +208,7 @@ ControlsPeakfits::ControlsPeakfits()
             Peaks::defaultFunctionName = peakFunctionName;
             if (gSession->peaks.selectedPeak())
                 gSession->peaks.selectedPeak()->setPeakFunction(peakFunctionName);
+            emit gSession->sigPeaks();
             gRoot->remakeAll("reflType");
         } );
 

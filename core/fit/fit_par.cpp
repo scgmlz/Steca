@@ -39,9 +39,3 @@ void FitParameter::setValue(double value, double error)
     value_ = value;
     error_ = error;
 }
-
-void FitParameter::reset()
-{
-    value_ = range_.bound(0);
-    error_ = 0;
-}

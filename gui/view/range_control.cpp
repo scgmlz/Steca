@@ -34,7 +34,7 @@ RangeControl::RangeControl(const QString& _name, const std::function<Range*()>& 
     connect(&spinRangeMin_, &QcrDoubleSpinBox::valueReleased, [this](double val) {
             double antival = qMax(spinRangeMax_.getValue(), val);
             selectRange_()->set(myRound(val), myRound(antival));
-            emit gSession->sigBaseline();
+            emit gSession->sigBaseline(); // TODO do this via setRange
             gRoot->remakeAll("RangeControl/min");
         });
     connect(&spinRangeMax_, &QcrDoubleSpinBox::valueReleased, [this](double val) {
