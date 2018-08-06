@@ -27,7 +27,7 @@ namespace {
 QString safeRealText(double val, int prec=4) {
     return qIsFinite(val) ? QString::number(val, 'g', prec) : "NaN"; }
 QString par2text(const FitParameter& par) {
-    return safeRealText(par.value()) + "+-" + safeRealText(par.error()); }
+    return safeRealText(par.value(),4) + "+-" + safeRealText(par.roundedError(4),4); }
 } // local methods
 
 //  ***********************************************************************************************
@@ -103,9 +103,9 @@ private:
     void remake();
     void enableRaw(bool);
     void enableFit(bool);
-    QcrLineDisplay showFitOutcomeX_ {"fittedX", 12, true};
-    QcrLineDisplay showFitOutcomeD_ {"fittedD", 12, true};
-    QcrLineDisplay showFitOutcomeY_ {"fittedY", 12, true};
+    QcrLineDisplay showFitOutcomeX_ {"fittedX", 10, true};
+    QcrLineDisplay showFitOutcomeD_ {"fittedD", 10, true};
+    QcrLineDisplay showFitOutcomeY_ {"fittedY", 10, true};
     QcrLineDisplay showRawOutcomeX_ {"rawX", 5, true};
     QcrLineDisplay showRawOutcomeY_ {"rawY", 5, true};
     QcrLineDisplay showRawOutcomeD_  {"rawD", 5, true};

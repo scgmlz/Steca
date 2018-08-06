@@ -14,6 +14,7 @@
 
 #include "core/fit/fit_par.h"
 #include "qcr/base/debug.h"
+#include <cmath>
 
 //  ***********************************************************************************************
 //! @class FitParameter
@@ -38,4 +39,15 @@ void FitParameter::setValue(double value, double error)
 {
     value_ = value;
     error_ = error;
+}
+
+//! Rounds error_ to prec digits, including leading zeros as given by the rounding of value_.
+
+//! Covered by test002_rounding.
+
+double FitParameter::roundedError(int prec) const
+{
+    int n = 1+lrintf(floor(log10(std::max(std::abs(value_),std::abs(error_)))));
+    double fac = pow(10.,prec-n);
+    return round(error_*fac)/fac;
 }

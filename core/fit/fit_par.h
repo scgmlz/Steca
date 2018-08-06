@@ -28,6 +28,7 @@ public:
 
     double value() const { return value_; }
     double error() const { return error_; }
+    double roundedError(int) const;
     const Range& range() const;
 
 private:

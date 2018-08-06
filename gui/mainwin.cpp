@@ -201,7 +201,7 @@ void MainWin::addFiles()
     TakesLongTime __("addFiles");
     try {
         gSession->dataset.addGivenFiles(fileNames);
-    } catch (Exception ex) {
+    } catch (const Exception& ex) {
         qWarning() << ex.msg();
     }
     gRoot->remakeAll("MainWin::addFiles");
@@ -219,7 +219,7 @@ void MainWin::loadCorrFile()
             return;
         try {
             gSession->corrset.loadFile(fileName);
-        } catch (Exception ex) {
+        } catch (const Exception& ex) {
             qWarning() << ex.msg();
         }
     }
