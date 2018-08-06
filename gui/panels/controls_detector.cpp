@@ -126,6 +126,7 @@ CutControls::CutControls()
 void CutControls::setCut(int val)
 {
     if ( gGui->toggles->linkCuts.getValue() ) {
+        // TODO does not work as intended: remakeAll is called four times!
         cutLeft_  .programaticallySetValue(val);
         cutTop_   .programaticallySetValue(val);
         cutRight_ .programaticallySetValue(val);
