@@ -20,6 +20,30 @@
 #include "core/aux/async.h"
 #include "qcr/base/debug.h"
 
+namespace {
+
+//! Computes curve .
+Curve computeAvgCurve(const ActiveClusters*const ac)
+{
+    TakesLongTime __("computeAvgCurve");
+    // flatten Cluster-Measurement hierarchy into one Sequence
+    std::vector<const Measurement*> group;
+    for (const Cluster* cluster : ac->clusters())
+        for (const Measurement* one: cluster->members())
+            group.push_back(one);
+    const Sequence seq(group);
+    // then compute the dfgram
+    return algo::projectCluster(seq, seq.rgeGma());
+}
+
+} // namespace
+
+ActiveClusters::ActiveClusters()
+    : avgDfgram( [this]()->Dfgram{ return Dfgram(computeAvgCurve(this)); } )
+{
+    invalidateAvgMutables();
+}
+
 void ActiveClusters::reset(std::vector<std::unique_ptr<Cluster>>& allClusters)
 {
     clusters_.clear();
@@ -70,18 +94,4 @@ void ActiveClusters::invalidateAvgMutables() const
     grandAvgDeltaTime        .invalidate();
     rgeFixedInten_.invalidate();
     rgeGma_.invalidate();
-}
-
-//! Computes curve .
-Curve computeAvgCurve(const ActiveClusters*const ac)
-{
-    TakesLongTime __("computeAvgCurve");
-    // flatten Cluster-Measurement hierarchy into one Sequence
-    std::vector<const Measurement*> group;
-    for (const Cluster* cluster : ac->clusters())
-        for (const Measurement* one: cluster->members())
-            group.push_back(one);
-    const Sequence seq(group);
-    // then compute the dfgram
-    return algo::projectCluster(seq, seq.rgeGma());
 }

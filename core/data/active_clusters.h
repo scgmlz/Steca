@@ -22,15 +22,11 @@
 class Cluster;
 class ActiveClusters;
 
-Curve computeAvgCurve(const ActiveClusters*const);
-
 //! The list of activated Cluster|s, and cached averages
 
 class ActiveClusters {
 public:
-    ActiveClusters()
-        : avgDfgram( [this]()->Dfgram{ return Dfgram(computeAvgCurve(this)); } )
-        { invalidateAvgMutables(); }
+    ActiveClusters();
     ActiveClusters(const ActiveClusters&) = delete;
 
     void reset(std::vector<std::unique_ptr<Cluster>>& allClusters);
