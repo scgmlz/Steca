@@ -47,11 +47,11 @@ public:
     void updateImageSize(); //!< Clears image size if session has no files
     void setImageSize(const size2d&); //!< Also ensures same size for all images
 
-    void onDetector();      //!< detector detector has changed
-    void onBaseline();      //!< settings for baseline fit have changed
-    void onPeaks();         //!< a peak has been added or removed
-    void onPeakPars(int);   //!< settings for one peak fit have changed
-    void onInterpol();      //!< interpolation control parameters have changed
+    void onDetector() const;      //!< detector detector has changed
+    void onBaseline() const;      //!< settings for baseline fit have changed
+    void onPeaks() const;         //!< a peak has been added or removed
+    void onPeakPars(int) const;   //!< settings for one peak fit have changed
+    void onInterpol() const;      //!< interpolation control parameters have changed
 
     // const methods:
     QByteArray serializeSession() const; // TODO rename toJson

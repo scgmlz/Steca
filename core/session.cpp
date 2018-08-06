@@ -29,36 +29,36 @@ Session::Session()
     gSession = this;
 }
 
-void Session::onDetector()
+void Session::onDetector() const
 {
     angleMap.invalidate();
     activeClusters.avgDfgram.invalidate();
-    for (auto& pCluster: dataset.allClusters)
+    for (auto const& pCluster: dataset.allClusters)
         pCluster->dfgrams.invalidate();
 }
 
-void Session::onBaseline()
+void Session::onBaseline() const
 {
-    for (auto& pCluster: dataset.allClusters)
+    for (auto const& pCluster: dataset.allClusters)
         pCluster->dfgrams.forAllValids(
             pCluster.get(), [](const Dfgram& d){d.invalidateBg();});
 }
 
-void Session::onPeaks()
+void Session::onPeaks() const
 {
-    for (auto& pCluster: dataset.allClusters)
+    for (auto const& pCluster: dataset.allClusters)
         pCluster->dfgrams.forAllValids(
             pCluster.get(), [](const Dfgram& d){d.invalidatePeaks();});
 }
 
-void Session::onPeakPars(int jP)
+void Session::onPeakPars(int jP) const
 {
-    for (auto& pCluster: dataset.allClusters)
+    for (auto const& pCluster: dataset.allClusters)
         pCluster->dfgrams.forAllValids(
             pCluster.get(), [jP](const Dfgram& d){d.invalidatePeakPars(jP);});
 }
 
-void Session::onInterpol()
+void Session::onInterpol() const
 {
 }
 
