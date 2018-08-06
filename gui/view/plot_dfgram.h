@@ -49,7 +49,6 @@ public:
 private:
     void addBgItem(const Range&, const QColor&);
     void resizeEvent(QResizeEvent*);
-    void onPeakData();
 
     QCPGraph *bgGraph_;
     QCPGraph *dgramGraph_;

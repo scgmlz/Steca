@@ -167,37 +167,6 @@ void PlotDfgram::resizeEvent(QResizeEvent* e)
     overlay_->setGeometry(0, 0, size.width(), size.height());
 }
 
-void PlotDfgram::onPeakData()
-{
-    const Peak* peak = gSession->peaks.selectedPeak();
-    guesses_->clearData();
-    fits_->clearData();
-
-    if (peak && gSession->highlightedCluster().cluster()) {
-        ; // TODO restore ?
-        // plot marks at peak center and at half maximum
-        /*
-        const PeakFunction& fun = peak->peakFunction();
-
-        const qpair gp = fun.guessedPeak();
-        if (gp.isValid()) {
-            guesses_->addData(gp.x, gp.y);
-            double gw2 = fun.guessedFWHM() / 2;
-            guesses_->addData(gp.x - gw2, gp.y / 2);
-            guesses_->addData(gp.x + gw2, gp.y / 2);
-        }
-
-        const qpair fp = fun.fittedPeak();
-        if (fp.isValid()) {
-            fits_->addData(fp.x, fp.y);
-            double fw2 = fun.fittedFWHM() / 2;
-            fits_->addData(fp.x - fw2, fp.y / 2);
-            fits_->addData(fp.x + fw2, fp.y / 2);
-        }*/
-    }
-    renderAll();
-}
-
 //! Repaints everything, including the colored background areas.
 void PlotDfgram::renderAll()
 {
