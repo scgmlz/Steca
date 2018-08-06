@@ -58,13 +58,13 @@ void HighlightedData::setCluster(int i)
 {
     if (i<0)
         return clear();
-    ASSERT(i<gSession->dataset.countClusters());
+    ASSERT(i<gSession->dataset.allClusters.size());
     current_ = &gSession->dataset.clusterAt(i);
 }
 
 void HighlightedData::reset()
 {
-    if (!gSession->dataset.countClusters())
+    if (!gSession->dataset.allClusters.size())
         return clear();
     setCluster(0);
 }

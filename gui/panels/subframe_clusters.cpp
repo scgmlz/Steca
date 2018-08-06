@@ -36,7 +36,7 @@ private:
     bool activated(int row) const { return gSession->dataset.clusterAt(row).isActivated(); }
     void setActivated(int row, bool on) { gSession->dataset.activateCluster(row, on); }
 
-    int rowCount() const final { return gSession->dataset.countClusters(); }
+    int rowCount() const final { return gSession->dataset.allClusters.size(); }
 
     QVariant data(const QModelIndex&, int) const final;
     QVariant headerData(int, Qt::Orientation, int) const final;
