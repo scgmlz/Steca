@@ -61,7 +61,7 @@ Range computeRgeFixedInten(const ActiveClusters*const ac)
 
 
 ActiveClusters::ActiveClusters()
-    : clusters {[]()->std::vector<Cluster*>{return gSession->dataset.activeClustersList();}}
+    : clusters {[]()->std::vector<const Cluster*>{return gSession->dataset.activeClustersList();}}
     , avgDfgram {[this]()->Dfgram{
         return Dfgram(computeAvgCurve(this));}}
     , rgeGma {[this]()->Range{

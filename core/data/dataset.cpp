@@ -191,9 +191,9 @@ void Dataset::updateClusters()
 }
 
 //! Returns list of activated clusters.
-std::vector<Cluster*> Dataset::activeClustersList() const
+std::vector<const Cluster*> Dataset::activeClustersList() const
 {
-    std::vector<Cluster*> ret;
+    std::vector<const Cluster*> ret;
     for (const auto& pCluster : allClusters)
         if (pCluster->isActivated())
             ret.push_back(pCluster.get());

@@ -32,7 +32,7 @@ public:
     void invalidate() const;
     void invalidateAvg() const;
 
-    Cached<std::vector<Cluster*>> clusters;
+    Cached<std::vector<const Cluster*>> clusters;
     Cached<Dfgram> avgDfgram;
     Cached<Range> rgeGma;
     Cached<Range> rgeFixedInten;
