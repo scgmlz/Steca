@@ -115,7 +115,9 @@ void PlotPolefig::paintGrid()
 
 void PlotPolefig::paintPoints()
 {
-    double rgeMax = rs_.rgeInten().max;
+    double rgeMax = 0;
+    for (const PeakInfo& r : rs_.peaks())
+        rgeMax = std::max(rgeMax, r.inten());
 
     /*
 [Jan:] As I read the code: the body of the 'for' loop (for all points) is guarded by

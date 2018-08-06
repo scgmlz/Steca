@@ -83,7 +83,6 @@ public:
 
     const std::vector<PeakInfo>& peaks() const { return peaks_; }
     float averageInten() const;
-    const Range& rgeInten() const;
     void get4(const int idxX, const int idxY,
               std::vector<double>& xs, std::vector<double>& ys,
               std::vector<double>& ysLow, std::vector<double>& ysHig) const;
@@ -92,7 +91,6 @@ private:
     void clearCache();
     std::vector<PeakInfo> peaks_;
     mutable float avgInten_;
-    mutable Range rgeInten_;
 };
 
 #endif // PEAK_INFO_H

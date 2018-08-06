@@ -172,19 +172,9 @@ float PeakInfos::averageInten() const
     return avgInten_;
 }
 
-const Range& PeakInfos::rgeInten() const
-{
-    if (!rgeInten_.isValid()) {
-        for(auto& info: peaks_)
-            rgeInten_.extendBy(info.inten());
-    }
-    return rgeInten_;
-}
-
 void PeakInfos::clearCache()
 {
     avgInten_ = float(Q_QNAN);
-    rgeInten_.invalidate();
 }
 
 void PeakInfos::get4(const int idxX, const int idxY,
