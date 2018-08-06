@@ -59,7 +59,7 @@ void HighlightedData::setCluster(int i)
     if (i<0)
         return clear();
     ASSERT(i<gSession->dataset.allClusters.size());
-    current_ = &gSession->dataset.clusterAt(i);
+    current_ = gSession->dataset.allClusters.at(i).get();
 }
 
 void HighlightedData::reset()
@@ -135,7 +135,7 @@ void Dataset::addGivenFiles(const QStringList& filePaths)
 
 void Dataset::activateCluster(int index, bool on)
 {
-    allClusters_.at(index)->setActivated(on);
+    allClusters.at(index)->setActivated(on);
     gSession->activeClusters.invalidate();
 }
 

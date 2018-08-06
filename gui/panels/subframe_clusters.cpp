@@ -33,7 +33,7 @@ public:
 private:
     int highlighted() const final { return gSession->highlightedCluster().clusterIndex(); }
     void onHighlight(int row) final { gSession->dataset.highlight().setCluster(row); }
-    bool activated(int row) const { return gSession->dataset.clusterAt(row).isActivated(); }
+    bool activated(int row) const { return gSession->dataset.allClusters.at(row)->isActivated(); }
     void setActivated(int row, bool on) { gSession->dataset.activateCluster(row, on); }
 
     int rowCount() const final { return gSession->dataset.allClusters.size(); }
@@ -47,7 +47,7 @@ QVariant ActiveClustersModel::data(const QModelIndex& index, int role) const
     int row = index.row();
     if (row < 0 || row >= rowCount())
         return {};
-    const Cluster& cluster = gSession->dataset.clusterAt(row);
+    const Cluster& cluster = *gSession->dataset.allClusters.at(row);
     int col = index.column();
     switch (role) {
     case Qt::DisplayRole: {
