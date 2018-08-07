@@ -196,9 +196,9 @@ void PeakInfos::get4(const int idxX, const int idxY,
 namespace {
 
 //! Fits peak to the given gamma gRange and constructs a PeakInfo.
-PeakInfo getPeak(int jP, Cluster& cluster, int iGamma, Peak& peak)
+PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
 {
-    const Range& fitrange = peak.range();
+    const Range& fitrange = gSession->peaks.at(jP).range();
     const Metadata* metadata = &cluster.avgMetadata();
     const Range gRange = gSession->gammaSelection.slice2range(iGamma);
     deg alpha, beta;
@@ -226,15 +226,15 @@ PeakInfos&& computeDirectPeakInfos(int jP)
     PeakInfos ret;
     //Progress progress(progressBar, "peak fitting", seq.size());
     int nGamma = qMax(1, gSession->gammaSelection.numSlices.val()); // TODO ensure >0 in GSelection
-    for (Cluster* cluster : gSession->activeClusters.clusters()) {
+    for (const Cluster* cluster : gSession->activeClusters.clusters.get()) {
         //progress.step();
         for (int i=0; i<nGamma; ++i) {
-            PeakInfo refInfo = getPeak(jP, *cluster, i, *peak);
+            PeakInfo refInfo = getPeak(jP, *cluster, i);
             if (!qIsNaN(refInfo.inten()))
-                ret.append(std::move(refInfo));
+                ret.appendPeak(std::move(refInfo));
         }
     }
-    gSession->setDirectPeakInfos(std::move(ret));
+    return std::move(ret);
 }
 
 } // namespace
