@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/algo/interpolate_polefig.cpp
+//! @file      core/calc/interpolate_polefig.cpp
 //! @brief     Implements function interpolateInfos
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/algo/interpolate_polefig.h"
+#include "core/calc/interpolate_polefig.h"
 #include "core/calc/peak_info.h"
 #include "core/session.h"
 #include "core/aux/async.h"
