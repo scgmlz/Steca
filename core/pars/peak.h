@@ -15,7 +15,7 @@
 #ifndef PEAK_H
 #define PEAK_H
 
-#include "core/fit/fit_fun.h"
+#include "core/fit/fit_fun.h" // TODO rm
 
 //! Global settings (range, function type) for one Bragg peak.
 

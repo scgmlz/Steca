@@ -14,7 +14,6 @@
 
 #include "gui/mainwin.h"
 #include "core/data/collect_intensities.h"
-#include "core/algo/fitting.h"
 #include "core/calc/interpolate_polefig.h"
 #include "core/aux/async.h"
 #include "core/aux/exception.h"

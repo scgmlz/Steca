@@ -208,13 +208,14 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
     if (fitrange.isEmpty())
         return {metadata, alpha, beta, gRange};
 
-    const PeakFunction& peakFit = dfgram->getPeakFit(jP); // TODO NOW get dfgram
+    const Dfgram& dfgram = cluster.dfgrams.getget(&cluster, iGamma);
+    const PeakFunction& peakFit = dfgram.getPeakFit(jP); // TODO NOW get dfgram
 
     FitParameter center    = peakFit.getCenter();
     FitParameter fwhm      = peakFit.getFwhm();
     FitParameter intensity = peakFit.getIntensity();
 
-    if (!fitrange.contains(center.value()))
+    if (!fitrange.contains(center.value())) // TODO generalize to fitIsCredible
         return {metadata, alpha, beta, gRange};
 
     return {metadata, alpha, beta, gRange, intensity.value(), intensity.error(),
