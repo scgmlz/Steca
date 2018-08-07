@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/algo/interpolate_polefig.h"
+#include "core/algo/coord_trafos.h"
 #include "core/session.h"
 #include "qcr/base/debug.h"
 
@@ -194,9 +195,46 @@ void PeakInfos::get4(const int idxX, const int idxY,
 
 namespace {
 
+//! Fits peak to the given gamma gRange and constructs a PeakInfo.
+PeakInfo getPeak(int jP, Cluster& cluster, int iGamma, Peak& peak)
+{
+    const Range& fitrange = peak.range();
+    const Metadata* metadata = &cluster.avgMetadata();
+    const Range gRange = gSession->gammaSelection.slice2range(iGamma);
+    deg alpha, beta;
+    // TODO (MATH) use fitted tth center, not center of given fit range
+    algo::calculateAlphaBeta(alpha, beta, fitrange.center(), gRange.center(),
+                             cluster.chi(), cluster.omg(), cluster.phi());
+    if (fitrange.isEmpty())
+        return {metadata, alpha, beta, gRange};
+
+    const PeakFunction& peakFit = dfgram->getPeakFit(jP); // TODO NOW get dfgram
+
+    FitParameter center    = peakFit.getCenter();
+    FitParameter fwhm      = peakFit.getFwhm();
+    FitParameter intensity = peakFit.getIntensity();
+
+    if (!fitrange.contains(center.value()))
+        return {metadata, alpha, beta, gRange};
+
+    return {metadata, alpha, beta, gRange, intensity.value(), intensity.error(),
+            deg(center.value()), deg(center.error()), fwhm.value(), fwhm.error()};
+}
+
 PeakInfos&& computeDirectPeakInfos(int jP)
 {
-    return std::move(PeakInfos{}); // TODO NOW
+    PeakInfos ret;
+    //Progress progress(progressBar, "peak fitting", seq.size());
+    int nGamma = qMax(1, gSession->gammaSelection.numSlices.val()); // TODO ensure >0 in GSelection
+    for (Cluster* cluster : gSession->activeClusters.clusters()) {
+        //progress.step();
+        for (int i=0; i<nGamma; ++i) {
+            PeakInfo refInfo = getPeak(jP, *cluster, i, *peak);
+            if (!qIsNaN(refInfo.inten()))
+                ret.append(std::move(refInfo));
+        }
+    }
+    gSession->setDirectPeakInfos(std::move(ret));
 }
 
 } // namespace
