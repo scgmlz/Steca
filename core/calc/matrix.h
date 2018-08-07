@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/algo/matrix.h
+//! @file      core/calc/matrix.h
 //! @brief     Defines the structs vec3f, vec3r, mat3r
 //!
 //! @homepage  https://github.com/scgmlz/Steca
