@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "tab_bigtable.h"
+#include "gui/panels/tab_bigtable.h"
 #include "core/def/idiomatic_for.h"
 #include "core/session.h"
 #include "gui/actions/triggers.h"
@@ -131,7 +131,8 @@ void ColumnSelector::updateRadiobuttons()
 //! @class BigtableTab
 
 BigtableTab::BigtableTab()
-    : bigtableView_ {new BigtableView()}
+    : QcrWidget("bigtable")
+    , bigtableView_ {new BigtableView()}
 {
     // layout
     auto* colSelBox = new QScrollArea;

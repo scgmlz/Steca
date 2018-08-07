@@ -25,6 +25,7 @@
 //! @class DiagramTab
 
 DiagramTab::DiagramTab()
+    : QcrWidget("diagram")
 {
     // initializations
     plot_ = new PlotDiagram; // the main subframe

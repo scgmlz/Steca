@@ -16,11 +16,11 @@
 #define TAB_DIAGRAM_H
 
 #include "core/calc/peak_info.h"
-#include <QWidget>
+#include "qcr/widgets/views.h"
 
 //! Mainframe tab to plot a pair of fit results or metadata, with associated controls.
 
-class DiagramTab : public QWidget {
+class DiagramTab : public QcrWidget {
 public:
     DiagramTab();
     void render();

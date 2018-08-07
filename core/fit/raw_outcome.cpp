@@ -39,5 +39,4 @@ RawOutcome::RawOutcome(const Curve& curve)
     stdv = sqrt( stdv/intensity_ - center_*center_ );
     fwhm_ = sqrt(8*log(2))*stdv;
     intensity_ *= curve.rgeX().width() / curve.count();
-    qDebug() << "Raw analysis: " << center_ << fwhm_ << intensity_;
 }

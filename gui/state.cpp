@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "state.h"
+#include "gui/state.h"
 #include "core/calc/peak_info.h" // dataTags
 #include "qcr/widgets/controls.h"
 #include <QDebug>

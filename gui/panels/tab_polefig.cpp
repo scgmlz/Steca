@@ -21,12 +21,10 @@
 
 
 PolefigTab::PolefigTab()
+    : QcrWidget("polefig")
 {
     // initializations
-    plot_ = new PlotPolefig; // the main subframe
-
-    // internal connections
-    connect(gGui->state->polefigShowGridPts, &QCheckBox::toggled, [this]() { render(); });
+    auto plot = new PlotPolefig; // the main subframe
 
     // layout
     auto* buttonBox = new QHBoxLayout;
@@ -40,15 +38,10 @@ PolefigTab::PolefigTab()
     controls->addLayout(buttonBox);
 
     auto* layout = new QHBoxLayout;
-    layout->addWidget(plot_);
+    layout->addWidget(plot);
     layout->addLayout(controls);
     layout->setStretch(0,1000);
     setLayout(layout);
-}
 
-void PolefigTab::render()
-{
-    if (!isVisible())
-        return;
-    plot_->refresh();
+    setRemake ([=](){plot->refresh();});
 }

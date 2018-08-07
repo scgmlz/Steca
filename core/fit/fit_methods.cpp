@@ -42,10 +42,8 @@ void FitWrapper::execFit(ParametricFunction& function, const Curve& curve)
             curve.ys().data(), curve.count());
 
     // pass fit results
-    for (int ip=0; ip<parCount; ++ip) {
+    for (int ip=0; ip<parCount; ++ip)
         function_->parameterAt(ip).setValue(parValue[ip], parError[ip]);
-        qDebug() << "Obtained fit par [" << ip << "] =" << parValue[ip] << "+-" << parError[ip];
-    }
 }
 
 template <typename T>
