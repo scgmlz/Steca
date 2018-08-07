@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/calc/interpolate_polefig.h"
-#include "core/algo/coord_trafos.h"
+#include "core/calc/coord_trafos.h"
 #include "core/session.h"
 #include "qcr/base/debug.h"
 

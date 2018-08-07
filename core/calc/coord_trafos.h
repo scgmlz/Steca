@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/algo/coord_trafos.h
+//! @file      core/calc/coord_trafos.h
 //! @brief     Defines function calculateAlphaBeta
 //!
 //! @homepage  https://github.com/scgmlz/Steca
