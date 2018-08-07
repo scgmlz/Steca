@@ -96,9 +96,9 @@ private:
 class AllPeaks {
 public:
     AllPeaks();
-    const PeakInfos& currentDirect() const;
-    const PeakInfos& currentInterpolated() const;
-    const PeakInfos& currentPeaks() const;
+    const PeakInfos* currentDirect() const;
+    const PeakInfos* currentInterpolated() const;
+    const PeakInfos* currentPeaks() const;
     void invalidateAll() const;
     void invalidateAt(int) const;
     void invalidateInterpolated() const;

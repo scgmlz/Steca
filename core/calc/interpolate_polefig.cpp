@@ -54,6 +54,7 @@ deg calculateDeltaBeta(deg beta1, deg beta2)
     tempDelta = deltaBeta + 360;
     if (qAbs(tempDelta) < qAbs(deltaBeta))
         deltaBeta = tempDelta;
+    qDebug() << "calcDBeta: " << beta1 << beta2 << deltaBeta;
     ASSERT(-180 <= deltaBeta && deltaBeta <= 180);
     return deg(deltaBeta);
 }
@@ -122,7 +123,9 @@ void searchPoints(deg alpha, deg beta, deg radius, const PeakInfos& infos,
                   std::vector<itf_t>& itfs)
 {
     // REVIEW Use value trees to improve performance.
+    qDebug() << "DEB searchPts " << alpha << beta;
     for (const PeakInfo& info : infos.peaks()) {
+        qDebug() << "  candidate " << info.alpha() << info.beta();
         if (inRadius(info.alpha(), info.beta(), alpha, beta, radius))
             itfs.push_back(itf_t(info.inten(), info.tth(), info.fwhm()));
     }

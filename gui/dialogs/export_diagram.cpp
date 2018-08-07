@@ -48,12 +48,10 @@ void ExportDiagram::save()
     const int xi = int(gGui->state->diagramX->getValue());
     const int yi = int(gGui->state->diagramY->getValue());
     std::vector<double> xs, ys, ysLow, ysHig;
-    gSession->allPeaks.currentPeaks().get4(xi, yi, xs, ys, ysLow, ysHig);
-    if (!xs.size()) {
-        qWarning() << "no data available";
-        return;
-    }
-
+    const PeakInfos* peakInfos = gSession->allPeaks.currentPeaks();
+    ASSERT(peakInfos);
+    peakInfos->get4(xi, yi, xs, ys, ysLow, ysHig);
+    ASSERT(xs.size());
     // write data table
     for_i (xs.size()) {
         stream << xs[i] << separator << ys[i];

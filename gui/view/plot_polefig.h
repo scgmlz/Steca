@@ -27,9 +27,7 @@ public:
     void refresh();
 
 private:
-    void update();
-
-    const PeakInfos* rs_;
+    const PeakInfos* peakInfos_;
     void paintEvent(QPaintEvent*);
 
     QPointF p(deg alpha, deg beta) const;

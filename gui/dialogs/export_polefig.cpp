@@ -26,9 +26,10 @@ namespace {
 // TODO move file saving code to Core
 void writePeakInfoInterpolated(QTextStream& stream)
 {
-    const PeakInfos& peakInfos = gSession->allPeaks.currentInterpolated();
+    const PeakInfos* peakInfos = gSession->allPeaks.currentInterpolated();
+    ASSERT(peakInfos);
     int col = 0;
-    for (auto& info : peakInfos.peaks()) {
+    for (auto& info : peakInfos->peaks()) {
         double val = info.inten();
         if (qIsNaN(val))
             stream << " -1";
@@ -44,8 +45,9 @@ void writePeakInfoInterpolated(QTextStream& stream)
 
 void writePeakInfoOriginalGrid(QTextStream& stream)
 {
-    const PeakInfos& peakInfos = gSession->allPeaks.currentDirect();
-    for (auto& info : peakInfos.peaks()) {
+    const PeakInfos* peakInfos = gSession->allPeaks.currentDirect();
+    ASSERT(peakInfos);
+    for (auto& info : peakInfos->peaks()) {
         double val = info.inten();
         stream << double(info.alpha()) << " "
                << double(info.beta()) << " "

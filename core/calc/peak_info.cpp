@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/calc/interpolate_polefig.h"
+#include "core/aux/async.h"
 #include "core/calc/coord_trafos.h"
 #include "core/session.h"
 #include "qcr/base/debug.h"
@@ -205,6 +206,7 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
     // TODO (MATH) use fitted tth center, not center of given fit range
     algo::calculateAlphaBeta(alpha, beta, fitrange.center(), gRange.center(),
                              cluster.chi(), cluster.omg(), cluster.phi());
+    qDebug() << "PI:gP" << alpha << beta;
     if (fitrange.isEmpty())
         return {metadata, alpha, beta, gRange};
 
@@ -224,6 +226,7 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
 
 PeakInfos&& computeDirectPeakInfos(int jP)
 {
+    TakesLongTime __("computeDirectPeakInfos");
     PeakInfos ret;
     //Progress progress(progressBar, "peak fitting", seq.size());
     int nGamma = qMax(1, gSession->gammaSelection.numSlices.val()); // TODO ensure >0 in GSelection
@@ -266,19 +269,23 @@ void AllPeaks::invalidateInterpolated() const
     interpolated.invalidate();
 }
 
-const PeakInfos& AllPeaks::currentDirect() const
+const PeakInfos* AllPeaks::currentDirect() const
 {
+    if (!gSession->peaks.count())
+        return nullptr;
     int jP = gSession->peaks.selectedIndex();
-    return direct.getget(this,jP);
+    return &direct.getget(this,jP);
 }
 
-const PeakInfos& AllPeaks::currentInterpolated() const
+const PeakInfos* AllPeaks::currentInterpolated() const
 {
+    if (!gSession->peaks.count())
+        return nullptr;
     int jP = gSession->peaks.selectedIndex();
-    return interpolated.getget(this,jP);
+    return &interpolated.getget(this,jP);
 }
 
-const PeakInfos& AllPeaks::currentPeaks() const
+const PeakInfos* AllPeaks::currentPeaks() const
 {
     return gSession->params.interpolParams.enabled.val() ?
         currentInterpolated() : currentDirect();
