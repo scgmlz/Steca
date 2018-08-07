@@ -14,7 +14,6 @@
 
 #include "core/data/dfgram.h"
 #include "core/session.h"
-#include "core/fit/fit_fun.h"
 
 namespace {
 

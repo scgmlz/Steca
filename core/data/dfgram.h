@@ -18,10 +18,7 @@
 #include "core/typ/cached.h"
 #include "core/typ/curve.h"
 #include "core/fit/raw_outcome.h"
-
-class Dfgram;
-class Polynom;
-class PeakFunction;
+#include "core/fit/fit_fun.h"
 
 //! A curve, and associated fit parameters.
 
