@@ -71,8 +71,8 @@ double Polynom::dy(double x, int i, double const*) const
 Polynom Polynom::fromFit(int degree, const Curve& curve, const Ranges& ranges)
 {
     qDebug() << "polynomial fit";
-    ASSERT(curve.count()>0);
-    ASSERT(ranges.count()>0);
+    ASSERT(curve.count());
+    ASSERT(ranges.count());
     Polynom p(degree);
     FitWrapper().execFit(p, curve.intersect(ranges));
     return p;
@@ -130,7 +130,7 @@ PeakFunction PeakFunction::fromFit(
     const QString& functionName, const Curve& curve, const RawOutcome& rawOutcome)
 {
     qDebug() << "peak fit";
-    ASSERT(curve.count()>0);
+    ASSERT(curve.count());
     PeakFunction p(functionName, rawOutcome);
     FitWrapper().execFit(p, curve);
     return p;

@@ -127,7 +127,7 @@ QByteArray Session::serializeSession() const
 
 void Session::updateImageSize()
 {
-    if (dataset.countFiles()==0 && !corrset.hasFile())
+    if (!dataset.countFiles() && !corrset.hasFile())
         imageSize_ = size2d(0, 0);
 }
 

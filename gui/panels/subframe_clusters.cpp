@@ -141,7 +141,7 @@ ActiveClustersView::ActiveClustersView()
 
 void ActiveClustersView::onData()
 {
-    setHeaderHidden(gSession->params.metaSelection.count()==0);
+    setHeaderHidden(!gSession->params.metaSelection.count());
     setColumnWidth(0, 0);
     setColumnWidth(1,  3*dWidth());
     for (int i=2; i<model_->columnCount(); ++i)
