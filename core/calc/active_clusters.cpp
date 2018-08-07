@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/calc/active_clusters.h"
-#include "core/algo/collect_intensities.h"
+#include "core/data/collect_intensities.h"
 #include "core/aux/async.h"
 #include "core/data/cluster.h"
 #include "core/data/dfgram.h"

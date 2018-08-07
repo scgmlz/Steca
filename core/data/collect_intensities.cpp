@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/algo/collect_intensities.cpp
+//! @file      core/data/collect_intensities.cpp
 //! @brief     Implements function projectIntensity
 //!
 //! @homepage  https://github.com/scgmlz/Steca
