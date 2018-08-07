@@ -190,6 +190,18 @@ void PeakInfos::get4(const int idxX, const int idxY,
     }
 }
 
+void PeakInfos::inspect(const QString& header) const
+{
+    qDebug() << header << "#peaks=" << peaks_.size();
+    if (!peaks_.size())
+        return;
+    const PeakInfo& p = peaks_.front();
+    qDebug() << " .. first entry: alpha=" << p.alpha() << "beta=" << p.beta()
+             << "inten=" << p.inten();
+    const PeakInfo& q = peaks_.back();
+    qDebug() << " ..  last entry: alpha=" << q.alpha() << "beta=" << q.beta()
+             << "inten=" << q.inten();
+}
 
 //  ***********************************************************************************************
 //! @class AllPeaks
@@ -238,6 +250,7 @@ PeakInfos&& computeDirectPeakInfos(int jP)
                 ret.appendPeak(std::move(refInfo));
         }
     }
+    ret.inspect("computeDirectPeakInfos");
     return std::move(ret);
 }
 
@@ -274,6 +287,7 @@ const PeakInfos* AllPeaks::currentDirect() const
     if (!gSession->peaks.count())
         return nullptr;
     int jP = gSession->peaks.selectedIndex();
+    direct.getget(this,jP).inspect("currentDirect");
     return &direct.getget(this,jP);
 }
 

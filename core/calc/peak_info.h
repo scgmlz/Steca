@@ -87,6 +87,7 @@ public:
     void get4(const int idxX, const int idxY,
               std::vector<double>& xs, std::vector<double>& ys,
               std::vector<double>& ysLow, std::vector<double>& ysHig) const;
+    void inspect(const QString& header) const;
 
 private:
     std::vector<PeakInfo> peaks_;
