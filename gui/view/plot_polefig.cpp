@@ -43,6 +43,7 @@ PlotPolefig::PlotPolefig()
 void PlotPolefig::refresh()
 {
     rs_ = &gSession->allPeaks.currentPeaks();
+    ASSERT(rs_);
     flat_ = gGui->state->polefigShowGridPts->checkState();
     update();
 }
