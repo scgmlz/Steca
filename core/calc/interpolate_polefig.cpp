@@ -270,13 +270,15 @@ PeakInfos&& algo::interpolateInfos(const PeakInfos& direct)
 
     // NOTE We expect all infos to have the same gamma range.
 
-    // REVIEW qRound oder qCeil?
+    // TODO REVIEW qRound oder qCeil?
     int numAlphas = qRound(90. / stepAlpha);
     int numBetas = qRound(360. / stepBeta);
 
     PeakInfos ret; // Output data.
 
     // TODO DONT KNOW HOW restore Progress progress(progressBar, "interpolation", numAlphas * numBetas); // TODO check number + 1?
+
+    // TODO revise the mathematics...
 
     for (int i=0; i<numAlphas+1; ++i) { // TODO why + 1 ?
         deg const alpha = i * stepAlpha;
@@ -297,8 +299,7 @@ PeakInfos&& algo::interpolateInfos(const PeakInfos& direct)
                 searchPoints(alpha, beta, avgRadius, direct, itfs);
 
                 if (!itfs.empty()) {
-                    // If treshold < 1, we'll only use a fraction of largest
-                    // peak parameter values.
+                    // If treshold < 1, we'll only use a fraction of largest peak parameter values.
                     std::sort(itfs.begin(), itfs.end(), [](const itf_t& i1, const itf_t& i2) {
                         return i1.inten < i2.inten;
                     });
@@ -314,7 +315,7 @@ PeakInfos&& algo::interpolateInfos(const PeakInfos& direct)
                         avg += itfs.at(i);
 
                     ret.appendPeak(PeakInfo(alpha, beta, direct.peaks().front().rgeGma(),
-                                        avg.inten / n, Q_QNAN,
+                                            avg.inten / n, Q_QNAN,
                         avg.tth / n, deg(Q_QNAN), avg.fwhm / n, Q_QNAN));
                     continue;
                 }
@@ -328,11 +329,10 @@ PeakInfos&& algo::interpolateInfos(const PeakInfos& direct)
 
             // Use idw, if alpha > avgAlphaMax OR averaging failed (too small avgRadius?).
             itf_t itf = interpolateValues(idwRadius, direct, alpha, beta);
-            ret.appendPeak(PeakInfo(
-                           alpha, beta, direct.peaks().front().rgeGma(), itf.inten,
-                           Q_QNAN, itf.tth, deg(Q_QNAN), itf.fwhm, Q_QNAN));
+            ret.appendPeak(PeakInfo(alpha, beta, direct.peaks().front().rgeGma(), itf.inten,
+                                    Q_QNAN, itf.tth, deg(Q_QNAN), itf.fwhm, Q_QNAN));
         }
     }
-    return std::move(ret);
     qDebug() << "interpolation ended";
+    return std::move(ret);
 }

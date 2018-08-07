@@ -102,6 +102,7 @@ public:
     void invalidateAll() const;
     void invalidateAt(int) const;
     void invalidateInterpolated() const;
+private:
     mutable SelfKachingVector<AllPeaks,PeakInfos> direct;
     mutable SelfKachingVector<AllPeaks,PeakInfos> interpolated;
 };
