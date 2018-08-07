@@ -236,7 +236,7 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
             deg(center.value()), deg(center.error()), fwhm.value(), fwhm.error()};
 }
 
-PeakInfos&& computeDirectPeakInfos(int jP)
+PeakInfos computeDirectPeakInfos(int jP)
 {
     TakesLongTime __("computeDirectPeakInfos");
     PeakInfos ret;
@@ -251,18 +251,18 @@ PeakInfos&& computeDirectPeakInfos(int jP)
         }
     }
     ret.inspect("computeDirectPeakInfos");
-    return std::move(ret);
+    return ret;
 }
 
 } // namespace
 
 AllPeaks::AllPeaks()
     : direct {[]()->int{return gSession->peaks.count();},
-        [](const AllPeaks*, int jP)->PeakInfos&&{
-            return std::move(computeDirectPeakInfos(jP)); }}
+        [](const AllPeaks*, int jP)->PeakInfos{
+            return computeDirectPeakInfos(jP); }}
     , interpolated {[]()->int{return gSession->peaks.count();},
-        [](const AllPeaks* parent, int jP)->PeakInfos&&{
-            return std::move(algo::interpolateInfos(parent->direct.getget(parent,jP))); }}
+        [](const AllPeaks* parent, int jP)->PeakInfos{
+            return algo::interpolateInfos(parent->direct.getget(parent,jP)); }}
 {}
 
 void AllPeaks::invalidateAll() const

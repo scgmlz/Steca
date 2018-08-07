@@ -54,7 +54,6 @@ deg calculateDeltaBeta(deg beta1, deg beta2)
     tempDelta = deltaBeta + 360;
     if (qAbs(tempDelta) < qAbs(deltaBeta))
         deltaBeta = tempDelta;
-    qDebug() << "calcDBeta: " << beta1 << beta2 << deltaBeta;
     ASSERT(-180 <= deltaBeta && deltaBeta <= 180);
     return deg(deltaBeta);
 }
@@ -122,10 +121,10 @@ bool inRadius(deg alpha, deg beta, deg centerAlpha, deg centerBeta, deg radius)
 void searchPoints(deg alpha, deg beta, deg radius, const PeakInfos& infos,
                   std::vector<itf_t>& itfs)
 {
-    // REVIEW Use value trees to improve performance.
-    qDebug() << "DEB searchPts " << alpha << beta;
+    // TODO REVIEW Use value trees to improve performance.
+    // qDebug() << "DEB searchPts " << alpha << beta;
     for (const PeakInfo& info : infos.peaks()) {
-        qDebug() << "  candidate " << info.alpha() << info.beta();
+        // qDebug() << "  candidate " << info.alpha() << info.beta();
         if (inRadius(info.alpha(), info.beta(), alpha, beta, radius))
             itfs.push_back(itf_t(info.inten(), info.tth(), info.fwhm()));
     }
@@ -149,7 +148,7 @@ void searchInQuadrants(
 
     // Find infos closest to given alpha and beta in each quadrant.
     for (const PeakInfo& info : infos.peaks()) {
-        // REVIEW We could do better with value trees than looping over all infos.
+        // TODO REVIEW We could do better with value trees than looping over all infos.
         deg deltaBeta = calculateDeltaBeta(info.beta(), beta);
         if (fabs(deltaBeta) > BETA_LIMIT)
             continue;
@@ -186,7 +185,7 @@ itf_t inverseDistanceWeighing(const std::vector<double>& distances, const std::v
         inverseDistances[i] = 1 / distances.at(i);
         inverseDistanceSum += inverseDistances.at(i);
     }
-    // REVIEW The RAW peak may need different handling.
+    // TODO REVIEW The RAW peak may need different handling.
     double offset = 0;
     double height = 0;
     double fwhm = 0;
@@ -250,7 +249,7 @@ itf_t interpolateValues(deg searchRadius, const PeakInfos& infos, deg alpha, deg
 //  ***********************************************************************************************
 
 //! Interpolates infos to equidistant grid in alpha and beta.
-PeakInfos&& algo::interpolateInfos(const PeakInfos& direct)
+PeakInfos algo::interpolateInfos(const PeakInfos& direct)
 {
     ASSERT(gSession->params.interpolParams.enabled.val());
     qDebug() << "interpolation began";
@@ -334,5 +333,5 @@ PeakInfos&& algo::interpolateInfos(const PeakInfos& direct)
         }
     }
     qDebug() << "interpolation ended";
-    return std::move(ret);
+    return ret;
 }

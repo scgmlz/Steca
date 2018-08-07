@@ -19,7 +19,7 @@ class PeakInfos;
 
 namespace algo {
 
-PeakInfos&& interpolateInfos(const PeakInfos& direct);
+PeakInfos interpolateInfos(const PeakInfos& direct);
 
 } // namespace algo
 
