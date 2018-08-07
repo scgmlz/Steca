@@ -12,6 +12,7 @@
 //
 //  ***********************************************************************************************
 
+#include "core/pars/interpol_params.h"
 #include "core/aux/settings.h"
 #include "core/session.h"
 
