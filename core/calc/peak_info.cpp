@@ -60,12 +60,12 @@ static void sortColumns(std::vector<double>& xs, std::vector<double>& ys, std::v
 //! as -1 when output is written for these programs (polefigure!).
 
 PeakInfo::PeakInfo()
-    : PeakInfo(nullptr, Q_QNAN, Q_QNAN, Range(), float(Q_QNAN), float(Q_QNAN),
+    : PeakInfo(nullptr, Q_QNAN, Q_QNAN, Range(), Q_QNAN, Q_QNAN,
                deg(Q_QNAN), deg(Q_QNAN), Q_QNAN, Q_QNAN)
 {}
 
-PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma, float inten,
-                   float intenError, deg tth, deg tthError, float fwhm, float fwhmError)
+PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma, double inten,
+                   double intenError, deg tth, deg tthError, double fwhm, double fwhmError)
     : md_(md)
     , alpha_(alpha)
     , beta_(beta)
@@ -79,19 +79,16 @@ PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma, float 
 {}
 
 PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma)
-    : PeakInfo(md, alpha, beta, rgeGma, float(Q_QNAN), float(Q_QNAN),
-               deg(Q_QNAN), deg(Q_QNAN), float(Q_QNAN), float(Q_QNAN))
+    : PeakInfo(md, alpha, beta, rgeGma, Q_QNAN, Q_QNAN, deg(Q_QNAN), deg(Q_QNAN), Q_QNAN, Q_QNAN)
 {}
 
-PeakInfo::PeakInfo(deg alpha, deg beta, Range rgeGma, float inten, float intenError, deg tth,
-                   deg tthError, float fwhm, float fwhmError)
-    : PeakInfo(nullptr, alpha, beta, rgeGma, inten, intenError,
-               tth, tthError, fwhm, fwhmError)
+PeakInfo::PeakInfo(deg alpha, deg beta, Range rgeGma, double inten, double intenError, deg tth,
+                   deg tthError, double fwhm, double fwhmError)
+    : PeakInfo(nullptr, alpha, beta, rgeGma, inten, intenError, tth, tthError, fwhm, fwhmError)
 {}
 
 PeakInfo::PeakInfo(deg alpha, deg beta)
-    : PeakInfo(alpha, beta, Range(), float(Q_QNAN), float(Q_QNAN),
-               deg(Q_QNAN), deg(Q_QNAN), float(Q_QNAN), float(Q_QNAN))
+    : PeakInfo(alpha, beta, Range(), Q_QNAN, Q_QNAN, deg(Q_QNAN), deg(Q_QNAN), Q_QNAN, Q_QNAN)
 {}
 
 QStringList PeakInfo::dataTags(bool out)

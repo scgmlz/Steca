@@ -24,11 +24,11 @@
 class PeakInfo final {
 public:
     PeakInfo();
-    PeakInfo(const Metadata*, deg alpha, deg beta, Range, float, float /*error*/,
-             deg, deg /*error*/, float, float /*error*/);
+    PeakInfo(const Metadata*, deg alpha, deg beta, Range, double, double /*error*/,
+             deg, deg /*error*/, double, double /*error*/);
     PeakInfo(const Metadata*, deg alpha, deg beta, Range);
-    PeakInfo(deg alpha, deg beta, Range, float, float /*error*/, deg, deg /*error*/,
-             float, float /*error*/);
+    PeakInfo(deg alpha, deg beta, Range, double, double /*error*/, deg, deg /*error*/,
+             double, double /*error*/);
     PeakInfo(deg alpha, deg beta);
 //    PeakInfo(const PeakInfo&) = default;
 //    PeakInfo(PeakInfo&&) = default;
@@ -65,9 +65,9 @@ private:
     const Metadata* md_;
     deg alpha_, beta_;
     Range rgeGma_;
-    float inten_, intenError_;
+    double inten_, intenError_;
     deg tth_, tthError_;
-    float fwhm_, fwhmError_;
+    double fwhm_, fwhmError_;
 
     static QString const reflStringTag(int attr, bool out);
 };
