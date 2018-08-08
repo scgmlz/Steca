@@ -81,7 +81,7 @@ void Session::sessionFromJson(const QByteArray& json)
         THROW("Error parsing session file");
 
     clear();
-    TR("sessionFromJson: cleared old session");
+    qDebug() << "sessionFromJson: cleared old session";
 
     JsonObj top(doc.object());
 
@@ -98,7 +98,7 @@ void Session::sessionFromJson(const QByteArray& json)
     gammaSelection.fromJson(top.loadObj("gamma selection"));
     thetaSelection.fromJson(top.loadObj("theta selection"));
 
-    TR("installed session from file");
+    qDebug() << "installed session from file";
 }
 
 QByteArray Session::serializeSession() const

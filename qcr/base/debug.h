@@ -19,10 +19,10 @@
 #include <QtGlobal> // protect
 
 // TRace:
-#define TR(what) { qDebug() << what; }
+//#define TR(what) { qDebug() << what; }
 
 // WaTch: same as TR, also prints stringized version (what is being printed)
-#define WT(what) TR(#what ":" << what)
+//#define WT(what) TR(#what ":" << what)
 
 #define ASSERT(cond) if (!(cond)) qFatal("assertion failed: " #cond)
 
