@@ -109,10 +109,10 @@ Console::Console()
 
 #ifdef Q_OS_WIN
 	notifier_ = new QWinEventNotifier();// GetStdHandle(STD_INPUT_HANDLE));
-	connect(notifier_, &QWinEventNotifier::activated, [this] (HANDLE) {readLine(); });
+	QObject::connect(notifier_, &QWinEventNotifier::activated, [this] (HANDLE) {readLine(); });
 #else
-	notifier_ = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read, this);
-    connect(notifier_, &QSocketNotifier::activated, [this](int) { readLine(); });
+	notifier_ = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read);
+        QObject::connect(notifier_, &QSocketNotifier::activated, [this](int) { readLine(); });
 #endif
 
     // start registry

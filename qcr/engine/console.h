@@ -22,9 +22,8 @@
 extern class Console* gConsole; //!< global
 
 //! Reads commands from stdin, and emits signal transmitLine
-class Console : public QObject
+class Console
 {
-    Q_OBJECT
 public:
     Console();
     ~Console();
@@ -38,6 +37,7 @@ public:
     void log2(bool, const QString&);
 private:
     class CommandRegistry& registry() { return *registryStack_.top(); }
+    void readLine();
     QDateTime startTime_;
     int computingTime_ {0};
     QTextStream log_;
@@ -51,8 +51,6 @@ private:
 #endif
     std::stack<class CommandRegistry*> registryStack_;
     std::deque<QString> commandLifo_;
-private slots:
-    void readLine();
 };
 
 #endif // CONSOLE_H
