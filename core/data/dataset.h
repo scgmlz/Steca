@@ -95,7 +95,7 @@ private:
     std::vector<Datafile> files_; //!< loaded Datafile|s only live here
     // leave this a unique_ptr because other vectors backlink through Cluster* pointers
 
-    bool hasIncomplete_; //!< current binning does result in at least one incomplete cluster
+    bool hasIncomplete_ {false}; //!< current binning does result in at least one incomplete cluster
 
     HighlightedData highlight_; //!< wraps pointer to highlighted Datafile and Cluster
 
