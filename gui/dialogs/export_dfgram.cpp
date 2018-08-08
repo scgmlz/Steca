@@ -156,7 +156,7 @@ void ExportDfgram::saveAll(bool oneFile)
                                            this, existingFiles.join(", ")))
             return;
     }
-    Progress progress(&fileField_->progressBar, "save diffractograms", nClusters);
+    TakesLongTime progress("save diffractograms", nClusters, &fileField_->progressBar);
     int picNum = 0;
     int fileNum = 0;
     int nSlices = gSession->gammaSelection.numSlices.val();

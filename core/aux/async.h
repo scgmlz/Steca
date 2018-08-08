@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/aux/async.h
-//! @brief     Defines classes TakesLongTime and Progress
+//! @brief     Defines class TakesLongTime
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -16,32 +16,21 @@
 #define ASYNC_H
 
 #include <QString>
+class QProgressBar;
 
-//! As long as an instance of this class exists, we see the 'waiting' cursor.
+//! Show 'waiting' cursor, and optionally a progress bar.
 
 class TakesLongTime final {
 public:
-    TakesLongTime(const QString& taskName);
+    TakesLongTime(const QString& taskName, int totalSteps=0, QProgressBar* bar=staticBar_);
     ~TakesLongTime();
-private:
-    const QString taskName_;
-};
-
-//! Manages the progress bar.
-
-class Progress {
-public:
-    Progress() = delete;
-    Progress(const Progress&) = delete;
-    Progress(class QProgressBar*, const QString& taskName, int totalSteps);
-    ~Progress();
-
     void step();
-
+    static void registerProgressBar(class QProgressBar* bar) { staticBar_ = bar; };
 private:
-    QProgressBar* bar_;
     const QString taskName_;
     int total_, i_;
+    static QProgressBar* staticBar_;
+    QProgressBar* bar_;
 };
 
 #endif // ASYNC_H

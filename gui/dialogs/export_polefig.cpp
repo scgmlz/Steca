@@ -175,7 +175,7 @@ void ExportPolefig::saveAll(bool oneFile)
             QMessageBox::Yes)
             return;
     }
-    Progress progress(&fileField_->progressBar, "save diffractograms", expt.size());
+    TakesLongTime progress(&fileField_->progressBar, "save diffractograms", expt.size());
     int picNum = 0;
     int fileNum = 0;
     int nSlices = gSession->gammaSelection.numSlices();

@@ -32,6 +32,7 @@
 #include "gui/panels/subframe_setup.h"
 #include "gui/state.h"
 #include "qcr/base/debug.h"
+#include <QProgressBar>
 #include <QSplitter>
 #include <QStatusBar>
 #include <QStringBuilder> // for ".." % ..
@@ -81,7 +82,9 @@ MainWin::MainWin()
     splMain->setStretchFactor(1, 1);
     setCentralWidget(splMain);
 
-    statusBar()->addWidget(&progressBar);
+    auto* progressBar = new QProgressBar{this};
+    statusBar()->addWidget(progressBar);
+    TakesLongTime::registerProgressBar(progressBar);
 
     // initialize state
     readSettings();

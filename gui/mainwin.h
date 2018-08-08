@@ -17,7 +17,6 @@
 
 #include "qcr/widgets/views.h"
 #include <QDir>
-#include <QProgressBar>
 
 extern class MainWin* gGui; //!< global pointer to _the_ main window
 
@@ -36,8 +35,6 @@ public:
     class Toggles* toggles;
     class GuiState* state;
     class ImageTrafoActions* imageTrafoActions;
-
-    QProgressBar progressBar {this};
 
 private:
     void refresh();

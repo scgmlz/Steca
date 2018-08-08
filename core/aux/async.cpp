@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/aux/async.cpp
-//! @brief     Implements classes TakesLongTime and Progress
+//! @brief     Implements class TakesLongTime
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -17,9 +17,19 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QProgressBar>
 
-TakesLongTime::TakesLongTime(const QString& taskName)
+QProgressBar* TakesLongTime::staticBar_ = nullptr;
+
+TakesLongTime::TakesLongTime(const QString& taskName, int totalSteps, QProgressBar* bar)
     : taskName_(taskName)
+    , total_(totalSteps)
+    , i_(0)
+    , bar_(bar)
 {
+    if (bar_) {
+        bar_->setRange(0, total_);
+        bar_->setValue(0);
+        bar_->show();
+    }
     qApp->setOverrideCursor(Qt::WaitCursor);
     qDebug() << "Long time task began: " << taskName_;
 }
@@ -28,30 +38,11 @@ TakesLongTime::~TakesLongTime()
 {
     qDebug() << "Long time task ended: " << taskName_;
     qApp->restoreOverrideCursor();
-}
-
-Progress::Progress(QProgressBar* bar, const QString& taskName, int totalSteps)
-    : bar_(bar)
-    , taskName_(taskName)
-    , total_(totalSteps)
-    , i_(0)
-{
-    if (bar_) {
-        bar_->setRange(0, total_);
-        bar_->setValue(0);
-        bar_->show();
-    }
-    qDebug() << "Task with progress bar [" << taskName_ << "] began";
-}
-
-Progress::~Progress()
-{
-    qDebug() << "Task with progress bar [" << taskName_ << "] ended";
     if (bar_)
         bar_->hide();
 }
 
-void Progress::step()
+void TakesLongTime::step()
 {
     i_ = qMin(i_+1, total_);
     if (bar_)
