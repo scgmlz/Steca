@@ -272,7 +272,7 @@ void Console::forget(const QString& name)
 void Console::log2(bool userCall, const QString& line)
 {
     if (caller_==Caller::gui && !userCall)
-        log("#: " + line);
+        log("#u " + line);
     else
         log(line);
 }
@@ -294,9 +294,9 @@ void Console::log(const QString& line)
     if      (caller_==Caller::gui || caller_==Caller::stack)
         log_ << line << "\n";
     else if (caller_==Caller::cli)
-        log_ << "#: " << line << "\n";
+        log_ << "#c " << line << "\n";
     else if (caller_==Caller::sys)
-        log_ << "#! " << line << "\n";
+        log_ << "#s " << line << "\n";
     else
         qFatal("invalid case");
     log_.flush();
