@@ -58,12 +58,12 @@ RangeControl::RangeControl(const QString& _name, const std::function<Range*()>& 
     hb->addStretch();
     setLayout(hb);
 
-    setRemake([cellMin, cellMax, this](){
+    setRemake([spinMin, spinMax, this](){
             const Range* range = selectRange_();
             setEnabled(range);
             if (!range)
                 return;
-            cellMin->setVal(range->min);
-            cellMax->setVal(range->max);
+            spinMin->programaticallySetValue(range->min);
+            spinMax->programaticallySetValue(range->max);
         });
 }

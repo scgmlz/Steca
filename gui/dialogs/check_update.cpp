@@ -30,10 +30,8 @@ CheckUpdate::CheckUpdate(QWidget* parent)
     auto* manager = new QNetworkAccessManager;
     QObject::connect(manager, &QNetworkAccessManager::finished,
                      [parent,manager](QNetworkReply* reply) {
-        if (QNetworkReply::NoError != reply->error()) {
-            qWarning() << "Network Error: " << reply->errorString();
-            return;
-        }
+        if (QNetworkReply::NoError != reply->error())
+            return qWarning() << "Network Error: " << reply->errorString();
         QString ver = qApp->applicationVersion();
         QString lastVer = reply->readAll().trimmed();
         QString name = qApp->applicationName();
