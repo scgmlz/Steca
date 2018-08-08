@@ -110,9 +110,11 @@ void Dfgram::invalidatePeaks() const
     rawOutcomes_.invalidate();
     peakFits_.invalidate();
     peaksAsCurve_.invalidate();
+    gSession->allPeaks.invalidateAll();
 }
 
-void Dfgram::invalidatePeakPars(int) const // TODO restrict to peak jP
+void Dfgram::invalidatePeakPars(int jP) const // TODO restrict to peak jP
 {
     invalidatePeaks();
+    gSession->allPeaks.invalidateAt(jP);
 }
