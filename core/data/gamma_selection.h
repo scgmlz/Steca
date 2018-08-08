@@ -15,7 +15,7 @@
 #ifndef GAMMA_SELECTION_H
 #define GAMMA_SELECTION_H
 
-#include "qcr/engine/param_wrapper.h"
+#include "qcr/engine/cell.h"
 
 //! Supports different ways of setting a gamma range.
 

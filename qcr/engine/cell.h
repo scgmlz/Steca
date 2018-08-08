@@ -2,7 +2,7 @@
 //
 //  libqcr: capture and replay Qt widget actions
 //
-//! @file      qcr/engine/param_wrapper.h
+//! @file      qcr/engine/cell.h
 //! @brief     Defines and implements templated class QcrCell
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef PARAM_WRAPPER_H
-#define PARAM_WRAPPER_H
+#ifndef CELL_H
+#define CELL_H
 
 #include "qcr/base/debug.h"
 #include "qcr/base/string_ops.h"
@@ -62,4 +62,4 @@ void QcrCell<T>::guiSetsVal(T val, bool userCall)
         hook_(val);
 }
 
-#endif // PARAM_WRAPPER_H
+#endif // CELL_H

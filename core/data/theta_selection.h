@@ -15,7 +15,7 @@
 #ifndef THETA_SELECTION_H
 #define THETA_SELECTION_H
 
-#include "qcr/engine/param_wrapper.h"
+#include "qcr/engine/cell.h"
 
 //! Select a theta bin for overlay in scattering image.
 

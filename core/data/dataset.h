@@ -16,7 +16,7 @@
 #define DATASET_H
 
 #include "core/data/cluster.h"
-#include "qcr/engine/param_wrapper.h"
+#include "qcr/engine/cell.h"
 #include <memory>
 
 //! A Rawfile and associated information.

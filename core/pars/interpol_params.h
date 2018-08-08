@@ -16,7 +16,7 @@
 #define INTERPOL_PARAMS_H
 
 #include "core/typ/json.h"
-#include "qcr/engine/param_wrapper.h"
+#include "qcr/engine/cell.h"
 
 //! Supports different ways of setting a gamma range.
 

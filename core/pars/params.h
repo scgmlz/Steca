@@ -19,7 +19,7 @@
 #include "core/pars/image_transform.h"
 #include "core/pars/interpol_params.h"
 #include "core/meta/meta_selection.h"
-#include "qcr/engine/param_wrapper.h"
+#include "qcr/engine/cell.h"
 
 enum class eNorm {
     NONE,

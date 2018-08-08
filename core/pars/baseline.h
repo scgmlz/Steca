@@ -16,7 +16,7 @@
 #define BASELINE_H
 
 #include "core/typ/range.h"
-#include "qcr/engine/param_wrapper.h"
+#include "qcr/engine/cell.h"
 
 //! Settings needed for fitting the baseline.
 

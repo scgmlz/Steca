@@ -18,7 +18,7 @@
 #include "core/aux/angles.h"
 #include "core/typ/range.h"
 #include "core/typ/size2d.h"
-#include "qcr/engine/param_wrapper.h"
+#include "qcr/engine/cell.h"
 #include <array>
 
 // TODO after removal of ImageKey: delete copy c'tors

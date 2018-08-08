@@ -18,7 +18,7 @@
 #include "qcr/base/debug.h"
 #include "qcr/base/string_ops.h"
 #include "qcr/engine/mixin.h"
-#include "qcr/engine/param_wrapper.h"
+#include "qcr/engine/cell.h"
 
 //! Base class for all Qcr widgets that hold a single value.
 template<class T>
