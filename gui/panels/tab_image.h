@@ -76,7 +76,7 @@ private:
     QLabel gammaRangeSlice_{"gammaRangeSlice"};
     QLabel thetaRangeTotal_{"thetaRangeTotal"};
     QLabel thetaRangeBin_  {"thetaRangeBin"};
-    QcrCell<int> iMeas {0};
+    QcrCell<int> iMeas {1};
 };
 
 //! A tab for the correction image and associated controls.

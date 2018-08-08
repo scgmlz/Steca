@@ -25,12 +25,14 @@ class MetaSelection {
 public:
     MetaSelection(bool on=false);
     MetaSelection(MetaSelection&&) = default;
+
     void set(int, bool);
     bool isSelected(int i) const { return vec[i].val(); }
-    int count() const { return list.get().size(); }
-    int at(int i) const { return list.get().at(i); }
+    int count() const { return list.get(this).size(); }
+    int at(int i) const { return list.get(this).at(i); }
+
     std::vector<QcrCell<bool>> vec; //!< true if to be displayed
-    Cached<std::vector<int>> list; //!< indices of metadata items selected for display
+    Kached<MetaSelection,std::vector<int>> list; //!< indices of metadata items selected for display
 };
 
 #endif // META_SELECTION_H

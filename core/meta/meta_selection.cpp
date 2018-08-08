@@ -15,14 +15,22 @@
 #include "core/meta/meta_selection.h"
 #include "core/meta/metadata.h"
 
+namespace {
+
+std::vector<int> computeList(const MetaSelection* ms)
+{
+    std::vector<int> ret;
+    for (int i=0; i<Metadata::size(); ++i)
+        if (ms->vec[i].val())
+            ret.push_back(i);
+    return ret;
+}
+
+} // namespace
+
 MetaSelection::MetaSelection(bool on)
     : vec {Metadata::size(), on}
-    , list {[this]()->std::vector<int>{
-            std::vector<int> ret;
-            for (int i=0; i<Metadata::size(); ++i)
-                if (vec[i].val())
-                    ret.push_back(i);
-            return ret; }}
+    , list {&computeList}
 {}
 
 void MetaSelection::set(int idx, bool on)
