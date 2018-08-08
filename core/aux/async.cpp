@@ -25,7 +25,7 @@ TakesLongTime::TakesLongTime(const QString& taskName, int totalSteps, QProgressB
     , i_(0)
     , bar_(bar)
 {
-    if (bar_) {
+    if (bar_ && total_>1) {
         bar_->setRange(0, total_);
         bar_->setValue(0);
         bar_->show();

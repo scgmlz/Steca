@@ -32,8 +32,7 @@ void FitWrapper::execFit(ParametricFunction& function, const Curve& curve)
 
     for (int ip=0; ip<parCount; ++ip) {
         const FitParameter& par = function_->parameterAt(ip);
-        ASSERT(qIsFinite(par.value())); // TODO if not so, return false ?
-        parValue[ip] = par.value();
+        parValue[ip] = qIsFinite(par.value()) ? par.value() : 0.;
         parMin[ip] = par.range().min;
         parMax[ip] = par.range().max;
     }

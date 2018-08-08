@@ -218,7 +218,6 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
     // TODO (MATH) use fitted tth center, not center of given fit range
     algo::calculateAlphaBeta(alpha, beta, fitrange.center(), gRange.center(),
                              cluster.chi(), cluster.omg(), cluster.phi());
-    qDebug() << "PI:gP" << alpha << beta;
     if (fitrange.isEmpty())
         return {metadata, alpha, beta, gRange};
 
