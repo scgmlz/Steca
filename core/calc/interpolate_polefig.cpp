@@ -275,7 +275,7 @@ PeakInfos algo::interpolateInfos(const PeakInfos& direct)
 
     PeakInfos ret; // Output data.
 
-    // TODO DONT KNOW HOW restore Progress progress(progressBar, "interpolation", numAlphas * numBetas); // TODO check number + 1?
+    TakesLongTime progress("interpolation", numAlphas * numBetas); // TODO check number + 1?
 
     // TODO revise the mathematics...
 
@@ -284,7 +284,7 @@ PeakInfos algo::interpolateInfos(const PeakInfos& direct)
         for (int j=0; j<numBetas; ++j) {
             deg const beta = j * stepBeta;
 
-            //progress.step();
+            progress.step();
 
             if (direct.peaks().empty()) {
                 ret.appendPeak(PeakInfo(alpha, beta));

@@ -25,6 +25,9 @@ public:
     TakesLongTime(const QString& taskName, int totalSteps=0, QProgressBar* bar=staticBar_);
     ~TakesLongTime();
     void step();
+    //! Once the GUI MainWindow has registered a progress bar, progress will be displayed
+    //! even if TakesLongTime(taskName, totalSteps) is called from Core. This mechanism
+    //! allows us to keep Core independent of Gui.
     static void registerProgressBar(class QProgressBar* bar) { staticBar_ = bar; };
 private:
     const QString taskName_;

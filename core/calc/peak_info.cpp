@@ -238,12 +238,11 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
 
 PeakInfos computeDirectPeakInfos(int jP)
 {
-    TakesLongTime __("computeDirectPeakInfos");
+    TakesLongTime progress("peak fitting", gSession->activeClusters.clusters.get().size());
     PeakInfos ret;
-    //Progress progress(progressBar, "peak fitting", seq.size());
     int nGamma = qMax(1, gSession->gammaSelection.numSlices.val()); // TODO ensure >0 in GSelection
     for (const Cluster* cluster : gSession->activeClusters.clusters.get()) {
-        //progress.step();
+        progress.step();
         for (int i=0; i<nGamma; ++i) {
             PeakInfo refInfo = getPeak(jP, *cluster, i);
             if (!qIsNaN(refInfo.inten()))
