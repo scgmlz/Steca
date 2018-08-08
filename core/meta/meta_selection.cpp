@@ -15,16 +15,17 @@
 #include "core/meta/meta_selection.h"
 #include "core/meta/metadata.h"
 
-MetaSelection::MetaSelection()
-    : metaSelection_ (Metadata::size(), false)
+MetaSelection::MetaSelection(bool on)
+    : vec {Metadata::size(), on}
+    , list {[this]()->std::vector<int>{
+            std::vector<int> ret;
+            for (int i=0; i<Metadata::size(); ++i)
+                if (vec[i].val())
+                    ret.push_back(i);
+            return ret; }}
 {}
 
 void MetaSelection::set(int idx, bool on)
 {
-    metaSelection_[idx] = on;
-    // alternative representation:
-    metaInfoNums_.clear();
-    for (int i=0; i<Metadata::size(); ++i)
-        if (metaSelection_[i])
-            metaInfoNums_.push_back(i);
+    vec[idx].setVal(on);
 }

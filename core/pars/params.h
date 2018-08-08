@@ -33,16 +33,17 @@ enum class eNorm {
 
 class Params {
 public:
-    void clear() { *this = {}; }
+    // void clear() { *this = {}; } TODO restore (broken because MetaSelection disallows copying
 
-    Detector             detector;
-    ImageTransform       imageTransform;
-    ImageCut             imageCut;
-    InterpolParams       interpolParams;
+    Detector        detector;
+    ImageTransform  imageTransform;
+    ImageCut        imageCut;
+    InterpolParams  interpolParams;
     QcrCell<bool>   intenScaledAvg {true}; // if not, summed
     QcrCell<double> intenScale {1};
-    eNorm                normMode {eNorm::NONE};
-    MetaSelection        metaSelection;
+    eNorm           normMode {eNorm::NONE};
+    MetaSelection   smallMetaSelection {false}; //!< for 'clusters' and 'metadata' subframes
+    MetaSelection   bigMetaSelection {true};    //!< for use in 'bigtable' (tabbed view and export)
 };
 
 #endif // PARAMS_H

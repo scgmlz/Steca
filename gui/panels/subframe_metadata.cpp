@@ -30,8 +30,8 @@ public:
 private:
     int highlighted() const final { return highlighted_; }
     void onHighlight(int i) final { highlighted_ = i; }
-    bool activated(int row) const { return gSession->params.metaSelection.isSelected(row); }
-    void setActivated(int row, bool on) { gSession->params.metaSelection.set(row, on); }
+    bool activated(int row) const { return gSession->params.smallMetaSelection.isSelected(row); }
+    void setActivated(int row, bool on) { gSession->params.smallMetaSelection.set(row, on); }
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return Metadata::numAttributes(false); }

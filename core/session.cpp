@@ -68,7 +68,7 @@ void Session::clear()
 {
     dataset.clear();
     corrset.clear();
-    params.clear();
+    // params.clear(); TODO
     baseline.clear();
     peaks.clear();
 }

@@ -28,7 +28,7 @@
 
 //! A row of controls for choosing which data columns are to be displayed in a TabTable.
 
-class ColumnSelector : public QWidget {
+class ColumnSelector : public QcrWidget {
 public:
     ColumnSelector();
 private:
@@ -45,6 +45,7 @@ private:
 };
 
 ColumnSelector::ColumnSelector()
+    : QcrWidget("colSel")
 {
     const QStringList& headers = PeakInfo::dataTags(false);
     rbHidden_.hide();
@@ -58,8 +59,9 @@ ColumnSelector::ColumnSelector()
     box->addWidget(&rbFWHM_);
     box->addSpacing(8);
     showCols_.resize(headers.count());
-    for_i (showCols_.size()) {
-        showCols_[i] = new QcrCheckBox("cb"+QString::number(i), headers[i], true);
+    for (int i=0; i<showCols_.size(); ++i) {
+        showCols_[i] = new QcrCheckBox(
+            "cb"+QString::number(i), headers[i], &gSession->params.bigMetaSelection.vec[i]);
         box->addWidget(showCols_[i]);
     }
     setLayout(box);
@@ -78,11 +80,7 @@ ColumnSelector::ColumnSelector()
             setAll(false);
             showCols_.at(int(eReflAttr::FWHM))->programaticallySetValue(true); });
 
-    for_i (showCols_.size())
-        connect(showCols_.at(i), &QCheckBox::toggled, [this, i](bool on) {
-                gGui->state->bigtableShowCol[i] = on;
-                updateRadiobuttons();
-            });
+    setRemake([=](){ updateRadiobuttons(); });
 }
 
 void ColumnSelector::setAll(bool on)

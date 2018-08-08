@@ -15,20 +15,22 @@
 #ifndef META_SELECTION_H
 #define META_SELECTION_H
 
+#include "core/typ/cached.h"
+#include "qcr/engine/cell.h"
 #include <vector>
 
 //! Selection of meta parameters
 
 class MetaSelection {
 public:
-    MetaSelection();
+    MetaSelection(bool on=false);
+    MetaSelection(MetaSelection&&) = default;
     void set(int, bool);
-    bool isSelected(int i) const { return metaSelection_[i]; }
-    int count() const { return metaInfoNums_.size(); }
-    int at(int i) const { return metaInfoNums_.at(i); }
-private:
-    std::vector<bool> metaSelection_; //!< true if to be displayed
-    std::vector<int> metaInfoNums_; //!< indices of metadata items selected for display
+    bool isSelected(int i) const { return vec[i].val(); }
+    int count() const { return list.get().size(); }
+    int at(int i) const { return list.get().at(i); }
+    std::vector<QcrCell<bool>> vec; //!< true if to be displayed
+    Cached<std::vector<int>> list; //!< indices of metadata items selected for display
 };
 
 #endif // META_SELECTION_H
