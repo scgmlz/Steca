@@ -16,11 +16,10 @@
 #define GAMMA_SELECTION_H
 
 #include "qcr/engine/param_wrapper.h"
-#include <QObject>
 
 //! Supports different ways of setting a gamma range.
 
-class GammaSelection : public QObject {
+class GammaSelection {
 public:
     GammaSelection();
 

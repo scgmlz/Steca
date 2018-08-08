@@ -19,7 +19,7 @@
 
 //! Collection of toggle actions, for use as member of MainWin.
 
-class Toggles : private QObject {
+class Toggles {
 public:
     Toggles();
     QcrToggle combinedDfgram {"dfg.all", "All measurements", false, ":/icon/all"};

@@ -20,7 +20,7 @@
 
 //! Trigger and toggle to control image rotation and mirror.
 
-class ImageTrafoActions : private QObject {
+class ImageTrafoActions {
 public:
     ImageTrafoActions();
     QcrTrigger rotateImage {"rotateImage", "Rotate", ":/icon/rotate0", Qt::CTRL | Qt::Key_R};

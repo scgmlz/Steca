@@ -19,7 +19,7 @@
 
 //! Collection of trigger actions, for use as member of MainWin.
 
-class Triggers : private QObject {
+class Triggers {
 public:
     Triggers();
     QcrTrigger about {"about", "About Steca"};

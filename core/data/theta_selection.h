@@ -16,11 +16,10 @@
 #define THETA_SELECTION_H
 
 #include "qcr/engine/param_wrapper.h"
-#include <QObject>
 
 //! Select a theta bin for overlay in scattering image.
 
-class ThetaSelection : public QObject {
+class ThetaSelection {
 public:
     ThetaSelection();
 
