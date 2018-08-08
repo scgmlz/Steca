@@ -18,7 +18,7 @@
 
 namespace {
 double safeReal(double val) { return qIsFinite(val) ? val : 0.0; }
-double myRound(double val) { return 0.1 * std::round(10*val); }
+double myRound(double val, double step=0.05) { return step * std::round(val/step); }
 }
 
 RangeControl::RangeControl(const QString& _name, const std::function<Range*()>& _selectRange)
@@ -30,17 +30,30 @@ RangeControl::RangeControl(const QString& _name, const std::function<Range*()>& 
     spinRangeMin_.setSingleStep(.1);
     spinRangeMax_.setSingleStep(.1);
 
-    // outbound connections
-    connect(&spinRangeMin_, &QcrDoubleSpinBox::valueReleased, [this](double val) {
-            double antival = qMax(spinRangeMax_.getValue(), val);
-            selectRange_()->set(myRound(val), myRound(antival));
+    spinRangeMin_.cell()->setHook([=](double val){
+            qDebug() << "MinHook " << val;
+            double antival = spinRangeMax_.getValue();
+            double newantival = myRound(antival);
+            double newval = qMin(myRound(val), antival-.1);
+            qDebug() << "1--> " << val << antival;
+            if (newval!=val || newantival!=antival) {
+                spinRangeMin_.programaticallySetValue(newval);
+                spinRangeMax_.programaticallySetValue(newantival);
+                qDebug() << "1z";
+                //return;
+            }
+            selectRange_()->set(newval, newantival);
+            qDebug() << "2--> " << spinRangeMin_.getValue() << spinRangeMax_.getValue();
             gSession->onBaseline(); // TODO do this via setRange
+            qDebug() << "3--> " << spinRangeMin_.getValue() << spinRangeMax_.getValue();
             gRoot->remakeAll("RangeControl/min");
+            qDebug() << "4--> " << spinRangeMin_.getValue() << spinRangeMax_.getValue();
         });
-    connect(&spinRangeMax_, &QcrDoubleSpinBox::valueReleased, [this](double val) {
-            double antival = qMin(spinRangeMin_.getValue(), val);
-            selectRange_()->set(myRound(antival), myRound(val));
-            gSession->onBaseline();
+    spinRangeMax_.cell()->setHook([=](double val){
+            double antival = myRound(spinRangeMin_.getValue());
+            val = qMax(myRound(val), antival+.1);
+            selectRange_()->set(antival, val);
+            gSession->onBaseline(); // TODO do this via setRange
             gRoot->remakeAll("RangeControl/max");
         });
 
