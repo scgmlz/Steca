@@ -18,9 +18,6 @@
 #include "core/fit/raw_outcome.h"
 #include "qcr/base/debug.h"
 
-// TODO move to peak computation
-#include "core/aux/exception.h"
-
 #include <cmath>
 
 #define SQR(x) (x)*(x)
@@ -121,7 +118,7 @@ double PeakFunction::dy(double x, int i, double const* parValues) const
     case 2:
         return prefac/stdv*g;
     default:
-        THROW("impossible case");
+        qFatal("impossible case");
     }
     // TODO provide unit test to check derivatives
 }

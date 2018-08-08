@@ -18,7 +18,7 @@
 #include <QException>
 #include <QString> // no auto rm
 
-//! The sole exception type used in this software.
+//! The sole exception type used within Qcr.
 class QcrException : public QException {
 public:
     QcrException() = delete;
