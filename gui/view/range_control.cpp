@@ -14,6 +14,7 @@
 
 #include "range_control.h"
 #include "core/session.h"
+#include "qcr/widgets/controls.h"
 #include <cmath>
 
 namespace {
@@ -23,34 +24,37 @@ double myRound(double val, double step=0.05) { return step * std::round(val/step
 
 RangeControl::RangeControl(const QString& _name, const std::function<Range*()>& _selectRange)
     : QcrWidget(_name)
-    , spinRangeMin_ {name()+"Min", 5, 2, 0., 89.9}
-    , spinRangeMax_ {name()+"Max", 5, 2, 0., 90.}
     , selectRange_(_selectRange)
 {
-    spinRangeMin_.setSingleStep(.1);
-    spinRangeMax_.setSingleStep(.1);
+    QcrCell<double> cellMin {0};
+    QcrCell<double> cellMax {0};
+    auto* spinMin = new QcrDoubleSpinBox{name()+"Min", &cellMin, 5, 2, 0., 89.9};
+    auto* spinMax = new QcrDoubleSpinBox{name()+"Max", &cellMax, 5, 2, 0., 90.};
 
-    spinRangeMin_.cell()->setHook([=](double val){
+    spinMin->setSingleStep(.1);
+    spinMax->setSingleStep(.1);
+
+    cellMin.setHook([=](double val){
             qDebug() << "MinHook " << val;
-            double antival = spinRangeMax_.getValue();
+            double antival = spinMax->getValue();
             double newantival = myRound(antival);
             double newval = qMin(myRound(val), antival-.1);
             qDebug() << "1--> " << val << antival;
             if (newval!=val || newantival!=antival) {
-                spinRangeMin_.programaticallySetValue(newval);
-                spinRangeMax_.programaticallySetValue(newantival);
+                spinMin->programaticallySetValue(newval);
+                spinMax->programaticallySetValue(newantival);
                 qDebug() << "1z";
                 //return;
             }
             selectRange_()->set(newval, newantival);
-            qDebug() << "2--> " << spinRangeMin_.getValue() << spinRangeMax_.getValue();
+            qDebug() << "2--> " << spinMin->getValue() << spinMax->getValue();
             gSession->onBaseline(); // TODO do this via setRange
-            qDebug() << "3--> " << spinRangeMin_.getValue() << spinRangeMax_.getValue();
+            qDebug() << "3--> " << spinMin->getValue() << spinMax->getValue();
             gRoot->remakeAll("RangeControl/min");
-            qDebug() << "4--> " << spinRangeMin_.getValue() << spinRangeMax_.getValue();
+            qDebug() << "4--> " << spinMin->getValue() << spinMax->getValue();
         });
-    spinRangeMax_.cell()->setHook([=](double val){
-            double antival = myRound(spinRangeMin_.getValue());
+    cellMax.setHook([=](double val){
+            double antival = myRound(spinMin->getValue());
             val = qMax(myRound(val), antival+.1);
             selectRange_()->set(antival, val);
             gSession->onBaseline(); // TODO do this via setRange
@@ -60,19 +64,19 @@ RangeControl::RangeControl(const QString& _name, const std::function<Range*()>& 
     // layout
     auto hb = new QHBoxLayout();
     hb->addWidget(new QLabel("range"));
-    hb->addWidget(&spinRangeMin_);
+    hb->addWidget(spinMin);
     hb->addWidget(new QLabel(".."));
-    hb->addWidget(&spinRangeMax_);
+    hb->addWidget(spinMax);
     hb->addWidget(new QLabel("deg"));
     hb->addStretch();
     setLayout(hb);
 
-    setRemake([this](){
+    setRemake([this,spinMin,spinMax](){
             const Range* range = selectRange_();
             setEnabled(range);
             if (!range)
                 return;
-            spinRangeMin_.programaticallySetValue(safeReal(range->min));
-            spinRangeMax_.programaticallySetValue(safeReal(range->max));
+            spinMin->programaticallySetValue(safeReal(range->min));
+            spinMax->programaticallySetValue(safeReal(range->max));
         });
 }

@@ -12,9 +12,9 @@
 //
 //  ***********************************************************************************************
 
-#include "core/typ/range.h"
-#include "qcr/widgets/controls.h"
 #include "qcr/widgets/views.h"
+
+class Range;
 
 //! A horizontal row with labels and spin boxes to view and change one peak fit range.
 
@@ -23,7 +23,5 @@ public:
     RangeControl() = delete;
     RangeControl(const QString& _name, const std::function<Range*()>& _selectRange);
 private:
-    QcrDoubleSpinBox spinRangeMin_;
-    QcrDoubleSpinBox spinRangeMax_;
     std::function<Range*()> selectRange_;
 };

@@ -226,14 +226,6 @@ void QcrSpinBox::executeConsoleCommand(const QString& arg)
 //! @class QcrDoubleSpinBox
 
 QcrDoubleSpinBox::QcrDoubleSpinBox(
-    const QString& _name, int nDigits, int nDecimals,
-    double min, double max, const QString& tooltip)
-    : QcrControl<double> {*this, _name, 0.}
-{
-    initDoubleSpinBox(nDigits, nDecimals, min, max, tooltip);
-}
-
-QcrDoubleSpinBox::QcrDoubleSpinBox(
     const QString& _name, QcrCell<double>* cell, int nDigits, int nDecimals,
     double min, double max, const QString& tooltip)
     : QcrControl<double> {*this, _name, cell}

@@ -110,9 +110,6 @@ private:
 class QcrDoubleSpinBox : public QDoubleSpinBox, public QcrControl<double> {
     Q_OBJECT
 public:
-    // TODO: rm when no longer needed by range control
-    QcrDoubleSpinBox(const QString& name, int nDigits, int nDecimals,
-                     double min = LLONG_MIN, double max = LLONG_MAX, const QString& tooltip="");
     QcrDoubleSpinBox(const QString& name, QcrCell<double>* cell, int nDigits, int nDecimals,
                      double min = LLONG_MIN, double max = LLONG_MAX, const QString& tooltip="");
     void executeConsoleCommand(const QString&) override;
