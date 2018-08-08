@@ -15,6 +15,8 @@
 #ifndef CHECK_UPDATE_H
 #define CHECK_UPDATE_H
 
+//! Queries whether there is a new version of this software, and shows message box.
+
 class CheckUpdate {
 public:
     CheckUpdate() = delete;

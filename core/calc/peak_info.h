@@ -94,6 +94,8 @@ private:
 };
 
 
+//! Direct and interpolated PeakInfos for all Bragg peaks.
+
 class AllPeaks {
 public:
     AllPeaks();
