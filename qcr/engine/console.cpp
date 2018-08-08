@@ -216,12 +216,12 @@ Console::Result Console::exec(QString line)
                 qterr << "cannot pop: registry stack is empty\n"; qterr.flush();
                 return Result::err;
             }
-            qterr << "going to pop registry " << registryStack_.top()->name() << "\n";
-            qterr.flush();
+            //qterr << "going to pop registry " << registryStack_.top()->name() << "\n";
+            //qterr.flush();
             delete registryStack_.top();
             registryStack_.pop();
-            qterr << "top registry is now " << registryStack_.top()->name() << "\n";
-            qterr.flush();
+            //qterr << "top registry is now " << registryStack_.top()->name() << "\n";
+            //qterr.flush();
         } else if (cmd=="@file") {
             readFile(arg);
         } else if (cmd=="@close") {
