@@ -25,15 +25,15 @@ Toggles::Toggles()
 {
 #define AT &QAction::toggled
 
-    connect(&viewStatusbar, AT, [](bool on) { gGui->statusBar()->setVisible(on); });
+    QObject::connect(&viewStatusbar, AT, [](bool on) { gGui->statusBar()->setVisible(on); });
 #ifndef Q_OS_OSX
-    connect(&fullScreen, AT, [](bool on) {
+    QObject::connect(&fullScreen, AT, [](bool on) {
             if (on)
                 gGui->showFullScreen();
             else
                 gGui->showNormal(); });
 #endif
-    connect(&viewFiles, AT, [](bool on) { gGui->dockFiles_->setVisible(on); });
-    connect(&viewClusters, AT, [](bool on) { gGui->dockClusters_->setVisible(on); });
-    connect(&viewMetadata, AT, [](bool on) { gGui->dockMetadata_->setVisible(on); });
+    QObject::connect(&viewFiles, AT, [](bool on) { gGui->dockFiles_->setVisible(on); });
+    QObject::connect(&viewClusters, AT, [](bool on) { gGui->dockClusters_->setVisible(on); });
+    QObject::connect(&viewMetadata, AT, [](bool on) { gGui->dockMetadata_->setVisible(on); });
 }

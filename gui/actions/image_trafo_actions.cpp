@@ -18,8 +18,8 @@
 
 ImageTrafoActions::ImageTrafoActions()
 {
-    connect(&mirrorImage, &QAction::toggled, [this](bool on) { setImageMirror(on); });
-    connect(&rotateImage, &QAction::triggered, [this]() { setImageRotate(
+    QObject::connect(&mirrorImage, &QAction::toggled, [this](bool on) { setImageMirror(on); });
+    QObject::connect(&rotateImage, &QAction::triggered, [this]() { setImageRotate(
                 gSession->params.imageTransform.nextRotate()); });
 }
 

@@ -30,24 +30,24 @@
 Triggers::Triggers()
 {
 #define AT &QAction::triggered
-    connect(&about, AT, [](){ AboutBox().exec(); });
-    connect(&baserangeAdd, &QAction::triggered, [](){ AddRangeBox("baseline").exec(); });
-    connect(&peakAdd, &QAction::triggered, [](){ AddRangeBox("peak").exec(); });
-    connect(&addFiles, AT, []() { gGui->addFiles(); });
-    connect(&checkUpdate, AT, []() { CheckUpdate _(gGui); });
-    connect(&clearSession, AT, []() { gSession->clear(); });
-    connect(&corrFile, AT, []() { gGui->loadCorrFile(); });
-    connect(&exportDfgram, AT, [](){ ExportDfgram().exec(); });
-    connect(&exportPolefig, AT, [](){ ExportPolefig().exec(); });
-    connect(&exportBigtable, AT, [](){ ExportBigtable().exec(); });
-    connect(&exportDiagram, AT, [](){ ExportDiagram().exec(); });
-    connect(&loadSession, AT, []() { gGui->loadSession(); });
-    connect(&online, AT, []() { QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
-    connect(&quit, AT, []() { gGui->deleteLater(); });
-    connect(&removeFile, AT, []() { gSession->dataset.removeFile(); });
-    connect(&saveSession, AT, []() { gGui->saveSession(); });
-    connect(&spawnDiagram, AT, [](){ new PopupDiagram(); });
-    connect(&spawnTable, AT, [](){ new PopupBigtable(); });
-    connect(&spawnPolefig, AT, [](){ new PopupPolefig(); });
-    connect(&viewReset, AT, []() { gGui->viewReset(); });
+    QObject::connect(&about, AT, [](){ AboutBox().exec(); });
+    QObject::connect(&baserangeAdd, &QAction::triggered, [](){ AddRangeBox("baseline").exec(); });
+    QObject::connect(&peakAdd, &QAction::triggered, [](){ AddRangeBox("peak").exec(); });
+    QObject::connect(&addFiles, AT, []() { gGui->addFiles(); });
+    QObject::connect(&checkUpdate, AT, []() { CheckUpdate _(gGui); });
+    QObject::connect(&clearSession, AT, []() { gSession->clear(); });
+    QObject::connect(&corrFile, AT, []() { gGui->loadCorrFile(); });
+    QObject::connect(&exportDfgram, AT, [](){ ExportDfgram().exec(); });
+    QObject::connect(&exportPolefig, AT, [](){ ExportPolefig().exec(); });
+    QObject::connect(&exportBigtable, AT, [](){ ExportBigtable().exec(); });
+    QObject::connect(&exportDiagram, AT, [](){ ExportDiagram().exec(); });
+    QObject::connect(&loadSession, AT, []() { gGui->loadSession(); });
+    QObject::connect(&online, AT, []() { QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
+    QObject::connect(&quit, AT, []() { gGui->deleteLater(); });
+    QObject::connect(&removeFile, AT, []() { gSession->dataset.removeFile(); });
+    QObject::connect(&saveSession, AT, []() { gGui->saveSession(); });
+    QObject::connect(&spawnDiagram, AT, [](){ new PopupDiagram(); });
+    QObject::connect(&spawnTable, AT, [](){ new PopupBigtable(); });
+    QObject::connect(&spawnPolefig, AT, [](){ new PopupPolefig(); });
+    QObject::connect(&viewReset, AT, []() { gGui->viewReset(); });
 }
