@@ -194,7 +194,6 @@ void QcrSpinBox::initSpinBox(int ndigits, bool withDot, int min, int max, const 
     if (tooltip!="")
         setToolTip(tooltip);
     initControl();
-    reportedValue_ = value();
     connect(this, &QSpinBox::editingFinished, this, &QcrSpinBox::reportChange);
     connect(this, _SLOT_(QSpinBox,valueChanged,int), [this](int val)->void {
             if(!hasFocus())
@@ -212,7 +211,6 @@ void QcrSpinBox::reportChange()
     int val = value();
     if (val == reportedValue_)
         return;
-    reportedValue_ = val;
     onChangedValue(hasFocus(), val);
     emit valueReleased(val);
 }
@@ -254,7 +252,6 @@ void QcrDoubleSpinBox::initDoubleSpinBox(
     if (tooltip!="")
         setToolTip(tooltip);
     initControl();
-    reportedValue_ = value();
     connect(this, &QDoubleSpinBox::editingFinished, this, &QcrDoubleSpinBox::reportChange);
     connect(this, _SLOT_(QDoubleSpinBox,valueChanged,double), [this](double val)->void {
             if(!hasFocus())
@@ -272,7 +269,6 @@ void QcrDoubleSpinBox::reportChange()
     double val = value();
     if (val == reportedValue_)
         return;
-    reportedValue_ = val;
     onChangedValue(hasFocus(), val);
     emit valueReleased(val);
 }

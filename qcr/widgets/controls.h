@@ -101,7 +101,6 @@ private:
     void initSpinBox(int ndigits, bool withDot, int min, int max, const QString& tooltip);
     void mouseReleaseEvent(QMouseEvent*) override;
     void reportChange();
-    int reportedValue_;
     void doSetValue(int val) final { setValue(val); }
     // hide some member functions of QSpinBox:
     void setValue(int val) { QSpinBox::setValue(val); }
@@ -111,6 +110,7 @@ private:
 class QcrDoubleSpinBox : public QDoubleSpinBox, public QcrControl<double> {
     Q_OBJECT
 public:
+    // TODO: rm when no longer needed by range control
     QcrDoubleSpinBox(const QString& name, int nDigits, int nDecimals,
                      double min = LLONG_MIN, double max = LLONG_MAX, const QString& tooltip="");
     QcrDoubleSpinBox(const QString& name, ParamWrapper<double>* cell, int nDigits, int nDecimals,
@@ -123,7 +123,6 @@ private:
     void initDoubleSpinBox(int nDigits, int nDecimals, double min, double max, const QString& tooltip);
     void mouseReleaseEvent(QMouseEvent*) override;
     void reportChange();
-    double reportedValue_;
     void doSetValue(double val) final { setValue(val); }
     // hide some member functions of QDoubleSpinBox:
     void setValue(double val) { QDoubleSpinBox::setValue(val); }
