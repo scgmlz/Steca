@@ -144,13 +144,6 @@ Range Range::intersect(const Range& that) const
     return Range(val, val); // empty, isValid()
 }
 
-double Range::bound(double value) const
-{
-    if (isValid() && !qIsNaN(value))
-        return qBound(min, value, max);
-    return Q_QNAN;
-}
-
 QJsonObject Range::toJson() const
 {
     return { { "min", double_to_json(min) }, { "max", double_to_json(max) } };

@@ -159,23 +159,6 @@ TEST(Range, Intersect) {
     EXPECT_TRUE(r.intersect(disjoint).isEmpty());
 }
 
-TEST(Range, Bound) {
-    auto r = Range(-1, +1);
-
-    EXPECT_TRUE(qIsNaN(Range().bound(0)));
-    EXPECT_TRUE(qIsNaN(Range().bound(Q_INFINITY)));
-    EXPECT_TRUE(qIsNaN(Range().bound(Q_QNAN)));
-    EXPECT_EQ(0, Range::infinite().bound(0));
-    EXPECT_TRUE(qIsInf(Range::infinite().bound(Q_INFINITY)));
-    EXPECT_TRUE(qIsNaN(Range::infinite().bound(Q_QNAN)));
-
-    EXPECT_EQ(0, r.bound(0));
-    EXPECT_EQ(-1, r.bound(-10));
-    EXPECT_EQ(-1, r.bound(-Q_INFINITY));
-    EXPECT_EQ(+1, r.bound(+10));
-    EXPECT_EQ(+1, r.bound(+Q_INFINITY));
-}
-
 typedef struct { qreal min, max; } min_max;
 
 static bool RANGES_EQ(Ranges const& rs1, Ranges const& rs2) {

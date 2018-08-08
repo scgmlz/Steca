@@ -47,10 +47,11 @@ public:
     bool contains(const Range&) const;
     bool intersects(const Range&) const;
     Range intersect(const Range&) const;
-    double bound(double) const; //!< limit the number to the interval, as qBound would
     QString to_s(const QString& unit="", int precision=5, int digitsAfter=2) const;
 
     double min, max; // this is the range
+
+private:
 };
 
 //! A set of *sorted* *non-overlapping* ranges
