@@ -18,46 +18,33 @@
 #include <cmath>
 
 namespace {
-double safeReal(double val) { return qIsFinite(val) ? val : 0.0; }
-double myRound(double val, double step=0.05) { return step * std::round(val/step); }
+const double STEP = 0.1;
+//double safeReal(double val) { return qIsFinite(val) ? val : 0.0; }
+double myRound(double val, double step=STEP) { return step * std::round(val/step); }
 }
 
 RangeControl::RangeControl(const QString& _name, const std::function<Range*()>& _selectRange)
     : QcrWidget(_name)
     , selectRange_(_selectRange)
 {
-    QcrCell<double> cellMin {0};
-    QcrCell<double> cellMax {0};
-    auto* spinMin = new QcrDoubleSpinBox{name()+"Min", &cellMin, 5, 2, 0., 89.9};
-    auto* spinMax = new QcrDoubleSpinBox{name()+"Max", &cellMax, 5, 2, 0., 90.};
+    auto* cellMin = new QcrCell<double>{0};
+    auto* cellMax = new QcrCell<double>{0};
+    auto* spinMin = new QcrDoubleSpinBox{name()+"Min", cellMin, 5, 2, 0., 89.9};
+    auto* spinMax = new QcrDoubleSpinBox{name()+"Max", cellMax, 5, 2, 0., 90.};
 
-    spinMin->setSingleStep(.1);
-    spinMax->setSingleStep(.1);
+    spinMin->setSingleStep(STEP);
+    spinMax->setSingleStep(STEP);
 
-    cellMin.setHook([=](double val){
-            qDebug() << "MinHook " << val;
-            double antival = spinMax->getValue();
-            double newantival = myRound(antival);
-            double newval = qMin(myRound(val), antival-.1);
-            qDebug() << "1--> " << val << antival;
-            if (newval!=val || newantival!=antival) {
-                spinMin->programaticallySetValue(newval);
-                spinMax->programaticallySetValue(newantival);
-                qDebug() << "1z";
-                //return;
-            }
-            selectRange_()->set(newval, newantival);
-            qDebug() << "2--> " << spinMin->getValue() << spinMax->getValue();
+    cellMin->setHook([cellMin, cellMax, this](double val){
+            cellMin->setVal( myRound(qMin(val, myRound(cellMax->val())-STEP)) );
             gSession->onBaseline(); // TODO do this via setRange
-            qDebug() << "3--> " << spinMin->getValue() << spinMax->getValue();
+            selectRange_()->setOne(cellMin->val(), false);
             gRoot->remakeAll("RangeControl/min");
-            qDebug() << "4--> " << spinMin->getValue() << spinMax->getValue();
         });
-    cellMax.setHook([=](double val){
-            double antival = myRound(spinMin->getValue());
-            val = qMax(myRound(val), antival+.1);
-            selectRange_()->set(antival, val);
+    cellMax->setHook([cellMin, cellMax, this](double val){
+            cellMax->setVal( myRound(qMax(val, myRound(cellMin->val())+STEP)) );
             gSession->onBaseline(); // TODO do this via setRange
+            selectRange_()->setOne(cellMax->val(), true);
             gRoot->remakeAll("RangeControl/max");
         });
 
@@ -71,12 +58,12 @@ RangeControl::RangeControl(const QString& _name, const std::function<Range*()>& 
     hb->addStretch();
     setLayout(hb);
 
-    setRemake([this,spinMin,spinMax](){
+    setRemake([cellMin, cellMax, this](){
             const Range* range = selectRange_();
             setEnabled(range);
             if (!range)
                 return;
-            spinMin->programaticallySetValue(safeReal(range->min));
-            spinMax->programaticallySetValue(safeReal(range->max));
+            cellMin->setVal(range->min);
+            cellMax->setVal(range->max);
         });
 }

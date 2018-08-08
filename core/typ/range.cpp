@@ -90,9 +90,19 @@ Range Range::slice(int i, int n) const
     return Range(min+i*delta, min+(i+1)*delta);
 }
 
-void Range::set(double min_, double max_) {
-    min = min_;
-    max = max_;
+void Range::set(double _min, double _max)
+{
+    min = _min;
+    max = _max;
+    ASSERT(!isValid() || min <= max);
+}
+
+void Range::setOne(double val, bool namelyMax) // sets either min or max
+{
+    if (namelyMax)
+        max = val;
+    else
+        min = val;
     ASSERT(!isValid() || min <= max);
 }
 
