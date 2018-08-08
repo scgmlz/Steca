@@ -17,6 +17,7 @@
 
 #include "qcr/widgets/controls.h"
 #include "qcr/widgets/views.h"
+#include "qcr/engine/cell.h"
 #include "core/raw/image.h"
 #include <QPainter>
 
@@ -71,13 +72,11 @@ private:
     QGridLayout boxRanges_;
     QPixmap pixmap() final;
     QcrIconToggleButton btnShowBins_;
-    QcrSpinBox idxMeas_;
-    QcrSpinBox idxTheta_;
-    QcrSpinBox idxSlice_;
     QLabel gammaRangeTotal_{"gammaRangeTotal"};
     QLabel gammaRangeSlice_{"gammaRangeSlice"};
     QLabel thetaRangeTotal_{"thetaRangeTotal"};
     QLabel thetaRangeBin_  {"thetaRangeBin"};
+    QcrCell<int> iMeas {0};
 };
 
 //! A tab for the correction image and associated controls.

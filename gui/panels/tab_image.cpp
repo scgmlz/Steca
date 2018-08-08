@@ -228,38 +228,38 @@ QImage ImageTab::makeImage(const Image& image)
 DataImageTab::DataImageTab()
     : ImageTab {"dataImage"}
     , btnShowBins_ {&gGui->toggles->showBins}
-    , idxMeas_ {
-        1, "idxMeas", 4, false, 1, INT_MAX,
-        "Index of measurement within the current group of measurements"}
-    , idxTheta_ {
-        "idxTheta", &gSession->thetaSelection.currArc,
-        4, false, 1, INT_MAX, "Index of 2θ bin to be shown" }
-    , idxSlice_ {
-        "idxSlice", &gSession->gammaSelection.currSlice,
-        4, false, 1, INT_MAX, "Index of γ slice to be shown" }
 {
+    auto* idxMeas  = new QcrSpinBox{
+        "idxMeas", &iMeas, 4, false, 1, INT_MAX,
+        "Index of measurement within the current group of measurements"};
+    auto* idxTheta = new QcrSpinBox{
+        "idxTheta", &gSession->thetaSelection.currArc,
+        4, false, 1, INT_MAX, "Index of 2θ bin to be shown" };
+    auto* idxSlice = new QcrSpinBox{
+        "idxSlice", &gSession->gammaSelection.currSlice,
+        4, false, 1, INT_MAX, "Index of γ slice to be shown" };
     setRemake( [=]() {
             gSession->gammaSelection.onData();
             gSession->thetaSelection.onData();
 
             const Cluster* cluster = gSession->highlightedCluster().cluster();
             int n = cluster ? cluster->count() : 1;
-            idxMeas_.setMaximum(n);
+            idxMeas->setMaximum(n);
             if (n>1) {
-                idxMeas_.setMinimum(1);
-                idxMeas_.setEnabled(true);
-                idxMeas_.setToolTip(
+                idxMeas->setMinimum(1);
+                idxMeas->setEnabled(true);
+                idxMeas->setToolTip(
                     "Index of measurement within the current group of " +
                     QString::number(n) + " measurements");
             } else {
-                idxMeas_.setEnabled(false);
-                idxMeas_.setToolTip(
+                idxMeas->setEnabled(false);
+                idxMeas->setToolTip(
                     "Index of measurement within the current group of measurements");
             }
 
             int nGamma = gSession->gammaSelection.numSlices.val();
-            idxSlice_.setMaximum(nGamma);
-            idxSlice_.setEnabled(nGamma>1);
+            idxSlice->setMaximum(nGamma);
+            idxSlice->setEnabled(nGamma>1);
 
             gammaRangeTotal_.setText(cluster ? cluster->rgeGmaFull().to_s("deg") : "");
             gammaRangeSlice_.setText(gSession->gammaSelection.range().to_s("deg"));
@@ -274,11 +274,11 @@ DataImageTab::DataImageTab()
     box1_.addWidget(&btnShowBins_, Qt::AlignLeft);
 
     boxIdx_.addWidget(new QLabel("idx (image)"), 0, 0, Qt::AlignLeft);
-    boxIdx_.addWidget(&idxMeas_, 0, 1, Qt::AlignLeft);
+    boxIdx_.addWidget(idxMeas, 0, 1, Qt::AlignLeft);
     boxIdx_.addWidget(new QLabel("idx (ϑ)"), 1, 0, Qt::AlignLeft);
-    boxIdx_.addWidget(&idxTheta_, 1, 1, Qt::AlignLeft);
+    boxIdx_.addWidget(idxTheta, 1, 1, Qt::AlignLeft);
     boxIdx_.addWidget(new QLabel("idx (γ)"), 2, 0, Qt::AlignLeft);
-    boxIdx_.addWidget(&idxSlice_, 2, 1, Qt::AlignLeft);
+    boxIdx_.addWidget(idxSlice, 2, 1, Qt::AlignLeft);
     controls_.addStretch(100);
     controls_.addLayout(&boxIdx_);
 
@@ -314,7 +314,7 @@ QPixmap DataImageTab::pixmap()
 const Measurement* DataImageTab::measurement()
 {
     const Cluster* cluster = gSession->highlightedCluster().cluster();
-    return cluster ? cluster->at(idxMeas_.getValue()-1) : nullptr;
+    return cluster ? cluster->at(iMeas.val()-1) : nullptr;
 }
 
 

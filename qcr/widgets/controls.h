@@ -89,8 +89,6 @@ public:
 class QcrSpinBox : public QSpinBox, public QcrControl<int> {
     Q_OBJECT
 public:
-    QcrSpinBox(int val, const QString& name, int ndigits, bool withDot = false,
-               int min = INT_MIN, int max = INT_MAX, const QString& tooltip="");
     QcrSpinBox(const QString& name, QcrCell<int>* cell, int ndigits, bool withDot = false,
                int min = INT_MIN, int max = INT_MAX, const QString& tooltip="");
     void executeConsoleCommand(const QString&) override;
