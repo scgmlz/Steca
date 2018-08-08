@@ -238,7 +238,8 @@ ControlsPeakfits::ControlsPeakfits()
 
 void ControlsPeakfits::hideEvent(QHideEvent*)
 {
-    gGui->state->editingPeakfits = false;
+    if (gGui)
+        gGui->state->editingPeakfits = false;
 }
 
 void ControlsPeakfits::showEvent(QShowEvent*)

@@ -122,7 +122,8 @@ ControlsBaseline::ControlsBaseline()
 
 void ControlsBaseline::hideEvent(QHideEvent*)
 {
-    gGui->state->editingBaseline = false;
+    if (gGui)
+        gGui->state->editingBaseline = false;
 }
 
 void ControlsBaseline::showEvent(QShowEvent*)
