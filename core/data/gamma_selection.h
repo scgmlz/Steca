@@ -33,8 +33,8 @@ public:
     double min() const { return range_.min; }// TODO NOW rm
     double max() const { return range_.max; }// TODO NOW rm
 
-    ParamWrapper<int> numSlices {1};
-    ParamWrapper<int> currSlice {1}; // counting from 1, for user convenience
+    QcrCell<int> numSlices {1};
+    QcrCell<int> currSlice {1}; // counting from 1, for user convenience
 
 private:
     void recomputeCache();// TODO NOW rm

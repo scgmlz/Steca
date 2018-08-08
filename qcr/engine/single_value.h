@@ -24,7 +24,7 @@
 template<class T>
 class QcrControl : public QcrSettable {
 public:
-    QcrControl(QObject& object, const QString& name, ParamWrapper<T>* cell);
+    QcrControl(QObject& object, const QString& name, QcrCell<T>* cell);
     QcrControl(QObject& object, const QString& name, const T val);
     ~QcrControl();
     void programaticallySetValue(T val);
@@ -32,12 +32,12 @@ public:
     void setGuiHook(std::function<void(T&)> hook) { hook_ = hook; }
     virtual T doGetValue() const = 0;
     virtual void executeConsoleCommand(const QString& arg);
-    ParamWrapper<T>* cell() { return cell_; } // TODO rm
+    QcrCell<T>* cell() { return cell_; } // TODO rm
 protected:
     void initControl();
     void onChangedValue(bool hasFocus, T val);
     bool softwareCalling_ {false}; // make it private again ??
-    ParamWrapper<T>* cell_ {nullptr};
+    QcrCell<T>* cell_ {nullptr};
     T reportedValue_;
 private:
     std::function<void(T&)> hook_ = [](T&) {};
@@ -48,21 +48,21 @@ private:
 //  ***********************************************************************************************
 //  implementation of QcrControl<T>
 
-//! Constructor that associates this QcrControl with an external ParamWrapper.
+//! Constructor that associates this QcrControl with an external QcrCell.
 template<class T>
-QcrControl<T>::QcrControl(QObject& object, const QString& name, ParamWrapper<T>* cell)
+QcrControl<T>::QcrControl(QObject& object, const QString& name, QcrCell<T>* cell)
     : QcrSettable {object, name}
     , cell_ {cell}
 {
 }
 
-//! Constructs a QcrControl that owns a ParamWrapper.
+//! Constructs a QcrControl that owns a QcrCell.
 template<class T>
 QcrControl<T>::QcrControl(QObject& object, const QString& name, const T val)
     : QcrSettable {object, name}
     , ownsItsCell_ {true}
 {
-    cell_ = new ParamWrapper<T>(val); // TODO RECONSIDER smart pointer
+    cell_ = new QcrCell<T>(val); // TODO RECONSIDER smart pointer
 }
 
 template<class T>

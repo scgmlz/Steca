@@ -39,8 +39,8 @@ public:
     ImageTransform       imageTransform;
     ImageCut             imageCut;
     InterpolParams       interpolParams;
-    ParamWrapper<bool>   intenScaledAvg {true}; // if not, summed
-    ParamWrapper<double> intenScale {1};
+    QcrCell<bool>   intenScaledAvg {true}; // if not, summed
+    QcrCell<double> intenScale {1};
     eNorm                normMode {eNorm::NONE};
     MetaSelection        metaSelection;
 };

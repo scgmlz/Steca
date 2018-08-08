@@ -29,13 +29,13 @@ public:
 
     QJsonObject toJson() const;
 
-    ParamWrapper<bool>   enabled     {false};
-    ParamWrapper<double> stepAlpha   {5.};
-    ParamWrapper<double> stepBeta    {5.};
-    ParamWrapper<double> idwRadius   {10.};
-    ParamWrapper<double> avgAlphaMax {5.};
-    ParamWrapper<double> avgRadius   {5.};
-    ParamWrapper<int>    threshold   {100};
+    QcrCell<bool>   enabled     {false};
+    QcrCell<double> stepAlpha   {5.};
+    QcrCell<double> stepBeta    {5.};
+    QcrCell<double> idwRadius   {10.};
+    QcrCell<double> avgAlphaMax {5.};
+    QcrCell<double> avgRadius   {5.};
+    QcrCell<int>    threshold   {100};
 
 };
 

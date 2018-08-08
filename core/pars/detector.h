@@ -36,9 +36,9 @@ public:
 
     QJsonObject toJson() const;
 
-    ParamWrapper<double> detectorDistance {DEF_DETECTOR_DISTANCE};
-    ParamWrapper<double> pixSize          {DEF_DETECTOR_PIXEL_SIZE};
-    std::array<ParamWrapper<int>,2> pixOffset {{0, 0}};
+    QcrCell<double> detectorDistance {DEF_DETECTOR_DISTANCE};
+    QcrCell<double> pixSize          {DEF_DETECTOR_PIXEL_SIZE};
+    std::array<QcrCell<int>,2> pixOffset {{0, 0}};
 };
 
 
@@ -55,10 +55,10 @@ public:
     size2d marginSize() const;
     QJsonObject toJson() const;
 
-    ParamWrapper<int> left {0};
-    ParamWrapper<int> right {0};
-    ParamWrapper<int> top {0};
-    ParamWrapper<int> bottom {0};
+    QcrCell<int> left {0};
+    QcrCell<int> right {0};
+    QcrCell<int> top {0};
+    QcrCell<int> bottom {0};
 };
 
 

@@ -87,8 +87,8 @@ public:
     bool hasIncomplete() const { return hasIncomplete_; }
     std::vector<const Cluster*> activeClustersList() const;
 
-    ParamWrapper<int> binning {1};             //!< bin so many Measurement|s into one cluster
-    ParamWrapper<bool> dropIncomplete {false}; //!< drop Clusters with less than 'binning' members.
+    QcrCell<int> binning {1};             //!< bin so many Measurement|s into one cluster
+    QcrCell<bool> dropIncomplete {false}; //!< drop Clusters with less than 'binning' members.
 
     std::vector<std::unique_ptr<Cluster>> allClusters; //!< all Cluster|s are owned by this
 private:

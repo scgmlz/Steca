@@ -103,7 +103,7 @@ QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on,
     initToggle(iconFile, shortcut);
 }
 
-QcrToggle::QcrToggle(const QString& rawname, ParamWrapper<bool>* cell, const QString& text,
+QcrToggle::QcrToggle(const QString& rawname, QcrCell<bool>* cell, const QString& text,
                      const QString& iconFile, const QKeySequence& shortcut)
     : QcrAction {text}
     , QcrControl<bool> {*this, rawname, cell}
@@ -178,7 +178,7 @@ QcrSpinBox::QcrSpinBox(int val, const QString& _name, int ndigits,
 }
 
 
-QcrSpinBox::QcrSpinBox(const QString& _name, ParamWrapper<int>* cell, int ndigits,
+QcrSpinBox::QcrSpinBox(const QString& _name, QcrCell<int>* cell, int ndigits,
                        bool withDot, int min, int max, const QString& tooltip)
     : QcrControl<int> {*this, _name, cell}
 {
@@ -234,7 +234,7 @@ QcrDoubleSpinBox::QcrDoubleSpinBox(
 }
 
 QcrDoubleSpinBox::QcrDoubleSpinBox(
-    const QString& _name, ParamWrapper<double>* cell, int nDigits, int nDecimals,
+    const QString& _name, QcrCell<double>* cell, int nDigits, int nDecimals,
     double min, double max, const QString& tooltip)
     : QcrControl<double> {*this, _name, cell}
 {
@@ -292,7 +292,7 @@ QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, bool val)
             onChangedValue(hasFocus(), (bool)val); });
 }
 
-QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, ParamWrapper<bool>* cell)
+QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, QcrCell<bool>* cell)
     : QCheckBox {text}
     , QcrControl<bool> {*this, _name, cell}
 {
@@ -313,7 +313,7 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, bool v
             onChangedValue(hasFocus(), val); });
 }
 
-QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, ParamWrapper<bool>* cell)
+QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, QcrCell<bool>* cell)
     : QRadioButton {text}
     , QcrControl<bool> {*this, _name, cell}
 {

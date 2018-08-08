@@ -40,7 +40,7 @@ public:
     const Image& image() const { return *corrImage_; }
     const Image* normalizer() const;
 
-    ParamWrapper<bool> enabled {true};
+    QcrCell<bool> enabled {true};
 
 private:
     void onCorr();

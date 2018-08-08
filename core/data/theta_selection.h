@@ -29,7 +29,7 @@ public:
     QJsonObject toJson() const;
     const Range& range() const { return range_; }
 
-    ParamWrapper<int> currArc {1}; // counting from 1, for user convenience
+    QcrCell<int> currArc {1}; // counting from 1, for user convenience
 
 private:
     void recomputeCache();

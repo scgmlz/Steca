@@ -3,7 +3,7 @@
 //  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/engine/param_wrapper.h
-//! @brief     Defines and implements templated class ParamWrapper
+//! @brief     Defines and implements templated class QcrCell
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -27,10 +27,10 @@ class QcrControl;
 
 //! Holds a single parameter.
 template<class T>
-class ParamWrapper {
+class QcrCell {
 public:
-    ParamWrapper() = delete;
-    ParamWrapper(T value) : value_{value} {}
+    QcrCell() = delete;
+    QcrCell(T value) : value_{value} {}
 
     void setVal(T);
     void setHook(std::function<void(T)> hook) { hook_ = hook; }
@@ -39,23 +39,23 @@ public:
 
 private:
     T value_;
-    std::function<void(T)> hook_ = [](T) { gRoot->remakeAll("ParamWrapper"); };
+    std::function<void(T)> hook_ = [](T) { gRoot->remakeAll("QcrCell"); };
 
     friend QcrControl<T>;
     void guiSetsVal(T, bool userCall=false);
 };
 
 //  ***********************************************************************************************
-//  class ParamWrapper implementation
+//  class QcrCell implementation
 
 template<class T>
-void ParamWrapper<T>::setVal(T val)
+void QcrCell<T>::setVal(T val)
 {
     value_ = val;
 }
 
 template<class T>
-void ParamWrapper<T>::guiSetsVal(T val, bool userCall)
+void QcrCell<T>::guiSetsVal(T val, bool userCall)
 {
     value_ = val;
     if (userCall) // to prevent circular calls; TODO simplify

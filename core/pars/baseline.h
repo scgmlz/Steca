@@ -29,7 +29,7 @@ public:
     QJsonObject toJson() const;
 
     Ranges ranges; // don't forget to emit sigBaseline after each change
-    ParamWrapper<int> polynomDegree {2};
+    QcrCell<int> polynomDegree {2};
 };
 
 #endif // BASELINE_H
