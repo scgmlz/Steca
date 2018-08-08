@@ -267,15 +267,6 @@ void QcrDoubleSpinBox::executeConsoleCommand(const QString& arg)
 //  ***********************************************************************************************
 //! @class QcrCheckBox
 
-QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, bool val)
-    : QCheckBox {text}
-    , QcrControl<bool> {*this, _name, val}
-{
-    initControl();
-    connect(this, _SLOT_(QCheckBox,stateChanged,int), [this](int val)->void {
-            onChangedValue(hasFocus(), (bool)val); });
-}
-
 QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, QcrCell<bool>* cell)
     : QCheckBox {text}
     , QcrControl<bool> {*this, _name, cell}

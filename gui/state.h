@@ -26,7 +26,6 @@ public:
     bool editingBaseline {false};
     bool editingPeakfits {false};
 
-    class QcrCheckBox* polefigShowGridPts;
     class QcrComboBox* diagramX;
     class QcrComboBox* diagramY;
 

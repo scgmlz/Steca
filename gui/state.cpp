@@ -19,8 +19,6 @@
 
 GuiState::GuiState()
 {
-    polefigShowGridPts = new QcrCheckBox {"gridPts", "grid points"};
-
     diagramX = new QcrComboBox {"diagramCoordX"};
     diagramY = new QcrComboBox {"diagramCoordY"};
 

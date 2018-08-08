@@ -26,6 +26,7 @@ public:
     PlotPolefig();
     void refresh();
 
+    QcrCell<bool> flat {false};
 private:
     const PeakInfos* peakInfos_;
     void paintEvent(QPaintEvent*);
@@ -44,7 +45,6 @@ private:
     QPointF c_;
     double r_;
 
-    bool flat_;
     double alphaMax_, avgAlphaMax_;
 };
 

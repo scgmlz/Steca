@@ -33,8 +33,7 @@ QColor intenGraph(double inten, double maxInten) {
 
 
 PlotPolefig::PlotPolefig()
-    : flat_(false)
-    , alphaMax_(90)
+    : alphaMax_(90)
     , avgAlphaMax_(0)
 {
     refresh();
@@ -43,7 +42,6 @@ PlotPolefig::PlotPolefig()
 void PlotPolefig::refresh()
 {
     peakInfos_ = gSession->allPeaks.currentPeaks();
-    flat_ = gGui->state->polefigShowGridPts->checkState();
     avgAlphaMax_ = gSession->params.interpolParams.avgAlphaMax.val();
     QWidget::update();
 }
@@ -120,11 +118,11 @@ void PlotPolefig::paintPoints()
 [Jan:] As I read the code: the body of the 'for' loop (for all points) is guarded by
 'if (qIsFinite(inten))'. NaNs are not finite, so they do not get painted.
 
-Inside the outer 'if' (for finite inten) is 'if (flat_) ... else' where the 'then'
+Inside the outer 'if' (for finite inten) is 'if (flat) ... else' where the 'then'
 branch paints all points blue and the same size (.5), and the 'else' branch paints
 them in various colours and size according to intensity.
 
-The 'flat_' flag is controlled by the check box that is in the corner of the pole graph.
+The 'flat' flag is controlled by the check box that is in the corner of the pole graph.
 
 NaNs (intensities) do not occur in computed points, only in interpolated points,
 when interpolation fails.
@@ -134,7 +132,7 @@ when interpolation fails.
         if (!qIsFinite(inten)) // nan comes from interpolation
             continue;
         const QPointF& pp = p(r.alpha(), r.beta());
-        if (flat_) {
+        if (flat.val()) {
             QColor color(Qt::blue);
             p_->setPen(color);
             p_->setBrush(color);

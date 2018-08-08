@@ -126,7 +126,6 @@ private:
 //! Named check box that can be set by console command.
 class QcrCheckBox : public QCheckBox, public QcrControl<bool> {
 public:
-    QcrCheckBox(const QString& name, const QString& text, bool val=false);
     QcrCheckBox(const QString& name, const QString& text, QcrCell<bool>* cell);
     bool doGetValue() const final { return isChecked(); }
 private:
