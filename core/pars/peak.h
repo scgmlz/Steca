@@ -15,6 +15,8 @@
 #ifndef PEAK_H
 #define PEAK_H
 
+#include "core/typ/range.h"
+
 //! Global settings (range, function type) for one Bragg peak.
 
 class Peak {

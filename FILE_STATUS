@@ -27,22 +27,22 @@
 ./core/loaders/loaders.h&cpp              review later
 ./core/loaders/load_mar.cpp (no h!)       don't touch, 3rd party
 ./core/loaders/load_tiff.cpp (no h!)      don't touch, 3rd party
-./core/loaders/load_yaml.cpp (no h!)      review later
+./core/loaders/load_yaml.cpp (no h!)      TODO get rid of warnings; otherwise review later
 ./core/pars/baseline.h&cpp                ok, class wraps just two variables
-./core/pars/detector.h&cpp
-./core/pars/image_transform.h&cpp
-./core/pars/interpol_params.h&cpp
+./core/pars/detector.h&cpp                simple and good
+./core/pars/image_transform.h&cpp         ugly and broken, revise along with lens.h&cpp
+./core/pars/interpol_params.h&cpp         trivial, revise along with interpolation
 ./core/pars/metadata.h&cpp                TODO revise metadata to make them more flexible
-./core/pars/params.h (only)
-./core/pars/peak.h&cpp
-./core/raw/angle_map.h&cpp
-./core/raw/image.h&cpp
-./core/raw/measurement.h&cpp
-./core/raw/rawfile.h&cpp
-./core/session.h&cpp
+./core/pars/params.h (only)               ok, TODO resuscitate clear(), revise eNorm
+./core/pars/peak.h&cpp                    revise along with fitting
+./core/raw/angle_map.h&cpp                someday revise the projection
+./core/raw/image.h&cpp                    ok, unless review needed for speed
+./core/raw/measurement.h&cpp              review along with metadata
+./core/raw/rawfile.h&cpp                  ok
+./core/session.h&cpp                      ok
 ./core/typ/bool_vector.h&cpp              simple and good
-./core/typ/cached.h (only)
-./core/typ/curve.h&cpp
+./core/typ/cached.h (only)                work in progress TODO needs tests
+./core/typ/curve.h&cpp                    ok, may need SubCurve for speed
 ./core/typ/json.h&cpp
 ./core/typ/range.h&cpp
 ./core/typ/size2d.h&cpp

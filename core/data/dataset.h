@@ -25,15 +25,18 @@ class Datafile {
 public:
     Datafile() = delete;
     Datafile(Rawfile&& raw) : raw_(std::move(raw)) {}
+    // TODO rm copy constructor ?
 
     int numMeasurements() const { return raw_.numMeasurements(); }
     QString name() const { return raw_.fileName(); }
     Qt::CheckState activated() const;
 
     int offset_;  //!< first index in total list of Measurement|s
+
 private:
     friend class Dataset;
     friend class HighlightedData;
+
     Rawfile raw_; //!< owned by this
     int index_; //!< index in files_
     std::vector<Cluster*> clusters_; //!< back links to Cluster|s made from this,
@@ -91,6 +94,7 @@ public:
     QcrCell<bool> dropIncomplete {false}; //!< drop Clusters with less than 'binning' members.
 
     std::vector<std::unique_ptr<Cluster>> allClusters; //!< all Cluster|s are owned by this
+
 private:
     std::vector<Datafile> files_; //!< loaded Datafile|s only live here
     // leave this a unique_ptr because other vectors backlink through Cluster* pointers

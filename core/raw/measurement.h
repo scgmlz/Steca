@@ -17,8 +17,8 @@
 
 #include "core/raw/image.h"
 #include "core/pars/metadata.h"
+#include "core/raw/angle_map.h"
 #include <memory>
-
 
 //! A Measurement consts of an Image with associated Metadata
 
@@ -32,7 +32,6 @@ public:
 
     int position() const { return position_; }
     const Metadata& metadata() const { return metadata_; }
-
 
     double monitorCount() const;
     double deltaMonitorCount() const;
@@ -52,7 +51,7 @@ public:
     const Image& image() const { return *image_; }
     size2d imageSize() const;
 
-    const class AngleMap& angleMap() const;
+    const AngleMap& angleMap() const;
 
 private:
     const int position_; //! position in file_

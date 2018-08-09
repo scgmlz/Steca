@@ -12,15 +12,15 @@
 //
 //  ***********************************************************************************************
 
-#include "core/aux/exception.h"
 #include "core/raw/image.h"
+#include "core/aux/exception.h"
 #include "qcr/base/debug.h"
 
 Image::Image(const size2d& size, float val)
-    : size_(size),
-      intens_(size.count(), val),
-      rangeInten_(val, val)
-{ }
+    : size_(size)
+    , intens_(size.count(), val)
+    , rangeInten_(val, val)
+{}
 
 Image::Image(const size2d& size, std::vector<float>&& intens)
     : size_(size)

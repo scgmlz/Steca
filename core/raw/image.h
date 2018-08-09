@@ -21,7 +21,6 @@
 //! Holds a detector image, and provides read and write access
 class Image {
 public:
-    Image() = delete;
     Image(const size2d&, float val);
     Image(const size2d& size, std::vector<float>&& intens);
     Image(const Image&) = delete;
