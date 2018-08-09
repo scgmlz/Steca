@@ -22,7 +22,9 @@
 Toggles::Toggles()
     : enableCorr {"enableCorr", &gSession->corrset.enabled,
         "Enable correction file", ":/icon/useCorrection"}
-{
+    , linkCuts {"linkCuts", &gSession->params.imageCut.linked,
+              "Link the four cut settings", ":/icon/link"}
+ {
 #define AT &QAction::toggled
 
     QObject::connect(&viewStatusbar, AT, [](bool on) { gGui->statusBar()->setVisible(on); });

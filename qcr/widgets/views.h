@@ -17,6 +17,7 @@
 
 #include "qcr/engine/mixin.h"
 #include <QDockWidget>
+#include <QFrame>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMainWindow>
@@ -30,6 +31,11 @@ public:
 class QcrWidget : public QWidget, public QcrMixin {
 public:
     QcrWidget(const QString& name) : QcrMixin{*this, name} {}
+};
+
+class QcrFrame : public QFrame, public QcrMixin {
+public:
+    QcrFrame(const QString& name) : QcrMixin{*this, name} {}
 };
 
 class QcrStackedWidget : public QStackedWidget, public QcrMixin {

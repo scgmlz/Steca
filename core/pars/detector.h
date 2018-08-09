@@ -58,6 +58,10 @@ public:
     QcrCell<int> right {0};
     QcrCell<int> top {0};
     QcrCell<int> bottom {0};
+    QcrCell<bool> linked {false};
+
+private:
+    void sync(int val, QcrCell<int>& _1, QcrCell<int>& _2, QcrCell<int>& _3);
 };
 
 #endif // DETECTOR_H

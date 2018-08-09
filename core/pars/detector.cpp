@@ -77,10 +77,21 @@ QJsonObject Detector::toJson() const
 
 ImageCut::ImageCut()
 {
-    left  .setHook( [](int   ) { gSession->onDetector(); gRoot->remakeAll("cut"); } );
-    right .setHook( [](int   ) { gSession->onDetector(); gRoot->remakeAll("cut"); } );
-    top   .setHook( [](int   ) { gSession->onDetector(); gRoot->remakeAll("cut"); } );
-    bottom.setHook( [](int   ) { gSession->onDetector(); gRoot->remakeAll("cut"); } );
+    left  .setHook([this](int val){ sync(val, right, top,   bottom); });
+    right .setHook([this](int val){ sync(val, left,  top,   bottom); });
+    top   .setHook([this](int val){ sync(val, left,  right, bottom); });
+    bottom.setHook([this](int val){ sync(val, left,  right, top   ); });
+}
+
+void ImageCut::sync(int val, QcrCell<int>& _1, QcrCell<int>& _2, QcrCell<int>& _3)
+{
+    if (linked.val()) {
+        _1.setVal(val);
+        _2.setVal(val);
+        _3.setVal(val);
+    }
+    gSession->onDetector();
+    gRoot->remakeAll("cut");
 }
 
 void ImageCut::clear()

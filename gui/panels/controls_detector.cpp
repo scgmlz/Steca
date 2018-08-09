@@ -82,7 +82,7 @@ DetectorControls::DetectorControls()
 
 //! Control widgets that govern the detector cuts.
 
-class CutControls : public QFrame {
+class CutControls : public QcrFrame {
 public:
     CutControls();
 private:
@@ -92,11 +92,11 @@ private:
     QcrSpinBox cutTop_;
     QcrSpinBox cutRight_;
     QcrSpinBox cutBottom_;
-    void setCut(int);
 };
 
 CutControls::CutControls()
-    : link_      {&gGui->toggles->linkCuts}
+    : QcrFrame("cuts")
+    , link_      {&gGui->toggles->linkCuts}
     , cutLeft_   {"cutLeft",   &gSession->params.imageCut.left,   3, false, 0, INT_MAX,
               "Number of pixels to be cut at the left"}
     , cutTop_    {"cutTop",    &gSession->params.imageCut.top,    3, false, 0, INT_MAX,
@@ -116,29 +116,6 @@ CutControls::CutControls()
     layout_.addWidget(&cutRight_, 1, 4);
     layout_.setColumnStretch(5, 1);
     setLayout(&layout_);
-
-    cutLeft_  .setGuiHook( [=](int& val){ setCut(val); } );
-    cutTop_   .setGuiHook( [=](int& val){ setCut(val); } );
-    cutRight_ .setGuiHook( [=](int& val){ setCut(val); } );
-    cutBottom_.setGuiHook( [=](int& val){ setCut(val); } );
-}
-
-void CutControls::setCut(int val)
-{
-    if ( gGui->toggles->linkCuts.getValue() ) {
-        // TODO does not work as intended: remakeAll is called four times!
-        qDebug() << "setCut 1";
-        cutLeft_  .programaticallySetValue(val);
-        qDebug() << "setCut 2";
-        cutTop_   .programaticallySetValue(val);
-        qDebug() << "setCut 3";
-        cutRight_ .programaticallySetValue(val);
-        qDebug() << "setCut 4";
-        cutBottom_.programaticallySetValue(val);
-        qDebug() << "setCut 5";
-    }
-    gRoot->remakeAll("setCut");
-        qDebug() << "setCut 6";
 }
 
 //  ***********************************************************************************************
@@ -146,7 +123,7 @@ void CutControls::setCut(int val)
 
 //! Control widgets that govern the combination of Measurement|s into Cluster|s.
 
-class ActiveClustersControls : public QWidget {
+class ActiveClustersControls : public QcrWidget {
 public:
     ActiveClustersControls();
 private:
@@ -157,7 +134,8 @@ private:
 };
 
 ActiveClustersControls::ActiveClustersControls()
-    : combineMeasurements_ {
+    : QcrWidget("activeClusters")
+    , combineMeasurements_ {
         "combineMeasurements", &gSession->dataset.binning, 3, false, 1, 999,
         "Combine this number of measurements into one group"}
     , dropIncompleteAction_ {
@@ -186,7 +164,7 @@ ActiveClustersControls::ActiveClustersControls()
 
 //! Control widgets that govern the gamma slicing.
 
-class GammaControls : public QWidget {
+class GammaControls : public QcrWidget {
 public:
     GammaControls();
 private:
@@ -195,6 +173,7 @@ private:
 };
 
 GammaControls::GammaControls()
+    : QcrWidget("gamma")
 {
     numSlices_ = new QcrSpinBox {
         "numSlices", &gSession->gammaSelection.numSlices, 2, false, 0, INT_MAX,
@@ -211,6 +190,7 @@ GammaControls::GammaControls()
 //! @class ControlsDetector
 
 ControlsDetector::ControlsDetector()
+    : QcrWidget("detector")
 {
     auto* vbox = new QVBoxLayout;
     vbox->addWidget(new DetectorControls);
