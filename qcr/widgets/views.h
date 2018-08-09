@@ -30,7 +30,7 @@ public:
 
 class QcrWidget : public QWidget, public QcrMixin {
 public:
-    QcrWidget(const QString& name) : QcrMixin{*this, name} {}
+QcrWidget() : QcrMixin(this) {}
 };
 
 class QcrFrame : public QFrame, public QcrMixin {

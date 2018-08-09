@@ -30,6 +30,12 @@ QcrMixin::QcrMixin(QObject& object, const QString& name)
     object_.setObjectName(name);
 }
 
+QcrMixin::QcrMixin(QObject* object, const QString& name)
+    : object_ {*object}
+{
+    object_.setObjectName(name);
+}
+
 void QcrMixin::remake()
 {
     if (const QWidget* w = dynamic_cast<const QWidget*>(&object()))

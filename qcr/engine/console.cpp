@@ -52,6 +52,7 @@ private:
 
 QString CommandRegistry::learn(const QString& name, QcrSettable* widget)
 {
+    ASSERT(name!=""); // empty name only allowed for non-settable QcrMixin
     // qterr << "Registry " << name_ << " learns '" << name << "'\n"; qterr.flush();
     QString ret = name;
     if (ret.contains("#")) {

@@ -23,7 +23,8 @@ extern class QcrRoot* gRoot;
 //! Mix-in for QObject, enforcing a name, and providing recompute functionality.
 class QcrMixin {
 protected:
-    QcrMixin(QObject& object, const QString& name);
+    QcrMixin(QObject& object, const QString& name); // TODO convert everywhere to QObject* form
+    QcrMixin(QObject* object, const QString& name="");
 public:
     QcrMixin(const QcrMixin&) = delete;
     const QObject& object() const { return object_; }
