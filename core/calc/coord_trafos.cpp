@@ -36,7 +36,7 @@ void algo::calculateAlphaBeta(deg& alpha, deg& beta, deg tth, deg gma, deg chi, 
 
     // Extract alpha (latitude) and beta (longitude).
     rad alphaRad = acos(rotated._2);
-    rad betaRad = atan2(rotated._0, rotated._1);
+    rad betaRad  = atan2(rotated._0, rotated._1);
 
     // If alpha is in the wrong hemisphere, mirror both alpha and beta over the
     // center of a unit sphere.

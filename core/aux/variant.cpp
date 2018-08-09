@@ -29,22 +29,24 @@ bool isNumeric(const QVariant& v)
     case QMetaType::Short:
     case QMetaType::ULong:
     case QMetaType::UShort:
-    case QMetaType::Float: return true;
-    default: return false;
+    case QMetaType::Float:
+        return true;
+    default:
+        return false;
     }
 }
 
-#define RET_COMPARE_VALUE2(v1, v2)                                                \
-    if (v1 < v2)                                                                  \
-        return -1;                                                                \
-    if (v1 > v2)                                                                  \
+#define RET_COMPARE_VALUES(v1, v2)                                      \
+    if (v1 < v2)                                                        \
+        return -1;                                                      \
+    if (v1 > v2)                                                        \
         return +1;
 
 #define IMPL_CMP(name, toType)                                          \
-    int name(const QVariant& v1, const QVariant& v2) {                                             \
-        auto val1 = v1.toType(), val2 = v2.toType();                                               \
-        RET_COMPARE_VALUE2(val1, val2)                                                             \
-        return 0;                                                                                  \
+    int name(const QVariant& v1, const QVariant& v2) {                  \
+        auto val1 = v1.toType(), val2 = v2.toType();                    \
+        RET_COMPARE_VALUES(val1, val2)                                  \
+        return 0;                                                       \
     }
 
 IMPL_CMP(cmp_int, toInt)
@@ -60,8 +62,9 @@ int cmp_real(const QVariant& v1, const QVariant& v2)
     if (qIsNaN(val2)) {
         return -1;
     }
-    RET_COMPARE_VALUE2(val1, val2)
+    RET_COMPARE_VALUES(val1, val2)
     return 0;
 }
 
 #undef IMPL_CMP
+#undef RET_COMPARE_VALUES

@@ -24,7 +24,7 @@ deg::deg(rad r)
 
 rad deg::toRad() const
 {
-    return val_ * (M_PI / 180);
+    return rad(val_ * (M_PI / 180));
 }
 
 deg& deg::operator+=(const deg& that)
@@ -39,10 +39,10 @@ deg& deg::operator*=(double fac)
     return *this;
 }
 
-deg deg::normalized()
+deg deg::normalized() const
 {
-    static double const MAX = 360;
-    double norm = fmod(val_, MAX);
+    static const deg MAX {360};
+    deg norm {fmod(val_, MAX)};
     if (norm < 0)
         norm += MAX;
     return norm;
@@ -55,7 +55,7 @@ rad::rad(deg d)
 
 deg rad::toDeg() const
 {
-    return val_ * (180 / M_PI);
+    return deg(val_ * (180 / M_PI));
 }
 
 rad& rad::operator+=(const rad& that)

@@ -15,14 +15,12 @@
 #ifndef ACTIVE_CLUSTERS_H
 #define ACTIVE_CLUSTERS_H
 
+#include "core/data/cluster.h"
+#include "core/data/dfgram.h"
+#include "core/raw/measurement.h"
 #include "core/typ/cached.h"
 
-class Cluster;
-class Dfgram;
-class Measurement;
-class Range;
-
-//! The list of activated Cluster|s, and cached averages
+//! The list of activated Cluster|s, their average Dfgram, and a few more cached properties.
 
 class ActiveClusters {
 public:
@@ -40,9 +38,6 @@ public:
     Cached<double> grandAvgDeltaMonitorCount;
     Cached<double> grandAvgTime;
     Cached<double> grandAvgDeltaTime;
-
-private:
-    double recomputeAvg(std::function<double(const Measurement*)> f);
 };
 
 #endif // ACTIVE_CLUSTERS_H

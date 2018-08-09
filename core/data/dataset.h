@@ -45,7 +45,7 @@ private:
 
 class HighlightedData {
 public:
-    HighlightedData() = default;
+    HighlightedData() {}
     HighlightedData(const HighlightedData&) = delete;
 
     void clear();

@@ -12,11 +12,10 @@
 //
 //  ***********************************************************************************************
 
-#include "collect_intensities.h"
-#include "core/def/idiomatic_for.h"
+#include "core/data/collect_intensities.h"
 #include "core/raw/angle_map.h"
 #include "core/session.h"
-#include "core/aux/async.h"
+//#include "core/aux/async.h"
 #include "qcr/base/debug.h"
 #include <qmath.h>
 
@@ -104,7 +103,7 @@ Curve algo::projectCluster(const Sequence& cluster, const Range& rgeGma)
     // sum or average
     if (gSession->params.intenScaledAvg.val()) {
         double scale = gSession->params.intenScale.val();
-        for_i (numBins) {
+        for (int i=0; i<numBins; ++i) {
             int cnt = counts.at(i);
             if (cnt > 0)
                 intens[i] *= scale / cnt;
@@ -112,7 +111,7 @@ Curve algo::projectCluster(const Sequence& cluster, const Range& rgeGma)
     }
 
     Curve ret;
-    for_i (numBins)
+    for (int i=0; i<numBins; ++i)
         ret.append(minTth + deltaTth * i, double(intens.at(i) * normFactor));
     return ret;
 }

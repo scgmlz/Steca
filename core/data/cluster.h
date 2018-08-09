@@ -19,9 +19,6 @@
 #include "core/data/dfgram.h"
 #include "core/raw/measurement.h"
 
-class Cluster;
-class Dfgram;
-
 //! A group of one or more Measurement|s.
 
 //! Base class of Cluster, and also used to hold _all_ loaded Measurements.

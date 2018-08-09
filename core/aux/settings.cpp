@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/aux/settings.h"
-#include "qcr/base/debug.h"
+//#include "qcr/base/debug.h"
 
 XSettings::XSettings(const QString& group)
 {

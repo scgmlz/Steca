@@ -53,8 +53,7 @@ template<class T>
 QcrControl<T>::QcrControl(QObject& object, const QString& name, QcrCell<T>* cell)
     : QcrSettable {object, name}
     , cell_ {cell}
-{
-}
+{}
 
 //! Constructs a QcrControl that owns a QcrCell.
 template<class T>
@@ -74,8 +73,10 @@ QcrControl<T>::~QcrControl()
 
 //! Ensures synchronization of this Control with its associated Cell.
 
-//! Cannot be called from QcrControl constructors, because it calls the pure virtual member
-//! function 'doSetValue'; its overrides are not available in the constructor of 'QcrControl'.
+//! Cannot be called from QcrControl constructors, because it indirectly calls the pure
+//! virtual member function 'doSetValue' that has overrides that are not available in
+//! the constructor of 'QcrControl'.
+
 template<class T>
 void QcrControl<T>::initControl()
 {
@@ -89,6 +90,8 @@ void QcrControl<T>::initControl()
                strOp::to_s(reportedValue_).toLatin1().constData());
     doLog(true, "initControl "+name()+" "+strOp::to_s(reportedValue_));
 }
+
+//! Wraps a call to 'doSetValue', with flag softwareCalling_ = true.
 
 template<class T>
 void QcrControl<T>::programaticallySetValue(T val)

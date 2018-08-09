@@ -18,7 +18,6 @@
 #include "core/aux/angles.h"
 #include <vector> // no auto rm
 
-class QProgressBar;
 class Curve;
 class Measurement;
 class Range;

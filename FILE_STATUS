@@ -1,0 +1,98 @@
+./core/aux/angles.h&cpp                   simple and good, has tests (003)
+./core/aux/async.h&cpp                    simple and good
+./core/aux/exception.h&cpp                simple and good
+./core/aux/settings.h&cpp                 simple and good, need unclear
+./core/aux/variant.h&cpp                  need unclear, revise along with meta pars
+./core/calc/active_clusters.h&cpp         ok, revise along with meta pars
+./core/calc/coord_trafos.h&cpp            revise along with math
+./core/calc/interpolate_polefig.h&cpp     too long & complex, revise along with math
+./core/calc/matrix.h&cpp                  unclear whether needed, revise along with math
+./core/calc/peak_info.h&cpp               revise along with meta pars
+./core/data/cluster.h&cpp                 revise along with meta pars
+./core/data/collect_intensities.h&cpp     revise along with math
+./core/data/corrset.h&cpp                 follows dataset.h&cpp
+./core/data/dataset.h&cpp                 complex datastructures, keep revising
+./core/data/dfgram.h&cpp                  good, given the complexity
+./core/data/gamma_selection.h&cpp
+./core/data/lens.h&cpp
+./core/data/theta_selection.h&cpp
+./core/def/idiomatic_for.h                TODO get rid of
+./core/fit/fit_fun.h&cpp
+./core/fit/fit_methods.h&cpp
+./core/fit/fit_par.h&cpp
+./core/fit/peak_functions.h&cpp
+./core/fit/raw_outcome.h&cpp
+./core/loaders/fastyamlloader.h&cpp       review later
+./core/loaders/load_caress.cpp (no h!)    don't touch, 3rd party
+./core/loaders/loaders.h&cpp              review later
+./core/loaders/load_mar.cpp (no h!)       don't touch, 3rd party
+./core/loaders/load_tiff.cpp (no h!)      don't touch, 3rd party
+./core/loaders/load_yaml.cpp (no h!)      review later
+./core/meta/metadata.h&cpp
+./core/meta/meta_selection.h&cpp
+./core/pars/baseline.h&cpp
+./core/pars/detector.h&cpp
+./core/pars/image_transform.h&cpp
+./core/pars/interpol_params.h&cpp
+./core/pars/params.h (only)
+./core/pars/peak.h&cpp
+./core/raw/angle_map.h&cpp
+./core/raw/image.h&cpp
+./core/raw/measurement.h&cpp
+./core/raw/rawfile.h&cpp
+./core/session.h&cpp
+./core/typ/cached.h (only)
+./core/typ/curve.h&cpp
+./core/typ/json.h&cpp
+./core/typ/range.h&cpp
+./core/typ/size2d.h&cpp
+./gui/actions/image_trafo_actions.h&cpp
+./gui/actions/menus.h&cpp
+./gui/actions/toggles.h&cpp
+./gui/actions/triggers.h&cpp
+./gui/cfg/msg_handler.h&cpp
+./gui/dialogs/check_update.h&cpp
+./gui/dialogs/export_bigtable.h&cpp
+./gui/dialogs/export_dfgram.h&cpp
+./gui/dialogs/export_diagram.h&cpp
+./gui/dialogs/exportfile_dialogfield.h&cpp
+./gui/dialogs/export_polefig.h&cpp
+./gui/dialogs/file_dialog.h&cpp
+./gui/dialogs/message_boxes.h&cpp
+./gui/dialogs/popup_bigtable.h&cpp
+./gui/dialogs/popup_diagram.h&cpp
+./gui/dialogs/popup_polefig.h&cpp
+./gui/mainwin.h&cpp
+./gui/panels/controls_baseline.h&cpp
+./gui/panels/controls_detector.h&cpp
+./gui/panels/controls_interpolation.h&cpp
+./gui/panels/controls_peakfits.h&cpp
+./gui/panels/mainframe.h&cpp
+./gui/panels/subframe_clusters.h&cpp
+./gui/panels/subframe_dfgram.h&cpp
+./gui/panels/subframe_files.h&cpp
+./gui/panels/subframe_metadata.h&cpp
+./gui/panels/subframe_setup.h&cpp
+./gui/panels/tab_bigtable.h&cpp
+./gui/panels/tab_diagram.h&cpp
+./gui/panels/tab_image.h&cpp
+./gui/panels/tab_polefig.h&cpp
+./gui/state.h&cpp
+./gui/view/bigtable.h&cpp
+./gui/view/plot_dfgram.h&cpp
+./gui/view/plot_diagram.h&cpp
+./gui/view/plot_overlay.h&cpp
+./gui/view/plot_polefig.h&cpp
+./gui/view/range_control.h&cpp
+./main/steca.h&cpp
+./qcr/base/debug.h (only)
+./qcr/base/qcrexception.h (only)
+./qcr/base/string_ops.h&cpp
+./qcr/engine/cell.h (only, tpl)
+./qcr/engine/console.h&cpp
+./qcr/engine/mixin.h&cpp
+./qcr/engine/single_value.h (only, tpl)
+./qcr/widgets/controls.h&cpp
+./qcr/widgets/modal_dialogs.h&cpp
+./qcr/widgets/tables.h&cpp
+./qcr/widgets/views.h&cpp

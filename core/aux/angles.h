@@ -15,23 +15,20 @@
 #ifndef ANGLES_H
 #define ANGLES_H
 
-#include <QtGlobal>
-
 class rad;
 
 //! An angle in degrees
 class deg {
 public:
     deg(double val = 0) : val_(val) {}
-    operator double() const { return val_; }
-
     explicit deg(rad);
-    rad toRad() const;
 
     deg& operator+=(const deg&);
     deg& operator*=(double);
 
-    deg normalized();
+    operator double() const { return val_; }
+    rad toRad() const;
+    deg normalized() const;
 
 private:
     double val_;
@@ -41,13 +38,13 @@ private:
 class rad {
 public:
     rad(double val = 0) : val_(val) {}
-    operator double() const { return val_; }
-
     explicit rad(deg);
-    deg toDeg() const;
 
     rad& operator+=(const rad&);
     rad& operator*=(double);
+
+    operator double() const { return val_; }
+    deg toDeg() const;
 
 private:
     double val_;

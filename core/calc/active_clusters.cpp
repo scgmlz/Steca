@@ -15,10 +15,7 @@
 #include "core/calc/active_clusters.h"
 #include "core/data/collect_intensities.h"
 #include "core/aux/async.h"
-#include "core/data/cluster.h"
-#include "core/data/dfgram.h"
 #include "core/data/lens.h"
-#include "core/raw/measurement.h"
 #include "core/session.h"
 #include "qcr/base/debug.h"
 
@@ -57,6 +54,19 @@ Range computeRgeFixedInten(const ActiveClusters*const ac)
     return ret;
 }
 
+//! Internally used to compute grand averages of monitor, time, etc
+double recomputeAvg(const ActiveClusters*const ac, std::function<double(const Measurement*)> f)
+{
+    double sum = 0;
+    int cnt = 0;
+    for (const Cluster* cluster : ac->clusters.get()) {
+        for (const Measurement* one : cluster->members())
+            sum += f(one);
+        cnt += cluster->count();
+    }
+    return sum/cnt;
+}
+
 } // namespace
 
 
@@ -69,27 +79,14 @@ ActiveClusters::ActiveClusters()
     , rgeFixedInten {[this]()->Range{
         return computeRgeFixedInten(this);}}
     , grandAvgMonitorCount {[this]()->double{
-        return recomputeAvg([](const Measurement* one){return one->monitorCount();});}}
+        return recomputeAvg(this, [](const Measurement* one){return one->monitorCount();});}}
     , grandAvgDeltaMonitorCount {[this]()->double{
-        return recomputeAvg([](const Measurement* one){return one->deltaMonitorCount();});}}
+        return recomputeAvg(this, [](const Measurement* one){return one->deltaMonitorCount();});}}
     , grandAvgTime {[this]()->double{
-        return recomputeAvg([](const Measurement* one){return one->time();});}}
+        return recomputeAvg(this, [](const Measurement* one){return one->time();});}}
     , grandAvgDeltaTime {[this]()->double{
-        return recomputeAvg([](const Measurement* one){return one->deltaTime();});}}
+        return recomputeAvg(this, [](const Measurement* one){return one->deltaTime();});}}
 {}
-
-//! Internally used to compute grand averages of monitor, time, etc
-double ActiveClusters::recomputeAvg(std::function<double(const Measurement*)> f)
-{
-    double sum = 0;
-    int cnt = 0;
-    for (const Cluster* cluster : clusters.get()) {
-        for (const Measurement* one : cluster->members())
-            sum += f(one);
-        cnt += cluster->count();
-    }
-    return sum/cnt;
-}
 
 void ActiveClusters::invalidate() const
 {

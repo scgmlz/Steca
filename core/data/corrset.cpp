@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/def/idiomatic_for.h"
+#include "core/data/corrset.h"
 #include "core/loaders/loaders.h"
 #include "core/session.h"
 #include "qcr/base/debug.h"
@@ -67,22 +67,25 @@ void Corrset::calcNormalizer() const
     int di = gSession->params.imageCut.left.val(), dj = gSession->params.imageCut.top.val();
 
     double sum = 0;
-    for_ij (w, h)
-        sum += corrImage_->inten2d(i + di, j + dj);
+    for (int i=0; i<w; ++i)
+        for (int j=0; j<h; ++j)
+            sum += corrImage_->inten2d(i + di, j + dj);
     double avg = sum / (w * h);
 
     normalizer_.reset(new Image(corrImage_->size(), 1.));
 
-    for_ij (w, h) {
-        const float inten = corrImage_->inten2d(i + di, j + dj);
-        double fact;
-        if (inten > 0) {
-            fact = avg / inten;
-        } else {
-            fact = Q_QNAN;
-            hasNANs_ = true;
+    for (int i=0; i<w; ++i) {
+        for (int j=0; j<h; ++j) {
+            const float inten = corrImage_->inten2d(i + di, j + dj);
+            double fact;
+            if (inten > 0) {
+                fact = avg / inten;
+            } else {
+                fact = Q_QNAN;
+                hasNANs_ = true;
+            }
+            normalizer_->setInten2d(i + di, j + dj, float(fact));
         }
-        normalizer_->setInten2d(i + di, j + dj, float(fact));
     }
 }
 

@@ -17,7 +17,6 @@
 
 #include <QException>
 #include <QString>
-#include <iostream>
 
 //! The sole exception type to be used in core and gui.
 
@@ -26,8 +25,7 @@
 
 class Exception : public QException {
 public:
-    Exception() = delete;
-    Exception(const QString& msg) noexcept : msg_(msg) {}
+    Exception(const QString& msg) noexcept;
     const QString& msg() const noexcept { return msg_; }
 private:
     QString msg_;
@@ -35,6 +33,6 @@ private:
 
 // The sole way to throw an Exception.
 // TODO reconsider whether output is needed here, and whether to prefer std::cerr over qDebug
-#define THROW(msg) { std::cerr << QString(msg).toStdString() << "\n"; throw Exception(msg); }
+#define THROW(msg) { throw Exception(msg); }
 
 #endif // EXCEPTION_H
