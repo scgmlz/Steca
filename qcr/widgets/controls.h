@@ -42,7 +42,6 @@ public:
     QcrTrigger(const QString& name, const QString& text, const QString& iconFile,
                const QKeySequence& shortcut);
     void executeConsoleCommand(const QString&) override;
-    void remake() final { remake_(); }
 };
 
 //! Trigger button with text display and associated action.
@@ -65,7 +64,6 @@ public:
     QcrToggle(const QString& name, QcrCell<bool>* cell, const QString& text,
               const QString& iconFile="", const QKeySequence& shortcut = {});
     bool doGetValue() const final { return isChecked(); }
-    void remake() final { remake_(); }
 private:
     void initToggle(const QString& iconFile, const QKeySequence& shortcut);
     void doSetValue(bool val) final { setChecked(val); }
