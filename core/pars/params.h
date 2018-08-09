@@ -40,7 +40,7 @@ public:
     ImageCut        imageCut;
     InterpolParams  interpolParams;
     QcrCell<bool>   intenScaledAvg {true}; // if not, summed
-    QcrCell<double> intenScale {1};
+    QcrCell<double> intenScale {1.};
     eNorm           normMode {eNorm::NONE};
     MetaSelection   smallMetaSelection {false}; //!< for 'clusters' and 'metadata' subframes
     MetaSelection   bigMetaSelection {true};    //!< for use in 'bigtable' (tabbed view and export)

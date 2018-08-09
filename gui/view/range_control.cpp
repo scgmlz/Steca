@@ -27,8 +27,8 @@ RangeControl::RangeControl(const QString& _name, const std::function<Range*()>& 
     : QcrWidget(_name)
     , selectRange_(_selectRange)
 {
-    auto* cellMin = new QcrCell<double>{0};
-    auto* cellMax = new QcrCell<double>{0};
+    auto* cellMin = new QcrCell<double>{0.};
+    auto* cellMax = new QcrCell<double>{0.};
     auto* spinMin = new QcrDoubleSpinBox{name()+"Min", cellMin, 5, 2, 0., 89.9};
     auto* spinMax = new QcrDoubleSpinBox{name()+"Max", cellMax, 5, 2, 0., 90.};
 
