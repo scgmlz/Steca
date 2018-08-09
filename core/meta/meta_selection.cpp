@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/meta/meta_selection.cpp
-//! @brief     Implements class MetaSelection
+//! @brief     Implements class BoolVector
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -17,7 +17,7 @@
 
 namespace {
 
-std::vector<int> computeList(const MetaSelection* ms)
+std::vector<int> computeList(const BoolVector* ms)
 {
     std::vector<int> ret;
     for (int i=0; i<ms->vec.size(); ++i)
@@ -28,11 +28,11 @@ std::vector<int> computeList(const MetaSelection* ms)
 
 } // namespace
 
-MetaSelection::MetaSelection()
+BoolVector::BoolVector()
     : list {&computeList}
 {}
 
-void MetaSelection::set(int idx, bool on)
+void BoolVector::set(int idx, bool on)
 {
     vec[idx].setVal(on);
     list.invalidate();

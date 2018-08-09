@@ -59,11 +59,11 @@ ColumnSelector::ColumnSelector()
     box->addSpacing(8);
 
     const QStringList& headers = PeakInfo::dataTags(false);
-    gSession->params.bigMetaSelection.vec.resize(headers.count(), true);
+    gSession->params.bigBoolVector.vec.resize(headers.count(), true);
     showCols_.resize(headers.count());
     for (int i=0; i<showCols_.size(); ++i) {
         showCols_[i] = new QcrCheckBox(
-            "cb"+QString::number(i), headers[i], &gSession->params.bigMetaSelection.vec[i]);
+            "cb"+QString::number(i), headers[i], &gSession->params.bigBoolVector.vec[i]);
         box->addWidget(showCols_[i]);
     }
     setLayout(box);

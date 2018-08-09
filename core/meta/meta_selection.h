@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/meta/meta_selection.h
-//! @brief     Defines class MetaSelection
+//! @brief     Defines class BoolVector
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -21,11 +21,11 @@
 
 //! Selection of meta parameters
 
-class MetaSelection {
+class BoolVector {
 public:
-    MetaSelection();
-    MetaSelection(const MetaSelection&) = delete;
-    MetaSelection(MetaSelection&&) = default;
+    BoolVector();
+    BoolVector(const BoolVector&) = delete;
+    BoolVector(BoolVector&&) = default;
 
     void set(int, bool);
 
@@ -35,7 +35,7 @@ public:
 
     std::vector<QcrCell<bool>> vec; //!< true if to be displayed
 private:
-    Kached<MetaSelection,std::vector<int>> list; //!< indices of metadata items selected for display
+    Kached<BoolVector,std::vector<int>> list; //!< indices of metadata items selected for display
 };
 
 #endif // META_SELECTION_H

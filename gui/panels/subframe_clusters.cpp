@@ -27,7 +27,7 @@ class ActiveClustersModel : public CheckTableModel { // < QAbstractTableModel < 
 public:
     ActiveClustersModel() : CheckTableModel("measurement") {}
     int columnCount() const final {
-        return COL_ATTRS + gSession->params.smallMetaSelection.numSelected(); }
+        return COL_ATTRS + gSession->params.smallBoolVector.numSelected(); }
 
     enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
 
@@ -58,9 +58,9 @@ QVariant ActiveClustersModel::data(const QModelIndex& index, int role) const
                 ret += "-" + QString::number(cluster.totalOffset()+cluster.count());
             return ret;
         } else if (col>=COL_ATTRS &&
-                   col < COL_ATTRS+gSession->params.smallMetaSelection.numSelected()) {
+                   col < COL_ATTRS+gSession->params.smallBoolVector.numSelected()) {
             return cluster.avgMetadata().attributeStrValue(
-                gSession->params.smallMetaSelection.selectedOf(col-COL_ATTRS));
+                gSession->params.smallBoolVector.selectedOf(col-COL_ATTRS));
         } else
             return {};
     }
@@ -116,9 +116,9 @@ QVariant ActiveClustersModel::headerData(int col, Qt::Orientation ori, int role)
     if (col==COL_NUMBER)
         return "#";
     else if (col>=COL_ATTRS &&
-             col < COL_ATTRS+gSession->params.smallMetaSelection.numSelected())
+             col < COL_ATTRS+gSession->params.smallBoolVector.numSelected())
         return Metadata::attributeTag(
-            gSession->params.smallMetaSelection.selectedOf(col-COL_ATTRS), false);
+            gSession->params.smallBoolVector.selectedOf(col-COL_ATTRS), false);
     return {};
 }
 
@@ -145,7 +145,7 @@ ActiveClustersView::ActiveClustersView()
 
 void ActiveClustersView::onData()
 {
-    setHeaderHidden(!gSession->params.smallMetaSelection.numSelected());
+    setHeaderHidden(!gSession->params.smallBoolVector.numSelected());
     setColumnWidth(0, 0);
     setColumnWidth(1,  3*dWidth());
     for (int i=2; i<model_->columnCount(); ++i)

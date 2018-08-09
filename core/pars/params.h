@@ -35,7 +35,7 @@ class Params {
 public:
     Params() {}
     Params(const Params&) = delete;
-    // void clear() { *this = {}; } TODO restore (broken because MetaSelection disallows copying
+    // void clear() { *this = {}; } TODO restore (broken because BoolVector disallows copying
 
     Detector        detector;
     ImageTransform  imageTransform;
@@ -44,8 +44,8 @@ public:
     QcrCell<bool>   intenScaledAvg {true}; // if not, summed
     QcrCell<double> intenScale {1.};
     eNorm           normMode {eNorm::NONE};
-    MetaSelection   smallMetaSelection;  //!< for 'clusters' and 'metadata' subframes:
-    MetaSelection   bigMetaSelection;    //! for use in 'bigtable' (tabbed view and export):
+    BoolVector   smallBoolVector;  //!< for 'clusters' and 'metadata' subframes:
+    BoolVector   bigBoolVector;    //! for use in 'bigtable' (tabbed view and export):
 };
 
 #endif // PARAMS_H
