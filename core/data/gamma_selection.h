@@ -30,8 +30,6 @@ public:
     QJsonObject toJson() const;
     const Range& range() const { return range_; }
     Range slice2range(int) const; // TODO NOW rm
-    double min() const { return range_.min; }// TODO NOW rm
-    double max() const { return range_.max; }// TODO NOW rm
 
     QcrCell<int> numSlices {1};
     QcrCell<int> currSlice {1}; // counting from 1, for user convenience

@@ -13,14 +13,14 @@
 ./core/data/corrset.h&cpp                 follows dataset.h&cpp
 ./core/data/dataset.h&cpp                 complex datastructures, keep revising
 ./core/data/dfgram.h&cpp                  good, given the complexity
-./core/data/gamma_selection.h&cpp
-./core/data/lens.h&cpp
-./core/data/theta_selection.h&cpp
+./core/data/gamma_selection.h&cpp         TODO revise caching; unclear whether class is needed
+./core/data/lens.h&cpp                    TODO functionality broken
+./core/data/theta_selection.h&cpp         TODO unclear whether class is needed
 ./core/def/idiomatic_for.h                TODO get rid of
-./core/fit/fit_fun.h&cpp
-./core/fit/fit_methods.h&cpp
-./core/fit/fit_par.h&cpp
-./core/fit/peak_functions.h&cpp
+./core/fit/fit_fun.h&cpp                  unclear whether inheritance is needed, revise a/w fitting
+./core/fit/fit_methods.h&cpp              revise along with fitting (convert to lmfit)
+./core/fit/fit_par.h&cpp                  revise along with fitting
+./core/fit/peak_functions.h&cpp           revise along with fitting, TODO restore Lorentz & Voigt
 ./core/fit/raw_outcome.h&cpp
 ./core/loaders/fastyamlloader.h&cpp       review later
 ./core/loaders/load_caress.cpp (no h!)    don't touch, 3rd party
