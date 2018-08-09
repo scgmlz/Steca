@@ -95,8 +95,7 @@ private:
 };
 
 CutControls::CutControls()
-    : QcrFrame("cuts")
-    , link_      {&gGui->toggles->linkCuts}
+    : link_      {&gGui->toggles->linkCuts}
     , cutLeft_   {"cutLeft",   &gSession->params.imageCut.left,   3, false, 0, INT_MAX,
               "Number of pixels to be cut at the left"}
     , cutTop_    {"cutTop",    &gSession->params.imageCut.top,    3, false, 0, INT_MAX,

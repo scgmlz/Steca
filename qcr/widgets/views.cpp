@@ -17,7 +17,7 @@
 #include <QIcon>
 
 QcrIcon::QcrIcon(const QString& fileName)
-    : QcrMixin {*this, fileName}
+    : QcrMixin {this}
 {
     int h = sizeHint().height();
     setPixmap(QIcon(fileName).pixmap(QSize(h, h)));

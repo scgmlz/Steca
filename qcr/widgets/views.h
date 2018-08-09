@@ -21,11 +21,10 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMainWindow>
-#include <QStackedWidget>
 
 class QcrMainWindow : public QMainWindow, public QcrRoot {
 public:
-    QcrMainWindow() : QcrRoot{*this, "mainwindow"} {}
+    QcrMainWindow() : QcrRoot{this} {}
 };
 
 class QcrWidget : public QWidget, public QcrMixin {
@@ -35,17 +34,12 @@ QcrWidget() : QcrMixin(this) {}
 
 class QcrFrame : public QFrame, public QcrMixin {
 public:
-    QcrFrame(const QString& name) : QcrMixin{*this, name} {}
-};
-
-class QcrStackedWidget : public QStackedWidget, public QcrMixin {
-public:
-    QcrStackedWidget(const QString& name) : QcrMixin{*this, name} {}
+    QcrFrame() : QcrMixin{this} {}
 };
 
 class QcrDockWidget : public QDockWidget, public QcrMixin {
 public:
-    QcrDockWidget(const QString& name) : QcrMixin{*this, name} {}
+    QcrDockWidget() : QcrMixin{this} {}
 };
 
 //! QLabel displaying an icon, with no associated action.

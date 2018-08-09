@@ -40,7 +40,7 @@ private:
 //! Root of class hierarchy, for inheritance by QcrMainWindow.
 class QcrRoot : public QcrMixin {
 public:
-    QcrRoot(QObject& object, const QString& name);
+    QcrRoot(QObject* object);
     void remakeAll(const QString& whence);
 };
 

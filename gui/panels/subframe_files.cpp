@@ -90,7 +90,6 @@ FilesView::FilesView()
 //! @class SubframeFiles
 
 SubframeFiles::SubframeFiles()
-    : QcrDockWidget("files")
 {
     setFeatures(DockWidgetMovable);
     setWindowTitle("Files");

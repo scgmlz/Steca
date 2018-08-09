@@ -160,7 +160,6 @@ void ActiveClustersView::onData()
 //! @class SubframeClusters
 
 SubframeClusters::SubframeClusters()
-    : QcrDockWidget("measurements")
 {
     setFeatures(DockWidgetMovable);
     setWindowTitle("Measurements");
