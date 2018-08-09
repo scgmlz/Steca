@@ -112,7 +112,6 @@ private:
 };
 
 PeakfitOutcomeView::PeakfitOutcomeView()
-    : QcrWidget("peakfitOutcomeView")
 {
     auto* grid = new QGridLayout;
     grid->addWidget(new QLabel("direct"), 0, 1);
@@ -196,8 +195,7 @@ void PeakfitOutcomeView::enable(bool haveRaw, bool haveFit)
 //! @class ControlsPeakfits
 
 ControlsPeakfits::ControlsPeakfits()
-    : QcrWidget{"peaks"}
-    , comboReflType_ {"reflTyp", Peak::keys}
+    : comboReflType_ {"reflTyp", Peak::keys}
 {
     // outbound connections
     connect(&gGui->triggers->peakRemove, &QAction::triggered, []() {

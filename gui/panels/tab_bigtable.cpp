@@ -45,7 +45,6 @@ private:
 };
 
 ColumnSelector::ColumnSelector()
-    : QcrWidget("colSel")
 {
     rbHidden_.hide();
 
@@ -131,8 +130,7 @@ void ColumnSelector::updateRadiobuttons()
 //! @class BigtableTab
 
 BigtableTab::BigtableTab()
-    : QcrWidget("bigtable")
-    , bigtableView_ {new BigtableView()}
+    : bigtableView_ {new BigtableView()}
 {
     // layout
     auto* colSelBox = new QScrollArea;

@@ -143,9 +143,8 @@ void ImageView::paintEvent(QPaintEvent*)
 //  base class ImageTab
 //  ***********************************************************************************************
 
-ImageTab::ImageTab(const QString& name)
-    : QcrWidget {name}
-    , btnScale_ {&gGui->toggles->fixedIntenImage}
+ImageTab::ImageTab()
+    : btnScale_ {&gGui->toggles->fixedIntenImage}
     , btnOverlay_ {&gGui->toggles->crosshair}
 {
     // layout
@@ -226,8 +225,7 @@ QImage ImageTab::makeImage(const Image& image)
 //! @class DataImageTab
 
 DataImageTab::DataImageTab()
-    : ImageTab {"dataImage"}
-    , btnShowBins_ {&gGui->toggles->showBins}
+    : btnShowBins_ {&gGui->toggles->showBins}
 {
     auto* idxMeas  = new QcrSpinBox{
         "idxMeas", &iMeas, 4, false, 1, INT_MAX,
@@ -323,7 +321,6 @@ const Measurement* DataImageTab::measurement()
 //! @class CorrImageTab
 
 CorrImageTab::CorrImageTab()
-    : ImageTab {"corrImage"}
 {
     controls_.addStretch(1);
 }

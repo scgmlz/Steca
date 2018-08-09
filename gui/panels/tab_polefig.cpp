@@ -20,7 +20,6 @@
 
 
 PolefigTab::PolefigTab()
-    : QcrWidget("polefig")
 {
     // initializations
     auto* plot = new PlotPolefig; // the main subframe

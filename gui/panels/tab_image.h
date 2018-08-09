@@ -39,8 +39,7 @@ private:
 
 class ImageTab : public QcrWidget {
 public:
-    ImageTab() = delete;
-    ImageTab(const QString&);
+    ImageTab();
 protected:
     void render();
     virtual QPixmap pixmap() = 0;

@@ -134,8 +134,7 @@ private:
 };
 
 ActiveClustersControls::ActiveClustersControls()
-    : QcrWidget("activeClusters")
-    , combineMeasurements_ {
+    : combineMeasurements_ {
         "combineMeasurements", &gSession->dataset.binning, 3, false, 1, 999,
         "Combine this number of measurements into one group"}
     , dropIncompleteAction_ {
@@ -171,7 +170,6 @@ private:
 };
 
 GammaControls::GammaControls()
-    : QcrWidget("gamma")
 {
     numSlices_ = new QcrSpinBox {
         "numSlices", &gSession->gammaSelection.numSlices, 2, false, 0, INT_MAX,
@@ -188,7 +186,6 @@ GammaControls::GammaControls()
 //! @class ControlsDetector
 
 ControlsDetector::ControlsDetector()
-    : QcrWidget("detector")
 {
     auto* vbox = new QVBoxLayout;
     vbox->addWidget(new DetectorControls);

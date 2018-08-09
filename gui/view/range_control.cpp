@@ -24,13 +24,12 @@ double myRound(double val, double step=STEP) { return step * std::round(val/step
 }
 
 RangeControl::RangeControl(const QString& _name, const std::function<Range*()>& _selectRange)
-    : QcrWidget(_name)
-    , selectRange_(_selectRange)
+    : selectRange_(_selectRange)
 {
     auto* cellMin = new QcrCell<double>{0.};
     auto* cellMax = new QcrCell<double>{0.};
-    auto* spinMin = new QcrDoubleSpinBox{name()+"Min", cellMin, 5, 2, 0., 89.9};
-    auto* spinMax = new QcrDoubleSpinBox{name()+"Max", cellMax, 5, 2, 0., 90.};
+    auto* spinMin = new QcrDoubleSpinBox{_name+"Min", cellMin, 5, 2, 0., 89.9};
+    auto* spinMax = new QcrDoubleSpinBox{_name+"Max", cellMax, 5, 2, 0., 90.};
 
     spinMin->setSingleStep(STEP);
     spinMax->setSingleStep(STEP);
