@@ -28,11 +28,11 @@
 ./core/loaders/load_mar.cpp (no h!)       don't touch, 3rd party
 ./core/loaders/load_tiff.cpp (no h!)      don't touch, 3rd party
 ./core/loaders/load_yaml.cpp (no h!)      review later
-./core/meta/metadata.h&cpp                TODO revise metadata to make them more flexible
-./core/pars/baseline.h&cpp
+./core/pars/baseline.h&cpp                ok, class wraps just two variables
 ./core/pars/detector.h&cpp
 ./core/pars/image_transform.h&cpp
 ./core/pars/interpol_params.h&cpp
+./core/pars/metadata.h&cpp                TODO revise metadata to make them more flexible
 ./core/pars/params.h (only)
 ./core/pars/peak.h&cpp
 ./core/raw/angle_map.h&cpp

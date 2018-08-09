@@ -16,7 +16,7 @@
 #define MEASUREMENT_H
 
 #include "core/raw/image.h"
-#include "core/meta/metadata.h"
+#include "core/pars/metadata.h"
 #include <memory>
 
 

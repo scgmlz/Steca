@@ -15,13 +15,10 @@
 #ifndef DETECTOR_H
 #define DETECTOR_H
 
-#include "core/aux/angles.h"
 #include "core/typ/range.h"
 #include "core/typ/size2d.h"
 #include "qcr/engine/cell.h"
 #include <array>
-
-// TODO after removal of ImageKey: delete copy c'tors
 
 //! Detector detector.
 class Detector {
@@ -31,6 +28,7 @@ public:
 
     Detector();
     ~Detector();
+    Detector(const Detector&) = delete;
 
     void fromJson(const JsonObj& obj);
 
@@ -46,6 +44,7 @@ public:
 class ImageCut {
 public:
     ImageCut();
+    ImageCut(const ImageCut&) = delete;
 
     void fromJson(const JsonObj& obj);
     void clear();
@@ -59,17 +58,6 @@ public:
     QcrCell<int> right {0};
     QcrCell<int> top {0};
     QcrCell<int> bottom {0};
-};
-
-
-//! A pair of angles (gamma, 2theta) that designate a scattering direction.
-class ScatterDirection {
-public:
-    ScatterDirection();
-    ScatterDirection(deg, deg);
-
-    deg tth;
-    deg gma;
 };
 
 #endif // DETECTOR_H

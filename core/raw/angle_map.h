@@ -15,8 +15,19 @@
 #ifndef ANGLE_MAP_H
 #define ANGLE_MAP_H
 
+#include "core/aux/angles.h"
 #include "core/pars/detector.h"
 #include <QSharedPointer> // no auto rm
+
+//! A pair of angles (gamma, 2theta) that designate a scattering direction.
+class ScatterDirection {
+public:
+    ScatterDirection() : ScatterDirection(0, 0) {}
+    ScatterDirection(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
+
+    deg tth;
+    deg gma;
+};
 
 //! Holds (gamma, 2theta) for all pixels in a detector image, and caches sorted gamma values.
 

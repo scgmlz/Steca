@@ -113,11 +113,3 @@ size2d ImageCut::marginSize() const
 {
     return size2d(horiz(), vertical());
 }
-
-
-//  ***********************************************************************************************
-//! @class ScatterDirection
-
-ScatterDirection::ScatterDirection() : ScatterDirection(0, 0) {}
-
-ScatterDirection::ScatterDirection(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}

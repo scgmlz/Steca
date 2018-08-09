@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/meta/metadata.h
+//! @file      core/pars/metadata.h
 //! @brief     Defines class Metadata
 //!
 //! @homepage  https://github.com/scgmlz/Steca
