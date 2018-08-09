@@ -98,6 +98,7 @@ MetabigtableView::MetabigtableView()
 SubframeMetadata::SubframeMetadata()
     : QcrDockWidget("metadata")
 {
+    gSession->params.smallMetaSelection.vec.resize(Metadata::size(), false);
     setFeatures(DockWidgetMovable);
     setWindowTitle("Metadata");
     setWidget(new MetabigtableView());

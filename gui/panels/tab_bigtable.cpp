@@ -47,7 +47,6 @@ private:
 ColumnSelector::ColumnSelector()
     : QcrWidget("colSel")
 {
-    const QStringList& headers = PeakInfo::dataTags(false);
     rbHidden_.hide();
 
     auto* box = new QVBoxLayout;
@@ -58,6 +57,9 @@ ColumnSelector::ColumnSelector()
     box->addWidget(&rbTth_);
     box->addWidget(&rbFWHM_);
     box->addSpacing(8);
+
+    const QStringList& headers = PeakInfo::dataTags(false);
+    gSession->params.bigMetaSelection.vec.resize(headers.count(), true);
     showCols_.resize(headers.count());
     for (int i=0; i<showCols_.size(); ++i) {
         showCols_[i] = new QcrCheckBox(

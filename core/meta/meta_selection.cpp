@@ -13,7 +13,6 @@
 //  ***********************************************************************************************
 
 #include "core/meta/meta_selection.h"
-#include "core/meta/metadata.h"
 #include "qcr/base/debug.h"
 
 namespace {
@@ -21,7 +20,7 @@ namespace {
 std::vector<int> computeList(const MetaSelection* ms)
 {
     std::vector<int> ret;
-    for (int i=0; i<Metadata::size(); ++i)
+    for (int i=0; i<ms->vec.size(); ++i)
         if (ms->vec[i].val())
             ret.push_back(i);
     return ret;
@@ -29,12 +28,9 @@ std::vector<int> computeList(const MetaSelection* ms)
 
 } // namespace
 
-MetaSelection::MetaSelection(const bool on)
-    : vec  (Metadata::size(), on) // imperatively (), not {}
-    , list {&computeList}
-{
-    qDebug() << "INIT MS " << Metadata::size() << "->" << vec.back().val();
-}
+MetaSelection::MetaSelection()
+    : list {&computeList}
+{}
 
 void MetaSelection::set(int idx, bool on)
 {

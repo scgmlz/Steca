@@ -23,16 +23,18 @@
 
 class MetaSelection {
 public:
-    explicit MetaSelection(const bool on);
+    MetaSelection();
     MetaSelection(const MetaSelection&) = delete;
     MetaSelection(MetaSelection&&) = default;
 
     void set(int, bool);
-    bool isSelected(int i) const { return vec[i].val(); }
-    int count() const { return list.get(this).size(); }
-    int at(int i) const { return list.get(this).at(i); }
+
+    bool isSelected(int i) const { return vec.at(i).val(); }
+    int numSelected() const { return list.get(this).size(); }
+    int selectedOf(int i) const { return list.get(this).at(i); }
 
     std::vector<QcrCell<bool>> vec; //!< true if to be displayed
+private:
     Kached<MetaSelection,std::vector<int>> list; //!< indices of metadata items selected for display
 };
 
