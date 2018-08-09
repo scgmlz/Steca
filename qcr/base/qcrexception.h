@@ -21,7 +21,6 @@
 //! The sole exception type used within Qcr.
 class QcrException : public QException {
 public:
-    QcrException() = delete;
     QcrException(const QString& msg) noexcept : msg_(msg) {}
     const QString& msg() const noexcept { return msg_; }
 private:

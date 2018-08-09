@@ -12,11 +12,11 @@
 //
 //  ***********************************************************************************************
 
-#include "plot_dfgram.h"
+#include "gui/view/plot_dfgram.h"
 #include "core/data/collect_intensities.h"
 #include "core/session.h"
 #include "gui/actions/toggles.h"
-#include "gui/panels/subframe_setup.h" // gGui->setup()
+#include "gui/panels/subframe_setup.h" // gGui->setup() TODO break this circular dependence
 #include "gui/state.h"
 #include "gui/mainwin.h"
 #include "qcr/engine/console.h"

@@ -16,8 +16,7 @@
 #define CELL_H
 
 //#include "qcr/base/debug.h"
-#include "qcr/base/string_ops.h"
-#include "qcr/engine/mixin.h"
+#include "qcr/engine/mixin.h" // gRoot
 #include <QObject>
 #include <functional>
 #include <vector>
@@ -29,7 +28,6 @@ class QcrControl;
 template<class T>
 class QcrCell {
 public:
-    QcrCell() = delete;
     QcrCell(T value) : value_{value} {}
     template<class Q> QcrCell(Q value) = delete; // prevent automatic conversion Q->T
     QcrCell(const QcrCell&) = default;
@@ -43,7 +41,7 @@ private:
     T value_;
     std::function<void(T)> hook_ = [](T) { gRoot->remakeAll("QcrCell"); };
 
-    friend QcrControl<T>;
+    friend QcrControl<T>; // may call guiSetsVal
     void guiSetsVal(T, bool userCall=false);
 };
 

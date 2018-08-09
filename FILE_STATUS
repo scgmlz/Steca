@@ -1,6 +1,6 @@
-./qcr/base/debug.h (only)
-./qcr/base/qcrexception.h (only)
-./qcr/base/string_ops.h&cpp
+./qcr/base/debug.h (only)                 very small, ok (mainly includes QtDebug, QtGlobal)
+./qcr/base/qcrexception.h (only)          very small, ok
+./qcr/base/string_ops.h&cpp               small and good
 ./qcr/engine/cell.h (only, tpl)
 ./qcr/engine/console.h&cpp
 ./qcr/engine/mixin.h&cpp
