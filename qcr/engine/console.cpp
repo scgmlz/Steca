@@ -277,27 +277,30 @@ void Console::log2(bool userCall, const QString& line)
         log(line);
 }
 
-void Console::log(const QString& line)
+void Console::log(QString line)
 {
     static auto lastTime = startTime_;
     auto currTime = QDateTime::currentDateTime();
     int tDiff = lastTime.msecsTo(currTime);
     lastTime = currTime;
-    log_ << "[";
+    QString prefix = "[";
     if (caller_==Caller::gui && line[0]!='#') {
-        log_ << "       "; // direct user action: we don't care how long the user was idle
+        prefix += "       "; // direct user action: we don't care how long the user was idle
     } else {
-        log_ << QString::number(tDiff).rightJustified(5) << "ms";
+        prefix += QString::number(tDiff).rightJustified(5) + "ms";
         computingTime_ += tDiff;
     }
-    log_ << " " << registry().name() << "]";
+    prefix += " " + registry().name() + "]";
     if      (caller_==Caller::gui || caller_==Caller::stack)
-        log_ << line << "\n";
+        ; // no further embellishment
     else if (caller_==Caller::cli)
-        log_ << "#c " << line << "\n";
+        line = "#c " + line;
     else if (caller_==Caller::sys)
-        log_ << "#s " << line << "\n";
+        line = "#s " + line;
     else
         qFatal("invalid case");
+    log_ << prefix << line << "\n";
     log_.flush();
+    qterr << line << "\n";
+    qterr.flush();
 }

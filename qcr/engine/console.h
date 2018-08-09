@@ -33,7 +33,7 @@ public:
     void call(const QString&);
     bool hasCommandsOnStack() const { return !commandLifo_.empty(); }
     void commandsFromStack();
-    void log(const QString&);
+    void log(QString);
     void log2(bool, const QString&);
 private:
     class CommandRegistry& registry() { return *registryStack_.top(); }
