@@ -301,6 +301,8 @@ void Console::log(QString line)
         qFatal("invalid case");
     log_ << prefix << line << "\n";
     log_.flush();
-    qterr << line << "\n";
-    qterr.flush();
+    if (line.indexOf("##")!=0) {
+        qterr << line << "\n";
+        qterr.flush();
+    }
 }

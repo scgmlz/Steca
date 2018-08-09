@@ -19,7 +19,7 @@
 
 #include "core/session.h"
 #include "core/aux/exception.h"
-#include "qcr/base/debug.h"
+//#include "qcr/base/debug.h"
 #include <QJsonDocument>
 
 Session* gSession; //!< global, for data handling
@@ -81,7 +81,7 @@ void Session::sessionFromJson(const QByteArray& json)
         THROW("Error parsing session file");
 
     clear();
-    qDebug() << "sessionFromJson: cleared old session";
+    //qDebug() << "sessionFromJson: cleared old session";
 
     JsonObj top(doc.object());
 
@@ -98,7 +98,7 @@ void Session::sessionFromJson(const QByteArray& json)
     gammaSelection.fromJson(top.loadObj("gamma selection"));
     thetaSelection.fromJson(top.loadObj("theta selection"));
 
-    qDebug() << "installed session from file";
+    //qDebug() << "installed session from file";
 }
 
 QByteArray Session::serializeSession() const

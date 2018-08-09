@@ -14,7 +14,7 @@
 
 #include "core/meta/meta_selection.h"
 #include "core/meta/metadata.h"
-//#include "qcr/base/debug.h"
+#include "qcr/base/debug.h"
 
 namespace {
 
@@ -32,7 +32,9 @@ std::vector<int> computeList(const MetaSelection* ms)
 MetaSelection::MetaSelection(const bool on)
     : vec  (Metadata::size(), on) // imperatively (), not {}
     , list {&computeList}
-{}
+{
+    qDebug() << "INIT MS " << Metadata::size() << "->" << vec.back().val();
+}
 
 void MetaSelection::set(int idx, bool on)
 {

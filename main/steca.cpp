@@ -19,11 +19,12 @@
 //! \par Repository:
 //!           https://github.com/scgmlz/Steca
 
-#include "manifest.h"
 #include "core/session.h"
+#include "manifest.h"
 #include "gui/cfg/msg_handler.h"
-#include "qcr/engine/console.h"
 #include "gui/mainwin.h"
+#include "qcr/engine/console.h"
+#include "qcr/base/debug.h"
 
 #define OPTPARSE_IMPLEMENTATION
 #define OPTPARSE_API static
@@ -98,7 +99,7 @@ int main(int argc, char* argv[]) {
     Session session;
     auto* mainwin = new MainWin; // must be pointer, because it can be deleted by 'quit' trigger
     mainwin->show();
-    gRoot->remakeAll("main/steca"); // depends on visbility, therefore must be invoked _after_ show()
+    gRoot->remakeAll("main/steca"); // depends on visibility, hence to be invoked _after_ show()
     if (nonoptArgs.size())
         gConsole->call("@file " + nonoptArgs[0]);
     app.exec();

@@ -15,7 +15,7 @@
 #include "core/data/cluster.h"
 #include "core/loaders/loaders.h"
 #include "core/session.h"
-#include "qcr/base/debug.h"
+//#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class Datafile
@@ -90,14 +90,14 @@ Dataset::Dataset() {
 
 void Dataset::clear()
 {
-    qDebug() << "Dataset::clear";
+    //qDebug() << "Dataset::clear";
     highlight_.clear();
     files_.clear();
     onFileChanged();
     gSession->updateImageSize();
     gSession->params.imageCut.clear();
     gRoot->remakeAll("Dataset::clearFiles");
-    qDebug() << "Dataset::clear/";
+    //qDebug() << "Dataset::clear/";
 }
 
 void Dataset::removeFile()

@@ -23,7 +23,8 @@
 
 class MetaSelection {
 public:
-    MetaSelection(const bool on=false);
+    explicit MetaSelection(const bool on);
+    MetaSelection(const MetaSelection&) = delete;
     MetaSelection(MetaSelection&&) = default;
 
     void set(int, bool);

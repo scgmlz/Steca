@@ -33,6 +33,8 @@ enum class eNorm {
 
 class Params {
 public:
+    Params() {}
+    Params(const Params&) = delete;
     // void clear() { *this = {}; } TODO restore (broken because MetaSelection disallows copying
 
     Detector        detector;

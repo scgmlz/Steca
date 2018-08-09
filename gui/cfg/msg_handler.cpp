@@ -44,7 +44,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString
             return;
         qApp->restoreOverrideCursor();
         QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
-        gConsole->log("#WARNING: " + msg);
+        gConsole->log("##WARN: " + msg);
         break;
     case QtFatalMsg:
         std::cerr << "BUG! " << msg.toStdString() << context(ctx) << "\n" << std::flush;
@@ -60,7 +60,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString
                               "Context:\n" + ctx.function + "\n"
 #endif
             );
-        gConsole->log("#FATAL: " + msg);
+        gConsole->log("##FATAL: " + msg);
         qApp->quit();
         break;
     }

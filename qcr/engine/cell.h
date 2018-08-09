@@ -32,6 +32,7 @@ public:
     QcrCell() = delete;
     QcrCell(T value) : value_{value} {}
     template<class Q> QcrCell(Q value) = delete; // prevent automatic conversion Q->T
+    QcrCell(const QcrCell&) = default;
 
     void setVal(T);
     void setHook(std::function<void(T)> hook) { hook_ = hook; }
