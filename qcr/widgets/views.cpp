@@ -23,15 +23,15 @@ QcrIcon::QcrIcon(const QString& fileName)
     setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
 }
 
-QcrLineDisplay::QcrLineDisplay(const QString& name, std::function<QString()> freshText)
-    : QcrMixin {*this, name}
+QcrLineDisplay::QcrLineDisplay(std::function<QString()> freshText)
+    : QcrMixin {this}
 {
     setReadOnly(true);
     setRemake( [this, freshText]() { setText( freshText() ); } );
 }
 
-QcrLineDisplay::QcrLineDisplay(const QString& name, int ndigits, bool withDot)
-    : QcrMixin {*this, name}
+QcrLineDisplay::QcrLineDisplay(int ndigits, bool withDot)
+    : QcrMixin {this}
 {
     strOp::setWidth(this, ndigits, withDot);
     setText("???");

@@ -51,9 +51,8 @@ public:
 //! Read-only QLineEdit for number display.
 class QcrLineDisplay : public QLineEdit, public QcrMixin {
 public:
-    QcrLineDisplay() = delete;
-    QcrLineDisplay(const QString& name, std::function<QString()> freshText);
-    QcrLineDisplay(const QString& name, int ndigits, bool withDot);
+    QcrLineDisplay(std::function<QString()> freshText);
+    QcrLineDisplay(int ndigits, bool withDot);
 };
 
 #endif // VIEWS_H

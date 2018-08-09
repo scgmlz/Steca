@@ -103,12 +103,12 @@ public:
 private:
     void refresh();
     void enable(bool haveRaw, bool haveFit);
-    QcrLineDisplay showFitOutcomeX_ {"fittedX", 10, true};
-    QcrLineDisplay showFitOutcomeD_ {"fittedD", 10, true};
-    QcrLineDisplay showFitOutcomeY_ {"fittedY", 10, true};
-    QcrLineDisplay showRawOutcomeX_ {"rawX", 5, true};
-    QcrLineDisplay showRawOutcomeY_ {"rawY", 5, true};
-    QcrLineDisplay showRawOutcomeD_  {"rawD", 5, true};
+    QcrLineDisplay showFitOutcomeX_ {10, true};
+    QcrLineDisplay showFitOutcomeD_ {10, true};
+    QcrLineDisplay showFitOutcomeY_ {10, true};
+    QcrLineDisplay showRawOutcomeX_ { 5, true};
+    QcrLineDisplay showRawOutcomeY_ { 5, true};
+    QcrLineDisplay showRawOutcomeD_ { 5, true};
 };
 
 PeakfitOutcomeView::PeakfitOutcomeView()
