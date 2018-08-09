@@ -3,7 +3,7 @@
 //  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/engine/cell.h
-//! @brief     Defines and implements templated class QcrCell
+//! @brief     Defines and implements class template QcrCell
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -19,12 +19,11 @@
 #include "qcr/engine/mixin.h" // gRoot
 #include <QObject>
 #include <functional>
-#include <vector>
 
 template<class T>
 class QcrControl;
 
-//! Holds a single parameter.
+//! Holds a single value, and a hook that is executed when the Gui changes the value.
 template<class T>
 class QcrCell {
 public:
