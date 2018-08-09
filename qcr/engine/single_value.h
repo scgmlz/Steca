@@ -28,11 +28,11 @@ template<class T>
 class QcrControl : public QcrSettable {
 public:
     QcrControl(QObject& object, const QString& name, QcrCell<T>* cell);
-    QcrControl(QObject& object, const QString& name, const T val);
+    QcrControl(QObject& object, const QString& name, const T val); // TODO get rid of this variant
     ~QcrControl();
     void programaticallySetValue(T val);
     T getValue() { remake(); return doGetValue(); } // TODO rather call Cell::val
-    virtual T doGetValue() const = 0;
+    virtual T doGetValue() const = 0; //!< to be overriden by the widget-specific get function
     virtual void executeConsoleCommand(const QString& arg);
     QcrCell<T>* cell() { return cell_; } // TODO rm
 protected:
@@ -42,7 +42,7 @@ protected:
     QcrCell<T>* cell_ {nullptr};
     T reportedValue_;
 private:
-    virtual void doSetValue(T) = 0;
+    virtual void doSetValue(T) = 0; //!< to be overriden by the widget-specific set function
     bool ownsItsCell_ {false};
 };
 

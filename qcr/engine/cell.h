@@ -20,10 +20,6 @@
 #include <QObject>
 #include <functional>
 
-namespace Qcr {
-void defaultHook();
-}
-
 template<class T>
 class QcrControl;
 

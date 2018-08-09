@@ -8,7 +8,7 @@
 ./qcr/widgets/controls.h&cpp
 ./qcr/widgets/modal_dialogs.h&cpp
 ./qcr/widgets/tables.h&cpp
-./qcr/widgets/views.h&cpp
+./qcr/widgets/views.h&cpp                 ok
 ./core/def/idiomatic_for.h                TODO get rid of
 ./core/aux/angles.h&cpp                   simple and good, has tests (003)
 ./core/aux/async.h&cpp                    simple and good
@@ -57,7 +57,7 @@
 ./core/calc/matrix.h&cpp                  unclear whether needed, revise along with math
 ./core/calc/peak_info.h&cpp               revise along with meta pars
 ./core/session.h&cpp                      ok
-./gui/cfg/msg_handler.h&cpp
+./gui/cfg/msg_handler.h&cpp               ok, stable and isolated
 ./gui/panels/controls_baseline.h&cpp
 ./gui/panels/controls_detector.h&cpp
 ./gui/panels/controls_interpolation.h&cpp
@@ -78,21 +78,21 @@
 ./gui/view/plot_overlay.h&cpp
 ./gui/view/plot_polefig.h&cpp
 ./gui/view/range_control.h&cpp
-./gui/dialogs/check_update.h&cpp
+./gui/dialogs/check_update.h&cpp           ok, stable and isolated
 ./gui/dialogs/export_bigtable.h&cpp
 ./gui/dialogs/export_dfgram.h&cpp
 ./gui/dialogs/export_diagram.h&cpp
 ./gui/dialogs/exportfile_dialogfield.h&cpp
 ./gui/dialogs/export_polefig.h&cpp
-./gui/dialogs/file_dialog.h&cpp
-./gui/dialogs/message_boxes.h&cpp
+./gui/dialogs/file_dialog.h&cpp            ok, stable and isolated (except for capture&replay)
+./gui/dialogs/message_boxes.h&cpp          ok, stable and isolated
 ./gui/dialogs/popup_bigtable.h&cpp
 ./gui/dialogs/popup_diagram.h&cpp
 ./gui/dialogs/popup_polefig.h&cpp
 ./gui/actions/image_trafo_actions.h&cpp
-./gui/actions/menus.h&cpp
+./gui/actions/menus.h&cpp                  ok, stable and isolated
 ./gui/actions/toggles.h&cpp
 ./gui/actions/triggers.h&cpp
-./gui/state.h&cpp
+./gui/state.h&cpp                          TODO get rid of this?
 ./gui/mainwin.h&cpp
-./main/steca.h&cpp
+./main/steca.h&cpp                         ok, rarely touched
