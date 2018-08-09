@@ -15,8 +15,9 @@
 #ifndef MIXIN_H
 #define MIXIN_H
 
-#include "qcr/base/debug.h"
+//#include "qcr/base/debug.h"
 #include <QDialog>
+#include <functional>
 
 extern class QcrRoot* gRoot;
 

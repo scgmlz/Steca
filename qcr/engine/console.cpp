@@ -12,10 +12,11 @@
 //
 //  ***********************************************************************************************
 
-#include "console.h"
+#include "qcr/engine/console.h"
 #include "qcr/engine/mixin.h"
 #include "qcr/base/qcrexception.h"
 #include "qcr/base/string_ops.h"
+#include "qcr/base/debug.h" // ASSERT
 #include <QDebug>
 #include <QFile>
 

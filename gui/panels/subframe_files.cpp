@@ -90,7 +90,6 @@ SubframeFiles::SubframeFiles()
     setFeatures(DockWidgetMovable);
     setWindowTitle("Files");
 
-    // layout
     setWidget(new QWidget);
 
     auto* dataControls = new QHBoxLayout;
