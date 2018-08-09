@@ -38,13 +38,11 @@ RangeControl::RangeControl(const QString& _name, const std::function<Range*()>& 
             cellMin->setVal( myRound(qMin(val, myRound(cellMax->val())-STEP)) );
             gSession->onBaseline(); // TODO do this via setRange
             selectRange_()->setOne(cellMin->val(), false);
-            gRoot->remakeAll("RangeControl/min");
         });
     cellMax->setHook([cellMin, cellMax, this](double val){
             cellMax->setVal( myRound(qMax(val, myRound(cellMin->val())+STEP)) );
             gSession->onBaseline(); // TODO do this via setRange
             selectRange_()->setOne(cellMax->val(), true);
-            gRoot->remakeAll("RangeControl/max");
         });
 
     // layout

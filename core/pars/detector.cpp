@@ -91,7 +91,7 @@ void ImageCut::sync(int val, QcrCell<int>& _1, QcrCell<int>& _2, QcrCell<int>& _
         _3.setVal(val);
     }
     gSession->onDetector();
-    QcrDefaultHook();
+    Qcr::defaultHook();
 }
 
 void ImageCut::clear()

@@ -52,7 +52,7 @@ void TableModel::setHighlightedCell(const QModelIndex& cell)
         return;
     onHighlight(row);
     gConsole->log(name() + " highlight " + QString::number(row));
-    QcrDefaultHook();
+    Qcr::defaultHook();
 }
 
 
@@ -75,7 +75,7 @@ void CheckTableModel::onClicked(const QModelIndex& cell)
     int col = cell.column();
     if (col==1) {
         activateAndLog(true, row, !activated(row));
-        QcrDefaultHook();
+        Qcr::defaultHook();
     }
 }
 

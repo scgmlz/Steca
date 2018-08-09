@@ -19,7 +19,7 @@
 #include "gui/panels/subframe_setup.h" // gGui->setup() TODO break this circular dependence
 #include "gui/state.h"
 #include "gui/mainwin.h"
-#include "qcr/engine/console.h"
+#include "qcr/engine/cell.h"
 
 namespace colors {
 QColor baseEmph{0x00, 0xff, 0x00, 0x50}; // green
@@ -49,7 +49,7 @@ void PlotDfgramOverlay::addRange(const Range& range)
         gSession->onPeaks();
     } else
         return;
-    gRoot->remakeAll("PlotDfgramOverlay::addRange");
+    Qcr::defaultHook();
 }
 
 //! Selects the range that contains pixel x.
@@ -62,7 +62,7 @@ void PlotDfgramOverlay::selectRange(double x)
         gSession->peaks.selectByValue(x);
     else
         return;
-    gRoot->remakeAll("PlotDfgramOverlay::selectRange");
+    Qcr::defaultHook();
 }
 
 bool PlotDfgramOverlay::addModeColor(QColor& color) const

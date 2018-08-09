@@ -75,21 +75,17 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const
 
 class FilesView : public CheckTableView {
 public:
-    FilesView();
+    FilesView() : CheckTableView {new FilesModel()} {}
 private:
     FilesModel* model() { return static_cast<FilesModel*>(model_); }
 };
-
-FilesView::FilesView()
-    : CheckTableView(new FilesModel())
-{
-}
 
 
 //  ***********************************************************************************************
 //! @class SubframeFiles
 
 SubframeFiles::SubframeFiles()
+    : QcrDockWidget("files")
 {
     setFeatures(DockWidgetMovable);
     setWindowTitle("Files");

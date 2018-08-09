@@ -112,11 +112,11 @@ ControlsBaseline::ControlsBaseline()
     connect(&gGui->triggers->baserangeRemove, &QAction::triggered, []() {
             gSession->baseline.ranges.removeSelected();
             gSession->onBaseline();
-            gRoot->remakeAll("clearBackground"); });
+            Qcr::defaultHook(); });
     connect(&gGui->triggers->baserangesClear, &QAction::triggered, []() {
             gSession->baseline.ranges.clear();
             gSession->onBaseline();
-            gRoot->remakeAll("clearBackground"); });
+            Qcr::defaultHook(); });
 }
 
 void ControlsBaseline::hideEvent(QHideEvent*)

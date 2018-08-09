@@ -62,7 +62,7 @@ void QcrCell<T>::guiSetsVal(T val, bool userCall)
     value_ = val;
     if (userCall) { // to prevent circular calls; TODO simplify
         hook_(val);
-        QcrDefaultHook();
+        Qcr::defaultHook();
     }
 }
 

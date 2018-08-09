@@ -203,11 +203,11 @@ ControlsPeakfits::ControlsPeakfits()
     connect(&gGui->triggers->peakRemove, &QAction::triggered, []() {
             gSession->peaks.removeSelected();
             gSession->onPeaks();
-            gRoot->remakeAll("removePeak"); });
+            Qcr::defaultHook(); });
     connect(&gGui->triggers->peaksClear, &QAction::triggered, []() {
             gSession->peaks.clear();
             gSession->onPeaks();
-            gRoot->remakeAll("clearPeaks"); });
+            Qcr::defaultHook(); });
 
     // TODO move this to core
     comboReflType_.cell()->setHook( [](int i) {
@@ -216,7 +216,7 @@ ControlsPeakfits::ControlsPeakfits()
             if (gSession->peaks.selectedPeak())
                 gSession->peaks.selectedPeak()->setPeakFunction(peakFunctionName);
             gSession->onPeaks();
-            gRoot->remakeAll("reflType");
+            Qcr::defaultHook();
         } );
 
     // layout

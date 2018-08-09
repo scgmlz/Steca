@@ -29,7 +29,7 @@ public:
 
 class QcrWidget : public QWidget, public QcrMixin {
 public:
-QcrWidget() : QcrMixin(this) {}
+    QcrWidget() : QcrMixin(this) {}
 };
 
 class QcrFrame : public QFrame, public QcrMixin {
@@ -39,7 +39,7 @@ public:
 
 class QcrDockWidget : public QDockWidget, public QcrMixin {
 public:
-    QcrDockWidget() : QcrMixin{this} {}
+    QcrDockWidget(const QString& name) : QcrMixin{this, name} {}
 };
 
 //! QLabel displaying an icon, with no associated action.
