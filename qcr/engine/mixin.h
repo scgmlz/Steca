@@ -22,42 +22,46 @@ extern class QcrRoot* gRoot;
 
 //! Mix-in for QObject, enforcing a name, and providing recompute functionality.
 class QcrMixin {
+protected:
+    QcrMixin(QObject& object, const QString& name);
 public:
+    QcrMixin(const QcrMixin&) = delete;
     const QObject& object() const { return object_; }
     const QString name() const { return object().objectName(); }
     virtual void remake();
     void setRemake(std::function<void()> _remake) { remake_ = _remake; }
 protected:
-    QcrMixin() = delete;
-    QcrMixin(const QcrMixin&) = delete;
-    QcrMixin(QObject& object, const QString& name);
     std::function<void()> remake_ {[](){}};
 private:
     QObject& object_;
 };
 
-//! Root of class hierarchy, normally mixed-in to QMainWindow
+
+//! Root of class hierarchy, for inheritance by QcrMainWindow.
 class QcrRoot : public QcrMixin {
 public:
     QcrRoot(QObject& object, const QString& name);
     void remakeAll(const QString& whence);
 };
 
+
 //! Mix-in for QObject, enforcing a unique name, providing Console connection.
 class QcrSettable : public QcrMixin {
+protected:
+    QcrSettable(QObject& object, const QString& name, bool _modal=false);
 public:
     virtual void executeConsoleCommand(const QString&) = 0;
 protected:
-    QcrSettable(QObject& object, const QString& name, bool _modal=false);
     void doLog(bool softwareCalled, const QString& msg);
 };
 
+
 //! A modeless (= persistent spawned popup) dialog with support for capture&replay.
 class QcrModelessDialog : protected QDialog, protected QcrSettable {
-public:
-    void executeConsoleCommand(const QString&) final;
 protected:
     QcrModelessDialog(QWidget* parent, const QString& name);
+public:
+    void executeConsoleCommand(const QString&) final;
 private:
     void closeEvent(QCloseEvent*);
 };

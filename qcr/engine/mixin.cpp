@@ -32,12 +32,9 @@ QcrMixin::QcrMixin(QObject& object, const QString& name)
 
 void QcrMixin::remake()
 {
-    if (const QWidget* w = dynamic_cast<const QWidget*>(&object())) {
-        if (w->isVisible()) {
+    if (const QWidget* w = dynamic_cast<const QWidget*>(&object()))
+        if (w->isVisible())
             remake_();
-        } else
-            ;
-    }
 }
 
 
@@ -54,11 +51,9 @@ void QcrRoot::remakeAll(const QString& whence)
 {
     qDebug() << "gRoot->remakeAll < " << whence;
     remake();
-    for (QWidget* w: object().findChildren<QWidget*>()) {
+    for (QWidget* w: object().findChildren<QWidget*>())
         if (QcrMixin* m = dynamic_cast<QcrMixin*>(w))
             m->remake();
-    }
-    // qDebug() << "/gRoot->remakeAll < " << whence;
 }
 
 
