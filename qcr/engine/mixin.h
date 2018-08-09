@@ -30,9 +30,8 @@ public:
     const QString name() const { return object().objectName(); }
     void remake();
     void setRemake(std::function<void()> _remake) { remake_ = _remake; }
-protected:
-    std::function<void()> remake_ {[](){}};
 private:
+    std::function<void()> remake_ {[](){}};
     QObject& object_;
 };
 

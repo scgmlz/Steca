@@ -152,11 +152,9 @@ ActiveClustersControls::ActiveClustersControls()
     layout_.addStretch(1);
     setLayout(&layout_);
 
-    //initialization
-    dropIncompleteAction_.setRemake([=](){
+    setRemake([this](){
             dropIncompleteAction_.setEnabled(gSession->dataset.hasIncomplete());
         });
-    dropIncompleteAction_.remake();
 }
 
 //  ***********************************************************************************************
