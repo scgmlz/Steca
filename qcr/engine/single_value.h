@@ -20,6 +20,9 @@
 #include "qcr/engine/mixin.h"
 #include "qcr/engine/cell.h"
 
+template<class T>
+class QcrCell;
+
 //! Base class for all Qcr widgets that hold a single value.
 template<class T>
 class QcrControl : public QcrSettable {
@@ -28,8 +31,7 @@ public:
     QcrControl(QObject& object, const QString& name, const T val);
     ~QcrControl();
     void programaticallySetValue(T val);
-    T getValue() { remake(); return doGetValue(); }
-    void setGuiHook(std::function<void(T&)> hook) { hook_ = hook; }
+    T getValue() { remake(); return doGetValue(); } // TODO rather call Cell::val
     virtual T doGetValue() const = 0;
     virtual void executeConsoleCommand(const QString& arg);
     QcrCell<T>* cell() { return cell_; } // TODO rm
@@ -40,7 +42,6 @@ protected:
     QcrCell<T>* cell_ {nullptr};
     T reportedValue_;
 private:
-    std::function<void(T&)> hook_ = [](T&) {};
     virtual void doSetValue(T) = 0;
     bool ownsItsCell_ {false};
 };
@@ -53,7 +54,9 @@ template<class T>
 QcrControl<T>::QcrControl(QObject& object, const QString& name, QcrCell<T>* cell)
     : QcrSettable {object, name}
     , cell_ {cell}
-{}
+{
+    cell_->backlink_ = this;
+}
 
 //! Constructs a QcrControl that owns a QcrCell.
 template<class T>
@@ -62,6 +65,7 @@ QcrControl<T>::QcrControl(QObject& object, const QString& name, const T val)
     , ownsItsCell_ {true}
 {
     cell_ = new QcrCell<T>(val); // TODO RECONSIDER smart pointer
+    cell_->backlink_ = this;
 }
 
 template<class T>
@@ -107,7 +111,7 @@ void QcrControl<T>::executeConsoleCommand(const QString& arg)
     programaticallySetValue(strOp::from_s<T>(arg));
 }
 
-//! If value has changed, then execute hook, transmit value to cell, and log.
+//! If value has changed, then transmit value to cell, and log.
 
 //! Used by control widgets, typically through Qt signals that are emitted upon user actions.
 
@@ -116,7 +120,6 @@ void QcrControl<T>::onChangedValue(bool hasFocus, T val)
 {
     if (val==reportedValue_)
         return; // nothing to do
-    hook_(val);
     bool userCall = hasFocus || !softwareCalling_;
     doLog(userCall, name()+" "+strOp::to_s(val));
 

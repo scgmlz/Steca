@@ -16,6 +16,7 @@
 #define CELL_H
 
 //#include "qcr/base/debug.h"
+#include "qcr/engine/single_value.h"
 #include <QObject>
 #include <functional>
 
@@ -42,8 +43,9 @@ public:
 private:
     T value_;
     std::function<void(T)> hook_ = [](T){;};
+    QcrControl<T>* backlink_ {nullptr};
 
-    friend QcrControl<T>; // may call guiSetsVal
+    friend QcrControl<T>; // may set backlink_, and call guiSetsVal
     void guiSetsVal(T, bool userCall=false);
 };
 
@@ -54,6 +56,8 @@ template<class T>
 void QcrCell<T>::setVal(T val)
 {
     value_ = val;
+    if (backlink_)
+        backlink_->programaticallySetValue(val);
 }
 
 template<class T>

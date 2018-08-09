@@ -105,8 +105,6 @@ CutControls::CutControls()
     , cutBottom_ {"cutBottom", &gSession->params.imageCut.bottom, 3, false, 0, INT_MAX,
               "Number of pixels to be cut at the bottom"}
 {
-
-    // layout
     layout_.addWidget(new QLabel("cut"), 1, 0);
     layout_.addWidget(&cutLeft_, 1, 2);
     layout_.addWidget(&link_, 1, 3, Qt::AlignHCenter);
