@@ -107,6 +107,10 @@ void QcrControl<T>::executeConsoleCommand(const QString& arg)
     programaticallySetValue(strOp::from_s<T>(arg));
 }
 
+//! If value has changed, then execute hook, transmit value to cell, and log.
+
+//! Used by control widgets, typically through Qt signals that are emitted upon user actions.
+
 template<class T>
 void QcrControl<T>::onChangedValue(bool hasFocus, T val)
 {
