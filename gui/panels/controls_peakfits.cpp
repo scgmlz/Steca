@@ -101,7 +101,7 @@ class PeakfitOutcomeView : public QcrWidget {
 public:
     PeakfitOutcomeView();
 private:
-    void remake();
+    void refresh();
     void enable(bool haveRaw, bool haveFit);
     QcrLineDisplay showFitOutcomeX_ {"fittedX", 10, true};
     QcrLineDisplay showFitOutcomeD_ {"fittedD", 10, true};
@@ -135,10 +135,10 @@ PeakfitOutcomeView::PeakfitOutcomeView()
     grid->setColumnStretch(4, 1);
     setLayout(grid);
 
-    setRemake( [this]() { remake(); } );
+    setRemake( [this]() { refresh(); } );
 }
 
-void PeakfitOutcomeView::remake()
+void PeakfitOutcomeView::refresh()
 {
     const Peak* peak = gSession->peaks.selectedPeak();
     if (!peak)

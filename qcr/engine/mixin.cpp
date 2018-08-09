@@ -61,7 +61,7 @@ void QcrRoot::remakeAll(const QString& whence)
 //! @class QcrSettable
 
 QcrSettable::QcrSettable(QObject& object, const QString& name, bool _modal)
-    : QcrMixin {object, gConsole->learn(name, this)}
+    : QcrMixin {object, gConsole->learn(name, this)} // console may change name (expand macros)
 {}
 
 // This function looks trivial, but it should not be inlined because it allow us to

@@ -32,7 +32,7 @@ public:
     ~Console();
     Console(const Console&) = delete;
 
-    QString learn(QString name, class QcrSettable*);
+    QString learn(QString name, class QcrSettable*); //!< learns _not_ commands, but widget names!
     void forget(const QString& name);
     void readFile(const QString& fName);
     void call(const QString&);
