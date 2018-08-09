@@ -52,7 +52,7 @@ protected:
 public:
     virtual void executeConsoleCommand(const QString&) = 0;
 protected:
-    void doLog(bool softwareCalled, const QString& msg);
+    void doLog(bool userCalled, const QString& msg);
 };
 
 

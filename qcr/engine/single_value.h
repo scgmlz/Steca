@@ -88,7 +88,7 @@ void QcrControl<T>::initControl()
                name().toLatin1().constData(),
                strOp::to_s(givenValue).toLatin1().constData(),
                strOp::to_s(reportedValue_).toLatin1().constData());
-    doLog(true, "initControl "+name()+" "+strOp::to_s(reportedValue_));
+    doLog(false, "initControl "+name()+" "+strOp::to_s(reportedValue_));
 }
 
 //! Wraps a call to 'doSetValue', with flag softwareCalling_ = true.
@@ -114,7 +114,7 @@ void QcrControl<T>::onChangedValue(bool hasFocus, T val)
         return; // nothing to do
     hook_(val);
     bool userCall = hasFocus || !softwareCalling_;
-    doLog(!userCall, name()+" "+strOp::to_s(val));
+    doLog(userCall, name()+" "+strOp::to_s(val));
 
     // not sure whether we want to get rid of hasFocus; perform some tests:
     if (hasFocus && softwareCalling_)

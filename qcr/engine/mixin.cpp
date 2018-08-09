@@ -64,9 +64,9 @@ QcrSettable::QcrSettable(QObject& object, const QString& name, bool _modal)
     : QcrMixin {object, gConsole->learn(name, this)}
 {}
 
-void QcrSettable::doLog(bool softwareCalled, const QString& msg)
+void QcrSettable::doLog(bool userCalled, const QString& msg)
 {
-    gConsole->log2(!softwareCalled, msg);
+    gConsole->log2(userCalled, msg);
 }
 
 
