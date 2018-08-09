@@ -43,9 +43,9 @@
 ./core/typ/bool_vector.h&cpp              simple and good
 ./core/typ/cached.h (only)                work in progress TODO needs tests
 ./core/typ/curve.h&cpp                    ok, may need SubCurve for speed
-./core/typ/json.h&cpp
-./core/typ/range.h&cpp
-./core/typ/size2d.h&cpp
+./core/typ/json.h&cpp                     unclear whether needed
+./core/typ/range.h&cpp                    TODO rm old-style caching
+./core/typ/size2d.h&cpp                   ok, TODO: consider QRect
 ./gui/actions/image_trafo_actions.h&cpp
 ./gui/actions/menus.h&cpp
 ./gui/actions/toggles.h&cpp

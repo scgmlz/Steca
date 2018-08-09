@@ -27,7 +27,7 @@ struct size2d {
 
     int count() const { return w * h; }
 
-    friend size2d operator-(const size2d& s1, const size2d& s2);
+    friend size2d operator-(const size2d& s1, const size2d& s2); // TODO more explicit fct name
 
     size2d transposed() const { return size2d(h, w); }
 
