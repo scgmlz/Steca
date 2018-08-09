@@ -16,9 +16,12 @@
 #define CELL_H
 
 //#include "qcr/base/debug.h"
-#include "qcr/engine/mixin.h" // gRoot
 #include <QObject>
 #include <functional>
+
+namespace Qcr {
+void defaultHook();
+}
 
 template<class T>
 class QcrControl;
@@ -38,7 +41,7 @@ public:
 
 private:
     T value_;
-    std::function<void(T)> hook_ = [](T) { gRoot->remakeAll("QcrCell"); };
+    std::function<void(T)> hook_ = [](T){;};
 
     friend QcrControl<T>; // may call guiSetsVal
     void guiSetsVal(T, bool userCall=false);
@@ -57,8 +60,10 @@ template<class T>
 void QcrCell<T>::guiSetsVal(T val, bool userCall)
 {
     value_ = val;
-    if (userCall) // to prevent circular calls; TODO simplify
+    if (userCall) { // to prevent circular calls; TODO simplify
         hook_(val);
+        QcrDefaultHook();
+    }
 }
 
 #endif // CELL_H

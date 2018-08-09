@@ -53,9 +53,9 @@ QcrRoot::QcrRoot(QObject* object)
     gRoot = this;
 }
 
-void QcrRoot::remakeAll(const QString& whence)
+void QcrRoot::remakeAll()
 {
-    qDebug() << "gRoot->remakeAll < " << whence;
+    qDebug() << "gRoot->remakeAll";
     remake();
     for (QWidget* w: object().findChildren<QWidget*>())
         if (QcrMixin* m = dynamic_cast<QcrMixin*>(w))

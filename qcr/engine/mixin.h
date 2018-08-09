@@ -41,7 +41,7 @@ private:
 class QcrRoot : public QcrMixin {
 public:
     QcrRoot(QObject* object);
-    void remakeAll(const QString& whence);
+    void remakeAll();
 };
 
 

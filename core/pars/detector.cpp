@@ -37,10 +37,10 @@ Detector::Detector()
     // detectorDistance_ = qMin(qMax(detectorDistance, 10.), 9999.);
     // pixSize_ = qMin(qMax(pixSize, .1), 9.9);
 
-    detectorDistance.setHook([](double){ gSession->onDetector(); gRoot->remakeAll("geo"); } );
-    pixSize         .setHook([](double){ gSession->onDetector(); gRoot->remakeAll("geo"); } );
-    pixOffset[0]    .setHook([](int   ){ gSession->onDetector(); gRoot->remakeAll("geo"); } );
-    pixOffset[1]    .setHook([](int   ){ gSession->onDetector(); gRoot->remakeAll("geo"); } );
+    detectorDistance.setHook([](double){ gSession->onDetector(); });
+    pixSize         .setHook([](double){ gSession->onDetector(); });
+    pixOffset[0]    .setHook([](int   ){ gSession->onDetector(); });
+    pixOffset[1]    .setHook([](int   ){ gSession->onDetector(); });
 }
 
 Detector::~Detector()
@@ -91,7 +91,7 @@ void ImageCut::sync(int val, QcrCell<int>& _1, QcrCell<int>& _2, QcrCell<int>& _
         _3.setVal(val);
     }
     gSession->onDetector();
-    gRoot->remakeAll("cut");
+    QcrDefaultHook();
 }
 
 void ImageCut::clear()

@@ -25,11 +25,13 @@
 #define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 
 namespace {
+
 QString safeRealText(double val, int prec=4) {
     return qIsFinite(val) ? QString::number(val, 'g', prec) : "NaN"; }
 QString par2text(const FitParameter& par) {
     return safeRealText(par.value(),6) + "+-" + safeRealText(par.roundedError(4),4); }
-} // local methods
+
+} // namespace
 
 //  ***********************************************************************************************
 //! @class PeaksModel (local scope)

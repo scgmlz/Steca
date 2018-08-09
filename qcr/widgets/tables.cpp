@@ -17,7 +17,7 @@
 #include "qcr/base/qcrexception.h"
 #include "qcr/base/string_ops.h"
 #include "qcr/engine/console.h"
-#include "qcr/engine/cell.h" // gRoot->remakeAll
+#include "qcr/engine/cell.h"
 
 //  ***********************************************************************************************
 //! @class TableModel
@@ -52,7 +52,7 @@ void TableModel::setHighlightedCell(const QModelIndex& cell)
         return;
     onHighlight(row);
     gConsole->log(name() + " highlight " + QString::number(row));
-    gRoot->remakeAll("TM::setHighlightedCell");
+    QcrDefaultHook();
 }
 
 
@@ -75,7 +75,7 @@ void CheckTableModel::onClicked(const QModelIndex& cell)
     int col = cell.column();
     if (col==1) {
         activateAndLog(true, row, !activated(row));
-        gRoot->remakeAll("CTM::onClicked/activate");
+        QcrDefaultHook();
     }
 }
 
