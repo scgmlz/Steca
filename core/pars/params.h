@@ -18,7 +18,7 @@
 #include "core/pars/detector.h"
 #include "core/pars/image_transform.h"
 #include "core/pars/interpol_params.h"
-#include "core/meta/meta_selection.h"
+#include "core/typ/bool_vector.h"
 #include "qcr/engine/cell.h"
 
 enum class eNorm {

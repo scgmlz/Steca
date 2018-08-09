@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/meta/meta_selection.h
+//! @file      core/typ/bool_vector.h
 //! @brief     Defines class BoolVector
 //!
 //! @homepage  https://github.com/scgmlz/Steca

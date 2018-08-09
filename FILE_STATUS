@@ -21,15 +21,14 @@
 ./core/fit/fit_methods.h&cpp              revise along with fitting (convert to lmfit)
 ./core/fit/fit_par.h&cpp                  revise along with fitting
 ./core/fit/peak_functions.h&cpp           revise along with fitting, TODO restore Lorentz & Voigt
-./core/fit/raw_outcome.h&cpp
+./core/fit/raw_outcome.h&cpp              good & simple
 ./core/loaders/fastyamlloader.h&cpp       review later
 ./core/loaders/load_caress.cpp (no h!)    don't touch, 3rd party
 ./core/loaders/loaders.h&cpp              review later
 ./core/loaders/load_mar.cpp (no h!)       don't touch, 3rd party
 ./core/loaders/load_tiff.cpp (no h!)      don't touch, 3rd party
 ./core/loaders/load_yaml.cpp (no h!)      review later
-./core/meta/metadata.h&cpp
-./core/meta/meta_selection.h&cpp
+./core/meta/metadata.h&cpp                TODO revise metadata to make them more flexible
 ./core/pars/baseline.h&cpp
 ./core/pars/detector.h&cpp
 ./core/pars/image_transform.h&cpp
@@ -41,6 +40,7 @@
 ./core/raw/measurement.h&cpp
 ./core/raw/rawfile.h&cpp
 ./core/session.h&cpp
+./core/typ/bool_vector.h&cpp              simple and good
 ./core/typ/cached.h (only)
 ./core/typ/curve.h&cpp
 ./core/typ/json.h&cpp
