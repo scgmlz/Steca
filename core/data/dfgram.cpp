@@ -67,6 +67,8 @@ Curve computePeakAsCurve(const Dfgram* parent, int jP)
     Peak& peak = gSession->peaks.at(jP);
     const Curve& curveMinusBg = parent->getCurveMinusBg();
     const PeakFunction& fun = parent->getPeakFit(jP);
+    if (!fun.success())
+        return {};
     const Range& rge = peak.range();
     Curve ret;
     for (int i=0; i<curveMinusBg.count(); ++i) {
