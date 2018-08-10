@@ -151,7 +151,7 @@ void PeakfitOutcomeView::refresh()
             return enable(false, false);
         dfgram = &gSession->activeClusters.avgDfgram.get();
     } else {
-        const Cluster* cluster = gSession->highlightedCluster().cluster();
+        const Cluster* cluster = gSession->currentCluster();
         if (!cluster)
             return enable(false, false);
         dfgram = &cluster->currentDfgram();

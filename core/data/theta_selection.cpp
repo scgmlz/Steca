@@ -39,7 +39,7 @@ void ThetaSelection::fromJson(const JsonObj& obj)
 //! Resets fullRange_ and numSlices_ according to loaded data.
 void ThetaSelection::onData()
 {
-    const Cluster* cluster = gSession->highlightedCluster().cluster();
+    const Cluster* cluster = gSession->currentCluster();
     if (!cluster) {
         fullRange_.invalidate();
         numSlices_ = 0;

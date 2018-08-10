@@ -45,7 +45,7 @@ private:
 
 int ActiveClustersModel::highlighted() const
 {
-    const Cluster* c = gSession->highlightedCluster().cluster();
+    const Cluster* c = gSession->currentCluster();
     return c ? c->index() : -1;
 }
 

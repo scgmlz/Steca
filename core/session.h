@@ -60,7 +60,7 @@ public:
     // const abbreviations to member member calls
     bool hasData() const { return dataset.countFiles(); }
     bool hasCorrFile() const { return corrset.hasFile(); }
-    const HighlightedData& highlightedCluster() const { return dataset.highlight(); }
+    const Cluster* currentCluster() const { return dataset.highlight().cluster(); }
 
     Dataset dataset;                    //!< raw data files with sample detector images
     Corrset corrset;                    //!< raw data files with standard sample image

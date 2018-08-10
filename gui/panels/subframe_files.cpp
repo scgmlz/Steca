@@ -43,7 +43,7 @@ private:
 
 int FilesModel::highlighted() const
 {
-    const Cluster* c = gSession->highlightedCluster().cluster();
+    const Cluster* c = gSession->currentCluster();
     return c ? c->file().index() : -1;
 }
 

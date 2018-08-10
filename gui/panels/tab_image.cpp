@@ -240,7 +240,7 @@ DataImageTab::DataImageTab()
             gSession->gammaSelection.onData();
             gSession->thetaSelection.onData();
 
-            const Cluster* cluster = gSession->highlightedCluster().cluster();
+            const Cluster* cluster = gSession->currentCluster();
             int n = cluster ? cluster->count() : 1;
             idxMeas->setMaximum(n);
             if (n>1) {
@@ -311,7 +311,7 @@ QPixmap DataImageTab::pixmap()
 
 const Measurement* DataImageTab::measurement()
 {
-    const Cluster* cluster = gSession->highlightedCluster().cluster();
+    const Cluster* cluster = gSession->currentCluster();
     return cluster ? cluster->at(iMeas.val()-1) : nullptr;
 }
 
