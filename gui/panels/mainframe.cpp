@@ -34,7 +34,9 @@ Mainframe::Mainframe()
     addTab((polefigTab_ = new PolefigTab), "Polefig");
 
     setRemake( [=]() {
-            setTabEnabled(1, gSession->corrset.hasFile()); // Corr img
-            setTabEnabled(4, gSession->peaks.count()); // Pole fig
+            setTabEnabled(1, gSession->corrset.hasFile());     // Corr img
+            setTabEnabled(2, gSession->activeClusters.size()); // Bigtable
+            setTabEnabled(3, gSession->activeClusters.size()); // Diagram
+            setTabEnabled(4, gSession->peaks.count());         // Pole fig
         } );
 }
