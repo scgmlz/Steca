@@ -31,13 +31,9 @@ SubframeSetup::SubframeSetup()
     addTab(new ControlsInterpolation(),"Interpol"); idxInterpol = 3;
 
     setRemake( [=]() {
-            if (gSession->dataset.countFiles()) {
-                setTabEnabled(idxBaseline, true);
-                setTabEnabled(idxPeakfits, true);
-            } else {
-                setTabEnabled(idxBaseline, false);
-                setTabEnabled(idxPeakfits, false);
+            setTabEnabled(idxBaseline, gSession->dataset.countFiles());
+            setTabEnabled(idxPeakfits, gSession->dataset.countFiles());
+            if (!currentWidget()->isEnabled())
                 programaticallySetValue(0);
-            }
         } );
 }
