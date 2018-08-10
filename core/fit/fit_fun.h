@@ -31,10 +31,12 @@ public:
     //! partial derivative / parameter, with given (parValues) or own parameters
     virtual double dy(double x, int parIndex, double const* parValues = nullptr) const = 0;
 
+    void setSuccess(bool s) { success_ = s; }
     void setParameterCount(int n) { parameters_.resize(n, {}); }
     FitParameter& parameterAt(int ip) { return parameters_[ip]; }
 
     int parameterCount() const { return parameters_.size(); }
+    bool success() const { return success_; }
 
 protected:
     void setParValue(int ip, double val) {parameters_[ip].setValue(val, 0); }
@@ -42,6 +44,7 @@ protected:
     double parValue(int parIndex, double const* parValues) const;
 
     std::vector<FitParameter> parameters_;
+    bool success_ {false};
 };
 
 //! A polynomial, for fitting the background of a diffractogram

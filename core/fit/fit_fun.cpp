@@ -68,8 +68,6 @@ double Polynom::dy(double x, int i, double const*) const
 Polynom Polynom::fromFit(int degree, const Curve& curve, const Ranges& ranges)
 {
     //qDebug() << "polynomial fit";
-    ASSERT(curve.count());
-    ASSERT(ranges.count());
     Polynom p(degree);
     FitWrapper().execFit(p, curve.intersect(ranges));
     return p;

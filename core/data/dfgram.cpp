@@ -26,10 +26,10 @@ Polynom computeBgFit(const Dfgram* parent)
 
 Curve computeBgAsCurve(const Dfgram* parent)
 {
-    if (!gSession->baseline.ranges.count())
+    const Polynom& bgFit = parent->getBgFit();
+    if (!bgFit.success())
         return {};
     Curve ret;
-    const Polynom& bgFit = parent->getBgFit();
     for (int i=0; i<parent->curve.count(); ++i) {
         double x = parent->curve.x(i);
         ret.append(x, bgFit.y(x));
@@ -39,10 +39,10 @@ Curve computeBgAsCurve(const Dfgram* parent)
 
 Curve computeCurveMinusBg(const Dfgram* parent)
 {
-    if (!gSession->baseline.ranges.count())
+    const Curve& bg = parent->getBgAsCurve();
+    if (!bg.count())
         return parent->curve; // no bg defined
     Curve ret;
-    const Curve& bg = parent->getBgAsCurve();
     for (int i=0; i<parent->curve.count(); ++i)
         ret.append(parent->curve.x(i), parent->curve.y(i)-bg.y(i));
     return ret;

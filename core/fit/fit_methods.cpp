@@ -20,29 +20,30 @@
 
 void FitWrapper::execFit(ParametricFunction& function, const Curve& curve)
 {
-    if (curve.isEmpty())
+    int parCount = function.parameterCount();
+    if (curve.count()<parCount) {
+        qDebug() << "not enough points for fitting";
+        function.setSuccess(false);
         return;
+    }
 
-    function_ = &function;
-    xValues_ = curve.xs().data();
-
-    // prepare data in a debug::ensured format
-    int parCount = function_->parameterCount();
     std::vector<double> parValue(parCount), parMin(parCount), parMax(parCount), parError(parCount);
-
     for (int ip=0; ip<parCount; ++ip) {
-        const FitParameter& par = function_->parameterAt(ip);
+        const FitParameter& par = function.parameterAt(ip);
         parValue[ip] = qIsFinite(par.value()) ? par.value() : 0.;
         parMin[ip] = par.range().min;
         parMax[ip] = par.range().max;
     }
 
+    function_ = &function;
+    xValues_ = curve.xs().data();
     callFit(parValue.data(), parMin.data(), parMax.data(), parError.data(), parCount,
             curve.ys().data(), curve.count());
 
     // pass fit results
+    function.setSuccess(true);
     for (int ip=0; ip<parCount; ++ip)
-        function_->parameterAt(ip).setValue(parValue[ip], parError[ip]);
+        function.parameterAt(ip).setValue(parValue[ip], parError[ip]);
 }
 
 template <typename T>
