@@ -34,11 +34,20 @@ QColor intenGraph(double inten, double maxInten) {
 
 PlotPolefig::PlotPolefig()
 {
-    setRemake ([this](){refresh();});
+    setRemake ([this](){
+            QWidget::update(); // Which then calls paintEvent. Only so we can use QPainter.
+        });
 }
 
-void PlotPolefig::refresh()
+void PlotPolefig::paintEvent(QPaintEvent*)
 {
+    qDebug() << "PlotPolefig::refresh()";
+    peakInfos_ = gSession->allPeaks.currentPeaks();
+    qDebug() << " -> " << peakInfos_;
+    qDebug() << " -> " << peakInfos_->peaks().size();
+    if (peakInfos_->peaks().size()>0)
+        qDebug() << " -> " << peakInfos_->peaks().at(0).data().size();
+
     int w = size().width(), h = size().height();
 
     QPainter painter(this);
@@ -51,7 +60,6 @@ void PlotPolefig::refresh()
 
     paintGrid();
 
-    peakInfos_ = gSession->allPeaks.currentPeaks();
     if (peakInfos_)
         paintPoints();
 }

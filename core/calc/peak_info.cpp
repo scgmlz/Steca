@@ -288,6 +288,7 @@ const PeakInfos* AllPeaks::currentDirect() const
 {
     if (!gSession->peaks.count())
         return nullptr;
+    ASSERT(direct.size(this)==gSession->peaks.count());
     int jP = gSession->peaks.selectedIndex();
     direct.getget(this,jP).inspect("currentDirect");
     return &direct.getget(this,jP);
@@ -297,6 +298,7 @@ const PeakInfos* AllPeaks::currentInterpolated() const
 {
     if (!gSession->peaks.count())
         return nullptr;
+    ASSERT(interpolated.size(this)==gSession->peaks.count());
     int jP = gSession->peaks.selectedIndex();
     return &interpolated.getget(this,jP);
 }

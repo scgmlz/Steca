@@ -32,6 +32,6 @@ PopupPolefig::PopupPolefig()
     // TODO (issue#76) add info about used parameters
     setLayout(layout);
 
-    plot->refresh();
+    plot->remake();
     show();
 }

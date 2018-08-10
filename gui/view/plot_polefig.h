@@ -25,11 +25,11 @@
 class PlotPolefig : public QcrWidget {
 public:
     PlotPolefig();
-    void refresh();
 
     QcrCell<bool> flat {false};
+
 private:
-    const PeakInfos* peakInfos_;
+    void paintEvent(QPaintEvent*);
 
     QPointF p(deg alpha, deg beta) const;
     deg alpha(const QPointF&) const;
@@ -40,8 +40,10 @@ private:
     void paintGrid();
     void paintPoints();
 
+    const PeakInfos* peakInfos_ {nullptr};
+
     // valid while painting
-    QPainter* p_;
+    QPainter* p_ {nullptr};
     QPointF c_;
     double r_;
 
