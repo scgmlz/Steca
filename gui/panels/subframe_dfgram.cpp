@@ -79,14 +79,18 @@ DfPanel::DfPanel()
     hb->addWidget(new QcrIconToggleButton {&gGui->toggles->fixedIntenDfgram});
     hb->addWidget(new QcrIconToggleButton {&gGui->toggles->showBackground});
     hb->addStretch(); // ---
-    hb->addWidget(new QcrIconTriggerButton {&gGui->triggers->exportDfgram});
+    auto* btnExport = new QcrIconTriggerButton {&gGui->triggers->exportDfgram};
+    hb->addWidget(btnExport);
 
     auto* box = new QVBoxLayout;
     box->addWidget(plot_);
     box->addLayout(hb);
     setLayout(box);
 
-    setRemake([this]() {plot_->renderAll();});
+    setRemake([=](){
+            btnExport->setEnabled(gSession->activeClusters.size());
+            plot_->renderAll();
+        });
 }
 
 void DfPanel::onNormChanged()

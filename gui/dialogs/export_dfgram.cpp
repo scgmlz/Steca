@@ -135,7 +135,7 @@ void ExportDfgram::saveAll(bool oneFile)
     if (path.isEmpty())
         return;
     QTextStream* stream = nullptr;
-    int nClusters = gSession->activeClusters.clusters.get().size();
+    int nClusters = gSession->activeClusters.size();
     ASSERT(nClusters>0);
     if (oneFile) {
         QFile* file = fileField_->file();

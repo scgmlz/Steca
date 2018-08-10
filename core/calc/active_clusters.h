@@ -25,6 +25,7 @@ public:
     ActiveClusters();
     ActiveClusters(const ActiveClusters&) = delete;
 
+    int size() const { return clusters.get().size(); }
     void invalidate() const;
     void invalidateAvg() const;
 

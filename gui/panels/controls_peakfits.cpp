@@ -147,7 +147,7 @@ void PeakfitOutcomeView::refresh()
 
     const Dfgram* dfgram;
     if (gGui->toggles->combinedDfgram.getValue()) {
-        if (!gSession->activeClusters.clusters.get().size())
+        if (!gSession->activeClusters.size())
             return enable(false, false);
         dfgram = &gSession->activeClusters.avgDfgram.get();
     } else {
