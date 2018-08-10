@@ -44,8 +44,8 @@ public:
     QcrCell<bool>   intenScaledAvg {true}; // if not, summed
     QcrCell<double> intenScale {1.};
     eNorm           normMode {eNorm::NONE};
-    BoolVector   smallBoolVector;  //!< for 'clusters' and 'metadata' subframes:
-    BoolVector   bigBoolVector;    //! for use in 'bigtable' (tabbed view and export):
+    BoolVector      smallBoolVector;  //!< for 'clusters' and 'metadata' subframes:
+    BoolVector      bigBoolVector;    //! for use in 'bigtable' (tabbed view and export):
 };
 
 #endif // PARAMS_H

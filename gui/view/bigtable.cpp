@@ -152,8 +152,8 @@ QStringList BigtableModel::getHeaders() const
 {
     QStringList ret;
     const QStringList& headers = PeakInfo::dataTags(true);
-    for_i (headers.count())
-        if (gGui->state->bigtableShowCol.at(i))
+    for (int i=0; i<headers.count(); ++i)
+        if (gSession->params.bigBoolVector.isSelected(i))
             ret.append(headers.at(i));
     return ret;
 }
@@ -161,9 +161,10 @@ QStringList BigtableModel::getHeaders() const
 std::vector<std::vector<const QVariant*>> BigtableModel::getData() const
 {
     std::vector<std::vector<const QVariant*>> ret(rowCount());
-    for_ij (rowCount(), columnCount()-1)
-        if (gGui->state->bigtableShowCol.at(j))
-            ret.at(i).push_back(&(rows_.at(i).row.at(j)));
+    for (int i=0; i<rowCount(); ++i)
+        for (int j=0; j<columnCount()-1; ++j)
+            if (gSession->params.bigBoolVector.isSelected(j))
+                ret.at(i).push_back(&(rows_.at(i).row.at(j)));
     return ret;
 }
 
@@ -215,7 +216,7 @@ void BigtableView::updateShownColumns()
 {
     int nCol = model()->columnCount();
     for_i (nCol-1) {
-        if (gGui->state->bigtableShowCol[i])
+        if (gSession->params.bigBoolVector.isSelected(i))
             showColumn(i + 1);
         else
             hideColumn(i + 1);

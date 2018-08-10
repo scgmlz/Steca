@@ -34,15 +34,15 @@ RangeControl::RangeControl(const QString& _name, const std::function<Range*()>& 
     spinMin->setSingleStep(STEP);
     spinMax->setSingleStep(STEP);
 
-    cellMin->setHook([cellMin, cellMax, this](double val){
-            cellMin->setVal( myRound(qMin(val, myRound(cellMax->val())-STEP)) );
+    cellMin->setHook([cellMin, cellMax, this](double& val){
+            val = myRound(qMin(val, myRound(cellMax->val())-STEP));
             gSession->onBaseline(); // TODO do this via setRange
-            selectRange_()->setOne(cellMin->val(), false);
+            selectRange_()->setOne(val, false);
         });
-    cellMax->setHook([cellMin, cellMax, this](double val){
-            cellMax->setVal( myRound(qMax(val, myRound(cellMin->val())+STEP)) );
+    cellMax->setHook([cellMin, cellMax, this](double& val){
+            val = myRound(qMax(val, myRound(cellMin->val())+STEP));
             gSession->onBaseline(); // TODO do this via setRange
-            selectRange_()->setOne(cellMax->val(), true);
+            selectRange_()->setOne(val, true);
         });
 
     // layout

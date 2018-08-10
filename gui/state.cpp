@@ -29,7 +29,4 @@ GuiState::GuiState()
     // qDebug() << "diagram tags: " << tags.join(" ");
     diagramX->addItems(tags);
     diagramY->addItems(tags);
-
-    bigtableShowCol.resize(PeakInfo::dataTags(false).count());
-    std::fill(bigtableShowCol.begin(), bigtableShowCol.end(), true);
 }

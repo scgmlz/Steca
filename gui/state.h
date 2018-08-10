@@ -29,7 +29,6 @@ public:
     class QcrComboBox* diagramX;
     class QcrComboBox* diagramY;
 
-    std::vector<bool> bigtableShowCol;
     const class BigtableModel* bigtableModel;
 };
 

@@ -102,6 +102,7 @@ void QcrControl<T>::programaticallySetValue(T val)
 {
     softwareCalling_ = true;
     doSetValue(val);
+    reportedValue_ = val;
     softwareCalling_ = false;
 }
 
