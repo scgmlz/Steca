@@ -28,6 +28,7 @@ public:
     // TODO rm copy constructor ?
 
     int numMeasurements() const { return raw_.numMeasurements(); }
+    int index() const { return index_; }
     QString name() const { return raw_.fileName(); }
     Qt::CheckState activated() const;
 
@@ -46,7 +47,7 @@ private:
 
 //! Pointer to highlighted data.
 
-class HighlightedData {
+class HighlightedData { // TODO ? mv to cluster.h ?
 public:
     HighlightedData() {}
     HighlightedData(const HighlightedData&) = delete;
@@ -58,8 +59,6 @@ public:
 
     const Cluster* cluster() const { return current_; }
     Cluster* cluster() { return current_; }
-    int clusterIndex() const;
-    int fileIndex() const;
 
 private:
     Cluster* current_ { nullptr };

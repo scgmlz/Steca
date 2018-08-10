@@ -69,16 +69,6 @@ void HighlightedData::reset()
     setCluster(0);
 }
 
-int HighlightedData::fileIndex() const
-{
-    return current_ ? current_->file().index_ : -1;
-}
-
-int HighlightedData::clusterIndex() const
-{
-    return current_ ? current_->index() : -1;
-}
-
 
 //  ***********************************************************************************************
 //! @class Dataset
@@ -102,7 +92,10 @@ void Dataset::clear()
 
 void Dataset::removeFile()
 {
-    int i = highlight_.fileIndex();
+    const Cluster* cluster = highlight_.cluster();
+    if (!cluster)
+        return;
+    int i = cluster->file().index();
     files_.erase(files_.begin()+i);
     if (files_.empty())
         return clear();
@@ -119,7 +112,9 @@ void Dataset::removeFile()
 
 void Dataset::addGivenFiles(const QStringList& filePaths)
 {
-    int i = highlight_.fileIndex();
+    int i = 0;
+    if (const Cluster* cluster = highlight_.cluster())
+        i = cluster->file().index();
     highlight_.clear();
     for (const QString& path: filePaths) {
         if (path.isEmpty() || hasFile(path))

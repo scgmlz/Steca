@@ -31,7 +31,7 @@ public:
     FilesModel() : CheckTableModel("datafiles") {}
 
 private:
-    int highlighted() const final { return gSession->highlightedCluster().fileIndex(); }
+    int highlighted() const final;
     void onHighlight(int i) final { gSession->dataset.highlight().setFile(i); }
     bool activated(int i) const { return gSession->dataset.fileAt(i).activated() == Qt::Checked; }
     void setActivated(int i, bool on) { gSession->dataset.setFileActivation(i, on); }
@@ -40,6 +40,12 @@ private:
     int rowCount() const final { return gSession->dataset.countFiles(); }
     QVariant data(const QModelIndex&, int) const final;
 };
+
+int FilesModel::highlighted() const
+{
+    const Cluster* c = gSession->highlightedCluster().cluster();
+    return c ? c->file().index() : -1;
+}
 
 //! Returns role-specific information about one table cell.
 QVariant FilesModel::data(const QModelIndex& index, int role) const
