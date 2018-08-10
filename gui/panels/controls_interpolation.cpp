@@ -14,30 +14,40 @@
 
 #include "controls_interpolation.h"
 #include "core/session.h"
+#include "qcr/widgets/controls.h"
 
 ControlsInterpolation::ControlsInterpolation()
-    : doInterpol_ {"doInterpol", "enabled", &gSession->params.interpolParams.enabled}
-    , stepAlpha_  {"stepAlpha",  &gSession->params.interpolParams.stepAlpha,  6, 2, 1., 30.}
-    , stepBeta_   {"stepBeta",   &gSession->params.interpolParams.stepBeta,   6, 2, 1., 30.}
-    , idwRadius_  {"idwRadius",  &gSession->params.interpolParams.idwRadius,  6, 2, 0., 90.}
-    , avgAlphaMax_{"avgAlphaMax",&gSession->params.interpolParams.avgAlphaMax,6, 2, 0., 90.}
-    , avgRadius_  {"avgRadius",  &gSession->params.interpolParams.avgRadius,  6, 2, 0., 90.}
-    , threshold_  {"threshold",  &gSession->params.interpolParams.threshold,  6, true, 0, 100}
 {
+    auto& P = gSession->params;
+    auto* doInterpol =
+        new QcrCheckBox      {"doInterpol", "enabled", &P.interpolParams.enabled};
+    auto* stepAlpha  =
+        new QcrDoubleSpinBox {"stepAlpha",  &P.interpolParams.stepAlpha,  6, 2, 1., 30.};
+    auto* stepBeta   =
+        new QcrDoubleSpinBox {"stepBeta",   &P.interpolParams.stepBeta,   6, 2, 1., 30.};
+    auto* idwRadius  =
+        new QcrDoubleSpinBox {"idwRadius",  &P.interpolParams.idwRadius,  6, 2, 0., 90.};
+    auto* avgAlphaMax=
+        new QcrDoubleSpinBox {"avgAlphaMax",&P.interpolParams.avgAlphaMax,6, 2, 0., 90.};
+    auto* avgRadius  =
+        new QcrDoubleSpinBox {"avgRadius",  &P.interpolParams.avgRadius,  6, 2, 0., 90.};
+    auto* threshold  =
+        new QcrSpinBox       {"threshold",  &P.interpolParams.threshold,  6, true, 0, 100};
+
     auto* grid = new QGridLayout;
-    grid->addWidget(&doInterpol_,              0, 1);
+    grid->addWidget(doInterpol,              0, 1);
     grid->addWidget(new QLabel("step α"),      1, 0, Qt::AlignRight);
-    grid->addWidget(&stepAlpha_,               1, 1);
+    grid->addWidget(stepAlpha,               1, 1);
     grid->addWidget(new QLabel("avg. α max"),  2, 0, Qt::AlignRight);
-    grid->addWidget(&avgAlphaMax_,             2, 1);
+    grid->addWidget(avgAlphaMax,             2, 1);
     grid->addWidget(new QLabel("β"),           3, 0, Qt::AlignRight);
-    grid->addWidget(&stepBeta_,                3, 1);
+    grid->addWidget(stepBeta,                3, 1);
     grid->addWidget(new QLabel("radius"),      4, 0, Qt::AlignRight);
-    grid->addWidget(&avgRadius_,               4, 1);
+    grid->addWidget(avgRadius,               4, 1);
     grid->addWidget(new QLabel("idw radius"),  5, 0, Qt::AlignRight);
-    grid->addWidget(&idwRadius_,               5, 1);
+    grid->addWidget(idwRadius,               5, 1);
     grid->addWidget(new QLabel("inclusion %"), 6, 0, Qt::AlignRight);
-    grid->addWidget(&threshold_,               6, 1);
+    grid->addWidget(threshold,               6, 1);
 
     grid->setColumnStretch(grid->columnCount(), 1000);
     grid->setRowStretch   (grid->   rowCount(), 1000);
@@ -45,11 +55,11 @@ ControlsInterpolation::ControlsInterpolation()
 
     setRemake([=](){
             bool on = gSession->params.interpolParams.enabled.val();
-            stepAlpha_  .setEnabled(on);
-            stepBeta_   .setEnabled(on);
-            idwRadius_  .setEnabled(on);
-            avgAlphaMax_.setEnabled(on);
-            avgRadius_  .setEnabled(on);
-            threshold_  .setEnabled(on);
+            stepAlpha  ->setEnabled(on);
+            stepBeta   ->setEnabled(on);
+            idwRadius  ->setEnabled(on);
+            avgAlphaMax->setEnabled(on);
+            avgRadius  ->setEnabled(on);
+            threshold  ->setEnabled(on);
         });
 }

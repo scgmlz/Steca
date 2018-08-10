@@ -15,7 +15,6 @@
 #ifndef CONTROLS_INTERPOLATION_H
 #define CONTROLS_INTERPOLATION_H
 
-#include "qcr/widgets/controls.h"
 #include "qcr/widgets/views.h"
 
 //! A widget with controls to change the interpolation fitting.
@@ -23,14 +22,6 @@
 class ControlsInterpolation : public QcrWidget {
 public:
     ControlsInterpolation();
-private:
-    QcrCheckBox      doInterpol_ ;
-    QcrDoubleSpinBox stepAlpha_  ;
-    QcrDoubleSpinBox stepBeta_   ;
-    QcrDoubleSpinBox idwRadius_  ;
-    QcrDoubleSpinBox avgAlphaMax_;
-    QcrDoubleSpinBox avgRadius_  ;
-    QcrSpinBox       threshold_  ;
 };
 
 #endif // CONTROLS_INTERPOLATION_H
