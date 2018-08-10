@@ -16,10 +16,11 @@
 #define CONTROLS_INTERPOLATION_H
 
 #include "qcr/widgets/controls.h"
+#include "qcr/widgets/views.h"
 
 //! A widget with controls to change the interpolation fitting.
 
-class ControlsInterpolation : public QWidget {
+class ControlsInterpolation : public QcrWidget {
 public:
     ControlsInterpolation();
 private:

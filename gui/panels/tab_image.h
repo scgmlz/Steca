@@ -23,7 +23,7 @@
 
 //! Displays a 2d detector image, and possibly some overlay. Used in ImageTab.
 
-class ImageView final : public QWidget {
+class ImageView final : public QcrWidget {
 public:
     ImageView();
     void setPixmap(const QPixmap&);

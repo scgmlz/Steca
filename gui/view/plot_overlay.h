@@ -15,12 +15,12 @@
 #ifndef PLOT_OVERLAY_H
 #define PLOT_OVERLAY_H
 
-#include "QCustomPlot/qcustomplot.h"
 #include "core/typ/range.h"
+#include "QCustomPlot/qcustomplot.h"
 
 //! Listens to mouse events to select subranges of a plot.
 
-class PlotOverlay : public QWidget {
+class PlotOverlay : public QWidget /* sic, no QcrWidget here */ {
 public:
     PlotOverlay(QCustomPlot&);
 

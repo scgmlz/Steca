@@ -18,10 +18,11 @@
 #include "QCustomPlot/qcustomplot.h"
 #include "core/calc/peak_info.h"
 #include "qcr/widgets/controls.h"
+#include "qcr/widgets/views.h"
 
 //! Tab in PoleFiguresFrame, to display the pole figure.
 
-class PlotPolefig : public QWidget {
+class PlotPolefig : public QcrWidget {
 public:
     PlotPolefig();
     void refresh();

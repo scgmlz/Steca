@@ -25,7 +25,7 @@
 
 //! Control widgets that govern the detector detector.
 
-class DetectorControls : public QWidget {
+class DetectorControls : public QcrWidget {
 public:
     DetectorControls();
 private:
