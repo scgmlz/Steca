@@ -76,7 +76,7 @@ public:
     void clear();
     void addGivenFiles(const QStringList& filePaths);
     void removeFile();
-    void activateCluster(int index, bool on);
+    void setClusterActivation(int index, bool on);
     void setFileActivation(int index, bool on);
 
     HighlightedData& highlight() { return highlight_; }

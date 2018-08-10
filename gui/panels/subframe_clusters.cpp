@@ -35,7 +35,7 @@ private:
     int highlighted() const final;
     void onHighlight(int row) final { gSession->dataset.highlight().setCluster(row); }
     bool activated(int row) const { return gSession->dataset.allClusters.at(row)->isActivated(); }
-    void setActivated(int row, bool on) { gSession->dataset.activateCluster(row, on); }
+    void setActivated(int row, bool on) { gSession->dataset.setClusterActivation(row, on); }
 
     int rowCount() const final { return gSession->dataset.allClusters.size(); }
 
