@@ -21,10 +21,8 @@
 
 PolefigTab::PolefigTab()
 {
-    // initializations
-    auto* plot = new PlotPolefig; // the main subframe
+    auto* plot = new PlotPolefig;
 
-    // layout
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);
     buttonBox->addWidget(new QcrIconTriggerButton {&gGui->triggers->spawnPolefig});
@@ -40,6 +38,4 @@ PolefigTab::PolefigTab()
     layout->addLayout(controls);
     layout->setStretch(0,1000);
     setLayout(layout);
-
-    setRemake ([=](){plot->refresh();});
 }

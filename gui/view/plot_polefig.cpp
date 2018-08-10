@@ -33,20 +33,11 @@ QColor intenGraph(double inten, double maxInten) {
 
 
 PlotPolefig::PlotPolefig()
-    : alphaMax_(90)
-    , avgAlphaMax_(0)
 {
-    refresh();
+    setRemake ([this](){refresh();});
 }
 
 void PlotPolefig::refresh()
-{
-    peakInfos_ = gSession->allPeaks.currentPeaks();
-    avgAlphaMax_ = gSession->params.interpolParams.avgAlphaMax.val();
-    QWidget::update();
-}
-
-void PlotPolefig::paintEvent(QPaintEvent*)
 {
     int w = size().width(), h = size().height();
 
@@ -59,32 +50,10 @@ void PlotPolefig::paintEvent(QPaintEvent*)
     r_ = qMin(w, h) / 2;
 
     paintGrid();
+
+    peakInfos_ = gSession->allPeaks.currentPeaks();
     if (peakInfos_)
         paintPoints();
-}
-
-//! Point in floating-point precision
-QPointF PlotPolefig::p(deg alpha, deg beta) const
-{
-    double r = r_ * alpha / alphaMax_;
-    rad betaRad = beta.toRad();
-    return QPointF(r * cos(betaRad), -r * sin(betaRad));
-}
-
-deg PlotPolefig::alpha(const QPointF& p) const
-{
-    return sqrt(p.x() * p.x() + p.y() * p.y()) / r_ * alphaMax_;
-}
-
-deg PlotPolefig::beta(const QPointF& p) const
-{
-    deg b = rad(atan2(p.y(), p.x())).toDeg();
-    return b <= 0 ? -b : 360 - b;
-}
-
-void PlotPolefig::circle(QPointF c, double r)
-{
-    p_->drawEllipse(c, r, r);
 }
 
 void PlotPolefig::paintGrid()
@@ -104,7 +73,8 @@ void PlotPolefig::paintGrid()
 
     QPen penMark(Qt::darkGreen);
     p_->setPen(penMark);
-    circle(c_, r_ * avgAlphaMax_ / alphaMax_);
+    double avgAlphaMax = gSession->params.interpolParams.avgAlphaMax.val();
+    circle(c_, r_ * avgAlphaMax / alphaMax_);
 }
 
 void PlotPolefig::paintPoints()
@@ -145,4 +115,28 @@ when interpolation fails.
             circle(pp, inten * r_ / 60); // TODO scale to max inten
         }
     }
+}
+
+//! Point in floating-point precision
+QPointF PlotPolefig::p(deg alpha, deg beta) const
+{
+    double r = r_ * alpha / alphaMax_;
+    rad betaRad = beta.toRad();
+    return QPointF(r * cos(betaRad), -r * sin(betaRad));
+}
+
+deg PlotPolefig::alpha(const QPointF& p) const
+{
+    return sqrt(p.x() * p.x() + p.y() * p.y()) / r_ * alphaMax_;
+}
+
+deg PlotPolefig::beta(const QPointF& p) const
+{
+    deg b = rad(atan2(p.y(), p.x())).toDeg();
+    return b <= 0 ? -b : 360 - b;
+}
+
+void PlotPolefig::circle(QPointF c, double r)
+{
+    p_->drawEllipse(c, r, r);
 }

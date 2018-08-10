@@ -266,18 +266,21 @@ AllPeaks::AllPeaks()
 
 void AllPeaks::invalidateAll() const
 {
+    qDebug() << "invalidate all peak infos";
     direct      .invalidate();
     interpolated.invalidate();
 }
 
 void AllPeaks::invalidateAt(int jP) const
 {
+    qDebug() << "invalidate infos on peak" << jP;
     direct      .get(this,jP).invalidate();
     interpolated.get(this,jP).invalidate();
 }
 
 void AllPeaks::invalidateInterpolated() const
 {
+    qDebug() << "invalidate interpolated peak infos";
     interpolated.invalidate();
 }
 

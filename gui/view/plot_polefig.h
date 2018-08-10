@@ -30,7 +30,6 @@ public:
     QcrCell<bool> flat {false};
 private:
     const PeakInfos* peakInfos_;
-    void paintEvent(QPaintEvent*);
 
     QPointF p(deg alpha, deg beta) const;
     deg alpha(const QPointF&) const;
@@ -41,12 +40,12 @@ private:
     void paintGrid();
     void paintPoints();
 
-    // valid during paintEvent
+    // valid while painting
     QPainter* p_;
     QPointF c_;
     double r_;
 
-    double alphaMax_, avgAlphaMax_;
+    const double alphaMax_ {90};
 };
 
 #endif // PLOT_POLEFIG_H
