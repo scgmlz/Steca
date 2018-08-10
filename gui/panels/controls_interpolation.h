@@ -24,7 +24,6 @@ class ControlsInterpolation : public QcrWidget {
 public:
     ControlsInterpolation();
 private:
-    void fromCore();
     QcrCheckBox      doInterpol_ ;
     QcrDoubleSpinBox stepAlpha_  ;
     QcrDoubleSpinBox stepBeta_   ;

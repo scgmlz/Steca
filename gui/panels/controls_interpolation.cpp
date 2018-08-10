@@ -24,7 +24,6 @@ ControlsInterpolation::ControlsInterpolation()
     , avgRadius_  {"avgRadius",  &gSession->params.interpolParams.avgRadius,  6, 2, 0., 90.}
     , threshold_  {"threshold",  &gSession->params.interpolParams.threshold,  6, true, 0, 100}
 {
-    // layout
     auto* grid = new QGridLayout;
     grid->addWidget(&doInterpol_,              0, 1);
     grid->addWidget(new QLabel("step α"),      1, 0, Qt::AlignRight);
@@ -44,16 +43,13 @@ ControlsInterpolation::ControlsInterpolation()
     grid->setRowStretch   (grid->   rowCount(), 1000);
     setLayout(grid);
 
-    fromCore();
-}
-
-void ControlsInterpolation::fromCore()
-{
-    bool on = gSession->params.interpolParams.enabled.val();
-    stepAlpha_  .setEnabled(on);
-    stepBeta_   .setEnabled(on);
-    idwRadius_  .setEnabled(on);
-    avgAlphaMax_.setEnabled(on);
-    avgRadius_  .setEnabled(on);
-    threshold_  .setEnabled(on);
+    setRemake([=](){
+            bool on = gSession->params.interpolParams.enabled.val();
+            stepAlpha_  .setEnabled(on);
+            stepBeta_   .setEnabled(on);
+            idwRadius_  .setEnabled(on);
+            avgAlphaMax_.setEnabled(on);
+            avgRadius_  .setEnabled(on);
+            threshold_  .setEnabled(on);
+        });
 }
