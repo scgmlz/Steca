@@ -28,26 +28,28 @@ CheckUpdate::CheckUpdate(QWidget* parent)
     QString qry = ver % "\t| " % QSysInfo::prettyProductName();
     req.setUrl(QUrl(QString(STECA2_VERSION_URL) % "?" % qry));
     auto* manager = new QNetworkAccessManager;
-    QObject::connect(manager, &QNetworkAccessManager::finished,
-                     [parent,manager](QNetworkReply* reply) {
-        if (QNetworkReply::NoError != reply->error())
-            return qWarning() << "Network Error: " << reply->errorString();
-        QString ver = qApp->applicationVersion();
-        QString lastVer = reply->readAll().trimmed();
-        QString name = qApp->applicationName();
-        QString result;
-        if (ver != lastVer)
-            result = QString(
-                "<p>The latest released %1 version is %2. You have "
-                "version %3.</p>"
-                "<p><a href='%4'>Open download location in external browser</a></p>")
-                .arg(name, lastVer, ver, STECA2_DOWNLOAD_URL);
-        else
-            result = QString(
-                "<p>You have the latest released %1 version (%2).</p>").arg(name).arg(ver);
-        QMessageBox::information(parent, QString("%1 update").arg(name), result);
-        reply->deleteLater();
-        manager->deleteLater();
+    QObject::connect(
+        manager, &QNetworkAccessManager::finished, [parent,manager](QNetworkReply* reply){
+            if (QNetworkReply::NoError != reply->error()) {
+                qWarning() << "Network Error: " << reply->errorString();
+                return;
+            }
+            QString ver = qApp->applicationVersion();
+            QString lastVer = reply->readAll().trimmed();
+            QString name = qApp->applicationName();
+            QString result;
+            if (ver != lastVer)
+                result = QString(
+                    "<p>The latest released %1 version is %2. You have "
+                    "version %3.</p>"
+                    "<p><a href='%4'>Open download location in external browser</a></p>")
+                    .arg(name, lastVer, ver, STECA2_DOWNLOAD_URL);
+            else
+                result = QString(
+                    "<p>You have the latest released %1 version (%2).</p>").arg(name).arg(ver);
+            QMessageBox::information(parent, QString("%1 update").arg(name), result);
+            reply->deleteLater();
+            manager->deleteLater();
         });
     manager->get(req);
 }
