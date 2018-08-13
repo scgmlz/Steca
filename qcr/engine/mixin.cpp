@@ -57,13 +57,20 @@ QcrRoot::QcrRoot(QObject* object)
     gRoot = this;
 }
 
+static bool remaking = false;
+
 void QcrRoot::remakeAll()
 {
+    if (remaking)
+        qFatal("Circular call of remakeAll");
     qDebug() << "gRoot->remakeAll";
+    remaking = true;
     remake();
     for (QWidget* w: object().findChildren<QWidget*>())
         if (QcrMixin* m = dynamic_cast<QcrMixin*>(w))
             m->remake();
+    remaking = false;
+    qDebug() << "gRoot->remakeAll/";
 }
 
 

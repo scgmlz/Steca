@@ -50,7 +50,7 @@ private:
 template<class T>
 void QcrCell<T>::setVal(T val)
 {
-    //qDebug()<<"Cell::setVal"<<value_<<"becomes"<<val;
+    qDebug()<<"Cell::setVal"<<value_<<"becomes"<<val;
     value_ = val;
     if (backlink_)
         backlink_->programaticallySetValue(val);
@@ -59,7 +59,7 @@ void QcrCell<T>::setVal(T val)
 template<class T>
 void QcrCell<T>::guiSetsVal(T val, bool userCall)
 {
-    //qDebug()<<"  guiSetsVal"<<value_<<"becomes"<<val;
+    qDebug()<<"  guiSetsVal"<<value_<<"becomes"<<val;
     value_ = val;
     if (userCall) { // to prevent circular calls; TODO simplify
         hook_(val);

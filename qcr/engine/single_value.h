@@ -100,6 +100,7 @@ void QcrControl<T>::initControl()
 template<class T>
 void QcrControl<T>::programaticallySetValue(T val)
 {
+    qDebug() << "progSetValue" << name() << "repVal=" << reportedValue_ << "val=" << val;
     softwareCalling_ = true;
     doSetValue(val);
     reportedValue_ = val;
@@ -119,6 +120,7 @@ void QcrControl<T>::executeConsoleCommand(const QString& arg)
 template<class T>
 void QcrControl<T>::onChangedValue(bool hasFocus, T val)
 {
+    qDebug() << "onChangedValue" << name() << "hasFocus=" << hasFocus << "swCalling=" << softwareCalling_ << "val=" << val;
     if (val==reportedValue_)
         return; // nothing to do
     bool userCall = hasFocus || !softwareCalling_;

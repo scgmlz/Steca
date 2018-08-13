@@ -80,17 +80,19 @@ ColumnSelector::ColumnSelector()
             setAll(false);
             showCols_.at(int(eReflAttr::FWHM))->programaticallySetValue(true); });
 
-    setRemake([=](){ updateRadiobuttons(); });
+    setRemake([=](){ qDebug() << "CS remake"; updateRadiobuttons(); });
 }
 
 void ColumnSelector::setAll(bool on)
 {
+    qDebug() << "CS setAll";
     for (auto* col : showCols_)
         col->programaticallySetValue(on);
 }
 
 void ColumnSelector::updateRadiobuttons()
 {
+    qDebug() << "CS update";
     bool isAll = true, isNone = true, isOther = false;
     int nInten = 0, nTth = 0, nFwhm = 0;
 
@@ -115,13 +117,18 @@ void ColumnSelector::updateRadiobuttons()
     }
 
     rbHidden_.programaticallySetValue(true);
+    qDebug() << "CS update2";
     rbNone_.programaticallySetValue(isNone);
+    qDebug() << "CS update3";
     rbAll_.programaticallySetValue(isAll);
+    qDebug() << "CS update4";
 
     int const PRESET_SELECTION = 1;
     rbInten_.programaticallySetValue(!isOther && PRESET_SELECTION == nInten);
+    qDebug() << "CS update5";
     rbTth_.programaticallySetValue(!isOther && PRESET_SELECTION == nTth);
     rbFWHM_.programaticallySetValue(!isOther && PRESET_SELECTION == nFwhm);
+    qDebug() << "CS update/";
 };
 
 
