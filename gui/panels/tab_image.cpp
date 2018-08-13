@@ -179,18 +179,20 @@ QPixmap ImageTab::makeOverlayPixmap(const Measurement* m)
     const AngleMap& angleMap = m->angleMap();
     const Range& rgeGma = gSession->gammaSelection.range();
     const Range& rgeTth = gSession->thetaSelection.range();
-    for_ij (im.size().width(), im.size().height()) {
-        const ScatterDirection& a = angleMap.dirAt2(i, j);
-        QColor color = im.pixel(i, j);
-        if (rgeGma.contains(a.gma)) {
-            if (rgeTth.contains(a.tth))
-                color = Qt::yellow;
-            else
+    for (int j=0; j<im.size().height(); ++j) {
+        for (int i=0; i<im.size().width(); ++i) {
+            const ScatterDirection& a = angleMap.dirAt2(i, j);
+            QColor color = im.pixel(i, j);
+            if (rgeGma.contains(a.gma)) {
+                if (rgeTth.contains(a.tth))
+                    color = Qt::yellow;
+                else
+                    color.setGreen(qFloor(color.green() * .3 + 255 * .7));
+            } else if (rgeTth.contains(a.tth)) {
                 color.setGreen(qFloor(color.green() * .3 + 255 * .7));
-        } else if (rgeTth.contains(a.tth)) {
-            color.setGreen(qFloor(color.green() * .3 + 255 * .7));
+            }
+            im.setPixel(i, j, color.rgb());
         }
-        im.setPixel(i, j, color.rgb());
     }
     return QPixmap::fromImage(im);
 }
@@ -206,18 +208,19 @@ QPixmap ImageTab::makeBlankPixmap()
 QImage ImageTab::makeImage(const Image& image)
 {
     ImageLens imageLens(image, true, false);
-    const size2d size = imageLens.imgSize();
-    if (size.isEmpty())
+    const size2d sz = imageLens.imgSize();
+    if (sz.isEmpty())
         return {};
 
-    QImage ret(QSize(size.w, size.h), QImage::Format_RGB32);
+    QImage ret(QSize(sz.w, sz.h), QImage::Format_RGB32);
 
     bool fixedScale = gGui->toggles->fixedIntenImage.getValue();
     const Range rgeInten = imageLens.rgeInten(fixedScale);
     float maxInten = float(rgeInten.max);
 
-    for_ij (size.w, size.h)
-        ret.setPixel(i, j, intenImage(imageLens.imageInten(i, j), maxInten, !fixedScale));
+    for (int j=0; j<sz.h; ++j)
+        for (int i=0; i<sz.w; ++i)
+            ret.setPixel(i, j, intenImage(imageLens.imageInten(i, j), maxInten, !fixedScale));
     return ret;
 }
 

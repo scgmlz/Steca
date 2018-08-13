@@ -20,8 +20,4 @@
 
 #define for_i(n) for_int (i, n)
 
-#define for_ij(ni, nj)  \
-    for_int (i, ni)     \
-        for_int (j, nj)
-
 #endif // IDIOMATIC_FOR_H
