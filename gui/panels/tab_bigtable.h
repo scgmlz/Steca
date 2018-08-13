@@ -22,7 +22,6 @@
 class BigtableTab : public QcrWidget {
 public:
     BigtableTab();
-    const class BigtableView& bigtableView() const { return *bigtableView_; }
 private:
     void render();
     void showEvent(QShowEvent*) { render(); }
