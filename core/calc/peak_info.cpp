@@ -103,6 +103,8 @@ QStringList PeakInfo::dataTags(bool out)
     return ret;
 }
 
+//! For use in Bigtable.
+
 std::vector<VariantComparator*> PeakInfo::dataCmps()
 {
     static std::vector<VariantComparator*> ret;
@@ -117,10 +119,11 @@ std::vector<VariantComparator*> PeakInfo::dataCmps()
 
 std::vector<QVariant> PeakInfo::data() const
 {
-    std::vector<QVariant> ret{ QVariant(alpha()),      QVariant(beta()),     QVariant(rgeGma().min),
-                    QVariant(rgeGma().max), QVariant(inten()),    QVariant(intenError()),
-                    QVariant(tth()),        QVariant(tthError()), QVariant(fwhm()),
-                    QVariant(fwhmError()) };
+    std::vector<QVariant> ret{
+        QVariant(alpha()),      QVariant(beta()),     QVariant(rgeGma().min),
+            QVariant(rgeGma().max), QVariant(inten()),    QVariant(intenError()),
+            QVariant(tth()),        QVariant(tthError()), QVariant(fwhm()),
+            QVariant(fwhmError()) };
     auto values_to_append = md_ ? md_->attributeValues() : Metadata::attributeNaNs();
     ret.insert(ret.end(), values_to_append.begin(), values_to_append.end());
     return ret;
@@ -152,6 +155,8 @@ void PeakInfos::appendPeak(PeakInfo&& info)
 {
     peaks_.push_back(std::move(info));
 }
+
+//! Returns entries idxX and idxY, as sorted vectors X and Ylow,Y,Yhig, for use in diagrams.
 
 void PeakInfos::get4(const int idxX, const int idxY,
                      std::vector<double>& xs, std::vector<double>& ys,
@@ -190,6 +195,8 @@ void PeakInfos::get4(const int idxX, const int idxY,
         ysHig.resize(0);
     }
 }
+
+//! For debugging only.
 
 void PeakInfos::inspect(const QString& header) const
 {
