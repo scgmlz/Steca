@@ -121,8 +121,8 @@ void ColumnSelector::updateRadiobuttons()
 //! @class BigtableTab
 
 BigtableTab::BigtableTab()
-    : bigtableView_ {new BigtableView()}
 {
+    auto bigtableView = new BigtableView;
     // layout
     auto* colSelBox = new QcrScrollArea;
     colSelBox->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -139,15 +139,10 @@ BigtableTab::BigtableTab()
     sideBox->setStretch(0,1000);
 
     auto* layout = new QHBoxLayout;
-    layout->addWidget(bigtableView_);
+    layout->addWidget(bigtableView);
     layout->addLayout(sideBox);
     layout->setStretch(0,1000);
     setLayout(layout);
-}
 
-void BigtableTab::render()
-{
-    if (!isVisible())
-        return;
-    bigtableView_->refresh();
+    setRemake([=](){bigtableView->refresh();});
 }
