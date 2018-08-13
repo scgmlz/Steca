@@ -12,7 +12,6 @@
 //
 //  ***********************************************************************************************
 
-#include "core/def/idiomatic_for.h"
 #include "core/session.h"
 #include "gui/panels/subframe_clusters.h"
 #include "qcr/base/debug.h"

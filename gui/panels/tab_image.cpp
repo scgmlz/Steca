@@ -14,7 +14,6 @@
 
 #include "tab_image.h"
 #include "core/data/lens.h"
-#include "core/def/idiomatic_for.h"
 #include "core/raw/angle_map.h"
 #include "core/session.h"
 #include "gui/actions/toggles.h"

@@ -16,7 +16,6 @@
 #include "core/data/collect_intensities.h"
 #include "core/aux/async.h"
 #include "core/aux/exception.h"
-#include "core/def/idiomatic_for.h"
 #include "core/session.h"
 #include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/dialogs/file_dialog.h"

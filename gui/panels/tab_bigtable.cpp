@@ -13,7 +13,6 @@
 //  ***********************************************************************************************
 
 #include "gui/panels/tab_bigtable.h"
-#include "core/def/idiomatic_for.h"
 #include "core/session.h"
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"
