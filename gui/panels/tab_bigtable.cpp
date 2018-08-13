@@ -46,12 +46,12 @@ ColumnSelector::ColumnSelector()
     //rbHidden_.hide();
 
     auto* box = new QVBoxLayout;
-    box->addWidget(&rbHidden_);
-    box->addWidget(&rbAll_);
-    box->addWidget(&rbNone_);
-    box->addWidget(&rbInten_);
-    box->addWidget(&rbTth_);
-    box->addWidget(&rbFWHM_);
+    box->addWidget(&rbHidden_);  rbHidden_.setAutoExclusive(false);
+    box->addWidget(&rbAll_);     rbAll_   .setAutoExclusive(false);
+    box->addWidget(&rbNone_);    rbNone_  .setAutoExclusive(false);
+    box->addWidget(&rbInten_);   rbInten_ .setAutoExclusive(false);
+    box->addWidget(&rbTth_);     rbTth_   .setAutoExclusive(false);
+    box->addWidget(&rbFWHM_);    rbFWHM_  .setAutoExclusive(false);
     box->addSpacing(8);
 
     const QStringList& headers = PeakInfo::dataTags(false);
