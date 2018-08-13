@@ -280,8 +280,9 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, bool v
     , QcrControl<bool> {*this, _name, val}
 {
     initControl();
-    connect(this, _SLOT_(QRadioButton,toggled,bool), [this](bool val)->void {
+    connect(this, _SLOT_(QRadioButton,toggled,bool), [this,_name](bool val)->void {
             qDebug() << "RB" << name() <<  "at" << this << "cell" << cell_ << "toggled: val=" << val;
+            ASSERT(_name==name());
             onChangedValue(hasFocus(), val); });
 }
 

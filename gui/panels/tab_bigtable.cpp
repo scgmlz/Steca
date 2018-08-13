@@ -18,6 +18,7 @@
 #include "gui/mainwin.h"
 #include "gui/view/bigtable.h"
 #include "qcr/base/debug.h"
+#include <QThread> // debug -> sleep
 
 //  ***********************************************************************************************
 //! @class ColumnSelector (local scope)
@@ -113,11 +114,15 @@ void ColumnSelector::updateRadiobuttons()
         }
     }
 
+    qDebug() << "CS update1";
     rbHidden_.programaticallySetValue(true);
+    QThread::sleep(1);
     qDebug() << "CS update2";
     rbNone_.programaticallySetValue(isNone);
+    QThread::sleep(1);
     qDebug() << "CS update3";
     rbAll_.programaticallySetValue(isAll);
+    QThread::sleep(1);
     qDebug() << "CS update4";
 
     int const PRESET_SELECTION = 1;
