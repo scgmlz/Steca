@@ -21,6 +21,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMainWindow>
+#include <QScrollArea>
 
 class QcrMainWindow : public QMainWindow, public QcrRoot {
 public:
@@ -35,6 +36,11 @@ public:
 class QcrFrame : public QFrame, public QcrMixin {
 public:
     QcrFrame() : QcrMixin{this} {}
+};
+
+class QcrScrollArea : public QScrollArea, public QcrMixin {
+public:
+    QcrScrollArea() : QcrMixin{this} {}
 };
 
 class QcrDockWidget : public QDockWidget, public QcrMixin {

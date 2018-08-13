@@ -54,7 +54,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString
         QMessageBox::critical(QApplication::activeWindow(), qAppName(),
                               "Sorry, you encountered a fatal bug.\n"
                               "The application will terminate.\n"
-                              "Please report the following to the maintainer.\n\n"
+                              "Please save the log file and inform the maintainer.\n\n"
                               "Error:\n" + msg + "\n"
 #ifndef QT_NO_DEBUG
                               "Context:\n" + ctx.function + "\n"

@@ -56,9 +56,9 @@ private:
     class Mainframe* mainframe_;
     class SubframeDfgram* frameDfgram_;
     class SubframeSetup* frameSetup_;
-    QDockWidget* dockFiles_;
-    QDockWidget* dockClusters_;
-    QDockWidget* dockMetadata_;
+    QcrDockWidget* dockFiles_;
+    QcrDockWidget* dockClusters_;
+    QcrDockWidget* dockMetadata_;
     class Menus* menus_;
 
     QByteArray initialState_;

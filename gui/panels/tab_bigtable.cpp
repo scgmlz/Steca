@@ -16,11 +16,8 @@
 #include "core/session.h"
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"
-#include "gui/state.h"
 #include "gui/view/bigtable.h"
 #include "qcr/base/debug.h"
-#include <QScrollArea>
-#include <QThread> // for sleep for debugging
 
 //  ***********************************************************************************************
 //! @class ColumnSelector (local scope)
@@ -32,7 +29,7 @@ public:
     ColumnSelector();
 private:
     std::vector<QcrCheckBox*> showCols_;
-    QcrRadioButton rbHidden_ {"rbHidden", ""};
+    QcrRadioButton rbHidden_ {"rbHidden", "hidden"};
     QcrRadioButton rbAll_ {"rbAll", "all"};
     QcrRadioButton rbNone_ {"rbNone", "none"};
     QcrRadioButton rbInten_ {"rbInten", "Intensity"};
@@ -45,7 +42,7 @@ private:
 
 ColumnSelector::ColumnSelector()
 {
-    rbHidden_.hide();
+    //rbHidden_.hide();
 
     auto* box = new QVBoxLayout;
     box->addWidget(&rbHidden_);
@@ -139,7 +136,7 @@ BigtableTab::BigtableTab()
     : bigtableView_ {new BigtableView()}
 {
     // layout
-    auto* colSelBox = new QScrollArea;
+    auto* colSelBox = new QcrScrollArea;
     colSelBox->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     colSelBox->setWidget(new ColumnSelector());
 

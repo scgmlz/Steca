@@ -16,7 +16,6 @@
 #include "core/session.h"
 #include "gui/mainwin.h"
 #include "qcr/base/debug.h"
-#include <QDockWidget>
 #include <QStatusBar>
 
 Toggles::Toggles()
@@ -24,7 +23,7 @@ Toggles::Toggles()
         "Enable correction file", ":/icon/useCorrection"}
     , linkCuts {"linkCuts", &gSession->params.imageCut.linked,
               "Link the four cut settings", ":/icon/link"}
- {
+{
 #define AT &QAction::toggled
 
     QObject::connect(&viewStatusbar, AT, [](bool on) { gGui->statusBar()->setVisible(on); });
