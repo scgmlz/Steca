@@ -110,7 +110,8 @@ const std::vector<QVariant>& BigtableModel::row(int index) const
 
 void BigtableModel::sortData()
 {
-    auto _cmpRows = [this](int col, const std::vector<QVariant>& r1, const std::vector<QVariant>& r2) {
+    auto _cmpRows = [this](int col,
+                           const std::vector<QVariant>& r1, const std::vector<QVariant>& r2) {
         col = colIndexMap_.at(col);
         return comparators_.at(col)(r1.at(col), r2.at(col));
     };
@@ -130,16 +131,15 @@ void BigtableModel::sortData()
                 return false;
         }
 
-        for_int (col, numCols_) {
-            if (col != sortColumn_) {
-                int c = _cmpRows(col, r1.row, r2.row);
-                if (c < 0)
-                    return true;
-                if (c > 0)
-                    return false;
-            }
+        for (int col=0; col<numCols_; ++col) {
+            if (col == sortColumn_)
+                continue;
+            int c = _cmpRows(col, r1.row, r2.row);
+            if (c < 0)
+                return true;
+            if (c > 0)
+                return false;
         }
-
         return false;
     };
 
