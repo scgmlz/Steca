@@ -1,5 +1,4 @@
 #include "gtest/gtest.h"
-#include "core/def/idiomatic_for.h"
 #include "core/typ/json.h"
 #include "core/typ/range.h"
 #include <vector>
@@ -161,19 +160,19 @@ TEST(Range, Intersect) {
 
 typedef struct { qreal min, max; } min_max;
 
+/* TODO restore to/fromJson
+
 static bool RANGES_EQ(Ranges const& rs1, Ranges const& rs2) {
     if (rs1.count() != rs2.count())
         return false;
 
-    for_i (rs1.count()) {
+    for (int i=0; i<rs1.count(); ++i) {
         if (! RANGE_EQ(rs1.at(i), rs2.at(i)) )
             return false;
     }
 
     return true;
 }
-
-/* TODO restore to/fromJson
 
 TEST(Ranges, Json) {
     Ranges rs, rs1;

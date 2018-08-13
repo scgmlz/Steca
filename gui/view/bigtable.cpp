@@ -214,7 +214,7 @@ void BigtableView::refresh()
 void BigtableView::updateShownColumns()
 {
     int nCol = model()->columnCount();
-    for_i (nCol-1) {
+    for (int i=0; i<nCol-1; ++i) {
         if (gSession->params.bigMetaSelection.isSelected(i))
             showColumn(i + 1);
         else
