@@ -22,7 +22,7 @@ void FitWrapper::execFit(ParametricFunction& function, const Curve& curve)
 {
     int parCount = function.parameterCount();
     if (curve.count()<parCount) {
-        qDebug() << "not enough points for fitting";
+        //qDebug() << "not enough points for fitting";
         function.setSuccess(false);
         return;
     }

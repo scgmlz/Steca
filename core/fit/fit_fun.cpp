@@ -124,7 +124,7 @@ double PeakFunction::dy(double x, int i, double const* parValues) const
 PeakFunction PeakFunction::fromFit(
     const QString& functionName, const Curve& curve, const RawOutcome& rawOutcome)
 {
-    qDebug() << "peak fit";
+    //qDebug() << "peak fit";
     ASSERT(curve.count());
     PeakFunction p(functionName, rawOutcome);
     FitWrapper().execFit(p, curve);
