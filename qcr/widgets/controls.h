@@ -85,14 +85,11 @@ public:
 
 //! Named integer-valued spin box that can be set by console command.
 class QcrSpinBox : public QSpinBox, public QcrControl<int> {
-    Q_OBJECT
 public:
     QcrSpinBox(const QString& name, QcrCell<int>* cell, int ndigits, bool withDot = false,
                int min = INT_MIN, int max = INT_MAX, const QString& tooltip="");
     void executeConsoleCommand(const QString&) override;
     int doGetValue() const final { return value(); }
-signals:
-    void valueReleased(int); //! Improving over valueChanged, do not signal intermediate states
 private:
     void initSpinBox(int ndigits, bool withDot, int min, int max, const QString& tooltip);
     void mouseReleaseEvent(QMouseEvent*) override;
@@ -104,14 +101,11 @@ private:
 
 //! Named double-valued spin box that can be set by console command.
 class QcrDoubleSpinBox : public QDoubleSpinBox, public QcrControl<double> {
-    Q_OBJECT
 public:
     QcrDoubleSpinBox(const QString& name, QcrCell<double>* cell, int nDigits, int nDecimals,
                      double min = LLONG_MIN, double max = LLONG_MAX, const QString& tooltip="");
     void executeConsoleCommand(const QString&) override;
     double doGetValue() const final { return value(); }
-signals:
-    void valueReleased(double); //! Improving over valueChanged, do not signal intermediate states
 private:
     void initDoubleSpinBox(int nDigits, int nDecimals, double min, double max, const QString& tooltip);
     void mouseReleaseEvent(QMouseEvent*) override;
@@ -139,9 +133,9 @@ public:
     QcrRadioButton(const QString& name, const QString& text, QcrCell<bool>* cell);
     bool doGetValue() const final { return isChecked(); }
 private:
-    void doSetValue(bool val) final { setChecked(val); }
+    void doSetValue(bool val) final { qDebug() << "RB" << this << "doSetValue val=" << val; setChecked(val); }
     // hide some member functions of QRadioButton:
-    void setChecked(bool val) { QRadioButton::setChecked(val); }
+    void setChecked(bool val) { qDebug() << "RB" << this << "setChecked val=" << val; QRadioButton::setChecked(val); qDebug() << "RB" << this << "setChecked/"; }
 };
 
 //! Named non-editable combo box that can be set by console command.

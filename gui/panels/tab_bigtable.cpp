@@ -28,13 +28,13 @@ class ColumnSelector : public QcrWidget {
 public:
     ColumnSelector();
 private:
-    std::vector<QcrCheckBox*> showCols_;
     QcrRadioButton rbHidden_ {"rbHidden", "hidden"};
     QcrRadioButton rbAll_ {"rbAll", "all"};
     QcrRadioButton rbNone_ {"rbNone", "none"};
     QcrRadioButton rbInten_ {"rbInten", "Intensity"};
     QcrRadioButton rbTth_ {"rbTth", "2θ"};
     QcrRadioButton rbFWHM_ {"rbFWHM", "fwhm"};
+    std::vector<QcrCheckBox*> showCols_;
     void setAll(bool on);
     void updateRadiobuttons();
     using eReflAttr = PeakInfo::eReflAttr;

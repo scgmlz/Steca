@@ -204,14 +204,12 @@ void QcrSpinBox::reportChange()
     if (val == reportedValue_)
         return;
     onChangedValue(hasFocus(), val);
-    emit valueReleased(val);
 }
 
 void QcrSpinBox::executeConsoleCommand(const QString& arg)
 {
     int val = strOp::to_i(arg);
     programaticallySetValue(val);
-    emit valueReleased(val);
 }
 
 //  ***********************************************************************************************
@@ -254,14 +252,12 @@ void QcrDoubleSpinBox::reportChange()
     if (val == reportedValue_)
         return;
     onChangedValue(hasFocus(), val);
-    emit valueReleased(val);
 }
 
 void QcrDoubleSpinBox::executeConsoleCommand(const QString& arg)
 {
     double val = strOp::to_d(arg);
     programaticallySetValue(val);
-    emit valueReleased(val);
 }
 
 //  ***********************************************************************************************
@@ -284,7 +280,8 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, bool v
     , QcrControl<bool> {*this, _name, val}
 {
     initControl();
-    connect(this, &QRadioButton::toggled, [this](bool val)->void {
+    connect(this, _SLOT_(QRadioButton,toggled,bool), [this](bool val)->void {
+            qDebug() << "RB" << name() <<  "at" << this << "cell" << cell_ << "toggled: val=" << val;
             onChangedValue(hasFocus(), val); });
 }
 
@@ -293,7 +290,7 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, QcrCel
     , QcrControl<bool> {*this, _name, cell}
 {
     initControl();
-    connect(this, &QRadioButton::toggled, [this](bool val)->void {
+    connect(this, _SLOT_(QRadioButton,toggled,bool), [this](bool val)->void {
             onChangedValue(hasFocus(), val); });
 }
 
