@@ -280,6 +280,7 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, bool v
     , QcrControl<bool> {*this, _name, val}
 {
     initControl();
+    setAutoExclusive(false); // TODO provide int-valued Qcr wrapper for exclusive radio buttons
     connect(this, _SLOT_(QRadioButton,toggled,bool), [this,_name](bool val)->void {
             onChangedValue(hasFocus(), val); });
 }
@@ -289,6 +290,7 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, QcrCel
     , QcrControl<bool> {*this, _name, cell}
 {
     initControl();
+    setAutoExclusive(false);
     connect(this, _SLOT_(QRadioButton,toggled,bool), [this](bool val)->void {
             onChangedValue(hasFocus(), val); });
 }
