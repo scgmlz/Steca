@@ -18,7 +18,6 @@
 #include "gui/mainwin.h"
 #include "gui/view/bigtable.h"
 #include "qcr/base/debug.h"
-#include <QThread> // debug -> sleep
 
 //  ***********************************************************************************************
 //! @class ColumnSelector (local scope)
@@ -78,19 +77,17 @@ ColumnSelector::ColumnSelector()
             setAll(false);
             showCols_.at(int(eReflAttr::FWHM))->programaticallySetValue(true); });
 
-    setRemake([=](){ qDebug() << "CS remake"; updateRadiobuttons(); });
+    setRemake([=](){ updateRadiobuttons(); });
 }
 
 void ColumnSelector::setAll(bool on)
 {
-    qDebug() << "CS setAll";
     for (auto* col : showCols_)
         col->programaticallySetValue(on);
 }
 
 void ColumnSelector::updateRadiobuttons()
 {
-    qDebug() << "CS update";
     bool isAll = true, isNone = true, isOther = false;
     int nInten = 0, nTth = 0, nFwhm = 0;
 
@@ -114,23 +111,14 @@ void ColumnSelector::updateRadiobuttons()
         }
     }
 
-    qDebug() << "CS update1";
     rbHidden_.programaticallySetValue(true);
-    QThread::sleep(1);
-    qDebug() << "CS update2";
     rbNone_.programaticallySetValue(isNone);
-    QThread::sleep(1);
-    qDebug() << "CS update3";
     rbAll_.programaticallySetValue(isAll);
-    QThread::sleep(1);
-    qDebug() << "CS update4";
 
     int const PRESET_SELECTION = 1;
     rbInten_.programaticallySetValue(!isOther && PRESET_SELECTION == nInten);
-    qDebug() << "CS update5";
     rbTth_.programaticallySetValue(!isOther && PRESET_SELECTION == nTth);
     rbFWHM_.programaticallySetValue(!isOther && PRESET_SELECTION == nFwhm);
-    qDebug() << "CS update/";
 };
 
 

@@ -92,7 +92,6 @@ void QcrControl<T>::initControl()
                name().toLatin1().constData(),
                strOp::to_s(givenValue).toLatin1().constData(),
                strOp::to_s(reportedValue_).toLatin1().constData());
-    qDebug() << "initControl" << name() << "at" << this << "cell" << cell_ << "val=" << reportedValue_;
 }
 
 //! Wraps a call to 'doSetValue', with flag softwareCalling_ = true.
@@ -100,13 +99,10 @@ void QcrControl<T>::initControl()
 template<class T>
 void QcrControl<T>::programaticallySetValue(T val)
 {
-    qDebug() << "progSetValue" << name() << "at" << this << "repVal=" << reportedValue_ << "val=" << val;
-    ASSERT(cell_->name()==name());
     softwareCalling_ = true;
     doSetValue(val);
     reportedValue_ = val;
     softwareCalling_ = false;
-    qDebug() << "progSetValue" << name() << "at" << this << "done: val=" << val;
 }
 
 template<class T>
@@ -122,11 +118,9 @@ void QcrControl<T>::executeConsoleCommand(const QString& arg)
 template<class T>
 void QcrControl<T>::onChangedValue(bool hasFocus, T val)
 {
-    qDebug() << "RB" << this << "onChangedValue" << name() << "hasFocus=" << hasFocus << "swCalling=" << softwareCalling_ << "reportedVal=" << reportedValue_ << "val=" << val;
     if (val==reportedValue_)
         return; // nothing to do
     bool userCall = hasFocus || !softwareCalling_;
-    qDebug() << "onChangedValue ctd, userCall=" << userCall;
     doLog(userCall, name()+" "+strOp::to_s(val));
 
     // not sure whether we want to get rid of hasFocus; perform some tests:

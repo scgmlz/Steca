@@ -107,7 +107,8 @@ public:
     void executeConsoleCommand(const QString&) override;
     double doGetValue() const final { return value(); }
 private:
-    void initDoubleSpinBox(int nDigits, int nDecimals, double min, double max, const QString& tooltip);
+    void initDoubleSpinBox(
+        int nDigits, int nDecimals, double min, double max, const QString& tooltip);
     void mouseReleaseEvent(QMouseEvent*) override;
     void reportChange();
     void doSetValue(double val) final { setValue(val); }
@@ -133,9 +134,9 @@ public:
     QcrRadioButton(const QString& name, const QString& text, QcrCell<bool>* cell);
     bool doGetValue() const final { return isChecked(); }
 private:
-    void doSetValue(bool val) final { qDebug() << "RB" << this << "doSetValue val=" << val; setChecked(val); }
+    void doSetValue(bool val) final { setChecked(val); }
     // hide some member functions of QRadioButton:
-    void setChecked(bool val) { qDebug() << "RB" << this << "setChecked val=" << val; QRadioButton::setChecked(val); qDebug() << "RB" << this << "setChecked/"; }
+    void setChecked(bool val) { QRadioButton::setChecked(val); }
 };
 
 //! Named non-editable combo box that can be set by console command.

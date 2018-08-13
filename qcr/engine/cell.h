@@ -34,7 +34,7 @@ public:
     void setHook(std::function<void(T&)> hook) { hook_ = hook; }
 
     T val() const { return value_; }
-    QString name() { return backlink_?backlink_->name():QString("<nameless>"); } // for Debug only
+    //QString name() { return backlink_?backlink_->name():QString("<nameless>"); } // for Debug only
 
 private:
     T value_;
@@ -51,7 +51,6 @@ private:
 template<class T>
 void QcrCell<T>::setVal(T val)
 {
-    qDebug()<<"Cell" << name() << "oldval="<<value_<<"becomes"<<val;
     value_ = val;
     if (backlink_)
         backlink_->programaticallySetValue(val);
@@ -60,7 +59,6 @@ void QcrCell<T>::setVal(T val)
 template<class T>
 void QcrCell<T>::guiSetsVal(T val, bool userCall)
 {
-    qDebug()<<"Cell" << name()<<"userCall="<<userCall<< "oldval="<<value_<<"becomes"<<val;
     value_ = val;
     if (userCall) { // to prevent circular calls; TODO simplify
         hook_(val);
