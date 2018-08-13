@@ -53,7 +53,7 @@ void ExportDiagram::save()
     peakInfos->get4(xi, yi, xs, ys, ysLow, ysHig);
     ASSERT(xs.size());
     // write data table
-    for_i (xs.size()) {
+    for (int i=0; i<xs.size(); ++i) {
         stream << xs[i] << separator << ys[i];
         if (ysLow.size())
             stream << separator << ysLow[i] << separator << ysHig[i];

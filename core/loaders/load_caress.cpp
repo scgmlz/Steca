@@ -165,7 +165,7 @@ Rawfile loadCaress(const QString& filePath) {
                 if (!(imageSize > 0 && imageSize == detRel * detRel)) THROW("bad image size");
 
                 std::vector<float> convertedIntens(imageSize);
-                for_i (imageSize)
+                for (int i=0; i<imageSize; ++i)
                     convertedIntens[i] = intens[i];
 
                 size2d size(detRel, detRel);

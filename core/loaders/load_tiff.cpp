@@ -95,7 +95,7 @@ static void loadTiff(
     qint16 numDirEntries;
     is >> numDirEntries;
 
-    for_i (numDirEntries) {
+    for (int i=0; i<numDirEntries; ++i) {
         is >> tagId >> dataType >> dataCount >> dataOffset;
         check();
 
@@ -160,7 +160,7 @@ static void loadTiff(
 
     seek(stripOffsets);
 
-    for_i (intens.size())
+    for (int i=0; i<intens.size(); ++i)
         switch (sampleFormat) {
         case 1: {
             qint32 sample;

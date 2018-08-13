@@ -95,7 +95,7 @@ void ColumnSelector::updateRadiobuttons()
     bool isAll = true, isNone = true, isOther = false;
     int nInten = 0, nTth = 0, nFwhm = 0;
 
-    for_i (showCols_.size()) {
+    for (int i=0; i<showCols_.size(); ++i) {
         if (!showCols_.at(i)->getValue()) {
             isAll = false;
             continue;

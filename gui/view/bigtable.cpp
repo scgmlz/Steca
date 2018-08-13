@@ -37,7 +37,7 @@ BigtableModel::BigtableModel()
     ASSERT((int)comparators_.size() == headers_.count());
     numCols_ = headers_.size();
     colIndexMap_.resize(numCols_);
-    for_i (numCols_)
+    for (int i=0; i<numCols_; ++i)
         colIndexMap_[i] = i;
 }
 

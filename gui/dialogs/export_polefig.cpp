@@ -164,7 +164,7 @@ void ExportPolefig::saveAll(bool oneFile)
     } else {
         // check whether any of the numbered files already exists
         QStringList existingFiles;
-        for_i (expt.size()) {
+        for (int i=0; i<expt.size(); ++i) {
             QString currPath = numberedName(path, i, expt.size()+1);
             if (QFile(currPath).exists())
                 existingFiles << QFileInfo(currPath).fileName();
