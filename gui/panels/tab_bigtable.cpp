@@ -28,7 +28,6 @@ class ColumnSelector : public QcrWidget {
 public:
     ColumnSelector();
 private:
-    QcrRadioButton rbHidden_ {"rbHidden", "hidden"};
     QcrRadioButton rbAll_ {"rbAll", "all"};
     QcrRadioButton rbNone_ {"rbNone", "none"};
     QcrRadioButton rbInten_ {"rbInten", "Intensity"};
@@ -42,10 +41,7 @@ private:
 
 ColumnSelector::ColumnSelector()
 {
-    //rbHidden_.hide();
-
     auto* box = new QVBoxLayout;
-    box->addWidget(&rbHidden_);  rbHidden_.setAutoExclusive(false);
     box->addWidget(&rbAll_);     rbAll_   .setAutoExclusive(false);
     box->addWidget(&rbNone_);    rbNone_  .setAutoExclusive(false);
     box->addWidget(&rbInten_);   rbInten_ .setAutoExclusive(false);
@@ -111,7 +107,6 @@ void ColumnSelector::updateRadiobuttons()
         }
     }
 
-    rbHidden_.programaticallySetValue(true);
     rbNone_.programaticallySetValue(isNone);
     rbAll_.programaticallySetValue(isAll);
 
