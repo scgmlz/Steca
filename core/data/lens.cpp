@@ -91,9 +91,9 @@ const Range& ImageLens::rgeInten(bool fixed) const
         return gSession->activeClusters.rgeFixedInten.get(); // TODO restore from pre d9714895: (trans_, cut_);
     if (!rgeInten_.isValid()) {
         size2d sz = imgSize();
-        for (int i=0; i<sz.h; ++i)
-            for (int j=0; j<sz.w; ++j)
-                rgeInten_.extendBy(double(imageInten(j, i)));
+        for (int j=0; j<sz.h; ++j)
+            for (int i=0; i<sz.w; ++i)
+                rgeInten_.extendBy(double(imageInten(i,j)));
     }
     return rgeInten_;
 }
