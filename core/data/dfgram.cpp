@@ -100,7 +100,6 @@ Dfgram::Dfgram(Curve&& c)
 
 void Dfgram::invalidateBg() const
 {
-    qDebug() << "invalidateBg";
     bgFit_.invalidate();
     bgAsCurve_.invalidate();
     curveMinusBg_.invalidate();
@@ -109,7 +108,6 @@ void Dfgram::invalidateBg() const
 
 void Dfgram::invalidatePeaks() const
 {
-    qDebug() << "invalidatePeaks";
     rawOutcomes_.invalidate();
     peakFits_.invalidate();
     peaksAsCurve_.invalidate();

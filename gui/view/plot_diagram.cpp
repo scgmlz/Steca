@@ -58,8 +58,7 @@ void PlotDiagram::refresh()
         return erase();
 
     Range rgeX(xs);
-    Range rgeY(ys);
-    qDebug() << "PLODI xrange" << rgeX.to_s();
+    Range rgeY = Range(ysLow).intersect(Range(ysHig));
     if (rgeX.isEmpty() || rgeY.isEmpty())
         return erase();
 

@@ -90,7 +90,6 @@ ActiveClusters::ActiveClusters()
 
 void ActiveClusters::invalidate() const
 {
-    qDebug() << "invalidate active clusters";
     clusters.invalidate();
     grandAvgMonitorCount.invalidate();
     grandAvgDeltaMonitorCount.invalidate();
@@ -102,7 +101,6 @@ void ActiveClusters::invalidate() const
 
 void ActiveClusters::invalidateAvg() const
 {
-    qDebug() << "invalidate average dfgram";
     avgDfgram.invalidate();
     rgeFixedInten.invalidate();
     rgeGma.invalidate();
