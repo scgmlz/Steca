@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/pars/params.h
-//! @brief     Defines class Params
+//! @brief     Defines and implements class Params
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -20,7 +20,6 @@
 #include "core/pars/interpol_params.h"
 #include "core/typ/bool_vector.h"
 #include "qcr/engine/cell.h"
-#include "qcr/engine/enum_cell.h"
 
 enum class eNorm {
     NONE,
@@ -38,19 +37,22 @@ public:
     Params(const Params&) = delete;
     // void clear() { *this = {}; } TODO restore (broken because BoolVector disallows copying
 
-    void onMeta(); //!< To be called when list of meta data has changed.
-
     Detector        detector;
     ImageTransform  imageTransform;
     ImageCut        imageCut;
-    InterpolParams  interpolParams;
+
     QcrCell<bool>   intenScaledAvg {true}; // if not, summed
     QcrCell<double> intenScale {1.};
     eNorm           normMode {eNorm::NONE};
+    QcrCell<int>    normType {0}; // TODO merge with normMode
+
     BoolVector      smallMetaSelection;  //!< for 'clusters' and 'metadata' subframes:
     BoolVector      bigMetaSelection;    //! for use in 'bigtable' (tabbed view and export):
-    QcrEnumCell     diagramX;            //!< for use as x axis in diagram
-    QcrEnumCell     diagramY;            //!< for use as y axis in diagram
+    QcrCell<int>    diagramX {0};        //!< for use as x axis in diagram
+    QcrCell<int>    diagramY {0};        //!< for use as y axis in diagram
+
+    QcrCell<int>    defaultPeakFunction {0};
+    InterpolParams  interpolParams;
 };
 
 #endif // PARAMS_H

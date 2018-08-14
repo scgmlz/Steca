@@ -298,36 +298,25 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, QcrCel
 //  ***********************************************************************************************
 //! @class QcrComboBox
 
-QcrComboBox::QcrComboBox(const QString& _name, QcrEnumCell* _cell)
-    : QcrControl<int> {*this, _name, (QcrCell<int>*)_cell}
+QcrComboBox::QcrComboBox(
+    const QString& _name, QcrCell<int>* _cell, std::function<QStringList()> _makeTags)
+    : QcrControl<int> {*this, _name, _cell}
+    , makeTags_(_makeTags)
 {
     initControl();
     connect(this, _SLOT_(QComboBox,currentIndexChanged,int), [this](int val)->void {
             onChangedValue(hasFocus(), val); });
 }
 
-QcrComboBox::QcrComboBox(const QString& _name, const QStringList& items)
-    : QcrControl<int> {*this, _name, -1}
+void QcrComboBox::remake()
 {
-    initControl();
-    addItems(items);
-    connect(this, _SLOT_(QComboBox,currentIndexChanged,int), [this](int val)->void {
-            onChangedValue(hasFocus(), val); });
-}
-
-void QcrComboBox::addItems(const QStringList& texts)
-{
-    softwareCalling_ = true;
-    QComboBox::addItems(texts);
-    softwareCalling_ = false;
-}
-
-void QcrComboBox::setItems(const QStringList& texts)
-{
-    softwareCalling_ = true;
-    QComboBox::clear();
-    QComboBox::addItems(texts);
-    softwareCalling_ = false;
+    if (isVisible()) {
+        softwareCalling_ = true;
+        QComboBox::clear();
+        QComboBox::addItems(makeTags_());
+        softwareCalling_ = false;
+    }
+    QcrMixin::remake();
 }
 
 //  ***********************************************************************************************

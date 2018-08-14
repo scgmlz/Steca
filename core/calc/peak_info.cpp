@@ -98,6 +98,14 @@ QStringList PeakInfo::dataTags(bool out)
     return ret;
 }
 
+QStringList PeakInfo::metaTags() // TODO simplify
+{
+    QStringList ret = dataTags(false);
+    for (int i=0; i< (Metadata::numAttributes(false) - Metadata::numAttributes(true)); ++i)
+        ret.removeLast(); // remove all tags that are not numbers
+    return ret;
+}
+
 //! For use in Bigtable.
 
 std::vector<VariantComparator*> PeakInfo::dataCmps()

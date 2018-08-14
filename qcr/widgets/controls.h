@@ -16,7 +16,6 @@
 #define CONTROLS_H
 
 #include "qcr/engine/single_value.h"
-#include "qcr/engine/enum_cell.h"
 #include <QAction>
 #include <QCheckBox>
 #include <QComboBox>
@@ -143,18 +142,18 @@ private:
 //! Named non-editable combo box that can be set by console command.
 class QcrComboBox : public QComboBox, public QcrControl<int> {
 public:
-    QcrComboBox(const QString& name, const QStringList& items = {});
-    QcrComboBox(const QString& name, QcrEnumCell* cell);
+    QcrComboBox(const QString& name, QcrCell<int>* cell, std::function<QStringList()> makeTags);
     int doGetValue() const final { return currentIndex(); }
-    void addItems(const QStringList& texts);
-    void setItems(const QStringList& texts);
+    void remake() override;
 private:
+    std::function<QStringList()> makeTags_;
     void doSetValue(int val) final { setCurrentIndex(val); }
     // hide some member functions of QComboBox:
     void setCurrentIndex(int val) { QComboBox::setCurrentIndex(val); }
     void setCurrentText(const QString&) = delete;
     void setEditable() = delete; // stay with default: editable=false
-    void addItem(const QIcon&, const QVariant&) = delete; // reimplement if needed, cf. addItems
+    void addItems(const QStringList&) = delete;
+    void addItem(const QIcon&, const QVariant&) = delete;
     void addItem(const QIcon&, const QString&, const QVariant&) = delete;
 };
 

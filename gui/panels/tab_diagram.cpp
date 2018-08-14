@@ -25,9 +25,11 @@ DiagramTab::DiagramTab()
 {
     auto* plot = new PlotDiagram; // the main subframe
 
-    // TODO NOW
-    auto* comboX = new QcrComboBox {"diagramCoordX", &gSession->params.diagramX};
-    auto* comboY = new QcrComboBox {"diagramCoordY", &gSession->params.diagramY};
+    // TODO cache tag list
+    auto* comboX =
+        new QcrComboBox {"diagramCoordX", &gSession->params.diagramX, &PeakInfo::metaTags};
+    auto* comboY =
+        new QcrComboBox {"diagramCoordY", &gSession->params.diagramY, &PeakInfo::metaTags};
 
     auto* selectorBox = new QGridLayout;
     selectorBox->addWidget(new QLabel("y"), 0, 0);
