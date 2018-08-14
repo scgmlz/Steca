@@ -37,7 +37,7 @@ public:
     QcrCell<T>* cell() { return cell_; } // TODO rm
 protected:
     void initControl();
-    void onChangedValue(bool hasFocus, T val);
+    void onChangedValue(T val);
     bool softwareCalling_ {false};
     QcrCell<T>* cell_ {nullptr};
     T reportedValue_;
@@ -116,12 +116,12 @@ void QcrControl<T>::executeConsoleCommand(const QString& arg)
 //! Used by control widgets, typically through Qt signals that are emitted upon user actions.
 
 template<class T>
-void QcrControl<T>::onChangedValue(bool hasFocus, T val)
+void QcrControl<T>::onChangedValue(T val)
 {
     if (val==reportedValue_)
         return; // nothing to do
     reportedValue_ = val;
-    bool userCall = hasFocus && !softwareCalling_;
+    bool userCall = dynamic_cast<QWidget*>(this)->hasFocus() && !softwareCalling_;
     doLog(userCall, name()+" "+strOp::to_s(val));
     cell_->guiSetsVal(val, userCall);
 }

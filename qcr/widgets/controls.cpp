@@ -122,7 +122,7 @@ void QcrToggle::initToggle(const QString& iconFile, const QKeySequence& shortcut
     initControl();
     connect(this, &QAction::toggled, this, [this](bool val){
             //qDebug()<<"TOGGLE "<<name()<<"toggled";
-            onChangedValue(hasFocus(), val);});
+            onChangedValue(val);});
     connect(this, &QAction::changed, [this]()->void {
             // Called upon any property change.
             // Also called when this is toggled (https://bugreports.qt.io/browse/QTBUG-68213)
@@ -189,7 +189,7 @@ void QcrSpinBox::initSpinBox(int ndigits, bool withDot, int min, int max, const 
     connect(this, &QSpinBox::editingFinished, this, &QcrSpinBox::reportChange);
     connect(this, _SLOT_(QSpinBox,valueChanged,int), [this](int val)->void {
             if(!hasFocus())
-                onChangedValue(hasFocus(), val); });
+                onChangedValue(val); });
 }
 
 void QcrSpinBox::mouseReleaseEvent(QMouseEvent* event)
@@ -203,7 +203,7 @@ void QcrSpinBox::reportChange()
     int val = value();
     if (val == reportedValue_)
         return;
-    onChangedValue(hasFocus(), val);
+    onChangedValue(val);
 }
 
 void QcrSpinBox::executeConsoleCommand(const QString& arg)
@@ -237,7 +237,7 @@ void QcrDoubleSpinBox::initDoubleSpinBox(
     connect(this, &QDoubleSpinBox::editingFinished, this, &QcrDoubleSpinBox::reportChange);
     connect(this, _SLOT_(QDoubleSpinBox,valueChanged,double), [this](double val)->void {
             if(!hasFocus())
-                onChangedValue(hasFocus(), val); });
+                onChangedValue(val); });
 }
 
 void QcrDoubleSpinBox::mouseReleaseEvent(QMouseEvent* event)
@@ -251,7 +251,7 @@ void QcrDoubleSpinBox::reportChange()
     double val = value();
     if (val == reportedValue_)
         return;
-    onChangedValue(hasFocus(), val);
+    onChangedValue(val);
 }
 
 void QcrDoubleSpinBox::executeConsoleCommand(const QString& arg)
@@ -269,7 +269,7 @@ QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, QcrCell<bool
 {
     initControl();
     connect(this, _SLOT_(QCheckBox,stateChanged,int), [this](int val)->void {
-            onChangedValue(hasFocus(), (bool)val); });
+            onChangedValue((bool)val); });
 }
 
 //  ***********************************************************************************************
@@ -282,7 +282,7 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, bool v
     initControl();
     setAutoExclusive(false); // TODO provide int-valued Qcr wrapper for exclusive radio buttons
     connect(this, _SLOT_(QRadioButton,toggled,bool), [this,_name](bool val)->void {
-            onChangedValue(hasFocus(), val); });
+            onChangedValue(val); });
 }
 
 QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, QcrCell<bool>* cell)
@@ -292,7 +292,7 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, QcrCel
     initControl();
     setAutoExclusive(false);
     connect(this, _SLOT_(QRadioButton,toggled,bool), [this](bool val)->void {
-            onChangedValue(hasFocus(), val); });
+            onChangedValue(val); });
 }
 
 //  ***********************************************************************************************
@@ -308,7 +308,7 @@ QcrComboBox::QcrComboBox(
     softwareCalling_ = false;
     initControl();
     connect(this, _SLOT_(QComboBox,currentIndexChanged,int), [this](int val)->void {
-            onChangedValue(hasFocus(), val); });
+            onChangedValue(val); });
 }
 
 void QcrComboBox::remake()
@@ -336,9 +336,9 @@ QcrLineEdit::QcrLineEdit(const QString& _name, const QString& val)
     // The following works, but has the drawback that a user action is logged not only as such,
     // but also in a second line as if there were an indirect call.
     connect(this, _SLOT_(QLineEdit,textEdited,const QString&),
-            [this](const QString& val)->void { onChangedValue(hasFocus(), val); });
+            [this](const QString& val)->void { onChangedValue(val); });
     connect(this, _SLOT_(QLineEdit,textChanged,const QString&),
-            [this](const QString& val)->void { onChangedValue(hasFocus(), val); });
+            [this](const QString& val)->void { onChangedValue(val); });
 }
 
 //  ***********************************************************************************************
@@ -349,7 +349,7 @@ QcrTabWidget::QcrTabWidget(const QString& _name)
 {
     initControl();
     connect(this, &QTabWidget::currentChanged, [this](int val) {
-            onChangedValue(hasFocus(), val); });
+            onChangedValue(val); });
 }
 
 void QcrTabWidget::addTab(QWidget* page, const QString& label)
