@@ -38,6 +38,11 @@ public:
     int parameterCount() const { return parameters_.size(); }
     bool success() const { return success_; }
 
+    virtual void setY(const double* parValues, const int nPts,
+                      const double* xValues, double* yValues) const;
+    virtual void setDY(const double* parValues, const int nPar, const int nPts,
+                       const double* xValues, double* jacobian) const;
+
 protected:
     void setParValue(int ip, double val) {parameters_[ip].setValue(val, 0); }
 
@@ -73,6 +78,11 @@ public:
     const FitParameter getFwhm() const;
     const FitParameter& getIntensity() const;
     static PeakFunction fromFit(const QString& functionName, const Curve&, const RawOutcome&);
+
+    void setY(const double* parValues, const int nPts,
+              const double* xValues, double* yValues) const override;
+    void setDY(const double* parValues, const int nPar, const int nPts,
+               const double* xValues, double* jacobian) const override;
 
 private:
     double dy(double x, int parIndex, double const* parValues = nullptr) const final;

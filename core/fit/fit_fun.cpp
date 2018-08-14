@@ -45,6 +45,22 @@ double ParametricFunction::parValue(int ip, double const* parValues) const
     return parValues ? parValues[ip] : parameters_.at(ip).value();
 }
 
+void ParametricFunction::setY(
+    const double* parValues, const int nPts, const double* xValues, double* yValues) const
+{
+    for (int i=0 ; i<nPts; ++i)
+        yValues[i] = y(*(xValues+i), parValues);
+}
+
+void ParametricFunction::setDY(
+    const double* parValues, const int nPar, const int nPts, const double* xValues,
+    double* jacobian) const
+{
+    for (int i=0; i<nPts; ++i)
+        for (int ip=0; ip<nPar; ++ip)
+            *jacobian++ = dy(*(xValues+i), ip, parValues);
+}
+
 //  ***********************************************************************************************
 //! @class Polynom
 
@@ -92,6 +108,32 @@ const FitParameter& PeakFunction::getIntensity() const { return parameters_[2]; 
 
 const double prefac = 1 / sqrt(2*M_PI);
 
+void PeakFunction::setY(
+    const double* parValues, const int nPts, const double* xValues, double* yValues) const
+{
+    double center = parValue(0, parValues);
+    double stdv = parValue(1, parValues);
+    double inten = parValue(2, parValues);
+    for (int i=0 ; i<nPts; ++i)
+        yValues[i] = inten*prefac/stdv*exp(-SQR(*(xValues+i)-center)/(2*SQR(stdv)));
+}
+
+void PeakFunction::setDY(
+    const double* parValues, const int nPar, const int nPts, const double* xValues,
+    double* jacobian) const
+{
+    double center = parValue(0, parValues);
+    double stdv = parValue(1, parValues);
+    double inten = parValue(2, parValues);
+    for (int i=0; i<nPts; ++i) {
+        double x = *(xValues+i);
+        double g = exp(-SQR(x-center)/(2*SQR(stdv)));
+        *jacobian++ = inten*prefac/stdv*g*(x-center)/SQR(stdv);
+        *jacobian++ = inten*prefac/stdv*g*(SQR((x-center)/stdv)-1)/stdv;
+        *jacobian++ = prefac/stdv*g;
+    }
+}
+
 double PeakFunction::y(double x, double const* parValues) const
 {
     // Gaussian
@@ -103,22 +145,7 @@ double PeakFunction::y(double x, double const* parValues) const
 
 double PeakFunction::dy(double x, int i, double const* parValues) const
 {
-    // Gaussian
-    double center = parValue(0, parValues);
-    double stdv = parValue(1, parValues);
-    double inten = parValue(2, parValues);
-    double g = exp(-SQR(x-center)/(2*SQR(stdv)));
-    switch (i) {
-    case 0:
-        return inten*prefac/stdv*g*(x-center)/SQR(stdv);
-    case 1:
-        return inten*prefac/stdv*g*(SQR((x-center)/stdv)-1)/stdv;
-    case 2:
-        return prefac/stdv*g;
-    default:
-        qFatal("impossible case");
-    }
-    // TODO provide unit test to check derivatives
+    qFatal("obsoleted by setDY");
 }
 
 PeakFunction PeakFunction::fromFit(
