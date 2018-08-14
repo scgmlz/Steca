@@ -94,7 +94,7 @@ void FitWrapper::callbackY(
 void FitWrapper::callbackJacobianLM(
     double* parValues, double* jacobian, int parCount, int xLength, void*)
 {
-    for (int ix=0; ix<xLength; ++ix)
+    for (int i=0; i<xLength; ++i)
         for (int ip=0; ip<parCount; ++ip)
-            *jacobian++ = function_->dy(xValues_[ix], ip, parValues);
+            *jacobian++ = function_->dy(xValues_[i], ip, parValues);
 }
