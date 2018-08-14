@@ -28,14 +28,6 @@ DiagramTab::DiagramTab()
 {
     auto* plot = new PlotDiagram; // the main subframe
 
-    // internal connections
-    /*
-    connect(gGui->state->diagramX, _SLOT_(QComboBox,currentIndexChanged,int), [this]() {
-            render(); });
-    connect(gGui->state->diagramY, _SLOT_(QComboBox,currentIndexChanged,int), [this]() {
-            render(); });
-    */
-
     auto* selectorBox = new QGridLayout;
     selectorBox->addWidget(new QLabel("x"), 0, 0);
     selectorBox->addWidget(gGui->state->diagramX, 0, 1);
