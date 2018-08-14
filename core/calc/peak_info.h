@@ -29,8 +29,8 @@ public:
     PeakInfo(deg alpha, deg beta, Range, double, double /*error*/, deg, deg /*error*/,
              double, double /*error*/);
     PeakInfo(deg alpha, deg beta);
-//    PeakInfo(const PeakInfo&) = default;
-//    PeakInfo(PeakInfo&&) = default;
+    PeakInfo(const PeakInfo&) = delete;
+    PeakInfo(PeakInfo&&) = default;
 
     enum class eReflAttr {
         ALPHA,
@@ -98,6 +98,7 @@ private:
 class AllPeaks {
 public:
     AllPeaks();
+    AllPeaks(const AllPeaks&) = delete;
     const PeakInfos* currentDirect() const;
     const PeakInfos* currentInterpolated() const;
     const PeakInfos* currentPeaks() const;
