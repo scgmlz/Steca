@@ -24,11 +24,11 @@
 
 PlotDiagram::PlotDiagram()
 {
-    graph_ = addGraph();
+    graph_   = addGraph();
     graphLo_ = addGraph();
     graphUp_ = addGraph();
 
-    graph_->setPen(QPen(Qt::blue));
+    graph_  ->setPen(QPen(Qt::blue));
     graphUp_->setPen(QPen(Qt::red));
     graphLo_->setPen(QPen(Qt::green));
 }
@@ -38,17 +38,15 @@ void PlotDiagram::refresh()
     if (!gSession->activeClusters.size() || !gSession->peaks.count())
         return;
 
-    graph_->clearData();
+    graph_  ->clearData();
     graphUp_->clearData();
     graphLo_->clearData();
 
-    const int xi = int(gGui->state->diagramX->getValue());
-    const int yi = int(gGui->state->diagramY->getValue());
+    const int idxX = int(gGui->state->diagramX->getValue());
+    const int idxY = int(gGui->state->diagramY->getValue());
 
     std::vector<double> xs, ys, ysLow, ysHig;
-    const PeakInfos* peakInfos = gSession->allPeaks.curentPeakInfos();
-    ASSERT(peakInfos);
-    peakInfos->get4(xi, yi, xs, ys, ysLow, ysHig);
+    gSession->allPeaks.curentPeakInfos()->get4(idxX, idxY, xs, ys, ysLow, ysHig);
 
     if (!xs.size())
         return erase();
@@ -63,9 +61,9 @@ void PlotDiagram::refresh()
     xAxis->setVisible(true);
     yAxis->setVisible(true);
 
-    graph_->addData(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ys));
-    graphUp_->addData(QVector<double>::fromStdVector(xs),QVector<double>::fromStdVector( ysHig));
-    graphLo_->addData(QVector<double>::fromStdVector(xs),QVector<double>::fromStdVector( ysLow));
+    graph_  ->addData(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ys));
+    graphUp_->addData(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ysHig));
+    graphLo_->addData(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ysLow));
 
     replot();
 }
