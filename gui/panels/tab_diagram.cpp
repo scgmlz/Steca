@@ -51,8 +51,5 @@ DiagramTab::DiagramTab()
     layout->setStretch(0,1000);
     setLayout(layout);
 
-    setRemake([=](){
-            gSession->params.onMeta();
-            plot->refresh();
-        });
+    setRemake([=](){plot->refresh();});
 }

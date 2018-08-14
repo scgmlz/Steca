@@ -14,6 +14,7 @@
 
 #include "core/pars/params.h"
 #include "core/calc/peak_info.h" // dataTags
+//#include "qcr/base/debug.h"
 
 void Params::onMeta()
 {

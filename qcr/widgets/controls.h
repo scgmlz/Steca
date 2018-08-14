@@ -147,6 +147,7 @@ public:
     QcrComboBox(const QString& name, QcrEnumCell* cell);
     int doGetValue() const final { return currentIndex(); }
     void addItems(const QStringList& texts);
+    void setItems(const QStringList& texts);
 private:
     void doSetValue(int val) final { setCurrentIndex(val); }
     // hide some member functions of QComboBox:

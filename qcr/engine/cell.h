@@ -38,9 +38,9 @@ public:
 
 protected:
     T value_;
+    QcrControl<T>* backlink_ {nullptr};
 private:
     std::function<void(T&)> hook_ = [](T&){;};
-    QcrControl<T>* backlink_ {nullptr};
 
     friend QcrControl<T>; // may set backlink_, and call guiSetsVal
     void guiSetsVal(T, bool userCall=false);

@@ -302,7 +302,6 @@ QcrComboBox::QcrComboBox(const QString& _name, QcrEnumCell* _cell)
     : QcrControl<int> {*this, _name, (QcrCell<int>*)_cell}
 {
     initControl();
-    addItems(_cell->tags());
     connect(this, _SLOT_(QComboBox,currentIndexChanged,int), [this](int val)->void {
             onChangedValue(hasFocus(), val); });
 }
@@ -319,6 +318,14 @@ QcrComboBox::QcrComboBox(const QString& _name, const QStringList& items)
 void QcrComboBox::addItems(const QStringList& texts)
 {
     softwareCalling_ = true;
+    QComboBox::addItems(texts);
+    softwareCalling_ = false;
+}
+
+void QcrComboBox::setItems(const QStringList& texts)
+{
+    softwareCalling_ = true;
+    QComboBox::clear();
     QComboBox::addItems(texts);
     softwareCalling_ = false;
 }
