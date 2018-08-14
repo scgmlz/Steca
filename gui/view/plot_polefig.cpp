@@ -42,7 +42,7 @@ PlotPolefig::PlotPolefig()
 void PlotPolefig::paintEvent(QPaintEvent*)
 {
     qDebug() << "PlotPolefig::refresh()";
-    peakInfos_ = gSession->allPeaks.currentPeaks();
+    peakInfos_ = gSession->allPeaks.curentPeakInfos();
     qDebug() << " -> " << peakInfos_;
     qDebug() << " -> " << peakInfos_->peaks().size();
     if (peakInfos_->peaks().size()>0)

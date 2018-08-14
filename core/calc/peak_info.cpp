@@ -305,7 +305,7 @@ const PeakInfos* AllPeaks::currentInterpolated() const
     return &interpolated.getget(this,jP);
 }
 
-const PeakInfos* AllPeaks::currentPeaks() const
+const PeakInfos* AllPeaks::curentPeakInfos() const
 {
     return gSession->params.interpolParams.enabled.val() ?
         currentInterpolated() : currentDirect();

@@ -45,7 +45,7 @@ void BigtableModel::refresh()
     qDebug() << "BigtableModel::refresh";
     beginResetModel();
     rows_.clear();
-    if (const PeakInfos* peakInfos = gSession->allPeaks.currentPeaks())
+    if (const PeakInfos* peakInfos = gSession->allPeaks.curentPeakInfos())
         for (const PeakInfo& r : peakInfos->peaks())
             rows_.push_back(XRow(rows_.size() + 1, r.data()));
     sortData();
