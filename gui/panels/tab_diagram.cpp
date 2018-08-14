@@ -27,10 +27,10 @@ DiagramTab::DiagramTab()
     auto* plot = new PlotDiagram; // the main subframe
 
     auto* selectorBox = new QGridLayout;
-    selectorBox->addWidget(new QLabel("x"), 0, 0);
-    selectorBox->addWidget(gGui->state->diagramX, 0, 1);
-    selectorBox->addWidget(new QLabel("y"), 1, 0);
-    selectorBox->addWidget(gGui->state->diagramY, 1, 1);
+    selectorBox->addWidget(new QLabel("y"),       0, 0);
+    selectorBox->addWidget(gGui->state->diagramY, 0, 1);
+    selectorBox->addWidget(new QLabel("x"),       1, 0);
+    selectorBox->addWidget(gGui->state->diagramX, 1, 1);
 
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);

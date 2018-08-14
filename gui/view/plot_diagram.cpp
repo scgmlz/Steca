@@ -25,7 +25,7 @@
 
 PlotDiagram::PlotDiagram()
 {
-    plotter_ = new QCustomPlot;
+    plotter_ = new QCustomPlot(this);
 
     graph_   = plotter_->addGraph();
     graphLo_ = plotter_->addGraph();
@@ -62,6 +62,7 @@ void PlotDiagram::refresh()
 
     Range rgeX(xs);
     Range rgeY(ys);
+    qDebug() << "PLODI xrange" << rgeX.to_s();
     if (rgeX.isEmpty() || rgeY.isEmpty())
         return erase();
 
