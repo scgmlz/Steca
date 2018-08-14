@@ -28,7 +28,7 @@ public:
 private:
     // these pointers are valid during fit() call
     ParametricFunction* function_;
-    double const* xValues_;
+    const std::vector<double>* xValues_ {nullptr};
 
     void callFit(double*, double const*, double const*, double*, int, double const*, int);
 

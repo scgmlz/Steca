@@ -36,7 +36,7 @@ void FitWrapper::execFit(ParametricFunction& function, const Curve& curve)
     }
 
     function_ = &function;
-    xValues_ = curve.xs().data();
+    xValues_ = &curve.xs();
     callFit(parValue.data(), parMin.data(), parMax.data(), parError.data(), parCount,
             curve.ys().data(), curve.count());
 
@@ -84,17 +84,15 @@ void FitWrapper::callFit(
         paramsError[ip] = sqrt(covar[ip * paramsCount + ip]); // the diagonal
 }
 
-void FitWrapper::callbackY(
-    double* parValues, double* yValues, int /*parCount*/, int xLength, void*)
+void FitWrapper::callbackY(double* parValues, double* yValues, int, int, void*)
 {
-    for (int i=0 ; i<xLength; ++i)
-        yValues[i] = function_->y(xValues_[i], parValues);
+    for (int i=0 ; i<xValues_->size(); ++i)
+        yValues[i] = function_->y((*xValues_)[i], parValues);
 }
 
-void FitWrapper::callbackJacobianLM(
-    double* parValues, double* jacobian, int parCount, int xLength, void*)
+void FitWrapper::callbackJacobianLM(double* parValues, double* jacobian, int, int, void*)
 {
-    for (int i=0; i<xLength; ++i)
-        for (int ip=0; ip<parCount; ++ip)
-            *jacobian++ = function_->dy(xValues_[i], ip, parValues);
+    for (int i=0; i<xValues_->size(); ++i)
+        for (int ip=0; ip<function_->parameterCount(); ++ip)
+            *jacobian++ = function_->dy((*xValues_)[i], ip, parValues);
 }
