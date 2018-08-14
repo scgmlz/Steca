@@ -12,14 +12,12 @@
 //
 //  ***********************************************************************************************
 
-#include "tab_diagram.h"
+#include "gui/panels/tab_diagram.h"
 #include "core/session.h"
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"
 #include "gui/state.h"
 #include "gui/view/plot_diagram.h"
-
-#define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 
 //  ***********************************************************************************************
 //! @class DiagramTab
