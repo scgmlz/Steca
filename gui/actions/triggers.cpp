@@ -50,4 +50,13 @@ Triggers::Triggers()
     QObject::connect(&spawnTable, AT, [](){ new PopupBigtable(); });
     QObject::connect(&spawnPolefig, AT, [](){ new PopupPolefig(); });
     QObject::connect(&viewReset, AT, []() { gGui->viewReset(); });
+
+    corrFile.setRemake([this]() {
+            bool hasCorr = gSession->hasCorrFile();
+            corrFile.setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
+            QString text = QString(hasCorr ? "Remove" : "Add") + " correction file";
+            corrFile.setText(text);
+            corrFile.setToolTip(text.toLower());
+        });
+    // other remakes are done more conveniently through Mainwindow::refresh
 }

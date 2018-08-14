@@ -89,19 +89,6 @@ MainWin::MainWin()
     // initialize state
     readSettings();
 
-    // TODO move this elsewhere
-    triggers->removeFile.setRemake([=]() {
-            triggers->removeFile.setEnabled(gSession->dataset.countFiles()); });
-    triggers->corrFile.setRemake([=]() {
-            bool hasCorr = gSession->hasCorrFile();
-            triggers->corrFile.setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
-            QString text = QString(hasCorr ? "Remove" : "Add") + " correction file";
-            triggers->corrFile.setText(text);
-            triggers->corrFile.setToolTip(text.toLower()); });
-    toggles->enableCorr.setRemake([=]() {
-            toggles->enableCorr.setEnabled(gSession->hasCorrFile()); });
-
-    // how to refresh
     setRemake( [=]() { refresh(); } );
 }
 
@@ -228,15 +215,12 @@ void MainWin::loadCorrFile()
     Qcr::defaultHook();
 }
 
-//  ***********************************************************************************************
-//   remake / compute
-//  ***********************************************************************************************
-
 void MainWin::refresh()
 {
     bool hasData = gSession->hasData();
     bool hasPeak = gSession->peaks.count();
     bool hasBase = gSession->baseline.ranges.count();
+    toggles->enableCorr.setEnabled(gSession->hasCorrFile());
     triggers->exportDfgram.setEnabled(hasData);
     triggers->exportBigtable.setEnabled(hasData && hasPeak);
     triggers->exportDiagram.setEnabled(hasData && hasPeak);
@@ -246,6 +230,7 @@ void MainWin::refresh()
     triggers->peakAdd   .setEnabled(hasData);
     triggers->peakRemove.setEnabled(hasPeak);
     triggers->peaksClear.setEnabled(hasPeak);
+    triggers->removeFile.setEnabled(hasData);
     menus_->export_->setEnabled(hasData);
     menus_->image_->setEnabled(hasData);
     menus_->dgram_->setEnabled(hasData);

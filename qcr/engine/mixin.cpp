@@ -42,9 +42,9 @@ QcrMixin::QcrMixin(QObject* object, const QString& name)
 
 void QcrMixin::remake()
 {
-    if (const QWidget* w = dynamic_cast<const QWidget*>(&object()))
-        if (w->isVisible())
-            remake_();
+    const QWidget* w = dynamic_cast<const QWidget*>(&object());
+    if ((w && w->isVisible()) || dynamic_cast<const QAction*>(&object()))
+        remake_();
 }
 
 
