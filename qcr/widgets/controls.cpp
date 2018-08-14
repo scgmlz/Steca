@@ -349,18 +349,26 @@ void QcrTabWidget::addTab(QWidget* page, const QString& label)
     softwareCalling_ = false;
 }
 
-void QcrTabWidget::setCurrentIndex(int val)
-{
-    softwareCalling_ = true;
-    QTabWidget::setCurrentIndex(val);
-    softwareCalling_ = false;
-}
-
 void QcrTabWidget::setTabEnabled(int index, bool on)
     // Needs to be encapsulate because of side effect upon currentIndex.
     // See https://bugreports.qt.io/browse/QTBUG-69930.
 {
     softwareCalling_ = true;
     QTabWidget::setTabEnabled(index, on);
+    softwareCalling_ = false;
+}
+
+bool QcrTabWidget::anyEnabled() const
+{
+    for (int i=0; i<count(); ++i)
+        if (isTabEnabled(i))
+            return true;
+    return false;
+}
+
+void QcrTabWidget::setCurrentIndex(int val)
+{
+    softwareCalling_ = true;
+    QTabWidget::setCurrentIndex(val);
     softwareCalling_ = false;
 }

@@ -33,16 +33,18 @@ Mainframe::Mainframe()
     addTab((diagramTab_ = new DiagramTab), "Diagram");
     addTab((polefigTab_ = new PolefigTab), "Polefig");
 
-    setRemake( [=]() {
+    setRemake([this](){
             bool active = gSession->activeClusters.size();
             bool peakish = gSession->peaks.count();
-            // Reverse order to work against unwanted heuristics of QTabBar::setTabEnabled.
+            // Work against unwanted heuristics of QTabBar::setTabEnabled.
             // See https://bugreports.qt.io/browse/QTBUG-69930.
-            setTabEnabled(4, active&&peakish);
-            setTabEnabled(3, active&&peakish);
-            setTabEnabled(2, active&&peakish);
-            setTabEnabled(1, gSession->corrset.hasFile());
+            //int oldCurrent = currentIndex();
             setTabEnabled(0, active);
+            setTabEnabled(1, gSession->corrset.hasFile());
+            setTabEnabled(2, active&&peakish);
+            setTabEnabled(3, active&&peakish);
+            setTabEnabled(4, active&&peakish);
+            setEnabled(anyEnabled());
             //if (!currentWidget()->isEnabled())
             //    programaticallySetValue(0);
         } );

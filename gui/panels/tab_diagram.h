@@ -23,10 +23,6 @@
 class DiagramTab : public QcrWidget {
 public:
     DiagramTab();
-    void render();
-private:
-    class PlotDiagram* plot_;
-    void showEvent(QShowEvent*) { render(); }
 };
 
 #endif // TAB_DIAGRAM_H

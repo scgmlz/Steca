@@ -35,6 +35,9 @@ PlotDiagram::PlotDiagram()
 
 void PlotDiagram::refresh()
 {
+    if (!gSession->activeClusters.size() || !gSession->peaks.count())
+        return;
+
     graph_->clearData();
     graphUp_->clearData();
     graphLo_->clearData();

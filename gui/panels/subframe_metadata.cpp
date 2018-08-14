@@ -102,4 +102,5 @@ SubframeMetadata::SubframeMetadata()
     setFeatures(DockWidgetMovable);
     setWindowTitle("Metadata");
     setWidget(new MetabigtableView());
+    setRemake([this](){setEnabled(gSession->hasData());});
 }

@@ -117,4 +117,5 @@ SubframeDfgram::SubframeDfgram()
 {
     setTabPosition(QTabWidget::North);
     addTab(new DfPanel, "Diffractogram");
+    setRemake([this](){setEnabled(gSession->activeClusters.size());});
 }

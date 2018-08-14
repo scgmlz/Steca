@@ -42,7 +42,8 @@ BigtableModel::BigtableModel()
 
 void BigtableModel::refresh()
 {
-    qDebug() << "BigtableModel::refresh";
+    if (!gSession->activeClusters.size() || !gSession->peaks.count())
+        return;
     beginResetModel();
     rows_.clear();
     if (const PeakInfos* peakInfos = gSession->allPeaks.curentPeakInfos())
