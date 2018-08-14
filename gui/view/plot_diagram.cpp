@@ -12,25 +12,34 @@
 //
 //  ***********************************************************************************************
 
-#include "plot_diagram.h"
+#include "gui/view/plot_diagram.h"
 #include "core/session.h"
 #include "gui/mainwin.h"
 #include "gui/state.h"
 #include "qcr/base/debug.h"
 #include "qcr/widgets/controls.h"
+#include "QCustomPlot/qcustomplot.h"
 
 //  ***********************************************************************************************
 //! @class PlotDiagram
 
 PlotDiagram::PlotDiagram()
 {
-    graph_   = addGraph();
-    graphLo_ = addGraph();
-    graphUp_ = addGraph();
+    plotter_ = new QCustomPlot;
+
+    graph_   = plotter_->addGraph();
+    graphLo_ = plotter_->addGraph();
+    graphUp_ = plotter_->addGraph();
 
     graph_  ->setPen(QPen(Qt::blue));
     graphUp_->setPen(QPen(Qt::red));
     graphLo_->setPen(QPen(Qt::green));
+}
+
+PlotDiagram::PlotDiagram(int w, int h)
+    : PlotDiagram()
+{
+    plotter_->setMinimumSize(w, h);
 }
 
 void PlotDiagram::refresh()
@@ -56,21 +65,21 @@ void PlotDiagram::refresh()
     if (rgeX.isEmpty() || rgeY.isEmpty())
         return erase();
 
-    xAxis->setRange(rgeX.min, rgeX.max);
-    yAxis->setRange(rgeY.min, rgeY.max);
-    xAxis->setVisible(true);
-    yAxis->setVisible(true);
+    plotter_->xAxis->setRange(rgeX.min, rgeX.max);
+    plotter_->yAxis->setRange(rgeY.min, rgeY.max);
+    plotter_->xAxis->setVisible(true);
+    plotter_->yAxis->setVisible(true);
 
     graph_  ->addData(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ys));
     graphUp_->addData(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ysHig));
     graphLo_->addData(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ysLow));
 
-    replot();
+    plotter_->replot();
 }
 
 void PlotDiagram::erase()
 {
-    xAxis->setVisible(false);
-    yAxis->setVisible(false);
-    replot();
+    plotter_->xAxis->setVisible(false);
+    plotter_->yAxis->setVisible(false);
+    plotter_->replot();
 }

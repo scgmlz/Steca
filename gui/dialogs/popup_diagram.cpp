@@ -25,8 +25,7 @@ PopupDiagram::PopupDiagram()
     setWindowTitle("Steca " + name());
 
     // initializations
-    auto* plot = new PlotDiagram; // the main subframe
-    plot->setMinimumSize(300,300); // TODO store and reuse user setting; freeze aspect ratio
+    auto* plot = new PlotDiagram(300,300); // TODO store and reuse user setting; freeze aspect ratio
 
     // layout
     auto* layout = new QVBoxLayout;

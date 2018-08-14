@@ -15,19 +15,20 @@
 #ifndef PLOT_DIAGRAM_H
 #define PLOT_DIAGRAM_H
 
-#include "QCustomPlot/qcustomplot.h"
 #include "core/calc/peak_info.h"
+#include "qcr/widgets/views.h"
 
 //! Tab in DiagramsFrame, to display a plot of something against something.
 
-class PlotDiagram : public QCustomPlot {
+class PlotDiagram : public QWidget {
 public:
     PlotDiagram();
-    void set(PeakInfos);
+    PlotDiagram(int, int);
     void refresh();
 private:
     void erase();
-    QCPGraph *graph_, *graphLo_, *graphUp_;
+    class QCustomPlot* plotter_;
+    class QCPGraph *graph_, *graphLo_, *graphUp_;
 };
 
 #endif // PLOT_DIAGRAM_H
