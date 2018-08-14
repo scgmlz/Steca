@@ -38,7 +38,7 @@ public:
 protected:
     void initControl();
     void onChangedValue(bool hasFocus, T val);
-    bool softwareCalling_ {false}; // make it private again ??
+    bool softwareCalling_ {false};
     QcrCell<T>* cell_ {nullptr};
     T reportedValue_;
 private:

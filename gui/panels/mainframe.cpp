@@ -34,9 +34,16 @@ Mainframe::Mainframe()
     addTab((polefigTab_ = new PolefigTab), "Polefig");
 
     setRemake( [=]() {
-            setTabEnabled(1, gSession->corrset.hasFile());     // Corr img
-            setTabEnabled(2, gSession->activeClusters.size()); // Bigtable
-            setTabEnabled(3, gSession->activeClusters.size()); // Diagram
-            setTabEnabled(4, gSession->peaks.count());         // Pole fig
+            bool active = gSession->activeClusters.size();
+            bool peakish = gSession->peaks.count();
+            // Reverse order to work against unwanted heuristics of QTabBar::setTabEnabled.
+            // See https://bugreports.qt.io/browse/QTBUG-69930.
+            setTabEnabled(4, active&&peakish);
+            setTabEnabled(3, active&&peakish);
+            setTabEnabled(2, active&&peakish);
+            setTabEnabled(1, gSession->corrset.hasFile());
+            setTabEnabled(0, active);
+            //if (!currentWidget()->isEnabled())
+            //    programaticallySetValue(0);
         } );
 }

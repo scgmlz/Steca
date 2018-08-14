@@ -339,8 +339,6 @@ QcrTabWidget::QcrTabWidget(const QString& _name)
 {
     initControl();
     connect(this, &QTabWidget::currentChanged, [this](int val) {
-            if (!isTabEnabled(val))
-                qFatal("Chosen tab is not enabled");
             onChangedValue(hasFocus(), val); });
 }
 
@@ -353,5 +351,16 @@ void QcrTabWidget::addTab(QWidget* page, const QString& label)
 
 void QcrTabWidget::setCurrentIndex(int val)
 {
+    softwareCalling_ = true;
     QTabWidget::setCurrentIndex(val);
+    softwareCalling_ = false;
+}
+
+void QcrTabWidget::setTabEnabled(int index, bool on)
+    // Needs to be encapsulate because of side effect upon currentIndex.
+    // See https://bugreports.qt.io/browse/QTBUG-69930.
+{
+    softwareCalling_ = true;
+    QTabWidget::setTabEnabled(index, on);
+    softwareCalling_ = false;
 }

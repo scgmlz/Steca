@@ -172,6 +172,7 @@ public:
     QcrTabWidget(const QString& name);
     int doGetValue() const final { return currentIndex(); }
     void addTab(QWidget* page, const QString& label);
+    void setTabEnabled(int, bool);
 private:
     void doSetValue(int val) final { setCurrentIndex(val); }
     // hide some member functions of QTabWidget:
