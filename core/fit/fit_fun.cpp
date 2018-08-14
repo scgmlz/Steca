@@ -127,10 +127,10 @@ void PeakFunction::setDY(
     double inten = parValue(2, parValues);
     for (int i=0; i<nPts; ++i) {
         double x = *(xValues+i);
-        double g = exp(-SQR(x-center)/(2*SQR(stdv)));
-        *jacobian++ = inten*prefac/stdv*g*(x-center)/SQR(stdv);
-        *jacobian++ = inten*prefac/stdv*g*(SQR((x-center)/stdv)-1)/stdv;
-        *jacobian++ = prefac/stdv*g;
+        double g = prefac/stdv*exp(-SQR(x-center)/(2*SQR(stdv)));
+        *jacobian++ = inten*g*(x-center)/SQR(stdv);
+        *jacobian++ = inten*g*(SQR((x-center)/stdv)-1)/stdv;
+        *jacobian++ = g;
     }
 }
 
