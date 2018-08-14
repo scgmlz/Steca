@@ -120,14 +120,9 @@ void QcrControl<T>::onChangedValue(bool hasFocus, T val)
 {
     if (val==reportedValue_)
         return; // nothing to do
-    bool userCall = hasFocus || !softwareCalling_;
-    doLog(userCall, name()+" "+strOp::to_s(val));
-
-    // not sure whether we want to get rid of hasFocus; perform some tests:
-    if (hasFocus && softwareCalling_)
-        qDebug() << "UNEXPECTED in "+name()+" hasFocus && softwareCalling_";
-
     reportedValue_ = val;
+    bool userCall = hasFocus && !softwareCalling_;
+    doLog(userCall, name()+" "+strOp::to_s(val));
     cell_->guiSetsVal(val, userCall);
 }
 
