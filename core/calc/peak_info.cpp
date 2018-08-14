@@ -62,11 +62,6 @@ static void sortColumns(std::vector<double>& xs, std::vector<double>& ys, std::v
 //! debug::ensure -1 as unknown value; thus, NaN parameter values should be output
 //! as -1 when output is written for these programs (polefigure!).
 
-PeakInfo::PeakInfo()
-    : PeakInfo(nullptr, Q_QNAN, Q_QNAN, Range(), Q_QNAN, Q_QNAN,
-               deg(Q_QNAN), deg(Q_QNAN), Q_QNAN, Q_QNAN)
-{}
-
 PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma, double inten,
                    double intenError, deg tth, deg tthError, double fwhm, double fwhmError)
     : md_(md)

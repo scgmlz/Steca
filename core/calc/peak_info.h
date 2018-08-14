@@ -23,7 +23,6 @@
 
 class PeakInfo final {
 public:
-    PeakInfo();
     PeakInfo(const Metadata*, deg alpha, deg beta, Range, double, double /*error*/,
              deg, deg /*error*/, double, double /*error*/);
     PeakInfo(const Metadata*, deg alpha, deg beta, Range);
