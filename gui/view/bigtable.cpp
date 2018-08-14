@@ -15,7 +15,6 @@
 #include "bigtable.h"
 #include "core/session.h"
 #include "gui/mainwin.h"
-#include "gui/state.h"
 #include "qcr/base/debug.h"
 #include <QApplication>
 #include <QClipboard>
@@ -30,7 +29,7 @@
 BigtableModel::BigtableModel()
     : TableModel("data#")
 {
-    gGui->state->bigtableModel = this;
+    gGui->bigtableModel = this; // for use in export dialog
     headers_ = PeakInfo::dataTags(false);
     comparators_ = PeakInfo::dataCmps();
     ASSERT((int)comparators_.size() == headers_.count());

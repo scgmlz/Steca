@@ -36,8 +36,9 @@ public:
     T val() const { return value_; }
     //QString name() { return backlink_?backlink_->name():QString("<nameless>"); } // for Debug only
 
-private:
+protected:
     T value_;
+private:
     std::function<void(T&)> hook_ = [](T&){;};
     QcrControl<T>* backlink_ {nullptr};
 

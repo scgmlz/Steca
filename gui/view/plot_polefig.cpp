@@ -15,7 +15,6 @@
 #include "plot_polefig.h"
 #include "core/session.h"
 #include "gui/mainwin.h"
-#include "gui/state.h"
 
 namespace {
 

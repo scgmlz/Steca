@@ -16,6 +16,7 @@
 #define CONTROLS_H
 
 #include "qcr/engine/single_value.h"
+#include "qcr/engine/enum_cell.h"
 #include <QAction>
 #include <QCheckBox>
 #include <QComboBox>
@@ -143,6 +144,7 @@ private:
 class QcrComboBox : public QComboBox, public QcrControl<int> {
 public:
     QcrComboBox(const QString& name, const QStringList& items = {});
+    QcrComboBox(const QString& name, QcrEnumCell* cell);
     int doGetValue() const final { return currentIndex(); }
     void addItems(const QStringList& texts);
 private:

@@ -16,7 +16,6 @@
 #include "core/session.h"
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"
-#include "gui/state.h"
 #include "gui/view/range_control.h"
 #include "qcr/widgets/tables.h"
 
@@ -122,10 +121,10 @@ ControlsBaseline::ControlsBaseline()
 void ControlsBaseline::hideEvent(QHideEvent*)
 {
     if (gGui)
-        gGui->state->editingBaseline = false;
+        gGui->editingBaseline = false;
 }
 
 void ControlsBaseline::showEvent(QShowEvent*)
 {
-    gGui->state->editingBaseline = true;
+    gGui->editingBaseline = true;
 }

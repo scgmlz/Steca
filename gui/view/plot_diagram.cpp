@@ -15,7 +15,6 @@
 #include "gui/view/plot_diagram.h"
 #include "core/session.h"
 #include "gui/mainwin.h"
-#include "gui/state.h"
 #include "qcr/base/debug.h"
 #include "qcr/widgets/controls.h"
 
@@ -48,8 +47,8 @@ void PlotDiagram::refresh()
     graphUp_->clearData();
     graphLo_->clearData();
 
-    const int idxX = int(gGui->state->diagramX->getValue());
-    const int idxY = int(gGui->state->diagramY->getValue());
+    const int idxX = int(gSession->params.diagramX.val());
+    const int idxY = int(gSession->params.diagramY.val());
 
     std::vector<double> xs, ys, ysLow, ysHig;
     gSession->allPeaks.curentPeakInfos()->get4(idxX, idxY, xs, ys, ysLow, ysHig);

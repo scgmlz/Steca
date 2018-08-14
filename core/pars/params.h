@@ -20,6 +20,7 @@
 #include "core/pars/interpol_params.h"
 #include "core/typ/bool_vector.h"
 #include "qcr/engine/cell.h"
+#include "qcr/engine/enum_cell.h"
 
 enum class eNorm {
     NONE,
@@ -37,6 +38,8 @@ public:
     Params(const Params&) = delete;
     // void clear() { *this = {}; } TODO restore (broken because BoolVector disallows copying
 
+    void onMeta(); //!< To be called when list of meta data has changed.
+
     Detector        detector;
     ImageTransform  imageTransform;
     ImageCut        imageCut;
@@ -46,6 +49,8 @@ public:
     eNorm           normMode {eNorm::NONE};
     BoolVector      smallMetaSelection;  //!< for 'clusters' and 'metadata' subframes:
     BoolVector      bigMetaSelection;    //! for use in 'bigtable' (tabbed view and export):
+    QcrEnumCell     diagramX;            //!< for use as x axis in diagram
+    QcrEnumCell     diagramY;            //!< for use as y axis in diagram
 };
 
 #endif // PARAMS_H

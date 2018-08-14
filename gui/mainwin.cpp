@@ -30,7 +30,6 @@
 #include "gui/panels/subframe_files.h"
 #include "gui/panels/subframe_metadata.h"
 #include "gui/panels/subframe_setup.h"
-#include "gui/state.h"
 #include "qcr/base/debug.h"
 #include <QProgressBar>
 #include <QSplitter>
@@ -54,7 +53,6 @@ MainWin::MainWin()
 
     triggers = new Triggers;
     toggles = new Toggles;
-    state = new GuiState;
     imageTrafoActions = new ImageTrafoActions;
     menus_ = new Menus(menuBar());
 

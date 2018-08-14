@@ -298,6 +298,15 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, QcrCel
 //  ***********************************************************************************************
 //! @class QcrComboBox
 
+QcrComboBox::QcrComboBox(const QString& _name, QcrEnumCell* _cell)
+    : QcrControl<int> {*this, _name, (QcrCell<int>*)_cell}
+{
+    initControl();
+    addItems(_cell->tags());
+    connect(this, _SLOT_(QComboBox,currentIndexChanged,int), [this](int val)->void {
+            onChangedValue(hasFocus(), val); });
+}
+
 QcrComboBox::QcrComboBox(const QString& _name, const QStringList& items)
     : QcrControl<int> {*this, _name, -1}
 {

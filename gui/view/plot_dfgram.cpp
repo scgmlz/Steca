@@ -17,7 +17,6 @@
 #include "core/session.h"
 #include "gui/actions/toggles.h"
 #include "gui/panels/subframe_setup.h" // gGui->setup() TODO break this circular dependence
-#include "gui/state.h"
 #include "gui/mainwin.h"
 #include "qcr/engine/cell.h"
 
@@ -41,10 +40,10 @@ PlotDfgramOverlay::PlotDfgramOverlay(PlotDfgram& parent)
 
 void PlotDfgramOverlay::addRange(const Range& range)
 {
-    if      (gGui->state->editingBaseline) {
+    if      (gGui->editingBaseline) {
         gSession->baseline.ranges.add(range);
         gSession->onBaseline();
-    } else if (gGui->state->editingPeakfits) {
+    } else if (gGui->editingPeakfits) {
         gSession->peaks.add(range);
         gSession->onPeaks();
     } else
@@ -56,9 +55,9 @@ void PlotDfgramOverlay::addRange(const Range& range)
 
 void PlotDfgramOverlay::selectRange(double x)
 {
-    if      (gGui->state->editingBaseline)
+    if      (gGui->editingBaseline)
         gSession->baseline.ranges.selectByValue(x);
-    else if (gGui->state->editingPeakfits)
+    else if (gGui->editingPeakfits)
         gSession->peaks.selectByValue(x);
     else
         return;
@@ -67,10 +66,10 @@ void PlotDfgramOverlay::selectRange(double x)
 
 bool PlotDfgramOverlay::addModeColor(QColor& color) const
 {
-    if        (gGui->state->editingBaseline) {
+    if        (gGui->editingBaseline) {
         color = colors::baseEdit;
         return true;
-    } else if (gGui->state->editingPeakfits) {
+    } else if (gGui->editingPeakfits) {
         color = colors::peakEdit;
         return true;
     }

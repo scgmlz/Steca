@@ -16,7 +16,6 @@
 #include "core/session.h"
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"
-#include "gui/state.h"
 #include "gui/view/plot_diagram.h"
 
 //  ***********************************************************************************************
@@ -26,11 +25,15 @@ DiagramTab::DiagramTab()
 {
     auto* plot = new PlotDiagram; // the main subframe
 
+    // TODO NOW
+    auto* comboX = new QcrComboBox {"diagramCoordX", &gSession->params.diagramX};
+    auto* comboY = new QcrComboBox {"diagramCoordY", &gSession->params.diagramY};
+
     auto* selectorBox = new QGridLayout;
-    selectorBox->addWidget(new QLabel("y"),       0, 0);
-    selectorBox->addWidget(gGui->state->diagramY, 0, 1);
-    selectorBox->addWidget(new QLabel("x"),       1, 0);
-    selectorBox->addWidget(gGui->state->diagramX, 1, 1);
+    selectorBox->addWidget(new QLabel("y"), 0, 0);
+    selectorBox->addWidget(comboY,          0, 1);
+    selectorBox->addWidget(new QLabel("x"), 1, 0);
+    selectorBox->addWidget(comboX,          1, 1);
 
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);
@@ -48,5 +51,8 @@ DiagramTab::DiagramTab()
     layout->setStretch(0,1000);
     setLayout(layout);
 
-    setRemake([=](){plot->refresh();});
+    setRemake([=](){
+            gSession->params.onMeta();
+            plot->refresh();
+        });
 }

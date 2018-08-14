@@ -16,7 +16,6 @@
 #include "core/session.h"
 #include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/mainwin.h"
-#include "gui/state.h"
 #include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
@@ -44,12 +43,12 @@ void ExportDiagram::save()
     QString separator = fileField_->separator();
 
     // get data
-    const int xi = int(gGui->state->diagramX->getValue());
-    const int yi = int(gGui->state->diagramY->getValue());
+    const int idxX = int(gSession->params.diagramX.val());
+    const int idxY = int(gSession->params.diagramY.val());
     std::vector<double> xs, ys, ysLow, ysHig;
     const PeakInfos* peakInfos = gSession->allPeaks.curentPeakInfos();
     ASSERT(peakInfos);
-    peakInfos->get4(xi, yi, xs, ys, ysLow, ysHig);
+    peakInfos->get4(idxX, idxY, xs, ys, ysLow, ysHig);
     ASSERT(xs.size());
     // write data table
     for (int i=0; i<xs.size(); ++i) {

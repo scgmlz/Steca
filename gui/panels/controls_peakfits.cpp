@@ -17,7 +17,6 @@
 #include "qcr/widgets/views.h"
 #include "qcr/widgets/tables.h"
 #include "gui/mainwin.h"
-#include "gui/state.h"
 #include "gui/actions/triggers.h"
 #include "gui/actions/toggles.h"
 #include "gui/view/range_control.h"
@@ -239,10 +238,10 @@ ControlsPeakfits::ControlsPeakfits()
 void ControlsPeakfits::hideEvent(QHideEvent*)
 {
     if (gGui)
-        gGui->state->editingPeakfits = false;
+        gGui->editingPeakfits = false;
 }
 
 void ControlsPeakfits::showEvent(QShowEvent*)
 {
-    gGui->state->editingPeakfits = true;
+    gGui->editingPeakfits = true;
 }
