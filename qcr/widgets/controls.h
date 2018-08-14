@@ -143,6 +143,7 @@ private:
 class QcrComboBox : public QComboBox, public QcrControl<int> {
 public:
     QcrComboBox(const QString& name, QcrCell<int>* cell, std::function<QStringList()> makeTags);
+    // TODO add simplified API with fixed tag list
     int doGetValue() const final { return currentIndex(); }
     void remake() override;
 private:
