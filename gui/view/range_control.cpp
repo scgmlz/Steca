@@ -37,13 +37,11 @@ RangeControl::RangeControl(const QString& _name, const std::function<Range*()>& 
     cellMin->setHook([cellMax, this](double& val){
             val = myRound(qMin(val, myRound(cellMax->val())-STEP));
             gSession->onBaseline(); // TODO do this via setRange
-            selectRange_()->setOne(val, false);
-        });
+            selectRange_()->setOne(val, false); });
     cellMax->setHook([cellMin, this](double& val){
             val = myRound(qMax(val, myRound(cellMin->val())+STEP));
             gSession->onBaseline(); // TODO do this via setRange
-            selectRange_()->setOne(val, true);
-        });
+            selectRange_()->setOne(val, true); });
 
     // layout
     auto hb = new QHBoxLayout();
@@ -61,6 +59,5 @@ RangeControl::RangeControl(const QString& _name, const std::function<Range*()>& 
             if (!range)
                 return;
             spinMin->programaticallySetValue(range->min);
-            spinMax->programaticallySetValue(range->max);
-        });
+            spinMax->programaticallySetValue(range->max); });
 }

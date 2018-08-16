@@ -45,16 +45,14 @@ Menus::Menus(QMenuBar* mbar)
 #ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
                 separator(),
 #endif
-                &triggers->quit,
-        });
+                &triggers->quit });
 
     export_ = actionsToMenu(
         "&Export",
         {       &triggers->exportDfgram,
                 &triggers->exportBigtable,
                 &triggers->exportDiagram,
-                &triggers->exportPolefig,
-        });
+                &triggers->exportPolefig });
 
     image_ = actionsToMenu(
         "&Image",
@@ -63,8 +61,7 @@ Menus::Menus(QMenuBar* mbar)
                 &toggles->fixedIntenImage,
                 &toggles->linkCuts,
                 &toggles->crosshair,
-                &toggles->showBins,
-        });
+                &toggles->showBins });
 
     dgram_ = actionsToMenu(
         "&Diffractogram",
@@ -78,8 +75,7 @@ Menus::Menus(QMenuBar* mbar)
                 &triggers->peaksClear,
                 separator(),
                 &toggles->combinedDfgram,
-                &toggles->fixedIntenDfgram,
-        });
+                &toggles->fixedIntenDfgram });
 
     actionsToMenu(
         "&View",
@@ -96,15 +92,13 @@ Menus::Menus(QMenuBar* mbar)
                 &triggers->spawnDiagram,
                 &triggers->spawnPolefig,
                 separator(),
-                &triggers->viewReset,
-        });
+                &triggers->viewReset });
 
     actionsToMenu(
         "&Help",
         {   &triggers->about, // Mac puts About into the Apple menu
                 &triggers->online,
-                &triggers->checkUpdate,
-        });
+                &triggers->checkUpdate });
 }
 
 QAction* Menus::separator() const

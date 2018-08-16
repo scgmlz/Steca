@@ -266,8 +266,7 @@ DataImageTab::DataImageTab()
             thetaRangeTotal_.setText(cluster ? cluster->rgeTth().to_s("deg") : "");
             thetaRangeBin_.setText(gSession->thetaSelection.range().to_s("deg"));
 
-            render();
-        } );
+            render(); });
 
     // layout
     box1_.addWidget(&btnShowBins_, Qt::AlignLeft);

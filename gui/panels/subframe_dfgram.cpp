@@ -56,8 +56,7 @@ DfPanel::DfPanel()
     actZoom_.cell()->setHook([this](bool on) {
         plot_->setInteraction(QCP::iRangeDrag, on);
         plot_->setInteraction(QCP::iRangeZoom, on);
-        plot_->enterZoom(on);
-    });
+        plot_->enterZoom(on); });
 
     auto* hb = new QHBoxLayout;
     hb->addWidget(new QLabel("normalize to:"));
@@ -83,8 +82,7 @@ DfPanel::DfPanel()
 
     setRemake([=](){
             btnExport->setEnabled(gSession->activeClusters.size());
-            plot_->renderAll();
-        });
+            plot_->renderAll(); });
 }
 
 void DfPanel::onNormChanged()

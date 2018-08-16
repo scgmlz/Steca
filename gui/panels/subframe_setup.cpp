@@ -30,10 +30,9 @@ SubframeSetup::SubframeSetup()
     addTab(new ControlsPeakfits(),     "Peakfits"); idxPeakfits = 2;
     addTab(new ControlsInterpolation(),"Interpol"); idxInterpol = 3;
 
-    setRemake( [=]() {
+    setRemake([=](){
             setTabEnabled(idxBaseline, gSession->dataset.countFiles());
             setTabEnabled(idxPeakfits, gSession->dataset.countFiles());
             if (!currentWidget()->isEnabled())
-                programaticallySetValue(0);
-        } );
+                programaticallySetValue(0); });
 }

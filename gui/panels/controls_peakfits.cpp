@@ -198,37 +198,27 @@ void PeakfitOutcomeView::enable(bool haveRaw, bool haveFit)
 
 ControlsPeakfits::ControlsPeakfits()
 {
-    // outbound connections
-    connect(&gGui->triggers->peakRemove, &QAction::triggered, []() {
-            gSession->peaks.removeSelected();
-            gSession->onPeaks();
-            Qcr::defaultHook(); });
-    connect(&gGui->triggers->peaksClear, &QAction::triggered, []() {
-            gSession->peaks.clear();
-            gSession->onPeaks();
-            Qcr::defaultHook(); });
-
-    // layout
-    auto* topControls = new QHBoxLayout;
-    topControls->addStretch();
-    topControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->peakAdd));
-    topControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->peakRemove));
-    topControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->peaksClear));
-
-    auto* box = new QVBoxLayout;
-    auto* comboReflType = new QcrComboBox{"reflTyp", &gSession->params.defaultPeakFunction,
-                                          []()->QStringList{return Peak::keys;}};
+    auto* comboReflType = new QcrComboBox{
+        "reflTyp", &gSession->params.defaultPeakFunction,
+        []()->QStringList{return Peak::keys;} };
     // TODO move this to core
-    comboReflType->cell()->setHook( [](int i) {
+    comboReflType->cell()->setHook([](int i){
             const QString& peakFunctionName = Peak::keys[i];
             Peaks::defaultFunctionName = peakFunctionName;
             if (gSession->peaks.selectedPeak())
                 gSession->peaks.selectedPeak()->setPeakFunction(peakFunctionName);
             gSession->onPeaks();
-            Qcr::defaultHook();
-        } );
+            Qcr::defaultHook(); });
 
+    auto* box = new QVBoxLayout;
+
+    auto* topControls = new QHBoxLayout;
+    topControls->addStretch();
+    topControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->peakAdd));
+    topControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->peakRemove));
+    topControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->peaksClear));
     box->addLayout(topControls);
+
     box->addWidget(new TableView(new PeaksModel()));
     box->addWidget(comboReflType);
     box->addWidget(new RangeControl("peak", []()->Range*{

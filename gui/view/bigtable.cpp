@@ -189,22 +189,19 @@ BigtableView::BigtableView()
     setColumnWidth(0, w);
 
     // internal connections:
-    connect(
-        header(), &QHeaderView::sectionMoved,
-        [this](int /*logicalIndex*/, int oldVisualIndex, int newVisualIndex) {
-            ASSERT(oldVisualIndex > 0 && newVisualIndex > 0);
-            header()->setSortIndicatorShown(false);
-            model()->onColumnMove(oldVisualIndex-1, newVisualIndex-1);
-            model()->sortData();
-        });
+    connect(header(), &QHeaderView::sectionMoved,
+            [this](int /*logicalIndex*/, int oldVisualIndex, int newVisualIndex) {
+                ASSERT(oldVisualIndex > 0 && newVisualIndex > 0);
+                header()->setSortIndicatorShown(false);
+                model()->onColumnMove(oldVisualIndex-1, newVisualIndex-1);
+                model()->sortData(); });
 
     connect(header(), &QHeaderView::sectionClicked, [this](int logicalIndex) {
         QHeaderView* h = header();
         h->setSortIndicatorShown(true);
         h->setSortIndicator(logicalIndex, Qt::AscendingOrder);
         model()->setSortColumn(logicalIndex-1);
-        model()->sortData();
-    });
+        model()->sortData(); });
 }
 
 void BigtableView::refresh()

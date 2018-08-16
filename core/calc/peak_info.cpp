@@ -38,8 +38,7 @@ static void sortColumns(std::vector<double>& xs, std::vector<double>& ys, std::v
             return true;
         if (x1 > x2)
             return false;
-        return ys.at(i1) < ys.at(i2);
-    });
+        return ys.at(i1) < ys.at(i2); });
 
     std::vector<double> r(count);
 

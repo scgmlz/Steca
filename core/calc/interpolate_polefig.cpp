@@ -300,8 +300,7 @@ PeakInfos algo::interpolateInfos(const PeakInfos& direct)
                 if (!itfs.empty()) {
                     // If treshold < 1, we'll only use a fraction of largest peak parameter values.
                     std::sort(itfs.begin(), itfs.end(), [](const itf_t& i1, const itf_t& i2) {
-                        return i1.inten < i2.inten;
-                    });
+                        return i1.inten < i2.inten; });
 
                     itf_t avg(0, 0, 0);
 

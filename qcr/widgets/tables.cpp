@@ -102,8 +102,7 @@ TableView::TableView(TableModel* model)
     hideColumn(0); // this should look like a list; 0th column is tree-like
     connect(model, &QAbstractItemModel::modelReset, [this, model]() {
             for (int i=0; i<model->columnCount(); ++i)
-                resizeColumnToContents(i);
-        });
+                resizeColumnToContents(i); });
     connect(this, &TableView::clicked, model_, &TableModel::onClicked);
 
     // other settings

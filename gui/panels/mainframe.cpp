@@ -48,6 +48,5 @@ Mainframe::Mainframe()
             //setEnabled(anyEnabled());
             //if (!currentWidget()->isEnabled())
             //    programaticallySetValue(0);
-            show();
-        } );
+            show(); });
 }
