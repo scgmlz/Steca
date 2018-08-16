@@ -34,26 +34,24 @@ QColor intenGraph(double inten, double maxInten) {
 PlotPolefig::PlotPolefig()
 {
     setRemake ([this](){
-            qDebug() << "REMAKE PLOT_POLEFIG";
+            qDebug() << "REMAKE PLOT_POLEFIG 1";
+            peakInfos_ = gSession->allPeaks.curentPeakInfos();
+            qDebug() << "REMAKE PLOT_POLEFIG 5";
             QWidget::update(); // Which then calls paintEvent. Only so we can use QPainter.
-            qDebug() << "REMAKE PLOT_POLEFIG/";
+            qDebug() << "REMAKE PLOT_POLEFIG 9";
         });
 }
 
 void PlotPolefig::paintEvent(QPaintEvent*)
 {
     qDebug() << "PlotPolefig::refresh()1";
-    peakInfos_ = gSession->allPeaks.curentPeakInfos();
-    qDebug() << "PlotPolefig::refresh()2";
-
-    int w = size().width(), h = size().height();
 
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
+    int w = size().width(), h = size().height();
     painter.translate(w / 2, h / 2);
 
     p_ = &painter;
-    c_ = QPointF(0, 0);
     r_ = qMin(w, h) / 2;
 
     paintGrid();
@@ -66,11 +64,12 @@ void PlotPolefig::paintEvent(QPaintEvent*)
 void PlotPolefig::paintGrid()
 {
     QPen penMajor(Qt::gray), penMinor(Qt::lightGray);
+    QPointF centre(0, 0);
 
     for (int alpha = 10; alpha <= 90; alpha += 10) {
         double r = r_ / alphaMax_ * alpha;
         p_->setPen(!(alpha % 30) ? penMajor : penMinor);
-        circle(c_, r);
+        circle(centre, r);
     }
 
     for (int beta = 0; beta < 360; beta += 10) {
@@ -81,7 +80,7 @@ void PlotPolefig::paintGrid()
     QPen penMark(Qt::darkGreen);
     p_->setPen(penMark);
     double avgAlphaMax = gSession->params.interpolParams.avgAlphaMax.val();
-    circle(c_, r_ * avgAlphaMax / alphaMax_);
+    circle(centre, r_ * avgAlphaMax / alphaMax_);
 }
 
 void PlotPolefig::paintPoints()

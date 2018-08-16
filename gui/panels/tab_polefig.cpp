@@ -13,7 +13,6 @@
 //  ***********************************************************************************************
 
 #include "gui/panels/tab_polefig.h"
-#include "core/session.h"
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"
 #include "gui/view/plot_polefig.h"
@@ -24,8 +23,8 @@ PolefigTab::PolefigTab()
 
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);
-    buttonBox->addWidget(new QcrIconTriggerButton {&gGui->triggers->spawnPolefig});
-    buttonBox->addWidget(new QcrIconTriggerButton {&gGui->triggers->exportPolefig});
+    buttonBox->addWidget(new QcrIconTriggerButton{&gGui->triggers->spawnPolefig});
+    buttonBox->addWidget(new QcrIconTriggerButton{&gGui->triggers->exportPolefig});
 
     auto* controls = new QVBoxLayout;
     controls->addWidget(new QcrCheckBox{"gridPts", "grid points", &plot->flat});

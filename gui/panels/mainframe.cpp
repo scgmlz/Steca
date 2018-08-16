@@ -45,7 +45,7 @@ Mainframe::Mainframe()
             setTabEnabled(2, active&&peakish);
             setTabEnabled(3, active&&peakish);
             setTabEnabled(4, active&&peakish);
-            setEnabled(anyEnabled());
+            //setEnabled(anyEnabled());
             //if (!currentWidget()->isEnabled())
             //    programaticallySetValue(0);
             show();

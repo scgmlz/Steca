@@ -12,9 +12,10 @@
 //
 //  ***********************************************************************************************
 
-#include "popup_polefig.h"
+#include "gui/dialogs/popup_polefig.h"
 #include "gui/mainwin.h"
 #include "gui/view/plot_polefig.h"
+#include <QLayout>
 
 PopupPolefig::PopupPolefig()
     : QcrModelessDialog(gGui, "polefig#")

@@ -17,7 +17,7 @@
 
 #include "QCustomPlot/qcustomplot.h"
 #include "core/calc/peak_info.h"
-#include "qcr/widgets/controls.h"
+#include "qcr/engine/cell.h"
 #include "qcr/widgets/views.h"
 
 //! Tab in PoleFiguresFrame, to display the pole figure.
@@ -44,7 +44,6 @@ private:
 
     // valid while painting
     QPainter* p_ {nullptr};
-    QPointF c_;
     double r_;
 
     const double alphaMax_ {90};
