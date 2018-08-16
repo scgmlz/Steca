@@ -12,12 +12,11 @@
 //
 //  ***********************************************************************************************
 
-#include "tab_polefig.h"
+#include "gui/panels/tab_polefig.h"
 #include "core/session.h"
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"
 #include "gui/view/plot_polefig.h"
-
 
 PolefigTab::PolefigTab()
 {

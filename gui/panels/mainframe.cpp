@@ -12,12 +12,13 @@
 //
 //  ***********************************************************************************************
 
-#include "mainframe.h"
+#include "gui/panels/mainframe.h"
 #include "core/session.h"
 #include "gui/panels/tab_bigtable.h"
 #include "gui/panels/tab_diagram.h"
 #include "gui/panels/tab_image.h"
 #include "gui/panels/tab_polefig.h"
+#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class Mainframe
@@ -34,6 +35,7 @@ Mainframe::Mainframe()
     addTab((polefigTab_ = new PolefigTab), "Polefig");
 
     setRemake([this](){
+            qDebug() << "REMAKE MAINFRAME";
             bool active = gSession->activeClusters.size();
             bool peakish = gSession->peaks.count();
             // Work against unwanted heuristics of QTabBar::setTabEnabled.

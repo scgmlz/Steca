@@ -12,9 +12,9 @@
 //
 //  ***********************************************************************************************
 
-#include "plot_polefig.h"
+#include "gui/view/plot_polefig.h"
 #include "core/session.h"
-#include "gui/mainwin.h"
+#include "qcr/base/debug.h"
 
 namespace {
 
@@ -34,6 +34,7 @@ QColor intenGraph(double inten, double maxInten) {
 PlotPolefig::PlotPolefig()
 {
     setRemake ([this](){
+            qDebug() << "REMAKE PLOT_POLEFIG";
             QWidget::update(); // Which then calls paintEvent. Only so we can use QPainter.
         });
 }
