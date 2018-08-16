@@ -13,7 +13,6 @@
 //  ***********************************************************************************************
 
 #include "gui/view/plot_dfgram.h"
-#include "core/data/collect_intensities.h"
 #include "core/session.h"
 #include "gui/actions/toggles.h"
 #include "gui/panels/subframe_setup.h" // gGui->setup() TODO break this circular dependence
