@@ -147,6 +147,7 @@ public:
     int doGetValue() const final { return (int)currentIndex(); }
     void remake() override;
 private:
+    QStringList tags_;
     std::function<QStringList()> makeTags_;
     void doSetValue(int val) final { setCurrentIndex((int)val); }
     // hide some member functions of QComboBox:

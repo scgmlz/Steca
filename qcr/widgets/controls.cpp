@@ -303,9 +303,8 @@ QcrComboBox::QcrComboBox(
     : QcrControl<int> {*this, _name, _cell}
     , makeTags_(_makeTags)
 {
-    softwareCalling_ = true;
-    QComboBox::addItems(makeTags_());
-    softwareCalling_ = false;
+    tags_ = makeTags_();
+    QComboBox::addItems(tags_);
     initControl();
     connect(this, _SLOT_(QComboBox,currentIndexChanged,int), [this](int val)->void {
             onChangedValue(hasFocus()&&!softwareCalling_, val); });
@@ -314,12 +313,16 @@ QcrComboBox::QcrComboBox(
 void QcrComboBox::remake()
 {
     if (isVisible()) {
-        const int oldIdx = currentIndex();
-        softwareCalling_ = true;
-        QComboBox::clear();
-        QComboBox::addItems(makeTags_());
-        QComboBox::setCurrentIndex(0<=oldIdx&&oldIdx<count()?oldIdx:0);
-        softwareCalling_ = false;
+        QStringList newTags = makeTags_();
+        if (newTags!=tags_) { // clear&addItems only when needed, to avoid changes of currentIndex
+            const int oldIdx = currentIndex();
+            softwareCalling_ = true;
+            QComboBox::clear();
+            QComboBox::addItems(newTags);
+            QComboBox::setCurrentIndex(0<=oldIdx&&oldIdx<count()?oldIdx:0);
+            softwareCalling_ = false;
+            tags_ = newTags;
+        }
     }
     QcrMixin::remake();
 }
