@@ -49,6 +49,5 @@ Mainframe::Mainframe()
             //if (!currentWidget()->isEnabled())
             //    programaticallySetValue(0);
             show();
-            qDebug() << "REMAKE MAINFRAME enabled=" << anyEnabled() << "visible=" << isVisible();
         } );
 }

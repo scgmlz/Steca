@@ -19,6 +19,7 @@
 #include "core/calc/peak_info.h"
 #include "qcr/engine/cell.h"
 #include "qcr/widgets/views.h"
+#include <memory>
 
 //! Tab in PoleFiguresFrame, to display the pole figure.
 
@@ -31,7 +32,7 @@ public:
 private:
     void paintEvent(QPaintEvent*);
 
-    QPointF p(deg alpha, deg beta) const;
+    QPointF angles2xy(deg alpha, deg beta) const;
 
     void circle(QPointF c, double r);
 
@@ -41,8 +42,8 @@ private:
     const PeakInfos* peakInfos_ {nullptr};
 
     // valid while painting
-    QPainter* p_ {nullptr};
-    double r_;
+    std::unique_ptr<QPainter> painter_;
+    double radius_;
 
 };
 
