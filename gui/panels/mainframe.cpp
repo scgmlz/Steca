@@ -35,7 +35,6 @@ Mainframe::Mainframe()
     addTab((polefigTab_ = new PolefigTab), "Polefig");
 
     setRemake([this](){
-            qDebug() << "REMAKE MAINFRAME";
             bool active = gSession->activeClusters.size();
             bool peakish = gSession->peaks.count();
             // Work against unwanted heuristics of QTabBar::setTabEnabled.
@@ -49,5 +48,7 @@ Mainframe::Mainframe()
             setEnabled(anyEnabled());
             //if (!currentWidget()->isEnabled())
             //    programaticallySetValue(0);
+            show();
+            qDebug() << "REMAKE MAINFRAME enabled=" << anyEnabled() << "visible=" << isVisible();
         } );
 }

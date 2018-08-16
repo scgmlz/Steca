@@ -351,7 +351,9 @@ QcrTabWidget::QcrTabWidget(const QString& _name)
 {
     initControl();
     connect(this, &QTabWidget::currentChanged, [this](int val) {
-            onChangedValue(hasFocus()&&!softwareCalling_, val); });
+            // To detect user action, we must entirely relie on !softwareCalling,
+            // since hasFocus() does not work as we would need.
+            onChangedValue(!softwareCalling_, val); });
 }
 
 void QcrTabWidget::addTab(QWidget* page, const QString& label)
