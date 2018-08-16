@@ -39,6 +39,12 @@ void Peak::setRange(const Range& r)
     gSession->onPeaks(); // TODO PeakAt(index())
 }
 
+void Peak::setOne(double val, bool namelyMax)
+{
+    range_.setOne(val, namelyMax);
+    gSession->onPeaks(); // TODO PeakAt(index())
+}
+
 void Peak::setPeakFunction(const QString& peakFunctionName)
 {
     // peakFunction_.reset(gSession->functionRegistry.name2new(peakFunctionName));

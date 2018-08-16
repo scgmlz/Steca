@@ -212,8 +212,14 @@ ControlsPeakfits::ControlsPeakfits()
 
     box->addWidget(new TableView(new PeaksModel()));
     box->addWidget(comboReflType);
-    box->addWidget(new RangeControl("peak", []()->Range*{
-                return gSession->peaks.selectedRange(); }));
+    box->addWidget(new RangeControl("peak",
+                                    []()->const Range* {
+                                        const Peak* p = gSession->peaks.selectedPeak();
+                                        return p ? &p->range() : nullptr; },
+                                    [](double val, bool namelyMax){
+                                        Peak* p = gSession->peaks.selectedPeak();
+                                        ASSERT(p);
+                                        p->setOne(val, namelyMax); }));
     box->addWidget(new PeakfitOutcomeView);
     box->addStretch(1000);
     setLayout(box);

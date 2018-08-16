@@ -25,6 +25,9 @@ class RangeControl : public QcrWidget {
 public:
     RangeControl() = delete;
     RangeControl(const QString& _name, const std::function<Range*()>& _selectRange);
+    RangeControl(const QString&,
+                 const std::function<const Range*()>&,
+                 const std::function<void(double,bool)>&);
     RangeControl(const RangeControl&) = delete;
 private:
     std::function<Range*()> selectRange_;

@@ -25,8 +25,8 @@ public:
 
     void setPeakFunction(const QString&);
     void setRange(const Range&);
+    void setOne(double val, bool namelyMax); //!< sets either min or max
 
-    Range& range() { return range_; } // TODO rm: need setRange to emit sigPeakAt
     const Range& range() const { return range_; }
 
     //const PeakFunction& peakFunction() const;
@@ -58,8 +58,6 @@ public:
 
     Peak* selectedPeak() {
         return 0<=selected_ && selected_<count() ? &peaks_[selected_] : nullptr; }
-    Range* selectedRange() {
-        return selectedPeak() ? &selectedPeak()->range() : nullptr; }
 
     int count() const { return peaks_.size(); }
     const Peak& at(int i) const { return peaks_.at(i); }
