@@ -197,8 +197,6 @@ void PeakfitOutcomeView::enable(bool haveRaw, bool haveFit)
 //! @class ControlsPeakfits
 
 ControlsPeakfits::ControlsPeakfits()
-    : comboReflType_ {"reflTyp", &gSession->params.defaultPeakFunction,
-        []()->QStringList{return Peak::keys;}}
 {
     // outbound connections
     connect(&gGui->triggers->peakRemove, &QAction::triggered, []() {
@@ -210,8 +208,18 @@ ControlsPeakfits::ControlsPeakfits()
             gSession->onPeaks();
             Qcr::defaultHook(); });
 
+    // layout
+    auto* topControls = new QHBoxLayout;
+    topControls->addStretch();
+    topControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->peakAdd));
+    topControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->peakRemove));
+    topControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->peaksClear));
+
+    auto* box = new QVBoxLayout;
+    auto* comboReflType = new QcrComboBox{"reflTyp", &gSession->params.defaultPeakFunction,
+                                          []()->QStringList{return Peak::keys;}};
     // TODO move this to core
-    comboReflType_.cell()->setHook( [](int i) {
+    comboReflType->cell()->setHook( [](int i) {
             const QString& peakFunctionName = Peak::keys[i];
             Peaks::defaultFunctionName = peakFunctionName;
             if (gSession->peaks.selectedPeak())
@@ -220,16 +228,9 @@ ControlsPeakfits::ControlsPeakfits()
             Qcr::defaultHook();
         } );
 
-    // layout
-    topControls_.addStretch();
-    topControls_.addWidget(new QcrIconTriggerButton(&gGui->triggers->peakAdd));
-    topControls_.addWidget(new QcrIconTriggerButton(&gGui->triggers->peakRemove));
-    topControls_.addWidget(new QcrIconTriggerButton(&gGui->triggers->peaksClear));
-
-    auto* box = new QVBoxLayout;
-    box->addLayout(&topControls_);
+    box->addLayout(topControls);
     box->addWidget(new TableView(new PeaksModel()));
-    box->addWidget(&comboReflType_);
+    box->addWidget(comboReflType);
     box->addWidget(new RangeControl("peak", []()->Range*{
                 return gSession->peaks.selectedRange(); }));
     box->addWidget(new PeakfitOutcomeView);
