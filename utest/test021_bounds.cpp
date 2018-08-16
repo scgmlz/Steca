@@ -3,7 +3,7 @@
 // written in order to find out what lowerBound(..) and upperBound(..) are computing
 
 #include "gtest/gtest.h"
-#include "core/raw/angle_map.cpp"
+#include "core/data/angle_map.cpp"
 
 const double e=1e-15;
 

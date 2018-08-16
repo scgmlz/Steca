@@ -14,7 +14,7 @@
 
 #include "gui/panels/tab_image.h"
 #include "core/data/lens.h"
-#include "core/raw/angle_map.h"
+#include "core/data/angle_map.h"
 #include "core/session.h"
 #include "gui/actions/toggles.h"
 #include "gui/mainwin.h"
