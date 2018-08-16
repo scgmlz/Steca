@@ -50,7 +50,7 @@ public:
     void onDetector() const;      //!< detector detector has changed
     void onBaseline() const;      //!< settings for baseline fit have changed
     void onPeaks() const;         //!< a peak has been added or removed
-    void onPeakPars(int) const;   //!< settings for one peak fit have changed
+    void onPeakAt(int) const;   //!< settings for one peak fit have changed
     void onInterpol() const;      //!< interpolation control parameters have changed
 
     // const methods:

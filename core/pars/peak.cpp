@@ -36,13 +36,13 @@ const PeakFunction& Peak::peakFunction() const
 void Peak::setRange(const Range& r)
 {
     range_ = r;
-    gSession->onPeaks(); // TODO PeakPars(index())
+    gSession->onPeaks(); // TODO PeakAt(index())
 }
 
 void Peak::setPeakFunction(const QString& peakFunctionName)
 {
     // peakFunction_.reset(gSession->functionRegistry.name2new(peakFunctionName));
-    gSession->onPeaks(); // TODO PeakPars(index())
+    gSession->onPeaks(); // TODO PeakAt(index())
 }
 
 JsonObj Peak::toJson() const
@@ -55,7 +55,7 @@ JsonObj Peak::toJson() const
 Peak Peak::fromJson(const JsonObj& obj)
 {
     return {obj.loadRange("range"), obj.loadString("type")};
-    gSession->onPeaks(); // TODO PeakPars(index())
+    gSession->onPeaks(); // TODO PeakAt(index())
 }
 
 

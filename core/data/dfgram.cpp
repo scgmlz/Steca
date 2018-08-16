@@ -114,7 +114,7 @@ void Dfgram::invalidatePeaks() const
     gSession->allPeaks.invalidateAll();
 }
 
-void Dfgram::invalidatePeakPars(int jP) const // TODO restrict to peak jP
+void Dfgram::invalidatePeakAt(int jP) const // TODO restrict to peak jP
 {
     invalidatePeaks();
     gSession->allPeaks.invalidateAt(jP);

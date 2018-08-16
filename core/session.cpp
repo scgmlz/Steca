@@ -51,11 +51,11 @@ void Session::onPeaks() const
             pCluster.get(), [](const Dfgram& d){d.invalidatePeaks();});
 }
 
-void Session::onPeakPars(int jP) const
+void Session::onPeakAt(int jP) const
 {
     for (auto const& pCluster: dataset.allClusters)
         pCluster->dfgrams.forAllValids(
-            pCluster.get(), [jP](const Dfgram& d){d.invalidatePeakPars(jP);});
+            pCluster.get(), [jP](const Dfgram& d){d.invalidatePeakAt(jP);});
 }
 
 void Session::onInterpol() const

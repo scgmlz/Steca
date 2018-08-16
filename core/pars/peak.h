@@ -26,7 +26,7 @@ public:
     void setPeakFunction(const QString&);
     void setRange(const Range&);
 
-    Range& range() { return range_; } // TODO rm: need setRange to emit sigPeakPars
+    Range& range() { return range_; } // TODO rm: need setRange to emit sigPeakAt
     const Range& range() const { return range_; }
 
     //const PeakFunction& peakFunction() const;

@@ -30,7 +30,7 @@ public:
 
     void invalidateBg() const;
     void invalidatePeaks() const;
-    void invalidatePeakPars(int) const;
+    void invalidatePeakAt(int) const;
 
     const Curve curve; // not cached here because recompute depends on context (sector vs avg)
     const Polynom& getBgFit     () const { return bgFit_.get(this); }
