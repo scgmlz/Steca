@@ -22,6 +22,7 @@
 #include "core/session.h"
 #include "manifest.h"
 #include "gui/cfg/msg_handler.h"
+#include "gui/dialogs/file_dialog.h"
 #include "gui/mainwin.h"
 #include "qcr/engine/console.h"
 #include "qcr/base/debug.h"
@@ -29,7 +30,6 @@
 #define OPTPARSE_IMPLEMENTATION
 #define OPTPARSE_API static
 #include "optparse.h"
-#include "gui/dialogs/file_dialog.h"
 
 #include <iostream>
 #include <QApplication>
@@ -97,9 +97,7 @@ int main(int argc, char* argv[]) {
     qInstallMessageHandler(messageHandler);
 
     Session session;
-    auto* mainwin = new MainWin; // must be pointer, because it can be deleted by 'quit' trigger
-    mainwin->show();
-    gRoot->remakeAll(); // depends on visibility, hence to be invoked _after_ show()
+    new MainWin; // must be pointer, because it can be deleted by 'quit' trigger
     if (nonoptArgs.size())
         gConsole->call("@file " + nonoptArgs[0]);
     app.exec();

@@ -49,7 +49,6 @@ const QString dataFormats {"Data files (*.dat *.yaml *.mar*);;All files (*.*)"};
 MainWin::MainWin()
 {
     gGui = this;
-    gRoot = this;
 
     triggers = new Triggers;
     toggles = new Toggles;
@@ -88,6 +87,8 @@ MainWin::MainWin()
     readSettings();
 
     setRemake( [=]() { refresh(); } );
+    show(); // must be called before initial remakeAll because remakeAll depends on visibility
+    remakeAll();
 }
 
 MainWin::~MainWin()
