@@ -45,7 +45,6 @@ double XSettings::readReal(const QString& key, double def)
     auto var = value(key);
     bool ok;
     double val = var.toDouble(&ok);
-    // qDebug() << "XSettings READ REAL " << key << " -> val=" << val << ", ok=" << ok;
     return ok ? val : def;
 }
 

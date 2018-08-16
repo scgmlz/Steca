@@ -129,7 +129,6 @@ double Sequence::normFactor() const
 namespace {
 Dfgram computeSectorDfgram(const Cluster* const parent, const int jS)
 {
-    //qDebug() << "recompute dfgram" << parent->index() << "for sector " << jS;
     int nS = gSession->gammaSelection.numSlices.val();
     return Dfgram(algo::projectCluster(*parent, parent->rgeGma().slice(jS,nS)));
 }

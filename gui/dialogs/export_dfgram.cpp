@@ -62,7 +62,6 @@ QString numberedName(const QString& templatedName, int num, int maxNum) {
     QString ret = templatedName;
     int nDigits = (int)log10((double)maxNum)+1;
     ret.replace("%d", QString("%1").arg(num, nDigits, 10, QLatin1Char('0')));
-    qDebug() << "PATH " << templatedName << " -> " << ret;
     return ret;
 }
 

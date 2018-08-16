@@ -36,17 +36,15 @@ PlotPolefig::PlotPolefig()
     setRemake ([this](){
             qDebug() << "REMAKE PLOT_POLEFIG";
             QWidget::update(); // Which then calls paintEvent. Only so we can use QPainter.
+            qDebug() << "REMAKE PLOT_POLEFIG/";
         });
 }
 
 void PlotPolefig::paintEvent(QPaintEvent*)
 {
-    qDebug() << "PlotPolefig::refresh()";
+    qDebug() << "PlotPolefig::refresh()1";
     peakInfos_ = gSession->allPeaks.curentPeakInfos();
-    qDebug() << " -> " << peakInfos_;
-    qDebug() << " -> " << peakInfos_->peaks().size();
-    if (peakInfos_->peaks().size()>0)
-        qDebug() << " -> " << peakInfos_->peaks().at(0).data().size();
+    qDebug() << "PlotPolefig::refresh()2";
 
     int w = size().width(), h = size().height();
 
@@ -62,6 +60,7 @@ void PlotPolefig::paintEvent(QPaintEvent*)
 
     if (peakInfos_)
         paintPoints();
+    qDebug() << "PlotPolefig::refresh()9";
 }
 
 void PlotPolefig::paintGrid()
