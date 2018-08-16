@@ -52,7 +52,8 @@ QcrTrigger::QcrTrigger(const QString& rawname, const QString& text, const QStrin
         setIcon(QIcon(iconFile));
     connect(this, &QAction::triggered, [this]()->void {
             gConsole->log(name());
-            hook_(); });
+            hook_();
+            Qcr::defaultHook(); });
     connect(this, &QAction::changed, [this]()->void {
             QString txt = tooltip_;
             if (!isEnabled())
