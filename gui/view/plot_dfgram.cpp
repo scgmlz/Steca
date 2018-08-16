@@ -208,15 +208,8 @@ void PlotDfgram::renderAll()
         plotEmpty();
         return;
     }
-    // TODO NOW move the following to session
-    const Dfgram* dfgram;
-    if (gSession->params.showAvgeDfgram.val())
-        dfgram = &gSession->activeClusters.avgDfgram.get();
-    else {
-        const Cluster* cluster = gSession->currentCluster();
-        ASSERT(cluster);
-        dfgram = &cluster->currentDfgram();
-    }
+
+    const Dfgram* dfgram = gSession->currentOrAvgeDfgram();
     ASSERT(!dfgram->curve.isEmpty());
 
     // retrieve background

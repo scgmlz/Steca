@@ -61,6 +61,7 @@ public:
     bool hasData() const { return dataset.countFiles(); }
     bool hasCorrFile() const { return corrset.hasFile(); }
     const Cluster* currentCluster() const { return dataset.highlight().cluster(); }
+    const Dfgram* currentOrAvgeDfgram() const;
 
     Dataset dataset;                    //!< raw data files with sample detector images
     Corrset corrset;                    //!< raw data files with standard sample image

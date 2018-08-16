@@ -143,3 +143,12 @@ size2d Session::imageSize() const
 {
     return params.imageTransform.isTransposed() ? imageSize_.transposed() : imageSize_;
 }
+
+const Dfgram* Session::currentOrAvgeDfgram() const
+{
+    if (gSession->params.showAvgeDfgram.val())
+        return &gSession->activeClusters.avgDfgram.get();
+    const Cluster* cluster = gSession->currentCluster();
+    ASSERT(cluster);
+    return &cluster->currentDfgram();
+}

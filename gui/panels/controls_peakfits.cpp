@@ -136,7 +136,7 @@ PeakfitOutcomeView::PeakfitOutcomeView()
     grid->setColumnStretch(4, 1);
     setLayout(grid);
 
-    setRemake( [this]() { refresh(); } );
+    setRemake([this](){ refresh(); });
 }
 
 void PeakfitOutcomeView::refresh()
@@ -145,17 +145,8 @@ void PeakfitOutcomeView::refresh()
     if (!peak)
         return enable(false, false);
 
-    const Dfgram* dfgram;
-    if (gGui->toggles->combinedDfgram.getValue()) {
-        if (!gSession->activeClusters.size())
-            return enable(false, false);
-        dfgram = &gSession->activeClusters.avgDfgram.get();
-    } else {
-        const Cluster* cluster = gSession->currentCluster();
-        if (!cluster)
-            return enable(false, false);
-        dfgram = &cluster->currentDfgram();
-    }
+    const Dfgram* dfgram = gSession->currentOrAvgeDfgram();
+    ASSERT(dfgram); // the entire tab should be disabled if there is no active cluster
 
     int jP = gSession->peaks.selectedIndex();
     const RawOutcome& outcome = dfgram->getRawOutcome(jP);
