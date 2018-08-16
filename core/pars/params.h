@@ -21,13 +21,8 @@
 #include "core/typ/bool_vector.h"
 #include "qcr/engine/cell.h"
 
-enum class eNorm {
-    NONE,
-    MONITOR,
-    DELTA_MONITOR,
-    TIME,
-    DELTA_TIME,
-};
+enum class eNorm { NONE, MONITOR, DELTA_MONITOR, TIME, DELTA_TIME };
+enum class EditableRange { NONE, BASELINE, PEAKS };
 
 //! Global user-selected parameters
 
@@ -52,6 +47,8 @@ public:
 
     QcrCell<int>    defaultPeakFunction {0};
     InterpolParams  interpolParams;
+
+    EditableRange   editableRange{EditableRange::NONE};
 };
 
 #endif // PARAMS_H

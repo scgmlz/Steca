@@ -13,10 +13,10 @@
 //  ***********************************************************************************************
 
 #include "qcr/widgets/controls.h"
-#include "qcr/base/debug.h"
 #include "qcr/base/qcrexception.h"
 #include "qcr/base/string_ops.h"
 #include "qcr/engine/console.h"
+//#include "qcr/base/debug.h"
 #include <QApplication> // for qApp for new Action
 #include <iostream> // debug
 
@@ -72,6 +72,10 @@ void QcrTrigger::executeConsoleCommand(const QString& arg)
 {
     if (arg!="")
         throw QcrException("Found unexpected argument to trigger command");
+    if (!isEnabled()) {
+        qDebug() << "Ignoring command because trigger is not enabled.";
+        return;
+    }
     trigger();
 }
 

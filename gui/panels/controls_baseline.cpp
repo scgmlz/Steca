@@ -115,14 +115,3 @@ ControlsBaseline::ControlsBaseline()
             gSession->onBaseline();
             Qcr::defaultHook(); });
 }
-
-void ControlsBaseline::hideEvent(QHideEvent*)
-{
-    if (gGui)
-        gGui->editingBaseline = false;
-}
-
-void ControlsBaseline::showEvent(QShowEvent*)
-{
-    gGui->editingBaseline = true;
-}

@@ -38,8 +38,6 @@ public:
 
     // cross references for use in export; current state of editing
     const class BigtableModel* bigtableModel;
-    bool editingBaseline {false};
-    bool editingPeakfits {false};
 
 private:
     void refresh();

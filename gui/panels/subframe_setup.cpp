@@ -25,14 +25,21 @@ SubframeSetup::SubframeSetup()
     setTabPosition(QTabWidget::North);
     setMinimumSize(270,320);
 
-    addTab(new ControlsDetector(),     "Detector"); idxDetector = 0;
-    addTab(new ControlsBaseline(),     "Baseline"); idxBaseline = 1;
-    addTab(new ControlsPeakfits(),     "Peakfits"); idxPeakfits = 2;
-    addTab(new ControlsInterpolation(),"Interpol"); idxInterpol = 3;
+    addTab(new ControlsDetector(),     "Detector"); //const int idxDetector = 0;
+    addTab(new ControlsBaseline(),     "Baseline"); const int idxBaseline = 1;
+    addTab(new ControlsPeakfits(),     "Peakfits"); const int idxPeakfits = 2;
+    addTab(new ControlsInterpolation(),"Interpol"); //const int idxInterpol = 3;
 
     setRemake([=](){
             setTabEnabled(idxBaseline, gSession->dataset.countFiles());
             setTabEnabled(idxPeakfits, gSession->dataset.countFiles());
             if (!currentWidget()->isEnabled())
-                programaticallySetValue(0); });
+                programaticallySetValue(0);
+            switch (currentIndex()) {
+            case idxBaseline: gSession->params.editableRange = EditableRange::BASELINE; break;
+            case idxPeakfits: gSession->params.editableRange = EditableRange::PEAKS; break;
+            default:          gSession->params.editableRange = EditableRange::NONE;
+            }
+        });
+
 }

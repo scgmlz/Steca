@@ -23,9 +23,6 @@
 class ControlsPeakfits : public QcrWidget {
 public:
     ControlsPeakfits();
-private:
-    void hideEvent(QHideEvent*) final;
-    void showEvent(QShowEvent*) final;
 };
 
 #endif // CONTROLS_PEAKFITS_H

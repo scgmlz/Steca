@@ -22,7 +22,6 @@
 class SubframeSetup : public QcrTabWidget {
 public:
     SubframeSetup();
-    int idxDetector, idxBaseline, idxPeakfits, idxInterpol;
 };
 
 #endif // SUBFRAME_SETUP_H

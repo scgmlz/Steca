@@ -227,14 +227,3 @@ ControlsPeakfits::ControlsPeakfits()
     box->addStretch(1000);
     setLayout(box);
 }
-
-void ControlsPeakfits::hideEvent(QHideEvent*)
-{
-    if (gGui)
-        gGui->editingPeakfits = false;
-}
-
-void ControlsPeakfits::showEvent(QShowEvent*)
-{
-    gGui->editingPeakfits = true;
-}

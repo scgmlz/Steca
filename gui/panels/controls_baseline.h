@@ -23,9 +23,6 @@
 class ControlsBaseline : public QcrWidget {
 public:
     ControlsBaseline();
-private:
-    void hideEvent(QHideEvent*) final;
-    void showEvent(QShowEvent*) final;
 };
 
 #endif // CONTROLS_BASELINE_H

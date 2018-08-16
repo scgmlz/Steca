@@ -15,7 +15,6 @@
 #include "gui/view/plot_dfgram.h"
 #include "core/session.h"
 #include "gui/actions/toggles.h"
-#include "gui/panels/subframe_setup.h" // gGui->setup() TODO break this circular dependence
 #include "gui/mainwin.h"
 #include "gui/view/plot_overlay.h"
 #include "qcr/engine/cell.h"
@@ -50,14 +49,18 @@ private:
 
 void PlotDfgramOverlay::addRange(const Range& range)
 {
-    if      (gGui->editingBaseline) {
+    switch (gSession->params.editableRange) {
+    case EditableRange::BASELINE:
         gSession->baseline.ranges.add(range);
         gSession->onBaseline();
-    } else if (gGui->editingPeakfits) {
+        break;
+    case EditableRange::PEAKS:
         gSession->peaks.add(range);
         gSession->onPeaks();
-    } else
+        break;
+    default:
         return;
+    }
     Qcr::defaultHook();
 }
 
@@ -65,12 +68,16 @@ void PlotDfgramOverlay::addRange(const Range& range)
 
 void PlotDfgramOverlay::selectRange(double x)
 {
-    if      (gGui->editingBaseline)
+    switch (gSession->params.editableRange) {
+    case EditableRange::BASELINE:
         gSession->baseline.ranges.selectByValue(x);
-    else if (gGui->editingPeakfits)
+        break;
+    case EditableRange::PEAKS:
         gSession->peaks.selectByValue(x);
-    else
+        break;
+    default:
         return;
+    }
     Qcr::defaultHook();
 }
 
@@ -78,12 +85,14 @@ void PlotDfgramOverlay::selectRange(double x)
 
 const QColor* PlotDfgramOverlay::mousedColor() const
 {
-    if        (gGui->editingBaseline) {
+    switch (gSession->params.editableRange) {
+    case EditableRange::BASELINE:
         return &colors::baseEdit;
-    } else if (gGui->editingPeakfits) {
+    case EditableRange::PEAKS:
         return &colors::peakEdit;
+    default:
+        return nullptr;
     }
-    return nullptr;
 }
 
 //  ***********************************************************************************************
@@ -185,7 +194,7 @@ void PlotDfgram::renderAll()
 
     // Render colored background areas to indicate baseline and peak fit ranges.
     const Ranges& rs = gSession->baseline.ranges;
-    bool showingBaseline = gGui->setup()->currentIndex() == gGui->setup()->idxBaseline;
+    bool showingBaseline = gSession->params.editableRange == EditableRange::BASELINE;
     for (int jR=0; jR<rs.count(); ++jR)
         addBgItem(rs.at(jR),
                   showingBaseline && jR==gSession->baseline.ranges.selectedIndex() ?
