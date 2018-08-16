@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/aux/exception.cpp
-//! @brief     Implements class Exception
+//! @file      core/data/from_map.cpp
+//! @brief     Implements namespace fromMap
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,11 +12,24 @@
 //
 //  ***********************************************************************************************
 
-#include "core/aux/exception.h"
-#include "qcr/base/debug.h"
+#include "core/data/from_map.h"
+#include "core/session.h"
 
-Exception::Exception(const QString& msg) noexcept
-    : msg_(msg)
+namespace fromMap {
+
+Range rgeGma(const Measurement* m)
 {
-    qWarning() << "Exception: " << msg;
+    return gSession->angleMap.get(m->midTth()).rgeGma();
 }
+
+Range rgeGmaFull(const Measurement* m)
+{
+    return gSession->angleMap.get(m->midTth()).rgeGmaFull();
+}
+
+Range rgeTth(const Measurement* m)
+{
+    return gSession->angleMap.get(m->midTth()).rgeTth();
+}
+
+} // fromMap

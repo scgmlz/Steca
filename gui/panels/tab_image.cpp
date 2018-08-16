@@ -174,7 +174,7 @@ QPixmap ImageTab::makeOverlayPixmap(const Measurement* m)
     gSession->gammaSelection.onData();
     gSession->thetaSelection.onData();
     QImage im = makeImage(m->image());
-    const AngleMap& angleMap = m->angleMap();
+    const AngleMap& angleMap = gSession->angleMap.get(m->midTth());
     const Range& rgeGma = gSession->gammaSelection.range();
     const Range& rgeTth = gSession->thetaSelection.range();
     for (int j=0; j<im.size().height(); ++j) {

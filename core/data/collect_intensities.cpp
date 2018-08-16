@@ -15,7 +15,7 @@
 #include "core/data/collect_intensities.h"
 #include "core/raw/angle_map.h"
 #include "core/session.h"
-//#include "core/aux/async.h"
+#include "core/data/from_map.h"
 #include "qcr/base/debug.h"
 #include <qmath.h>
 
@@ -26,7 +26,7 @@ void projectMeasurement(
     std::vector<float>& intens, std::vector<int>& counts,
     const Measurement& measurement, const Range& rgeGma, deg minTth, deg deltaTth)
 {
-    const AngleMap& angleMap = measurement.angleMap();
+    const AngleMap& angleMap = gSession->angleMap.get(measurement.midTth());
 
     const std::vector<int>* gmaIndexes = nullptr;
     int gmaIndexMin = 0, gmaIndexMax = 0;
@@ -76,7 +76,7 @@ int algo::numTthBins(const std::vector<const Measurement*>& _members, const Rang
     const ImageCut& cut = gSession->params.imageCut;
     int ret = gSession->imageSize().w - cut.horiz(); // number of horizontal pixels
     if (_members.size()>1) // for combined cluster, increase ret
-        ret = ret * _rgeTth.width() / _members.front()->rgeTth().width();
+        ret = ret * _rgeTth.width() / fromMap::rgeTth(_members.front()).width();
     ASSERT(ret);
     return ret;
 }

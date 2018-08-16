@@ -13,9 +13,6 @@
 //  ***********************************************************************************************
 
 #include "measurement.h"
-#include "core/session.h"
-#include "core/raw/angle_map.h"
-#include "core/typ/cached.h"
 #include "qcr/base/debug.h"
 
 Measurement::Measurement(
@@ -23,46 +20,17 @@ Measurement::Measurement(
     : position_(position)
     , metadata_(std::move(md))
     , image_(new Image(size, std::move(intens)))
-{
-}
+{}
 
-Range Measurement::rgeGma() const
-{
-    return angleMap().rgeGma();
-}
-
-Range Measurement::rgeGmaFull() const
-{
-    return angleMap().rgeGmaFull();
-}
-
-Range Measurement::rgeTth() const
-{
-    return angleMap().rgeTth();
-}
-
-Range Measurement::rgeInten() const
-{
-    return image_->rgeInten();
-}
-
-size2d Measurement::imageSize() const
-{
-    return image_->size();
-}
-
-deg Measurement::midTth() const { return metadata_.motorTth; }
+Range Measurement::rgeInten() const { return image_->rgeInten(); }
+size2d Measurement::imageSize() const { return image_->size(); }
 
 double Measurement::monitorCount() const { return metadata_.monitorCount; }
 double Measurement::deltaMonitorCount() const { return metadata_.deltaMonitorCount; }
 double Measurement::time() const { return metadata_.time; }
 double Measurement::deltaTime() const { return metadata_.deltaTime; }
 
+deg Measurement::midTth() const { return metadata_.motorTth; }
 deg Measurement::omg() const { return metadata_.motorOmg; }
 deg Measurement::phi() const { return metadata_.motorPhi; }
 deg Measurement::chi() const { return metadata_.motorChi; }
-
-const AngleMap& Measurement::angleMap() const
-{
-    return gSession->angleMap.get(midTth());
-}

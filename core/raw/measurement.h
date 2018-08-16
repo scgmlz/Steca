@@ -17,7 +17,6 @@
 
 #include "core/raw/image.h"
 #include "core/raw/metadata.h"
-#include "core/raw/angle_map.h"
 #include <memory>
 
 //! A Measurement consts of an Image with associated Metadata
@@ -38,26 +37,20 @@ public:
     double time() const;
     double deltaTime() const;
 
+    deg midTth() const;
     deg omg() const;
     deg phi() const;
     deg chi() const;
-
-    Range rgeGma() const;
-    Range rgeGmaFull() const;
-    Range rgeTth() const;
 
     Range rgeInten() const;
 
     const Image& image() const { return *image_; }
     size2d imageSize() const;
 
-    const AngleMap& angleMap() const;
-
 private:
     const int position_; //! position in file_
     Metadata metadata_;
     std::unique_ptr<Image> image_;
-    deg midTth() const;
 };
 
 #endif // MEASUREMENT_H

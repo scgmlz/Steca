@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "range_control.h"
+#include "gui/view/range_control.h"
 #include "core/session.h"
 #include "qcr/widgets/controls.h"
 #include <cmath>

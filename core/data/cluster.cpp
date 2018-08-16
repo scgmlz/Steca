@@ -12,7 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#include "cluster.h"
+#include "core/data/cluster.h"
+#include "core/data/from_map.h"
 #include "core/session.h"
 #include "core/data/collect_intensities.h"
 #include "qcr/base/debug.h"
@@ -25,6 +26,34 @@ Sequence::Sequence(const std::vector<const Measurement*>& measurements)
     : members_(measurements)
     , metadata_(computeAvgMetadata())
 {}
+
+Range Sequence::rgeGma() const {
+    Range ret;
+    for (const Measurement* m : members_)
+        ret.extendBy(fromMap::rgeGma(m));
+    return ret;
+}
+
+Range Sequence::rgeGmaFull() const {
+    Range ret;
+    for (const Measurement* m : members_)
+        ret.extendBy(fromMap::rgeGmaFull(m));
+    return ret;
+}
+
+Range Sequence::rgeTth() const {
+    Range ret;
+    for (const Measurement* m : members_)
+        ret.extendBy(fromMap::rgeTth(m));
+    return ret;
+}
+
+Range Sequence::rgeInten() const {
+    Range ret;
+    for (const Measurement* m : members_)
+        ret.intersect(m->rgeInten());
+    return ret;
+}
 
 //! Returns metadata, averaged over Sequence members.
 Metadata Sequence::computeAvgMetadata() const
@@ -47,21 +76,6 @@ deg Sequence::omg() const { AVG_ONES(omg) }
 deg Sequence::phi() const { AVG_ONES(phi) }
 
 deg Sequence::chi() const { AVG_ONES(chi) }
-
-// combined range of combined cluster
-#define RGE_COMBINE(combineOp, what)            \
-    Range rge;                                  \
-    for (const Measurement* one : members_)     \
-        rge.combineOp(one->what);               \
-    return rge;
-
-Range Sequence::rgeGma() const { RGE_COMBINE(extendBy, rgeGma()) }
-
-Range Sequence::rgeGmaFull() const { RGE_COMBINE(extendBy, rgeGmaFull()) }
-
-Range Sequence::rgeTth() const { RGE_COMBINE(extendBy, rgeTth()) }
-
-Range Sequence::rgeInten() const { RGE_COMBINE(intersect, rgeInten()) }
 
 double Sequence::avgMonitorCount() const { AVG_ONES(monitorCount) }
 

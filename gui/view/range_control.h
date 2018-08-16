@@ -12,6 +12,9 @@
 //
 //  ***********************************************************************************************
 
+#ifndef RANGE_CONTROL_H
+#define RANGE_CONTROL_H
+
 #include "qcr/widgets/views.h"
 
 class Range;
@@ -26,3 +29,5 @@ public:
 private:
     std::function<Range*()> selectRange_;
 };
+
+#endif // RANGE_CONTROL_H

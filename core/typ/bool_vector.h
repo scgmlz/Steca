@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef META_SELECTION_H
-#define META_SELECTION_H
+#ifndef BOOL_VECTOR_H
+#define BOOL_VECTOR_H
 
 #include "core/typ/cached.h"
 #include "qcr/engine/cell.h"
@@ -38,4 +38,4 @@ private:
     Kached<BoolVector,std::vector<int>> list; //!< indices of metadata items selected for display
 };
 
-#endif // META_SELECTION_H
+#endif // BOOL_VECTOR_H
