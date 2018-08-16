@@ -32,8 +32,6 @@ private:
     void paintEvent(QPaintEvent*);
 
     QPointF p(deg alpha, deg beta) const;
-    deg alpha(const QPointF&) const;
-    deg beta(const QPointF&) const;
 
     void circle(QPointF c, double r);
 
@@ -46,7 +44,6 @@ private:
     QPainter* p_ {nullptr};
     double r_;
 
-    const double alphaMax_ {90};
 };
 
 #endif // PLOT_POLEFIG_H

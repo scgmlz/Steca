@@ -18,6 +18,8 @@
 
 namespace {
 
+const double alphaMAX {90};
+
 //! Color map for polefigure: shades of blue.
 QColor intenGraph(double inten, double maxInten) {
     if (!qIsFinite(inten) || qIsNaN(maxInten) || maxInten <= 0)
@@ -34,14 +36,12 @@ QColor intenGraph(double inten, double maxInten) {
 PlotPolefig::PlotPolefig()
 {
     setRemake ([this](){
-            qDebug() << "REMAKE PLOT_POLEFIG 1";
             peakInfos_ = gSession->allPeaks.curentPeakInfos();
-            qDebug() << "REMAKE PLOT_POLEFIG 5";
             QWidget::update(); // Which then calls paintEvent. Only so we can use QPainter.
-            qDebug() << "REMAKE PLOT_POLEFIG 9";
         });
 }
 
+//! Plots the figure, using cached data points (which are computed by remake()).
 void PlotPolefig::paintEvent(QPaintEvent*)
 {
     qDebug() << "PlotPolefig::refresh()1";
@@ -67,7 +67,7 @@ void PlotPolefig::paintGrid()
     QPointF centre(0, 0);
 
     for (int alpha = 10; alpha <= 90; alpha += 10) {
-        double r = r_ / alphaMax_ * alpha;
+        double r = r_ / alphaMAX * alpha;
         p_->setPen(!(alpha % 30) ? penMajor : penMinor);
         circle(centre, r);
     }
@@ -80,7 +80,7 @@ void PlotPolefig::paintGrid()
     QPen penMark(Qt::darkGreen);
     p_->setPen(penMark);
     double avgAlphaMax = gSession->params.interpolParams.avgAlphaMax.val();
-    circle(centre, r_ * avgAlphaMax / alphaMax_);
+    circle(centre, r_ * avgAlphaMax / alphaMAX);
 }
 
 void PlotPolefig::paintPoints()
@@ -126,20 +126,9 @@ when interpolation fails.
 //! Point in floating-point precision
 QPointF PlotPolefig::p(deg alpha, deg beta) const
 {
-    double r = r_ * alpha / alphaMax_;
+    double r = r_ * alpha / alphaMAX;
     rad betaRad = beta.toRad();
     return QPointF(r * cos(betaRad), -r * sin(betaRad));
-}
-
-deg PlotPolefig::alpha(const QPointF& p) const
-{
-    return sqrt(p.x() * p.x() + p.y() * p.y()) / r_ * alphaMax_;
-}
-
-deg PlotPolefig::beta(const QPointF& p) const
-{
-    deg b = rad(atan2(p.y(), p.x())).toDeg();
-    return b <= 0 ? -b : 360 - b;
 }
 
 void PlotPolefig::circle(QPointF c, double r)
