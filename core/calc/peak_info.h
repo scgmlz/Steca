@@ -15,7 +15,7 @@
 #ifndef PEAK_INFO_H
 #define PEAK_INFO_H
 
-#include "core/pars/metadata.h"
+#include "core/raw/metadata.h"
 #include "core/typ/cached.h"
 #include "core/typ/range.h"
 
