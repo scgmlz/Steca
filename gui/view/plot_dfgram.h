@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/view/plot_dfgram.h
-//! @brief     Defines classes PlotDfgram and Dfgram.
+//! @brief     Defines class PlotDfgram.
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)

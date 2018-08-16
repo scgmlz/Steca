@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/view/plot_dfgram.cpp
-//! @brief     Implements classes PlotDfgram and Dfgram.
+//! @brief     Implements class PlotDfgram. Has local class PlotDfgramOverlay.
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -40,18 +40,13 @@ QColor scatter {255, 0, 0};
 
 class PlotDfgramOverlay : public PlotOverlay {
 public:
-    PlotDfgramOverlay(class PlotDfgram&);
-
+    PlotDfgramOverlay(class PlotDfgram& parent) : PlotOverlay(parent) {}
 private:
     void addRange(const Range&) final;
     void selectRange(double x) final;
     bool addModeColor(QColor&) const final;
 };
 
-
-PlotDfgramOverlay::PlotDfgramOverlay(PlotDfgram& parent)
-    : PlotOverlay(parent)
-{}
 
 void PlotDfgramOverlay::addRange(const Range& range)
 {

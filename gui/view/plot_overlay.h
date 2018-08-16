@@ -23,6 +23,7 @@
 class PlotOverlay : public QWidget /* sic, no QcrWidget here */ {
 public:
     PlotOverlay(QCustomPlot&);
+    PlotOverlay(const PlotOverlay&) = delete;
 
     void setMargins(int left, int right);
 
