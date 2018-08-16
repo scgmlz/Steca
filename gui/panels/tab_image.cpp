@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "tab_image.h"
+#include "gui/panels/tab_image.h"
 #include "core/data/lens.h"
 #include "core/raw/angle_map.h"
 #include "core/session.h"
@@ -57,7 +57,6 @@ ImageView::ImageView()
     : scale_(0)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
     connect(&gGui->toggles->crosshair, &QAction::toggled, [this](bool /*unused*/) { update(); });
 }
 
