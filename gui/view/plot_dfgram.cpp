@@ -17,6 +17,7 @@
 #include "gui/actions/toggles.h"
 #include "gui/panels/subframe_setup.h" // gGui->setup() TODO break this circular dependence
 #include "gui/mainwin.h"
+#include "gui/view/plot_overlay.h"
 #include "qcr/engine/cell.h"
 
 namespace colors {
@@ -32,6 +33,21 @@ QColor scatter {255, 0, 0};
 
 //  ***********************************************************************************************
 //! @class PlotDfgramOverlay
+
+//! Listens to mouse events to select subranges of a PlotDfgram.
+
+//! Equips PlotOverlay with domain-specific colors and setter functions.
+
+class PlotDfgramOverlay : public PlotOverlay {
+public:
+    PlotDfgramOverlay(class PlotDfgram&);
+
+private:
+    void addRange(const Range&) final;
+    void selectRange(double x) final;
+    bool addModeColor(QColor&) const final;
+};
+
 
 PlotDfgramOverlay::PlotDfgramOverlay(PlotDfgram& parent)
     : PlotOverlay(parent)

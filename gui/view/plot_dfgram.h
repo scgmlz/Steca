@@ -15,23 +15,8 @@
 #ifndef PLOT_DFGRAM_H
 #define PLOT_DFGRAM_H
 
-#include "core/data/dfgram.h"
-#include "gui/view/plot_overlay.h"
-
-//! Listens to mouse events to select subranges of a PlotDfgram.
-
-//! Equips PlotOverlay with domain-specific colors and setter functions.
-
-class PlotDfgramOverlay : public PlotOverlay {
-public:
-    PlotDfgramOverlay(class PlotDfgram&);
-
-private:
-    void addRange(const Range&) final;
-    void selectRange(double x) final;
-    bool addModeColor(QColor&) const final;
-};
-
+#include "core/typ/range.h"
+#include "QCustomPlot/qcustomplot.h"
 
 //! A plot frame that displays diffractogram, background and peak fits, and fit ranges.
 
@@ -56,7 +41,7 @@ private:
     QCPGraph *guesses_;
     QCPGraph *fits_;
     std::vector<QCPGraph*> reflGraph_;
-    PlotDfgramOverlay* overlay_;
+    class PlotDfgramOverlay* overlay_;
 };
 
 #endif // PLOT_DFGRAM_H
