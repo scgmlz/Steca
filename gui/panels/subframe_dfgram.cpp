@@ -35,7 +35,7 @@ private:
     void onHighlight();
 
     class PlotDfgram* plot_;
-    QcrComboBox comboNormType_;
+    QcrComboBox<eNorm> comboNormType_;
     QcrRadioButton intenSum_;
     QcrRadioButton intenAvg_;
     QcrDoubleSpinBox intenScale_;
@@ -44,28 +44,21 @@ private:
 
 
 DfPanel::DfPanel()
-    : comboNormType_ {"normTyp", &gSession->params.normType,
+    : comboNormType_ {"normTyp", &gSession->params.howtoNormalize,
         []()->QStringList{return {"none", "monitor", "Δ monitor", "time", "Δ time"};}}
     , intenSum_ {"intenSum", "sum"}
     , intenAvg_ {"intenAvg", "avg ×", &gSession->params.intenScaledAvg}
     , intenScale_ {"intenScale", &gSession->params.intenScale, 5, 1, 0.001}
 {
-    // initializations
     plot_ = new PlotDfgram();
     intenAvg_.programaticallySetValue(true);
 
-    // internal connections
-    connect(&actZoom_, &QAction::toggled, this, [this](bool on) {
+    actZoom_.setHook([this](bool on) {
         plot_->setInteraction(QCP::iRangeDrag, on);
         plot_->setInteraction(QCP::iRangeZoom, on);
         plot_->enterZoom(on);
     });
 
-    // outbound connections
-    connect(&comboNormType_, _SLOT_(QComboBox,currentIndexChanged,int), [](int index) {
-            gSession->params.normMode = (eNorm)index; });
-
-    // layout
     auto* hb = new QHBoxLayout;
     hb->addWidget(new QLabel("normalize to:"));
     hb->addWidget(&comboNormType_);

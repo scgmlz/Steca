@@ -140,15 +140,16 @@ private:
 };
 
 //! Named non-editable combo box that can be set by console command.
-class QcrComboBox : public QComboBox, public QcrControl<int> {
+template<class T>
+class QcrComboBox : public QComboBox, public QcrControl<T> {
 public:
-    QcrComboBox(const QString& name, QcrCell<int>* cell, std::function<QStringList()> makeTags);
+    QcrComboBox(const QString& name, QcrCell<T>* cell, std::function<QStringList()> makeTags);
     // TODO add simplified API with fixed tag list
-    int doGetValue() const final { return currentIndex(); }
+    T doGetValue() const final { return (T)currentIndex(); }
     void remake() override;
 private:
     std::function<QStringList()> makeTags_;
-    void doSetValue(int val) final { setCurrentIndex(val); }
+    void doSetValue(T val) final { setCurrentIndex((int)val); }
     // hide some member functions of QComboBox:
     void setCurrentIndex(int val) { QComboBox::setCurrentIndex(val); }
     void setCurrentText(const QString&) = delete;
@@ -183,5 +184,36 @@ private:
     void setCurrentIndex(int val);
     void setCurrentWidget(QWidget*) = delete;
 };
+
+//  ***********************************************************************************************
+//! Implement class template QcrComboBox
+
+template<class T>
+QcrComboBox<T>::QcrComboBox(
+    const QString& _name, QcrCell<T>* _cell, std::function<QStringList()> _makeTags)
+    : QcrControl<T> {*this, _name, _cell}
+    , makeTags_(_makeTags)
+{
+    softwareCalling_ = true;
+    QComboBox::addItems(makeTags_());
+    softwareCalling_ = false;
+    initControl();
+    connect(this, &QComboBox::currentIndexChanged, [this](int val)->void {
+            onChangedValue(hasFocus()&&!softwareCalling_, val); });
+}
+
+template<class T>
+void QcrComboBox<T>::remake()
+{
+    if (isVisible()) {
+        const int oldIdx = currentIndex();
+        softwareCalling_ = true;
+        QComboBox::clear();
+        QComboBox::addItems(makeTags_());
+        QComboBox::setCurrentIndex(0<=oldIdx&&oldIdx<count()?oldIdx:0);
+        softwareCalling_ = false;
+    }
+    QcrMixin::remake();
+}
 
 #endif // CONTROLS_H
