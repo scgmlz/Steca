@@ -19,7 +19,7 @@
 #include "core/session.h"
 #include "gui/actions/image_trafo_actions.h"
 #include "gui/actions/menus.h"
-#include "gui/actions/toggles.h"
+#include "gui/view/toggles.h"
 #include "gui/actions/triggers.h"
 #include "gui/dialogs/file_dialog.h"
 #include "gui/panels/mainframe.h"

@@ -16,7 +16,7 @@
 #include "core/data/lens.h"
 #include "core/data/angle_map.h"
 #include "core/session.h"
-#include "gui/actions/toggles.h"
+#include "gui/view/toggles.h"
 #include "gui/mainwin.h"
 #include "qcr/base/debug.h"
 #include <qmath.h>

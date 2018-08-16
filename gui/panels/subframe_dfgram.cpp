@@ -14,7 +14,7 @@
 
 #include "gui/panels/subframe_dfgram.h"
 #include "core/session.h"
-#include "gui/actions/toggles.h"
+#include "gui/view/toggles.h"
 #include "gui/actions/triggers.h"
 #include "gui/view/plot_dfgram.h"
 #include "gui/mainwin.h"

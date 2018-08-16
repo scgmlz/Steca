@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/actions/toggles.h
+//! @file      gui/view/toggles.h
 //! @brief     Defines class Toggles
 //!
 //! @homepage  https://github.com/scgmlz/Steca

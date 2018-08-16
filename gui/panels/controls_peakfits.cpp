@@ -18,7 +18,7 @@
 #include "qcr/widgets/tables.h"
 #include "gui/mainwin.h"
 #include "gui/actions/triggers.h"
-#include "gui/actions/toggles.h"
+#include "gui/view/toggles.h"
 #include "gui/view/range_control.h"
 //#include "qcr/base/debug.h"
 

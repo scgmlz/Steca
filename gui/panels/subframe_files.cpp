@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/session.h"
-#include "gui/actions/toggles.h"
+#include "gui/view/toggles.h"
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"
 #include "gui/panels/subframe_files.h"

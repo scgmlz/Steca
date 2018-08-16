@@ -14,7 +14,7 @@
 
 #include "gui/view/plot_dfgram.h"
 #include "core/session.h"
-#include "gui/actions/toggles.h"
+#include "gui/view/toggles.h"
 #include "gui/mainwin.h"
 #include "gui/view/plot_overlay.h"
 #include "qcr/engine/cell.h"
