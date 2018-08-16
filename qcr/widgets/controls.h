@@ -194,12 +194,13 @@ QcrComboBox<T>::QcrComboBox(
     : QcrControl<T> {*this, _name, _cell}
     , makeTags_(_makeTags)
 {
-    softwareCalling_ = true;
+    QcrComboBox<T>::softwareCalling_ = true;
     QComboBox::addItems(makeTags_());
-    softwareCalling_ = false;
-    initControl();
-    connect(this, &QComboBox::currentIndexChanged, [this](int val)->void {
-            onChangedValue(hasFocus()&&!softwareCalling_, val); });
+    QcrComboBox<T>::softwareCalling_ = false;
+    QcrComboBox<T>::initControl();
+    connect(this, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            [this](int val)->void {
+            QcrComboBox<T>::onChangedValue(hasFocus()&&!QcrComboBox<T>::softwareCalling_, (T)val); });
 }
 
 template<class T>
@@ -207,11 +208,11 @@ void QcrComboBox<T>::remake()
 {
     if (isVisible()) {
         const int oldIdx = currentIndex();
-        softwareCalling_ = true;
+        QcrComboBox<T>::softwareCalling_ = true;
         QComboBox::clear();
         QComboBox::addItems(makeTags_());
         QComboBox::setCurrentIndex(0<=oldIdx&&oldIdx<count()?oldIdx:0);
-        softwareCalling_ = false;
+        QcrComboBox<T>::softwareCalling_ = false;
     }
     QcrMixin::remake();
 }
