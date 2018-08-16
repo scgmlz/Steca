@@ -25,7 +25,7 @@ public:
     ControlsPeakfits();
 private:
     QHBoxLayout topControls_;
-    QcrComboBox<int> comboReflType_;
+    QcrComboBox comboReflType_;
     void hideEvent(QHideEvent*) final;
     void showEvent(QShowEvent*) final;
 };

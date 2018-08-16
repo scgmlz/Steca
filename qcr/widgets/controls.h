@@ -140,16 +140,15 @@ private:
 };
 
 //! Named non-editable combo box that can be set by console command.
-template<class T>
-class QcrComboBox : public QComboBox, public QcrControl<T> {
+class QcrComboBox : public QComboBox, public QcrControl<int> {
 public:
-    QcrComboBox(const QString& name, QcrCell<T>* cell, std::function<QStringList()> makeTags);
+    QcrComboBox(const QString& name, QcrCell<int>* cell, std::function<QStringList()> makeTags);
     // TODO add simplified API with fixed tag list
-    T doGetValue() const final { return (T)currentIndex(); }
+    int doGetValue() const final { return (int)currentIndex(); }
     void remake() override;
 private:
     std::function<QStringList()> makeTags_;
-    void doSetValue(T val) final { setCurrentIndex((int)val); }
+    void doSetValue(int val) final { setCurrentIndex((int)val); }
     // hide some member functions of QComboBox:
     void setCurrentIndex(int val) { QComboBox::setCurrentIndex(val); }
     void setCurrentText(const QString&) = delete;
@@ -184,37 +183,5 @@ private:
     void setCurrentIndex(int val);
     void setCurrentWidget(QWidget*) = delete;
 };
-
-//  ***********************************************************************************************
-//! Implement class template QcrComboBox
-
-template<class T>
-QcrComboBox<T>::QcrComboBox(
-    const QString& _name, QcrCell<T>* _cell, std::function<QStringList()> _makeTags)
-    : QcrControl<T> {*this, _name, _cell}
-    , makeTags_(_makeTags)
-{
-    QcrComboBox<T>::softwareCalling_ = true;
-    QComboBox::addItems(makeTags_());
-    QcrComboBox<T>::softwareCalling_ = false;
-    QcrComboBox<T>::initControl();
-    connect(this, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
-            [this](int val)->void {
-            QcrComboBox<T>::onChangedValue(hasFocus()&&!QcrComboBox<T>::softwareCalling_, (T)val); });
-}
-
-template<class T>
-void QcrComboBox<T>::remake()
-{
-    if (isVisible()) {
-        const int oldIdx = currentIndex();
-        QcrComboBox<T>::softwareCalling_ = true;
-        QComboBox::clear();
-        QComboBox::addItems(makeTags_());
-        QComboBox::setCurrentIndex(0<=oldIdx&&oldIdx<count()?oldIdx:0);
-        QcrComboBox<T>::softwareCalling_ = false;
-    }
-    QcrMixin::remake();
-}
 
 #endif // CONTROLS_H

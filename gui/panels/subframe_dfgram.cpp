@@ -35,7 +35,7 @@ private:
     void onHighlight();
 
     class PlotDfgram* plot_;
-    QcrComboBox<eNorm> comboNormType_;
+    QcrComboBox comboNormType_;
     QcrRadioButton intenSum_;
     QcrRadioButton intenAvg_;
     QcrDoubleSpinBox intenScale_;

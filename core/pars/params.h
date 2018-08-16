@@ -43,7 +43,7 @@ public:
 
     QcrCell<bool>   intenScaledAvg {true}; // if not, summed
     QcrCell<double> intenScale {1.};
-    QcrCell<eNorm>  howtoNormalize {eNorm::NONE};
+    QcrCell<int>    howtoNormalize {(int)eNorm::NONE};
 
     BoolVector      smallMetaSelection;  //!< for 'clusters' and 'metadata' subframes:
     BoolVector      bigMetaSelection;    //! for use in 'bigtable' (tabbed view and export):

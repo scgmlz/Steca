@@ -296,6 +296,35 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, QcrCel
 }
 
 //  ***********************************************************************************************
+//! @class QcrComboBox
+
+QcrComboBox::QcrComboBox(
+    const QString& _name, QcrCell<int>* _cell, std::function<QStringList()> _makeTags)
+    : QcrControl<int> {*this, _name, _cell}
+    , makeTags_(_makeTags)
+{
+    softwareCalling_ = true;
+    QComboBox::addItems(makeTags_());
+    softwareCalling_ = false;
+    initControl();
+    connect(this, _SLOT_(QComboBox,currentIndexChanged,int), [this](int val)->void {
+            onChangedValue(hasFocus()&&!softwareCalling_, val); });
+}
+
+void QcrComboBox::remake()
+{
+    if (isVisible()) {
+        const int oldIdx = currentIndex();
+        softwareCalling_ = true;
+        QComboBox::clear();
+        QComboBox::addItems(makeTags_());
+        QComboBox::setCurrentIndex(0<=oldIdx&&oldIdx<count()?oldIdx:0);
+        softwareCalling_ = false;
+    }
+    QcrMixin::remake();
+}
+
+//  ***********************************************************************************************
 //! @class QcrLineEdit
 
 QcrLineEdit::QcrLineEdit(const QString& _name, const QString& val)
