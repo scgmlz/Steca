@@ -15,8 +15,8 @@
 #include "gui/view/plot_diagram.h"
 #include "core/session.h"
 #include "gui/mainwin.h"
-#include "qcr/base/debug.h"
 #include "qcr/widgets/controls.h"
+//#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class PlotDiagram

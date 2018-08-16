@@ -18,7 +18,7 @@
 #include "gui/panels/tab_diagram.h"
 #include "gui/panels/tab_image.h"
 #include "gui/panels/tab_polefig.h"
-#include "qcr/base/debug.h"
+//#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class Mainframe

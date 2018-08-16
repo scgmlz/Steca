@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "export_bigtable.h"
+#include "gui/dialogs/export_bigtable.h"
 #include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/mainwin.h"
 #include "gui/view/bigtable.h"

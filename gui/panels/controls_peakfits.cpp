@@ -20,7 +20,8 @@
 #include "gui/actions/triggers.h"
 #include "gui/actions/toggles.h"
 #include "gui/view/range_control.h"
-#include "qcr/base/debug.h"
+//#include "qcr/base/debug.h"
+
 #define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 
 namespace {

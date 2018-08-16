@@ -14,7 +14,7 @@
 
 #include "gui/view/plot_polefig.h"
 #include "core/session.h"
-#include "qcr/base/debug.h"
+//#include "qcr/base/debug.h"
 
 namespace {
 
@@ -44,8 +44,6 @@ PlotPolefig::PlotPolefig()
 //! Plots the figure, using cached data points (which are computed by remake()).
 void PlotPolefig::paintEvent(QPaintEvent*)
 {
-    qDebug() << "PlotPolefig::refresh()1";
-
     painter_.reset(new QPainter(this));
     painter_->setRenderHint(QPainter::Antialiasing);
     int w = size().width(), h = size().height();
@@ -58,7 +56,6 @@ void PlotPolefig::paintEvent(QPaintEvent*)
     if (peakInfos_)
         paintPoints();
     painter_.reset();
-    qDebug() << "PlotPolefig::refresh()9";
 }
 
 void PlotPolefig::paintGrid()

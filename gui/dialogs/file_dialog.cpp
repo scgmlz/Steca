@@ -14,7 +14,7 @@
 
 #include "file_dialog.h"
 #include "core/loaders/loaders.h"
-#include "qcr/base/debug.h"
+//#include "qcr/base/debug.h"
 #include "qcr/base/string_ops.h"
 #include "qcr/widgets/modal_dialogs.h"
 #include <QFileSystemModel>
@@ -115,8 +115,7 @@ static eFileOverwritePolicy fileOverwritePolicy = eFileOverwritePolicy::PROMPT;
 void setFileOverwritePolicy(eFileOverwritePolicy val)
 {
     fileOverwritePolicy = val;
-
-    qDebug() << "fileOverwritePolicy set to " << (int)fileOverwritePolicy << "\n";
+    //qDebug() << "fileOverwritePolicy set to " << (int)fileOverwritePolicy << "\n";
 }
 
 bool confirmOverwrite(const QString& name, QWidget* parent, const QString& path)

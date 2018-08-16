@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#include "measurement.h"
-#include "qcr/base/debug.h"
+#include "core/raw/measurement.h"
+//#include "qcr/base/debug.h"
 
 Measurement::Measurement(
     const int position, Metadata&& md, const size2d& size, std::vector<float>&& intens)

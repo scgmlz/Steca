@@ -16,7 +16,7 @@
 #include "core/session.h"
 #include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/mainwin.h"
-#include "qcr/base/debug.h"
+//#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class ExportDiagram

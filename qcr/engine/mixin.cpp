@@ -12,11 +12,10 @@
 //
 //  ***********************************************************************************************
 
-#include "mixin.h"
+#include "qcr/engine/mixin.h"
 #include "qcr/base/qcrexception.h"
 #include "qcr/engine/console.h"
 #include <QAction>
-#include <QDebug>
 
 QcrRoot* gRoot {nullptr};
 

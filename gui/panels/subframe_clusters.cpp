@@ -12,10 +12,10 @@
 //
 //  ***********************************************************************************************
 
-#include "core/session.h"
 #include "gui/panels/subframe_clusters.h"
-#include "qcr/base/debug.h"
+#include "core/session.h"
 #include "qcr/widgets/tables.h"
+//#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class ActiveClustersModel (local scope)
