@@ -49,6 +49,7 @@ public:
     InterpolParams  interpolParams;
 
     EditableRange   editableRange{EditableRange::NONE};
+    QcrCell<bool>   showAvgeDfgram {false};
 };
 
 #endif // PARAMS_H

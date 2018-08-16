@@ -22,7 +22,7 @@
 class Toggles {
 public:
     Toggles();
-    QcrToggle combinedDfgram {"dfg.all", "All measurements", false, ":/icon/all"};
+    QcrToggle combinedDfgram;
     QcrToggle crosshair {"crosshair", "Show crosshair", false, ":/icon/crop"};
     QcrToggle enableCorr;
     QcrToggle fixedIntenDfgram {"dfg.fixInt", "Fixed intensity scale", false, ":/icon/scale"};

@@ -16,9 +16,9 @@
 #include "core/data/lens.h"
 #include "core/data/angle_map.h"
 #include "core/session.h"
-#include "gui/view/toggles.h"
 #include "gui/mainwin.h"
-#include "qcr/base/debug.h"
+#include "gui/view/toggles.h"
+//#include "qcr/base/debug.h"
 #include <qmath.h>
 
 namespace {
@@ -212,7 +212,7 @@ QImage ImageTab::makeImage(const Image& image)
 
     QImage ret(QSize(sz.w, sz.h), QImage::Format_RGB32);
 
-    bool fixedScale = gGui->toggles->fixedIntenImage.getValue();
+    bool fixedScale = gSession->params.showAvgeDfgram.val();
     const Range rgeInten = imageLens.rgeInten(fixedScale);
     float maxInten = float(rgeInten.max);
 

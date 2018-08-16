@@ -210,7 +210,7 @@ void PlotDfgram::renderAll()
     }
     // TODO NOW move the following to session
     const Dfgram* dfgram;
-    if (gGui->toggles->combinedDfgram.getValue())
+    if (gSession->params.showAvgeDfgram.val())
         dfgram = &gSession->activeClusters.avgDfgram.get();
     else {
         const Cluster* cluster = gSession->currentCluster();

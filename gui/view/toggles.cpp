@@ -19,22 +19,26 @@
 #include <QStatusBar>
 
 Toggles::Toggles()
-    : enableCorr {"enableCorr", &gSession->corrset.enabled,
+    : combinedDfgram {"dfg.all", &gSession->params.showAvgeDfgram,
+        "All measurements", ":/icon/all"}
+    , enableCorr {"enableCorr", &gSession->corrset.enabled,
         "Enable correction file", ":/icon/useCorrection"}
     , linkCuts {"linkCuts", &gSession->params.imageCut.linked,
               "Link the four cut settings", ":/icon/link"}
 {
-#define AT &QAction::toggled
-
-    QObject::connect(&viewStatusbar, AT, [](bool on) { gGui->statusBar()->setVisible(on); });
+    QObject::connect(&viewStatusbar, &QAction::toggled, [](bool on){
+            gGui->statusBar()->setVisible(on); });
 #ifndef Q_OS_OSX
-    QObject::connect(&fullScreen, AT, [](bool on) {
+    QObject::connect(&fullScreen, &QAction::toggled, [](bool on){
             if (on)
                 gGui->showFullScreen();
             else
                 gGui->showNormal(); });
 #endif
-    QObject::connect(&viewFiles, AT, [](bool on) { gGui->dockFiles_->setVisible(on); });
-    QObject::connect(&viewClusters, AT, [](bool on) { gGui->dockClusters_->setVisible(on); });
-    QObject::connect(&viewMetadata, AT, [](bool on) { gGui->dockMetadata_->setVisible(on); });
+    QObject::connect(&viewFiles, &QAction::toggled, [](bool on){
+            gGui->dockFiles_->setVisible(on); });
+    QObject::connect(&viewClusters, &QAction::toggled, [](bool on){
+            gGui->dockClusters_->setVisible(on); });
+    QObject::connect(&viewMetadata, &QAction::toggled, [](bool on){
+            gGui->dockMetadata_->setVisible(on); });
 }
