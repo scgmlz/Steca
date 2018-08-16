@@ -77,36 +77,34 @@ QVariant BaseRangesModel::data(const QModelIndex& index, int role) const
 
 //! List view of user-defined Bragg peaks.
 
-class BaseRangesView final : public TableView {
+class BaseRangesView : public TableView {
 public:
-    BaseRangesView();
+    BaseRangesView() : TableView{new BaseRangesModel()} {}
 };
-
-BaseRangesView::BaseRangesView()
-    : TableView(new BaseRangesModel())
-{
-}
 
 //  ***********************************************************************************************
 //! @class ControlsBaseline
 
 ControlsBaseline::ControlsBaseline()
-    : spinDegree_ {"degree", &gSession->baseline.polynomDegree, 4, false, 0, 4,
-              "Degree of the polynomial used to fit the baseline"}
 {
-    hb_.addWidget(new QLabel("Pol. degree:"));
-    hb_.addWidget(&spinDegree_);
-    hb_.addStretch(1);
-    hb_.addWidget(new QcrIconTriggerButton(&gGui->triggers->baserangeAdd));
-    hb_.addWidget(new QcrIconTriggerButton(&gGui->triggers->baserangeRemove));
-    hb_.addWidget(new QcrIconTriggerButton(&gGui->triggers->baserangesClear));
-    box_.addLayout(&hb_);
+    auto* box = new QVBoxLayout;
+    auto* hb  = new QHBoxLayout;
+    auto* spinDegree = new QcrSpinBox{
+        "degree", &gSession->baseline.polynomDegree, 4, false, 0, 4,
+        "Degree of the polynomial used to fit the baseline"};
+    hb->addWidget(new QLabel("Pol. degree:"));
+    hb->addWidget(spinDegree);
+    hb->addStretch(1);
+    hb->addWidget(new QcrIconTriggerButton(&gGui->triggers->baserangeAdd));
+    hb->addWidget(new QcrIconTriggerButton(&gGui->triggers->baserangeRemove));
+    hb->addWidget(new QcrIconTriggerButton(&gGui->triggers->baserangesClear));
+    box->addLayout(hb);
 
-    box_.addWidget(new BaseRangesView());
-    box_.addWidget(new RangeControl("base", []()->Range*{
+    box->addWidget(new BaseRangesView());
+    box->addWidget(new RangeControl("base", []()->Range*{
                 return gSession->baseline.ranges.selectedRange(); }));
-    box_.addStretch(1);
-    setLayout(&box_);
+    box->addStretch(1);
+    setLayout(box);
 
     connect(&gGui->triggers->baserangeRemove, &QAction::triggered, []() {
             gSession->baseline.ranges.removeSelected();

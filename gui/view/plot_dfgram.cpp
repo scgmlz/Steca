@@ -44,7 +44,7 @@ public:
 private:
     void addRange(const Range&) final;
     void selectRange(double x) final;
-    bool addModeColor(QColor&) const final;
+    const QColor* mousedColor() const final;
 };
 
 
@@ -74,16 +74,16 @@ void PlotDfgramOverlay::selectRange(double x)
     Qcr::defaultHook();
 }
 
-bool PlotDfgramOverlay::addModeColor(QColor& color) const
+//! Returns color to be used when the mouse is marking a range.
+
+const QColor* PlotDfgramOverlay::mousedColor() const
 {
     if        (gGui->editingBaseline) {
-        color = colors::baseEdit;
-        return true;
+        return &colors::baseEdit;
     } else if (gGui->editingPeakfits) {
-        color = colors::peakEdit;
-        return true;
+        return &colors::peakEdit;
     }
-    return false;
+    return nullptr;
 }
 
 //  ***********************************************************************************************

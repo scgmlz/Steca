@@ -93,10 +93,8 @@ void PlotOverlay::paintMousedZone()
     QRect g = geometry();
     g.setLeft(qMin(mouseDownPos_, cursorPos_));
     g.setRight(qMax(mouseDownPos_, cursorPos_));
-    QColor color;
-    if (!addModeColor(color))
-        return;
-    QPainter(this).fillRect(g, color);
+    if (const QColor* color = mousedColor())
+        QPainter(this).fillRect(g, *color);
 }
 
 void PlotOverlay::paintCursor()

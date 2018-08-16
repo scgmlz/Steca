@@ -24,9 +24,6 @@ class ControlsBaseline : public QcrWidget {
 public:
     ControlsBaseline();
 private:
-    QVBoxLayout box_;
-    QHBoxLayout hb_;
-    QcrSpinBox spinDegree_;
     void hideEvent(QHideEvent*) final;
     void showEvent(QShowEvent*) final;
 };
