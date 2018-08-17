@@ -219,7 +219,10 @@ ControlsPeakfits::ControlsPeakfits()
                                     [](double val, bool namelyMax){
                                         Peak* p = gSession->peaks.selectedPeak();
                                         ASSERT(p);
-                                        p->setOne(val, namelyMax); }));
+                                        p->setOne(val, namelyMax);
+                                        gSession->onPeaks();
+
+                                    }));
     box->addWidget(new PeakfitOutcomeView);
     box->addStretch(1000);
     setLayout(box);

@@ -37,14 +37,14 @@ RangeControl::RangeControl(
     spinMax->setSingleStep(STEP);
 
     cellMin->setHook([cellMax, _setOne](double& val){
-            qDebug() << "cellMin hook";
+            qDebug() << "cellMin hook" << val;
             val = myRound(qMin(val, myRound(cellMax->val())-STEP));
-            gSession->onBaseline(); // TODO do this via setRange
+            qDebug() << ".. rounded" << val;
             _setOne(val, false); });
     cellMax->setHook([cellMin, _setOne](double& val){
-            qDebug() << "cellMax hook";
+            qDebug() << "cellMax hook" << val;
             val = myRound(qMax(val, myRound(cellMin->val())+STEP));
-            gSession->onBaseline(); // TODO do this via setRange
+            qDebug() << ".. rounded" << val;
             _setOne(val, true); });
 
     // layout
