@@ -23,13 +23,16 @@
 class Baseline {
 public:
     Baseline();
+    Baseline(const Baseline&) = delete;
+
     void fromJson(const JsonObj obj);
     void clear();
+    void setOneLimit(double val, bool namelyMax);
 
     QJsonObject toJson() const;
 
-    Ranges ranges; // don't forget to emit sigBaseline after each change
     QcrCell<int> polynomDegree {2};
+    Ranges ranges;
 };
 
 #endif // BASELINE_H

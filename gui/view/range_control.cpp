@@ -19,14 +19,15 @@
 
 namespace {
 const double STEP = 0.1;
-//double safeReal(double val) { return qIsFinite(val) ? val : 0.0; }
 double myRound(double val, double step=STEP) { return step * std::round(val/step); }
 }
 
-RangeControl::RangeControl(const QString& _name, const std::function<Range*()>& _selectRange)
-    : selectRange_(_selectRange)
+RangeControl::RangeControl(
+    const QString& _name,
+    const std::function<const Range*()>& _getRange,
+    const std::function<void(double,bool)>& _setOne)
 {
-    auto* cellMin = new QcrCell<double>{0.};
+    auto* cellMin = new QcrCell<double>{0.}; // will not be deleted on shutdown
     auto* cellMax = new QcrCell<double>{0.};
     auto* spinMin = new QcrDoubleSpinBox{_name+"Min", cellMin, 5, 2, 0., 89.9};
     auto* spinMax = new QcrDoubleSpinBox{_name+"Max", cellMax, 5, 2, 0., 90.};
@@ -34,14 +35,14 @@ RangeControl::RangeControl(const QString& _name, const std::function<Range*()>& 
     spinMin->setSingleStep(STEP);
     spinMax->setSingleStep(STEP);
 
-    cellMin->setHook([cellMax, this](double& val){
+    cellMin->setHook([cellMax, _setOne, this](double& val){
             val = myRound(qMin(val, myRound(cellMax->val())-STEP));
             gSession->onBaseline(); // TODO do this via setRange
-            selectRange_()->setOne(val, false); });
-    cellMax->setHook([cellMin, this](double& val){
+            _setOne(val, false); });
+    cellMax->setHook([cellMin, _setOne, this](double& val){
             val = myRound(qMax(val, myRound(cellMin->val())+STEP));
             gSession->onBaseline(); // TODO do this via setRange
-            selectRange_()->setOne(val, true); });
+            _setOne(val, true); });
 
     // layout
     auto hb = new QHBoxLayout();
@@ -53,9 +54,9 @@ RangeControl::RangeControl(const QString& _name, const std::function<Range*()>& 
     hb->addStretch();
     setLayout(hb);
 
-    setRemake([spinMin, spinMax, this](){
-            const Range* range = selectRange_();
-            setEnabled(range);
+    setRemake([spinMin, spinMax, _getRange, this](){
+            const Range* range = _getRange();
+            setEnabled(range!=nullptr);
             if (!range)
                 return;
             spinMin->programaticallySetValue(range->min);

@@ -51,7 +51,7 @@ Triggers::Triggers()
     QObject::connect(&spawnPolefig, AT, [](){ new PopupPolefig(); });
     QObject::connect(&viewReset, AT, []() { gGui->viewReset(); });
 
-    // Remakes (others are done more conveniently through Mainwindow::refresh):
+    // Remakes (others are set more conveniently in Mainwindow::refresh):
     corrFile.setRemake([this]() {
             bool hasCorr = gSession->hasCorrFile();
             corrFile.setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
@@ -60,6 +60,12 @@ Triggers::Triggers()
             corrFile.setToolTip(text.toLower()); });
 
     // Hooks:
+    baserangeRemove.setHook([](){
+            gSession->baseline.ranges.removeSelected();
+            gSession->onBaseline(); });
+    baserangesClear.setHook([](){
+            gSession->baseline.ranges.clear();
+            gSession->onBaseline(); });
     peakRemove.setHook([](){
             gSession->peaks.removeSelected();
             gSession->onPeaks(); });

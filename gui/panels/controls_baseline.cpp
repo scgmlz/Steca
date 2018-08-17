@@ -101,17 +101,12 @@ ControlsBaseline::ControlsBaseline()
     box->addLayout(hb);
 
     box->addWidget(new BaseRangesView());
-    box->addWidget(new RangeControl("base", []()->Range*{
-                return gSession->baseline.ranges.selectedRange(); }));
+    box->addWidget(
+        new RangeControl(
+            "base",
+            []()->const Range*{return gSession->baseline.ranges.selectedRange();},
+            [](double val, bool namelyMax)->void{
+                gSession->baseline.ranges.selectedRange()->setOne(val, namelyMax);}));
     box->addStretch(1);
     setLayout(box);
-
-    connect(&gGui->triggers->baserangeRemove, &QAction::triggered, []() {
-            gSession->baseline.ranges.removeSelected();
-            gSession->onBaseline();
-            Qcr::defaultHook(); });
-    connect(&gGui->triggers->baserangesClear, &QAction::triggered, []() {
-            gSession->baseline.ranges.clear();
-            gSession->onBaseline();
-            Qcr::defaultHook(); });
 }

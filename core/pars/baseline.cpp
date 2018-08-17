@@ -17,7 +17,7 @@
 
 Baseline::Baseline()
 {
-    polynomDegree.setHook( [](int){ gSession->onBaseline(); } );
+    polynomDegree.setHook([](int){gSession->onBaseline();});
 }
 
 void Baseline::fromJson(const JsonObj obj)
