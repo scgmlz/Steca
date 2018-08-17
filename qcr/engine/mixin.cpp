@@ -19,11 +19,6 @@
 
 QcrRoot* gRoot {nullptr};
 
-void Qcr::defaultHook()
-{
-    gRoot->remakeAll();
-}
-
 //  ***********************************************************************************************
 //! @class QcrMixin
 

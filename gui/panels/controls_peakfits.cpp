@@ -199,7 +199,7 @@ ControlsPeakfits::ControlsPeakfits()
             if (gSession->peaks.selectedPeak())
                 gSession->peaks.selectedPeak()->setPeakFunction(peakFunctionName);
             gSession->onPeaks();
-            Qcr::defaultHook(); });
+            gRoot->remakeAll(); });
 
     auto* box = new QVBoxLayout;
 

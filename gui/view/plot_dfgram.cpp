@@ -65,7 +65,7 @@ void PlotDfgramOverlay::addRange(const Range& range)
     default:
         return;
     }
-    Qcr::defaultHook();
+    gRoot->remakeAll();
 }
 
 //! Selects the range that contains pixel x.
@@ -83,7 +83,7 @@ void PlotDfgramOverlay::selectRange(double x)
     default:
         return;
     }
-    Qcr::defaultHook();
+    gRoot->remakeAll();
 }
 
 void PlotDfgramOverlay::executeConsoleCommand(const QString& arg)

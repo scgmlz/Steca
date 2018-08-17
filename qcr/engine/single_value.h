@@ -123,7 +123,7 @@ void QcrControl<T>::onChangedValue(bool userCall, T val)
     doLog(userCall, name()+" "+strOp::to_s(val));
     cell_->guiSetsVal(val);
     if (userCall)
-        Qcr::defaultHook();
+        gRoot->remakeAll();
 }
 
 #endif // SINGLE_VALUE_H

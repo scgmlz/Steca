@@ -21,10 +21,6 @@
 
 extern class QcrRoot* gRoot;
 
-namespace Qcr {
-void defaultHook();
-}
-
 //! Mix-in for QObject, enforcing a name, and providing recompute functionality.
 class QcrMixin {
 protected:

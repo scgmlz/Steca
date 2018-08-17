@@ -53,7 +53,7 @@ QcrTrigger::QcrTrigger(const QString& rawname, const QString& text, const QStrin
     connect(this, &QAction::triggered, [this]()->void {
             gConsole->log(name());
             hook_();
-            Qcr::defaultHook(); });
+            gRoot->remakeAll(); });
     connect(this, &QAction::changed, [this]()->void {
             QString txt = tooltip_;
             if (!isEnabled())

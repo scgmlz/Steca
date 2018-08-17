@@ -87,7 +87,7 @@ void Dataset::clear()
     onFileChanged();
     gSession->updateImageSize();
     gSession->params.imageCut.clear();
-    Qcr::defaultHook();
+    gRoot->remakeAll();
     //qDebug() << "Dataset::clear/";
 }
 
@@ -108,7 +108,7 @@ void Dataset::removeFile()
         highlight_.setFile(i-1);
     else
         qFatal("impossible case in Dataset::removeFile");
-    Qcr::defaultHook();
+    gRoot->remakeAll();
 }
 
 void Dataset::addGivenFiles(const QStringList& filePaths)
@@ -153,14 +153,14 @@ void Dataset::onFileChanged()
         cnt += file.numMeasurements();
     }
     updateClusters();
-    Qcr::defaultHook();
+    gRoot->remakeAll();
 }
 
 void Dataset::onClusteringChanged()
 {
     updateClusters();
     highlight_.reset();
-    Qcr::defaultHook();
+    gRoot->remakeAll();
 }
 
 void Dataset::updateClusters()

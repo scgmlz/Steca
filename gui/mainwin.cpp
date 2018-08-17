@@ -190,7 +190,7 @@ void MainWin::addFiles()
     } catch (const Exception& ex) {
         qWarning() << ex.msg();
     }
-    Qcr::defaultHook();
+    gRoot->remakeAll();
 }
 
 void MainWin::loadCorrFile()
@@ -209,7 +209,7 @@ void MainWin::loadCorrFile()
             qWarning() << ex.msg();
         }
     }
-    Qcr::defaultHook();
+    gRoot->remakeAll();
 }
 
 void MainWin::refresh()
