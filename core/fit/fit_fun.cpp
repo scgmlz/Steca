@@ -16,7 +16,7 @@
 #include "core/typ/curve.h"
 #include "core/fit/fit_methods.h"
 #include "core/fit/raw_outcome.h"
-#include "qcr/base/debug.h"
+#include "qcr/base/debug.h" // ASSERT
 
 #include <cmath>
 
@@ -83,7 +83,6 @@ double Polynom::dy(double x, int i, double const*) const
 
 Polynom Polynom::fromFit(int degree, const Curve& curve, const Ranges& ranges)
 {
-    //qDebug() << "polynomial fit";
     Polynom p(degree);
     FitWrapper().execFit(p, curve.intersect(ranges));
     return p;
@@ -151,9 +150,8 @@ double PeakFunction::dy(double x, int i, double const* parValues) const
 PeakFunction PeakFunction::fromFit(
     const QString& functionName, const Curve& curve, const RawOutcome& rawOutcome)
 {
-    //qDebug() << "peak fit";
     ASSERT(curve.count());
-    PeakFunction p(functionName, rawOutcome);
-    FitWrapper().execFit(p, curve);
-    return p;
+    PeakFunction ret(functionName, rawOutcome);
+    FitWrapper().execFit(ret, curve);
+    return ret;
 }

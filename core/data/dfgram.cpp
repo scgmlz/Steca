@@ -59,7 +59,8 @@ PeakFunction computePeakFit(const Dfgram* parent, int jP)
 {
     Peak& peak = gSession->peaks.at(jP);
     return PeakFunction::fromFit(
-        peak.functionName(), parent->getCurveMinusBg(), parent->getRawOutcome(jP));
+        peak.functionName(), parent->getCurveMinusBg().intersect(peak.range()),
+        parent->getRawOutcome(jP));
 }
 
 Curve computePeakAsCurve(const Dfgram* parent, int jP)
@@ -95,8 +96,7 @@ Dfgram::Dfgram(Curve&& c)
     , peaksAsCurve_ {[]()->int {return gSession->peaks.count();},
               [](const Dfgram* parent, int jP)->Curve{
                   return computePeakAsCurve(parent, jP); } }
-{
-}
+{}
 
 void Dfgram::invalidateBg() const
 {
