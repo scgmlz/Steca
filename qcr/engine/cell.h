@@ -26,12 +26,12 @@ public:
     template<class Q> QcrCell(Q value) = delete; // prevent automatic conversion Q->T
     QcrCell(const QcrCell&) = default;
 
-    void setVal(T);
+    void setVal(const T);
+    void guiSetsVal(T);
     void setHook(std::function<void(T&)> f) { hook_ = f; }
     void setCallback(std::function<void(const T)> f) { callback_ = f; }
 
     T val() const { return value_; }
-    void guiSetsVal(T);
 
 private:
     T value_;
@@ -43,7 +43,7 @@ private:
 //  class QcrCell implementation
 
 template<class T>
-void QcrCell<T>::setVal(T val)
+void QcrCell<T>::setVal(const T val)
 {
     value_ = val;
     callback_(val);
