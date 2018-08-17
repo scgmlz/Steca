@@ -24,8 +24,7 @@
 
 QcrModal::QcrModal(QObject& object, const QString& name)
     : QcrSettable {object, "@push " + name, true}
-{
-}
+{}
 
 QcrModal::~QcrModal()
 {
@@ -42,10 +41,6 @@ QcrDialog::QcrDialog(QWidget* parent, const QString& caption)
     , QcrModal {*this, "dlog"}
 {
     setWindowTitle(caption);
-}
-
-QcrDialog::~QcrDialog()
-{
 }
 
 int QcrDialog::exec()

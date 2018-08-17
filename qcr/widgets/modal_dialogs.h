@@ -30,7 +30,6 @@ protected:
 class QcrDialog : public QDialog, protected QcrModal {
 public:
     QcrDialog(QWidget* parent, const QString& caption);
-    ~QcrDialog();
     int exec() override;
     void executeConsoleCommand(const QString&) override;
 };

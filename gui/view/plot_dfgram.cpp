@@ -17,6 +17,7 @@
 #include "gui/view/toggles.h"
 #include "gui/mainwin.h"
 #include "gui/view/plot_overlay.h"
+#include "qcr/base/qcrexception.h"
 #include "qcr/engine/cell.h"
 
 namespace colors {
@@ -37,10 +38,12 @@ QColor scatter {255, 0, 0};
 
 //! Equips PlotOverlay with domain-specific colors and setter functions.
 
-class PlotDfgramOverlay : public PlotOverlay {
+class PlotDfgramOverlay : public PlotOverlay, public QcrSettable {
 public:
-    PlotDfgramOverlay(class PlotDfgram& parent) : PlotOverlay(parent) {}
+    PlotDfgramOverlay(class PlotDfgram& parent)
+        : PlotOverlay{parent}, QcrSettable{*this,"dfgram"} {}
 private:
+    void executeConsoleCommand(const QString&) final;
     void addRange(const Range&) final;
     void selectRange(double x) final;
     const QColor* mousedColor() const final;
@@ -49,6 +52,7 @@ private:
 
 void PlotDfgramOverlay::addRange(const Range& range)
 {
+    doLog(!softwareCalling_, QString("dfgram add %1 %2").arg(range.min).arg(range.max));
     switch (gSession->params.editableRange) {
     case EditableRange::BASELINE:
         gSession->baseline.ranges.add(range);
@@ -68,6 +72,7 @@ void PlotDfgramOverlay::addRange(const Range& range)
 
 void PlotDfgramOverlay::selectRange(double x)
 {
+    doLog(!softwareCalling_, QString("dfgram sel %1").arg(x));
     switch (gSession->params.editableRange) {
     case EditableRange::BASELINE:
         gSession->baseline.ranges.selectByValue(x);
@@ -79,6 +84,23 @@ void PlotDfgramOverlay::selectRange(double x)
         return;
     }
     Qcr::defaultHook();
+}
+
+void PlotDfgramOverlay::executeConsoleCommand(const QString& arg)
+{
+    softwareCalling_ = true;
+    QStringList args = arg.split(' ');
+    if (args[0]=="add") {
+        if (args.size()<3)
+            throw QcrException("Missing arguments to command 'add'");
+        addRange(Range(strOp::to_d(args[1]), strOp::to_d(args[2])));
+    } else if (args[0]=="sel") {
+        if (args.size()<2)
+            throw QcrException("Missing argument to command 'sel'");
+        selectRange(strOp::to_d(args[1]));
+    } else
+        throw QcrException("Unexpected dfgram command");
+    softwareCalling_ = false;
 }
 
 //! Returns color to be used when the mouse is marking a range.

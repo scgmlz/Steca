@@ -38,7 +38,6 @@ public:
 protected:
     void initControl();
     void onChangedValue(bool userCall, T val);
-    bool softwareCalling_ {false};
     QcrCell<T>* cell_ {nullptr};
     T reportedValue_;
 private:
