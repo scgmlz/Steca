@@ -16,7 +16,6 @@
 #define CELL_H
 
 //#include "qcr/base/debug.h"
-#include "qcr/engine/single_value.h"
 #include <functional>
 
 template<class T>
@@ -31,19 +30,18 @@ public:
     QcrCell(const QcrCell&) = default;
 
     void setVal(T);
-    void setHook(std::function<void(T&)> hook) { hook_ = hook; }
+    void setHook(std::function<void(T&)> f) { hook_ = f; }
+    void setCallback(std::function<void(const T)> f) { callback_ = f; }
 
     T val() const { return value_; }
-    //QString name() { return backlink_?backlink_->name():QString("<nameless>"); } // for Debug only
+    void guiSetsVal(T);
 
 protected:
     T value_;
-    QcrControl<T>* backlink_ {nullptr};
+
 private:
     std::function<void(T&)> hook_ = [](T&){;};
-
-    friend QcrControl<T>; // may set backlink_, and call guiSetsVal
-    void guiSetsVal(T);
+    std::function<void(const T)> callback_ = [](const T){;};
 };
 
 //  ***********************************************************************************************
@@ -53,8 +51,7 @@ template<class T>
 void QcrCell<T>::setVal(T val)
 {
     value_ = val;
-    if (backlink_)
-        backlink_->programaticallySetValue(val);
+    callback_(val);
 }
 
 template<class T>

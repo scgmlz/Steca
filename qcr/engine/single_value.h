@@ -54,7 +54,7 @@ QcrControl<T>::QcrControl(QObject& object, const QString& name, QcrCell<T>* cell
     : QcrSettable {object, name}
     , cell_ {cell}
 {
-    cell_->backlink_ = this;
+    cell_->setCallback([this](const T val){programaticallySetValue(val);});
 }
 
 //! Constructs a QcrControl that owns a QcrCell.
@@ -64,7 +64,7 @@ QcrControl<T>::QcrControl(QObject& object, const QString& name, const T val)
     , ownsItsCell_ {true}
 {
     cell_ = new QcrCell<T>(val); // TODO RECONSIDER smart pointer
-    cell_->backlink_ = this;
+    cell_->setCallback([this](const T val){programaticallySetValue(val);});
 }
 
 template<class T>
