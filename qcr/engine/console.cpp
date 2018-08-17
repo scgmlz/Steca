@@ -146,7 +146,7 @@ void Console::readLine()
     QTextStream qtin(stdin);
     QString line = qtin.readLine();
     caller_ = Caller::cli;
-    exec(line);
+    executeLine(line);
     caller_ = Caller::gui;
 }
 
@@ -183,7 +183,7 @@ void Console::commandsFromStack()
         if (line=="@close")
             return;
         caller_ = Caller::stack;
-        Result ret = exec(line);
+        Result ret = executeLine(line);
         caller_ = Caller::gui;
         if (ret==Result::err) {
             commandLifo_.clear();
@@ -197,11 +197,11 @@ void Console::commandsFromStack()
 void Console::call(const QString& line)
 {
     caller_ = Caller::sys;
-    exec(line);
+    executeLine(line);
     caller_ = Caller::gui;
 }
 
-Console::Result Console::exec(QString line)
+Console::Result Console::executeLine(QString line)
 {
     if (line[0]=='#')
         return Result::ok; // comment => nothing to do
@@ -213,17 +213,6 @@ Console::Result Console::exec(QString line)
             qterr << "registry " << registryStack_.top()->name() << " has commands:\n";
             qterr.flush();
             registryStack_.top()->dump(qterr);
-        } else if (cmd=="@pop") {
-            if (registryStack_.empty()) {
-                qterr << "cannot pop: registry stack is empty\n"; qterr.flush();
-                return Result::err;
-            }
-            //qterr << "going to pop registry " << registryStack_.top()->name() << "\n";
-            //qterr.flush();
-            delete registryStack_.top();
-            registryStack_.pop();
-            //qterr << "top registry is now " << registryStack_.top()->name() << "\n";
-            //qterr.flush();
         } else if (cmd=="@file") {
             readFile(arg);
         } else if (cmd=="@close") {
@@ -264,6 +253,20 @@ QString Console::learn(QString name, QcrSettable* widget)
         registryStack_.push(new CommandRegistry(name));
     }
     return registry().learn(name, widget);
+}
+
+void Console::pop()
+{
+    if (registryStack_.empty()) {
+        qterr << "cannot pop: registry stack is empty\n"; qterr.flush();
+        return;
+    }
+    //qterr << "going to pop registry " << registryStack_.top()->name() << "\n";
+    //qterr.flush();
+    delete registryStack_.top();
+    registryStack_.pop();
+    //qterr << "top registry is now " << registryStack_.top()->name() << "\n";
+    //qterr.flush();
 }
 
 void Console::forget(const QString& name)

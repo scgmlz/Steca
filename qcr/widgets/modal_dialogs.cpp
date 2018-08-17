@@ -29,7 +29,7 @@ QcrModal::QcrModal(QObject& object, const QString& name)
 QcrModal::~QcrModal()
 {
     gConsole->log("@close");
-    gConsole->call("@pop");
+    gConsole->pop();
 }
 
 

@@ -15,6 +15,7 @@
 #include "gui/view/range_control.h"
 #include "core/session.h"
 #include "qcr/widgets/controls.h"
+#include "qcr/base/debug.h"
 #include <cmath>
 
 namespace {
@@ -35,11 +36,13 @@ RangeControl::RangeControl(
     spinMin->setSingleStep(STEP);
     spinMax->setSingleStep(STEP);
 
-    cellMin->setHook([cellMax, _setOne, this](double& val){
+    cellMin->setHook([cellMax, _setOne](double& val){
+            qDebug() << "cellMin hook";
             val = myRound(qMin(val, myRound(cellMax->val())-STEP));
             gSession->onBaseline(); // TODO do this via setRange
             _setOne(val, false); });
-    cellMax->setHook([cellMin, _setOne, this](double& val){
+    cellMax->setHook([cellMin, _setOne](double& val){
+            qDebug() << "cellMax hook";
             val = myRound(qMax(val, myRound(cellMin->val())+STEP));
             gSession->onBaseline(); // TODO do this via setRange
             _setOne(val, true); });
@@ -55,10 +58,14 @@ RangeControl::RangeControl(
     setLayout(hb);
 
     setRemake([spinMin, spinMax, _getRange, this](){
+            qDebug() << "RangeControl::remake";
             const Range* range = _getRange();
             setEnabled(range!=nullptr);
             if (!range)
                 return;
+            qDebug() << "RangeControl::remake ctd with " << range->to_s();
             spinMin->programaticallySetValue(range->min);
-            spinMax->programaticallySetValue(range->max); });
+            spinMax->programaticallySetValue(range->max);
+            qDebug() << "RangeControl::remake done";
+        });
 }

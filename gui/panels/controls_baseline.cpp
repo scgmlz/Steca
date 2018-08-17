@@ -18,6 +18,7 @@
 #include "gui/mainwin.h"
 #include "gui/view/range_control.h"
 #include "qcr/widgets/tables.h"
+#include "qcr/base/debug.h" // ASSERT
 
 //  ***********************************************************************************************
 //! @class BaseRangesModel, used in BaseRangesView (local scope)
@@ -106,7 +107,9 @@ ControlsBaseline::ControlsBaseline()
             "base",
             []()->const Range*{return gSession->baseline.ranges.selectedRange();},
             [](double val, bool namelyMax)->void{
-                gSession->baseline.ranges.selectedRange()->setOne(val, namelyMax);}));
+                Range* r = gSession->baseline.ranges.selectedRange();
+                ASSERT(r);
+                r->setOne(val, namelyMax);}));
     box->addStretch(1);
     setLayout(box);
 }

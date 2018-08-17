@@ -34,6 +34,7 @@ public:
 
     QString learn(QString name, class QcrSettable*); //!< learns _not_ commands, but widget names!
     void forget(const QString& name);
+    void pop();
     void readFile(const QString& fName);
     void call(const QString&);
     void commandsFromStack();  //!< needed by modal dialogs
@@ -49,7 +50,7 @@ private:
     class CommandRegistry& registry() const { return *registryStack_.top(); }
 
     void readLine();
-    Result exec(QString);
+    Result executeLine(QString);
 
     QDateTime startTime_;
 #ifdef Q_OS_WIN
