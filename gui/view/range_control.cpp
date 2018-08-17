@@ -57,13 +57,15 @@ RangeControl::RangeControl(
     hb->addStretch();
     setLayout(hb);
 
-    setRemake([spinMin, spinMax, _getRange, this](){
+    setRemake([cellMin, cellMax, spinMin, spinMax, _getRange, this](){
             qDebug() << "RangeControl::remake";
             const Range* range = _getRange();
             setEnabled(range!=nullptr);
             if (!range)
                 return;
             qDebug() << "RangeControl::remake ctd with " << range->to_s();
+            cellMax->setVal(90);
+            cellMin->setVal(0);
             spinMin->programaticallySetValue(range->min);
             spinMax->programaticallySetValue(range->max);
             qDebug() << "RangeControl::remake done";

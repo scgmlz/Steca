@@ -73,7 +73,7 @@ void QcrTrigger::executeConsoleCommand(const QString& arg)
     if (arg!="")
         throw QcrException("Found unexpected argument to trigger command");
     if (!isEnabled()) {
-        qDebug() << "Ignoring command because trigger is not enabled.";
+        qDebug() << "Ignoring command" << arg << "because trigger" << name() << "is not enabled.";
         return;
     }
     trigger();

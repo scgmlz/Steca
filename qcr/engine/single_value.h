@@ -96,8 +96,8 @@ template<class T>
 void QcrControl<T>::programaticallySetValue(T val)
 {
     softwareCalling_ = true;
-    doSetValue(val);
     reportedValue_ = val;
+    doSetValue(val);
     softwareCalling_ = false;
 }
 
