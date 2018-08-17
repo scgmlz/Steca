@@ -360,6 +360,8 @@ QcrTabWidget::QcrTabWidget(const QString& _name)
 {
     initControl();
     connect(this, &QTabWidget::currentChanged, [this](int val) {
+            if (spuriousCall_)
+                return; // do not log spurious index changes
             // To detect user action, we must entirely relie on !softwareCalling,
             // since hasFocus() does not work as we would need.
             onChangedValue(!softwareCalling_, val); });
@@ -367,17 +369,24 @@ QcrTabWidget::QcrTabWidget(const QString& _name)
 
 void QcrTabWidget::addTab(QWidget* page, const QString& label)
 {
-    softwareCalling_ = true;
+    spuriousCall_ = true;
     QTabWidget::addTab(page, label);
-    softwareCalling_ = false;
+    spuriousCall_ = false;
 }
 
 void QcrTabWidget::setTabEnabled(int index, bool on)
     // Needs to be encapsulate because of side effect upon currentIndex.
     // See https://bugreports.qt.io/browse/QTBUG-69930.
 {
-    softwareCalling_ = true;
+    spuriousCall_ = true;
     QTabWidget::setTabEnabled(index, on);
+    spuriousCall_ = false;
+}
+
+void QcrTabWidget::setCurrentIndex(int val)
+{
+    softwareCalling_ = true;
+    QTabWidget::setCurrentIndex(val);
     softwareCalling_ = false;
 }
 
@@ -387,11 +396,4 @@ bool QcrTabWidget::anyEnabled() const
         if (isTabEnabled(i))
             return true;
     return false;
-}
-
-void QcrTabWidget::setCurrentIndex(int val)
-{
-    softwareCalling_ = true;
-    QTabWidget::setCurrentIndex(val);
-    softwareCalling_ = false;
 }

@@ -274,7 +274,7 @@ void Console::forget(const QString& name)
 void Console::log2(bool userCall, const QString& line) const
 {
     if (caller_==Caller::gui && !userCall)
-        log("#u " + line);
+        log("#g " + line);
     else
         log(line);
 }

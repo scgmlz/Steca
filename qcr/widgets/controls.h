@@ -182,6 +182,7 @@ public:
     void setTabEnabled(int, bool);
     bool anyEnabled() const;
 private:
+    bool spuriousCall_ {false};
     void doSetValue(int val) final { setCurrentIndex(val); }
     // hide some member functions of QTabWidget:
     void setCurrentIndex(int val);

@@ -43,7 +43,7 @@ private:
     std::function<void(T&)> hook_ = [](T&){;};
 
     friend QcrControl<T>; // may set backlink_, and call guiSetsVal
-    void guiSetsVal(T, bool userCall=false);
+    void guiSetsVal(T);
 };
 
 //  ***********************************************************************************************
@@ -58,15 +58,12 @@ void QcrCell<T>::setVal(T val)
 }
 
 template<class T>
-void QcrCell<T>::guiSetsVal(T val, bool userCall)
+void QcrCell<T>::guiSetsVal(T val)
 {
     value_ = val;
-    if (userCall) { // to prevent circular calls; TODO simplify
-        hook_(val);
-        if (val!=value_) // hook_ may change val; this mechanism is used in RangeControl
-            setVal(val);
-        Qcr::defaultHook();
-    }
+    hook_(val);
+    if (val!=value_) // hook_ may change val; this mechanism is used in RangeControl
+        setVal(val);
 }
 
 #endif // CELL_H
