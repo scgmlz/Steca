@@ -18,9 +18,6 @@
 //#include "qcr/base/debug.h"
 #include <functional>
 
-template<class T>
-class QcrControl;
-
 //! Holds a single value, and a hook that is executed when the Gui changes the value.
 template<class T>
 class QcrCell {
@@ -36,10 +33,8 @@ public:
     T val() const { return value_; }
     void guiSetsVal(T);
 
-protected:
-    T value_;
-
 private:
+    T value_;
     std::function<void(T&)> hook_ = [](T&){;};
     std::function<void(const T)> callback_ = [](const T){;};
 };

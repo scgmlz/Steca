@@ -20,9 +20,6 @@
 #include "qcr/engine/mixin.h"
 #include "qcr/engine/cell.h"
 
-template<class T>
-class QcrCell;
-
 //! Base class for all Qcr widgets that hold a single value.
 template<class T>
 class QcrControl : public QcrSettable {
