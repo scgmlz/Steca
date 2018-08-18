@@ -15,7 +15,7 @@
 #ifndef CELL_H
 #define CELL_H
 
-//#include "qcr/base/debug.h"
+#include "qcr/base/debug.h"
 #include <functional>
 
 //! Holds a single value, and a hook that is executed when the Gui changes the value.
@@ -44,11 +44,13 @@ private:
 //  class QcrCell implementation
 
 template<class T>
-void QcrCell<T>::setVal(const T val)
+void QcrCell<T>::setVal(const T v)
 {
-    value_ = coerce_(val);
+    value_ = coerce_(v);
+    qDebug() << "Cell::setVal" << v << "->" << value_;
     callback_(value_);
-    hook_(val);
+    if (value_==v)
+        hook_(value_);
 }
 
 #endif // CELL_H

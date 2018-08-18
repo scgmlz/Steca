@@ -37,12 +37,12 @@ RangeControl::RangeControl(
     spinMax->setSingleStep(STEP);
 
     cellMin->setCoerce([cellMax](const double val)->double{
-            qDebug() << "cellMin hook" << val;
+            qDebug() << "cellMin coerce" << val;
             double ret = myRound(qMin(val, myRound(cellMax->val())-STEP));
             qDebug() << ".. rounded" << ret;
             return ret; });
     cellMax->setCoerce([cellMin](const double val)->double{
-            qDebug() << "cellMax hook" << val;
+            qDebug() << "cellMax coerce" << val;
             double ret = myRound(qMax(val, myRound(cellMin->val())+STEP));
             qDebug() << ".. rounded" << ret;
             return ret; });
@@ -60,17 +60,16 @@ RangeControl::RangeControl(
     hb->addStretch();
     setLayout(hb);
 
-    setRemake([cellMin, cellMax, spinMin, spinMax, _getRange, this](){
+    setRemake([cellMin, cellMax, _getRange, this](){
             qDebug() << "RangeControl::remake";
             const Range* range = _getRange();
             setEnabled(range!=nullptr);
             if (!range)
                 return;
-            qDebug() << "RangeControl::remake ctd with " << range->to_s();
-            cellMax->setVal(90);
-            cellMin->setVal(0);
-            spinMin->programaticallySetValue(range->min);
-            spinMax->programaticallySetValue(range->max);
-            qDebug() << "RangeControl::remake done";
+            qDebug() << "RangeControl::remake ctd1 with " << range->to_s();
+            cellMax->setVal(range->max);
+            qDebug() << "RangeControl::remake ctd2 with " << range->to_s();
+            cellMin->setVal(range->min);
+            qDebug() << "RangeControl::remake done with " << range->to_s();
         });
 }
