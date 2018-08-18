@@ -27,16 +27,17 @@ public:
     QcrCell(const QcrCell&) = default;
 
     void setVal(const T);
-    void guiSetsVal(T);
-    void setHook(std::function<void(T&)> f) { hook_ = f; }
+    void setCoerce  (std::function<T   (const T)> f) { coerce_ = f; }
+    void setHook    (std::function<void(const T)> f) { hook_ = f; }
     void setCallback(std::function<void(const T)> f) { callback_ = f; }
 
     T val() const { return value_; }
 
 private:
     T value_;
-    std::function<void(T&)> hook_ = [](T&){;};
-    std::function<void(const T)> callback_ = [](const T){;};
+    std::function<T   (const T)> coerce_   = [](const T v){ return v;};
+    std::function<void(const T)> hook_     = [](const T)  {;};
+    std::function<void(const T)> callback_ = [](const T)  {;};
 };
 
 //  ***********************************************************************************************
@@ -45,17 +46,9 @@ private:
 template<class T>
 void QcrCell<T>::setVal(const T val)
 {
-    value_ = val;
-    callback_(val);
-}
-
-template<class T>
-void QcrCell<T>::guiSetsVal(T val)
-{
-    value_ = val;
+    value_ = coerce_(val);
+    callback_(value_);
     hook_(val);
-    if (val!=value_) // hook_ may change val; this mechanism is used in RangeControl
-        setVal(val);
 }
 
 #endif // CELL_H

@@ -36,16 +36,19 @@ RangeControl::RangeControl(
     spinMin->setSingleStep(STEP);
     spinMax->setSingleStep(STEP);
 
-    cellMin->setHook([cellMax, _setOne](double& val){
+    cellMin->setCoerce([cellMax](const double val)->double{
             qDebug() << "cellMin hook" << val;
-            val = myRound(qMin(val, myRound(cellMax->val())-STEP));
-            qDebug() << ".. rounded" << val;
-            _setOne(val, false); });
-    cellMax->setHook([cellMin, _setOne](double& val){
+            double ret = myRound(qMin(val, myRound(cellMax->val())-STEP));
+            qDebug() << ".. rounded" << ret;
+            return ret; });
+    cellMax->setCoerce([cellMin](const double val)->double{
             qDebug() << "cellMax hook" << val;
-            val = myRound(qMax(val, myRound(cellMin->val())+STEP));
-            qDebug() << ".. rounded" << val;
-            _setOne(val, true); });
+            double ret = myRound(qMax(val, myRound(cellMin->val())+STEP));
+            qDebug() << ".. rounded" << ret;
+            return ret; });
+
+    cellMin->setHook([_setOne](const double val){_setOne(val, false); });
+    cellMax->setHook([_setOne](const double val){_setOne(val, true ); });
 
     // layout
     auto hb = new QHBoxLayout();

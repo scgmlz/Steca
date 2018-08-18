@@ -96,7 +96,6 @@ public:
 private:
     void initSpinBox(int ndigits, bool withDot, int min, int max, const QString& tooltip);
     void mouseReleaseEvent(QMouseEvent*) override;
-    void reportChange();
     void doSetValue(int val) final { setValue(val); }
     // hide some member functions of QSpinBox:
     void setValue(int val) { QSpinBox::setValue(val); }
@@ -113,7 +112,6 @@ private:
     void initDoubleSpinBox(
         int nDigits, int nDecimals, double min, double max, const QString& tooltip);
     void mouseReleaseEvent(QMouseEvent*) override;
-    void reportChange();
     void doSetValue(double val) final { setValue(val); }
     // hide some member functions of QDoubleSpinBox:
     void setValue(double val) { QDoubleSpinBox::setValue(val); }

@@ -192,7 +192,8 @@ void QcrSpinBox::initSpinBox(int ndigits, bool withDot, int min, int max, const 
     if (tooltip!="")
         setToolTip(tooltip);
     initControl();
-    connect(this, &QSpinBox::editingFinished, this, &QcrSpinBox::reportChange);
+    connect(this, &QSpinBox::editingFinished, this, [this]() {
+            onChangedValue(hasFocus()&&!softwareCalling_, value()); });
     connect(this, _SLOT_(QSpinBox,valueChanged,int), [this](int val)->void {
             if(!hasFocus())
                 onChangedValue(hasFocus()&&!softwareCalling_, val); });
@@ -201,21 +202,13 @@ void QcrSpinBox::initSpinBox(int ndigits, bool withDot, int min, int max, const 
 void QcrSpinBox::mouseReleaseEvent(QMouseEvent* event)
 {
     QSpinBox::mouseReleaseEvent(event);
-    reportChange();
-}
-
-void QcrSpinBox::reportChange()
-{
-    int val = value();
-    if (val == reportedValue_)
-        return;
-    onChangedValue(hasFocus()&&!softwareCalling_, val);
+    onChangedValue(hasFocus()&&!softwareCalling_, value());
 }
 
 void QcrSpinBox::executeConsoleCommand(const QString& arg)
 {
     int val = strOp::to_i(arg);
-    programaticallySetValue(val);
+    doSetValue(val);
 }
 
 //  ***********************************************************************************************
@@ -240,7 +233,8 @@ void QcrDoubleSpinBox::initDoubleSpinBox(
     if (tooltip!="")
         setToolTip(tooltip);
     initControl();
-    connect(this, &QDoubleSpinBox::editingFinished, this, &QcrDoubleSpinBox::reportChange);
+    connect(this, &QDoubleSpinBox::editingFinished, this, [this]() {
+            onChangedValue(hasFocus()&&!softwareCalling_, value()); });
     connect(this, _SLOT_(QDoubleSpinBox,valueChanged,double), [this](double val)->void {
             if(!hasFocus())
                 onChangedValue(hasFocus()&&!softwareCalling_, val); });
@@ -249,21 +243,13 @@ void QcrDoubleSpinBox::initDoubleSpinBox(
 void QcrDoubleSpinBox::mouseReleaseEvent(QMouseEvent* event)
 {
     QDoubleSpinBox::mouseReleaseEvent(event);
-    reportChange();
-}
-
-void QcrDoubleSpinBox::reportChange()
-{
-    double val = value();
-    if (val == reportedValue_)
-        return;
-    onChangedValue(hasFocus()&&!softwareCalling_, val);
+    onChangedValue(hasFocus()&&!softwareCalling_, value());
 }
 
 void QcrDoubleSpinBox::executeConsoleCommand(const QString& arg)
 {
     double val = strOp::to_d(arg);
-    programaticallySetValue(val);
+    doSetValue(val);
 }
 
 //  ***********************************************************************************************
@@ -385,9 +371,9 @@ void QcrTabWidget::setTabEnabled(int index, bool on)
 
 void QcrTabWidget::setCurrentIndex(int val)
 {
-    softwareCalling_ = true;
+    //softwareCalling_ = true;
     QTabWidget::setCurrentIndex(val);
-    softwareCalling_ = false;
+    //softwareCalling_ = false;
 }
 
 bool QcrTabWidget::anyEnabled() const

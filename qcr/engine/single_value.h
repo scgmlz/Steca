@@ -15,28 +15,27 @@
 #ifndef SINGLE_VALUE_H
 #define SINGLE_VALUE_H
 
-#include "qcr/base/debug.h"
 #include "qcr/base/string_ops.h"
 #include "qcr/engine/mixin.h"
 #include "qcr/engine/cell.h"
+#include "qcr/base/debug.h"
 
 //! Base class for all Qcr widgets that hold a single value.
 template<class T>
 class QcrControl : public QcrSettable {
 public:
     QcrControl(QObject& object, const QString& name, QcrCell<T>* cell);
-    QcrControl(QObject& object, const QString& name, const T val); // TODO get rid of this variant
+    QcrControl(QObject& object, const QString& name, const T val); // TODO get rid of this variant?
     ~QcrControl();
     void programaticallySetValue(T val);
-    T getValue() { remake(); return doGetValue(); } // TODO rather call Cell::val
+    T getValue() { ASSERT(doGetValue()==cell_->val()); return cell_->val(); }
     virtual T doGetValue() const = 0; //!< to be overriden by the widget-specific get function
     virtual void executeConsoleCommand(const QString& arg);
-    QcrCell<T>* cell() { return cell_; } // TODO rm
+    QcrCell<T>* cell() { return cell_; }
 protected:
     void initControl();
     void onChangedValue(bool userCall, T val);
     QcrCell<T>* cell_ {nullptr};
-    T reportedValue_;
 private:
     virtual void doSetValue(T) = 0; //!< to be overriden by the widget-specific set function
     bool ownsItsCell_ {false};
@@ -73,21 +72,14 @@ QcrControl<T>::~QcrControl()
 
 //! Ensures synchronization of this Control with its associated Cell.
 
-//! Cannot be called from QcrControl constructors, because it indirectly calls the pure
+//! Cannot be called from QcrControl constructors, because it calls the pure
 //! virtual member function 'doSetValue' that has overrides that are not available in
 //! the constructor of 'QcrControl'.
 
 template<class T>
 void QcrControl<T>::initControl()
 {
-    T givenValue = cell_->val();
-    programaticallySetValue(givenValue);
-    reportedValue_ = getValue();
-    if (!ownsItsCell_ && reportedValue_ != givenValue)
-        qWarning("Widget %s has changed value of cell from %s to %s",
-               name().toLatin1().constData(),
-               strOp::to_s(givenValue).toLatin1().constData(),
-               strOp::to_s(reportedValue_).toLatin1().constData());
+    doSetValue(cell_->val());
 }
 
 //! Wraps a call to 'doSetValue', with flag softwareCalling_ = true.
@@ -95,16 +87,13 @@ void QcrControl<T>::initControl()
 template<class T>
 void QcrControl<T>::programaticallySetValue(T val)
 {
-    softwareCalling_ = true;
-    reportedValue_ = val;
-    doSetValue(val);
-    softwareCalling_ = false;
+    cell_->setVal(val);
 }
 
 template<class T>
 void QcrControl<T>::executeConsoleCommand(const QString& arg)
 {
-    programaticallySetValue(strOp::from_s<T>(arg));
+    doSetValue(strOp::from_s<T>(arg));
 }
 
 //! If value has changed, then transmit value to cell, and log.
@@ -114,13 +103,11 @@ void QcrControl<T>::executeConsoleCommand(const QString& arg)
 template<class T>
 void QcrControl<T>::onChangedValue(bool userCall, T val)
 {
-    if (val==reportedValue_)
+    if (val==cell_->val())
         return; // nothing to do
-    reportedValue_ = val;
     doLog(userCall, name()+" "+strOp::to_s(val));
-    cell_->guiSetsVal(val);
-    if (userCall)
-        gRoot->remakeAll();
+    cell_->setVal(val);
+    gRoot->remakeAll();
 }
 
 #endif // SINGLE_VALUE_H
