@@ -65,7 +65,9 @@ void PlotDfgramOverlay::addRange(const Range& range)
     default:
         return;
     }
+    qDebug()<<"PlotDfgramOverlay::addRange REMAKE ALL";
     gRoot->remakeAll();
+    qDebug()<<"PlotDfgramOverlay::addRange REMAKE ALL/";
 }
 
 //! Selects the range that contains pixel x.
@@ -83,7 +85,9 @@ void PlotDfgramOverlay::selectRange(double x)
     default:
         return;
     }
+    qDebug()<<"PlotDfgramOverlay::selRange REMAKE ALL";
     gRoot->remakeAll();
+    qDebug()<<"PlotDfgramOverlay::selRange REMAKE ALL/";
 }
 
 void PlotDfgramOverlay::executeConsoleCommand(const QString& arg)

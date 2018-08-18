@@ -19,6 +19,8 @@
 
 QcrRoot* gRoot {nullptr};
 
+int qcrCallLevel {0};
+
 //  ***********************************************************************************************
 //! @class QcrMixin
 
@@ -55,7 +57,7 @@ static bool remaking = false;
 
 void QcrRoot::remakeAll()
 {
-    //qDebug() << "REMAKE ALL";
+    qDebug() << "REMAKE ALL";
     if (remaking)
         qFatal("Circular call of remakeAll");
     remaking = true;
@@ -64,7 +66,7 @@ void QcrRoot::remakeAll()
         if (QcrMixin* m = dynamic_cast<QcrMixin*>(w))
             m->remake();
     remaking = false;
-    //qDebug() << "REMAKE ALL/";
+    qDebug() << "REMAKE ALL/";
 }
 
 

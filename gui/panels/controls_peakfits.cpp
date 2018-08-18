@@ -198,8 +198,7 @@ ControlsPeakfits::ControlsPeakfits()
             Peaks::defaultFunctionName = peakFunctionName;
             if (gSession->peaks.selectedPeak())
                 gSession->peaks.selectedPeak()->setPeakFunction(peakFunctionName);
-            gSession->onPeaks();
-            gRoot->remakeAll(); });
+            gSession->onPeaks(); });
 
     auto* box = new QVBoxLayout;
 
@@ -220,9 +219,8 @@ ControlsPeakfits::ControlsPeakfits()
                                         Peak* p = gSession->peaks.selectedPeak();
                                         ASSERT(p);
                                         p->setOne(val, namelyMax);
-                                        gSession->onPeaks();
-
-                                    }));
+                                        gSession->onPeaks(); }
+                       ));
     box->addWidget(new PeakfitOutcomeView);
     box->addStretch(1000);
     setLayout(box);
