@@ -50,7 +50,7 @@ QcrControl<T>::QcrControl(QObject& object, const QString& name, QcrCell<T>* cell
     : QcrSettable {object, name}
     , cell_ {cell}
 {
-    cell_->setCallback([this](const T val){programaticallySetValue(val);});
+    cell_->setCallback([this](const T val){doSetValue(val);});
 }
 
 //! Constructs a QcrControl that owns a QcrCell.
@@ -60,7 +60,7 @@ QcrControl<T>::QcrControl(QObject& object, const QString& name, const T val)
     , ownsItsCell_ {true}
 {
     cell_ = new QcrCell<T>(val); // TODO RECONSIDER smart pointer
-    cell_->setCallback([this](const T val){programaticallySetValue(val);});
+    cell_->setCallback([this](const T val){doSetValue(val);});
 }
 
 template<class T>
@@ -82,7 +82,7 @@ void QcrControl<T>::initControl()
     doSetValue(cell_->val());
 }
 
-//! Wraps a call to 'doSetValue', with flag softwareCalling_ = true.
+//!
 
 template<class T>
 void QcrControl<T>::programaticallySetValue(T val)
