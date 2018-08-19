@@ -46,7 +46,7 @@ void ExportDiagram::save()
     const int idxX = int(gSession->params.diagramX.val());
     const int idxY = int(gSession->params.diagramY.val());
     std::vector<double> xs, ys, ysLow, ysHig;
-    const PeakInfos* peakInfos = gSession->allPeaks.curentPeakInfos();
+    const PeakInfos* peakInfos = gSession->allPeaks.currentPeakInfos();
     ASSERT(peakInfos);
     peakInfos->get4(idxX, idxY, xs, ys, ysLow, ysHig);
     ASSERT(xs.size());

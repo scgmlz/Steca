@@ -36,7 +36,7 @@ QColor intenGraph(double inten, double maxInten) {
 PlotPolefig::PlotPolefig()
 {
     setRemake ([this](){
-            peakInfos_ = gSession->allPeaks.curentPeakInfos();
+            peakInfos_ = gSession->allPeaks.currentPeakInfos();
             QWidget::update(); // Which then calls paintEvent. Only so we can use QPainter.
         });
 }

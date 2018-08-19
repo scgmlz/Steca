@@ -102,7 +102,7 @@ public:
     AllPeaks(const AllPeaks&) = delete;
     const PeakInfos* currentDirect() const;
     const PeakInfos* currentInterpolated() const;
-    const PeakInfos* curentPeakInfos() const;
+    const PeakInfos* currentPeakInfos() const;
     void invalidateAll() const;
     void invalidateAt(int) const;
     void invalidateInterpolated() const;
