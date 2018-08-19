@@ -30,15 +30,18 @@ SubframeSetup::SubframeSetup()
     addTab(new ControlsPeakfits(),     "Peakfits"); const int idxPeakfits = 2;
     addTab(new ControlsInterpolation(),"Interpol"); //const int idxInterpol = 3;
 
+    cell()->setHook([=](int val){
+            ASSERT(val==this->currentIndex());
+            switch (val) {
+            case idxBaseline: gSession->params.editableRange = EditableRange::BASELINE; break;
+            case idxPeakfits: gSession->params.editableRange = EditableRange::PEAKS; break;
+            default:          gSession->params.editableRange = EditableRange::NONE;
+            }
+        });
     setRemake([=](){
             setTabEnabled(idxBaseline, gSession->dataset.countFiles());
             setTabEnabled(idxPeakfits, gSession->dataset.countFiles());
             if (!currentWidget()->isEnabled())
                 programaticallySetValue(0);
-            switch (currentIndex()) {
-            case idxBaseline: gSession->params.editableRange = EditableRange::BASELINE; break;
-            case idxPeakfits: gSession->params.editableRange = EditableRange::PEAKS; break;
-            default:          gSession->params.editableRange = EditableRange::NONE;
-            }
         });
 }
