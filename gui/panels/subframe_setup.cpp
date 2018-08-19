@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "subframe_setup.h"
+#include "gui/panels/subframe_setup.h"
 #include "core/session.h"
 #include "gui/panels/controls_baseline.h"
 #include "gui/panels/controls_detector.h"
@@ -41,5 +41,4 @@ SubframeSetup::SubframeSetup()
             default:          gSession->params.editableRange = EditableRange::NONE;
             }
         });
-
 }

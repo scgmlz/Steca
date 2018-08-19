@@ -23,7 +23,6 @@ ThetaSelection::ThetaSelection()
 // TODO HOOK    currArc.setHook( [this](int) { recomputeCache(); /* UNDER CONSTRUCTION */ });
 }
 
-
 QJsonObject ThetaSelection::toJson() const
 {
     return {

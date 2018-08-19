@@ -22,7 +22,7 @@
 
 //! A correction dataset, consisting of one Rawfile and associated settings.
 
-//! Note that "correction", as used throughout Steca, rather means "calibration" or "normalization".
+//! Note that "correction", throughout Steca, means "calibration" or "normalization".
 
 class Corrset {
 public:
@@ -49,7 +49,7 @@ private:
     std::unique_ptr<const Rawfile> raw_; //!< owned by this
     mutable bool hasNANs_ {false};
     std::unique_ptr<Image> corrImage_;
-    mutable std::unique_ptr<Image> normalizer_;
+    mutable std::unique_ptr<Image> normalizer_; // TODO replace by cache, and check when it is to be invalidated
 };
 
 #endif // CORRSET_H
