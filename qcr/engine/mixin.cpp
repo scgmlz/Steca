@@ -56,7 +56,7 @@ static int remakeLoops {0};
 void QcrRoot::remakeAll()
 {
     ++remakeLoops;
-    if (remakeLoops>9)
+    if (remakeLoops>1)
         qFatal("circular remakeAll, it seems");
     remake();
     for (QWidget* w: object().findChildren<QWidget*>())

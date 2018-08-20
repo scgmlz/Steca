@@ -50,7 +50,8 @@ ColumnSelector::ColumnSelector()
     box->addSpacing(8);
 
     const QStringList& headers = PeakInfo::dataTags(false);
-    gSession->params.bigMetaSelection.vec.resize(headers.count(), true);
+    for (int i=0; i<headers.count(); ++i)
+        gSession->params.bigMetaSelection.vec.push_back({true});
     showCols_.resize(headers.count());
     for (int i=0; i<showCols_.size(); ++i) {
         showCols_[i] = new QcrCheckBox(

@@ -38,7 +38,6 @@ protected:
 private:
     virtual void doSetValue(T) = 0; //!< to be overriden by the widget-specific set function
     bool ownsItsCell_ {false};
-    bool selfCalling_ {false};
 };
 
 //  ***********************************************************************************************
@@ -50,7 +49,7 @@ QcrControl<T>::QcrControl(QObject& object, const QString& name, QcrCell<T>* cell
     : QcrSettable {object, name}
     , cell_ {cell}
 {
-    cell_->setCallback([this](const T val){doSetValue(val);});
+    cell_->setCallbacks([this](){return doGetValue();}, [this](const T val){doSetValue(val);});
 }
 
 //! Constructs a QcrControl that owns a QcrCell.
@@ -60,7 +59,7 @@ QcrControl<T>::QcrControl(QObject& object, const QString& name, const T val)
     , ownsItsCell_ {true}
 {
     cell_ = new QcrCell<T>(val); // TODO RECONSIDER smart pointer
-    cell_->setCallback([this](const T val){doSetValue(val);});
+    cell_->setCallbacks([this](){return doGetValue();}, [this](const T val){doSetValue(val);});
 }
 
 template<class T>
@@ -81,7 +80,7 @@ void QcrControl<T>::programaticallySetValue(T val)
 template<class T>
 void QcrControl<T>::executeConsoleCommand(const QString& arg)
 {
-    doSetValue(strOp::from_s<T>(arg));
+    doSetValue(strOp::from_s<T>(arg)); // unguarded
 }
 
 //! If value has changed, then logtransmit value to cell, and log.
@@ -91,18 +90,16 @@ void QcrControl<T>::executeConsoleCommand(const QString& arg)
 template<class T>
 void QcrControl<T>::onChangedValue(T val)
 {
-    qDebug()<<name()<<"onChangedValue selfCalling="<<selfCalling_<<"val="<<val<<"cellval="<<cell_->val();
-    if (selfCalling_ || val==cell_->val()) {
+    ASSERT(val==doGetValue());
+    if (cell_->amCalling || val==cell_->val()) {
         qDebug()<<name()<<"onChangedValue nothing to do";
         return;
     }
-    selfCalling_ = true;
     doLog(name()+" "+strOp::to_s(val));
     cell_->setVal(val);
     qDebug()<<name()<<"remakeAll beg";
     gRoot->remakeAll();
     qDebug()<<name()<<"remakeAll end";
-    selfCalling_ = false;
 }
 
 #endif // SINGLE_VALUE_H
