@@ -18,7 +18,7 @@
 #include "qcr/base/debug.h"
 #include <functional>
 
-//! Holds a single value, and a hook that is executed when the Gui changes the value.
+//! Holds a single value, and a hook that is executed when the value has changed.
 template<class T>
 class QcrCell {
 public:
@@ -27,6 +27,7 @@ public:
     QcrCell(const QcrCell&) = default;
 
     void setVal(const T);
+    void pureSetVal(const T);
     void setCoerce  (std::function<T   (const T)> f) { coerce_ = f; }
     void setHook    (std::function<void(const T)> f) { hook_ = f; }
     void setCallback(std::function<void(const T)> f) { callback_ = f; }
@@ -43,14 +44,24 @@ private:
 //  ***********************************************************************************************
 //  class QcrCell implementation
 
+//! Sets value of cell, sets value of owning widget, and runs hook if value has changed.
 template<class T>
 void QcrCell<T>::setVal(const T v)
 {
+    T oldvalue = value_;
     value_ = coerce_(v);
     qDebug() << "Cell::setVal" << v << "->" << value_;
-    callback_(value_);
-    if (value_==v)
+    callback_(value_); // set value of owning widget
+    if (value_==v && value_!=oldvalue)
         hook_(value_);
+}
+
+//! Sets value of cell, calls callback to set value of controlling widget, but does not calls hook.
+template<class T>
+void QcrCell<T>::pureSetVal(const T v)
+{
+    value_ = coerce_(v);
+    callback_(value_);
 }
 
 #endif // CELL_H

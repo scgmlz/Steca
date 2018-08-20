@@ -86,9 +86,9 @@ ImageCut::ImageCut()
 void ImageCut::sync(int val, QcrCell<int>& _1, QcrCell<int>& _2, QcrCell<int>& _3)
 {
     if (linked.val()) {
-        _1.setVal(val);
-        _2.setVal(val);
-        _3.setVal(val);
+        _1.pureSetVal(val);
+        _2.pureSetVal(val);
+        _3.pureSetVal(val);
     }
     gSession->onDetector();
 }
