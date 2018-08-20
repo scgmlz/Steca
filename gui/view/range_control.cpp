@@ -15,7 +15,7 @@
 #include "gui/view/range_control.h"
 #include "core/session.h"
 #include "qcr/widgets/controls.h"
-//#include "qcr/base/debug.h"
+#include "qcr/base/debug.h"
 #include <cmath>
 
 const double RangeControl::STEP {0.05};
@@ -28,9 +28,13 @@ RangeControl::RangeControl(
     auto* cellMin = new QcrCell<double>{0.}; // will not be deleted on shutdown
     auto* cellMax = new QcrCell<double>{0.};
     cellMin->setCoerce([](const double val){return STEP*std::round(val/STEP);});
-    cellMax->setCoerce([](const double val){return STEP*std::round(val/STEP);});
+    cellMax->setCoerce([](const double val){
+            qDebug()<<"MAX coerce"<<val<<"->"<<STEP*std::round(val/STEP);
+            return STEP*std::round(val/STEP);});
     cellMin->setHook([_setOne](const double val){_setOne(val, false); });
-    cellMax->setHook([_setOne](const double val){_setOne(val, true ); });
+    cellMax->setHook([_setOne](const double val){
+            qDebug()<<"MAX hook"<<val;
+            _setOne(val, true ); });
     auto* spinMin = new QcrDoubleSpinBox{_name+"Min", cellMin, 5, 2, 0., 90.};
     auto* spinMax = new QcrDoubleSpinBox{_name+"Max", cellMax, 5, 2, 0., 90.};
     spinMin->setSingleStep(STEP);
@@ -46,15 +50,23 @@ RangeControl::RangeControl(
     setLayout(hb);
 
     setRemake([cellMin, cellMax, spinMin, spinMax, _getRange, this](){
+            qDebug()<<"rangeControl remake beg";
             const Range* range = _getRange();
             setEnabled(range!=nullptr);
-            if (!range)
+            if (!range) {
+                qDebug()<<"rangeControl remake end nothing to do";
                 return;
+            }
             spinMin->setMaximum(90.);
             spinMax->setMinimum( 0.);
-            cellMin->setVal(range->min);
-            cellMax->setVal(range->max);
+            cellMin->pureSetVal(range->min);
+            qDebug()<<"MAX set cell"<<range->max;
+            cellMax->pureSetVal(range->max);
+            qDebug()<<"MAX cell val"<<cellMax->val();
             spinMin->setMaximum(range->max-STEP);
             spinMax->setMinimum(range->min+STEP);
+            qDebug()<<"MAX min"<<spinMax->minimum();
+            qDebug()<<"MAX max"<<spinMax->maximum();
+            qDebug()<<"rangeControl remake end";
         });
 }

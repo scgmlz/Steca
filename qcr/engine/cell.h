@@ -32,11 +32,11 @@ public:
     void setHook    (std::function<void(const T)> f) { hook_ = f; }
     void setCallback(std::function<void(const T)> f) { callback_ = f; }
 
-    T val() const { return value_; }
+    std::function<T   (const T)> coerce_   = [](const T v){ return v;};
 
+    T val() const { return value_; }
 private:
     T value_;
-    std::function<T   (const T)> coerce_   = [](const T v){ return v;};
     std::function<void(const T)> hook_     = [](const T)  {;};
     std::function<void(const T)> callback_ = [](const T)  {;};
 };
@@ -48,11 +48,17 @@ private:
 template<class T>
 void QcrCell<T>::setVal(const T v)
 {
-    T oldvalue = value_;
+    const T oldvalue = value_;
     value_ = coerce_(v);
+    qDebug()<<"Cell setVal callback beg"<<oldvalue<<"->"<<v<<"-coerce->"<<value_;
     callback_(value_); // set value of owning widget
-    if (value_==v /* ultimately ensured by callback loop */ && value_!=oldvalue)
+    qDebug()<<"Cell setVal callback end"<<oldvalue<<"->"<<v<<"-coerce->"<<value_;
+    if (value_==v /* ultimately ensured by callback loop */ && value_!=oldvalue) {
+        qDebug()<<"Cell setVal hook beg";
         hook_(value_);
+        qDebug()<<"Cell setVal hook end";
+    } else
+        qDebug()<<"Cell setVal no hook"<<(value_==v)<<"&&"<<(value_!=oldvalue);
 }
 
 //! Sets value of cell, calls callback to set value of controlling widget, but does not calls hook.
@@ -60,7 +66,9 @@ template<class T>
 void QcrCell<T>::pureSetVal(const T v)
 {
     value_ = coerce_(v);
+    qDebug()<<"Cell pureSetVal callback beg"<<v<<"->"<<value_;
     callback_(value_);
+    qDebug()<<"Cell pureSetVal callback end";
 }
 
 #endif // CELL_H

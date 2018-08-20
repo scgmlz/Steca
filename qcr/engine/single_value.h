@@ -38,7 +38,7 @@ protected:
 private:
     virtual void doSetValue(T) = 0; //!< to be overriden by the widget-specific set function
     bool ownsItsCell_ {false};
-    int selfCalling_ {0};
+    bool selfCalling_ {false};
 };
 
 //  ***********************************************************************************************
@@ -91,15 +91,18 @@ void QcrControl<T>::executeConsoleCommand(const QString& arg)
 template<class T>
 void QcrControl<T>::onChangedValue(T val)
 {
-    if (val==cell_->val())
-        return; // nothing to do
-    if (!selfCalling_)
-        doLog(name()+" "+strOp::to_s(val));
-    ++selfCalling_;
+    qDebug()<<name()<<"onChangedValue selfCalling="<<selfCalling_<<"val="<<val<<"cellval="<<cell_->val();
+    if (selfCalling_ || val==cell_->val()) {
+        qDebug()<<name()<<"onChangedValue nothing to do";
+        return;
+    }
+    selfCalling_ = true;
+    doLog(name()+" "+strOp::to_s(val));
     cell_->setVal(val);
-    --selfCalling_;
-    if (!selfCalling_)
-        gRoot->remakeAll();
+    qDebug()<<name()<<"remakeAll beg";
+    gRoot->remakeAll();
+    qDebug()<<name()<<"remakeAll end";
+    selfCalling_ = false;
 }
 
 #endif // SINGLE_VALUE_H
