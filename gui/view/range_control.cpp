@@ -18,18 +18,23 @@
 //#include "qcr/base/debug.h"
 #include <cmath>
 
-const double RangeControl::STEP {0.1};
+const double RangeControl::STEP {0.05};
 
 RangeControl::RangeControl(
     const QString& _name,
     const std::function<const Range*()>& _getRange,
     const std::function<void(double,bool)>& _setOne)
 {
-    const Range* range = _getRange();
-    auto* cellMin = new QcrCell<double>{range->min}; // will not be deleted on shutdown
-    auto* cellMax = new QcrCell<double>{range->max};
+    auto* cellMin = new QcrCell<double>{0.}; // will not be deleted on shutdown
+    auto* cellMax = new QcrCell<double>{0.};
+    cellMin->setCoerce([](const double val){return STEP*std::round(val/STEP);});
+    cellMax->setCoerce([](const double val){return STEP*std::round(val/STEP);});
+    cellMin->setHook([_setOne](const double val){_setOne(val, false); });
+    cellMax->setHook([_setOne](const double val){_setOne(val, true ); });
     auto* spinMin = new QcrDoubleSpinBox{_name+"Min", cellMin, 5, 2, 0., 90.};
     auto* spinMax = new QcrDoubleSpinBox{_name+"Max", cellMax, 5, 2, 0., 90.};
+    spinMin->setSingleStep(STEP);
+    spinMax->setSingleStep(STEP);
 
     auto hb = new QHBoxLayout();
     hb->addWidget(new QLabel("range"));
@@ -40,19 +45,15 @@ RangeControl::RangeControl(
     hb->addStretch();
     setLayout(hb);
 
-    spinMin->setSingleStep(STEP);
-    spinMax->setSingleStep(STEP);
-
-    cellMin->setHook([_setOne](const double val){_setOne(val, false); });
-    cellMax->setHook([_setOne](const double val){_setOne(val, true ); });
-
     setRemake([cellMin, cellMax, spinMin, spinMax, _getRange, this](){
             const Range* range = _getRange();
             setEnabled(range!=nullptr);
             if (!range)
                 return;
-            cellMin->pureSetVal(range->min);
-            cellMax->pureSetVal(range->max);
+            spinMin->setMaximum(90.);
+            spinMax->setMinimum( 0.);
+            cellMin->setVal(range->min);
+            cellMax->setVal(range->max);
             spinMin->setMaximum(range->max-STEP);
             spinMax->setMinimum(range->min+STEP);
         });

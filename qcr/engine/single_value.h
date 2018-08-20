@@ -38,6 +38,7 @@ protected:
 private:
     virtual void doSetValue(T) = 0; //!< to be overriden by the widget-specific set function
     bool ownsItsCell_ {false};
+    int selfCalling_ {0};
 };
 
 //  ***********************************************************************************************
@@ -83,7 +84,7 @@ void QcrControl<T>::executeConsoleCommand(const QString& arg)
     doSetValue(strOp::from_s<T>(arg));
 }
 
-//! If value has changed, then transmit value to cell, and log.
+//! If value has changed, then logtransmit value to cell, and log.
 
 //! Used by control widgets, typically through Qt signals that are emitted upon user actions.
 
@@ -92,13 +93,13 @@ void QcrControl<T>::onChangedValue(T val)
 {
     if (val==cell_->val())
         return; // nothing to do
-    if(qcrCallLevel)
-        qFatal("Unexpected circular call of onChangedValue");
-    ++qcrCallLevel;
-    doLog(name()+" "+strOp::to_s(val));
+    if (!selfCalling_)
+        doLog(name()+" "+strOp::to_s(val));
+    ++selfCalling_;
     cell_->setVal(val);
-    gRoot->remakeAll();
-    --qcrCallLevel;
+    --selfCalling_;
+    if (!selfCalling_)
+        gRoot->remakeAll();
 }
 
 #endif // SINGLE_VALUE_H

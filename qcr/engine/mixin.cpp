@@ -19,8 +19,6 @@
 
 QcrRoot* gRoot {nullptr};
 
-int qcrCallLevel {0};
-
 //  ***********************************************************************************************
 //! @class QcrMixin
 
@@ -57,16 +55,14 @@ static int remakeLoops {0};
 
 void QcrRoot::remakeAll()
 {
-    //qDebug() << "REMAKE ALL" << remakeLoops;
-    if (remakeLoops>0)
-        qFatal("Circular call of remakeAll");
     ++remakeLoops;
+    if (remakeLoops>9)
+        qFatal("circular remakeAll, it seems");
     remake();
     for (QWidget* w: object().findChildren<QWidget*>())
         if (QcrMixin* m = dynamic_cast<QcrMixin*>(w))
             m->remake();
     --remakeLoops;
-    //qDebug() << "REMAKE ALL" << remakeLoops << "DONE";
 }
 
 

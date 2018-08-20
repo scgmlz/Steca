@@ -191,7 +191,7 @@ void QcrSpinBox::initSpinBox(int ndigits, bool withDot, int min, int max, const 
     setMaximum(max);
     if (tooltip!="")
         setToolTip(tooltip);
-    ASSERT(min<=cell_->val() && cell_->val()<max);
+    ASSERT(min<=cell_->val() && cell_->val()<=max);
     doSetValue(cell_->val());
     connect(this, &QSpinBox::editingFinished, this, [this]() {
             onChangedValue(value()); });
@@ -233,7 +233,7 @@ void QcrDoubleSpinBox::initDoubleSpinBox(
     setMaximum(max);
     if (tooltip!="")
         setToolTip(tooltip);
-    ASSERT(min<=cell_->val() && cell_->val()<max);
+    ASSERT(min<=cell_->val() && cell_->val()<=max);
     doSetValue(cell_->val());
     connect(this, &QDoubleSpinBox::editingFinished, this, [this]() {
             onChangedValue(value()); });

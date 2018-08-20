@@ -28,7 +28,7 @@ public:
 
     void setVal(const T);
     void pureSetVal(const T);
-    //void setCoerce  (std::function<T   (const T)> f) { coerce_ = f; }
+    void setCoerce  (std::function<T   (const T)> f) { coerce_ = f; }
     void setHook    (std::function<void(const T)> f) { hook_ = f; }
     void setCallback(std::function<void(const T)> f) { callback_ = f; }
 
@@ -51,7 +51,7 @@ void QcrCell<T>::setVal(const T v)
     T oldvalue = value_;
     value_ = coerce_(v);
     callback_(value_); // set value of owning widget
-    if (value_==v && value_!=oldvalue)
+    if (value_==v /* ultimately ensured by callback loop */ && value_!=oldvalue)
         hook_(value_);
 }
 
