@@ -61,8 +61,8 @@ void PlotOverlay::mouseReleaseEvent(QMouseEvent* e)
 {
     mouseDown_ = false;
     update();
-    double xold = roundedCoord(mouseDownPos_);
-    double xnew = roundedCoord(cursorPos_);
+    double xold = pix2roundedCoord(mouseDownPos_);
+    double xnew = pix2roundedCoord(cursorPos_);
     if (xnew == xold) { // clicked not moved
         selectRange(xnew);
         return;
@@ -93,8 +93,8 @@ void PlotOverlay::paintMousedZone()
     if (mouseButton_!=Qt::LeftButton)
         return;
     QRect g = geometry();
-    g.setLeft (roundedPixel(qMin(mouseDownPos_, cursorPos_)));
-    g.setRight(roundedPixel(qMax(mouseDownPos_, cursorPos_)));
+    g.setLeft (pix2roundedPixel(qMin(mouseDownPos_, cursorPos_)));
+    g.setRight(pix2roundedPixel(qMax(mouseDownPos_, cursorPos_)));
     if (const QColor* color = mousedColor())
         QPainter(this).fillRect(g, *color);
 }
@@ -115,12 +115,12 @@ void PlotOverlay::updateCursorRegion()
     update(cursorPos_ - 1, g.top(), 2, g.height());
 }
 
-double PlotOverlay::roundedCoord(double pix) const
+double PlotOverlay::pix2roundedCoord(double pix) const
 {
     return step_ * std::round(plot_.xAxis->pixelToCoord(pix)/step_);
 }
 
-double PlotOverlay::roundedPixel(double pix) const
+double PlotOverlay::pix2roundedPixel(double pix) const
 {
-    return plot_.xAxis->coordToPixel(roundedCoord(pix));
+    return plot_.xAxis->coordToPixel(pix2roundedCoord(pix));
 }
