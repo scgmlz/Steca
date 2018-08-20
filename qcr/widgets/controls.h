@@ -42,9 +42,9 @@ public:
     QcrTrigger(const QString& name, const QString& text, const QString& iconFile,
                const QKeySequence& shortcut);
     void executeConsoleCommand(const QString&) override;
-    void setHook(std::function<void()> hook) { hook_ = hook; }
+    void setTriggerHook(std::function<void()> triggerHook) { triggerHook_ = triggerHook; }
 private:
-    std::function<void()> hook_ = [](){;};
+    std::function<void()> triggerHook_ = [](){;};
 };
 
 //! Trigger button with text display and associated action.

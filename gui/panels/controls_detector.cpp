@@ -85,34 +85,33 @@ DetectorControls::DetectorControls()
 class CutControls : public QcrFrame {
 public:
     CutControls();
-private:
-    QGridLayout layout_;
-    QcrIconToggleButton link_;
-    QcrSpinBox cutLeft_;
-    QcrSpinBox cutTop_;
-    QcrSpinBox cutRight_;
-    QcrSpinBox cutBottom_;
 };
 
 CutControls::CutControls()
-    : link_      {&gGui->toggles->linkCuts}
-    , cutLeft_   {"cutLeft",   &gSession->params.imageCut.left,   3, false, 0, INT_MAX,
-              "Number of pixels to be cut at the left"}
-    , cutTop_    {"cutTop",    &gSession->params.imageCut.top,    3, false, 0, INT_MAX,
-              "Number of pixels to be cut at the top"}
-    , cutRight_  {"cutRight",  &gSession->params.imageCut.right,  3, false, 0, INT_MAX,
-              "Number of pixels to be cut at the right"}
-    , cutBottom_ {"cutBottom", &gSession->params.imageCut.bottom, 3, false, 0, INT_MAX,
-              "Number of pixels to be cut at the bottom"}
 {
-    layout_.addWidget(new QLabel("cut"), 1, 0);
-    layout_.addWidget(&cutLeft_, 1, 2);
-    layout_.addWidget(&link_, 1, 3, Qt::AlignHCenter);
-    layout_.addWidget(&cutTop_, 0, 3);
-    layout_.addWidget(&cutBottom_, 2, 3);
-    layout_.addWidget(&cutRight_, 1, 4);
-    layout_.setColumnStretch(5, 1);
-    setLayout(&layout_);
+    auto* layout = new QGridLayout;
+    layout->addWidget(new QLabel("cut"), 1, 0);
+    layout->addWidget(
+        new QcrSpinBox{"cutLeft",   &gSession->params.imageCut.left,   3, false, 0, INT_MAX,
+                "Number of pixels to be cut at the left"},
+        1, 2);
+    layout->addWidget(
+        new QcrSpinBox{"cutTop",    &gSession->params.imageCut.top,    3, false, 0, INT_MAX,
+                "Number of pixels to be cut at the top"},
+        0, 3);
+    layout->addWidget(
+        new QcrSpinBox{"cutBottom", &gSession->params.imageCut.bottom, 3, false, 0, INT_MAX,
+                "Number of pixels to be cut at the bottom"},
+        2, 3);
+    layout->addWidget(
+        new QcrSpinBox{"cutRight",  &gSession->params.imageCut.right,  3, false, 0, INT_MAX,
+                "Number of pixels to be cut at the right"},
+        1, 4);
+    layout->addWidget(
+        new QcrIconToggleButton{&gGui->toggles->linkCuts},
+        1, 3, Qt::AlignHCenter);
+    layout->setColumnStretch(5, 1);
+    setLayout(layout);
 }
 
 //  ***********************************************************************************************

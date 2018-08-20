@@ -52,7 +52,7 @@ QcrTrigger::QcrTrigger(const QString& rawname, const QString& text, const QStrin
         setIcon(QIcon(iconFile));
     connect(this, &QAction::triggered, [this]()->void {
             gConsole->log(name());
-            hook_();
+            triggerHook_();
             gRoot->remakeAll(); });
     connect(this, &QAction::changed, [this]()->void {
             QString txt = tooltip_;

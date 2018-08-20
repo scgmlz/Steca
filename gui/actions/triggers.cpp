@@ -60,16 +60,16 @@ Triggers::Triggers()
             corrFile.setToolTip(text.toLower()); });
 
     // Hooks:
-    baserangeRemove.setHook([](){
+    baserangeRemove.setTriggerHook([](){
             gSession->baseline.ranges.removeSelected();
             gSession->onBaseline(); });
-    baserangesClear.setHook([](){
+    baserangesClear.setTriggerHook([](){
             gSession->baseline.ranges.clear();
             gSession->onBaseline(); });
-    peakRemove.setHook([](){
+    peakRemove.setTriggerHook([](){
             gSession->peaks.removeSelected();
             gSession->onPeaks(); });
-    peaksClear.setHook([](){
+    peaksClear.setTriggerHook([](){
             gSession->peaks.clear();
             gSession->onPeaks(); });
 }
