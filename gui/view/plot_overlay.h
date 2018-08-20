@@ -22,7 +22,7 @@
 
 class PlotOverlay : public QWidget /* sic, no QcrWidget here */ {
 public:
-    PlotOverlay(QCustomPlot&);
+    PlotOverlay(QCustomPlot&, double _step);
     PlotOverlay(const PlotOverlay&) = delete;
 
     void setMargins(int left, int right);
@@ -44,11 +44,14 @@ private:
     void paintMousedZone();
     void paintCursor();
     void updateCursorRegion();
+    double roundedCoord(double) const;
+    double roundedPixel(double) const;
 
     int marginLeft_, marginRight_;
     int cursorPos_, mouseDownPos_;
     bool hasCursor_, mouseDown_;
     Qt::MouseButton mouseButton_;
+    double step_;
 };
 
 #endif // PLOT_OVERLAY_H
