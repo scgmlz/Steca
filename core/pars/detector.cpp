@@ -95,18 +95,18 @@ void ImageCut::sync(int val, QcrCell<int>& _1, QcrCell<int>& _2, QcrCell<int>& _
 
 void ImageCut::clear()
 {
-    left  .setVal(0);
-    right .setVal(0);
-    top   .setVal(0);
-    bottom.setVal(0);
+    left  .pureSetVal(0);
+    right .pureSetVal(0);
+    top   .pureSetVal(0);
+    bottom.pureSetVal(0);
 }
 
 void ImageCut::fromJson(const JsonObj& obj)
 {
-    left  .setVal(obj.loadUint("left"));
-    right .setVal(obj.loadUint("right"));
-    top   .setVal(obj.loadUint("top"));
-    bottom.setVal(obj.loadUint("bottom"));
+    left  .pureSetVal(obj.loadUint("left"));
+    right .pureSetVal(obj.loadUint("right"));
+    top   .pureSetVal(obj.loadUint("top"));
+    bottom.pureSetVal(obj.loadUint("bottom"));
 }
 
 QJsonObject ImageCut::toJson() const
