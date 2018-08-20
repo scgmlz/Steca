@@ -17,6 +17,7 @@
 #include "gui/view/toggles.h"
 #include "gui/mainwin.h"
 #include "gui/view/plot_overlay.h"
+#include "gui/view/range_control.h"
 #include "qcr/base/qcrexception.h"
 #include "qcr/engine/cell.h"
 
@@ -41,7 +42,7 @@ QColor scatter {255, 0, 0};
 class PlotDfgramOverlay : public PlotOverlay, public QcrSettable {
 public:
     PlotDfgramOverlay(class PlotDfgram& parent)
-        : PlotOverlay{parent, .05}, QcrSettable{*this,"dfgram"} {}
+        : PlotOverlay{parent, RangeControl::STEP}, QcrSettable{*this,"dfgram"} {}
 private:
     void executeConsoleCommand(const QString&) final;
     void addRange(const Range&) final;

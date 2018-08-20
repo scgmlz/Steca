@@ -26,6 +26,7 @@ public:
                  const std::function<const class Range*()>&,
                  const std::function<void(double,bool)>&);
     RangeControl(const RangeControl&) = delete;
+    static const double STEP;
 };
 
 #endif // RANGE_CONTROL_H

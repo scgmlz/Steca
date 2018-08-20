@@ -33,7 +33,6 @@ public:
     virtual void executeConsoleCommand(const QString& arg);
     QcrCell<T>* cell() { return cell_; }
 protected:
-    void initControl();
     void onChangedValue(T val);
     QcrCell<T>* cell_ {nullptr};
 private:
@@ -70,18 +69,6 @@ QcrControl<T>::~QcrControl()
         delete cell_;
 }
 
-//! Ensures synchronization of this Control with its associated Cell.
-
-//! Cannot be called from QcrControl constructors, because it calls the pure
-//! virtual member function 'doSetValue' that has overrides that are not available in
-//! the constructor of 'QcrControl'.
-
-template<class T>
-void QcrControl<T>::initControl()
-{
-    doSetValue(cell_->val());
-}
-
 //!
 
 template<class T>
@@ -103,18 +90,15 @@ void QcrControl<T>::executeConsoleCommand(const QString& arg)
 template<class T>
 void QcrControl<T>::onChangedValue(T val)
 {
-    qDebug()<<"onChanged"<<name()<<"val="<<val<<"cellval="<<cell_->val()<<"callLevel="<<qcrCallLevel;
-    if (qcrCallLevel>0 || val==cell_->val())
+    if (val==cell_->val())
         return; // nothing to do
-    //qDebug()<<"onChanged"<<name()<<"ctd1";
+    if(qcrCallLevel)
+        qFatal("Unexpected circular call of onChangedValue");
     ++qcrCallLevel;
     doLog(name()+" "+strOp::to_s(val));
-    //qDebug()<<"onChanged"<<name()<<"ctd2";
     cell_->setVal(val);
-    //qDebug()<<"onChanged"<<name()<<"ctd3";
     gRoot->remakeAll();
     --qcrCallLevel;
-    qDebug()<<"onChanged"<<name()<<"done";
 }
 
 #endif // SINGLE_VALUE_H

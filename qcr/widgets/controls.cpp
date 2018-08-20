@@ -125,7 +125,7 @@ void QcrToggle::initToggle(const QString& iconFile, const QKeySequence& shortcut
     //QAction::setObjectName(QcrSettable::name());
     if (iconFile!="")
         setIcon(QIcon(iconFile));
-    initControl();
+    doSetValue(cell_->val());
     connect(this, &QAction::toggled, this, [this](bool val){
             //qDebug()<<"TOGGLE "<<name()<<"toggled";
             onChangedValue(val);});
@@ -191,7 +191,8 @@ void QcrSpinBox::initSpinBox(int ndigits, bool withDot, int min, int max, const 
     setMaximum(max);
     if (tooltip!="")
         setToolTip(tooltip);
-    initControl();
+    ASSERT(min<=cell_->val() && cell_->val()<max);
+    doSetValue(cell_->val());
     connect(this, &QSpinBox::editingFinished, this, [this]() {
             onChangedValue(value()); });
     connect(this, _SLOT_(QSpinBox,valueChanged,int), [this](int val)->void {
@@ -232,7 +233,8 @@ void QcrDoubleSpinBox::initDoubleSpinBox(
     setMaximum(max);
     if (tooltip!="")
         setToolTip(tooltip);
-    initControl();
+    ASSERT(min<=cell_->val() && cell_->val()<max);
+    doSetValue(cell_->val());
     connect(this, &QDoubleSpinBox::editingFinished, this, [this]() {
             onChangedValue(value()); });
     connect(this, _SLOT_(QDoubleSpinBox,valueChanged,double), [this](double val)->void {
@@ -259,7 +261,7 @@ QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, QcrCell<bool
     : QCheckBox {text}
     , QcrControl<bool> {*this, _name, cell}
 {
-    initControl();
+    doSetValue(cell_->val());
     connect(this, _SLOT_(QCheckBox,stateChanged,int), [this](int val)->void {
             onChangedValue((bool)val); });
 }
@@ -271,7 +273,7 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, bool v
     : QRadioButton {text}
     , QcrControl<bool> {*this, _name, val}
 {
-    initControl();
+    doSetValue(cell_->val());
     setAutoExclusive(false); // TODO provide int-valued Qcr wrapper for exclusive radio buttons
     connect(this, _SLOT_(QRadioButton,toggled,bool), [this,_name](bool val)->void {
             onChangedValue(val); });
@@ -281,7 +283,7 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, QcrCel
     : QRadioButton {text}
     , QcrControl<bool> {*this, _name, cell}
 {
-    initControl();
+    doSetValue(cell_->val());
     setAutoExclusive(false);
     connect(this, _SLOT_(QRadioButton,toggled,bool), [this](bool val)->void {
             onChangedValue(val); });
@@ -297,7 +299,7 @@ QcrComboBox::QcrComboBox(
 {
     tags_ = makeTags_();
     QComboBox::addItems(tags_);
-    initControl();
+    doSetValue(cell_->val());
     connect(this, _SLOT_(QComboBox,currentIndexChanged,int), [this](int val)->void {
             if (!spuriousCall_)
                 onChangedValue(val); });
@@ -326,7 +328,7 @@ void QcrComboBox::remake()
 QcrLineEdit::QcrLineEdit(const QString& _name, const QString& val)
     : QcrControl<QString> {*this, _name, val}
 {
-    initControl();
+    doSetValue(cell_->val());
     // For unknown reason, hasFocus() is not always false when setText is called programmatically;
     // therefore we must use another criterion to distinuish user actions from other calls.
     // The following works, but has the drawback that a user action is logged not only as such,
@@ -345,7 +347,7 @@ QcrLineEdit::QcrLineEdit(const QString& _name, const QString& val)
 QcrTabWidget::QcrTabWidget(const QString& _name)
     : QcrControl<int> {*this, _name, 0}
 {
-    initControl();
+    doSetValue(cell_->val());
     connect(this, &QTabWidget::currentChanged, [this](int val) {
             if (spuriousCall_)
                 return;

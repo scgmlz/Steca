@@ -57,8 +57,8 @@ static int remakeLoops {0};
 
 void QcrRoot::remakeAll()
 {
-    qDebug() << "REMAKE ALL" << remakeLoops;
-    if (remakeLoops>9)
+    //qDebug() << "REMAKE ALL" << remakeLoops;
+    if (remakeLoops>0)
         qFatal("Circular call of remakeAll");
     ++remakeLoops;
     remake();
@@ -66,7 +66,7 @@ void QcrRoot::remakeAll()
         if (QcrMixin* m = dynamic_cast<QcrMixin*>(w))
             m->remake();
     --remakeLoops;
-    qDebug() << "REMAKE ALL" << remakeLoops << "DONE";
+    //qDebug() << "REMAKE ALL" << remakeLoops << "DONE";
 }
 
 

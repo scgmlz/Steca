@@ -44,6 +44,7 @@ private:
     void paintMousedZone();
     void paintCursor();
     void updateCursorRegion();
+
     double pix2roundedCoord(double) const;
     double pix2roundedPixel(double) const;
 

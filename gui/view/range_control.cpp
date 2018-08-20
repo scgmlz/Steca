@@ -15,42 +15,22 @@
 #include "gui/view/range_control.h"
 #include "core/session.h"
 #include "qcr/widgets/controls.h"
-#include "qcr/base/debug.h"
+//#include "qcr/base/debug.h"
 #include <cmath>
 
-namespace {
-const double STEP = 0.1;
-double myRound(double val, double step=STEP) { return step * std::round(val/step); }
-}
+const double RangeControl::STEP {0.1};
 
 RangeControl::RangeControl(
     const QString& _name,
     const std::function<const Range*()>& _getRange,
     const std::function<void(double,bool)>& _setOne)
 {
-    auto* cellMin = new QcrCell<double>{0.}; // will not be deleted on shutdown
-    auto* cellMax = new QcrCell<double>{0.};
-    auto* spinMin = new QcrDoubleSpinBox{_name+"Min", cellMin, 5, 2, 0., 89.9};
+    const Range* range = _getRange();
+    auto* cellMin = new QcrCell<double>{range->min}; // will not be deleted on shutdown
+    auto* cellMax = new QcrCell<double>{range->max};
+    auto* spinMin = new QcrDoubleSpinBox{_name+"Min", cellMin, 5, 2, 0., 90.};
     auto* spinMax = new QcrDoubleSpinBox{_name+"Max", cellMax, 5, 2, 0., 90.};
 
-    spinMin->setSingleStep(STEP);
-    spinMax->setSingleStep(STEP);
-
-    cellMin->setCoerce([cellMax](const double val)->double{
-            qDebug() << "cellMin coerce" << val;
-            double ret = myRound(qMin(val, myRound(cellMax->val())-STEP));
-            qDebug() << ".. rounded" << ret;
-            return ret; });
-    cellMax->setCoerce([cellMin](const double val)->double{
-            qDebug() << "cellMax coerce" << val;
-            double ret = myRound(qMax(val, myRound(cellMin->val())+STEP));
-            qDebug() << ".. rounded" << ret;
-            return ret; });
-
-    cellMin->setHook([_setOne](const double val){_setOne(val, false); });
-    cellMax->setHook([_setOne](const double val){_setOne(val, true ); });
-
-    // layout
     auto hb = new QHBoxLayout();
     hb->addWidget(new QLabel("range"));
     hb->addWidget(spinMin);
@@ -60,16 +40,20 @@ RangeControl::RangeControl(
     hb->addStretch();
     setLayout(hb);
 
-    setRemake([cellMin, cellMax, _getRange, this](){
-            qDebug() << "RangeControl::remake";
+    spinMin->setSingleStep(STEP);
+    spinMax->setSingleStep(STEP);
+
+    cellMin->setHook([_setOne](const double val){_setOne(val, false); });
+    cellMax->setHook([_setOne](const double val){_setOne(val, true ); });
+
+    setRemake([cellMin, cellMax, spinMin, spinMax, _getRange, this](){
             const Range* range = _getRange();
             setEnabled(range!=nullptr);
             if (!range)
                 return;
-            qDebug() << "RangeControl::remake ctd1 with " << range->to_s();
-            cellMax->setVal(range->max);
-            qDebug() << "RangeControl::remake ctd2 with " << range->to_s();
-            cellMin->setVal(range->min);
-            qDebug() << "RangeControl::remake done with " << range->to_s();
+            cellMin->pureSetVal(range->min);
+            cellMax->pureSetVal(range->max);
+            spinMin->setMaximum(range->max-STEP);
+            spinMax->setMinimum(range->min+STEP);
         });
 }
