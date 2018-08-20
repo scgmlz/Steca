@@ -74,16 +74,15 @@ void CheckTableModel::onClicked(const QModelIndex& cell)
     int row = cell.row();
     int col = cell.column();
     if (col==1) {
-        activateAndLog(true, row, !activated(row));
+        activateAndLog(row, !activated(row));
         gRoot->remakeAll();
     }
 }
 
-void CheckTableModel::activateAndLog(bool primaryCall, int row, bool on)
+void CheckTableModel::activateAndLog(int row, bool on)
 {
     setActivated(row, on);
-    gConsole->log2(primaryCall,
-                   name() + ( on ? " activate " : " deactivate ") + QString::number(row));
+    gConsole->log(name() + ( on ? " activate " : " deactivate ") + QString::number(row));
 }
 
 
@@ -162,11 +161,11 @@ void TableView::gotoCurrent(const QModelIndex& current)
 }
 
 //! Highlights one cluster. Called either from GUI > currentChanged [TODO? restore], or through Console command.
-void TableView::highlight(bool primaryCall, int row)
+void TableView::highlight(int row)
 {
     if (row==model_->highlighted())
         return; // the following would prevent execution of "onClicked"
-    gConsole->log2(primaryCall, name()+".highlight="+QString::number(row));
+    gConsole->log(name()+".highlight="+QString::number(row));
     model_->onHighlight(row);
     updateScroll();
 }
@@ -194,11 +193,11 @@ void CheckTableView::executeConsoleCommand(const QString& arg)
     if        (args[0]=="activate") {
         if (args.size()<2)
             throw QcrException("Missing argument to command 'activate'");
-        model()->activateAndLog(false, strOp::to_i(args[1]), true);
+        model()->activateAndLog(strOp::to_i(args[1]), true);
     } else if (args[0]=="deactivate") {
         if (args.size()<2)
             throw QcrException("Missing argument to command 'deactivate'");
-        model()->activateAndLog(false, strOp::to_i(args[1]), false);
+        model()->activateAndLog(strOp::to_i(args[1]), false);
     } else
         TableView::executeConsoleCommand(arg);
 }

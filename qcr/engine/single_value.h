@@ -34,7 +34,7 @@ public:
     QcrCell<T>* cell() { return cell_; }
 protected:
     void initControl();
-    void onChangedValue(bool userCall, T val);
+    void onChangedValue(T val);
     QcrCell<T>* cell_ {nullptr};
 private:
     virtual void doSetValue(T) = 0; //!< to be overriden by the widget-specific set function
@@ -101,17 +101,17 @@ void QcrControl<T>::executeConsoleCommand(const QString& arg)
 //! Used by control widgets, typically through Qt signals that are emitted upon user actions.
 
 template<class T>
-void QcrControl<T>::onChangedValue(bool userCall, T val)
+void QcrControl<T>::onChangedValue(T val)
 {
     qDebug()<<"onChanged"<<name()<<"val="<<val<<"cellval="<<cell_->val()<<"callLevel="<<qcrCallLevel;
     if (qcrCallLevel>0 || val==cell_->val())
         return; // nothing to do
-    qDebug()<<"onChanged"<<name()<<"ctd1";
+    //qDebug()<<"onChanged"<<name()<<"ctd1";
     ++qcrCallLevel;
-    doLog(userCall, name()+" "+strOp::to_s(val));
-    qDebug()<<"onChanged"<<name()<<"ctd2";
+    doLog(name()+" "+strOp::to_s(val));
+    //qDebug()<<"onChanged"<<name()<<"ctd2";
     cell_->setVal(val);
-    qDebug()<<"onChanged"<<name()<<"ctd3";
+    //qDebug()<<"onChanged"<<name()<<"ctd3";
     gRoot->remakeAll();
     --qcrCallLevel;
     qDebug()<<"onChanged"<<name()<<"done";

@@ -52,7 +52,7 @@ private:
 
 void PlotDfgramOverlay::addRange(const Range& range)
 {
-    doLog(!softwareCalling_, QString("dfgram add %1 %2").arg(range.min).arg(range.max));
+    doLog(QString("dfgram add %1 %2").arg(range.min).arg(range.max));
     switch (gSession->params.editableRange) {
     case EditableRange::BASELINE:
         gSession->baseline.ranges.add(range);
@@ -74,7 +74,7 @@ void PlotDfgramOverlay::addRange(const Range& range)
 
 void PlotDfgramOverlay::selectRange(double x)
 {
-    doLog(!softwareCalling_, QString("dfgram sel %1").arg(x));
+    doLog(QString("dfgram sel %1").arg(x));
     switch (gSession->params.editableRange) {
     case EditableRange::BASELINE:
         gSession->baseline.ranges.selectByValue(x);
@@ -92,7 +92,6 @@ void PlotDfgramOverlay::selectRange(double x)
 
 void PlotDfgramOverlay::executeConsoleCommand(const QString& arg)
 {
-    softwareCalling_ = true;
     QStringList args = arg.split(' ');
     if (args[0]=="add") {
         if (args.size()<3)
@@ -104,7 +103,6 @@ void PlotDfgramOverlay::executeConsoleCommand(const QString& arg)
         selectRange(strOp::to_d(args[1]));
     } else
         throw QcrException("Unexpected dfgram command");
-    softwareCalling_ = false;
 }
 
 //! Returns color to be used when the mouse is marking a range.

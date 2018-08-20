@@ -128,7 +128,7 @@ void QcrToggle::initToggle(const QString& iconFile, const QKeySequence& shortcut
     initControl();
     connect(this, &QAction::toggled, this, [this](bool val){
             //qDebug()<<"TOGGLE "<<name()<<"toggled";
-            onChangedValue(hasFocus()&&!softwareCalling_, val);});
+            onChangedValue(val);});
     connect(this, &QAction::changed, [this]()->void {
             // Called upon any property change.
             // Also called when this is toggled (https://bugreports.qt.io/browse/QTBUG-68213)
@@ -193,16 +193,16 @@ void QcrSpinBox::initSpinBox(int ndigits, bool withDot, int min, int max, const 
         setToolTip(tooltip);
     initControl();
     connect(this, &QSpinBox::editingFinished, this, [this]() {
-            onChangedValue(hasFocus()&&!softwareCalling_, value()); });
+            onChangedValue(value()); });
     connect(this, _SLOT_(QSpinBox,valueChanged,int), [this](int val)->void {
             if(!hasFocus())
-                onChangedValue(hasFocus()&&!softwareCalling_, val); });
+                onChangedValue(val); });
 }
 
 void QcrSpinBox::mouseReleaseEvent(QMouseEvent* event)
 {
     QSpinBox::mouseReleaseEvent(event);
-    onChangedValue(hasFocus()&&!softwareCalling_, value());
+    onChangedValue(value());
 }
 
 void QcrSpinBox::executeConsoleCommand(const QString& arg)
@@ -234,16 +234,16 @@ void QcrDoubleSpinBox::initDoubleSpinBox(
         setToolTip(tooltip);
     initControl();
     connect(this, &QDoubleSpinBox::editingFinished, this, [this]() {
-            onChangedValue(hasFocus()&&!softwareCalling_, value()); });
+            onChangedValue(value()); });
     connect(this, _SLOT_(QDoubleSpinBox,valueChanged,double), [this](double val)->void {
             if(!hasFocus())
-                onChangedValue(hasFocus()&&!softwareCalling_, val); });
+                onChangedValue(val); });
 }
 
 void QcrDoubleSpinBox::mouseReleaseEvent(QMouseEvent* event)
 {
     QDoubleSpinBox::mouseReleaseEvent(event);
-    onChangedValue(hasFocus()&&!softwareCalling_, value());
+    onChangedValue(value());
 }
 
 void QcrDoubleSpinBox::executeConsoleCommand(const QString& arg)
@@ -261,7 +261,7 @@ QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, QcrCell<bool
 {
     initControl();
     connect(this, _SLOT_(QCheckBox,stateChanged,int), [this](int val)->void {
-            onChangedValue(hasFocus()&&!softwareCalling_, (bool)val); });
+            onChangedValue((bool)val); });
 }
 
 //  ***********************************************************************************************
@@ -274,7 +274,7 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, bool v
     initControl();
     setAutoExclusive(false); // TODO provide int-valued Qcr wrapper for exclusive radio buttons
     connect(this, _SLOT_(QRadioButton,toggled,bool), [this,_name](bool val)->void {
-            onChangedValue(hasFocus()&&!softwareCalling_, val); });
+            onChangedValue(val); });
 }
 
 QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, QcrCell<bool>* cell)
@@ -284,7 +284,7 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, QcrCel
     initControl();
     setAutoExclusive(false);
     connect(this, _SLOT_(QRadioButton,toggled,bool), [this](bool val)->void {
-            onChangedValue(hasFocus()&&!softwareCalling_, val); });
+            onChangedValue(val); });
 }
 
 //  ***********************************************************************************************
@@ -299,7 +299,8 @@ QcrComboBox::QcrComboBox(
     QComboBox::addItems(tags_);
     initControl();
     connect(this, _SLOT_(QComboBox,currentIndexChanged,int), [this](int val)->void {
-            onChangedValue(hasFocus()&&!softwareCalling_, val); });
+            if (!spuriousCall_)
+                onChangedValue(val); });
 }
 
 void QcrComboBox::remake()
@@ -308,11 +309,11 @@ void QcrComboBox::remake()
         QStringList newTags = makeTags_();
         if (newTags!=tags_) { // clear&addItems only when needed, to avoid changes of currentIndex
             const int oldIdx = currentIndex();
-            softwareCalling_ = true;
+            spuriousCall_ = true;
             QComboBox::clear();
             QComboBox::addItems(newTags);
             QComboBox::setCurrentIndex(0<=oldIdx&&oldIdx<count()?oldIdx:0);
-            softwareCalling_ = false;
+            spuriousCall_ = false;
             tags_ = newTags;
         }
     }
@@ -332,10 +333,10 @@ QcrLineEdit::QcrLineEdit(const QString& _name, const QString& val)
     // but also in a second line as if there were an indirect call.
     connect(this, _SLOT_(QLineEdit,textEdited,const QString&),
             [this](const QString& val)->void {
-                onChangedValue(hasFocus()&&!softwareCalling_, val); });
+                onChangedValue(val); });
     connect(this, _SLOT_(QLineEdit,textChanged,const QString&),
             [this](const QString& val)->void {
-                onChangedValue(hasFocus()&&!softwareCalling_, val); });
+                onChangedValue(val); });
 }
 
 //  ***********************************************************************************************
@@ -347,10 +348,8 @@ QcrTabWidget::QcrTabWidget(const QString& _name)
     initControl();
     connect(this, &QTabWidget::currentChanged, [this](int val) {
             if (spuriousCall_)
-                return; // do not log spurious index changes
-            // To detect user action, we must entirely relie on !softwareCalling,
-            // since hasFocus() does not work as we would need.
-            onChangedValue(!softwareCalling_, val); });
+                return;
+            onChangedValue(val); });
 }
 
 void QcrTabWidget::addTab(QWidget* page, const QString& label)
@@ -371,9 +370,7 @@ void QcrTabWidget::setTabEnabled(int index, bool on)
 
 void QcrTabWidget::setCurrentIndex(int val)
 {
-    //softwareCalling_ = true;
     QTabWidget::setCurrentIndex(val);
-    //softwareCalling_ = false;
 }
 
 bool QcrTabWidget::anyEnabled() const

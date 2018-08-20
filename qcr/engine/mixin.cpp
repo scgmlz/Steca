@@ -77,12 +77,11 @@ QcrSettable::QcrSettable(QObject& object, const QString& name, bool _modal)
     : QcrMixin {object, gConsole->learn(name, this)} // console may change name (expand macros)
 {}
 
-// This function looks trivial, but it should not be inlined because it allow us to
-// keep console.h out of single_value.h and widgets/controls.h
+// Not inlined to isolate dependence on console.h.
 
-void QcrSettable::doLog(bool userCalled, const QString& msg)
+void QcrSettable::doLog(const QString& msg)
 {
-    gConsole->log2(userCalled, msg);
+    gConsole->log(msg);
 }
 
 

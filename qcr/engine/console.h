@@ -40,7 +40,6 @@ public:
     void commandsFromStack();  //!< needed by modal dialogs
 
     void log(QString) const;
-    void log2(bool userCall, const QString&) const; //!< for use within lib Qcr
     bool hasCommandsOnStack() const { return !commandLifo_.empty(); } //!< needed by modal dialogs
 
 private:

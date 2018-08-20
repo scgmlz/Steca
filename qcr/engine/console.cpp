@@ -274,14 +274,6 @@ void Console::forget(const QString& name)
     registry().forget(name);
 }
 
-void Console::log2(bool userCall, const QString& line) const
-{
-    if (caller_==Caller::gui && !userCall)
-        log("#g " + line);
-    else
-        log(line);
-}
-
 void Console::log(QString line) const
 {
     static auto lastTime = startTime_;

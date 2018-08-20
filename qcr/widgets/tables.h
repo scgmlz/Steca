@@ -54,7 +54,7 @@ public:
     void onClicked(const QModelIndex& cell) override;
     virtual bool activated(int row) const = 0;
     virtual void setActivated(int row, bool on) = 0;
-    void activateAndLog(bool primaryCall, int row, bool on);
+    void activateAndLog(int row, bool on);
 };
 
 //! Pure virtual base class of all views of rectangular table form
@@ -77,7 +77,7 @@ protected:
     void currentChanged(const QModelIndex& current, const QModelIndex&) override final;
     void gotoCurrent(const QModelIndex&);
     void updateScroll();
-    void highlight(bool primaryCall, int row);
+    void highlight(int row);
 };
 
 //! Pure virtual base class for rectangular table models with rows that can be checked.

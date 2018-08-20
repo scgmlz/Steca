@@ -150,6 +150,7 @@ public:
 private:
     QStringList tags_;
     std::function<QStringList()> makeTags_;
+    bool spuriousCall_ {false};
     void doSetValue(int val) final { setCurrentIndex((int)val); }
     // hide some member functions of QComboBox:
     void setCurrentIndex(int val) { QComboBox::setCurrentIndex(val); }
