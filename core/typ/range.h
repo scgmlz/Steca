@@ -55,7 +55,7 @@ public:
 private:
 };
 
-//! A set of *sorted* *non-overlapping* ranges
+//! A *sorted* list of *non-overlapping* ranges, of which one is always selected.
 class Ranges {
 public:
     void fromJson(const QJsonArray&);
@@ -65,7 +65,7 @@ public:
     void select(int i);
     void selectByValue(double x);
 
-    Range* selectedRange() { return selected_==-1 || isEmpty() ? nullptr : &ranges_.at(selected_); }
+    Range* selectedRange() { return isEmpty() ? nullptr : &ranges_.at(selected_); }
 
     QJsonArray toJson() const;
     bool isEmpty() const { return ranges_.empty(); }
@@ -76,7 +76,7 @@ public:
 private:
     void sort();
     std::vector<Range> ranges_;
-    int selected_ {-1};
+    int selected_;
 };
 
 #endif // RANGE_H

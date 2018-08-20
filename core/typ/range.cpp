@@ -175,12 +175,12 @@ QString Range::to_s(const QString& unit, int precision, int digitsAfter) const
         : "undefined";
 }
 
+
 //  ***********************************************************************************************
 //! @class Ranges
 
 void Ranges::clear() {
     ranges_.clear();
-    selected_ = -1;
 }
 
 //! Adds given range to *this, and removes ranges from *this that intersect.
@@ -211,9 +211,11 @@ void Ranges::removeSelected()
 
 void Ranges::select(int i)
 {
+    ASSERT(0<=i && i<count());
     selected_ = i;
 }
 
+//! Selects the range that contains x. If there is no such range, then selected_ is left unchanged.
 void Ranges::selectByValue(double x)
 {
     for (int i=0; i<count(); ++i) {
