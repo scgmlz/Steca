@@ -13,7 +13,6 @@
 //  ***********************************************************************************************
 
 #include "core/data/collect_intensities.h"
-#include "core/data/angle_map.h"
 #include "core/session.h"
 #include "core/data/from_map.h"
 #include "qcr/base/debug.h"

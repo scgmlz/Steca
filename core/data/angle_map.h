@@ -16,7 +16,8 @@
 #define ANGLE_MAP_H
 
 #include "core/aux/angles.h"
-#include "core/pars/detector.h"
+#include "core/typ/range.h"
+#include "core/typ/size2d.h"
 #include <QSharedPointer> // no auto rm
 
 //! A pair of angles (gamma, 2theta) that designate a scattering direction.

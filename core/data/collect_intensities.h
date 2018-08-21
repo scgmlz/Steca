@@ -15,7 +15,6 @@
 #ifndef COLLECT_INTENSITIES_H
 #define COLLECT_INTENSITIES_H
 
-#include "core/aux/angles.h"
 #include <vector> // no auto rm
 
 class Curve;

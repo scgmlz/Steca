@@ -12,9 +12,9 @@
 //
 //  ***********************************************************************************************
 
-#include "angle_map.h"
+#include "core/data/angle_map.h"
 #include "core/session.h"
-#include "qcr/base/debug.h"
+//#include "qcr/base/debug.h"
 #include <qmath.h>
 #include <iostream> // for debugging
 

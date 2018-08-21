@@ -15,8 +15,6 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
-#include <QtGlobal>
-
 struct vec3r;
 
 //! 3D vector with base type float.

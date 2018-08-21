@@ -13,10 +13,9 @@
 //  ***********************************************************************************************
 
 #include "core/calc/interpolate_polefig.h"
-#include "core/calc/peak_info.h"
 #include "core/session.h"
 #include "core/aux/async.h"
-#include "qcr/base/debug.h"
+//#include "qcr/base/debug.h"
 #include <qmath.h>
 
 //  ***********************************************************************************************

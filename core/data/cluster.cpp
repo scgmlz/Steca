@@ -17,7 +17,6 @@
 #include "core/session.h"
 #include "core/data/collect_intensities.h"
 #include "qcr/base/debug.h" // warning
-#include <qmath.h>
 
 //  ***********************************************************************************************
 //! @class Sequence

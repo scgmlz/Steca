@@ -124,7 +124,7 @@ void ColumnSelector::updateRadiobuttons()
 BigtableTab::BigtableTab()
 {
     auto bigtableView = new BigtableView;
-    // layout
+
     auto* colSelBox = new QcrScrollArea;
     colSelBox->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     colSelBox->setWidget(new ColumnSelector());
