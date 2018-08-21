@@ -18,7 +18,9 @@
 #include "core/session.h"
 #include "gui/mainwin.h"
 #include "gui/view/toggles.h"
+#include "qcr/widgets/controls.h"
 //#include "qcr/base/debug.h"
+#include <QPainter>
 #include <qmath.h>
 
 namespace {
@@ -53,8 +55,21 @@ QRgb intenImage(float inten, float maxInten, bool curved) {
 //  ***********************************************************************************************
 //! @class ImageView
 
+//! Displays a 2d detector image, and possibly some overlay. Used in ImageTab.
+
+class ImageView final : public QcrWidget {
+public:
+    ImageView();
+    void setPixmap(const QPixmap&);
+    void setScale();
+private:
+    void resizeEvent(QResizeEvent*);
+    void paintEvent(QPaintEvent*);
+    double scale_ {0};
+    QPixmap original_, scaled_;
+};
+
 ImageView::ImageView()
-    : scale_(0)
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     connect(&gGui->toggles->crosshair, &QAction::toggled, [this](bool /*unused*/) { update(); });
@@ -142,16 +157,14 @@ void ImageView::paintEvent(QPaintEvent*)
 //  ***********************************************************************************************
 
 ImageTab::ImageTab()
-    : btnScale_ {&gGui->toggles->fixedIntenImage}
-    , btnOverlay_ {&gGui->toggles->crosshair}
 {
     // layout
-    box1_.addWidget(&btnScale_, Qt::AlignLeft);
-    box1_.addWidget(&btnOverlay_, Qt::AlignLeft);
+    box1_.addWidget(new QcrIconToggleButton{&gGui->toggles->fixedIntenImage}, Qt::AlignLeft);
+    box1_.addWidget(new QcrIconToggleButton{&gGui->toggles->crosshair}, Qt::AlignLeft);
     controls_.addLayout(&box1_);
 
     box_.addLayout(&controls_);
-    box_.addWidget(&imageView_);
+    box_.addWidget(imageView_ = new ImageView);
     setLayout(&box_);
 
     setRemake([this]() {render();});
@@ -160,7 +173,7 @@ ImageTab::ImageTab()
 void ImageTab::render()
 {
     //gSession->corrset.clearIntens(); // trigger redisplay // TODO move this to more appriate place
-    imageView_.setPixmap(pixmap());
+    imageView_->setPixmap(pixmap());
 }
 
 QPixmap ImageTab::makePixmap(const Image& image)

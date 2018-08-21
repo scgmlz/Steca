@@ -15,25 +15,11 @@
 #ifndef TAB_IMAGE_H
 #define TAB_IMAGE_H
 
-#include "qcr/widgets/controls.h"
+#include "qcr/widgets/controls.h" // TODO rm when layouts are gone
 #include "qcr/widgets/views.h"
 #include "qcr/engine/cell.h"
 #include "core/raw/image.h"
-#include <QPainter>
-
-//! Displays a 2d detector image, and possibly some overlay. Used in ImageTab.
-
-class ImageView final : public QcrWidget {
-public:
-    ImageView();
-    void setPixmap(const QPixmap&);
-    void setScale();
-private:
-    void resizeEvent(QResizeEvent*);
-    void paintEvent(QPaintEvent*);
-    double scale_;
-    QPixmap original_, scaled_;
-};
+#include <QPixmap>
 
 //! Pure virtual base class for DataImageTab and CorrImageTab, shows a detector image and controls.
 
@@ -47,13 +33,10 @@ protected:
     QPixmap makeOverlayPixmap(const class Measurement*);
     QPixmap makeBlankPixmap();
     QImage makeImage(const Image&);
-    ImageView imageView_;
+    class ImageView* imageView_;
     QHBoxLayout box_;
     QVBoxLayout controls_;
     QHBoxLayout box1_;
-private:
-    QcrIconToggleButton btnScale_;
-    QcrIconToggleButton btnOverlay_;
 };
 
 //! A tab for a data image and associated controls.
