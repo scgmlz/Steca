@@ -17,6 +17,7 @@
 
 #include "qcr/widgets/views.h"
 #include "qcr/engine/cell.h"
+#include "core/raw/measurement.h"
 #include "core/raw/image.h"
 
 //! Pure virtual base class for DataImageTab and CorrImageTab, shows a detector image and controls.
@@ -27,9 +28,7 @@ public:
 protected:
     void render();
     virtual QPixmap pixmap() = 0;
-    QPixmap makePixmap(const Image&);
-    QPixmap makeOverlayPixmap(const class Measurement*);
-    QPixmap makeBlankPixmap();
+    QPixmap blankPixmap();
     QImage makeImage(const Image&);
     class QHBoxLayout* box1_;
     class QVBoxLayout* controls_;
@@ -47,6 +46,7 @@ public:
 private:
     const Measurement* measurement();
     QPixmap pixmap() final;
+    void addOverlay(QImage&, double);
     QcrCell<int> iMeas {1};
 };
 

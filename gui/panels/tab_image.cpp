@@ -74,42 +74,11 @@ ImageTab::ImageTab()
 
 void ImageTab::render()
 {
+    qDebug()<<"RENDER IMAGE";
     imageView_->setPixmap(pixmap());
 }
 
-QPixmap ImageTab::makePixmap(const Image& image)
-{
-    QImage im = makeImage(image);
-    return QPixmap::fromImage(im);
-}
-
-QPixmap ImageTab::makeOverlayPixmap(const Measurement* m)
-{
-    gSession->gammaSelection.onData();
-    gSession->thetaSelection.onData();
-    QImage im = makeImage(m->image());
-    const AngleMap& angleMap = gSession->angleMap.get(m->midTth());
-    const Range& rgeGma = gSession->gammaSelection.range();
-    const Range& rgeTth = gSession->thetaSelection.range();
-    for (int j=0; j<im.size().height(); ++j) {
-        for (int i=0; i<im.size().width(); ++i) {
-            const ScatterDirection& a = angleMap.dirAt2(i, j);
-            QColor color = im.pixel(i, j);
-            if (rgeGma.contains(a.gma)) {
-                if (rgeTth.contains(a.tth))
-                    color = Qt::yellow;
-                else
-                    color.setGreen(qFloor(color.green() * .3 + 255 * .7));
-            } else if (rgeTth.contains(a.tth)) {
-                color.setGreen(qFloor(color.green() * .3 + 255 * .7));
-            }
-            im.setPixel(i, j, color.rgb());
-        }
-    }
-    return QPixmap::fromImage(im);
-}
-
-QPixmap ImageTab::makeBlankPixmap()
+QPixmap ImageTab::blankPixmap()
 {
     const size2d size = gSession->imageSize();
     QPixmap pixmap(size.w, size.h);
@@ -130,6 +99,7 @@ QImage ImageTab::makeImage(const Image& image)
     const Range rgeInten = imageLens.rgeInten(fixedScale);
     float maxInten = float(rgeInten.max);
 
+    qDebug()<<"MAKE IMAGE";
     for (int j=0; j<sz.h; ++j)
         for (int i=0; i<sz.w; ++i)
             ret.setPixel(i, j, intenImage(imageLens.imageInten(i, j), maxInten, !fixedScale));
@@ -215,16 +185,41 @@ QPixmap DataImageTab::pixmap()
 {
     const Measurement* m = measurement();
     if (!m)
-        return makeBlankPixmap();
+        return blankPixmap();
+    QImage img = makeImage(m->image());
     if (gGui->toggles->showBins.getValue())
-        return makeOverlayPixmap(m);
-    return makePixmap(m->image());
+        addOverlay(img, m->midTth());
+    return QPixmap::fromImage(img);
 }
 
 const Measurement* DataImageTab::measurement()
 {
     const Cluster* cluster = gSession->currentCluster();
     return cluster ? cluster->at(iMeas.val()-1) : nullptr;
+}
+
+void DataImageTab::addOverlay(QImage& img, double midTth)
+{
+    gSession->gammaSelection.onData();
+    gSession->thetaSelection.onData();
+    const AngleMap& angleMap = gSession->angleMap.get(midTth);
+    const Range& rgeGma = gSession->gammaSelection.range();
+    const Range& rgeTth = gSession->thetaSelection.range();
+    for (int j=0; j<img.size().height(); ++j) {
+        for (int i=0; i<img.size().width(); ++i) {
+            const ScatterDirection& a = angleMap.dirAt2(i, j);
+            QColor color = img.pixel(i, j);
+            if (rgeGma.contains(a.gma)) {
+                if (rgeTth.contains(a.tth))
+                    color = Qt::yellow;
+                else
+                    color.setGreen(qFloor(color.green() * .3 + 255 * .7));
+            } else if (rgeTth.contains(a.tth)) {
+                color.setGreen(qFloor(color.green() * .3 + 255 * .7));
+            }
+            img.setPixel(i, j, color.rgb());
+        }
+    }
 }
 
 
@@ -239,6 +234,6 @@ CorrImageTab::CorrImageTab()
 QPixmap CorrImageTab::pixmap()
 {
     if (!gSession->corrset.hasFile())
-        return makeBlankPixmap();
-    return makePixmap(gSession->corrset.image());
+        return blankPixmap();
+    return QPixmap::fromImage(makeImage(gSession->corrset.image()));
 }
