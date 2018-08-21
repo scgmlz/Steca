@@ -15,7 +15,6 @@
 #ifndef TAB_IMAGE_H
 #define TAB_IMAGE_H
 
-#include "qcr/widgets/controls.h" // TODO rm when layouts are gone
 #include "qcr/widgets/views.h"
 #include "qcr/engine/cell.h"
 #include "core/raw/image.h"
@@ -33,10 +32,9 @@ protected:
     QPixmap makeOverlayPixmap(const class Measurement*);
     QPixmap makeBlankPixmap();
     QImage makeImage(const Image&);
+    class QHBoxLayout* box1_;
+    class QVBoxLayout* controls_;
     class ImageView* imageView_;
-    QHBoxLayout box_;
-    QVBoxLayout controls_;
-    QHBoxLayout box1_;
 };
 
 //! A tab for a data image and associated controls.

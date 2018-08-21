@@ -152,27 +152,32 @@ void ImageView::paintEvent(QPaintEvent*)
     p.drawRect(rect.adjusted(-1, -1, 0, 0));
 }
 
+
 //  ***********************************************************************************************
 //  base class ImageTab
 //  ***********************************************************************************************
 
 ImageTab::ImageTab()
 {
-    // layout
-    box1_.addWidget(new QcrIconToggleButton{&gGui->toggles->fixedIntenImage}, Qt::AlignLeft);
-    box1_.addWidget(new QcrIconToggleButton{&gGui->toggles->crosshair}, Qt::AlignLeft);
-    controls_.addLayout(&box1_);
+    box1_ = new QHBoxLayout;
+    box1_->addWidget(new QcrIconToggleButton{&gGui->toggles->fixedIntenImage}, Qt::AlignLeft);
+    box1_->addWidget(new QcrIconToggleButton{&gGui->toggles->crosshair}, Qt::AlignLeft);
 
-    box_.addLayout(&controls_);
-    box_.addWidget(imageView_ = new ImageView);
-    setLayout(&box_);
+    controls_ = new QVBoxLayout;
+    controls_->addLayout(box1_);
 
-    setRemake([this]() {render();});
+    imageView_ = new ImageView;
+
+    auto* box = new QHBoxLayout;
+    box->addLayout(controls_);
+    box->addWidget(imageView_);
+    setLayout(box);
+
+    setRemake([this](){ render(); });
 }
 
 void ImageTab::render()
 {
-    //gSession->corrset.clearIntens(); // trigger redisplay // TODO move this to more appriate place
     imageView_->setPixmap(pixmap());
 }
 
@@ -235,6 +240,7 @@ QImage ImageTab::makeImage(const Image& image)
     return ret;
 }
 
+
 //  ***********************************************************************************************
 //! @class DataImageTab
 
@@ -285,7 +291,7 @@ DataImageTab::DataImageTab()
             render(); });
 
     // layout
-    box1_.addWidget(new QcrIconToggleButton{&gGui->toggles->showBins}, Qt::AlignLeft);
+    box1_->addWidget(new QcrIconToggleButton{&gGui->toggles->showBins}, Qt::AlignLeft);
 
     auto* boxIdx = new QGridLayout;
     boxIdx->addWidget(new QLabel("idx (image)"), 0, 0, Qt::AlignLeft);
@@ -294,10 +300,10 @@ DataImageTab::DataImageTab()
     boxIdx->addWidget(idxTheta, 1, 1, Qt::AlignLeft);
     boxIdx->addWidget(new QLabel("idx (γ)"), 2, 0, Qt::AlignLeft);
     boxIdx->addWidget(idxSlice, 2, 1, Qt::AlignLeft);
-    controls_.addStretch(100);
-    controls_.addLayout(boxIdx);
+    controls_->addStretch(100);
+    controls_->addLayout(boxIdx);
 
-    controls_.addStretch(1000);
+    controls_->addStretch(1000);
     auto* boxRanges = new QGridLayout;
     boxRanges->addWidget(new QLabel("γ total:"), 0, 0, Qt::AlignLeft);
     boxRanges->addWidget(new QLabel("γ slice:"), 1, 0, Qt::AlignLeft);
@@ -307,7 +313,7 @@ DataImageTab::DataImageTab()
     boxRanges->addWidget(gammaRangeSlice, 1, 1, Qt::AlignLeft);
     boxRanges->addWidget(thetaRangeTotal, 2, 1, Qt::AlignLeft);
     boxRanges->addWidget(thetaRangeBin,   3, 1, Qt::AlignLeft);
-    controls_.addLayout(boxRanges, Qt::AlignLeft|Qt::AlignBottom);
+    controls_->addLayout(boxRanges, Qt::AlignLeft|Qt::AlignBottom);
 }
 
 QPixmap DataImageTab::pixmap()
@@ -327,13 +333,12 @@ const Measurement* DataImageTab::measurement()
 }
 
 
-
 //  ***********************************************************************************************
 //! @class CorrImageTab
 
 CorrImageTab::CorrImageTab()
 {
-    controls_.addStretch(1);
+    controls_->addStretch(1);
 }
 
 QPixmap CorrImageTab::pixmap()
