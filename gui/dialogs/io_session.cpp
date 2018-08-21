@@ -18,6 +18,7 @@
 #include "core/aux/exception.h"
 #include "gui/dialogs/file_dialog.h"
 #include "qcr/base/debug.h" // warning
+#include <QDir>
 #include <QStringBuilder> // for ".." % ..
 
 namespace {

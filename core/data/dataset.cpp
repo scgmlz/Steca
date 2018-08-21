@@ -127,6 +127,7 @@ void Dataset::addGivenFiles(const QStringList& filePaths)
     }
     if (countFiles())
         highlight_.setFile( i<0 ? 0 : i );
+    gRoot->remakeAll();
 }
 
 void Dataset::setClusterActivation(int index, bool on)

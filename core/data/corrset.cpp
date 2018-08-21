@@ -15,6 +15,7 @@
 #include "core/data/corrset.h"
 #include "core/loaders/loaders.h"
 #include "core/session.h"
+#include "qcr/engine/mixin.h" // remakeAll
 #include "qcr/base/debug.h"
 
 void Corrset::clear()
@@ -29,7 +30,7 @@ void Corrset::removeFile()
     raw_.release();
     // TODO empty image? was corrImage_.clear();
     normalizer_.release();
-    gSession->updateImageSize(); /* UNDER CONSTRUCTION */
+    gSession->updateImageSize(); // TODO check, was marked "UNDER CONSTRUCTION"
 }
 
 void Corrset::loadFile(const QString& filePath)
@@ -44,6 +45,7 @@ void Corrset::loadFile(const QString& filePath)
     normalizer_.release(); // will be calculated when needed
     // all ok
     enabled.setVal(true);
+    gRoot->remakeAll();
 }
 
 const Image* Corrset::normalizer() const

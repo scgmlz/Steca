@@ -22,6 +22,7 @@
 #include "gui/dialogs/export_diagram.h"
 #include "gui/dialogs/export_polefig.h"
 #include "gui/dialogs/io_session.h"
+#include "gui/dialogs/load_data.h"
 #include "gui/dialogs/popup_bigtable.h"
 #include "gui/dialogs/popup_diagram.h"
 #include "gui/dialogs/popup_polefig.h"
@@ -35,10 +36,10 @@ Triggers::Triggers()
     baserangesClear.setTriggerHook([](){ gSession->baseline.clear();          });
     baserangeRemove.setTriggerHook([](){ gSession->baseline.removeSelected(); });
     peakAdd        .setTriggerHook([](){ AddRangeBox("peak").exec(); });
-    addFiles       .setTriggerHook([](){ gGui->addFiles(); });
+    addFiles       .setTriggerHook([](){ loadData::addFiles(gGui); });
     checkUpdate    .setTriggerHook([](){ CheckUpdate _(gGui); });
     clearSession   .setTriggerHook([](){ gSession->clear(); });
-    corrFile       .setTriggerHook([](){ gGui->loadCorrFile(); });
+    corrFile       .setTriggerHook([](){ loadData::loadCorrFile(gGui); });
     exportDfgram   .setTriggerHook([](){ ExportDfgram().exec(); });
     exportPolefig  .setTriggerHook([](){ ExportPolefig().exec(); });
     exportBigtable .setTriggerHook([](){ ExportBigtable().exec(); });

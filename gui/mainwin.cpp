@@ -35,10 +35,6 @@
 
 MainWin* gGui; //!< global pointer to _the_ main window
 
-namespace {
-const QString dataFormats {"Data files (*.dat *.yaml *.mar*);;All files (*.*)"};
-}
-
 //  ***********************************************************************************************
 //! @class MainWin
 
@@ -157,39 +153,4 @@ void MainWin::saveSettings() const
     XSettings s("MainWin");
     s.setValue("geometry", saveGeometry()); // this mainwindow's widget geometry
     s.setValue("state", saveState()); // state of this mainwindow's toolbars and dockwidgets
-}
-
-void MainWin::addFiles()
-{
-    QStringList fileNames
-        = file_dialog::queryImportFileNames(this, "Add files", dataDir_, dataFormats);
-    repaint();
-    if (fileNames.isEmpty())
-        return;
-    TakesLongTime __("addFiles");
-    try {
-        gSession->dataset.addGivenFiles(fileNames);
-    } catch (const Exception& ex) {
-        qWarning() << ex.msg();
-    }
-    gRoot->remakeAll();
-}
-
-void MainWin::loadCorrFile()
-{
-    // TODO catch THROW's
-    if (gSession->corrset.hasFile()) {
-        gSession->corrset.removeFile();
-    } else {
-        QString fileName = file_dialog::queryImportFileName(
-            this, "Set correction file", dataDir_, dataFormats);
-        if (fileName.isEmpty())
-            return;
-        try {
-            gSession->corrset.loadFile(fileName);
-        } catch (const Exception& ex) {
-            qWarning() << ex.msg();
-        }
-    }
-    gRoot->remakeAll();
 }

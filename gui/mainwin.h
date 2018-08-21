@@ -16,7 +16,6 @@
 #define MAINWIN_H
 
 #include "qcr/widgets/views.h"
-#include <QDir>
 
 extern class MainWin* gGui; //!< global pointer to _the_ main window
 
@@ -45,9 +44,6 @@ private:
 
     void clearSession();
 
-    void addFiles();
-    void loadCorrFile();
-
     class Mainframe* mainframe_;
     class SubframeDfgram* frameDfgram_;
     class SubframeSetup* frameSetup_;
@@ -57,7 +53,6 @@ private:
     class Menus* menus_;
 
     QByteArray initialState_;
-    QDir dataDir_ {QDir::homePath()};
 
     friend Triggers;
 };
