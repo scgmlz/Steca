@@ -191,7 +191,7 @@ ControlsPeakfits::ControlsPeakfits()
         "reflTyp", &gSession->params.defaultPeakFunction,
         []()->QStringList{return Peak::keys;} };
     // TODO move this to core
-    comboReflType->cell()->setHook([](int i){
+    comboReflType->setHook([](int i){
             const QString& peakFunctionName = Peak::keys[i];
             Peaks::defaultFunctionName = peakFunctionName;
             if (gSession->peaks.selectedPeak())

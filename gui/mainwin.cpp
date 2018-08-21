@@ -74,12 +74,12 @@ MainWin::MainWin()
     TakesLongTime::registerProgressBar(progressBar);
 
     // connect toggles
-    toggles->viewStatusbar.cell()->setHook([this](bool on){statusBar()  ->setVisible(on);});
-    toggles->viewFiles    .cell()->setHook([this](bool on){dockFiles_   ->setVisible(on);});
-    toggles->viewClusters .cell()->setHook([this](bool on){dockClusters_->setVisible(on);});
-    toggles->viewMetadata .cell()->setHook([this](bool on){dockMetadata_->setVisible(on);});
+    toggles->viewStatusbar.setHook([this](bool on){statusBar()  ->setVisible(on);});
+    toggles->viewFiles    .setHook([this](bool on){dockFiles_   ->setVisible(on);});
+    toggles->viewClusters .setHook([this](bool on){dockClusters_->setVisible(on);});
+    toggles->viewMetadata .setHook([this](bool on){dockMetadata_->setVisible(on);});
 #ifndef Q_OS_OSX
-    toggles->fullScreen   .cell()->setHook([this](bool on){
+    toggles->fullScreen   .setHook([this](bool on){
             if (on) showFullScreen(); else showNormal();});
 #endif
 

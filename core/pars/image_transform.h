@@ -19,33 +19,12 @@
 
 class ImageTransform {
 public:
-    enum eTransform {
-        ROTATE_0 = 0, // no transform
-        ROTATE_1 = 1, // one quarter
-        ROTATE_2 = 2, // two quarters
-        ROTATE_3 = 3, // three quarters
-        MIRROR = 4,
-        MIRROR_ROTATE_0 = MIRROR | ROTATE_0,
-        MIRROR_ROTATE_1 = MIRROR | ROTATE_1,
-        MIRROR_ROTATE_2 = MIRROR | ROTATE_2,
-        MIRROR_ROTATE_3 = MIRROR | ROTATE_3,
-    } val;
+    ImageTransform() {}
+    void doRotate() { rotation = (rotation+1)%4; }
+    bool isTransposed() const { return rotation & 1; }
 
-    //! clamps val appropriately
-    ImageTransform(int val = ROTATE_0);
-
-    //! adds/removes the mirror flag
-    ImageTransform mirror(bool on) const;
-
-    //! rotates only; keeps the mirror flag
-    ImageTransform rotateTo(const ImageTransform&) const;
-
-    //! rotates by one quarter-turn
-    ImageTransform nextRotate() const;
-
-    bool isTransposed() const { return 0 != (val & 1); }
-
-    bool operator==(const ImageTransform& that) const { return val == that.val; }
+    bool mirror {false};
+    int rotation {0};
 };
 
 #endif // IMAGE_TRANSFORM_H

@@ -30,7 +30,7 @@ SubframeSetup::SubframeSetup()
     addTab(new ControlsPeakfits(),     "Peakfits"); const int idxPeakfits = 2;
     addTab(new ControlsInterpolation(),"Interpol"); //const int idxInterpol = 3;
 
-    cell()->setHook([=](int val){
+    setHook([=](int val){
             ASSERT(val==this->currentIndex());
             switch (val) {
             case idxBaseline: gSession->params.editableRange = EditableRange::BASELINE; break;

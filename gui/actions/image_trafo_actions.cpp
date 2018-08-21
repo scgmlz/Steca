@@ -18,17 +18,16 @@
 
 ImageTrafoActions::ImageTrafoActions()
 {
-    QObject::connect(&mirrorImage, &QAction::toggled, [this](bool on) { setImageMirror(on); });
-    QObject::connect(&rotateImage, &QAction::triggered, [this]() { doImageRotate(); });
+    mirrorImage.setHook([this](bool on){ setImageMirror(on); });
+    rotateImage.setTriggerHook([this](){ doImageRotate(); });
 }
 
 void ImageTrafoActions::doImageRotate()
 {
-    const ImageTransform& rot = gSession->params.imageTransform.nextRotate();
+    gSession->params.imageTransform.doRotate();
     const char* rotateIconFile;
     const char* mirrorIconFile;
-
-    switch (rot.val & 3) {
+    switch (gSession->params.imageTransform.rotation) {
     case 0:
         rotateIconFile = ":/icon/rotate0";
         mirrorIconFile = ":/icon/mirrorHorz";
@@ -48,14 +47,11 @@ void ImageTrafoActions::doImageRotate()
     default:
         qFatal("impossible rotation");
     }
-
     rotateImage.setIcon(QIcon(rotateIconFile));
     mirrorImage.setIcon(QIcon(mirrorIconFile));
-    gSession->params.imageTransform.rotateTo(rot);
 }
 
 void ImageTrafoActions::setImageMirror(bool on)
 {
-    mirrorImage.programaticallySetValue(on);
-    gSession->params.imageTransform.mirror(on);
+    gSession->params.imageTransform.mirror = on;
 }

@@ -40,28 +40,28 @@ void ImageLens::doTrans(int& x, int& y) const
     int w = s.w;
     int h = s.h;
 
-    switch (gSession->params.imageTransform.val) {
-    case ImageTransform::ROTATE_0: break;
-    case ImageTransform::ROTATE_1:
+    const ImageTransform& trafo = gSession->params.imageTransform;
+    if        (trafo.rotation==0 && !trafo.mirror) {
+        ; // do nothing
+    } else if (trafo.rotation==1 && !trafo.mirror) {
         qSwap(x, y);
         y = w - y - 1;
-        break;
-    case ImageTransform::ROTATE_2:
+    } else if (trafo.rotation==2 && !trafo.mirror) {
         x = w - x - 1;
         y = h - y - 1;
-        break;
-    case ImageTransform::ROTATE_3:
+    } else if (trafo.rotation==3 && !trafo.mirror) {
         qSwap(x, y);
         x = h - x - 1;
-        break;
-    case ImageTransform::MIRROR_ROTATE_0: x = w - x - 1; break;
-    case ImageTransform::MIRROR_ROTATE_1:
+    } else if (trafo.rotation==0 &&  trafo.mirror) {
+        x = w - x - 1;
+    } else if (trafo.rotation==1 &&  trafo.mirror) {
         y = h - y - 1;
         qSwap(x, y);
         y = w - y - 1;
-        break;
-    case ImageTransform::MIRROR_ROTATE_2: y = h - y - 1; break;
-    case ImageTransform::MIRROR_ROTATE_3: qSwap(x, y); break;
+    } else if (trafo.rotation==2 &&  trafo.mirror) {
+        y = h - y - 1;
+    } else if (trafo.rotation==3 &&  trafo.mirror) {
+        qSwap(x, y);
     }
 }
 

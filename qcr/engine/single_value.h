@@ -32,6 +32,7 @@ public:
     virtual T doGetValue() const = 0; //!< to be overriden by the widget-specific get function
     virtual void executeConsoleCommand(const QString& arg);
     QcrCell<T>* cell() { return cell_; }
+    void setHook(std::function<void(const T)> f) { cell()->setHook(f); }
 protected:
     void onChangedValue(T val);
     QcrCell<T>* cell_ {nullptr};
