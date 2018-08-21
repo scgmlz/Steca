@@ -28,7 +28,7 @@
 #include "gui/panels/subframe_files.h"
 #include "gui/panels/subframe_metadata.h"
 #include "gui/panels/subframe_setup.h"
-#include "qcr/base/debug.h"
+//#include "qcr/base/debug.h"
 #include <QProgressBar>
 #include <QSplitter>
 #include <QStatusBar>

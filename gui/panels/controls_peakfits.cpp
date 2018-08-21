@@ -12,13 +12,11 @@
 //
 //  ***********************************************************************************************
 
-#include "controls_peakfits.h"
+#include "gui/panels/controls_peakfits.h"
 #include "core/session.h"
-#include "qcr/widgets/views.h"
 #include "qcr/widgets/tables.h"
 #include "gui/mainwin.h"
 #include "gui/actions/triggers.h"
-#include "gui/view/toggles.h"
 #include "gui/view/range_control.h"
 //#include "qcr/base/debug.h"
 

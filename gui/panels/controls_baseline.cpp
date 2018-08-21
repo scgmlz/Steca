@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "controls_baseline.h"
+#include "gui/panels/controls_baseline.h"
 #include "core/session.h"
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"

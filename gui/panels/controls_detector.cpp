@@ -12,12 +12,12 @@
 //
 //  ***********************************************************************************************
 
-#include "controls_detector.h"
+#include "gui/panels/controls_detector.h"
 #include "core/session.h"
 #include "gui/actions/image_trafo_actions.h"
 #include "gui/view/toggles.h"
 #include "gui/mainwin.h"
-#include "qcr/base/debug.h"
+//#include "qcr/base/debug.h"
 #include <QThread> // for sleep for debugging
 
 //  ***********************************************************************************************

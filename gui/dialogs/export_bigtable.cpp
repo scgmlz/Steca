@@ -16,7 +16,6 @@
 #include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/mainwin.h"
 #include "gui/view/bigtable.h"
-#include <QTextStream>
 
 //  ***********************************************************************************************
 //! @class ExportBigtable
@@ -33,6 +32,7 @@ ExportBigtable::ExportBigtable()
     setLayout(fileField_);
 }
 
+// TODO move to Core
 void ExportBigtable::save()
 {
     QFile* file = fileField_->file();

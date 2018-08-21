@@ -13,7 +13,6 @@
 //  ***********************************************************************************************
 
 #include "gui/dialogs/export_dfgram.h"
-#include "core/data/collect_intensities.h"
 #include "core/aux/async.h"
 #include "core/aux/exception.h"
 #include "core/session.h"
@@ -23,7 +22,6 @@
 //#include "qcr/base/debug.h"
 #include <qmath.h>
 #include <QGroupBox>
-#include <QMessageBox>
 
 namespace {
 

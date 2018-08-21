@@ -12,8 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "popup_diagram.h"
-#include "core/session.h"
+#include "gui/dialogs/popup_diagram.h"
 #include "gui/mainwin.h"
 #include "gui/view/plot_diagram.h"
 #include <QVBoxLayout>
