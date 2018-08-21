@@ -43,6 +43,4 @@ private:
     size2d imageSize_;
 };
 
-Q_DECLARE_METATYPE(const Rawfile*)
-
 #endif // RAWFILE_H
