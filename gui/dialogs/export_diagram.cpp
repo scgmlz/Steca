@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "export_diagram.h"
+#include "gui/dialogs/export_diagram.h"
 #include "core/session.h"
 #include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/mainwin.h"

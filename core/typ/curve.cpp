@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "curve.h"
+#include "core/typ/curve.h"
 #include "qcr/base/debug.h"
 
 void Curve::clear()

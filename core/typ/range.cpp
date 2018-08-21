@@ -14,7 +14,7 @@
 //
 //  ***********************************************************************************************
 
-#include "range.h"
+#include "core/typ/range.h"
 #include "core/aux/exception.h"
 #include "core/typ/json.h"
 #include "qcr/base/debug.h"

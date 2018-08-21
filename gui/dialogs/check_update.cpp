@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "check_update.h"
+#include "gui/dialogs/check_update.h"
 #include "manifest.h"
 #include <QApplication>
 #include <QMessageBox>

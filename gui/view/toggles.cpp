@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "toggles.h"
+#include "gui/view/toggles.h"
 #include "core/session.h"
 #include "gui/mainwin.h"
 //#include "qcr/base/debug.h"

@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "variant.h"
+#include "core/aux/variant.h"
 #include <QDate>
 
 bool isNumeric(const QVariant& v)

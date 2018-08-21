@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "bigtable.h"
+#include "gui/view/bigtable.h"
 #include "core/session.h"
 #include "gui/mainwin.h"
 #include "qcr/base/debug.h"

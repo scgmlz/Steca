@@ -14,7 +14,7 @@
 //
 //  ***********************************************************************************************
 
-#include "angles.h"
+#include "core/aux/angles.h"
 #include <qmath.h>
 
 deg::deg(rad r)

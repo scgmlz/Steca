@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "export_polefig.h"
+#include "gui/dialogs/export_polefig.h"
 #include "core/data/collect_intensities.h"
 #include "core/session.h"
 #include "gui/dialogs/exportfile_dialogfield.h"

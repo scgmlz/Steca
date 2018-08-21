@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "fit_fun.h"
+#include "core/fit/fit_fun.h"
 #include "core/typ/curve.h"
 #include "core/fit/fit_methods.h"
 #include "core/fit/raw_outcome.h"

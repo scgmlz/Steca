@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "message_boxes.h"
+#include "gui/dialogs/message_boxes.h"
 #include "gui/mainwin.h"
 #include "manifest.h"
 #include <QApplication>

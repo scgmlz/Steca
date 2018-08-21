@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "controls_interpolation.h"
+#include "gui/panels/controls_interpolation.h"
 #include "core/session.h"
 #include "qcr/widgets/controls.h"
 
