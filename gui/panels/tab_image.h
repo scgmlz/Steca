@@ -46,7 +46,6 @@ public:
 private:
     const Measurement* measurement();
     QPixmap pixmap() final;
-    void addOverlay(QImage&, double);
     QcrCell<int> iMeas {1};
 };
 

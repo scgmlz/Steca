@@ -48,6 +48,30 @@ QRgb intenImage(float inten, float maxInten, bool curved) {
     return qRgb(int(0xff * (inten - high) * 4), 0xff, 0xff);
 }
 
+void addOverlay(QImage& img, double midTth)
+{
+    gSession->gammaSelection.onData();
+    gSession->thetaSelection.onData();
+    const AngleMap& angleMap = gSession->angleMap.get(midTth);
+    const Range& rgeGma = gSession->gammaSelection.range();
+    const Range& rgeTth = gSession->thetaSelection.range();
+    for (int j=0; j<img.size().height(); ++j) {
+        for (int i=0; i<img.size().width(); ++i) {
+            const ScatterDirection& a = angleMap.dirAt2(i, j);
+            QColor color = img.pixel(i, j);
+            if (rgeGma.contains(a.gma)) {
+                if (rgeTth.contains(a.tth))
+                    color = Qt::yellow;
+                else
+                    color.setGreen(qFloor(color.green() * .3 + 255 * .7));
+            } else if (rgeTth.contains(a.tth)) {
+                color.setGreen(qFloor(color.green() * .3 + 255 * .7));
+            }
+            img.setPixel(i, j, color.rgb());
+        }
+    }
+}
+
 } // namespace
 
 //  ***********************************************************************************************
@@ -197,31 +221,6 @@ const Measurement* DataImageTab::measurement()
     const Cluster* cluster = gSession->currentCluster();
     return cluster ? cluster->at(iMeas.val()-1) : nullptr;
 }
-
-void DataImageTab::addOverlay(QImage& img, double midTth)
-{
-    gSession->gammaSelection.onData();
-    gSession->thetaSelection.onData();
-    const AngleMap& angleMap = gSession->angleMap.get(midTth);
-    const Range& rgeGma = gSession->gammaSelection.range();
-    const Range& rgeTth = gSession->thetaSelection.range();
-    for (int j=0; j<img.size().height(); ++j) {
-        for (int i=0; i<img.size().width(); ++i) {
-            const ScatterDirection& a = angleMap.dirAt2(i, j);
-            QColor color = img.pixel(i, j);
-            if (rgeGma.contains(a.gma)) {
-                if (rgeTth.contains(a.tth))
-                    color = Qt::yellow;
-                else
-                    color.setGreen(qFloor(color.green() * .3 + 255 * .7));
-            } else if (rgeTth.contains(a.tth)) {
-                color.setGreen(qFloor(color.green() * .3 + 255 * .7));
-            }
-            img.setPixel(i, j, color.rgb());
-        }
-    }
-}
-
 
 //  ***********************************************************************************************
 //! @class CorrImageTab
