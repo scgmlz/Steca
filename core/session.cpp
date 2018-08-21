@@ -37,6 +37,12 @@ void Session::onDetector() const
         pCluster->dfgrams.invalidate();
 }
 
+void Session::onCut() const
+{
+    onDetector();
+    corrset.invalidateNormalizer();
+}
+
 void Session::onBaseline() const
 {
     for (auto const& pCluster: dataset.allClusters)

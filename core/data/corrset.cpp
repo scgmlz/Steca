@@ -18,49 +18,11 @@
 #include "qcr/engine/mixin.h" // remakeAll
 #include "qcr/base/debug.h"
 
-void Corrset::clear()
-{
-    removeFile();
-    enabled.setVal(true);
-    hasNANs_ = false;
-}
+namespace {
 
-void Corrset::removeFile()
+Image recomputeNormalizer(const Corrset* parent)
 {
-    raw_.release();
-    // TODO empty image? was corrImage_.clear();
-    normalizer_.release();
-    gSession->updateImageSize(); // TODO check, was marked "UNDER CONSTRUCTION"
-}
-
-void Corrset::loadFile(const QString& filePath)
-{
-    if (filePath.isEmpty())
-        qFatal("Corrset::loadFile called with empty filePath argument");
-    raw_.reset(new Rawfile(load::loadRawfile(filePath)));
-    if (!raw_.get())
-        return;
-    gSession->setImageSize(raw_->imageSize());
-    corrImage_.reset(new Image{raw_->summedImage()});
-    normalizer_.release(); // will be calculated when needed
-    // all ok
-    enabled.setVal(true);
-    gRoot->remakeAll();
-}
-
-const Image* Corrset::normalizer() const
-{
-    if (!hasFile() || !enabled.val())
-        return nullptr;
-    if (!normalizer_.get())
-        calcNormalizer();
-    return normalizer_.get();
-}
-
-void Corrset::calcNormalizer() const
-{
-    hasNANs_ = false;
-
+    /*
     ASSERT(corrImage_.get());
     size2d size = corrImage_->size() - gSession->params.imageCut.marginSize();
     ASSERT(!size.isEmpty());
@@ -84,11 +46,48 @@ void Corrset::calcNormalizer() const
                 fact = avg / inten;
             } else {
                 fact = Q_QNAN;
-                hasNANs_ = true;
             }
             normalizer_->setInten2d(i + di, j + dj, float(fact));
         }
     }
+    */
+    return {};
+}
+
+} // namespace
+
+
+Corrset::Corrset()
+    : normalizer_{[this]()->Image{ return recomputeNormalizer(this); }}
+{}
+
+void Corrset::clear()
+{
+    removeFile();
+    enabled.setVal(true);
+}
+
+void Corrset::removeFile()
+{
+    raw_.release();
+    // TODO empty image? was corrImage_.clear();
+    invalidateNormalizer();
+    gSession->updateImageSize(); // TODO check, was marked "UNDER CONSTRUCTION"
+}
+
+void Corrset::loadFile(const QString& filePath)
+{
+    if (filePath.isEmpty())
+        qFatal("Corrset::loadFile called with empty filePath argument");
+    raw_.reset(new Rawfile(load::loadRawfile(filePath)));
+    if (!raw_.get())
+        return;
+    gSession->setImageSize(raw_->imageSize());
+    corrImage_.reset(new Image{raw_->summedImage()});
+    invalidateNormalizer();
+    // all ok
+    enabled.setVal(true);
+    gRoot->remakeAll();
 }
 
 QJsonObject Corrset::toJson() const

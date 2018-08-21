@@ -47,9 +47,10 @@ public:
     void setImageSize(const size2d&); //!< Also ensures same size for all images
 
     void onDetector() const;      //!< detector detector has changed
+    void onCut() const;           //!< image cuts have changed
     void onBaseline() const;      //!< settings for baseline fit have changed
     void onPeaks() const;         //!< a peak has been added or removed
-    void onPeakAt(int) const;   //!< settings for one peak fit have changed
+    void onPeakAt(int) const;     //!< settings for one peak fit have changed
     void onInterpol() const;      //!< interpolation control parameters have changed
 
     // const methods:

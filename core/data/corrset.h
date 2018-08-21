@@ -17,6 +17,7 @@
 
 #include "core/raw/image.h"
 #include "core/raw/rawfile.h"
+#include "core/typ/cached.h"
 #include "qcr/engine/cell.h"
 #include <memory>
 
@@ -26,9 +27,9 @@
 
 class Corrset {
 public:
+    Corrset();
     void fromJson(const JsonObj& obj);
     void clear();
-    void clearIntens() { normalizer_.release(); }
     void removeFile();
     void loadFile(const QString& filePath);
 
@@ -36,20 +37,16 @@ public:
     const Rawfile& raw() const { return *raw_; }
     bool hasFile() const { return raw_.get(); }
     QString fileName() const { return hasFile() ? raw_->fileName() : ""; }
-    bool hasNANs() const { return hasNANs_; }
     const Image& image() const { return *corrImage_; }
-    const Image* normalizer() const;
+    void invalidateNormalizer() const { normalizer_.invalidate(); }
+    const Image& getNormalizer() const { return normalizer_.get(); }
 
     QcrCell<bool> enabled {true};
 
 private:
-    void onCorr();
-    void calcNormalizer() const;
-
     std::unique_ptr<const Rawfile> raw_; //!< owned by this
-    mutable bool hasNANs_ {false};
     std::unique_ptr<Image> corrImage_;
-    mutable std::unique_ptr<Image> normalizer_; // TODO replace by cache, and check when it is to be invalidated
+    mutable Cached<Image> normalizer_;
 };
 
 #endif // CORRSET_H

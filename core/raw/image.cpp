@@ -33,7 +33,7 @@ Image::Image(const size2d& size, std::vector<float>&& intens)
         rangeInten_.extendBy(val);
 }
 
-void  Image::clear()
+void Image::clear()
 {
     size_ = size2d(0, 0);
     intens_.clear();

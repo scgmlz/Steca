@@ -79,8 +79,9 @@ float ImageLens::imageInten(int i, int j) const
     if (cut_)
         doCut(i, j);
     float ret = image_.inten2d(i, j);
-    if (auto* corr = gSession->corrset.normalizer())
-        ret *= corr->inten2d(i, j);
+    const Image& normalizer = gSession->corrset.getNormalizer();
+    if (!normalizer.isEmpty())
+        ret *= normalizer.inten2d(i, j);
     return ret;
 }
 
