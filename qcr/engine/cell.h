@@ -15,7 +15,7 @@
 #ifndef CELL_H
 #define CELL_H
 
-#include "qcr/base/debug.h"
+//#include "qcr/base/debug.h"
 #include <functional>
 #include <memory>
 

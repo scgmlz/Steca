@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#include "tables.h"
-#include "qcr/base/debug.h"
+#include "qcr/widgets/tables.h"
+//#include "qcr/base/debug.h"
 #include "qcr/base/qcrexception.h"
 #include "qcr/base/string_ops.h"
 #include "qcr/engine/console.h"

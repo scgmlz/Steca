@@ -25,7 +25,7 @@
 #include "gui/dialogs/file_dialog.h"
 #include "gui/mainwin.h"
 #include "qcr/engine/console.h"
-#include "qcr/base/debug.h"
+//#include "qcr/base/debug.h"
 
 #define OPTPARSE_IMPLEMENTATION
 #define OPTPARSE_API static

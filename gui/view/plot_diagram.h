@@ -15,7 +15,6 @@
 #ifndef PLOT_DIAGRAM_H
 #define PLOT_DIAGRAM_H
 
-#include "core/calc/peak_info.h"
 #include "QCustomPlot/qcustomplot.h"
 
 //! Tab in DiagramsFrame, to display a plot of something against something.

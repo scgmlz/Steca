@@ -19,7 +19,6 @@
 #include "gui/view/plot_overlay.h"
 #include "gui/view/range_control.h"
 #include "qcr/base/qcrexception.h"
-#include "qcr/engine/cell.h"
 
 namespace colors {
 QColor baseEmph{0x00, 0xff, 0x00, 0x50}; // green

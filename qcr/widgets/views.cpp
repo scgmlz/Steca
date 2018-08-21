@@ -12,9 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#include "views.h"
+#include "qcr/widgets/views.h"
 #include "qcr/base/string_ops.h"
-#include <QIcon>
 
 QcrIcon::QcrIcon(const QString& fileName)
     : QcrMixin {this}

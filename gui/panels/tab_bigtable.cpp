@@ -17,7 +17,7 @@
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"
 #include "gui/view/bigtable.h"
-#include "qcr/base/debug.h"
+//#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class ColumnSelector (local scope)

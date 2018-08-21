@@ -17,7 +17,6 @@
 
 #include "qcr/engine/mixin.h"
 #include <QDockWidget>
-#include <QFrame>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMainWindow>

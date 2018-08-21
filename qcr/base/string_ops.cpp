@@ -12,9 +12,9 @@
 //
 //  ***********************************************************************************************
 
-#include "string_ops.h"
+#include "qcr/base/string_ops.h"
 #include "qcr/base/qcrexception.h"
-#include <QString>
+#include <QWidget>
 
 namespace strOp {
 

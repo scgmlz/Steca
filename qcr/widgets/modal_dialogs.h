@@ -17,7 +17,6 @@
 
 #include "qcr/engine/mixin.h"
 #include <QFileDialog>
-#include <QtGlobal>
 
 //! Mix-in for modal (blocking) dialogs.
 class QcrModal : public QcrSettable {

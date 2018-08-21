@@ -14,7 +14,7 @@
 
 #include "gui/view/plot_polefig.h"
 #include "core/session.h"
-//#include "qcr/base/debug.h"
+#include "qcr/base/debug.h" // ASSERT
 
 namespace {
 

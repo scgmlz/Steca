@@ -17,7 +17,6 @@
 #include "qcr/base/qcrexception.h"
 #include "qcr/base/string_ops.h"
 #include "qcr/base/debug.h" // ASSERT
-#include <QDebug>
 #include <QFile>
 
 #ifdef Q_OS_WIN

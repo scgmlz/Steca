@@ -15,8 +15,8 @@
 #ifndef STRING_OPS_H
 #define STRING_OPS_H
 
-#include <QWidget>
-#include <QtGlobal>
+#include <QString>
+class QWidget;
 
 //! String operations
 
