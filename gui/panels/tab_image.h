@@ -18,7 +18,6 @@
 #include "qcr/widgets/views.h"
 #include "qcr/engine/cell.h"
 #include "core/raw/image.h"
-#include <QPixmap>
 
 //! Pure virtual base class for DataImageTab and CorrImageTab, shows a detector image and controls.
 
