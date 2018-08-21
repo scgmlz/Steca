@@ -226,7 +226,6 @@ QImage ImageTab::makeImage(const Image& image)
 //! @class DataImageTab
 
 DataImageTab::DataImageTab()
-    : btnShowBins_ {&gGui->toggles->showBins}
 {
     auto* idxMeas  = new QcrSpinBox{
         "idxMeas", &iMeas, 4, false, 1, INT_MAX,
@@ -237,6 +236,10 @@ DataImageTab::DataImageTab()
     auto* idxSlice = new QcrSpinBox{
         "idxSlice", &gSession->gammaSelection.currSlice,
         4, false, 1, INT_MAX, "Index of γ slice to be shown" };
+    auto* gammaRangeTotal = new QLabel{"gammaRangeTotal"};
+    auto* gammaRangeSlice = new QLabel{"gammaRangeSlice"};
+    auto* thetaRangeTotal = new QLabel{"thetaRangeTotal"};
+    auto* thetaRangeBin   = new QLabel{"thetaRangeBin"};
     setRemake( [=]() {
             gSession->gammaSelection.onData();
             gSession->thetaSelection.onData();
@@ -260,43 +263,38 @@ DataImageTab::DataImageTab()
             idxSlice->setMaximum(nGamma);
             idxSlice->setEnabled(nGamma>1);
 
-            gammaRangeTotal_.setText(cluster ? cluster->rgeGmaFull().to_s("deg") : "");
-            gammaRangeSlice_.setText(gSession->gammaSelection.range().to_s("deg"));
+            gammaRangeTotal->setText(cluster ? cluster->rgeGmaFull().to_s("deg") : "");
+            gammaRangeSlice->setText(gSession->gammaSelection.range().to_s("deg"));
 
-            thetaRangeTotal_.setText(cluster ? cluster->rgeTth().to_s("deg") : "");
-            thetaRangeBin_.setText(gSession->thetaSelection.range().to_s("deg"));
+            thetaRangeTotal->setText(cluster ? cluster->rgeTth().to_s("deg") : "");
+            thetaRangeBin->setText(gSession->thetaSelection.range().to_s("deg"));
 
             render(); });
 
     // layout
-    box1_.addWidget(&btnShowBins_, Qt::AlignLeft);
+    box1_.addWidget(new QcrIconToggleButton{&gGui->toggles->showBins}, Qt::AlignLeft);
 
-    boxIdx_.addWidget(new QLabel("idx (image)"), 0, 0, Qt::AlignLeft);
-    boxIdx_.addWidget(idxMeas, 0, 1, Qt::AlignLeft);
-    boxIdx_.addWidget(new QLabel("idx (ϑ)"), 1, 0, Qt::AlignLeft);
-    boxIdx_.addWidget(idxTheta, 1, 1, Qt::AlignLeft);
-    boxIdx_.addWidget(new QLabel("idx (γ)"), 2, 0, Qt::AlignLeft);
-    boxIdx_.addWidget(idxSlice, 2, 1, Qt::AlignLeft);
+    auto* boxIdx = new QGridLayout;
+    boxIdx->addWidget(new QLabel("idx (image)"), 0, 0, Qt::AlignLeft);
+    boxIdx->addWidget(idxMeas, 0, 1, Qt::AlignLeft);
+    boxIdx->addWidget(new QLabel("idx (ϑ)"), 1, 0, Qt::AlignLeft);
+    boxIdx->addWidget(idxTheta, 1, 1, Qt::AlignLeft);
+    boxIdx->addWidget(new QLabel("idx (γ)"), 2, 0, Qt::AlignLeft);
+    boxIdx->addWidget(idxSlice, 2, 1, Qt::AlignLeft);
     controls_.addStretch(100);
-    controls_.addLayout(&boxIdx_);
+    controls_.addLayout(boxIdx);
 
     controls_.addStretch(1000);
-    boxRanges_.addWidget(new QLabel("γ total:"), 0, 0, Qt::AlignLeft);
-    boxRanges_.addWidget(new QLabel("γ slice:"), 1, 0, Qt::AlignLeft);
-    boxRanges_.addWidget(new QLabel("ϑ total:" ), 2, 0, Qt::AlignLeft);
-    boxRanges_.addWidget(new QLabel("ϑ bin:"   ), 3, 0, Qt::AlignLeft);
-    boxRanges_.addWidget(&gammaRangeTotal_, 0, 1, Qt::AlignLeft);
-    boxRanges_.addWidget(&gammaRangeSlice_, 1, 1, Qt::AlignLeft);
-    boxRanges_.addWidget(&thetaRangeTotal_, 2, 1, Qt::AlignLeft);
-    boxRanges_.addWidget(&thetaRangeBin_,   3, 1, Qt::AlignLeft);
-    controls_.addLayout(&boxRanges_, Qt::AlignLeft|Qt::AlignBottom);
-}
-
-DataImageTab::~DataImageTab()
-{
-    box1_.removeWidget(&btnShowBins_);
-    controls_.removeItem(&boxIdx_);
-    controls_.removeItem(&boxRanges_);
+    auto* boxRanges = new QGridLayout;
+    boxRanges->addWidget(new QLabel("γ total:"), 0, 0, Qt::AlignLeft);
+    boxRanges->addWidget(new QLabel("γ slice:"), 1, 0, Qt::AlignLeft);
+    boxRanges->addWidget(new QLabel("ϑ total:" ), 2, 0, Qt::AlignLeft);
+    boxRanges->addWidget(new QLabel("ϑ bin:"   ), 3, 0, Qt::AlignLeft);
+    boxRanges->addWidget(gammaRangeTotal, 0, 1, Qt::AlignLeft);
+    boxRanges->addWidget(gammaRangeSlice, 1, 1, Qt::AlignLeft);
+    boxRanges->addWidget(thetaRangeTotal, 2, 1, Qt::AlignLeft);
+    boxRanges->addWidget(thetaRangeBin,   3, 1, Qt::AlignLeft);
+    controls_.addLayout(boxRanges, Qt::AlignLeft|Qt::AlignBottom);
 }
 
 QPixmap DataImageTab::pixmap()

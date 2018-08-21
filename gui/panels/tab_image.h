@@ -64,17 +64,9 @@ private:
 class DataImageTab : public ImageTab {
 public:
     DataImageTab();
-    ~DataImageTab();
 private:
     const Measurement* measurement();
-    QGridLayout boxIdx_;
-    QGridLayout boxRanges_;
     QPixmap pixmap() final;
-    QcrIconToggleButton btnShowBins_;
-    QLabel gammaRangeTotal_{"gammaRangeTotal"};
-    QLabel gammaRangeSlice_{"gammaRangeSlice"};
-    QLabel thetaRangeTotal_{"thetaRangeTotal"};
-    QLabel thetaRangeBin_  {"thetaRangeBin"};
     QcrCell<int> iMeas {1};
 };
 
