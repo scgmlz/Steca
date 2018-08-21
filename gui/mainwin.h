@@ -42,11 +42,6 @@ private:
     void saveSettings() const;
     void resetViews();
 
-    void clearSession();
-
-    class Mainframe* mainframe_;
-    class SubframeDfgram* frameDfgram_;
-    class SubframeSetup* frameSetup_;
     QcrDockWidget* dockFiles_;
     QcrDockWidget* dockClusters_;
     QcrDockWidget* dockMetadata_;

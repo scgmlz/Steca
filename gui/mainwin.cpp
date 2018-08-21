@@ -14,14 +14,12 @@
 
 #include "gui/mainwin.h"
 #include "core/aux/async.h"
-#include "core/aux/exception.h"
 #include "core/aux/settings.h"
 #include "core/session.h"
 #include "gui/actions/image_trafo_actions.h"
 #include "gui/actions/menus.h"
 #include "gui/view/toggles.h"
 #include "gui/actions/triggers.h"
-#include "gui/dialogs/file_dialog.h"
 #include "gui/panels/mainframe.h"
 #include "gui/panels/subframe_clusters.h"
 #include "gui/panels/subframe_dfgram.h"
@@ -60,14 +58,14 @@ MainWin::MainWin()
 
     auto* splTop = new QSplitter {Qt::Horizontal};
     splTop->setChildrenCollapsible(false);
-    splTop->addWidget(frameSetup_ = new SubframeSetup());
-    splTop->addWidget(mainframe_  = new Mainframe());
+    splTop->addWidget(new SubframeSetup());
+    splTop->addWidget(new Mainframe());
     splTop->setStretchFactor(1, 1);
 
     auto* splMain = new QSplitter {Qt::Vertical};
     splMain->setChildrenCollapsible(false);
     splMain->addWidget(splTop);
-    splMain->addWidget(frameDfgram_ = new SubframeDfgram());
+    splMain->addWidget(new SubframeDfgram());
     splMain->setStretchFactor(1, 1);
     setCentralWidget(splMain);
 
