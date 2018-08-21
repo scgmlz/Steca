@@ -54,13 +54,14 @@ void plotOverlays(QPainter& p, const QRect& rect, const double scale)
 
 } // namespace
 
+
 //  ***********************************************************************************************
 //! @class ImageView
 
 ImageView::ImageView()
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    connect(&gGui->toggles->crosshair, &QAction::toggled, [this](bool /*unused*/) { update(); });
+    gGui->toggles->crosshair.cell()->setHook([this](bool) { update(); });
 }
 
 void ImageView::setPixmap(const QPixmap& pixmap)
