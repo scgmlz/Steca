@@ -14,8 +14,7 @@
 
 #include "core/aux/settings.h"
 #include "core/session.h"
-#include "qcr/base/debug.h"
-#include <iostream> // for debugging
+//#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class Detector

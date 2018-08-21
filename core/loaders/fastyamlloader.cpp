@@ -12,10 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#include "fastyamlloader.h"
+#include "core/loaders/fastyamlloader.h"
 #include "core/aux/exception.h"
-#include <yaml.h>
-#include <QMap>
 #include <sstream>
 
 // Allows for a very verbious yaml parser for debugging purposes:

@@ -13,7 +13,6 @@
 //  ***********************************************************************************************
 
 #include "core/pars/peak.h"
-#include "core/aux/exception.h"
 #include "core/session.h"
 #include "qcr/base/debug.h"
 

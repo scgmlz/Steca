@@ -12,11 +12,9 @@
 //
 //  ***********************************************************************************************
 
+#include "core/loaders/fastyamlloader.h"
 #include "core/aux/exception.h"
-#include "core/raw/rawfile.h"
-#include "fastyamlloader.h"
 #include "qcr/base/debug.h"
-#include <algorithm>
 #include <functional>
 
 namespace  {

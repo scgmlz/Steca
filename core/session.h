@@ -21,7 +21,6 @@
 #include "core/data/dataset.h"
 #include "core/data/gamma_selection.h"
 #include "core/data/theta_selection.h"
-#include "core/fit/peak_functions.h"
 #include "core/pars/baseline.h"
 #include "core/pars/params.h"
 #include "core/pars/peak.h"

@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "metadata.h"
-#include "qcr/base/debug.h"
+//#include "qcr/base/debug.h"
 
 // metadata attributes
 

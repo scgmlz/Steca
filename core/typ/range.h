@@ -16,7 +16,6 @@
 #define RANGE_H
 
 #include <QJsonArray>
-#include <QtGlobal>
 #include <vector> // no auto rm
 
 class JsonObj;
@@ -51,8 +50,6 @@ public:
     QString to_s(const QString& unit="", int precision=5, int digitsAfter=2) const;
 
     double min, max; // this is the range
-
-private:
 };
 
 //! A *sorted* list of *non-overlapping* ranges, of which one is always selected.
