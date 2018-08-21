@@ -186,7 +186,6 @@ DataImageTab::DataImageTab()
 
             render(); });
 
-    // layout
     box1_->addWidget(new QcrIconToggleButton{&gGui->toggles->showBins}, Qt::AlignLeft);
 
     auto* boxIdx = new QGridLayout;

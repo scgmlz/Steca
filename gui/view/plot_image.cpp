@@ -19,6 +19,41 @@
 //#include "qcr/base/debug.h"
 #include <QPainter>
 
+namespace {
+
+void plotOverlays(QPainter& p, const QRect& rect, const double scale)
+{
+    p.setPen(Qt::lightGray);
+
+    // cut
+    const ImageCut& cut = gSession->params.imageCut;
+    const QRect r = rect.adjusted(-1, -1, 0, 0)
+        .adjusted(
+            qRound(scale * cut.left.val()), qRound(scale * cut.top.val()),
+            -qRound(scale * cut.right.val()), -qRound(scale * cut.bottom.val()));
+    p.drawRect(r);
+
+    const QPoint rc = r.center();
+    const int rcx = rc.x(), rcy = rc.y();
+
+    int rl, rt, rr, rb;
+    r.getCoords(&rl, &rt, &rr, &rb);
+    const int rw = rr - rl;
+
+    // cross
+    const int x = qRound(rcx + scale * gSession->params.detector.pixOffset[0].val());
+    const int y = qRound(rcy + scale * gSession->params.detector.pixOffset[1].val());
+    p.drawLine(x, rt, x, rb);
+    p.drawLine(rl, y, rr, y);
+
+    // text
+    QPoint pos(rr - rw / 5, rcy);
+    p.setPen(Qt::cyan);
+    p.drawText(pos, "γ=0");
+}
+
+} // namespace
+
 //  ***********************************************************************************************
 //! @class ImageView
 
@@ -66,39 +101,10 @@ void ImageView::paintEvent(QPaintEvent*)
 
     QPainter p(this);
 
-    // image
+    // plot image and overlays
     p.drawPixmap(rect.left(), rect.top(), scaled_);
-
-    // crosshair overlay
-    if (gGui->toggles->crosshair.getValue()) {
-        p.setPen(Qt::lightGray);
-
-        // cut
-        const ImageCut& cut = gSession->params.imageCut;
-        const QRect r = rect.adjusted(-1, -1, 0, 0)
-                      .adjusted(
-                          qRound(scale_ * cut.left.val()), qRound(scale_ * cut.top.val()),
-                          -qRound(scale_ * cut.right.val()), -qRound(scale_ * cut.bottom.val()));
-        p.drawRect(r);
-
-        const QPoint rc = r.center();
-        const int rcx = rc.x(), rcy = rc.y();
-
-        int rl, rt, rr, rb;
-        r.getCoords(&rl, &rt, &rr, &rb);
-        const int rw = rr - rl;
-
-        // cross
-        const int x = qRound(rcx + scale_ * gSession->params.detector.pixOffset[0].val());
-        const int y = qRound(rcy + scale_ * gSession->params.detector.pixOffset[1].val());
-        p.drawLine(x, rt, x, rb);
-        p.drawLine(rl, y, rr, y);
-
-        // text
-        QPoint pos(rr - rw / 5, rcy);
-        p.setPen(Qt::cyan);
-        p.drawText(pos, "γ=0");
-    }
+    if (gGui->toggles->crosshair.getValue())
+        plotOverlays(p, rect, scale_);
 
     // frame
     p.setPen(Qt::black);
