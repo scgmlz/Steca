@@ -91,15 +91,13 @@ template<class T>
 void QcrControl<T>::onChangedValue(T val)
 {
     ASSERT(val==doGetValue());
-    if (cell_->amCalling || val==cell_->val()) {
-        qDebug()<<name()<<"onChangedValue nothing to do";
+    if (cell_->amCalling || val==cell_->val())
         return;
-    }
     doLog(name()+" "+strOp::to_s(val));
     cell_->setVal(val);
-    qDebug()<<name()<<"remakeAll beg";
+    //qDebug()<<name()<<"remakeAll beg";
     gRoot->remakeAll();
-    qDebug()<<name()<<"remakeAll end";
+    //qDebug()<<name()<<"remakeAll end";
 }
 
 #endif // SINGLE_VALUE_H
