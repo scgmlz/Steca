@@ -47,7 +47,7 @@ public:
     QcrTrigger removeFile {"removeFile", "Remove highlighted file", ":/icon/rem",
             QKeySequence::Delete};
     QcrTrigger saveSession {"saveSession", "Save session..."};
-    QcrTrigger viewReset {"viewReset", "Reset"};
+    QcrTrigger viewsReset {"viewsReset", "Reset"};
 };
 
 #endif // TRIGGERS_H

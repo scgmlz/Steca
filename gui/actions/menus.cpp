@@ -92,7 +92,7 @@ Menus::Menus(QMenuBar* mbar)
                 &triggers->spawnDiagram,
                 &triggers->spawnPolefig,
                 separator(),
-                &triggers->viewReset });
+                &triggers->viewsReset });
 
     actionsToMenu(
         "&Help",

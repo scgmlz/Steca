@@ -41,17 +41,12 @@ private:
 
     void readSettings();
     void saveSettings() const;
-    void viewReset();
+    void resetViews();
 
-    void loadSession();
-    void saveSession();
     void clearSession();
 
     void addFiles();
     void loadCorrFile();
-
-    void runFits();
-    void runInterpolation();
 
     class Mainframe* mainframe_;
     class SubframeDfgram* frameDfgram_;
@@ -62,7 +57,6 @@ private:
     class Menus* menus_;
 
     QByteArray initialState_;
-    QDir sessionDir_ {QDir::homePath()};
     QDir dataDir_ {QDir::homePath()};
 
     friend Triggers;

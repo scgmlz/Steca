@@ -21,6 +21,7 @@
 #include "gui/dialogs/export_dfgram.h"
 #include "gui/dialogs/export_diagram.h"
 #include "gui/dialogs/export_polefig.h"
+#include "gui/dialogs/io_session.h"
 #include "gui/dialogs/popup_bigtable.h"
 #include "gui/dialogs/popup_diagram.h"
 #include "gui/dialogs/popup_polefig.h"
@@ -42,17 +43,17 @@ Triggers::Triggers()
     exportPolefig  .setTriggerHook([](){ ExportPolefig().exec(); });
     exportBigtable .setTriggerHook([](){ ExportBigtable().exec(); });
     exportDiagram  .setTriggerHook([](){ ExportDiagram().exec(); });
-    loadSession    .setTriggerHook([](){ gGui->loadSession(); });
+    loadSession    .setTriggerHook([](){ ioSession::load(gGui); });
     online         .setTriggerHook([](){ QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
     peakRemove     .setTriggerHook([](){ gSession->peaks.removeSelected(); });
     peaksClear     .setTriggerHook([](){ gSession->peaks.clear();          });
     quit           .setTriggerHook([](){ gGui->deleteLater(); });
     removeFile     .setTriggerHook([](){ gSession->dataset.removeFile(); });
-    saveSession    .setTriggerHook([](){ gGui->saveSession(); });
+    saveSession    .setTriggerHook([](){ ioSession::save(gGui); });
     spawnDiagram   .setTriggerHook([](){ new PopupDiagram(); });
     spawnTable     .setTriggerHook([](){ new PopupBigtable(); });
     spawnPolefig   .setTriggerHook([](){ new PopupPolefig(); });
-    viewReset      .setTriggerHook([](){ gGui->viewReset(); });
+    viewsReset     .setTriggerHook([](){ gGui->resetViews(); });
 
     // Remakes (others are set more conveniently in Mainwindow::refresh):
     corrFile.setRemake([this]() {

@@ -32,8 +32,6 @@
 #include <QProgressBar>
 #include <QSplitter>
 #include <QStatusBar>
-#include <QStringBuilder> // for ".." % ..
-#include <iostream> // debug
 
 MainWin* gGui; //!< global pointer to _the_ main window
 
@@ -111,11 +109,28 @@ MainWin::~MainWin()
     gGui = nullptr;
 }
 
-//  ***********************************************************************************************
-//   reset / load / save
-//  ***********************************************************************************************
+void MainWin::refresh()
+{
+    bool hasData = gSession->hasData();
+    bool hasPeak = gSession->peaks.count();
+    bool hasBase = gSession->baseline.ranges.count();
+    toggles->enableCorr.setEnabled(gSession->hasCorrFile());
+    triggers->exportDfgram.setEnabled(hasData);
+    triggers->exportBigtable.setEnabled(hasData && hasPeak);
+    triggers->exportDiagram.setEnabled(hasData && hasPeak);
+    triggers->baserangeAdd   .setEnabled(hasData);
+    triggers->baserangeRemove.setEnabled(hasBase);
+    triggers->baserangesClear.setEnabled(hasBase);
+    triggers->peakAdd   .setEnabled(hasData);
+    triggers->peakRemove.setEnabled(hasPeak);
+    triggers->peaksClear.setEnabled(hasPeak);
+    triggers->removeFile.setEnabled(hasData);
+    menus_->export_->setEnabled(hasData);
+    menus_->image_->setEnabled(hasData);
+    menus_->dgram_->setEnabled(hasData);
+}
 
-void MainWin::viewReset()
+void MainWin::resetViews()
 {
     restoreState(initialState_);
 #ifndef Q_OS_OSX
@@ -143,49 +158,6 @@ void MainWin::saveSettings() const
     s.setValue("geometry", saveGeometry()); // this mainwindow's widget geometry
     s.setValue("state", saveState()); // state of this mainwindow's toolbars and dockwidgets
 }
-
-void MainWin::loadSession()
-{
-    QString fileName = file_dialog::queryImportFileName(
-        this, "Load session", sessionDir_, "Session files (*.ste)");
-    if (fileName.isEmpty())
-        return;
-    QFile file(fileName);
-    if (!(file.open(QIODevice::ReadOnly | QIODevice::Text))) {
-        qWarning() << ("Cannot open file for reading: " % fileName);
-        return;
-    }
-    try {
-        TakesLongTime __("loadSession");
-        gSession->sessionFromJson(file.readAll());
-    } catch(Exception& ex) {
-        qWarning() << "Could not load session from file " << fileName << ":\n"
-                   << ex.msg() << "\n"
-                   << "The application may now be in an inconsistent state.\n"
-                   << "Please consider to quit the application, and start afresh.\n";
-        gSession->clear();
-    }
-}
-
-void MainWin::saveSession()
-{
-    QString fileName = file_dialog::queryExportFileName(
-        this, "Save session", sessionDir_, "Session files (*.ste)");
-    if (!fileName.endsWith(".ste"))
-        fileName += ".ste";
-    QFileInfo fileInfo(fileName);
-    QFile* file = file_dialog::openFileConfirmOverwrite("file", this, fileInfo.filePath());
-    if (!file)
-        return;
-    const int result = file->write(gSession->serializeSession());
-    delete file;
-    if (!(result >= 0))
-        qWarning() << "Could not write session";
-}
-
-//  ***********************************************************************************************
-//   modal dialogs
-//  ***********************************************************************************************
 
 void MainWin::addFiles()
 {
@@ -220,25 +192,4 @@ void MainWin::loadCorrFile()
         }
     }
     gRoot->remakeAll();
-}
-
-void MainWin::refresh()
-{
-    bool hasData = gSession->hasData();
-    bool hasPeak = gSession->peaks.count();
-    bool hasBase = gSession->baseline.ranges.count();
-    toggles->enableCorr.setEnabled(gSession->hasCorrFile());
-    triggers->exportDfgram.setEnabled(hasData);
-    triggers->exportBigtable.setEnabled(hasData && hasPeak);
-    triggers->exportDiagram.setEnabled(hasData && hasPeak);
-    triggers->baserangeAdd   .setEnabled(hasData);
-    triggers->baserangeRemove.setEnabled(hasBase);
-    triggers->baserangesClear.setEnabled(hasBase);
-    triggers->peakAdd   .setEnabled(hasData);
-    triggers->peakRemove.setEnabled(hasPeak);
-    triggers->peaksClear.setEnabled(hasPeak);
-    triggers->removeFile.setEnabled(hasData);
-    menus_->export_->setEnabled(hasData);
-    menus_->image_->setEnabled(hasData);
-    menus_->dgram_->setEnabled(hasData);
 }
