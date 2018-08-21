@@ -28,25 +28,16 @@ public:
     Image(Image&&) = default;
     Image& operator=(Image&&) = default;
 
-    const size2d& size() const { return size_; }
-
     void clear();
+    void fill(float val, const size2d& size);
+    void setInten1d(int i, float val) { intens_[i] = val; }
+    void setInten2d(int ix, int iy, float val) { setInten1d(pointToIndex(ix, iy), val); }
+    void addImage(const Image&); //!< add pointwise
 
     bool isEmpty() const { return intens_.empty(); }
-
-    void fill(float val, const size2d& size);
-
+    const size2d& size() const { return size_; }
     float inten1d(int i) const { return intens_[i]; }
-
     float inten2d(int ix, int iy) const { return inten1d(pointToIndex(ix, iy)); }
-
-    void setInten1d(int i, float val) { intens_[i] = val; }
-
-    void setInten2d(int ix, int iy, float val) { setInten1d(pointToIndex(ix, iy), val); }
-
-    // Sum all intensities with new ones.
-    void addImage(const Image&);
-
     const Range& rgeInten() const { return rangeInten_; }
 
 private:

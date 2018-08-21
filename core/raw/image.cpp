@@ -26,8 +26,7 @@ Image::Image(const size2d& size, std::vector<float>&& intens)
     : size_(size)
     , intens_(std::move(intens))
 {
-   ASSERT(intens_.size() == size.count());
-
+    ASSERT(intens_.size() == size.count());
     rangeInten_.set(intens_[0], intens_[0]);
     for (const auto val: intens_)
         rangeInten_.extendBy(val);
@@ -51,12 +50,9 @@ void Image::fill(float val, const size2d& size)
     rangeInten_.set(val, val); // set Range to val
 }
 
-
 void Image::addImage(const Image& that)
 {
-    if (!(size() == that.size()))
-        THROW("inconsistent image size");
-
+    ASSERT(size() == that.size());
     rangeInten_.extendBy(that.rgeInten());
     for (int i=0; i<intens_.size(); ++i)
         intens_[i] += that.intens_[i];
