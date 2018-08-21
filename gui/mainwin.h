@@ -28,9 +28,6 @@ public:
     MainWin();
     ~MainWin();
 
-    const class Mainframe& mainframe() const { return *mainframe_; }
-    const class SubframeSetup* setup() const { return frameSetup_; }
-
     class Triggers* triggers;
     class Toggles* toggles;
     class GuiState* state;

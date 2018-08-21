@@ -29,32 +29,30 @@
 
 Triggers::Triggers()
 {
-#define AT &QAction::triggered
-    QObject::connect(&about, AT, [](){ AboutBox().exec(); });
-    QObject::connect(&baserangeAdd, &QAction::triggered, [](){ AddRangeBox("baseline").exec(); });
-    QObject::connect(&peakAdd, &QAction::triggered, [](){ AddRangeBox("peak").exec(); });
-    QObject::connect(&addFiles, AT, []() { gGui->addFiles(); });
-    QObject::connect(&checkUpdate, AT, []() { CheckUpdate _(gGui); });
-    QObject::connect(&clearSession, AT, []() { gSession->clear(); });
-    QObject::connect(&corrFile, AT, []() { gGui->loadCorrFile(); });
-    QObject::connect(&exportDfgram, AT, [](){ ExportDfgram().exec(); });
-    QObject::connect(&exportPolefig, AT, [](){ ExportPolefig().exec(); });
-    QObject::connect(&exportBigtable, AT, [](){ ExportBigtable().exec(); });
-    QObject::connect(&exportDiagram, AT, [](){ ExportDiagram().exec(); });
-    QObject::connect(&loadSession, AT, []() { gGui->loadSession(); });
-    QObject::connect(&online, AT, []() { QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
-    QObject::connect(&quit, AT, []() { gGui->deleteLater(); });
-    QObject::connect(&removeFile, AT, []() { gSession->dataset.removeFile(); });
-    QObject::connect(&saveSession, AT, []() { gGui->saveSession(); });
-    QObject::connect(&spawnDiagram, AT, [](){ new PopupDiagram(); });
-    QObject::connect(&spawnTable, AT, [](){ new PopupBigtable(); });
-    QObject::connect(&spawnPolefig, AT, [](){ new PopupPolefig(); });
-    QObject::connect(&viewReset, AT, []() { gGui->viewReset(); });
-
-    baserangeRemove.setTriggerHook([](){ gSession->baseline.removeSelected(); });
+    about          .setTriggerHook([](){ AboutBox().exec(); });
+    baserangeAdd   .setTriggerHook([](){ AddRangeBox("baseline").exec(); });
     baserangesClear.setTriggerHook([](){ gSession->baseline.clear();          });
-    peakRemove     .setTriggerHook([](){ gSession->peaks   .removeSelected(); });
-    peaksClear     .setTriggerHook([](){ gSession->peaks   .clear();          });
+    baserangeRemove.setTriggerHook([](){ gSession->baseline.removeSelected(); });
+    peakAdd        .setTriggerHook([](){ AddRangeBox("peak").exec(); });
+    addFiles       .setTriggerHook([](){ gGui->addFiles(); });
+    checkUpdate    .setTriggerHook([](){ CheckUpdate _(gGui); });
+    clearSession   .setTriggerHook([](){ gSession->clear(); });
+    corrFile       .setTriggerHook([](){ gGui->loadCorrFile(); });
+    exportDfgram   .setTriggerHook([](){ ExportDfgram().exec(); });
+    exportPolefig  .setTriggerHook([](){ ExportPolefig().exec(); });
+    exportBigtable .setTriggerHook([](){ ExportBigtable().exec(); });
+    exportDiagram  .setTriggerHook([](){ ExportDiagram().exec(); });
+    loadSession    .setTriggerHook([](){ gGui->loadSession(); });
+    online         .setTriggerHook([](){ QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
+    peakRemove     .setTriggerHook([](){ gSession->peaks.removeSelected(); });
+    peaksClear     .setTriggerHook([](){ gSession->peaks.clear();          });
+    quit           .setTriggerHook([](){ gGui->deleteLater(); });
+    removeFile     .setTriggerHook([](){ gSession->dataset.removeFile(); });
+    saveSession    .setTriggerHook([](){ gGui->saveSession(); });
+    spawnDiagram   .setTriggerHook([](){ new PopupDiagram(); });
+    spawnTable     .setTriggerHook([](){ new PopupBigtable(); });
+    spawnPolefig   .setTriggerHook([](){ new PopupPolefig(); });
+    viewReset      .setTriggerHook([](){ gGui->viewReset(); });
 
     // Remakes (others are set more conveniently in Mainwindow::refresh):
     corrFile.setRemake([this]() {
