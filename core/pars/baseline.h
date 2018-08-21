@@ -26,9 +26,9 @@ public:
     Baseline(const Baseline&) = delete;
 
     void fromJson(const JsonObj obj);
-    void clear();
     void setOneLimit(double val, bool namelyMax);
-
+    void clear();
+    void removeSelected();
     QJsonObject toJson() const;
 
     QcrCell<int> polynomDegree {2};

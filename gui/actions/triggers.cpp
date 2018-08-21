@@ -51,6 +51,11 @@ Triggers::Triggers()
     QObject::connect(&spawnPolefig, AT, [](){ new PopupPolefig(); });
     QObject::connect(&viewReset, AT, []() { gGui->viewReset(); });
 
+    baserangeRemove.setTriggerHook([](){ gSession->baseline.removeSelected(); });
+    baserangesClear.setTriggerHook([](){ gSession->baseline.clear();          });
+    peakRemove     .setTriggerHook([](){ gSession->peaks   .removeSelected(); });
+    peaksClear     .setTriggerHook([](){ gSession->peaks   .clear();          });
+
     // Remakes (others are set more conveniently in Mainwindow::refresh):
     corrFile.setRemake([this]() {
             bool hasCorr = gSession->hasCorrFile();
@@ -58,18 +63,4 @@ Triggers::Triggers()
             QString text = QString(hasCorr ? "Remove" : "Add") + " correction file";
             corrFile.setText(text);
             corrFile.setToolTip(text.toLower()); });
-
-    // Hooks:
-    baserangeRemove.setTriggerHook([](){
-            gSession->baseline.ranges.removeSelected();
-            gSession->onBaseline(); });
-    baserangesClear.setTriggerHook([](){
-            gSession->baseline.ranges.clear();
-            gSession->onBaseline(); });
-    peakRemove.setTriggerHook([](){
-            gSession->peaks.removeSelected();
-            gSession->onPeaks(); });
-    peaksClear.setTriggerHook([](){
-            gSession->peaks.clear();
-            gSession->onPeaks(); });
 }

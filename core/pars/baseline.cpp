@@ -31,7 +31,12 @@ void Baseline::fromJson(const JsonObj obj)
 void Baseline::clear()
 {
     ranges.clear();
-    polynomDegree.setVal(0);
+    gSession->onBaseline();
+}
+
+void Baseline::removeSelected()
+{
+    ranges.removeSelected();
     gSession->onBaseline();
 }
 
