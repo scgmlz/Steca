@@ -21,7 +21,7 @@
 
 #include "core/session.h"
 #include "manifest.h"
-#include "gui/cfg/msg_handler.h"
+#include "gui/view/msg_handler.h"
 #include "gui/dialogs/file_dialog.h"
 #include "gui/mainwin.h"
 #include "qcr/engine/console.h"

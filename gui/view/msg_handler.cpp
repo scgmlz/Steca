@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/cfg/msg_handler.cpp
+//! @file      gui/view/msg_handler.cpp
 //! @brief     Implements messageHandler.
 //!
 //! @homepage  https://github.com/scgmlz/Steca
