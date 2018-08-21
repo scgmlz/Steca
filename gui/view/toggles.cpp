@@ -14,9 +14,6 @@
 
 #include "gui/view/toggles.h"
 #include "core/session.h"
-#include "gui/mainwin.h"
-//#include "qcr/base/debug.h"
-#include <QStatusBar>
 
 Toggles::Toggles()
     : combinedDfgram {"dfg.all", &gSession->params.showAvgeDfgram,
@@ -25,20 +22,4 @@ Toggles::Toggles()
         "Enable correction file", ":/icon/useCorrection"}
     , linkCuts {"linkCuts", &gSession->params.imageCut.linked,
               "Link the four cut settings", ":/icon/link"}
-{
-    QObject::connect(&viewStatusbar, &QAction::toggled, [](bool on){
-            gGui->statusBar()->setVisible(on); });
-#ifndef Q_OS_OSX
-    QObject::connect(&fullScreen, &QAction::toggled, [](bool on){
-            if (on)
-                gGui->showFullScreen();
-            else
-                gGui->showNormal(); });
-#endif
-    QObject::connect(&viewFiles, &QAction::toggled, [](bool on){
-            gGui->dockFiles_->setVisible(on); });
-    QObject::connect(&viewClusters, &QAction::toggled, [](bool on){
-            gGui->dockClusters_->setVisible(on); });
-    QObject::connect(&viewMetadata, &QAction::toggled, [](bool on){
-            gGui->dockMetadata_->setVisible(on); });
-}
+{}

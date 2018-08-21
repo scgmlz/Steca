@@ -69,7 +69,6 @@ private:
     QDir dataDir_ {QDir::homePath()};
 
     friend Triggers;
-    friend Toggles;
 };
 
 #endif // MAINWIN_H
