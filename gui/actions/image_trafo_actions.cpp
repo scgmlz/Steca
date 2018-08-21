@@ -19,12 +19,12 @@
 ImageTrafoActions::ImageTrafoActions()
 {
     QObject::connect(&mirrorImage, &QAction::toggled, [this](bool on) { setImageMirror(on); });
-    QObject::connect(&rotateImage, &QAction::triggered, [this]() { setImageRotate(
-                gSession->params.imageTransform.nextRotate()); });
+    QObject::connect(&rotateImage, &QAction::triggered, [this]() { doImageRotate(); });
 }
 
-void ImageTrafoActions::setImageRotate(const ImageTransform& rot)
+void ImageTrafoActions::doImageRotate()
 {
+    const ImageTransform& rot = gSession->params.imageTransform.nextRotate();
     const char* rotateIconFile;
     const char* mirrorIconFile;
 

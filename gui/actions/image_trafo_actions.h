@@ -25,8 +25,8 @@ public:
     ImageTrafoActions();
     QcrTrigger rotateImage {"rotateImage", "Rotate", ":/icon/rotate0", Qt::CTRL | Qt::Key_R};
     QcrToggle mirrorImage {"mirrorImage", "Mirror", false, ":/icon/mirrorHorz"};
-    void setImageRotate(const ImageTransform&);
 private:
+    void doImageRotate();
     void setImageMirror(bool on);
 };
 
