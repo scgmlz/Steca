@@ -98,8 +98,8 @@ ImageTab::ImageTab()
 
 void ImageTab::render()
 {
-    qDebug()<<"RENDER IMAGE";
     imageView_->setPixmap(pixmap());
+    qDebug()<<"RENDERED IMAGE";
 }
 
 QPixmap ImageTab::blankPixmap()
