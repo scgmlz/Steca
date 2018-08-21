@@ -99,7 +99,6 @@ ImageTab::ImageTab()
 void ImageTab::render()
 {
     imageView_->setPixmap(pixmap());
-    qDebug()<<"RENDERED IMAGE";
 }
 
 QPixmap ImageTab::blankPixmap()
@@ -123,7 +122,6 @@ QImage ImageTab::makeImage(const Image& image)
     const Range rgeInten = imageLens.rgeInten(fixedScale);
     float maxInten = float(rgeInten.max);
 
-    qDebug()<<"MAKE IMAGE";
     for (int j=0; j<sz.h; ++j)
         for (int i=0; i<sz.w; ++i)
             ret.setPixel(i, j, intenImage(imageLens.imageInten(i, j), maxInten, !fixedScale));

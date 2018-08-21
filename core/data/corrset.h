@@ -28,6 +28,8 @@
 class Corrset {
 public:
     Corrset();
+    Corrset(const Corrset&) = delete;
+
     void fromJson(const JsonObj& obj);
     void clear();
     void removeFile();
@@ -37,7 +39,7 @@ public:
     const Rawfile& raw() const { return *raw_; }
     bool hasFile() const { return raw_.get(); }
     QString fileName() const { return hasFile() ? raw_->fileName() : ""; }
-    const Image& image() const { return *corrImage_; }
+    const Image& image() const { return corrImage_; }
     void invalidateNormalizer() const { normalizer_.invalidate(); }
     const Image& getNormalizer() const { return normalizer_.get(); }
 
@@ -45,7 +47,7 @@ public:
 
 private:
     std::unique_ptr<const Rawfile> raw_; //!< owned by this
-    std::unique_ptr<Image> corrImage_;
+    Image corrImage_;
     mutable Cached<Image> normalizer_;
 };
 

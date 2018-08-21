@@ -50,7 +50,7 @@ public:
 private:
     const int position_; //! position in file_
     Metadata metadata_;
-    std::unique_ptr<Image> image_;
+    std::unique_ptr<Image> image_; // TODO consider without pointer
 };
 
 #endif // MEASUREMENT_H

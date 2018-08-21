@@ -20,45 +20,48 @@
 
 namespace {
 
-Image recomputeNormalizer(const Corrset* parent)
+Image recomputeNormalizer(const Image& corrImage)
 {
-    /*
-    ASSERT(corrImage_.get());
-    size2d size = corrImage_->size() - gSession->params.imageCut.marginSize();
-    ASSERT(!size.isEmpty());
+    size2d size = corrImage.size();
+    if (size.isEmpty())
+        return {};
 
-    int w = size.w, h = size.h;
-    int di = gSession->params.imageCut.left.val(), dj = gSession->params.imageCut.top.val();
+    // only use pixels that are not cut
+    size = size - gSession->params.imageCut.marginSize();
+    ASSERT(!size.isEmpty());
+    int w = size.w;
+    int h = size.h;
+    int di = gSession->params.imageCut.left.val();
+    int dj = gSession->params.imageCut.top .val();
 
     double sum = 0;
     for (int i=0; i<w; ++i)
         for (int j=0; j<h; ++j)
-            sum += corrImage_->inten2d(i + di, j + dj);
+            sum += corrImage.inten2d(i + di, j + dj);
     double avg = sum / (w * h);
 
-    normalizer_.reset(new Image(corrImage_->size(), 1.));
+    Image ret(corrImage.size(), 1.);
 
     for (int i=0; i<w; ++i) {
         for (int j=0; j<h; ++j) {
-            const float inten = corrImage_->inten2d(i + di, j + dj);
+            const float inten = corrImage.inten2d(i + di, j + dj);
             double fact;
             if (inten > 0) {
                 fact = avg / inten;
             } else {
                 fact = Q_QNAN;
             }
-            normalizer_->setInten2d(i + di, j + dj, float(fact));
+            ret.setInten2d(i + di, j + dj, float(fact));
         }
     }
-    */
-    return {};
+    return ret;
 }
 
 } // namespace
 
 
 Corrset::Corrset()
-    : normalizer_{[this]()->Image{ return recomputeNormalizer(this); }}
+    : normalizer_{[this]()->Image{ return recomputeNormalizer(image()); }}
 {}
 
 void Corrset::clear()
@@ -83,7 +86,7 @@ void Corrset::loadFile(const QString& filePath)
     if (!raw_.get())
         return;
     gSession->setImageSize(raw_->imageSize());
-    corrImage_.reset(new Image{raw_->summedImage()});
+    corrImage_ = raw_->summedImage();
     invalidateNormalizer();
     // all ok
     enabled.setVal(true);
