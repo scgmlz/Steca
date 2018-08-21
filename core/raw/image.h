@@ -24,6 +24,9 @@ public:
     Image() {} // empty image
     Image(const size2d&, float val);
     Image(const size2d& size, std::vector<float>&& intens);
+    Image(const Image&) = delete;
+    Image(Image&&) = default;
+    Image& operator=(Image&&) = default;
 
     const size2d& size() const { return size_; }
 
