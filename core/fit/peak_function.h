@@ -33,7 +33,7 @@ public:
 
 class PeakFunction : public FitFunction {
 public:
-    virtual PeakOutcome outcome(const Fitted&) const = 0;
+    virtual PeakOutcome outcome(const Fitted&) const;
 
     static Fitted fromFit(const QString&, const Curve&, const RawOutcome&);
 };
