@@ -13,12 +13,8 @@
 //  ***********************************************************************************************
 
 #include "core/calc/peak_info.h"
-#include "core/aux/async.h"
-#include "core/calc/coord_trafos.h"
-#include "core/calc/interpolate_polefig.h"
-#include "core/fit/peak_function.h"
 #include "core/session.h"
-#include "qcr/base/debug.h" // ASSERT
+//#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class PeakInfo
