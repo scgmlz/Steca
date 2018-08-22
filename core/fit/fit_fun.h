@@ -52,6 +52,7 @@ protected:
     bool success_ {false};
 };
 
+
 //! A polynomial, for fitting the background of a diffractogram
 
 // TODO use Legendre polynomials on rescaled interval to provide an easy approximation of the average.
@@ -73,16 +74,17 @@ private:
 class PeakFunction : public ParametricFunction {
 public:
     PeakFunction(const QString& functionName, const RawOutcome&);
-    double y(double x, double const* parValues = nullptr) const final;
-    const FitParameter& getCenter() const;
-    const FitParameter getFwhm() const;
-    const FitParameter& getIntensity() const;
-    static PeakFunction fromFit(const QString& functionName, const Curve&, const RawOutcome&);
 
+    double y(double x, double const* parValues = nullptr) const final;
     void setY(const double* parValues, const int nPts,
               const double* xValues, double* yValues) const override;
     void setDY(const double* parValues, const int nPar, const int nPts,
                const double* xValues, double* jacobian) const override;
+    const FitParameter& getCenter() const;
+    const FitParameter getFwhm() const;
+    const FitParameter& getIntensity() const;
+
+    static PeakFunction fromFit(const QString& functionName, const Curve&, const RawOutcome&);
 
 private:
     double dy(double x, int parIndex, double const* parValues = nullptr) const final;
