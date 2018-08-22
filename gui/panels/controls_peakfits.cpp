@@ -14,13 +14,12 @@
 
 #include "gui/panels/controls_peakfits.h"
 #include "core/session.h"
+#include "core/fit/peak_function.h"
 #include "qcr/widgets/tables.h"
 #include "gui/mainwin.h"
 #include "gui/actions/triggers.h"
 #include "gui/view/range_control.h"
 //#include "qcr/base/debug.h"
-
-#define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 
 namespace {
 

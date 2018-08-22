@@ -77,21 +77,4 @@ private:
     bool success_ {false};
 };
 
-
-//! Abstract peak function
-
-class PeakFunction : public FitFunction {
-public:
-    void setY(const double* P, const int nXY, const double* X, double* Y) const final;
-    void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
-    const FitParameter getCenter   (const std::vector<FitParameter>& par) const;
-    const FitParameter getFwhm     (const std::vector<FitParameter>& par) const;
-    const FitParameter getIntensity(const std::vector<FitParameter>& par) const;
-};
-
-
-// global functions
-
-ParametricFunction peakfunctionFromFit(const QString&, const Curve&, const RawOutcome&);
-
 #endif // PARAMETRIC_FUNCTION_H

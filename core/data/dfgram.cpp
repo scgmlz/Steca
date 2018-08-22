@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/data/dfgram.h"
+#include "core/fit/peak_function.h"
 #include "core/fit/polynom.h"
 #include "core/session.h"
 //#include "qcr/base/debug.h"
@@ -59,7 +60,7 @@ RawOutcome computeRawOutcome(const Dfgram* parent, int jP)
 ParametricFunction computePeakFit(const Dfgram* parent, int jP)
 {
     Peak& peak = gSession->peaks.at(jP);
-    return peakfunctionFromFit(
+    return PeakFunction::fromFit(
         peak.functionName(), parent->getCurveMinusBg().intersect(peak.range()),
         parent->getRawOutcome(jP));
 }
