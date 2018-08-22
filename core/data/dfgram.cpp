@@ -20,7 +20,7 @@ namespace {
 
 Polynom computeBgFit(const Dfgram* parent)
 {
-    return Polynom::fromFit(
+    return polynomFromFit(
         gSession->baseline.polynomDegree.val(), parent->curve, gSession->baseline.ranges);
 }
 
@@ -58,7 +58,7 @@ RawOutcome computeRawOutcome(const Dfgram* parent, int jP)
 PeakFunction computePeakFit(const Dfgram* parent, int jP)
 {
     Peak& peak = gSession->peaks.at(jP);
-    return PeakFunction::fromFit(
+    return peakfunctionFromFit(
         peak.functionName(), parent->getCurveMinusBg().intersect(peak.range()),
         parent->getRawOutcome(jP));
 }

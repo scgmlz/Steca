@@ -22,6 +22,22 @@
 
 #define SQR(x) (x)*(x)
 
+Polynom polynomFromFit(int degree, const Curve& curve, const Ranges& ranges)
+{
+    Polynom p(degree);
+    FitWrapper().execFit(p, curve.intersect(ranges));
+    return p;
+}
+
+PeakFunction peakfunctionFromFit(
+    const QString& functionName, const Curve& curve, const RawOutcome& rawOutcome)
+{
+    ASSERT(curve.count());
+    PeakFunction ret(functionName, rawOutcome);
+    FitWrapper().execFit(ret, curve);
+    return ret;
+}
+
 //  ***********************************************************************************************
 //! @class ParametricFunction
 
@@ -68,13 +84,6 @@ void Polynom::setDY(const int nPar, const double*,
     }
 }
 
-Polynom Polynom::fromFit(int degree, const Curve& curve, const Ranges& ranges)
-{
-    Polynom p(degree);
-    FitWrapper().execFit(p, curve.intersect(ranges));
-    return p;
-}
-
 //  ***********************************************************************************************
 //! @class PeakFunction
 
@@ -118,15 +127,6 @@ void PeakFunction::setDY(const int, const double* parValues,
         *jacobian++ = inten*g*(SQR((x-center)/stdv)-1)/stdv;
         *jacobian++ = g;
     }
-}
-
-PeakFunction PeakFunction::fromFit(
-    const QString& functionName, const Curve& curve, const RawOutcome& rawOutcome)
-{
-    ASSERT(curve.count());
-    PeakFunction ret(functionName, rawOutcome);
-    FitWrapper().execFit(ret, curve);
-    return ret;
 }
 
 /*

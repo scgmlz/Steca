@@ -60,8 +60,6 @@ public:
               const int nPts, const double* xValues, double* yValues) const final;
     void setDY(const int nPar, const double* parValues,
                const int nPts, const double* xValues, double* jacobian) const final;
-
-    static Polynom fromFit(int degree, const Curve&, const Ranges&);
 };
 
 
@@ -79,7 +77,13 @@ public:
     const FitParameter getFwhm() const;
     const FitParameter& getIntensity() const;
 
-    static PeakFunction fromFit(const QString& functionName, const Curve&, const RawOutcome&);
 };
+
+
+// global functions
+
+PeakFunction peakfunctionFromFit(const QString& functionName, const Curve&, const RawOutcome&);
+Polynom polynomFromFit(int degree, const Curve&, const Ranges&);
+
 
 #endif // FIT_FUN_H
