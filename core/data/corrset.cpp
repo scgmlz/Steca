@@ -73,9 +73,8 @@ void Corrset::clear()
 void Corrset::removeFile()
 {
     raw_.release();
-    // TODO empty image? was corrImage_.clear();
     invalidateNormalizer();
-    gSession->updateImageSize(); // TODO check, was marked "UNDER CONSTRUCTION"
+    gSession->updateImageSize();
 }
 
 void Corrset::loadFile(const QString& filePath)

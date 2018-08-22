@@ -27,15 +27,15 @@ public:
 
     QJsonObject toJson() const;
     const Range& range() const { return range_; }
-    Range slice2range(int) const; // TODO NOW rm
+    Range slice2range(int) const; // TODO rm
 
     QcrCell<int> numSlices {1};
     QcrCell<int> currSlice {1}; // counting from 1, for user convenience
 
 private:
-    void recomputeCache();// TODO NOW rm
-    Range fullRange_;// TODO NOW rm
-    Range range_;// TODO NOW rm
+    void recomputeCache();// TODO rm
+    Range fullRange_;// TODO rm
+    Range range_;// TODO rm
 };
 
 #endif // GAMMA_SELECTION_H
