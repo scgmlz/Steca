@@ -67,7 +67,7 @@ Metadata Sequence::computeAvgMetadata() const
     double avg = 0;                             \
     for (const Measurement* one : members_)     \
         avg += one->what_function();            \
-    avg /= count();                             \
+    avg /= size();                             \
     return avg;
 
 deg Sequence::omg() const { AVG_ONES(omg) }
@@ -153,7 +153,7 @@ int Cluster::totalOffset() const
 
 bool Cluster::isIncomplete() const
 {
-    return count() < gSession->dataset.binning.val();
+    return size() < gSession->dataset.binning.val();
 }
 
 const Dfgram& Cluster::currentDfgram() const

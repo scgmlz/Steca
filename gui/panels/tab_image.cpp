@@ -152,7 +152,7 @@ DataImageTab::DataImageTab()
             gSession->thetaSelection.onData();
 
             const Cluster* cluster = gSession->currentCluster();
-            int n = cluster ? cluster->count() : 1;
+            int n = cluster ? cluster->size() : 1;
             idxMeas->setMaximum(n);
             if (n>1) {
                 idxMeas->setMinimum(1);

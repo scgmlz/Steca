@@ -59,8 +59,8 @@ QVariant ActiveClustersModel::data(const QModelIndex& index, int role) const
     case Qt::DisplayRole: {
         if (col==COL_NUMBER) {
             QString ret = QString::number(cluster.totalOffset()+1);
-            if (cluster.count()>1)
-                ret += "-" + QString::number(cluster.totalOffset()+cluster.count());
+            if (cluster.size()>1)
+                ret += "-" + QString::number(cluster.totalOffset()+cluster.size());
             return ret;
         } else if (col>=COL_ATTRS &&
                    col < COL_ATTRS+gSession->params.smallMetaSelection.numSelected()) {
@@ -71,12 +71,12 @@ QVariant ActiveClustersModel::data(const QModelIndex& index, int role) const
     }
     case Qt::ToolTipRole: {
         QString ret;
-        if (cluster.count()>1) {
+        if (cluster.size()>1) {
             ret = QString("Measurements %1..%2 are numbers %3..%4 in file %5")
                 .arg(cluster.totalOffset()+1)
-                .arg(cluster.totalOffset()+cluster.count())
+                .arg(cluster.totalOffset()+cluster.size())
                 .arg(cluster.offset()+1)
-                .arg(cluster.offset()+cluster.count())
+                .arg(cluster.offset()+cluster.size())
                 .arg(cluster.file().name());
         } else {
             ret = QString("Measurement %1 is number %2 in file %3")
@@ -87,12 +87,12 @@ QVariant ActiveClustersModel::data(const QModelIndex& index, int role) const
         ret += ".";
         if (cluster.isIncomplete())
             ret += QString("\nThis cluster has only %1 elements, while the binning factor is %2.")
-                .arg(cluster.count())
+                .arg(cluster.size())
                 .arg(gSession->dataset.binning.val());
         return ret;
     }
     case Qt::ForegroundRole: {
-        if (col==COL_NUMBER && cluster.count()>1 &&
+        if (col==COL_NUMBER && cluster.size()>1 &&
             (cluster.isIncomplete()))
             return QColor(Qt::red);
         return QColor(Qt::black);

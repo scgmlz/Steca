@@ -31,7 +31,7 @@ public:
     Sequence(const Sequence&) = delete;
     Sequence(const std::vector<const Measurement*>& measurements);
 
-    const int count() const { return members_.size(); }
+    const int size() const { return members_.size(); }
     const Measurement* first() const { return members_.front(); }
     const Measurement* at(int i) const { return members_.at(i); }
     const std::vector<const Measurement*>& members() const { return members_; }

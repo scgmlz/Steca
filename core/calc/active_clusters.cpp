@@ -62,7 +62,7 @@ double recomputeAvg(const ActiveClusters*const ac, std::function<double(const Me
     for (const Cluster* cluster : ac->clusters.get()) {
         for (const Measurement* one : cluster->members())
             sum += f(one);
-        cnt += cluster->count();
+        cnt += cluster->size();
     }
     return sum/cnt;
 }
