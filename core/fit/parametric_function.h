@@ -53,7 +53,7 @@ class Curve;
 class RawOutcome;
 
 
-//! A function, fitted parameters, and a success flag.
+//! The outcome of a fit: a function, some fitted parameters, and a success flag.
 
 class FitOutcome {
 public:
