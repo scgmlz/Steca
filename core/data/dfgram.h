@@ -18,7 +18,7 @@
 #include "core/typ/cached.h"
 #include "core/typ/curve.h"
 #include "core/fit/raw_outcome.h"
-#include "core/fit/fit_fun.h"
+#include "core/fit/parametric_function.h"
 
 //! A curve, and associated fit parameters.
 

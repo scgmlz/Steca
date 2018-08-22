@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/fit/fit_fun.h
+//! @file      core/fit/parametric_function.h
 //! @brief     Defines classes ParametricFunction, Polynom, PeakFunction
 //!
 //! @homepage  https://github.com/scgmlz/Steca

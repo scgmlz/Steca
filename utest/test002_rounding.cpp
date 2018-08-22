@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "core/fit/fit_fun.h"
+#include "core/fit/parametric_function.h"
 #include <qmath.h>
 
 TEST(Rounding, FitParError) {
