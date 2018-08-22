@@ -18,9 +18,8 @@
 #include <memory>
 #include <vector>
 
-//! One fit parameter, with value, error, and allowed range.
+//! One double value with error estimate. Used to hold fitted parameter.
 
-// TODO ranges belong into PeakFunction; rename this into ErroredValue
 class DoubleWithError {
 public:
     DoubleWithError(double value=0, double error=0);
@@ -49,7 +48,8 @@ public:
 class Curve;
 class RawOutcome;
 
-//! Abstract function with parameters
+
+//! A function with fitted parameters.
 
 class ParametricFunction {
 public:

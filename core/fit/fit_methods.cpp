@@ -24,7 +24,8 @@ T* remove_const(T const* t)
     return const_cast<T*>(t);
 }
 
-void FitWrapper::execFit(ParametricFunction& function, const Curve& curve)
+void FitWrapper::execFit(
+    ParametricFunction& function, const Curve& curve, std::vector<double> parValue)
 {
     int parCount = function.parameterCount();
     if (curve.count()<parCount) {
@@ -33,16 +34,9 @@ void FitWrapper::execFit(ParametricFunction& function, const Curve& curve)
         return;
     }
 
-    std::vector<double> parValue(parCount);
     std::vector<double> parError(parCount);
     std::vector<double> covar(parCount * parCount); // output covariance matrix
     //std::vector<double> parMin(parCount), parMax(parCount);
-    for (int ip=0; ip<parCount; ++ip) {
-        parValue[ip] = function.parameterAt(ip).value();
-        ASSERT(qIsFinite(parValue[ip]));
-        //parMin[ip] = par.range().min;
-        //parMax[ip] = par.range().max;
-    }
 
     // minimizer options mu, epsilon1, epsilon2, epsilon3
     double opts[] = { LM_INIT_MU, 1e-12, 1e-12, 1e-18 };

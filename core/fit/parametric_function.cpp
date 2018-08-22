@@ -45,11 +45,11 @@ double DoubleWithError::roundedError(int prec) const
 //  ***********************************************************************************************
 //! @class ParametricFunction
 
-// TODO replace by vectorial access wherever possible,
-//      or/and maintain values vector within parameters_.
+// TODO replace by vectorial access wherever possible
 
 double ParametricFunction::y(const double x) const
 {
+    ASSERT(success_); // computing y makes only sense after a successful fit
     double pars[parameters_.size()];
     for (int ip=0; ip<parameters_.size(); ++ip)
         pars[ip] = parameters_[ip].value();

@@ -486,11 +486,13 @@ ParametricFunction PeakFunction::fromFit(
 {
     ASSERT(curve.count());
     const PeakFunction* f;
+    int nPar = 3;
     f = new Gaussian();
-    ParametricFunction F(3, f);
-    F.parameterAt(0).setValue(rawOutcome.getCenter(),0);
-    F.parameterAt(1).setValue(rawOutcome.getFwhm() / sqrt(8*log(2)),0);
-    F.parameterAt(2).setValue(rawOutcome.getIntensity(),0);
-    FitWrapper().execFit(F, curve);
+    std::vector<double> startParams(nPar);
+    ParametricFunction F(nPar, f);
+    startParams[0] = rawOutcome.getCenter();
+    startParams[1] = rawOutcome.getFwhm() / sqrt(8*log(2));
+    startParams[2] = rawOutcome.getIntensity();
+    FitWrapper().execFit(F, curve, startParams);
     return F;
 }
