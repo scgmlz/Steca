@@ -39,7 +39,7 @@ private:
     void paintGrid();
     void paintPoints();
 
-    const PeakInfos* peakInfos_ {nullptr};
+    const InfoSequence* peakInfos_ {nullptr};
 
     // valid while painting
     std::unique_ptr<QPainter> painter_;

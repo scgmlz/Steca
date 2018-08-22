@@ -15,11 +15,11 @@
 #ifndef INTERPOLATE_POLEFIG_H
 #define INTERPOLATE_POLEFIG_H
 
-class PeakInfos;
+class InfoSequence;
 
 namespace algo {
 
-PeakInfos interpolateInfos(const PeakInfos& direct);
+InfoSequence interpolateInfos(const InfoSequence& direct);
 
 } // namespace algo
 

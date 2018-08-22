@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/calc/peak_info.h
-//! @brief     Defines classes PeakInfo, PeakInfos
+//! @brief     Defines classes PeakInfo, InfoSequence
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -75,11 +75,11 @@ private:
 
 //! A list of PeakInfo's, associated with _one_ Bragg peak and different orientations alpha,beta.
 
-class PeakInfos {
+class InfoSequence {
 public:
-    PeakInfos() {}
-    PeakInfos(const PeakInfos&) = delete;
-    PeakInfos(PeakInfos&&) = default;
+    InfoSequence() {}
+    InfoSequence(const InfoSequence&) = delete;
+    InfoSequence(InfoSequence&&) = default;
 
     void appendPeak(PeakInfo&&);
 
@@ -94,21 +94,21 @@ private:
 };
 
 
-//! Direct and interpolated PeakInfos for all Bragg peaks.
+//! Direct and interpolated InfoSequence for all Bragg peaks.
 
 class AllPeaks {
 public:
     AllPeaks();
     AllPeaks(const AllPeaks&) = delete;
-    const PeakInfos* currentDirect() const;
-    const PeakInfos* currentInterpolated() const;
-    const PeakInfos* currentPeakInfos() const;
+    const InfoSequence* currentDirect() const;
+    const InfoSequence* currentInterpolated() const;
+    const InfoSequence* currentInfoSequence() const;
     void invalidateAll() const;
     void invalidateAt(int) const;
     void invalidateInterpolated() const;
 private:
-    mutable SelfKachingVector<AllPeaks,PeakInfos> direct;
-    mutable SelfKachingVector<AllPeaks,PeakInfos> interpolated;
+    mutable SelfKachingVector<AllPeaks,InfoSequence> direct;
+    mutable SelfKachingVector<AllPeaks,InfoSequence> interpolated;
 };
 
 #endif // PEAK_INFO_H

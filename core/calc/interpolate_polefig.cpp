@@ -117,7 +117,7 @@ bool inRadius(deg alpha, deg beta, deg centerAlpha, deg centerBeta, deg radius)
 
 // Adds data from peak infos within radius from alpha and beta
 // to the peak parameter lists.
-void searchPoints(deg alpha, deg beta, deg radius, const PeakInfos& infos,
+void searchPoints(deg alpha, deg beta, deg radius, const InfoSequence& infos,
                   std::vector<itf_t>& itfs)
 {
     // TODO REVIEW Use value trees to improve performance.
@@ -129,9 +129,9 @@ void searchPoints(deg alpha, deg beta, deg radius, const PeakInfos& infos,
     }
 }
 
-// Searches closest PeakInfos to given alpha and beta in quadrants.
+// Searches closest InfoSequence to given alpha and beta in quadrants.
 void searchInQuadrants(
-    const Quadrants& quadrants, deg alpha, deg beta, deg searchRadius, const PeakInfos& infos,
+    const Quadrants& quadrants, deg alpha, deg beta, deg searchRadius, const InfoSequence& infos,
     std::vector<PeakInfo const*>& foundInfos, std::vector<double>& distances)
 {
     ASSERT(quadrants.size() <= NUM_QUADRANTS);
@@ -202,7 +202,7 @@ itf_t inverseDistanceWeighing(const std::vector<double>& distances, const std::v
 }
 
 // Interpolates peak infos to a single point using idw.
-itf_t interpolateValues(deg searchRadius, const PeakInfos& infos, deg alpha, deg beta)
+itf_t interpolateValues(deg searchRadius, const InfoSequence& infos, deg alpha, deg beta)
 {
     std::vector<PeakInfo const*> interpolationInfos;
     std::vector<double> distances;
@@ -248,7 +248,7 @@ itf_t interpolateValues(deg searchRadius, const PeakInfos& infos, deg alpha, deg
 //  ***********************************************************************************************
 
 //! Interpolates infos to equidistant grid in alpha and beta.
-PeakInfos algo::interpolateInfos(const PeakInfos& direct)
+InfoSequence algo::interpolateInfos(const InfoSequence& direct)
 {
     ASSERT(gSession->params.interpolParams.enabled.val());
     qDebug() << "interpolation began";
@@ -272,7 +272,7 @@ PeakInfos algo::interpolateInfos(const PeakInfos& direct)
     int numAlphas = qRound(90. / stepAlpha);
     int numBetas = qRound(360. / stepBeta);
 
-    PeakInfos ret; // Output data.
+    InfoSequence ret; // Output data.
 
     TakesLongTime progress("interpolation", numAlphas * numBetas); // TODO check number + 1?
 

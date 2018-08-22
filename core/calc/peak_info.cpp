@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/calc/peak_info.cpp
-//! @brief     Implements classes PeakInfo, PeakInfos
+//! @brief     Implements classes PeakInfo, InfoSequence
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -152,16 +152,16 @@ QString const PeakInfo::reflStringTag(int attr, bool out)
 
 
 //  ***********************************************************************************************
-//! @class PeakInfos
+//! @class InfoSequence
 
-void PeakInfos::appendPeak(PeakInfo&& info)
+void InfoSequence::appendPeak(PeakInfo&& info)
 {
     peaks_.push_back(std::move(info));
 }
 
 //! Returns entries idxX and idxY, as sorted vectors X and Ylow,Y,Yhig, for use in diagrams.
 
-void PeakInfos::get4(const int idxX, const int idxY,
+void InfoSequence::get4(const int idxX, const int idxY,
                      std::vector<double>& xs, std::vector<double>& ys,
                      std::vector<double>& ysLow, std::vector<double>& ysHig) const
 {
@@ -201,7 +201,7 @@ void PeakInfos::get4(const int idxX, const int idxY,
 
 //! For debugging only.
 
-void PeakInfos::inspect(const QString& header) const
+void InfoSequence::inspect(const QString& header) const
 {
     qDebug() << header << "#peaks=" << peaks_.size();
     if (!peaks_.size())
@@ -248,10 +248,10 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
             deg(center.value), deg(center.error), fwhm.value, fwhm.error};
 }
 
-PeakInfos computeDirectPeakInfos(int jP)
+InfoSequence computeDirectInfoSequence(int jP)
 {
     TakesLongTime progress("peak fitting", gSession->activeClusters.size());
-    PeakInfos ret;
+    InfoSequence ret;
     int nGamma = qMax(1, gSession->gammaSelection.numSlices.val());
     for (const Cluster* cluster : gSession->activeClusters.clusters.get()) {
         progress.step();
@@ -261,7 +261,7 @@ PeakInfos computeDirectPeakInfos(int jP)
                 ret.appendPeak(std::move(refInfo));
         }
     }
-    ret.inspect("computeDirectPeakInfos");
+    ret.inspect("computeDirectInfoSequence");
     return ret;
 }
 
@@ -270,10 +270,10 @@ PeakInfos computeDirectPeakInfos(int jP)
 
 AllPeaks::AllPeaks()
     : direct {[]()->int{return gSession->peaks.size();},
-        [](const AllPeaks*, int jP)->PeakInfos{
-            return computeDirectPeakInfos(jP); }}
+        [](const AllPeaks*, int jP)->InfoSequence{
+            return computeDirectInfoSequence(jP); }}
     , interpolated {[]()->int{return gSession->peaks.size();},
-        [](const AllPeaks* parent, int jP)->PeakInfos{
+        [](const AllPeaks* parent, int jP)->InfoSequence{
             return algo::interpolateInfos(parent->direct.getget(parent,jP)); }}
 {}
 
@@ -294,7 +294,7 @@ void AllPeaks::invalidateInterpolated() const
     interpolated.invalidate();
 }
 
-const PeakInfos* AllPeaks::currentDirect() const
+const InfoSequence* AllPeaks::currentDirect() const
 {
     if (!gSession->peaks.size())
         return nullptr;
@@ -304,7 +304,7 @@ const PeakInfos* AllPeaks::currentDirect() const
     return &direct.getget(this,jP);
 }
 
-const PeakInfos* AllPeaks::currentInterpolated() const
+const InfoSequence* AllPeaks::currentInterpolated() const
 {
     if (!gSession->peaks.size())
         return nullptr;
@@ -313,7 +313,7 @@ const PeakInfos* AllPeaks::currentInterpolated() const
     return &interpolated.getget(this,jP);
 }
 
-const PeakInfos* AllPeaks::currentPeakInfos() const
+const InfoSequence* AllPeaks::currentInfoSequence() const
 {
     return gSession->params.interpolParams.enabled.val() ?
         currentInterpolated() : currentDirect();
