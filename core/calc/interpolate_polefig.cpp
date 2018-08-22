@@ -251,7 +251,7 @@ itf_t interpolateValues(deg searchRadius, const InfoSequence& infos, deg alpha, 
 InfoSequence algo::interpolateInfos(const InfoSequence& direct)
 {
     ASSERT(gSession->params.interpolParams.enabled.val());
-    qDebug() << "interpolation began";
+    //qDebug() << "interpolation began";
 
     double stepAlpha   = gSession->params.interpolParams.stepAlpha.val();
     double stepBeta    = gSession->params.interpolParams.stepBeta.val();
@@ -330,6 +330,6 @@ InfoSequence algo::interpolateInfos(const InfoSequence& direct)
                                     Q_QNAN, itf.tth, deg(Q_QNAN), itf.fwhm, Q_QNAN));
         }
     }
-    qDebug() << "interpolation ended";
+    //qDebug() << "interpolation ended";
     return ret;
 }

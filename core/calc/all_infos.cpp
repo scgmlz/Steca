@@ -78,7 +78,6 @@ InfoSequence computeDirectInfoSequence(int jP)
                 ret.appendPeak(std::move(refInfo));
         }
     }
-    ret.inspect("computeDirectInfoSequence");
     return ret;
 }
 
@@ -117,7 +116,6 @@ const InfoSequence* AllInfos::currentDirect() const
         return nullptr;
     ASSERT(direct.size(this)==gSession->peaks.size());
     int jP = gSession->peaks.selectedIndex();
-    direct.getget(this,jP).inspect("currentDirect");
     return &direct.getget(this,jP);
 }
 
