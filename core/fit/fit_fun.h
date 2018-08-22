@@ -27,9 +27,9 @@ public:
     virtual ~ParametricFunction() {}
 
     //! evaluate the function y = f(x), with given (parValues) or own parameters
-    virtual double y(double x, double const* parValues = nullptr) const = 0;
+    virtual double y(double x, double const* parValues) const = 0;
     //! partial derivative / parameter, with given (parValues) or own parameters
-    virtual double dy(double x, int parIndex, double const* parValues = nullptr) const = 0;
+    virtual double dy(double x, int parIndex, double const* parValues) const = 0;
 
     void setSuccess(bool s) { success_ = s; }
     void setParameterCount(int n) { parameters_.resize(n, {}); }
