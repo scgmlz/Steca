@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/fit/parametric_function.h
-//! @brief     Defines classes DoubleWithError, FitFunction, ParametricFunction
+//! @brief     Defines classes DoubleWithError, FitFunction, FitOutcome
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -52,13 +52,13 @@ class RawOutcome;
 
 //! A function with fitted parameters.
 
-class ParametricFunction {
+class FitOutcome {
 public:
-    ParametricFunction(const int _nPar, const FitFunction* _f)
+    FitOutcome(const int _nPar, const FitFunction* _f)
         : f{_f}, parameters_(_nPar) {}
-    ~ParametricFunction() { delete f; }
-    ParametricFunction(const ParametricFunction&) = delete;
-    ParametricFunction(ParametricFunction&&) = default;
+    ~FitOutcome() { delete f; }
+    FitOutcome(const FitOutcome&) = delete;
+    FitOutcome(FitOutcome&&) = default;
 
     void setSuccess(bool s) { success_ = s; }
     DoubleWithError& parameterAt(int ip) { return parameters_[ip]; }

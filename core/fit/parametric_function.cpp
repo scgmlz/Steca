@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/fit/parametric_function.cpp
-//! @brief     Implements classes DoubleWithError, ParametricFunction
+//! @brief     Implements classes DoubleWithError, FitOutcome
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -43,11 +43,11 @@ double DoubleWithError::roundedError(int prec) const
 }
 
 //  ***********************************************************************************************
-//! @class ParametricFunction
+//! @class FitOutcome
 
 // TODO replace by vectorial access wherever possible
 
-double ParametricFunction::y(const double x) const
+double FitOutcome::y(const double x) const
 {
     ASSERT(success_); // computing y makes only sense after a successful fit
     double pars[parameters_.size()];

@@ -233,7 +233,7 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
         return {metadata, alpha, beta, gRange};
 
     const Dfgram& dfgram = cluster.dfgrams.getget(&cluster, iGamma);
-    const ParametricFunction& pFct = dfgram.getPeakFit(jP);
+    const FitOutcome& pFct = dfgram.getPeakFit(jP);
     const auto* peakFit = dynamic_cast<const PeakFunction*>(pFct.f);
     ASSERT(peakFit);
 

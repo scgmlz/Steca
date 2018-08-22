@@ -482,7 +482,7 @@ FunctionRegistry::FunctionRegistry()
 }
 */
 
-ParametricFunction PeakFunction::fromFit(
+FitOutcome PeakFunction::fromFit(
     const QString& functionName, const Curve& curve, const RawOutcome& rawOutcome)
 {
     ASSERT(curve.count());

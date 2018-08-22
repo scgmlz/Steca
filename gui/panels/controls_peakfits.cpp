@@ -153,7 +153,7 @@ void PeakfitOutcomeView::refresh()
 
     if (peak->isRaw())
         return enable(true, false);
-    const ParametricFunction& pFct = dfgram->getPeakFit(jP);
+    const FitOutcome& pFct = dfgram->getPeakFit(jP);
     const auto* peakFit = dynamic_cast<const PeakFunction*>(pFct.f);
     ASSERT(peakFit);
 

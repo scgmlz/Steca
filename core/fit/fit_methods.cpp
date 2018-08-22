@@ -25,11 +25,11 @@ T* remove_const(T const* t)
 }
 
 
-ParametricFunction FitWrapper::execFit(
+FitOutcome FitWrapper::execFit(
     const FitFunction* f,const Curve& curve, std::vector<double> parValue)
 {
     int nPar = f->nPar();
-    ParametricFunction ret(nPar, f);
+    FitOutcome ret(nPar, f);
     if (curve.count()<nPar) {
         //qDebug() << "not enough points for fitting";
         ret.setSuccess(false);

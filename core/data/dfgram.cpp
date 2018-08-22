@@ -20,7 +20,7 @@
 
 namespace {
 
-ParametricFunction computeBgFit(const Dfgram* parent)
+FitOutcome computeBgFit(const Dfgram* parent)
 {
     return Polynom::fromFit(
         gSession->baseline.polynomDegree.val(), parent->curve, gSession->baseline.ranges);
@@ -28,7 +28,7 @@ ParametricFunction computeBgFit(const Dfgram* parent)
 
 Curve computeBgAsCurve(const Dfgram* parent)
 {
-    const ParametricFunction& bgFit = parent->getBgFit();
+    const FitOutcome& bgFit = parent->getBgFit();
     if (!bgFit.success())
         return {};
     Curve ret;
@@ -57,7 +57,7 @@ RawOutcome computeRawOutcome(const Dfgram* parent, int jP)
     return RawOutcome(peakCurve);
 }
 
-ParametricFunction computePeakFit(const Dfgram* parent, int jP)
+FitOutcome computePeakFit(const Dfgram* parent, int jP)
 {
     Peak& peak = gSession->peaks.at(jP);
     return PeakFunction::fromFit(
@@ -69,7 +69,7 @@ Curve computePeakAsCurve(const Dfgram* parent, int jP)
 {
     Peak& peak = gSession->peaks.at(jP);
     const Curve& curveMinusBg = parent->getCurveMinusBg();
-    const ParametricFunction& fun = parent->getPeakFit(jP);
+    const FitOutcome& fun = parent->getPeakFit(jP);
     if (!fun.success())
         return {};
     const Range& rge = peak.range();
@@ -93,7 +93,7 @@ Dfgram::Dfgram(Curve&& c)
               [](const Dfgram* parent, int jP)->RawOutcome{
                   return computeRawOutcome(parent, jP); } }
     , peakFits_ {[]()->int {return gSession->peaks.count();},
-              [](const Dfgram* parent, int jP)->ParametricFunction{
+              [](const Dfgram* parent, int jP)->FitOutcome{
                   return computePeakFit(parent, jP); } }
     , peaksAsCurve_ {[]()->int {return gSession->peaks.count();},
               [](const Dfgram* parent, int jP)->Curve{

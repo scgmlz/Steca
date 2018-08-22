@@ -26,7 +26,7 @@ public:
     const DoubleWithError getFwhm     (const std::vector<DoubleWithError>& par) const;
     const DoubleWithError getIntensity(const std::vector<DoubleWithError>& par) const;
 
-    static ParametricFunction fromFit(const QString&, const Curve&, const RawOutcome&);
+    static FitOutcome fromFit(const QString&, const Curve&, const RawOutcome&);
 };
 
 #endif // PEAK_FUNCTION_H
