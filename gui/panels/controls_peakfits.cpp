@@ -156,10 +156,10 @@ void PeakfitOutcomeView::refresh()
     const Fitted& pFct = dfgram->getPeakFit(jP);
     const auto* peakFit = dynamic_cast<const PeakFunction*>(pFct.f);
     ASSERT(peakFit);
-
-    showFittedX_.setText(par2text(peakFit->getCenter   (pFct.parameters())));
-    showFittedD_.setText(par2text(peakFit->getFwhm     (pFct.parameters())));
-    showFittedY_.setText(par2text(peakFit->getIntensity(pFct.parameters())));
+    const PeakOutcome out = peakFit->outcome(pFct);
+    showFittedX_.setText(par2text(out.center));
+    showFittedD_.setText(par2text(out.fwhm));
+    showFittedY_.setText(par2text(out.intensity));
     enable(true, true);
 }
 

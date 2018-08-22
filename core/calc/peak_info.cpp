@@ -236,10 +236,10 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
     const Fitted& pFct = dfgram.getPeakFit(jP);
     const auto* peakFit = dynamic_cast<const PeakFunction*>(pFct.f);
     ASSERT(peakFit);
-
-    DoubleWithError center    = peakFit->getCenter   (pFct.parameters());
-    DoubleWithError fwhm      = peakFit->getFwhm     (pFct.parameters());
-    DoubleWithError intensity = peakFit->getIntensity(pFct.parameters());
+    const PeakOutcome out = peakFit->outcome(pFct);
+    const DoubleWithError center    = out.center;
+    const DoubleWithError fwhm      = out.fwhm;
+    const DoubleWithError intensity = out.intensity;
 
     if (!fitrange.contains(center.value())) // TODO/math generalize to fitIsCredible
         return {metadata, alpha, beta, gRange};

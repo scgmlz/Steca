@@ -25,14 +25,13 @@ T* remove_const(T const* t)
 }
 
 
-Fitted FitWrapper::execFit(
-    const FitFunction* f,const Curve& curve, std::vector<double> parValue)
+Fitted FitWrapper::execFit(const FitFunction* f,const Curve& curve, std::vector<double> parValue)
 {
     int nPar = f->nPar();
     ASSERT(parValue.size()==nPar);
 
     if (curve.count()<nPar)
-        return Fitted::Failure();
+        return {}; // signals failure
 
     std::vector<double> parError(nPar);
     std::vector<double> covar(nPar * nPar); // output covariance matrix

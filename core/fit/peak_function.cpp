@@ -28,22 +28,8 @@ public:
     void setY(const double* P, const int nXY, const double* X, double* Y) const final;
     void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
     int nPar() const final { return 3; };
+    PeakOutcome outcome(const Fitted&) const final;
 };
-
-//  ***********************************************************************************************
-//! @class PeakFunction
-
-const DoubleWithError PeakFunction::getCenter(const std::vector<DoubleWithError>& par) const {
-    return par[0];
-}
-const DoubleWithError PeakFunction::getFwhm(const std::vector<DoubleWithError>& par) const {
-    return DoubleWithError(par[1].value()*sqrt(8*log(2)),
-                        par[1].error()*sqrt(8*log(2)));
-}
-const DoubleWithError PeakFunction::getIntensity(const std::vector<DoubleWithError>& par) const
-{
-    return par[2];
-}
 
 //  ***********************************************************************************************
 //! @class Gaussian
@@ -71,6 +57,14 @@ void Gaussian::setDY(const double* P, const int nXY, const double* X, double* Ja
         *Jacobian++ = inten*g*(SQR((x-center)/stdv)-1)/stdv;
         *Jacobian++ = g;
     }
+}
+
+PeakOutcome Gaussian::outcome(const Fitted& F) const
+{
+    return {
+        {F.parVal.at(0), F.parErr.at(0)},
+        {F.parVal.at(1)*sqrt(8*log(2)), F.parErr.at(2)*sqrt(8*log(2))},
+        {F.parVal.at(2), F.parErr.at(2)} };
 }
 
 /*

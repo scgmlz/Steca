@@ -46,25 +46,21 @@ double DoubleWithError::roundedError(int prec) const
 //! @class Fitted
 
 Fitted::Fitted(const FitFunction* _f,
-                       const std::vector<double>& parValue, const std::vector<double>& parError)
-        : f{_f}
-        , success_{true}
+               const std::vector<double>& _parVal, const std::vector<double>& _parErr)
+        : success{true}
+        , f{_f}
+        , parVal{_parVal}
+        , parErr{_parErr}
 {
-    const int nPar = parValue.size();
-    ASSERT(parError.size()==nPar);
-    for (int i=0; i<nPar; ++i)
-        parameters_.push_back({parValue[i], parError[i]});
+    ASSERT(parErr.size()==parVal.size());
 }
 
 // TODO replace by vectorial access wherever possible
 
 double Fitted::y(const double x) const
 {
-    ASSERT(success_); // computing y makes only sense after a successful fit
-    double pars[parameters_.size()];
-    for (int ip=0; ip<parameters_.size(); ++ip)
-        pars[ip] = parameters_[ip].value();
+    ASSERT(success); // computing y makes only sense after a successful fit
     double ret;
-    f->setY(pars, 1, &x, &ret);
+    f->setY(parVal.data(), 1, &x, &ret);
     return ret;
 }

@@ -56,27 +56,22 @@ class Curve;
 
 class Fitted {
 public:
+    Fitted() {}                                 //!< When fit has failed.
     Fitted(const FitFunction* _f,
-               const std::vector<double>& parValue, const std::vector<double>& parError);
+           const std::vector<double>& _parVal,
+           const std::vector<double>& _parErr); //!< To hold outcome of successful fit
     ~Fitted() { delete f; }
     Fitted(const Fitted&) = delete;
     Fitted(Fitted&&) = default;
 
-    static Fitted Failure() { return Fitted(); }
-
     double y(const double x) const;
-    bool success() const { return success_; }
 
-    // TODO: in getCenter etc, do we really need to pass _all_ parameters?
-    // const DoubleWithError& parameterAt(int ip) const { return parameters_[ip]; }
-    const std::vector<DoubleWithError>& parameters() const { return parameters_; };
-
+    const bool success {false};
     const FitFunction* f {nullptr};
+    const std::vector<double> parVal;
+    const std::vector<double> parErr;
 
 private:
-    Fitted() {}
-    std::vector<DoubleWithError> parameters_; // would be const if we knew how to initialize
-    const bool success_ {false};
 };
 
 #endif // PARAMETRIC_FUNCTION_H

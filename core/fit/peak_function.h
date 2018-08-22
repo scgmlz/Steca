@@ -20,13 +20,20 @@
 
 class RawOutcome;
 
+//! Numeric outcome of peak fit.
+
+class PeakOutcome {
+public:
+    const DoubleWithError center;
+    const DoubleWithError fwhm;
+    const DoubleWithError intensity;
+};
+
 //! Abstract peak function
 
 class PeakFunction : public FitFunction {
 public:
-    const DoubleWithError getCenter   (const std::vector<DoubleWithError>& par) const;
-    const DoubleWithError getFwhm     (const std::vector<DoubleWithError>& par) const;
-    const DoubleWithError getIntensity(const std::vector<DoubleWithError>& par) const;
+    virtual PeakOutcome outcome(const Fitted&) const = 0;
 
     static Fitted fromFit(const QString&, const Curve&, const RawOutcome&);
 };
