@@ -54,25 +54,27 @@ class RawOutcome;
 
 class FitOutcome {
 public:
-    FitOutcome(const int _nPar, const FitFunction* _f)
-        : f{_f}, parameters_(_nPar) {}
+    FitOutcome(const FitFunction* _f,
+               const std::vector<double>& parValue, const std::vector<double>& parError);
     ~FitOutcome() { delete f; }
     FitOutcome(const FitOutcome&) = delete;
     FitOutcome(FitOutcome&&) = default;
 
-    void setSuccess(bool s) { success_ = s; }
-    DoubleWithError& parameterAt(int ip) { return parameters_[ip]; }
+    static FitOutcome Failure() { return FitOutcome(); }
+
+    const DoubleWithError& parameterAt(int ip) const { return parameters_[ip]; }
 
     double y(const double x) const;
     int parameterCount() const { return parameters_.size(); }
     bool success() const { return success_; }
     const std::vector<DoubleWithError>& parameters() const { return parameters_; };
 
-    const FitFunction* f;
+    const FitFunction* f {nullptr};
 
 private:
-    std::vector<DoubleWithError> parameters_;
-    bool success_ {false};
+    FitOutcome() {}
+    std::vector<DoubleWithError> parameters_; // would be const if we knew how to initialize
+    const bool success_ {false};
 };
 
 #endif // PARAMETRIC_FUNCTION_H

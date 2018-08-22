@@ -29,14 +29,11 @@ FitOutcome FitWrapper::execFit(
     const FitFunction* f,const Curve& curve, std::vector<double> parValue)
 {
     int nPar = f->nPar();
-    FitOutcome ret(nPar, f);
-    if (curve.count()<nPar) {
-        //qDebug() << "not enough points for fitting";
-        ret.setSuccess(false);
-        return ret;
-    }
-
     ASSERT(parValue.size()==nPar);
+
+    if (curve.count()<nPar)
+        return FitOutcome::Failure();
+
     std::vector<double> parError(nPar);
     std::vector<double> covar(nPar * nPar); // output covariance matrix
     //std::vector<double> parMin(nPar), parMax(nPar);
@@ -60,12 +57,9 @@ FitOutcome FitWrapper::execFit(
         nullptr, maxIterations, opts, info, nullptr, covar.data(), nullptr);
 
     // pass fit results
-    ret.setSuccess(true);
     for (int ip=0; ip<nPar; ++ip)
         parError[ip] = sqrt(covar[ip * nPar + ip]); // the diagonal
-    for (int ip=0; ip<nPar; ++ip)
-        ret.parameterAt(ip).setValue(parValue[ip], parError[ip]);
-    return ret;
+    return FitOutcome(f, parValue, parError);
 }
 
 void FitWrapper::callbackY(double* P, double* Y, int, int, void*)

@@ -45,6 +45,17 @@ double DoubleWithError::roundedError(int prec) const
 //  ***********************************************************************************************
 //! @class FitOutcome
 
+FitOutcome::FitOutcome(const FitFunction* _f,
+                       const std::vector<double>& parValue, const std::vector<double>& parError)
+        : f{_f}
+        , success_{true}
+{
+    const int nPar = parValue.size();
+    ASSERT(parError.size()==nPar);
+    for (int i=0; i<nPar; ++i)
+        parameters_.push_back({parValue[i], parError[i]});
+}
+
 // TODO replace by vectorial access wherever possible
 
 double FitOutcome::y(const double x) const
