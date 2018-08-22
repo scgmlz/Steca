@@ -26,16 +26,13 @@ public:
     FitParameter(double value=0, double error=0);
 
     void setValue(double value, double error); // TODO rm ?
-    void setAllowedRange(double min, double max);
 
     double value() const { return value_; }
     double error() const { return error_; }
     double roundedError(int) const;
-    const Range& range() const;
 
 private:
     double value_, error_;
-    Range range_; //!< allowed range of values
 };
 
 
