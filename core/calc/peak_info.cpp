@@ -215,7 +215,7 @@ void InfoSequence::inspect(const QString& header) const
 }
 
 //  ***********************************************************************************************
-//! @class AllPeaks
+//! @class AllInfos
 
 namespace {
 
@@ -268,33 +268,33 @@ InfoSequence computeDirectInfoSequence(int jP)
 } // namespace
 
 
-AllPeaks::AllPeaks()
+AllInfos::AllInfos()
     : direct {[]()->int{return gSession->peaks.size();},
-        [](const AllPeaks*, int jP)->InfoSequence{
+        [](const AllInfos*, int jP)->InfoSequence{
             return computeDirectInfoSequence(jP); }}
     , interpolated {[]()->int{return gSession->peaks.size();},
-        [](const AllPeaks* parent, int jP)->InfoSequence{
+        [](const AllInfos* parent, int jP)->InfoSequence{
             return algo::interpolateInfos(parent->direct.getget(parent,jP)); }}
 {}
 
-void AllPeaks::invalidateAll() const
+void AllInfos::invalidateAll() const
 {
     direct      .invalidate();
     interpolated.invalidate();
 }
 
-void AllPeaks::invalidateAt(int jP) const
+void AllInfos::invalidateAt(int jP) const
 {
     direct      .get(this,jP).invalidate();
     interpolated.get(this,jP).invalidate();
 }
 
-void AllPeaks::invalidateInterpolated() const
+void AllInfos::invalidateInterpolated() const
 {
     interpolated.invalidate();
 }
 
-const InfoSequence* AllPeaks::currentDirect() const
+const InfoSequence* AllInfos::currentDirect() const
 {
     if (!gSession->peaks.size())
         return nullptr;
@@ -304,7 +304,7 @@ const InfoSequence* AllPeaks::currentDirect() const
     return &direct.getget(this,jP);
 }
 
-const InfoSequence* AllPeaks::currentInterpolated() const
+const InfoSequence* AllInfos::currentInterpolated() const
 {
     if (!gSession->peaks.size())
         return nullptr;
@@ -313,7 +313,7 @@ const InfoSequence* AllPeaks::currentInterpolated() const
     return &interpolated.getget(this,jP);
 }
 
-const InfoSequence* AllPeaks::currentInfoSequence() const
+const InfoSequence* AllInfos::currentInfoSequence() const
 {
     return gSession->params.interpolParams.enabled.val() ?
         currentInterpolated() : currentDirect();

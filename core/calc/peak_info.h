@@ -96,10 +96,10 @@ private:
 
 //! Direct and interpolated InfoSequence for all Bragg peaks.
 
-class AllPeaks {
+class AllInfos {
 public:
-    AllPeaks();
-    AllPeaks(const AllPeaks&) = delete;
+    AllInfos();
+    AllInfos(const AllInfos&) = delete;
     const InfoSequence* currentDirect() const;
     const InfoSequence* currentInterpolated() const;
     const InfoSequence* currentInfoSequence() const;
@@ -107,8 +107,8 @@ public:
     void invalidateAt(int) const;
     void invalidateInterpolated() const;
 private:
-    mutable SelfKachingVector<AllPeaks,InfoSequence> direct;
-    mutable SelfKachingVector<AllPeaks,InfoSequence> interpolated;
+    mutable SelfKachingVector<AllInfos,InfoSequence> direct;
+    mutable SelfKachingVector<AllInfos,InfoSequence> interpolated;
 };
 
 #endif // PEAK_INFO_H

@@ -72,7 +72,7 @@ public:
     Peaks peaks;                        //!< ranges and other parameters for Bragg peak fitting
     ActiveClusters activeClusters;      //!< list of all clusters except the unselected ones
     KeyedCache<AngleMap, deg> angleMap; //!< to accelerate the projection image->dfgram
-    AllPeaks allPeaks;                  //!< all the outcome of peak raw analysis or fitting
+    AllInfos allPeaks;                  //!< all the outcome of peak raw analysis or fitting
 
 private:
     size2d imageSize_; //!< All images must have this same size
