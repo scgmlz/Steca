@@ -16,34 +16,41 @@
 #define FIT_FUN_H
 
 #include "core/fit/fit_par.h"
+#include <memory>
 
 class Curve;
 class RawOutcome;
+
+class FitFunction {
+public:
+    virtual ~FitFunction() {}
+    virtual void setY(const int nPar, const double* parValues,
+                      const int nPts, const double* xValues, double* yValues) const = 0;
+    virtual void setDY(const int nPar, const double* parValues, const int nPts,
+                       const double* xValues, double* jacobian) const = 0;
+};
 
 //! Abstract function with parameters
 
 class ParametricFunction {
 public:
-    virtual ~ParametricFunction() {}
-
-    //! evaluate the function y = f(x), with given (parValues) or own parameters
-    double y(const double x) const;
+    ParametricFunction(const int _nPar, const FitFunction* _f)
+        : f{_f}, parameters_(_nPar) {}
+    ~ParametricFunction() { delete f; }
+    ParametricFunction(const ParametricFunction&) = delete;
+    ParametricFunction(ParametricFunction&&) = default;
 
     void setSuccess(bool s) { success_ = s; }
-    void setParameterCount(int n) { parameters_.resize(n, {}); }
     FitParameter& parameterAt(int ip) { return parameters_[ip]; }
 
+    double y(const double x) const;
     int parameterCount() const { return parameters_.size(); }
     bool success() const { return success_; }
+    const std::vector<FitParameter>& parameters() const { return parameters_; };
 
-    virtual void setY(const int nPar, const double* parValues,
-                      const int nPts, const double* xValues, double* yValues) const = 0;
-    virtual void setDY(const int nPar, const double* parValues, const int nPts,
-                       const double* xValues, double* jacobian) const = 0;
+    const FitFunction* f;
 
-protected:
-    void setParValue(int ip, double val) {parameters_[ip].setValue(val, 0); }
-
+private:
     std::vector<FitParameter> parameters_;
     bool success_ {false};
 };
@@ -52,38 +59,35 @@ protected:
 //! A polynomial, for fitting the background of a diffractogram
 
 // TODO use Legendre polynomials on rescaled interval to provide an easy approximation of the average.
-class Polynom : public ParametricFunction {
+class Polynom : public FitFunction {
 public:
-    Polynom(int _degree) { setParameterCount(_degree + 1); } // only called by fromFit
-
+    Polynom(int _degree) : nPar_{_degree + 1} {}
     void setY(const int nPar, const double* parValues,
               const int nPts, const double* xValues, double* yValues) const final;
     void setDY(const int nPar, const double* parValues,
                const int nPts, const double* xValues, double* jacobian) const final;
+private:
+    const int nPar_;
 };
 
 
 //! Abstract peak function
 
-class PeakFunction : public ParametricFunction {
+class PeakFunction : public FitFunction {
 public:
-    PeakFunction(const QString& functionName, const RawOutcome&);
-
     void setY(const int nPar, const double* parValues,
               const int nPts, const double* xValues, double* yValues) const final;
     void setDY(const int nPar, const double* parValues,
                const int nPts, const double* xValues, double* jacobian) const final;
-    const FitParameter& getCenter() const;
-    const FitParameter getFwhm() const;
-    const FitParameter& getIntensity() const;
-
+    const FitParameter getCenter   (const std::vector<FitParameter>& par) const;
+    const FitParameter getFwhm     (const std::vector<FitParameter>& par) const;
+    const FitParameter getIntensity(const std::vector<FitParameter>& par) const;
 };
 
 
 // global functions
 
-PeakFunction peakfunctionFromFit(const QString& functionName, const Curve&, const RawOutcome&);
-Polynom polynomFromFit(int degree, const Curve&, const Ranges&);
-
+ParametricFunction peakfunctionFromFit(const QString&, const Curve&, const RawOutcome&);
+ParametricFunction polynomFromFit(int degree, const Curve&, const Ranges&);
 
 #endif // FIT_FUN_H

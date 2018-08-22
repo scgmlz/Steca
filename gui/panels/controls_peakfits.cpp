@@ -154,10 +154,13 @@ void PeakfitOutcomeView::refresh()
 
     if (peak->isRaw())
         return enable(true, false);
-    const PeakFunction& peakFit = dfgram->getPeakFit(jP);
-    showFitOutcomeX_.setText(par2text(peakFit.getCenter()));
-    showFitOutcomeD_.setText(par2text(peakFit.getFwhm()));
-    showFitOutcomeY_.setText(par2text(peakFit.getIntensity()));
+    const ParametricFunction& pFct = dfgram->getPeakFit(jP);
+    const auto* peakFit = dynamic_cast<const PeakFunction*>(pFct.f);
+    ASSERT(peakFit);
+
+    showFitOutcomeX_.setText(par2text(peakFit->getCenter   (pFct.parameters())));
+    showFitOutcomeD_.setText(par2text(peakFit->getFwhm     (pFct.parameters())));
+    showFitOutcomeY_.setText(par2text(peakFit->getIntensity(pFct.parameters())));
     enable(true, true);
 }
 

@@ -22,20 +22,24 @@
 
 #define SQR(x) (x)*(x)
 
-Polynom polynomFromFit(int degree, const Curve& curve, const Ranges& ranges)
+ParametricFunction polynomFromFit(int degree, const Curve& curve, const Ranges& ranges)
 {
-    Polynom p(degree);
-    FitWrapper().execFit(p, curve.intersect(ranges));
-    return p;
+    ParametricFunction F(degree+1, new Polynom(degree));
+    FitWrapper().execFit(F, curve.intersect(ranges));
+    return F;
 }
 
-PeakFunction peakfunctionFromFit(
+ParametricFunction peakfunctionFromFit(
     const QString& functionName, const Curve& curve, const RawOutcome& rawOutcome)
 {
     ASSERT(curve.count());
-    PeakFunction ret(functionName, rawOutcome);
-    FitWrapper().execFit(ret, curve);
-    return ret;
+    const auto* f = new PeakFunction();
+    ParametricFunction F(3, f);
+    F.parameterAt(0).setValue(rawOutcome.getCenter(),0);
+    F.parameterAt(1).setValue(rawOutcome.getFwhm() / sqrt(8*log(2)),0);
+    F.parameterAt(2).setValue(rawOutcome.getIntensity(),0);
+    FitWrapper().execFit(F, curve);
+    return F;
 }
 
 //  ***********************************************************************************************
@@ -50,7 +54,7 @@ double ParametricFunction::y(const double x) const
     for (int ip=0; ip<parameters_.size(); ++ip)
         pars[ip] = parameters_[ip].value();
     double ret;
-    setY(parameters_.size(), pars, 1, &x, &ret);
+    f->setY(parameters_.size(), pars, 1, &x, &ret);
     return ret;
 }
 
@@ -87,19 +91,17 @@ void Polynom::setDY(const int nPar, const double*,
 //  ***********************************************************************************************
 //! @class PeakFunction
 
-PeakFunction::PeakFunction(const QString& functionName, const RawOutcome& rawOutcome)
-{
-    // Gaussian
-    parameters_.resize(3);
-    parameters_[0].setValue(rawOutcome.getCenter(),0);
-    parameters_[1].setValue(rawOutcome.getFwhm() / sqrt(8*log(2)),0);
-    parameters_[2].setValue(rawOutcome.getIntensity(),0);
+const FitParameter PeakFunction::getCenter(const std::vector<FitParameter>& par) const {
+    return par[0];
 }
-
-const FitParameter& PeakFunction::getCenter() const { return parameters_[0]; }
-const FitParameter PeakFunction::getFwhm() const { return
-        FitParameter(parameters_[1].value()*sqrt(8*log(2)),parameters_[1].error()*sqrt(8*log(2))); }
-const FitParameter& PeakFunction::getIntensity() const { return parameters_[2]; }
+const FitParameter PeakFunction::getFwhm(const std::vector<FitParameter>& par) const {
+    return FitParameter(par[1].value()*sqrt(8*log(2)),
+                        par[1].error()*sqrt(8*log(2)));
+}
+const FitParameter PeakFunction::getIntensity(const std::vector<FitParameter>& par) const
+{
+    return par[2];
+}
 
 const double prefac = 1 / sqrt(2*M_PI);
 

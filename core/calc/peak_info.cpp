@@ -225,20 +225,22 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
     const Metadata* metadata = &cluster.avgMetadata();
     const Range gRange = gSession->gammaSelection.slice2range(iGamma);
     deg alpha, beta;
-    // TODO (MATH) use fitted tth center, not center of given fit range
+    // TODO/math use fitted tth center, not center of given fit range
     algo::calculateAlphaBeta(alpha, beta, fitrange.center(), gRange.center(),
                              cluster.chi(), cluster.omg(), cluster.phi());
     if (fitrange.isEmpty())
         return {metadata, alpha, beta, gRange};
 
     const Dfgram& dfgram = cluster.dfgrams.getget(&cluster, iGamma);
-    const PeakFunction& peakFit = dfgram.getPeakFit(jP); // TODO NOW get dfgram
+    const ParametricFunction& pFct = dfgram.getPeakFit(jP);
+    const auto* peakFit = dynamic_cast<const PeakFunction*>(pFct.f);
+    ASSERT(peakFit);
 
-    FitParameter center    = peakFit.getCenter();
-    FitParameter fwhm      = peakFit.getFwhm();
-    FitParameter intensity = peakFit.getIntensity();
+    FitParameter center    = peakFit->getCenter   (pFct.parameters());
+    FitParameter fwhm      = peakFit->getFwhm     (pFct.parameters());
+    FitParameter intensity = peakFit->getIntensity(pFct.parameters());
 
-    if (!fitrange.contains(center.value())) // TODO generalize to fitIsCredible
+    if (!fitrange.contains(center.value())) // TODO/math generalize to fitIsCredible
         return {metadata, alpha, beta, gRange};
 
     return {metadata, alpha, beta, gRange, intensity.value(), intensity.error(),
@@ -249,7 +251,7 @@ PeakInfos computeDirectPeakInfos(int jP)
 {
     TakesLongTime progress("peak fitting", gSession->activeClusters.size());
     PeakInfos ret;
-    int nGamma = qMax(1, gSession->gammaSelection.numSlices.val()); // TODO ensure >0 in GSelection
+    int nGamma = qMax(1, gSession->gammaSelection.numSlices.val());
     for (const Cluster* cluster : gSession->activeClusters.clusters.get()) {
         progress.step();
         for (int i=0; i<nGamma; ++i) {
