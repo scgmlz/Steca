@@ -28,11 +28,6 @@
 // outside the fit routine, functions y(x) are called with parValues==nullptr;
 // therefore we need 'parValue' to access either 'parValues' or 'parameters_'.
 
-double ParametricFunction::parValue(int ip, double const* parValues) const
-{
-    return parValues ? parValues[ip] : parameters_.at(ip).value();
-}
-
 double ParametricFunction::y(const double x) const
 {
     double pars[parameters_.size()];
@@ -53,7 +48,7 @@ void Polynom::setY(
         double ret = 0;
         double xPow = 1;
         for (int ip=0; ip<parameters_.size(); ++ip) {
-            ret += parValue(ip, parValues) * xPow;
+            ret += parValues[ip] * xPow;
             xPow *= *(xValues+i);
         }
         yValues[i] = ret;  // <--- return values are set here
@@ -61,7 +56,7 @@ void Polynom::setY(
 }
 
 void Polynom::setDY(
-    const double* parValues, const int nPar, const int nPts, const double* xValues,
+    const double*, const int nPar, const int nPts, const double* xValues,
     double* jacobian) const
 {
     for (int i=0; i<nPts; ++i) {
@@ -102,9 +97,9 @@ const double prefac = 1 / sqrt(2*M_PI);
 void PeakFunction::setY(
     const double* parValues, const int nPts, const double* xValues, double* yValues) const
 {
-    double center = parValue(0, parValues);
-    double stdv = parValue(1, parValues);
-    double inten = parValue(2, parValues);
+    double center = parValues[0];
+    double stdv   = parValues[1];
+    double inten  = parValues[2];
     for (int i=0 ; i<nPts; ++i)
         yValues[i] = inten*prefac/stdv*exp(-SQR(*(xValues+i)-center)/(2*SQR(stdv)));
 }
@@ -113,9 +108,9 @@ void PeakFunction::setDY(
     const double* parValues, const int nPar, const int nPts, const double* xValues,
     double* jacobian) const
 {
-    double center = parValue(0, parValues);
-    double stdv = parValue(1, parValues);
-    double inten = parValue(2, parValues);
+    double center = parValues[0];
+    double stdv   = parValues[1];
+    double inten  = parValues[2];
     for (int i=0; i<nPts; ++i) {
         double x = *(xValues+i);
         double g = prefac/stdv*exp(-SQR(x-center)/(2*SQR(stdv)));

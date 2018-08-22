@@ -44,8 +44,6 @@ public:
 protected:
     void setParValue(int ip, double val) {parameters_[ip].setValue(val, 0); }
 
-    double parValue(int parIndex, double const* parValues) const;
-
     std::vector<FitParameter> parameters_;
     bool success_ {false};
 };
