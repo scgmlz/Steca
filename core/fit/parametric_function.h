@@ -93,6 +93,5 @@ public:
 // global functions
 
 ParametricFunction peakfunctionFromFit(const QString&, const Curve&, const RawOutcome&);
-ParametricFunction polynomFromFit(int degree, const Curve&, const Ranges&);
 
 #endif // PARAMETRIC_FUNCTION_H

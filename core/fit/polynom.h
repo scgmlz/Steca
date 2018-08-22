@@ -23,8 +23,12 @@
 class Polynom : public FitFunction {
 public:
     Polynom(int _degree) : nPar_{_degree + 1} {}
+
     void setY(const double* P, const int nXY, const double* X, double* Y) const final;
     void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
+
+    static ParametricFunction fromFit(int degree, const Curve&, const Ranges&);
+
 private:
     const int nPar_;
 };

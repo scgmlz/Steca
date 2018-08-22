@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/data/dfgram.h"
+#include "core/fit/polynom.h"
 #include "core/session.h"
 //#include "qcr/base/debug.h"
 
@@ -20,7 +21,7 @@ namespace {
 
 ParametricFunction computeBgFit(const Dfgram* parent)
 {
-    return polynomFromFit(
+    return Polynom::fromFit(
         gSession->baseline.polynomDegree.val(), parent->curve, gSession->baseline.ranges);
 }
 

@@ -13,6 +13,8 @@
 //  ***********************************************************************************************
 
 #include "core/fit/polynom.h"
+#include "core/typ/curve.h"
+#include "core/fit/fit_methods.h"
 
 void Polynom::setY(const double* P, const int nXY, const double* X, double* Y) const
 {
@@ -36,4 +38,11 @@ void Polynom::setDY(const double*, const int nXY, const double* X, double* Jacob
             xPow *= *(X+i);
         }
     }
+}
+
+ParametricFunction Polynom::fromFit(int degree, const Curve& curve, const Ranges& ranges)
+{
+    ParametricFunction F(degree+1, new Polynom(degree));
+    FitWrapper().execFit(F, curve.intersect(ranges));
+    return F;
 }

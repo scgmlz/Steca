@@ -523,13 +523,6 @@ FunctionRegistry::FunctionRegistry()
 }
 */
 
-ParametricFunction polynomFromFit(int degree, const Curve& curve, const Ranges& ranges)
-{
-    ParametricFunction F(degree+1, new Polynom(degree));
-    FitWrapper().execFit(F, curve.intersect(ranges));
-    return F;
-}
-
 ParametricFunction peakfunctionFromFit(
     const QString& functionName, const Curve& curve, const RawOutcome& rawOutcome)
 {
