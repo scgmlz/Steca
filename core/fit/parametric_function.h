@@ -78,19 +78,6 @@ private:
 };
 
 
-//! A polynomial, for fitting the background of a diffractogram
-
-// TODO use Legendre polynomials on rescaled interval to provide an easy approximation of the average.
-class Polynom : public FitFunction {
-public:
-    Polynom(int _degree) : nPar_{_degree + 1} {}
-    void setY(const double* P, const int nXY, const double* X, double* Y) const final;
-    void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
-private:
-    const int nPar_;
-};
-
-
 //! Abstract peak function
 
 class PeakFunction : public FitFunction {
