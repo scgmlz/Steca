@@ -21,7 +21,7 @@
 
 class Peak {
 public:
-    Peak(const Range& range, const QString& functionName = "Gaussian");
+    Peak(const Range& range, const QString& functionName);
 
     void setPeakFunction(const QString&);
     void setRange(const Range&);
@@ -29,7 +29,6 @@ public:
 
     const Range& range() const { return range_; }
 
-    //const PeakFunction& peakFunction() const;
     QString functionName() const { return functionName_; }
     bool isRaw() const { return functionName_=="Raw"; }
     JsonObj toJson() const;

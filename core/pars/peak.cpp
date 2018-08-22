@@ -21,33 +21,23 @@ const QStringList Peak::keys = { "Raw", "Gaussian", "Lorentzian" };
 Peak::Peak(const Range& r, const QString& functionName)
     : range_(r)
     , functionName_(functionName)
-{
-    // TODO NOW setPeakFunction(functionName);
-}
-
-/*
-const PeakFunction& Peak::peakFunction() const
-{
-    ASSERT(peakFunction_);
-    return *peakFunction_;
-}*/
+{}
 
 void Peak::setRange(const Range& r)
 {
     range_ = r;
-    gSession->onPeaks(); // TODO PeakAt(index())
+    gSession->onPeaks(); // TODO restrict to PeakAt(index())
 }
 
 void Peak::setOne(double val, bool namelyMax)
 {
     range_.setOne(val, namelyMax);
-    gSession->onPeaks(); // TODO PeakAt(index())
+    gSession->onPeaks(); // TODO restrict to PeakAt(index())
 }
 
 void Peak::setPeakFunction(const QString& peakFunctionName)
 {
-    // peakFunction_.reset(gSession->functionRegistry.name2new(peakFunctionName));
-    gSession->onPeaks(); // TODO PeakAt(index())
+    gSession->onPeaks(); // TODO restrict to PeakAt(index())
 }
 
 JsonObj Peak::toJson() const
