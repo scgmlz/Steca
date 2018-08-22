@@ -18,6 +18,8 @@
 #include "core/fit/parametric_function.h"
 #include <QString>
 
+class RawOutcome;
+
 //! Abstract peak function
 
 class PeakFunction : public FitFunction {
@@ -26,7 +28,7 @@ public:
     const DoubleWithError getFwhm     (const std::vector<DoubleWithError>& par) const;
     const DoubleWithError getIntensity(const std::vector<DoubleWithError>& par) const;
 
-    static FitOutcome fromFit(const QString&, const Curve&, const RawOutcome&);
+    static Fitted fromFit(const QString&, const Curve&, const RawOutcome&);
 };
 
 #endif // PEAK_FUNCTION_H

@@ -102,9 +102,9 @@ public:
 private:
     void refresh();
     void enable(bool haveRaw, bool haveFit);
-    QcrLineDisplay showFitOutcomeX_ {10, true};
-    QcrLineDisplay showFitOutcomeD_ {10, true};
-    QcrLineDisplay showFitOutcomeY_ {10, true};
+    QcrLineDisplay showFittedX_ {10, true};
+    QcrLineDisplay showFittedD_ {10, true};
+    QcrLineDisplay showFittedY_ {10, true};
     QcrLineDisplay showRawOutcomeX_ { 5, true};
     QcrLineDisplay showRawOutcomeY_ { 5, true};
     QcrLineDisplay showRawOutcomeD_ { 5, true};
@@ -118,17 +118,17 @@ PeakfitOutcomeView::PeakfitOutcomeView()
 
     grid->addWidget(new QLabel("centre"), 1, 0);
     grid->addWidget(&showRawOutcomeX_, 1, 1);
-    grid->addWidget(&showFitOutcomeX_, 1, 2);
+    grid->addWidget(&showFittedX_, 1, 2);
     grid->addWidget(new QLabel("deg"), 1, 3);
 
     grid->addWidget(new QLabel("fwhm"), 2, 0);
     grid->addWidget(&showRawOutcomeD_, 2, 1);
-    grid->addWidget(&showFitOutcomeD_, 2, 2);
+    grid->addWidget(&showFittedD_, 2, 2);
     grid->addWidget(new QLabel("deg"), 2, 3);
 
     grid->addWidget(new QLabel("intens"), 3, 0);
     grid->addWidget(&showRawOutcomeY_, 3, 1);
-    grid->addWidget(&showFitOutcomeY_, 3, 2);
+    grid->addWidget(&showFittedY_, 3, 2);
 
     grid->setColumnStretch(4, 1);
     setLayout(grid);
@@ -153,13 +153,13 @@ void PeakfitOutcomeView::refresh()
 
     if (peak->isRaw())
         return enable(true, false);
-    const FitOutcome& pFct = dfgram->getPeakFit(jP);
+    const Fitted& pFct = dfgram->getPeakFit(jP);
     const auto* peakFit = dynamic_cast<const PeakFunction*>(pFct.f);
     ASSERT(peakFit);
 
-    showFitOutcomeX_.setText(par2text(peakFit->getCenter   (pFct.parameters())));
-    showFitOutcomeD_.setText(par2text(peakFit->getFwhm     (pFct.parameters())));
-    showFitOutcomeY_.setText(par2text(peakFit->getIntensity(pFct.parameters())));
+    showFittedX_.setText(par2text(peakFit->getCenter   (pFct.parameters())));
+    showFittedD_.setText(par2text(peakFit->getFwhm     (pFct.parameters())));
+    showFittedY_.setText(par2text(peakFit->getIntensity(pFct.parameters())));
     enable(true, true);
 }
 
@@ -174,13 +174,13 @@ void PeakfitOutcomeView::enable(bool haveRaw, bool haveFit)
         showRawOutcomeY_.setText("");
     }
 
-    showFitOutcomeX_.setEnabled(haveFit);
-    showFitOutcomeD_.setEnabled(haveFit);
-    showFitOutcomeY_.setEnabled(haveFit);
+    showFittedX_.setEnabled(haveFit);
+    showFittedD_.setEnabled(haveFit);
+    showFittedY_.setEnabled(haveFit);
     if (!haveFit) {
-        showFitOutcomeX_.setText("");
-        showFitOutcomeD_.setText("");
-        showFitOutcomeY_.setText("");
+        showFittedX_.setText("");
+        showFittedD_.setText("");
+        showFittedY_.setText("");
     }
 }
 

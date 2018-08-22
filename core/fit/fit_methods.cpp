@@ -25,14 +25,14 @@ T* remove_const(T const* t)
 }
 
 
-FitOutcome FitWrapper::execFit(
+Fitted FitWrapper::execFit(
     const FitFunction* f,const Curve& curve, std::vector<double> parValue)
 {
     int nPar = f->nPar();
     ASSERT(parValue.size()==nPar);
 
     if (curve.count()<nPar)
-        return FitOutcome::Failure();
+        return Fitted::Failure();
 
     std::vector<double> parError(nPar);
     std::vector<double> covar(nPar * nPar); // output covariance matrix
@@ -59,7 +59,7 @@ FitOutcome FitWrapper::execFit(
     // pass fit results
     for (int ip=0; ip<nPar; ++ip)
         parError[ip] = sqrt(covar[ip * nPar + ip]); // the diagonal
-    return FitOutcome(f, parValue, parError);
+    return Fitted(f, parValue, parError);
 }
 
 void FitWrapper::callbackY(double* P, double* Y, int, int, void*)

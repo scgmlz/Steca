@@ -23,7 +23,7 @@
 
 class FitWrapper {
 public:
-    FitOutcome execFit(
+    Fitted execFit(
         const FitFunction*, const class Curve&, std::vector<double> parValue);
 
 private:

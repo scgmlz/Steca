@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/fit/parametric_function.h
-//! @brief     Defines classes DoubleWithError, FitFunction, FitOutcome
+//! @brief     Defines classes DoubleWithError, FitFunction, Fitted
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -50,20 +50,19 @@ public:
 };
 
 class Curve;
-class RawOutcome;
 
 
 //! The outcome of a fit: a function, some fitted parameters, and a success flag.
 
-class FitOutcome {
+class Fitted {
 public:
-    FitOutcome(const FitFunction* _f,
+    Fitted(const FitFunction* _f,
                const std::vector<double>& parValue, const std::vector<double>& parError);
-    ~FitOutcome() { delete f; }
-    FitOutcome(const FitOutcome&) = delete;
-    FitOutcome(FitOutcome&&) = default;
+    ~Fitted() { delete f; }
+    Fitted(const Fitted&) = delete;
+    Fitted(Fitted&&) = default;
 
-    static FitOutcome Failure() { return FitOutcome(); }
+    static Fitted Failure() { return Fitted(); }
 
     double y(const double x) const;
     bool success() const { return success_; }
@@ -75,7 +74,7 @@ public:
     const FitFunction* f {nullptr};
 
 private:
-    FitOutcome() {}
+    Fitted() {}
     std::vector<DoubleWithError> parameters_; // would be const if we knew how to initialize
     const bool success_ {false};
 };
