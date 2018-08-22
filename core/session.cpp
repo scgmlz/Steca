@@ -33,8 +33,8 @@ void Session::onDetector() const
 {
     angleMap.invalidate();
     activeClusters.avgDfgram.invalidate();
-    for (auto const& pCluster: dataset.allClusters)
-        pCluster->dfgrams.invalidate();
+    for (auto const& cluster: dataset.allClusters)
+        cluster->dfgrams.invalidate();
 }
 
 void Session::onCut() const
@@ -45,23 +45,23 @@ void Session::onCut() const
 
 void Session::onBaseline() const
 {
-    for (auto const& pCluster: dataset.allClusters)
-        pCluster->dfgrams.forAllValids(
-            pCluster.get(), [](const Dfgram& d){d.invalidateBg();});
+    for (auto const& cluster: dataset.allClusters)
+        cluster->dfgrams.forAllValids(
+            cluster.get(), [](const Dfgram& d){d.invalidateBg();});
 }
 
 void Session::onPeaks() const
 {
-    for (auto const& pCluster: dataset.allClusters)
-        pCluster->dfgrams.forAllValids(
-            pCluster.get(), [](const Dfgram& d){d.invalidatePeaks();});
+    for (auto const& cluster: dataset.allClusters)
+        cluster->dfgrams.forAllValids(
+            cluster.get(), [](const Dfgram& d){d.invalidatePeaks();});
 }
 
 void Session::onPeakAt(int jP) const
 {
-    for (auto const& pCluster: dataset.allClusters)
-        pCluster->dfgrams.forAllValids(
-            pCluster.get(), [jP](const Dfgram& d){d.invalidatePeakAt(jP);});
+    for (auto const& cluster: dataset.allClusters)
+        cluster->dfgrams.forAllValids(
+            cluster.get(), [jP](const Dfgram& d){d.invalidatePeakAt(jP);});
 }
 
 void Session::onInterpol() const
