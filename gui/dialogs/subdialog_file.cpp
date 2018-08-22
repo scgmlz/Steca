@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/dialogs/exportfile_dialogfield.cpp
+//! @file      gui/dialogs/subdialog_file.cpp
 //! @brief     Implements classes ExportfileDialogfield
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "gui/dialogs/exportfile_dialogfield.h"
+#include "gui/dialogs/subdialog_file.h"
 #include "gui/dialogs/file_dialog.h"
 //#include "qcr/base/debug.h"
 #include <QGroupBox>

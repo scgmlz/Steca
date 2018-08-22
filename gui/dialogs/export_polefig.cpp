@@ -15,7 +15,7 @@
 #include "gui/dialogs/export_polefig.h"
 #include "core/data/collect_intensities.h"
 #include "core/session.h"
-#include "gui/dialogs/exportfile_dialogfield.h"
+#include "gui/dialogs/subdialog_file.h"
 #include "gui/mainwin.h"
 #include "qcr/base/debug.h"
 #include <QGroupBox>

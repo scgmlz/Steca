@@ -16,7 +16,7 @@
 #include "core/aux/async.h"
 #include "core/aux/exception.h"
 #include "core/session.h"
-#include "gui/dialogs/exportfile_dialogfield.h"
+#include "gui/dialogs/subdialog_file.h"
 #include "gui/dialogs/file_dialog.h"
 #include "gui/mainwin.h"
 //#include "qcr/base/debug.h"
