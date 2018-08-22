@@ -39,7 +39,10 @@ private:
 
 class FitFunction {
 public:
+    FitFunction() {}
     virtual ~FitFunction() {}
+    FitFunction(const FitFunction&) = delete;
+    FitFunction(FitFunction&&) = default;
     virtual void setY(const double* P, const int nXY, const double* X, double* Y) const = 0;
     virtual void setDY(const double* P, const int nXY, const double* X,
                        double* Jacobian) const = 0;
@@ -50,7 +53,7 @@ class Curve;
 class RawOutcome;
 
 
-//! A function with fitted parameters.
+//! A function, fitted parameters, and a success flag.
 
 class FitOutcome {
 public:
@@ -62,11 +65,11 @@ public:
 
     static FitOutcome Failure() { return FitOutcome(); }
 
-    const DoubleWithError& parameterAt(int ip) const { return parameters_[ip]; }
-
     double y(const double x) const;
-    int parameterCount() const { return parameters_.size(); }
     bool success() const { return success_; }
+
+    // TODO: in getCenter etc, do we really need to pass _all_ parameters?
+    // const DoubleWithError& parameterAt(int ip) const { return parameters_[ip]; }
     const std::vector<DoubleWithError>& parameters() const { return parameters_; };
 
     const FitFunction* f {nullptr};
