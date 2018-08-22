@@ -25,8 +25,8 @@
 //  ***********************************************************************************************
 //! @class ParametricFunction
 
-// outside the fit routine, functions y(x) are called with parValues==nullptr;
-// therefore we need 'parValue' to access either 'parValues' or 'parameters_'.
+// TODO replace by vectorial access whereever possible,
+//      or/and maintain values vector within parameters_.
 
 double ParametricFunction::y(const double x) const
 {
@@ -34,20 +34,20 @@ double ParametricFunction::y(const double x) const
     for (int ip=0; ip<parameters_.size(); ++ip)
         pars[ip] = parameters_[ip].value();
     double ret;
-    setY(pars, 1, &x, &ret);
+    setY(parameters_.size(), pars, 1, &x, &ret);
     return ret;
 }
 
 //  ***********************************************************************************************
 //! @class Polynom
 
-void Polynom::setY(
-    const double* parValues, const int nPts, const double* xValues, double* yValues) const
+void Polynom::setY(const int nPar, const double* parValues,
+                   const int nPts, const double* xValues, double* yValues) const
 {
     for (int i=0 ; i<nPts; ++i) {
         double ret = 0;
         double xPow = 1;
-        for (int ip=0; ip<parameters_.size(); ++ip) {
+        for (int ip=0; ip<nPar; ++ip) {
             ret += parValues[ip] * xPow;
             xPow *= *(xValues+i);
         }
@@ -55,8 +55,8 @@ void Polynom::setY(
     }
 }
 
-void Polynom::setDY(
-    const double*, const int nPar, const int nPts, const double* xValues,
+void Polynom::setDY(const int nPar, const double*,
+                    const int nPts, const double* xValues,
     double* jacobian) const
 {
     for (int i=0; i<nPts; ++i) {
@@ -94,9 +94,10 @@ const FitParameter& PeakFunction::getIntensity() const { return parameters_[2]; 
 
 const double prefac = 1 / sqrt(2*M_PI);
 
-void PeakFunction::setY(
-    const double* parValues, const int nPts, const double* xValues, double* yValues) const
+void PeakFunction::setY(const int nPar, const double* parValues,
+                        const int nPts, const double* xValues, double* yValues) const
 {
+    ASSERT(nPar==3);
     double center = parValues[0];
     double stdv   = parValues[1];
     double inten  = parValues[2];
@@ -104,9 +105,8 @@ void PeakFunction::setY(
         yValues[i] = inten*prefac/stdv*exp(-SQR(*(xValues+i)-center)/(2*SQR(stdv)));
 }
 
-void PeakFunction::setDY(
-    const double* parValues, const int nPar, const int nPts, const double* xValues,
-    double* jacobian) const
+void PeakFunction::setDY(const int, const double* parValues,
+                         const int nPts, const double* xValues, double* jacobian) const
 {
     double center = parValues[0];
     double stdv   = parValues[1];
