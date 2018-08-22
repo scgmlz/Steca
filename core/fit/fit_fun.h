@@ -27,9 +27,7 @@ public:
     virtual ~ParametricFunction() {}
 
     //! evaluate the function y = f(x), with given (parValues) or own parameters
-    virtual double y(double x, double const* parValues) const = 0;
-    //! partial derivative / parameter, with given (parValues) or own parameters
-    virtual double dy(double x, int parIndex, double const* parValues) const = 0;
+    double y(const double x) const;
 
     void setSuccess(bool s) { success_ = s; }
     void setParameterCount(int n) { parameters_.resize(n, {}); }
@@ -64,12 +62,8 @@ public:
               const double* xValues, double* yValues) const final;
     void setDY(const double* parValues, const int nPar, const int nPts,
                const double* xValues, double* jacobian) const final;
-    double y(double x, double const* parValues = nullptr) const final;
 
     static Polynom fromFit(int degree, const Curve&, const Ranges&);
-
-private:
-    double dy(double x, int parIndex, double const* parValues = nullptr) const final;
 };
 
 
@@ -79,7 +73,6 @@ class PeakFunction : public ParametricFunction {
 public:
     PeakFunction(const QString& functionName, const RawOutcome&);
 
-    double y(double x, double const* parValues = nullptr) const final;
     void setY(const double* parValues, const int nPts,
               const double* xValues, double* yValues) const override;
     void setDY(const double* parValues, const int nPar, const int nPts,
@@ -89,9 +82,6 @@ public:
     const FitParameter& getIntensity() const;
 
     static PeakFunction fromFit(const QString& functionName, const Curve&, const RawOutcome&);
-
-private:
-    double dy(double x, int parIndex, double const* parValues = nullptr) const final;
 };
 
 #endif // FIT_FUN_H

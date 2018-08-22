@@ -22,19 +22,6 @@
 
 #define SQR(x) (x)*(x)
 
-namespace {
-
-//! Computes a low integer power of x.
-static double pow_n(double x, int n)
-{
-    double ret = 1;
-    while (n-- > 0)
-        ret *= x;
-    return ret;
-}
-
-} // namespace
-
 //  ***********************************************************************************************
 //! @class ParametricFunction
 
@@ -44,6 +31,16 @@ static double pow_n(double x, int n)
 double ParametricFunction::parValue(int ip, double const* parValues) const
 {
     return parValues ? parValues[ip] : parameters_.at(ip).value();
+}
+
+double ParametricFunction::y(const double x) const
+{
+    double pars[parameters_.size()];
+    for (int ip=0; ip<parameters_.size(); ++ip)
+        pars[ip] = parameters_[ip].value();
+    double ret;
+    setY(pars, 1, &x, &ret);
+    return ret;
 }
 
 //  ***********************************************************************************************
@@ -74,23 +71,6 @@ void Polynom::setDY(
             xPow *= *(xValues+i);
         }
     }
-}
-
-double Polynom::y(double x, double const* parValues) const
-{
-    double ret = 0, xPow = 1;
-    for (int i=0; i<parameters_.size(); ++i) {
-        ret += parValue(i, parValues) * xPow;
-           // outside the fit routine, functions y(x) are called with parValues==nullptr;
-           // therefore we need 'parValue' to access either 'parValues' or 'parameters_'.
-        xPow *= x;
-    }
-    return ret;
-}
-
-double Polynom::dy(double x, int i, double const*) const
-{
-    return pow_n(x, i);
 }
 
 Polynom Polynom::fromFit(int degree, const Curve& curve, const Ranges& ranges)
@@ -143,20 +123,6 @@ void PeakFunction::setDY(
         *jacobian++ = inten*g*(SQR((x-center)/stdv)-1)/stdv;
         *jacobian++ = g;
     }
-}
-
-double PeakFunction::y(double x, double const* parValues) const
-{
-    // Gaussian
-    double center = parValue(0, parValues);
-    double stdv = parValue(1, parValues);
-    double inten = parValue(2, parValues);
-    return inten*prefac/stdv*exp(-SQR(x-center)/(2*SQR(stdv)));
-}
-
-double PeakFunction::dy(double x, int i, double const* parValues) const
-{
-    qFatal("obsoleted by setDY");
 }
 
 PeakFunction PeakFunction::fromFit(
