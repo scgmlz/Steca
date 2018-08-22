@@ -33,7 +33,7 @@ public:
 
 private:
     int columnCount() const final { return NUM_COLUMNS; }
-    int rowCount() const final { return gSession->baseline.ranges.count(); }
+    int rowCount() const final { return gSession->baseline.ranges.size(); }
     int highlighted() const final { return gSession->baseline.ranges.selectedIndex(); }
     void onHighlight(int row) final { gSession->baseline.ranges.select(row); }
 

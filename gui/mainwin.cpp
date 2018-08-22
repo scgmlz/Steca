@@ -106,8 +106,8 @@ MainWin::~MainWin()
 void MainWin::refresh()
 {
     bool hasData = gSession->hasData();
-    bool hasPeak = gSession->peaks.count();
-    bool hasBase = gSession->baseline.ranges.count();
+    bool hasPeak = gSession->peaks.size();
+    bool hasBase = gSession->baseline.ranges.size();
     toggles->enableCorr.setEnabled(gSession->hasCorrFile());
     triggers->exportDfgram.setEnabled(hasData);
     triggers->exportBigtable.setEnabled(hasData && hasPeak);

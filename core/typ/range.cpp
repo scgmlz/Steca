@@ -192,7 +192,7 @@ void Ranges::add(const Range& range)
     ranges_.push_back(range);
     sort();
     // not elegant: find the newly added range
-    for (int i=0; i<count(); ++i) {
+    for (int i=0; i<size(); ++i) {
         if (at(i).intersects(range)) {
             selected_ = i;
             return;
@@ -202,23 +202,23 @@ void Ranges::add(const Range& range)
 
 void Ranges::removeSelected()
 {
-    ASSERT(0<=selected_ && selected_<count());
+    ASSERT(0<=selected_ && selected_<size());
     ranges_.erase(ranges_.begin()+selected_);
     selected_ -= 1;
-    if (selected_<0 && count())
+    if (selected_<0 && size())
         selected_ = 0;
 }
 
 void Ranges::select(int i)
 {
-    ASSERT(0<=i && i<count());
+    ASSERT(0<=i && i<size());
     selected_ = i;
 }
 
 //! Selects the range that contains x. If there is no such range, then selected_ is left unchanged.
 void Ranges::selectByValue(double x)
 {
-    for (int i=0; i<count(); ++i) {
+    for (int i=0; i<size(); ++i) {
         if (at(i).contains(x)) {
             selected_ = i;
             return;

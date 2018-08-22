@@ -268,10 +268,10 @@ PeakInfos computeDirectPeakInfos(int jP)
 } // namespace
 
 AllPeaks::AllPeaks()
-    : direct {[]()->int{return gSession->peaks.count();},
+    : direct {[]()->int{return gSession->peaks.size();},
         [](const AllPeaks*, int jP)->PeakInfos{
             return computeDirectPeakInfos(jP); }}
-    , interpolated {[]()->int{return gSession->peaks.count();},
+    , interpolated {[]()->int{return gSession->peaks.size();},
         [](const AllPeaks* parent, int jP)->PeakInfos{
             return algo::interpolateInfos(parent->direct.getget(parent,jP)); }}
 {}
@@ -295,9 +295,9 @@ void AllPeaks::invalidateInterpolated() const
 
 const PeakInfos* AllPeaks::currentDirect() const
 {
-    if (!gSession->peaks.count())
+    if (!gSession->peaks.size())
         return nullptr;
-    ASSERT(direct.size(this)==gSession->peaks.count());
+    ASSERT(direct.size(this)==gSession->peaks.size());
     int jP = gSession->peaks.selectedIndex();
     direct.getget(this,jP).inspect("currentDirect");
     return &direct.getget(this,jP);
@@ -305,9 +305,9 @@ const PeakInfos* AllPeaks::currentDirect() const
 
 const PeakInfos* AllPeaks::currentInterpolated() const
 {
-    if (!gSession->peaks.count())
+    if (!gSession->peaks.size())
         return nullptr;
-    ASSERT(interpolated.size(this)==gSession->peaks.count());
+    ASSERT(interpolated.size(this)==gSession->peaks.size());
     int jP = gSession->peaks.selectedIndex();
     return &interpolated.getget(this,jP);
 }

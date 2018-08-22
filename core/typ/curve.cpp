@@ -28,7 +28,7 @@ bool Curve::isEmpty() const
     return xs_.empty();
 }
 
-int Curve::count() const
+int Curve::size() const
 {
     ASSERT(xs_.size() == ys_.size());
     return xs_.size();
@@ -50,7 +50,7 @@ Curve Curve::intersect(const Range& range) const
         return {};
     Curve ret;
     int xi = 0;
-    const int cnt = count();
+    const int cnt = size();
     while (xi < cnt && xs_.at(xi) < range.min)
         ++xi;
     while (xi < cnt && xs_.at(xi) <= range.max) {
@@ -67,8 +67,8 @@ Curve Curve::intersect(const Range& range) const
 Curve Curve::intersect(const Ranges& ranges) const
 {
     Curve ret;
-    int xi = 0, cnt = count();
-    for (int i=0; i<ranges.count(); ++i) {
+    int xi = 0, cnt = size();
+    for (int i=0; i<ranges.size(); ++i) {
         const Range& range = ranges.at(i);
         while (xi < cnt && xs_.at(xi) < range.min)
             ++xi;
@@ -84,7 +84,7 @@ Curve Curve::intersect(const Ranges& ranges) const
 Curve Curve::subtract(const std::function<double(double)>& func) const
 {
     Curve ret = *this;
-    for (int i=0; i<count(); ++i)
+    for (int i=0; i<size(); ++i)
         ret.ys_[i] = ys_[i] - func(xs_.at(i));
     return ret;
 }
@@ -95,7 +95,7 @@ int Curve::idxMax() const
         return 0;
     double yMax = ys_.front();
     int ret = 0;
-    for (int i=0; i<count(); ++i) {
+    for (int i=0; i<size(); ++i) {
         const double y = ys_.at(i);
         if (y > yMax) {
             yMax = y;

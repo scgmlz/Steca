@@ -40,7 +40,7 @@ public:
     PeaksModel() : TableModel("peaks") {}
 
     int columnCount() const final { return NUM_COLUMNS; }
-    int rowCount() const final { return gSession->peaks.count(); }
+    int rowCount() const final { return gSession->peaks.size(); }
     int highlighted() const final { return gSession->peaks.selectedIndex(); }
     void onHighlight(int row) final { gSession->peaks.select(row); }
 

@@ -40,7 +40,7 @@ PlotDiagram::PlotDiagram(int w, int h)
 
 void PlotDiagram::refresh()
 {
-    if (!gSession->activeClusters.size() || !gSession->peaks.count())
+    if (!gSession->activeClusters.size() || !gSession->peaks.size())
         return;
 
     graph_  ->clearData();

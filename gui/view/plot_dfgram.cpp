@@ -213,13 +213,13 @@ void PlotDfgram::renderAll()
     clearItems();
 
     // Render colored background areas to indicate baseline and peak fit ranges.
-    const Ranges& rs = gSession->baseline.ranges;
+    const Ranges& ranges = gSession->baseline.ranges;
     bool showingBaseline = gSession->params.editableRange == EditableRange::BASELINE;
-    for (int jR=0; jR<rs.count(); ++jR)
-        addBgItem(rs.at(jR),
+    for (int jR=0; jR<ranges.size(); ++jR)
+        addBgItem(ranges.at(jR),
                   showingBaseline && jR==gSession->baseline.ranges.selectedIndex() ?
                   colors::baseEmph : colors::baseStd);
-    for (int jP=0; jP<gSession->peaks.count(); ++jP)
+    for (int jP=0; jP<gSession->peaks.size(); ++jP)
         addBgItem(gSession->peaks.at(jP).range(),
                   !showingBaseline && jP==gSession->peaks.selectedIndex() ?
                   colors::peakEdit : colors::peakStd);
@@ -238,7 +238,7 @@ void PlotDfgram::renderAll()
 
     // calculate peaks
     std::vector<Curve> fitCurves;
-    for (int jP=0; jP<gSession->peaks.count(); ++jP)
+    for (int jP=0; jP<gSession->peaks.size(); ++jP)
         fitCurves.push_back(dfgram->getPeakAsCurve(jP));
 
     const Range& tthRange = dfgram->curve.rgeX();

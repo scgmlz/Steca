@@ -30,7 +30,7 @@ Fitted FitWrapper::execFit(const FitFunction* f,const Curve& curve, std::vector<
     int nPar = f->nPar();
     ASSERT(parValue.size()==nPar);
 
-    if (curve.count()<nPar)
+    if (curve.size()<nPar)
         return {}; // signals failure
 
     std::vector<double> parError(nPar);
@@ -50,7 +50,7 @@ Fitted FitWrapper::execFit(const FitFunction* f,const Curve& curve, std::vector<
 
     dlevmar_bc_der(
         &fitFct, &Jacobian, parValue.data(), remove_const(curve.ys().data()), nPar,
-        curve.count(),
+        curve.size(),
         nullptr /* remove_const(parMin.data()) */,
         nullptr /* remove_const(parMax.data()) */,
         nullptr, maxIterations, opts, info, nullptr, covar.data(), nullptr);

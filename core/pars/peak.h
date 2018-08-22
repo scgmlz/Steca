@@ -54,9 +54,9 @@ public:
     void selectByValue(double x);
 
     Peak* selectedPeak() {
-        return 0<=selected_ && selected_<count() ? &peaks_[selected_] : nullptr; }
+        return 0<=selected_ && selected_<size() ? &peaks_[selected_] : nullptr; }
 
-    int count() const { return peaks_.size(); }
+    int size() const { return peaks_.size(); }
     const Peak& at(int i) const { return peaks_.at(i); }
     Peak& at(int i) { return peaks_.at(i); }
     int selectedIndex() { return selected_; }

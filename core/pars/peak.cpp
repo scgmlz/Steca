@@ -70,7 +70,7 @@ void Peaks::add(const Range& range)
                 return p.range().intersects(range); }), peaks_.end());
     doAdd({range, Peak::keys.at(gSession->params.defaultPeakFunction.val())});
     // not elegant: find the newly added range
-    for (int i=0; i<count(); ++i) {
+    for (int i=0; i<size(); ++i) {
         if (at(i).range().intersects(range)) {
             selected_ = i;
             return;
@@ -83,21 +83,21 @@ void Peaks::doAdd(Peak&& peak)
 {
     peaks_.push_back(std::move(peak));
     sort();
-    selected_ = count()-1;
+    selected_ = size()-1;
 }
 
 void Peaks::removeSelected()
 {
-    ASSERT(0<=selected_ && selected_<count());
+    ASSERT(0<=selected_ && selected_<size());
     peaks_.erase(peaks_.begin()+selected_);
-    if (selected_>=count())
-        selected_ = count()-1;
+    if (selected_>=size())
+        selected_ = size()-1;
     gSession->onPeaks();
 }
 
 void Peaks::selectByValue(double x)
 {
-    for (int i=0; i<count(); ++i) {
+    for (int i=0; i<size(); ++i) {
         if (at(i).range().contains(x)) {
             selected_ = i;
             return;

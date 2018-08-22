@@ -23,7 +23,7 @@
 
 RawOutcome::RawOutcome(const Curve& curve)
 {
-    int n = curve.count();
+    int n = curve.size();
     ASSERT(n>0);
     intensity_ = 0;
     center_ = 0;
@@ -38,5 +38,5 @@ RawOutcome::RawOutcome(const Curve& curve)
     center_ /= intensity_;
     stdv = sqrt( stdv/intensity_ - center_*center_ );
     fwhm_ = sqrt(8*log(2))*stdv;
-    intensity_ *= curve.rgeX().width() / curve.count();
+    intensity_ *= curve.rgeX().width() / curve.size();
 }

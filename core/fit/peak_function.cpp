@@ -54,7 +54,6 @@ PeakOutcome PeakFunction::outcome(const Fitted& F) const
 
 Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const RawOutcome& rawOutcome)
 {
-    ASSERT(curve.count());
     const PeakFunction* f;
     int nPar = 3;
     if        (name=="Raw") {

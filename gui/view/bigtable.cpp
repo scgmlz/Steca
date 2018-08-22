@@ -32,8 +32,8 @@ BigtableModel::BigtableModel()
     gGui->bigtableModel = this; // for use in export dialog
     headers_ = PeakInfo::dataTags(false);
     comparators_ = PeakInfo::dataCmps();
-    ASSERT((int)comparators_.size() == headers_.count());
-    numCols_ = headers_.size();
+    numCols_ = headers_.count();
+    ASSERT((int)comparators_.size() == numCols_);
     colIndexMap_.resize(numCols_);
     for (int i=0; i<numCols_; ++i)
         colIndexMap_[i] = i;
@@ -41,7 +41,7 @@ BigtableModel::BigtableModel()
 
 void BigtableModel::refresh()
 {
-    if (!gSession->activeClusters.size() || !gSession->peaks.count())
+    if (!gSession->activeClusters.size() || !gSession->peaks.size())
         return;
     beginResetModel();
     rows_.clear();
@@ -154,7 +154,7 @@ QStringList BigtableModel::getHeaders() const
     const QStringList& headers = PeakInfo::dataTags(true);
     for (int i=0; i<headers.count(); ++i)
         if (gSession->params.bigMetaSelection.isSelected(i))
-            ret.append(headers.at(i));
+            ret.append(headers[i]);
     return ret;
 }
 

@@ -66,7 +66,7 @@ public:
 
     QJsonArray toJson() const;
     bool isEmpty() const { return ranges_.empty(); }
-    int count() const { return ranges_.size(); }
+    int size() const { return ranges_.size(); }
     const Range& at(int i) const { return ranges_[i]; }
     int selectedIndex() const { return selected_; }
 

@@ -26,7 +26,7 @@ public:
     void append(double x, double y);
 
     bool isEmpty() const;
-    int count() const;
+    int size() const;
 
     // access to underlying data vectors
     const std::vector<double>& xs() const { return xs_; }
