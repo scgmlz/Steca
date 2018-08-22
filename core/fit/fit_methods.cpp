@@ -70,12 +70,10 @@ void FitWrapper::execFit(ParametricFunction& function, const Curve& curve)
 
 void FitWrapper::callbackY(double* parValues, double* yValues, int, int, void*)
 {
-    function_->f->setY(function_->parameterCount(), parValues,
-                       xValues_->size(), xValues_->data(), yValues);
+    function_->f->setY(parValues, xValues_->size(), xValues_->data(), yValues);
 }
 
 void FitWrapper::callbackJacobianLM(double* parValues, double* jacobian, int, int, void*)
 {
-    function_->f->setDY(function_->parameterCount(), parValues,
-                        xValues_->size(), xValues_->data(), jacobian);
+    function_->f->setDY(parValues, xValues_->size(), xValues_->data(), jacobian);
 }

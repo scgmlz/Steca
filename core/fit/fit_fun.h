@@ -24,10 +24,9 @@ class RawOutcome;
 class FitFunction {
 public:
     virtual ~FitFunction() {}
-    virtual void setY(const int nPar, const double* parValues,
-                      const int nPts, const double* xValues, double* yValues) const = 0;
-    virtual void setDY(const int nPar, const double* parValues, const int nPts,
-                       const double* xValues, double* jacobian) const = 0;
+    virtual void setY(const double* P, const int nXY, const double* X, double* Y) const = 0;
+    virtual void setDY(const double* P, const int nXY, const double* X,
+                       double* Jacobian) const = 0;
 };
 
 //! Abstract function with parameters
@@ -62,10 +61,8 @@ private:
 class Polynom : public FitFunction {
 public:
     Polynom(int _degree) : nPar_{_degree + 1} {}
-    void setY(const int nPar, const double* parValues,
-              const int nPts, const double* xValues, double* yValues) const final;
-    void setDY(const int nPar, const double* parValues,
-               const int nPts, const double* xValues, double* jacobian) const final;
+    void setY(const double* P, const int nXY, const double* X, double* Y) const final;
+    void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
 private:
     const int nPar_;
 };
@@ -75,10 +72,8 @@ private:
 
 class PeakFunction : public FitFunction {
 public:
-    void setY(const int nPar, const double* parValues,
-              const int nPts, const double* xValues, double* yValues) const final;
-    void setDY(const int nPar, const double* parValues,
-               const int nPts, const double* xValues, double* jacobian) const final;
+    void setY(const double* P, const int nXY, const double* X, double* Y) const final;
+    void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
     const FitParameter getCenter   (const std::vector<FitParameter>& par) const;
     const FitParameter getFwhm     (const std::vector<FitParameter>& par) const;
     const FitParameter getIntensity(const std::vector<FitParameter>& par) const;

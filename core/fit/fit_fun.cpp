@@ -54,36 +54,33 @@ double ParametricFunction::y(const double x) const
     for (int ip=0; ip<parameters_.size(); ++ip)
         pars[ip] = parameters_[ip].value();
     double ret;
-    f->setY(parameters_.size(), pars, 1, &x, &ret);
+    f->setY(pars, 1, &x, &ret);
     return ret;
 }
 
 //  ***********************************************************************************************
 //! @class Polynom
 
-void Polynom::setY(const int nPar, const double* parValues,
-                   const int nPts, const double* xValues, double* yValues) const
+void Polynom::setY(const double* P, const int nXY, const double* X, double* Y) const
 {
-    for (int i=0 ; i<nPts; ++i) {
+    for (int i=0 ; i<nXY; ++i) {
         double ret = 0;
         double xPow = 1;
-        for (int ip=0; ip<nPar; ++ip) {
-            ret += parValues[ip] * xPow;
-            xPow *= *(xValues+i);
+        for (int ip=0; ip<nPar_; ++ip) {
+            ret += P[ip] * xPow;
+            xPow *= *(X+i);
         }
-        yValues[i] = ret;  // <--- return values are set here
+        Y[i] = ret;  // <--- return values are set here
     }
 }
 
-void Polynom::setDY(const int nPar, const double*,
-                    const int nPts, const double* xValues,
-    double* jacobian) const
+void Polynom::setDY(const double*, const int nXY, const double* X, double* Jacobian) const
 {
-    for (int i=0; i<nPts; ++i) {
+    for (int i=0; i<nXY; ++i) {
         double xPow = 1;
-        for (int ip=0; ip<nPar; ++ip) {
-            *jacobian++ = xPow;  // <--- return values are set here
-            xPow *= *(xValues+i);
+        for (int ip=0; ip<nPar_; ++ip) {
+            *Jacobian++ = xPow;  // <--- return values are set here
+            xPow *= *(X+i);
         }
     }
 }
@@ -105,29 +102,26 @@ const FitParameter PeakFunction::getIntensity(const std::vector<FitParameter>& p
 
 const double prefac = 1 / sqrt(2*M_PI);
 
-void PeakFunction::setY(const int nPar, const double* parValues,
-                        const int nPts, const double* xValues, double* yValues) const
+void PeakFunction::setY(const double* P, const int nXY, const double* X, double* Y) const
 {
-    ASSERT(nPar==3);
-    double center = parValues[0];
-    double stdv   = parValues[1];
-    double inten  = parValues[2];
-    for (int i=0 ; i<nPts; ++i)
-        yValues[i] = inten*prefac/stdv*exp(-SQR(*(xValues+i)-center)/(2*SQR(stdv)));
+    double center = P[0];
+    double stdv   = P[1];
+    double inten  = P[2];
+    for (int i=0 ; i<nXY; ++i)
+        Y[i] = inten*prefac/stdv*exp(-SQR(*(X+i)-center)/(2*SQR(stdv)));
 }
 
-void PeakFunction::setDY(const int, const double* parValues,
-                         const int nPts, const double* xValues, double* jacobian) const
+void PeakFunction::setDY(const double* P, const int nXY, const double* X, double* Jacobian) const
 {
-    double center = parValues[0];
-    double stdv   = parValues[1];
-    double inten  = parValues[2];
-    for (int i=0; i<nPts; ++i) {
-        double x = *(xValues+i);
+    double center = P[0];
+    double stdv   = P[1];
+    double inten  = P[2];
+    for (int i=0; i<nXY; ++i) {
+        double x = *(X+i);
         double g = prefac/stdv*exp(-SQR(x-center)/(2*SQR(stdv)));
-        *jacobian++ = inten*g*(x-center)/SQR(stdv);
-        *jacobian++ = inten*g*(SQR((x-center)/stdv)-1)/stdv;
-        *jacobian++ = g;
+        *Jacobian++ = inten*g*(x-center)/SQR(stdv);
+        *Jacobian++ = inten*g*(SQR((x-center)/stdv)-1)/stdv;
+        *Jacobian++ = g;
     }
 }
 
@@ -146,8 +140,8 @@ public:
 
     Lorentzian(double ampl = 1, double xShift = 0, double gamma = 1);
 
-    double y(double x, double const* parValues = nullptr) const final;
-    double dy(double x, int parIndex, double const* parValues = nullptr) const final;
+    double y(double x, double const* P = nullptr) const final;
+    double dy(double x, int parIndex, double const* P = nullptr) const final;
 
     void setGuessedPeak(const qpair&);
     void setGuessedFWHM(float);
@@ -178,20 +172,20 @@ Lorentzian::Lorentzian(double ampl, double xShift, double gamma)
     parGamma.setValue(gamma, 0);
 }
 
-double Lorentzian::y(double x, double const* parValues) const {
-    double ampl = parValue(parAMPL, parValues);
-    double xShift = parValue(parXSHIFT, parValues);
-    double gamma = parValue(parGAMMA, parValues);
+double Lorentzian::y(double x, double const* P) const {
+    double ampl = parValue(parAMPL, P);
+    double xShift = parValue(parXSHIFT, P);
+    double gamma = parValue(parGAMMA, P);
 
     double arg = (x - xShift) / gamma;
     return ampl / (1 + arg * arg);
 }
 
-double Lorentzian::dy(double x, int parIndex, double const* parValues) const
+double Lorentzian::dy(double x, int parIndex, double const* P) const
 {
-    double ampl = parValue(parAMPL, parValues);
-    double xShift = parValue(parXSHIFT, parValues);
-    double gamma = parValue(parGAMMA, parValues);
+    double ampl = parValue(parAMPL, P);
+    double xShift = parValue(parXSHIFT, P);
+    double gamma = parValue(parGAMMA, P);
 
     double arg1 = (x - xShift) / gamma;
     double arg2 = arg1 * arg1;
@@ -252,8 +246,8 @@ public:
 
     PseudoVoigt1(double ampl = 1, double xShift = 0, double sigmaGamma = 1, double eta = 0.1);
 
-    double y(double x, double const* parValues = nullptr) const final;
-    double dy(double x, int parIndex, double const* parValues = nullptr) const final;
+    double y(double x, double const* P = nullptr) const final;
+    double dy(double x, int parIndex, double const* P = nullptr) const final;
 
     void setGuessedPeak(const qpair&);
     void setGuessedFWHM(float);
@@ -288,12 +282,12 @@ PseudoVoigt1::PseudoVoigt1(double ampl, double xShift, double sigmaGamma, double
     parEta.setValue(eta, 0);
 }
 
-double PseudoVoigt1::y(double x, double const* parValues) const
+double PseudoVoigt1::y(double x, double const* P) const
 {
-    double ampl = parValue(parAMPL, parValues);
-    double xShift = parValue(parXSHIFT, parValues);
-    double sigmaGamma = parValue(parSIGMAGAMMA, parValues);
-    double eta = parValue(parETA, parValues);
+    double ampl = parValue(parAMPL, P);
+    double xShift = parValue(parXSHIFT, P);
+    double sigmaGamma = parValue(parSIGMAGAMMA, P);
+    double eta = parValue(parETA, P);
 
     double arg = (x - xShift) / sigmaGamma;
     double arg2 = arg * arg;
@@ -303,12 +297,12 @@ double PseudoVoigt1::y(double x, double const* parValues) const
     return (1 - eta) * gaussian + eta * lorentz;
 }
 
-double PseudoVoigt1::dy(double x, int parIndex, double const* parValues) const
+double PseudoVoigt1::dy(double x, int parIndex, double const* P) const
 {
-    double ampl = parValue(parAMPL, parValues);
-    double xShift = parValue(parXSHIFT, parValues);
-    double sigmaGamma = parValue(parSIGMAGAMMA, parValues);
-    double eta = parValue(parETA, parValues);
+    double ampl = parValue(parAMPL, P);
+    double xShift = parValue(parXSHIFT, P);
+    double sigmaGamma = parValue(parSIGMAGAMMA, P);
+    double eta = parValue(parETA, P);
 
     double arg1 = (x - xShift) / sigmaGamma;
     double arg2 = arg1 * arg1;
@@ -376,8 +370,8 @@ public:
     PseudoVoigt2(
         double ampl = 1, double xShift = 0, double sigma = 1, double gamma = 1, double eta = 0.1);
 
-    double y(double x, double const* parValues = nullptr) const final;
-    double dy(double x, int parIndex, double const* parValues = nullptr) const final;
+    double y(double x, double const* P = nullptr) const final;
+    double dy(double x, int parIndex, double const* P = nullptr) const final;
 
     void setGuessedPeak(const qpair&);
     void setGuessedFWHM(float);
@@ -416,12 +410,12 @@ PseudoVoigt2::PseudoVoigt2(double ampl, double mu, double hwhmG, double hwhmL, d
     parEta.setValue(eta, 0);
 }
 
-double PseudoVoigt2::y(double x, double const* parValues) const {
-    double ampl = parValue(parAMPL, parValues);
-    double xShift = parValue(parXSHIFT, parValues);
-    double sigma = parValue(parSIGMA, parValues);
-    double gamma = parValue(parGAMMA, parValues);
-    double eta = parValue(parETA, parValues);
+double PseudoVoigt2::y(double x, double const* P) const {
+    double ampl = parValue(parAMPL, P);
+    double xShift = parValue(parXSHIFT, P);
+    double sigma = parValue(parSIGMA, P);
+    double gamma = parValue(parGAMMA, P);
+    double eta = parValue(parETA, P);
 
     double argG = (x - xShift) / sigma;
     double argG2 = argG * argG;
@@ -434,13 +428,13 @@ double PseudoVoigt2::y(double x, double const* parValues) const {
     return (1 - eta) * gaussian + eta * lorentz;
 }
 
-double PseudoVoigt2::dy(double x, int parIndex, double const* parValues) const
+double PseudoVoigt2::dy(double x, int parIndex, double const* P) const
 {
-    double ampl = parValue(parAMPL, parValues);
-    double xShift = parValue(parXSHIFT, parValues);
-    double sigma = parValue(parSIGMA, parValues);
-    double gamma = parValue(parGAMMA, parValues);
-    double eta = parValue(parETA, parValues);
+    double ampl = parValue(parAMPL, P);
+    double xShift = parValue(parXSHIFT, P);
+    double sigma = parValue(parSIGMA, P);
+    double gamma = parValue(parGAMMA, P);
+    double eta = parValue(parETA, P);
 
     double argG1 = (x - xShift) / sigma;
     double argG2 = argG1 * argG1;
