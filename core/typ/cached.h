@@ -15,7 +15,7 @@
 #ifndef CACHED_H
 #define CACHED_H
 
-// #include "qcr/base/debug.h" // TMP
+//#include "qcr/base/debug.h" // TMP
 #include <functional>
 #include <memory>
 #include <vector>
@@ -37,7 +37,6 @@ private:
     mutable std::unique_ptr<T> cached_;
     const std::function<T(void)> remake_;
 };
-
 
 //! Cached object with parent-dependent remake.
 template<typename Parent, typename T>
@@ -101,11 +100,8 @@ public:
     SelfKachingVector() = delete;
     SelfKachingVector(const std::function<int()> nFct,
                       const std::function<T(const Parent*,int)> rFct)
-        : Base(
-            nFct,
-            [rFct](const Parent* p, int i) {
-                return Kached<Parent,T>([rFct,i](const Parent* p)->T{
-                        return rFct(p,i); }); } )
+        : Base(nFct, [rFct](const Parent* p, int i){
+                return Kached<Parent,T>([rFct,i](const Parent* p)->T{return rFct(p,i);}); } )
     {}
     const T& getget(const Parent* parent, int i) const { return Base::get(parent,i).get(parent); }
     void forAllValids(const Parent* parent, std::function<void(const T& t)> f) const {
