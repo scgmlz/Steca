@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef EXPORTFILE_DIALOGFIELD_H
-#define EXPORTFILE_DIALOGFIELD_H
+#ifndef SUBDIALOG_FILE_H
+#define SUBDIALOG_FILE_H
 
 #include "qcr/widgets/controls.h"
 #include "qcr/widgets/modal_dialogs.h"
@@ -41,4 +41,4 @@ private:
     QcrTrigger actSave_ {"save", "Save"};
 };
 
-#endif // EXPORTFILE_DIALOGFIELD_H
+#endif // SUBDIALOG_FILE_H

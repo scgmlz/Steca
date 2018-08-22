@@ -16,7 +16,7 @@
 #define SESSION_H
 
 #include "core/calc/active_clusters.h"
-#include "core/calc/peak_info.h"
+#include "core/calc/all_infos.h"
 #include "core/data/corrset.h"
 #include "core/data/dataset.h"
 #include "core/data/gamma_selection.h"

@@ -15,11 +15,13 @@
 #ifndef PLOT_POLEFIG_H
 #define PLOT_POLEFIG_H
 
-#include "core/calc/peak_info.h"
 #include "qcr/engine/cell.h"
+#include "core/aux/angles.h"
 #include "qcr/widgets/views.h"
 #include "QCustomPlot/qcustomplot.h"
 #include <memory>
+
+class InfoSequence;
 
 //! Tab in PoleFiguresFrame, to display the pole figure.
 

@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/calc/peak_info.h
-//! @brief     Defines classes PeakInfo, InfoSequence
+//! @brief     Defines class PeakInfo
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -16,7 +16,6 @@
 #define PEAK_INFO_H
 
 #include "core/raw/metadata.h"
-#include "core/typ/cached.h"
 #include "core/typ/range.h"
 
 //! Metadata, peak fit results, and pole figure angles.
@@ -70,45 +69,6 @@ private:
     double fwhm_, fwhmError_;
 
     static QString const reflStringTag(int attr, bool out);
-};
-
-
-//! A list of PeakInfo's, associated with _one_ Bragg peak and different orientations alpha,beta.
-
-class InfoSequence {
-public:
-    InfoSequence() {}
-    InfoSequence(const InfoSequence&) = delete;
-    InfoSequence(InfoSequence&&) = default;
-
-    void appendPeak(PeakInfo&&);
-
-    const std::vector<PeakInfo>& peaks() const { return peaks_; }
-    void get4(const int idxX, const int idxY,
-              std::vector<double>& xs, std::vector<double>& ys,
-              std::vector<double>& ysLow, std::vector<double>& ysHig) const;
-    void inspect(const QString& header) const;
-
-private:
-    std::vector<PeakInfo> peaks_;
-};
-
-
-//! Direct and interpolated InfoSequence for all Bragg peaks.
-
-class AllInfos {
-public:
-    AllInfos();
-    AllInfos(const AllInfos&) = delete;
-    const InfoSequence* currentDirect() const;
-    const InfoSequence* currentInterpolated() const;
-    const InfoSequence* currentInfoSequence() const;
-    void invalidateAll() const;
-    void invalidateAt(int) const;
-    void invalidateInterpolated() const;
-private:
-    mutable SelfKachingVector<AllInfos,InfoSequence> direct;
-    mutable SelfKachingVector<AllInfos,InfoSequence> interpolated;
 };
 
 #endif // PEAK_INFO_H
