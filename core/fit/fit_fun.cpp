@@ -38,31 +38,43 @@ static double pow_n(double x, int n)
 //  ***********************************************************************************************
 //! @class ParametricFunction
 
-// outside the fit routine, functions y(x) are called with parValues==nullptr
+// outside the fit routine, functions y(x) are called with parValues==nullptr;
+// therefore we need 'parValue' to access either 'parValues' or 'parameters_'.
 
 double ParametricFunction::parValue(int ip, double const* parValues) const
 {
     return parValues ? parValues[ip] : parameters_.at(ip).value();
 }
 
-void ParametricFunction::setY(
+//  ***********************************************************************************************
+//! @class Polynom
+
+void Polynom::setY(
     const double* parValues, const int nPts, const double* xValues, double* yValues) const
 {
-    for (int i=0 ; i<nPts; ++i)
-        yValues[i] = y(*(xValues+i), parValues);
+    for (int i=0 ; i<nPts; ++i) {
+        double ret = 0;
+        double xPow = 1;
+        for (int ip=0; ip<parameters_.size(); ++ip) {
+            ret += parValue(ip, parValues) * xPow;
+            xPow *= *(xValues+i);
+        }
+        yValues[i] = ret;  // <--- return values are set here
+    }
 }
 
-void ParametricFunction::setDY(
+void Polynom::setDY(
     const double* parValues, const int nPar, const int nPts, const double* xValues,
     double* jacobian) const
 {
-    for (int i=0; i<nPts; ++i)
-        for (int ip=0; ip<nPar; ++ip)
-            *jacobian++ = dy(*(xValues+i), ip, parValues);
+    for (int i=0; i<nPts; ++i) {
+        double xPow = 1;
+        for (int ip=0; ip<nPar; ++ip) {
+            *jacobian++ = xPow;  // <--- return values are set here
+            xPow *= *(xValues+i);
+        }
+    }
 }
-
-//  ***********************************************************************************************
-//! @class Polynom
 
 double Polynom::y(double x, double const* parValues) const
 {

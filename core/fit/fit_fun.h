@@ -39,9 +39,9 @@ public:
     bool success() const { return success_; }
 
     virtual void setY(const double* parValues, const int nPts,
-                      const double* xValues, double* yValues) const;
+                      const double* xValues, double* yValues) const = 0;
     virtual void setDY(const double* parValues, const int nPar, const int nPts,
-                       const double* xValues, double* jacobian) const;
+                       const double* xValues, double* jacobian) const = 0;
 
 protected:
     void setParValue(int ip, double val) {parameters_[ip].setValue(val, 0); }
@@ -60,6 +60,10 @@ class Polynom : public ParametricFunction {
 public:
     Polynom(int _degree) { setParameterCount(_degree + 1); } // only called by fromFit
 
+    void setY(const double* parValues, const int nPts,
+              const double* xValues, double* yValues) const final;
+    void setDY(const double* parValues, const int nPar, const int nPts,
+               const double* xValues, double* jacobian) const final;
     double y(double x, double const* parValues = nullptr) const final;
 
     static Polynom fromFit(int degree, const Curve&, const Ranges&);
