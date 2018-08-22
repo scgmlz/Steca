@@ -20,7 +20,7 @@
 
 //! One fit parameter, with value, error, and allowed range.
 
-// TODO split off range, rename ->? ErroredValue
+// TODO ranges belong into PeakFunction; rename this into ErroredValue
 class FitParameter {
 public:
     FitParameter(double value=0, double error=0);

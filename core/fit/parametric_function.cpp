@@ -56,7 +56,7 @@ double FitParameter::roundedError(int prec) const
 //  ***********************************************************************************************
 //! @class ParametricFunction
 
-// TODO replace by vectorial access whereever possible,
+// TODO replace by vectorial access wherever possible,
 //      or/and maintain values vector within parameters_.
 
 double ParametricFunction::y(const double x) const

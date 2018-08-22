@@ -15,7 +15,7 @@
 #include "core/fit/fit_methods.h"
 #include "LevMar/LM/levmar.h"
 #include "core/typ/curve.h"
-//#include "qcr/base/debug.h"
+#include "qcr/base/debug.h"
 #include <qmath.h>
 
 template <typename T>
@@ -33,16 +33,16 @@ void FitWrapper::execFit(ParametricFunction& function, const Curve& curve)
         return;
     }
 
-    std::vector<double> parValue(parCount), parMin(parCount), parMax(parCount), parError(parCount);
+    std::vector<double> parValue(parCount);
+    std::vector<double> parError(parCount);
+    std::vector<double> covar(parCount * parCount); // output covariance matrix
+    //std::vector<double> parMin(parCount), parMax(parCount);
     for (int ip=0; ip<parCount; ++ip) {
-        const FitParameter& par = function.parameterAt(ip);
-        parValue[ip] = qIsFinite(par.value()) ? par.value() : 0.;
-        parMin[ip] = par.range().min;
-        parMax[ip] = par.range().max;
+        parValue[ip] = function.parameterAt(ip).value();
+        ASSERT(qIsFinite(parValue[ip]));
+        //parMin[ip] = par.range().min;
+        //parMax[ip] = par.range().max;
     }
-
-    // output covariance matrix
-    std::vector<double> covar(parCount * parCount);
 
     // minimizer options mu, epsilon1, epsilon2, epsilon3
     double opts[] = { LM_INIT_MU, 1e-12, 1e-12, 1e-18 };
@@ -57,8 +57,10 @@ void FitWrapper::execFit(ParametricFunction& function, const Curve& curve)
 
     dlevmar_bc_der(
         &fitFct, &Jacobian, parValue.data(), remove_const(curve.ys().data()), parCount,
-        curve.count(), remove_const(parMin.data()), remove_const(parMax.data()), NULL,
-        maxIterations, opts, info, NULL, covar.data(), NULL);
+        curve.count(),
+        nullptr /* remove_const(parMin.data()) */,
+        nullptr /* remove_const(parMax.data()) */,
+        nullptr, maxIterations, opts, info, nullptr, covar.data(), nullptr);
 
     // pass fit results
     function.setSuccess(true);
