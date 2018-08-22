@@ -63,6 +63,8 @@ public:
     const Cluster* currentCluster() const { return dataset.highlight().cluster(); }
     const Dfgram* currentOrAvgeDfgram() const;
 
+    AllInfos allPeaks;                  //!< all the outcome of peak raw analysis or fitting
+    /* order matters: allPeaks must be destroyed after Dfgrams */
     Dataset dataset;                    //!< raw data files with sample detector images
     Corrset corrset;                    //!< raw data files with standard sample image
     Params  params;                     //!< global parameters like detector geometry, ...
@@ -72,7 +74,6 @@ public:
     Peaks peaks;                        //!< ranges and other parameters for Bragg peak fitting
     ActiveClusters activeClusters;      //!< list of all clusters except the unselected ones
     KeyedCache<AngleMap, deg> angleMap; //!< to accelerate the projection image->dfgram
-    AllInfos allPeaks;                  //!< all the outcome of peak raw analysis or fitting
 
 private:
     size2d imageSize_; //!< All images must have this same size
