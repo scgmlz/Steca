@@ -14,7 +14,6 @@
 
 #include "core/fit/parametric_function.h"
 #include "core/typ/curve.h"
-#include "core/fit/fit_methods.h"
 #include "qcr/base/debug.h" // ASSERT
 #include <cmath>
 
