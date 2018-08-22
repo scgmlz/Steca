@@ -241,11 +241,11 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
     const DoubleWithError fwhm      = out.fwhm;
     const DoubleWithError intensity = out.intensity;
 
-    if (!fitrange.contains(center.value())) // TODO/math generalize to fitIsCredible
+    if (!fitrange.contains(center.value)) // TODO/math generalize to fitIsCredible
         return {metadata, alpha, beta, gRange};
 
-    return {metadata, alpha, beta, gRange, intensity.value(), intensity.error(),
-            deg(center.value()), deg(center.error()), fwhm.value(), fwhm.error()};
+    return {metadata, alpha, beta, gRange, intensity.value, intensity.error,
+            deg(center.value), deg(center.error), fwhm.value, fwhm.error};
 }
 
 PeakInfos computeDirectPeakInfos(int jP)

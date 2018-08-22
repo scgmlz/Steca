@@ -20,26 +20,15 @@
 //  ***********************************************************************************************
 //! @class DoubleWithError
 
-DoubleWithError::DoubleWithError(double value, double error)
-    : value_(value)
-    , error_(error)
-{}
-
-void DoubleWithError::setValue(double value, double error)
-{
-    value_ = value;
-    error_ = error;
-}
-
 //! Rounds error_ to prec digits, including leading zeros as given by the rounding of value_.
 
 //! Covered by test002_rounding.
 
 double DoubleWithError::roundedError(int prec) const
 {
-    int n = 1+lrintf(floor(log10(std::max(std::abs(value_),std::abs(error_)))));
+    int n = 1+lrintf(floor(log10(std::max(std::abs(value),std::abs(error)))));
     double fac = pow(10.,prec-n);
-    return round(error_*fac)/fac;
+    return round(error*fac)/fac;
 }
 
 //  ***********************************************************************************************

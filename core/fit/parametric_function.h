@@ -22,16 +22,10 @@
 
 class DoubleWithError {
 public:
-    DoubleWithError(double value=0, double error=0);
-
-    void setValue(double value, double error); // TODO rm ?
-
-    double value() const { return value_; }
-    double error() const { return error_; }
     double roundedError(int) const;
 
-private:
-    double value_, error_;
+    const double value;
+    const double error;
 };
 
 
