@@ -194,7 +194,6 @@ ControlsPeakfits::ControlsPeakfits()
         []()->QStringList{return Peak::keys;} };
     comboPeakFct->setHook([](int i){
             const QString& name = Peak::keys[i];
-            Peaks::defaultFunctionName = name;
             if (Peak* p = gSession->peaks.selectedPeak())
                 p->setPeakFunction(name);
             gSession->onPeaks(); });

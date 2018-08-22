@@ -58,8 +58,6 @@ Peak Peak::fromJson(const JsonObj& obj)
 //  ***********************************************************************************************
 //! @class Peaks
 
-QString Peaks::defaultFunctionName = "Gaussian";
-
 void Peaks::clear()
 {
     peaks_.clear();
@@ -70,7 +68,7 @@ void Peaks::add(const Range& range)
 {
     peaks_.erase(std::remove_if(peaks_.begin(), peaks_.end(), [=](const Peak& p) {
                 return p.range().intersects(range); }), peaks_.end());
-    doAdd({range, defaultFunctionName});
+    doAdd({range, Peak::keys.at(gSession->params.defaultPeakFunction.val())});
     // not elegant: find the newly added range
     for (int i=0; i<count(); ++i) {
         if (at(i).range().intersects(range)) {

@@ -46,8 +46,6 @@ private:
 
 class Peaks {
 public:
-    static QString defaultFunctionName;
-
     void clear();
     void fromJson(const QJsonArray& arr);
     void add(const Range&);
