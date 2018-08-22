@@ -16,6 +16,7 @@
 #define PEAK_FUNCTION_H
 
 #include "core/fit/parametric_function.h"
+#include <QString>
 
 //! Abstract peak function
 
