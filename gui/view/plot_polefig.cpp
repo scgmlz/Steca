@@ -24,9 +24,7 @@ const double alphaMAX {90};
 QColor intenGraph(double inten, double maxInten) {
     if (!qIsFinite(inten) || qIsNaN(maxInten) || maxInten <= 0)
         return { qRgb(0x00, 0x00, 0x00) };
-
     inten /= maxInten;
-
     return { qRgb(0, 0, int(0xff * (1 - inten / 3))) };
 }
 
@@ -35,7 +33,7 @@ QColor intenGraph(double inten, double maxInten) {
 
 PlotPolefig::PlotPolefig()
 {
-    setRemake ([this](){
+    setRemake([this](){
             peakInfos_ = gSession->allPeaks.currentInfoSequence();
             QWidget::update(); // Which then calls paintEvent. Only so we can use QPainter.
         });

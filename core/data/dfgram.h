@@ -25,6 +25,7 @@
 class Dfgram {
 public:
     Dfgram(Curve&& c);
+    ~Dfgram();
     Dfgram(const Dfgram&) = delete;
     Dfgram(Dfgram&&) = default;
 

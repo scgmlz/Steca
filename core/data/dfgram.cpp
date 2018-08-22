@@ -100,6 +100,11 @@ Dfgram::Dfgram(Curve&& c)
                   return computePeakAsCurve(parent, jP); } }
 {}
 
+Dfgram::~Dfgram()
+{
+    gSession->allPeaks.invalidateAll();
+}
+
 void Dfgram::invalidateBg() const
 {
     bgFit_.invalidate();
