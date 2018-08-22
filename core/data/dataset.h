@@ -25,7 +25,9 @@ class Datafile {
 public:
     Datafile() = delete;
     Datafile(Rawfile&& raw) : raw_(std::move(raw)) {}
-    // TODO rm copy constructor ?
+    Datafile(const Datafile&) = delete;
+    Datafile(Datafile&&) = default;
+    Datafile& operator=(Datafile&&) = default;
 
     int numMeasurements() const { return raw_.numMeasurements(); }
     int index() const { return index_; }
