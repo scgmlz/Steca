@@ -17,12 +17,6 @@
 #include "core/session.h"
 #include "qcr/base/debug.h"
 
-ThetaSelection::ThetaSelection()
-{
-// TODO COERCE    currArc.setCoerce( [this](int i) { return qMax(0, qMin(i, numSlices_)); });
-// TODO HOOK    currArc.setHook( [this](int) { recomputeCache(); /* UNDER CONSTRUCTION */ });
-}
-
 QJsonObject ThetaSelection::toJson() const
 {
     return {

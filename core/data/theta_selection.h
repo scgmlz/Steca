@@ -17,12 +17,12 @@
 
 #include "qcr/engine/cell.h"
 
+// TODO replace this entirely by synchronized range display in Dfgram and Image
+
 //! Select a theta bin for overlay in scattering image.
 
 class ThetaSelection {
 public:
-    ThetaSelection();
-
     void fromJson(const JsonObj& obj);
     void onData();
 
