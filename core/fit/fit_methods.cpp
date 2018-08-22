@@ -24,52 +24,56 @@ T* remove_const(T const* t)
     return const_cast<T*>(t);
 }
 
-void FitWrapper::execFit(
-    ParametricFunction& function, const Curve& curve, std::vector<double> parValue)
+
+ParametricFunction FitWrapper::execFit(
+    const FitFunction* f,const Curve& curve, std::vector<double> parValue)
 {
-    int parCount = function.parameterCount();
-    if (curve.count()<parCount) {
+    int nPar = f->nPar();
+    ParametricFunction ret(nPar, f);
+    if (curve.count()<nPar) {
         //qDebug() << "not enough points for fitting";
-        function.setSuccess(false);
-        return;
+        ret.setSuccess(false);
+        return ret;
     }
 
-    std::vector<double> parError(parCount);
-    std::vector<double> covar(parCount * parCount); // output covariance matrix
-    //std::vector<double> parMin(parCount), parMax(parCount);
+    ASSERT(parValue.size()==nPar);
+    std::vector<double> parError(nPar);
+    std::vector<double> covar(nPar * nPar); // output covariance matrix
+    //std::vector<double> parMin(nPar), parMax(nPar);
 
     // minimizer options mu, epsilon1, epsilon2, epsilon3
     double opts[] = { LM_INIT_MU, 1e-12, 1e-12, 1e-18 };
     int const maxIterations = 1000;
     double info[LM_INFO_SZ];
 
-    function_ = &function;
-    xValues_ = &curve.xs();
+    f_ = f;
+    X_ = &curve.xs();
 
     DelegateCalculationDbl fitFct(this, &FitWrapper::callbackY);
     DelegateCalculationDbl Jacobian(this, &FitWrapper::callbackJacobianLM);
 
     dlevmar_bc_der(
-        &fitFct, &Jacobian, parValue.data(), remove_const(curve.ys().data()), parCount,
+        &fitFct, &Jacobian, parValue.data(), remove_const(curve.ys().data()), nPar,
         curve.count(),
         nullptr /* remove_const(parMin.data()) */,
         nullptr /* remove_const(parMax.data()) */,
         nullptr, maxIterations, opts, info, nullptr, covar.data(), nullptr);
 
     // pass fit results
-    function.setSuccess(true);
-    for (int ip=0; ip<parCount; ++ip)
-        parError[ip] = sqrt(covar[ip * parCount + ip]); // the diagonal
-    for (int ip=0; ip<parCount; ++ip)
-        function.parameterAt(ip).setValue(parValue[ip], parError[ip]);
+    ret.setSuccess(true);
+    for (int ip=0; ip<nPar; ++ip)
+        parError[ip] = sqrt(covar[ip * nPar + ip]); // the diagonal
+    for (int ip=0; ip<nPar; ++ip)
+        ret.parameterAt(ip).setValue(parValue[ip], parError[ip]);
+    return ret;
 }
 
-void FitWrapper::callbackY(double* parValues, double* yValues, int, int, void*)
+void FitWrapper::callbackY(double* P, double* Y, int, int, void*)
 {
-    function_->f->setY(parValues, xValues_->size(), xValues_->data(), yValues);
+    f_->setY(P, X_->size(), X_->data(), Y);
 }
 
-void FitWrapper::callbackJacobianLM(double* parValues, double* jacobian, int, int, void*)
+void FitWrapper::callbackJacobianLM(double* P, double* Jacobian, int, int, void*)
 {
-    function_->f->setDY(parValues, xValues_->size(), xValues_->data(), jacobian);
+    f_->setDY(P, X_->size(), X_->data(), Jacobian);
 }

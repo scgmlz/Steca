@@ -43,6 +43,7 @@ public:
     virtual void setY(const double* P, const int nXY, const double* X, double* Y) const = 0;
     virtual void setDY(const double* P, const int nXY, const double* X,
                        double* Jacobian) const = 0;
+    virtual int nPar() const = 0;
 };
 
 class Curve;

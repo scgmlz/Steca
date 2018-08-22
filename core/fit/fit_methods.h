@@ -23,12 +23,13 @@
 
 class FitWrapper {
 public:
-    void execFit(ParametricFunction&, const class Curve&, std::vector<double> parValue);
+    ParametricFunction execFit(
+        const FitFunction*, const class Curve&, std::vector<double> parValue);
 
 private:
     // these pointers are valid during fit() call
-    ParametricFunction* function_;
-    const std::vector<double>* xValues_ {nullptr};
+    const FitFunction* f_;
+    const std::vector<double>* X_ {nullptr};
 
     void callFit(double*, double const*, double const*, double*, int, double const*, int);
 

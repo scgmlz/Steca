@@ -27,6 +27,7 @@ public:
 
     void setY(const double* P, const int nXY, const double* X, double* Y) const final;
     void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
+    int nPar() const final { return nPar_; };
 
     static ParametricFunction fromFit(int degree, const Curve&, const Ranges&);
 

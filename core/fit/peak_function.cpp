@@ -27,6 +27,7 @@ class Gaussian : public PeakFunction {
 public:
     void setY(const double* P, const int nXY, const double* X, double* Y) const final;
     void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
+    int nPar() const final { return 3; };
 };
 
 //  ***********************************************************************************************
@@ -489,10 +490,8 @@ ParametricFunction PeakFunction::fromFit(
     int nPar = 3;
     f = new Gaussian();
     std::vector<double> startParams(nPar);
-    ParametricFunction F(nPar, f);
     startParams[0] = rawOutcome.getCenter();
     startParams[1] = rawOutcome.getFwhm() / sqrt(8*log(2));
     startParams[2] = rawOutcome.getIntensity();
-    FitWrapper().execFit(F, curve, startParams);
-    return F;
+    return FitWrapper().execFit(f, curve, startParams);
 }
