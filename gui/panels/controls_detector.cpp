@@ -157,7 +157,7 @@ GammaControls::GammaControls()
     auto layout = new QHBoxLayout;
     layout->addWidget(new QLabel("number of γ slices"));
     layout->addWidget(new QcrSpinBox
-                      {"numSlices", &gSession->gammaSelection.numSlices, 2, false, 0, INT_MAX,
+                      {"numSlices", &gSession->gammaSelection.numSlices, 2, false, 1, INT_MAX,
                               "Number of γ slices (0: no slicing, take entire image)" });
     layout->addStretch(1);
     setLayout(layout);

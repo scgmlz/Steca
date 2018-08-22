@@ -21,6 +21,7 @@
 
 class GammaSelection {
 public:
+    GammaSelection();
     void fromJson(const JsonObj& obj);
     void setRange(const Range&);
     void onData();

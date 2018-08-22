@@ -16,6 +16,11 @@
 #include "core/session.h"
 //#include "qcr/base/debug.h"
 
+GammaSelection::GammaSelection()
+{
+    numSlices.setHook([](int){gSession->onDetector();});
+}
+
 QJsonObject GammaSelection::toJson() const
 {
     return {
