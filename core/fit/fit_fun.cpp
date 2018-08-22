@@ -22,24 +22,40 @@
 
 #define SQR(x) (x)*(x)
 
-ParametricFunction polynomFromFit(int degree, const Curve& curve, const Ranges& ranges)
+//  ***********************************************************************************************
+//! @class FitParameter
+
+FitParameter::FitParameter(double value, double error)
+    : value_(value)
+    , error_(error)
+    , range_(Range::infinite())
+{}
+
+void FitParameter::setAllowedRange(double min, double max)
 {
-    ParametricFunction F(degree+1, new Polynom(degree));
-    FitWrapper().execFit(F, curve.intersect(ranges));
-    return F;
+    range_.set(min, max);
 }
 
-ParametricFunction peakfunctionFromFit(
-    const QString& functionName, const Curve& curve, const RawOutcome& rawOutcome)
+const Range& FitParameter::range() const {
+    ASSERT (range_.isValid());
+    return range_;
+}
+
+void FitParameter::setValue(double value, double error)
 {
-    ASSERT(curve.count());
-    const auto* f = new PeakFunction();
-    ParametricFunction F(3, f);
-    F.parameterAt(0).setValue(rawOutcome.getCenter(),0);
-    F.parameterAt(1).setValue(rawOutcome.getFwhm() / sqrt(8*log(2)),0);
-    F.parameterAt(2).setValue(rawOutcome.getIntensity(),0);
-    FitWrapper().execFit(F, curve);
-    return F;
+    value_ = value;
+    error_ = error;
+}
+
+//! Rounds error_ to prec digits, including leading zeros as given by the rounding of value_.
+
+//! Covered by test002_rounding.
+
+double FitParameter::roundedError(int prec) const
+{
+    int n = 1+lrintf(floor(log10(std::max(std::abs(value_),std::abs(error_)))));
+    double fac = pow(10.,prec-n);
+    return round(error_*fac)/fac;
 }
 
 //  ***********************************************************************************************
@@ -533,3 +549,23 @@ FunctionRegistry::FunctionRegistry()
     register_fct([]()->PeakFunction*{return new PseudoVoigt2();});
 }
 */
+
+ParametricFunction polynomFromFit(int degree, const Curve& curve, const Ranges& ranges)
+{
+    ParametricFunction F(degree+1, new Polynom(degree));
+    FitWrapper().execFit(F, curve.intersect(ranges));
+    return F;
+}
+
+ParametricFunction peakfunctionFromFit(
+    const QString& functionName, const Curve& curve, const RawOutcome& rawOutcome)
+{
+    ASSERT(curve.count());
+    const auto* f = new PeakFunction();
+    ParametricFunction F(3, f);
+    F.parameterAt(0).setValue(rawOutcome.getCenter(),0);
+    F.parameterAt(1).setValue(rawOutcome.getFwhm() / sqrt(8*log(2)),0);
+    F.parameterAt(2).setValue(rawOutcome.getIntensity(),0);
+    FitWrapper().execFit(F, curve);
+    return F;
+}

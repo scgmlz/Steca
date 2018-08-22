@@ -15,11 +15,31 @@
 #ifndef FIT_FUN_H
 #define FIT_FUN_H
 
-#include "core/fit/fit_par.h"
+#include "core/typ/range.h"
 #include <memory>
 
-class Curve;
-class RawOutcome;
+//! One fit parameter, with value, error, and allowed range.
+
+// TODO split off range, rename ->? ErroredValue
+class FitParameter {
+public:
+    FitParameter(double value=0, double error=0);
+
+    void setValue(double value, double error); // TODO rm ?
+    void setAllowedRange(double min, double max);
+
+    double value() const { return value_; }
+    double error() const { return error_; }
+    double roundedError(int) const;
+    const Range& range() const;
+
+private:
+    double value_, error_;
+    Range range_; //!< allowed range of values
+};
+
+
+//! Holds instructions how to compute y(x) and its Jacobian. Base for Polynom and PeakFunction.
 
 class FitFunction {
 public:
@@ -28,6 +48,9 @@ public:
     virtual void setDY(const double* P, const int nXY, const double* X,
                        double* Jacobian) const = 0;
 };
+
+class Curve;
+class RawOutcome;
 
 //! Abstract function with parameters
 
