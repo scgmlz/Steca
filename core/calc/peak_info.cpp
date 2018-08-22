@@ -267,6 +267,7 @@ PeakInfos computeDirectPeakInfos(int jP)
 
 } // namespace
 
+
 AllPeaks::AllPeaks()
     : direct {[]()->int{return gSession->peaks.size();},
         [](const AllPeaks*, int jP)->PeakInfos{

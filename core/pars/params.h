@@ -45,7 +45,7 @@ public:
     QcrCell<int>    diagramX {0};        //!< for use as x axis in diagram
     QcrCell<int>    diagramY {0};        //!< for use as y axis in diagram
 
-    QcrCell<int>    defaultPeakFunction {0};
+    QcrCell<int>    defaultPeakFunction {1}; //!< Refers to Peak::keys.
     InterpolParams  interpolParams;
 
     EditableRange   editableRange{EditableRange::NONE};
