@@ -189,10 +189,10 @@ void PeakfitOutcomeView::enable(bool haveRaw, bool haveFit)
 
 ControlsPeakfits::ControlsPeakfits()
 {
-    auto* comboReflType = new QcrComboBox{
+    auto* comboPeakFct = new QcrComboBox{
         "reflTyp", &gSession->params.defaultPeakFunction,
         []()->QStringList{return Peak::keys;} };
-    comboReflType->setHook([](int i){
+    comboPeakFct->setHook([](int i){
             const QString& name = Peak::keys[i];
             Peaks::defaultFunctionName = name;
             if (Peak* p = gSession->peaks.selectedPeak())
@@ -209,7 +209,7 @@ ControlsPeakfits::ControlsPeakfits()
     box->addLayout(topControls);
 
     box->addWidget(new TableView(new PeaksModel()));
-    box->addWidget(comboReflType);
+    box->addWidget(comboPeakFct);
     box->addWidget(new RangeControl("peak",
                                     []()->const Range* {
                                         const Peak* p = gSession->peaks.selectedPeak();

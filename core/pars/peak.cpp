@@ -35,8 +35,9 @@ void Peak::setOne(double val, bool namelyMax)
     gSession->onPeaks(); // TODO restrict to PeakAt(index())
 }
 
-void Peak::setPeakFunction(const QString& peakFunctionName)
+void Peak::setPeakFunction(const QString& name)
 {
+    functionName_ = name;
     gSession->onPeaks(); // TODO restrict to PeakAt(index())
 }
 
