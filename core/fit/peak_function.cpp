@@ -21,6 +21,14 @@
 
 #define SQR(x) (x)*(x)
 
+//! A Gaussian as a peak fit function.
+
+class Gaussian : public PeakFunction {
+public:
+    void setY(const double* P, const int nXY, const double* X, double* Y) const final;
+    void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
+};
+
 //  ***********************************************************************************************
 //! @class PeakFunction
 
@@ -36,9 +44,12 @@ const DoubleWithError PeakFunction::getIntensity(const std::vector<DoubleWithErr
     return par[2];
 }
 
+//  ***********************************************************************************************
+//! @class Gaussian
+
 const double prefac = 1 / sqrt(2*M_PI);
 
-void PeakFunction::setY(const double* P, const int nXY, const double* X, double* Y) const
+void Gaussian::setY(const double* P, const int nXY, const double* X, double* Y) const
 {
     double center = P[0];
     double stdv   = P[1];
@@ -47,7 +58,7 @@ void PeakFunction::setY(const double* P, const int nXY, const double* X, double*
         Y[i] = inten*prefac/stdv*exp(-SQR(*(X+i)-center)/(2*SQR(stdv)));
 }
 
-void PeakFunction::setDY(const double* P, const int nXY, const double* X, double* Jacobian) const
+void Gaussian::setDY(const double* P, const int nXY, const double* X, double* Jacobian) const
 {
     double center = P[0];
     double stdv   = P[1];
@@ -474,7 +485,8 @@ ParametricFunction PeakFunction::fromFit(
     const QString& functionName, const Curve& curve, const RawOutcome& rawOutcome)
 {
     ASSERT(curve.count());
-    const auto* f = new PeakFunction();
+    const PeakFunction* f;
+    f = new Gaussian();
     ParametricFunction F(3, f);
     F.parameterAt(0).setValue(rawOutcome.getCenter(),0);
     F.parameterAt(1).setValue(rawOutcome.getFwhm() / sqrt(8*log(2)),0);

@@ -22,9 +22,6 @@
 
 class PeakFunction : public FitFunction {
 public:
-    void setY(const double* P, const int nXY, const double* X, double* Y) const final;
-    void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
-
     const DoubleWithError getCenter   (const std::vector<DoubleWithError>& par) const;
     const DoubleWithError getFwhm     (const std::vector<DoubleWithError>& par) const;
     const DoubleWithError getIntensity(const std::vector<DoubleWithError>& par) const;
