@@ -17,6 +17,9 @@
 
 class Curve;
 
+// TODO rather use PeakOutcome to report result of raw analysis;
+//      this will simplify getPeak in all_infos.cpp
+
 //! Minimal outcome of peak analysis: center, width, intensity.
 
 class RawOutcome {

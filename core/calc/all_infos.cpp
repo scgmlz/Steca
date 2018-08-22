@@ -25,7 +25,8 @@ namespace {
 //! Fits peak to the given gamma gRange and constructs a PeakInfo.
 PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
 {
-    const Range& fitrange = gSession->peaks.at(jP).range();
+    const Peak& peak = gSession->peaks.at(jP);
+    const Range& fitrange = peak.range();
     const Metadata* metadata = &cluster.avgMetadata();
     const Range gRange = gSession->gammaSelection.slice2range(iGamma);
     deg alpha, beta;
@@ -36,19 +37,32 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
         return {metadata, alpha, beta, gRange};
 
     const Dfgram& dfgram = cluster.dfgrams.getget(&cluster, iGamma);
-    const Fitted& pFct = dfgram.getPeakFit(jP);
-    const auto* peakFit = dynamic_cast<const PeakFunction*>(pFct.f);
-    ASSERT(peakFit);
-    const PeakOutcome out = peakFit->outcome(pFct);
-    const DoubleWithError center    = out.center;
-    const DoubleWithError fwhm      = out.fwhm;
-    const DoubleWithError intensity = out.intensity;
 
-    if (!fitrange.contains(center.value)) // TODO/math generalize to fitIsCredible
+    // TODO: the following could be simplified if RawOutcome were replaced by PeakOutcome
+    std::unique_ptr<DoubleWithError> center;
+    std::unique_ptr<DoubleWithError> fwhm;
+    std::unique_ptr<DoubleWithError> intensity;
+    if (peak.isRaw()) {
+        const RawOutcome& out = dfgram.getRawOutcome(jP);
+        center    .reset(new DoubleWithError{out.getCenter(),0});
+        fwhm      .reset(new DoubleWithError{out.getFwhm(),0});
+        intensity .reset(new DoubleWithError{out.getIntensity(),0});
+    } else {
+        const Fitted& pFct = dfgram.getPeakFit(jP);
+        const auto* peakFit = dynamic_cast<const PeakFunction*>(pFct.f);
+        ASSERT(peakFit);
+        const PeakOutcome out = peakFit->outcome(pFct);
+        center    .reset(new DoubleWithError{out.center});
+        fwhm      .reset(new DoubleWithError{out.fwhm});
+        intensity .reset(new DoubleWithError{out.intensity});
+    }
+
+    if (!fitrange.contains(center->value)) // TODO/math generalize to fitIsCredible
         return {metadata, alpha, beta, gRange};
 
-    return {metadata, alpha, beta, gRange, intensity.value, intensity.error,
-            deg(center.value), deg(center.error), fwhm.value, fwhm.error};
+    // TODO pass PeakOutcome instead of 6 components
+    return {metadata, alpha, beta, gRange, intensity->value, intensity->error,
+            deg(center->value), deg(center->error), fwhm->value, fwhm->error};
 }
 
 InfoSequence computeDirectInfoSequence(int jP)
