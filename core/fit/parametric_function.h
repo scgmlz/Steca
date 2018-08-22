@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef FIT_FUN_H
-#define FIT_FUN_H
+#ifndef PARAMETRIC_FUNCTION_H
+#define PARAMETRIC_FUNCTION_H
 
 #include "core/typ/range.h"
 #include <memory>
@@ -95,4 +95,4 @@ public:
 ParametricFunction peakfunctionFromFit(const QString&, const Curve&, const RawOutcome&);
 ParametricFunction polynomFromFit(int degree, const Curve&, const Ranges&);
 
-#endif // FIT_FUN_H
+#endif // PARAMETRIC_FUNCTION_H

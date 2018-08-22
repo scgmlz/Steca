@@ -1,3 +1,17 @@
+//  ***********************************************************************************************
+//
+//  Steca: stress and texture calculator
+//
+//! @file      core/fit/polynom.cpp
+//! @brief     Implements class Polynom
+//!
+//! @homepage  https://github.com/scgmlz/Steca
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016-2018
+//! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
+//
+//  ***********************************************************************************************
+
 #include "core/fit/polynom.h"
 
 void Polynom::setY(const double* P, const int nXY, const double* X, double* Y) const

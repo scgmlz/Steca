@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/fit/fit_par.h
-//! @brief     Defines classes FitParameter
+//! @file      core/fit/polynom.h
+//! @brief     Defines class Polynom
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef FIT_PAR_H
-#define FIT_PAR_H
+#ifndef POLYNOM_H
+#define POLYNOM_H
 
 #include "core/fit/parametric_function.h"
 
@@ -29,4 +29,4 @@ private:
     const int nPar_;
 };
 
-#endif // FIT_PAR_H
+#endif // POLYNOM_H

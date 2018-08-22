@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/tab_image.cpp
+//! @file      gui/view/plot_image.cpp
 //! @brief     Implements class ImageView
 //!
 //! @homepage  https://github.com/scgmlz/Steca

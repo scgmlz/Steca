@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/panels/tab_image.cpp
+//! @file      gui/view/plot_image.h
 //! @brief     Defines class ImageView
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -11,6 +11,9 @@
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 //  ***********************************************************************************************
+
+#ifndef PLOT_IMAGE_H
+#define PLOT_IMAGE_H
 
 #include "qcr/widgets/views.h"
 
@@ -27,3 +30,5 @@ private:
     double scale_ {0};
     QPixmap original_, scaled_;
 };
+
+#endif // PLOT_IMAGE_H
