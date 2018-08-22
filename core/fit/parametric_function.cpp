@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/fit/parametric_function.cpp
-//! @brief     Implements classes FitParameter, ParametricFunction
+//! @brief     Implements classes DoubleWithError, ParametricFunction
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -18,14 +18,14 @@
 #include <cmath>
 
 //  ***********************************************************************************************
-//! @class FitParameter
+//! @class DoubleWithError
 
-FitParameter::FitParameter(double value, double error)
+DoubleWithError::DoubleWithError(double value, double error)
     : value_(value)
     , error_(error)
 {}
 
-void FitParameter::setValue(double value, double error)
+void DoubleWithError::setValue(double value, double error)
 {
     value_ = value;
     error_ = error;
@@ -35,7 +35,7 @@ void FitParameter::setValue(double value, double error)
 
 //! Covered by test002_rounding.
 
-double FitParameter::roundedError(int prec) const
+double DoubleWithError::roundedError(int prec) const
 {
     int n = 1+lrintf(floor(log10(std::max(std::abs(value_),std::abs(error_)))));
     double fac = pow(10.,prec-n);

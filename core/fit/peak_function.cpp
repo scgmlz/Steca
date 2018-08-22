@@ -24,14 +24,14 @@
 //  ***********************************************************************************************
 //! @class PeakFunction
 
-const FitParameter PeakFunction::getCenter(const std::vector<FitParameter>& par) const {
+const DoubleWithError PeakFunction::getCenter(const std::vector<DoubleWithError>& par) const {
     return par[0];
 }
-const FitParameter PeakFunction::getFwhm(const std::vector<FitParameter>& par) const {
-    return FitParameter(par[1].value()*sqrt(8*log(2)),
+const DoubleWithError PeakFunction::getFwhm(const std::vector<DoubleWithError>& par) const {
+    return DoubleWithError(par[1].value()*sqrt(8*log(2)),
                         par[1].error()*sqrt(8*log(2)));
 }
-const FitParameter PeakFunction::getIntensity(const std::vector<FitParameter>& par) const
+const DoubleWithError PeakFunction::getIntensity(const std::vector<DoubleWithError>& par) const
 {
     return par[2];
 }

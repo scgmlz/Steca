@@ -25,9 +25,9 @@ public:
     void setY(const double* P, const int nXY, const double* X, double* Y) const final;
     void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
 
-    const FitParameter getCenter   (const std::vector<FitParameter>& par) const;
-    const FitParameter getFwhm     (const std::vector<FitParameter>& par) const;
-    const FitParameter getIntensity(const std::vector<FitParameter>& par) const;
+    const DoubleWithError getCenter   (const std::vector<DoubleWithError>& par) const;
+    const DoubleWithError getFwhm     (const std::vector<DoubleWithError>& par) const;
+    const DoubleWithError getIntensity(const std::vector<DoubleWithError>& par) const;
 
     static ParametricFunction fromFit(const QString&, const Curve&, const RawOutcome&);
 };

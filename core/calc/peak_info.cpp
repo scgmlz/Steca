@@ -237,9 +237,9 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
     const auto* peakFit = dynamic_cast<const PeakFunction*>(pFct.f);
     ASSERT(peakFit);
 
-    FitParameter center    = peakFit->getCenter   (pFct.parameters());
-    FitParameter fwhm      = peakFit->getFwhm     (pFct.parameters());
-    FitParameter intensity = peakFit->getIntensity(pFct.parameters());
+    DoubleWithError center    = peakFit->getCenter   (pFct.parameters());
+    DoubleWithError fwhm      = peakFit->getFwhm     (pFct.parameters());
+    DoubleWithError intensity = peakFit->getIntensity(pFct.parameters());
 
     if (!fitrange.contains(center.value())) // TODO/math generalize to fitIsCredible
         return {metadata, alpha, beta, gRange};
