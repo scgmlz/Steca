@@ -16,9 +16,7 @@
 #define PLOT_POLEFIG_H
 
 #include "qcr/engine/cell.h"
-#include "core/aux/angles.h"
 #include "qcr/widgets/views.h"
-#include "QCustomPlot/qcustomplot.h"
 #include <memory>
 
 class InfoSequence;
@@ -34,13 +32,7 @@ public:
 private:
     void paintEvent(QPaintEvent*);
 
-    void paintPoints();
-
     const InfoSequence* peakInfos_ {nullptr};
-
-    // valid while painting
-    std::unique_ptr<QPainter> painter_;
-    double radius_;
 };
 
 #endif // PLOT_POLEFIG_H

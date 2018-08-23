@@ -14,7 +14,9 @@
 
 #include "gui/view/plot_polefig.h"
 #include "core/session.h"
+#include "core/aux/angles.h"
 #include "qcr/base/debug.h" // ASSERT
+#include "QCustomPlot/qcustomplot.h"
 
 namespace {
 
@@ -61,6 +63,34 @@ void paintGrid(QPainter& painter, const double radius)
     circle(painter, centre, radius * avgAlphaMax / 90);
 }
 
+
+void paintPoints(
+    QPainter& painter, const InfoSequence& peakInfos, const bool flat, const double radius)
+{
+    double rgeMax = 0;
+    for (const PeakInfo& r : peakInfos.peaks())
+        rgeMax = std::max(rgeMax, r.inten());
+
+    for (const PeakInfo& r : peakInfos.peaks()) {
+        double inten = r.inten();
+        if (!qIsFinite(inten)) // NaN's may occur in interpolated (but not in direct) peakInfos
+            continue;
+        const QPointF& pp = angles2xy(radius, r.alpha(), r.beta());
+        if (flat) {
+            QColor color(Qt::blue);
+            painter.setPen(color);
+            painter.setBrush(color);
+            circle(painter, pp, .5);
+        } else {
+            inten /= rgeMax;
+            QColor color = intenGraph(inten, 1);
+            painter.setPen(color);
+            painter.setBrush(color);
+            circle(painter, pp, inten * radius / 60); // TODO scale to max inten
+        }
+    }
+}
+
 } //namespace
 
 
@@ -75,43 +105,17 @@ PlotPolefig::PlotPolefig()
 //! Plots the figure, using cached data points (which are computed by remake()).
 void PlotPolefig::paintEvent(QPaintEvent*)
 {
-    painter_.reset(new QPainter(this));
-    painter_->setRenderHint(QPainter::Antialiasing);
-    int w = size().width(), h = size().height();
-    painter_->translate(w / 2, h / 2);
+    int w = size().width();
+    int h = size().height();
+    double radius = qMin(w, h) / 2;
 
-    radius_ = qMin(w, h) / 2;
+    QPainter painter{this};
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.translate(w / 2, h / 2);
 
-    paintGrid(*painter_, radius_);
-
-    if (peakInfos_)
-        paintPoints();
-    painter_.reset();
-}
-
-void PlotPolefig::paintPoints()
-{
-    double rgeMax = 0;
-    ASSERT(peakInfos_);
-    for (const PeakInfo& r : peakInfos_->peaks())
-        rgeMax = std::max(rgeMax, r.inten());
-
-    for (const PeakInfo& r : peakInfos_->peaks()) {
-        double inten = r.inten();
-        if (!qIsFinite(inten)) // NaN's may occur in interpolated (but not in direct) peakInfos
-            continue;
-        const QPointF& pp = angles2xy(radius_, r.alpha(), r.beta());
-        if (flat.val()) {
-            QColor color(Qt::blue);
-            painter_->setPen(color);
-            painter_->setBrush(color);
-            circle(*painter_, pp, .5);
-        } else {
-            inten /= rgeMax;
-            QColor color = intenGraph(inten, 1);
-            painter_->setPen(color);
-            painter_->setBrush(color);
-            circle(*painter_, pp, inten * radius_ / 60); // TODO scale to max inten
-        }
+    paintGrid(painter, radius);
+    if (peakInfos_) {
+        ASSERT(peakInfos_);
+        paintPoints(painter, *peakInfos_, flat.val(), radius);
     }
 }
