@@ -34,10 +34,6 @@ public:
 private:
     void paintEvent(QPaintEvent*);
 
-    QPointF angles2xy(deg alpha, deg beta) const;
-
-    void circle(QPointF c, double r);
-
     void paintGrid();
     void paintPoints();
 
@@ -46,7 +42,6 @@ private:
     // valid while painting
     std::unique_ptr<QPainter> painter_;
     double radius_;
-
 };
 
 #endif // PLOT_POLEFIG_H

@@ -18,14 +18,25 @@
 
 namespace {
 
-const double alphaMAX {90};
-
 //! Color map for polefigure: shades of blue.
 QColor intenGraph(double inten, double maxInten) {
     if (!qIsFinite(inten) || qIsNaN(maxInten) || maxInten <= 0)
         return { qRgb(0x00, 0x00, 0x00) };
     inten /= maxInten;
     return { qRgb(0, 0, int(0xff * (1 - inten / 3))) };
+}
+
+//! Point in floating-point precision
+QPointF angles2xy(double radius, deg alpha, deg beta)
+{
+    double r = radius * alpha / 90;
+    rad betaRad = beta.toRad();
+    return QPointF(r * cos(betaRad), -r * sin(betaRad));
+}
+
+void circle(QPainter& painter, QPointF c, double r)
+{
+    painter.drawEllipse(c, r, r);
 }
 
 } //namespace
@@ -62,20 +73,20 @@ void PlotPolefig::paintGrid()
     QPointF centre(0, 0);
 
     for (int alpha = 10; alpha <= 90; alpha += 10) {
-        double r = radius_ / alphaMAX * alpha;
+        double r = radius_ * alpha / 90;
         painter_->setPen(!(alpha % 30) ? penMajor : penMinor);
-        circle(centre, r);
+        circle(*painter_, centre, r);
     }
 
     for (int beta = 0; beta < 360; beta += 10) {
         painter_->setPen(!(beta % 30) ? penMajor : penMinor);
-        painter_->drawLine(angles2xy(10, beta), angles2xy(90, beta));
+        painter_->drawLine(angles2xy(radius_, 10, beta), angles2xy(radius_, 90, beta));
     }
 
     QPen penMark(Qt::darkGreen);
     painter_->setPen(penMark);
     double avgAlphaMax = gSession->params.interpolParams.avgAlphaMax.val();
-    circle(centre, radius_ * avgAlphaMax / alphaMAX);
+    circle(*painter_, centre, radius_ * avgAlphaMax / 90);
 }
 
 void PlotPolefig::paintPoints()
@@ -89,31 +100,18 @@ void PlotPolefig::paintPoints()
         double inten = r.inten();
         if (!qIsFinite(inten)) // NaN's may occur in interpolated (but not in direct) peakInfos
             continue;
-        const QPointF& pp = angles2xy(r.alpha(), r.beta());
+        const QPointF& pp = angles2xy(radius_, r.alpha(), r.beta());
         if (flat.val()) {
             QColor color(Qt::blue);
             painter_->setPen(color);
             painter_->setBrush(color);
-            circle(pp, .5);
+            circle(*painter_, pp, .5);
         } else {
             inten /= rgeMax;
             QColor color = intenGraph(inten, 1);
             painter_->setPen(color);
             painter_->setBrush(color);
-            circle(pp, inten * radius_ / 60); // TODO scale to max inten
+            circle(*painter_, pp, inten * radius_ / 60); // TODO scale to max inten
         }
     }
-}
-
-//! Point in floating-point precision
-QPointF PlotPolefig::angles2xy(deg alpha, deg beta) const
-{
-    double r = radius_ * alpha / alphaMAX;
-    rad betaRad = beta.toRad();
-    return QPointF(r * cos(betaRad), -r * sin(betaRad));
-}
-
-void PlotPolefig::circle(QPointF c, double r)
-{
-    painter_->drawEllipse(c, r, r);
 }
