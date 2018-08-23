@@ -39,6 +39,28 @@ void circle(QPainter& painter, QPointF c, double r)
     painter.drawEllipse(c, r, r);
 }
 
+void paintGrid(QPainter& painter, const double radius)
+{
+    QPen penMajor(Qt::gray), penMinor(Qt::lightGray);
+    QPointF centre(0, 0);
+
+    for (int alpha = 10; alpha <= 90; alpha += 10) {
+        double r = radius * alpha / 90;
+        painter.setPen(!(alpha % 30) ? penMajor : penMinor);
+        circle(painter, centre, r);
+    }
+
+    for (int beta = 0; beta < 360; beta += 10) {
+        painter.setPen(!(beta % 30) ? penMajor : penMinor);
+        painter.drawLine(angles2xy(radius, 10, beta), angles2xy(radius, 90, beta));
+    }
+
+    QPen penMark(Qt::darkGreen);
+    painter.setPen(penMark);
+    double avgAlphaMax = gSession->params.interpolParams.avgAlphaMax.val();
+    circle(painter, centre, radius * avgAlphaMax / 90);
+}
+
 } //namespace
 
 
@@ -60,33 +82,11 @@ void PlotPolefig::paintEvent(QPaintEvent*)
 
     radius_ = qMin(w, h) / 2;
 
-    paintGrid();
+    paintGrid(*painter_, radius_);
 
     if (peakInfos_)
         paintPoints();
     painter_.reset();
-}
-
-void PlotPolefig::paintGrid()
-{
-    QPen penMajor(Qt::gray), penMinor(Qt::lightGray);
-    QPointF centre(0, 0);
-
-    for (int alpha = 10; alpha <= 90; alpha += 10) {
-        double r = radius_ * alpha / 90;
-        painter_->setPen(!(alpha % 30) ? penMajor : penMinor);
-        circle(*painter_, centre, r);
-    }
-
-    for (int beta = 0; beta < 360; beta += 10) {
-        painter_->setPen(!(beta % 30) ? penMajor : penMinor);
-        painter_->drawLine(angles2xy(radius_, 10, beta), angles2xy(radius_, 90, beta));
-    }
-
-    QPen penMark(Qt::darkGreen);
-    painter_->setPen(penMark);
-    double avgAlphaMax = gSession->params.interpolParams.avgAlphaMax.val();
-    circle(*painter_, centre, radius_ * avgAlphaMax / 90);
 }
 
 void PlotPolefig::paintPoints()

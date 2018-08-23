@@ -34,7 +34,6 @@ public:
 private:
     void paintEvent(QPaintEvent*);
 
-    void paintGrid();
     void paintPoints();
 
     const InfoSequence* peakInfos_ {nullptr};
