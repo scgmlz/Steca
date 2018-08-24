@@ -19,7 +19,7 @@
 
 PolefigTab::PolefigTab()
 {
-    auto* plot = new PlotPolefig;
+    auto* plot = new PlotPolefig(true);
 
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);

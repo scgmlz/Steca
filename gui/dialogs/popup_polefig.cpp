@@ -22,7 +22,7 @@ PopupPolefig::PopupPolefig()
 {
     setWindowTitle("Steca " + name());
 
-    auto* plot = new PlotPolefig; // the main subframe
+    auto* plot = new PlotPolefig(false); // the main subframe
     plot->setMinimumSize(300,300); // TODO store and reuse user setting; freeze aspect ratio
 
     auto* layout = new QVBoxLayout;

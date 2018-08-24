@@ -30,7 +30,7 @@ struct PolefigPoint {
 
 class PlotPolefig : public QcrWidget {
 public:
-    PlotPolefig();
+    PlotPolefig(bool alive);
 
     QcrCell<bool> flat {false};
 

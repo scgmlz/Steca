@@ -15,16 +15,19 @@
 #include "gui/view/plot_polefig.h"
 #include "core/session.h"
 #include "core/aux/angles.h"
-#include "qcr/base/debug.h" // ASSERT
+//#include "qcr/base/debug.h"
 #include "QCustomPlot/qcustomplot.h"
 
 namespace {
 
 //! Color map for polefigure: shades of blue.
-QColor intenGraph(double inten) {
+QColor intenGraph(double inten, bool highlight) {
     if (!qIsFinite(inten))
         return { qRgb(0x00, 0x00, 0x00) };
-    return { qRgb(0, 0, int(0xff * (1 - inten / 3))) };
+    int saturation = 0xff - (int)(0xff * inten) / 3;
+    if (highlight)
+        return { qRgb(0, saturation, saturation) };
+    return { qRgb(0, 0, saturation) };
 }
 
 //! Point in floating-point precision
@@ -66,7 +69,7 @@ void paintPoints(QPainter& painter, const std::vector<PolefigPoint>& points, con
 {
     for (const PolefigPoint& p : points) {
         const QPointF& pp = angles2xy(radius, p.alpha, p.beta);
-        QColor color = intenGraph(p.intensity);
+        QColor color = intenGraph(p.intensity, p.highlight);
         painter.setPen(color);
         painter.setBrush(color);
         circle(painter, pp, p.intensity * radius / 60); // TODO scale to max inten
@@ -91,7 +94,10 @@ std::vector<PolefigPoint> computePoints(const bool flat, const bool withHighligh
         for (const PeakInfo& r : allPeaks->peaks()) {
             //if (!qIsFinite(r.inten())) // NaN's may occur in interpolated allPeaks
             //    continue;
-            ret.push_back({r.alpha(), r.beta(), r.inten()/rgeMax, false});
+            bool highlight = false;
+            if (withHighlight)
+                highlight = false; // TODO find out whether this comes from highlighted cluster
+            ret.push_back({r.alpha(), r.beta(), r.inten()/rgeMax, highlight});
         }
     }
     return ret;
@@ -100,12 +106,15 @@ std::vector<PolefigPoint> computePoints(const bool flat, const bool withHighligh
 } //namespace
 
 
-PlotPolefig::PlotPolefig()
+PlotPolefig::PlotPolefig(const bool alive)
 {
-    setRemake([this](){
-            points_ = computePoints(flat.val(), true);
-            QWidget::update(); // Which then calls paintEvent. Only so we can use QPainter.
-        });
+    if (alive)
+        setRemake([this](){
+                points_ = computePoints(flat.val(), true);
+                QWidget::update(); // Which then calls paintEvent. Only so we can use QPainter.
+            });
+    else
+        points_ = computePoints(flat.val(), false);
 }
 
 //! Plots the figure, using cached data points (which are computed by remake()).
