@@ -13,28 +13,26 @@
 //  ***********************************************************************************************
 
 #include "core/raw/image.h"
-#include "core/def/idiomatic_for.h"
-#include "qcr/engine/debug.h"
+#include "core/aux/exception.h"
+#include "qcr/base/debug.h"
 
 Image::Image(const size2d& size, float val)
-    : size_(size),
-      intens_(size.count(), val),
-      rangeInten_(val, val)
-{ }
+    : size_(size)
+    , intens_(size.count(), val)
+    , rangeInten_(val, val)
+{}
 
 Image::Image(const size2d& size, std::vector<float>&& intens)
     : size_(size)
     , intens_(std::move(intens))
 {
-   ASSERT(intens_.size() == size.count());
-
+    ASSERT(intens_.size() == size.count());
     rangeInten_.set(intens_[0], intens_[0]);
-    for_i(intens_.size()) {
-        rangeInten_.extendBy(intens_[i]);
-    }
+    for (const auto val: intens_)
+        rangeInten_.extendBy(val);
 }
 
-void  Image::clear()
+void Image::clear()
 {
     size_ = size2d(0, 0);
     intens_.clear();
@@ -47,21 +45,15 @@ void Image::fill(float val, const size2d& size)
     int newSize = size.count();
     size_ = size;
     intens_.resize(newSize, val); // sets only new pixels to val
-    auto maxIndex = std::min(oldSize, newSize);
-    for_i(maxIndex) { // set all remaining pixels to val
+    for (int i=0; i<qMin(oldSize, newSize); ++i) // set all remaining pixels to val
         intens_[i] = val;
-    }
     rangeInten_.set(val, val); // set Range to val
 }
 
-
 void Image::addImage(const Image& that)
 {
-    if (!(size() == that.size()))
-        THROW("inconsistent image size");
-
+    ASSERT(size() == that.size());
     rangeInten_.extendBy(that.rgeInten());
-    for_i(intens_.size()) {
+    for (int i=0; i<intens_.size(); ++i)
         intens_[i] += that.intens_[i];
-    }
 }

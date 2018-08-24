@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/mainframe.cpp
-//! @brief     Implements class SubframeImage
+//! @brief     Implements class Mainframe
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,23 +12,20 @@
 //
 //  ***********************************************************************************************
 
-#include "mainframe.h"
+#include "gui/panels/mainframe.h"
 #include "core/session.h"
-#include "gui/panels/tab_image.h"
 #include "gui/panels/tab_bigtable.h"
 #include "gui/panels/tab_diagram.h"
+#include "gui/panels/tab_image.h"
 #include "gui/panels/tab_polefig.h"
+//#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class Mainframe
 
 Mainframe::Mainframe()
-    : QcrTabWidget {"viewsTab"}
+    : QcrTabWidget {"mainTabs"}
 {
-    // inbound connections
-    connect(gSession, &Session::sigCorr, [this]() {
-            setTabEnabled(1, gSession->corrset().hasFile()); });
-
     // layout
     setTabPosition(QTabWidget::North);
     addTab((dataImageTab_ = new DataImageTab), "Data image");
@@ -36,5 +33,20 @@ Mainframe::Mainframe()
     addTab((bigtableTab_ = new BigtableTab), "Table");
     addTab((diagramTab_ = new DiagramTab), "Diagram");
     addTab((polefigTab_ = new PolefigTab), "Polefig");
-    setTabEnabled(1, false);
+
+    setRemake([this](){
+            bool active = gSession->activeClusters.size();
+            bool peakish = gSession->peaks.size();
+            // Work against unwanted heuristics of QTabBar::setTabEnabled.
+            // See https://bugreports.qt.io/browse/QTBUG-69930.
+            //int oldCurrent = currentIndex();
+            setTabEnabled(0, active);
+            setTabEnabled(1, gSession->corrset.hasFile());
+            setTabEnabled(2, active&&peakish);
+            setTabEnabled(3, active&&peakish);
+            setTabEnabled(4, active&&peakish);
+            //setEnabled(anyEnabled());
+            //if (!currentWidget()->isEnabled())
+            //    programaticallySetValue(0);
+            show(); });
 }

@@ -19,17 +19,17 @@
 
 //! Collection of trigger actions, for use as member of MainWin.
 
-class Triggers : private QObject {
+class Triggers {
 public:
     Triggers();
     QcrTrigger about {"about", "About Steca"};
+    QcrTrigger baserangeAdd {"baserangeAdd", "To add a baseline fit range, mark it in the diffractogram...", ":/icon/add", Qt::CTRL | Qt::Key_O};
+    QcrTrigger baserangeRemove {"baserangeRemove", "Remove baseline range", ":/icon/rem"};
+    QcrTrigger baserangesClear {"baserangesClear", "Clear baseline ranges", ":/icon/clear"};
     QcrTrigger addFiles {"addFiles", "Add files...", ":/icon/add", Qt::CTRL | Qt::Key_O};
-    QcrTrigger addPeak {"addPeak", "Add peak", ":/icon/add"};
     QcrTrigger checkUpdate {"checkUpdate", "Check for update"};
-    QcrTrigger clearBackground {"clearBackground", "Clear background regions", ":/icon/clear"};
-    QcrTrigger clearPeaks {"clearPeaks", "Clear peaks", ":/icon/clear"};
     QcrTrigger clearSession {"clearSession", "Clear session"};
-    QcrTrigger corrFile {"corrFile", "Add correction file", ":/icon/add",
+    QcrTrigger corrFile {"loadCorr", "Add correction file...", ":/icon/add",
             Qt::SHIFT | Qt::CTRL | Qt::Key_O};
     QcrTrigger exportDfgram {"exportDfgram", "Export diffractogram(s)...", ":/icon/filesave" };
     QcrTrigger exportPolefig {"exportPolefig", "Export pole figure...", ":/icon/filesave" };
@@ -40,12 +40,14 @@ public:
     QcrTrigger spawnPolefig {"spawnPolefig", "Spawn pole figure...", ":/icon/window" };
     QcrTrigger loadSession {"loadSession", "Load session..."};
     QcrTrigger online  {"online", "Open docs in external browser"};
+    QcrTrigger peakAdd {"peakAdd", "Add peak", ":/icon/add"};
+    QcrTrigger peakRemove {"peakRemove", "Remove peak", ":/icon/rem"};
+    QcrTrigger peaksClear {"peaksClear", "Clear peaks", ":/icon/clear"};
     QcrTrigger quit {"quit", "Quit", "", QKeySequence::Quit};
     QcrTrigger removeFile {"removeFile", "Remove highlighted file", ":/icon/rem",
             QKeySequence::Delete};
-    QcrTrigger removePeak {"removePeak", "Remove peak", ":/icon/rem"};
     QcrTrigger saveSession {"saveSession", "Save session..."};
-    QcrTrigger viewReset {"viewReset", "Reset"};
+    QcrTrigger viewsReset {"viewsReset", "Reset"};
 };
 
 #endif // TRIGGERS_H

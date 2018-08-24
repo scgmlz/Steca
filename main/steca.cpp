@@ -19,16 +19,17 @@
 //! \par Repository:
 //!           https://github.com/scgmlz/Steca
 
-#include "manifest.h"
 #include "core/session.h"
-#include "gui/cfg/msg_handler.h"
-#include "qcr/engine/console.h"
+#include "manifest.h"
+#include "gui/view/msg_handler.h"
+#include "gui/dialogs/file_dialog.h"
 #include "gui/mainwin.h"
+#include "qcr/engine/console.h"
+//#include "qcr/base/debug.h"
 
 #define OPTPARSE_IMPLEMENTATION
 #define OPTPARSE_API static
 #include "optparse.h"
-#include "gui/dialogs/file_dialog.h"
 
 #include <iostream>
 #include <QApplication>
@@ -91,13 +92,12 @@ int main(int argc, char* argv[]) {
     app.setStyle(QStyleFactory::create("Fusion"));
 #endif
 
+    Console console;
     QLoggingCategory::setFilterRules("*.debug=true\nqt.*.debug=false");
     qInstallMessageHandler(messageHandler);
 
     Session session;
-    Console console;
-    auto* mainwin = new MainWin; // must be pointer, because it can be deleted by 'quit' trigger
-    mainwin->show();
+    new MainWin; // must be pointer, because it can be deleted by 'quit' trigger
     if (nonoptArgs.size())
         gConsole->call("@file " + nonoptArgs[0]);
     app.exec();

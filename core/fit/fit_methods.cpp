@@ -12,41 +12,11 @@
 //
 //  ***********************************************************************************************
 
-#include "fit_methods.h"
-#include "qcr/engine/debug.h"
-#include "core/def/idiomatic_for.h"
-#include "core/typ/curve.h"
+#include "core/fit/fit_methods.h"
 #include "LevMar/LM/levmar.h"
+#include "core/typ/curve.h"
+#include "qcr/base/debug.h"
 #include <qmath.h>
-
-void FitWrapper::fit(ParametricFunction& function, const Curve& curve)
-{
-    if (curve.isEmpty())
-        return;
-
-    function_ = &function;
-    xValues_ = curve.xs().data();
-
-    // prepare data in a debug::ensured format
-    int parCount = function_->parameterCount();
-    std::vector<double> parValue(parCount), parMin(parCount), parMax(parCount), parError(parCount);
-
-    for_i (parCount) {
-        const FitParameter& par = function_->parameterAt(i);
-        ASSERT(qIsFinite(par.value())); // TODO if not so, return false ?
-        parValue[i] = par.value();
-        parMin[i] = par.allowedMin();
-        parMax[i] = par.allowedMax();
-    }
-
-    fit_exec(
-        parValue.data(), parMin.data(), parMax.data(), parError.data(), parCount, curve.ys().data(),
-        curve.count());
-
-    // read data
-    for_i (parCount)
-        function_->parameterAt(i).setValue(parValue[i], parError[i]);
-}
 
 template <typename T>
 T* remove_const(T const* t)
@@ -54,51 +24,49 @@ T* remove_const(T const* t)
     return const_cast<T*>(t);
 }
 
-void FitWrapper::fit_exec(
-    double* params, // IO initial parameter estimates -> estimated solution
-    double const* paramsLimitMin, // I
-    double const* paramsLimitMax, // I
-    double* paramsError, // O
-    int paramsCount, // I
-    double const* yValues, // I
-    int dataPointsCount) // I
+
+Fitted FitWrapper::execFit(const FitFunction* f,const Curve& curve, std::vector<double> parValue)
 {
-    DelegateCalculationDbl function(this, &FitWrapper::callbackY);
-    DelegateCalculationDbl functionJacobian(this, &FitWrapper::callbackJacobianLM);
+    int nPar = f->nPar();
+    ASSERT(parValue.size()==nPar);
 
-    // minim. options mu, epsilon1, epsilon2, epsilon3
+    if (curve.size()<nPar)
+        return {}; // signals failure
+
+    std::vector<double> parError(nPar);
+    std::vector<double> covar(nPar * nPar); // output covariance matrix
+    //std::vector<double> parMin(nPar), parMax(nPar);
+
+    // minimizer options mu, epsilon1, epsilon2, epsilon3
     double opts[] = { LM_INIT_MU, 1e-12, 1e-12, 1e-18 };
-
-    // information regarding the minimization
+    int const maxIterations = 1000;
     double info[LM_INFO_SZ];
 
-    // output covariance matrix
-    std::vector<double> covar(paramsCount * paramsCount);
+    f_ = f;
+    X_ = &curve.xs();
 
-    int const maxIterations = 1000;
+    DelegateCalculationDbl fitFct(this, &FitWrapper::callbackY);
+    DelegateCalculationDbl Jacobian(this, &FitWrapper::callbackJacobianLM);
 
     dlevmar_bc_der(
-        &function, &functionJacobian, params, remove_const(yValues), paramsCount,
-        dataPointsCount, remove_const(paramsLimitMin), remove_const(paramsLimitMax), NULL,
-        maxIterations, opts, info, NULL, covar.data(), NULL);
+        &fitFct, &Jacobian, parValue.data(), remove_const(curve.ys().data()), nPar,
+        curve.size(),
+        nullptr /* remove_const(parMin.data()) */,
+        nullptr /* remove_const(parMax.data()) */,
+        nullptr, maxIterations, opts, info, nullptr, covar.data(), nullptr);
 
-    for_i (paramsCount)
-        paramsError[i] = sqrt(covar[i * paramsCount + i]); // the diagonal
+    // pass fit results
+    for (int ip=0; ip<nPar; ++ip)
+        parError[ip] = sqrt(covar[ip * nPar + ip]); // the diagonal
+    return Fitted(f, parValue, parError);
 }
 
-void FitWrapper::callbackY(
-    double* parValues, double* yValues, int /*parCount*/, int xLength, void*)
+void FitWrapper::callbackY(double* P, double* Y, int, int, void*)
 {
-    for_i (xLength)
-        yValues[i] = function_->y(xValues_[i], parValues);
+    f_->setY(P, X_->size(), X_->data(), Y);
 }
 
-void FitWrapper::callbackJacobianLM(
-    double* parValues, double* jacobian, int parCount, int xLength, void*)
+void FitWrapper::callbackJacobianLM(double* P, double* Jacobian, int, int, void*)
 {
-    for_int (ix, xLength) {
-        for_int (ip, parCount) {
-            *jacobian++ = function_->dy(xValues_[ix], ip, parValues);
-        }
-    }
+    f_->setDY(P, X_->size(), X_->data(), Jacobian);
 }

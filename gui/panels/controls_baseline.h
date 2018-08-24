@@ -15,20 +15,13 @@
 #ifndef CONTROLS_BASELINE_H
 #define CONTROLS_BASELINE_H
 
-#include "qcr/widgets/controls.h"
+#include "qcr/widgets/views.h"
 
 //! A widget with controls to change the baseline fitting.
 
-class ControlsBaseline : public QWidget {
+class ControlsBaseline : public QcrWidget {
 public:
     ControlsBaseline();
-private:
-    QVBoxLayout box_;
-    QHBoxLayout hb_;
-    QcrSpinBox spinDegree_ {"degree", 4, false, 0, 4,
-            "Degree of the polynomial used to fit the baseline"};
-    void hideEvent(QHideEvent*) final;
-    void showEvent(QShowEvent*) final;
 };
 
 #endif // CONTROLS_BASELINE_H

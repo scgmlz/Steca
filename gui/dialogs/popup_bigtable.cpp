@@ -12,13 +12,13 @@
 //
 //  ***********************************************************************************************
 
-#include "popup_bigtable.h"
-#include "gui/view/bigtable.h"
+#include "gui/dialogs/popup_bigtable.h"
 #include "gui/mainwin.h"
+#include "gui/view/bigtable.h"
 #include <QVBoxLayout>
 
 PopupBigtable::PopupBigtable()
-    : CModelessDialog(gGui, "table#")
+    : QcrModelessDialog(gGui, "table#")
 {
     auto* bigtableView = new BigtableView;
     bigtableView->setMinimumSize(600,600);

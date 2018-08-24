@@ -16,6 +16,7 @@
 #define EXPORT_POLEFIG_H
 
 #include "qcr/widgets/controls.h"
+#include "qcr/widgets/modal_dialogs.h"
 
 //! The modal dialog for saving the main polefig (fit results and metadata).
 
@@ -36,7 +37,7 @@ private:
     void saveCurrent();
     void saveAll(bool oneFile);
 
-    void onCommand(const QString&) override {}
+    void executeConsoleCommand(const QString&) override {}
 };
 
 #endif // EXPORT_POLEFIG_H

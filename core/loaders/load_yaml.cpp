@@ -12,10 +12,9 @@
 //
 //  ***********************************************************************************************
 
-#include "fastyamlloader.h"
-#include "core/raw/rawfile.h"
-#include "qcr/engine/debug.h"
-#include <algorithm>
+#include "core/loaders/fastyamlloader.h"
+#include "core/aux/exception.h"
+#include "qcr/base/debug.h"
 #include <functional>
 
 namespace  {
@@ -177,8 +176,8 @@ Rawfile loadYaml(const QString& filePath)
         readMeasurement(yamlFile["measurement"], rawfile);
         return rawfile;
     qDebug() << "DEBUG[load_yaml] done";
-    } catch (Exception e) {
-        THROW("Invalid data in file "+filePath+":\n" + e.what());
+    } catch (Exception ex) {
+        THROW("Invalid data in file "+filePath+":\n" + ex.msg());
     }
     // just to avoid compiler warnings:
     return Rawfile("");

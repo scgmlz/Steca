@@ -15,13 +15,11 @@
 #ifndef JSON_H
 #define JSON_H
 
-#include <QtGlobal>
 #include <QJsonObject>
 
 QJsonValue double_to_json(const double num);
 
 class Range;
-class IJ;
 
 //! Extends QJsonObject by read-out methods; used to load a session from a .ste file
 class JsonObj : public QJsonObject {
@@ -55,8 +53,6 @@ public:
     QString loadString(const QString& key, const QString& def) const;
 
     Range loadRange(const QString& key) const;
-
-    IJ loadIJ(const QString& key) const;
 };
 
 #endif // JSON_H

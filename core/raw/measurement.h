@@ -19,7 +19,6 @@
 #include "core/raw/metadata.h"
 #include <memory>
 
-
 //! A Measurement consts of an Image with associated Metadata
 
 class Measurement {
@@ -33,32 +32,25 @@ public:
     int position() const { return position_; }
     const Metadata& metadata() const { return metadata_; }
 
-    deg midTth() const;
-
     double monitorCount() const;
     double deltaMonitorCount() const;
     double time() const;
     double deltaTime() const;
 
+    deg midTth() const;
     deg omg() const;
     deg phi() const;
     deg chi() const;
-
-    Range rgeGma() const;
-    Range rgeGmaFull() const;
-    Range rgeTth() const;
 
     Range rgeInten() const;
 
     const Image& image() const { return *image_; }
     size2d imageSize() const;
 
-    const class AngleMap& angleMap() const;
-
 private:
     const int position_; //! position in file_
     Metadata metadata_;
-    std::unique_ptr<Image> image_;
+    std::unique_ptr<Image> image_; // TODO consider without pointer
 };
 
 #endif // MEASUREMENT_H

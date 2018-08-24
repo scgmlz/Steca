@@ -12,43 +12,35 @@
 //
 //  ***********************************************************************************************
 
-#include "tab_diagram.h"
+#include "gui/panels/tab_diagram.h"
 #include "core/session.h"
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"
 #include "gui/view/plot_diagram.h"
-#include "gui/state.h"
-
-#define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 
 //  ***********************************************************************************************
 //! @class DiagramTab
 
 DiagramTab::DiagramTab()
 {
-    // initializations
-    plot_ = new PlotDiagram; // the main subframe
+    auto* plot = new PlotDiagram; // the main subframe
 
-    // internal connections
-    connect(gGui->state->diagramX, _SLOT_(QComboBox,currentIndexChanged,int), [this]() {
-            render(); });
-    connect(gGui->state->diagramY, _SLOT_(QComboBox,currentIndexChanged,int), [this]() {
-            render(); });
+    // TODO cache tag list
+    auto* comboX =
+        new QcrComboBox {"diagramCoordX", &gSession->params.diagramX, &PeakInfo::metaTags};
+    auto* comboY =
+        new QcrComboBox {"diagramCoordY", &gSession->params.diagramY, &PeakInfo::metaTags};
 
-    // inbound connection
-    connect(gSession, &Session::sigRawFits, [this]() { render(); });
-
-    // layout
     auto* selectorBox = new QGridLayout;
-    selectorBox->addWidget(new QLabel("x"), 0, 0);
-    selectorBox->addWidget(gGui->state->diagramX, 0, 1);
-    selectorBox->addWidget(new QLabel("y"), 1, 0);
-    selectorBox->addWidget(gGui->state->diagramY, 1, 1);
+    selectorBox->addWidget(new QLabel("y"), 0, 0);
+    selectorBox->addWidget(comboY,          0, 1);
+    selectorBox->addWidget(new QLabel("x"), 1, 0);
+    selectorBox->addWidget(comboX,          1, 1);
 
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);
-    buttonBox->addWidget(new QcrIconButton {&gGui->triggers->spawnDiagram});
-    buttonBox->addWidget(new QcrIconButton {&gGui->triggers->exportDiagram});
+    buttonBox->addWidget(new QcrIconTriggerButton {&gGui->triggers->spawnDiagram});
+    buttonBox->addWidget(new QcrIconTriggerButton {&gGui->triggers->exportDiagram});
 
     auto* controls = new QVBoxLayout;
     controls->addLayout(selectorBox);
@@ -56,15 +48,10 @@ DiagramTab::DiagramTab()
     controls->addLayout(buttonBox);
 
     auto* layout = new QHBoxLayout;
-    layout->addWidget(plot_);
+    layout->addWidget(plot);
     layout->addLayout(controls);
     layout->setStretch(0,1000);
     setLayout(layout);
-}
 
-void DiagramTab::render()
-{
-    if (!isVisible())
-        return;
-    plot_->refresh();
+    setRemake([=](){plot->refresh();});
 }

@@ -17,13 +17,11 @@
 
 #include "qcr/widgets/controls.h"
 
-//! Subframe of the main window, with tabs to control geometry, fits, &c
+//! Subframe of the main window, with tabs to control detector, fits, &c
 
 class SubframeSetup : public QcrTabWidget {
 public:
     SubframeSetup();
-private:
-    void updateTabsAvailability();
 };
 
 #endif // SUBFRAME_SETUP_H

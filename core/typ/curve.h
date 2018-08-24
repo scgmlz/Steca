@@ -23,12 +23,10 @@
 class Curve {
 public:
     void clear();
+    void append(double x, double y);
 
     bool isEmpty() const;
-    int count() const;
-    bool isOrdered() const;
-
-    void append(double x, double y);
+    int size() const;
 
     // access to underlying data vectors
     const std::vector<double>& xs() const { return xs_; }
@@ -42,10 +40,9 @@ public:
 
     Curve intersect(const Range&) const;
     Curve intersect(const Ranges&) const;
+    Curve subtract(const std::function<double(double)>& func) const;
 
-    void subtract(const std::function<double(double)>& func);
-
-    int maqpairindex() const; // the index of the maximum y value
+    int idxMax() const; //!< the index of the maximum y value
 
     double sumY() const;
 
@@ -53,7 +50,5 @@ private:
     std::vector<double> xs_, ys_;
     Range rgeX_, rgeY_;
 };
-
-typedef std::vector<Curve> curve_vec;
 
 #endif // CURVE_H

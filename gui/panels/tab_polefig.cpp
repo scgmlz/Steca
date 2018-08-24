@@ -12,46 +12,28 @@
 //
 //  ***********************************************************************************************
 
-#include "tab_polefig.h"
-#include "core/session.h"
+#include "gui/panels/tab_polefig.h"
 #include "gui/actions/triggers.h"
-#include "gui/view/plot_polefig.h"
 #include "gui/mainwin.h"
-#include "gui/state.h"
-
+#include "gui/view/plot_polefig.h"
 
 PolefigTab::PolefigTab()
 {
-    // initializations
-    plot_ = new PlotPolefig; // the main subframe
+    auto* plot = new PlotPolefig(true);
 
-    // internal connections
-    connect(gGui->state->polefigShowGridPts, &QCheckBox::toggled, [this]() { render(); });
-
-    // inbound connection
-    connect(gSession, &Session::sigRawFits, [this]() { render(); });
-
-    // layout
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);
-    buttonBox->addWidget(new QcrIconButton {&gGui->triggers->spawnPolefig});
-    buttonBox->addWidget(new QcrIconButton {&gGui->triggers->exportPolefig});
+    buttonBox->addWidget(new QcrIconTriggerButton{&gGui->triggers->spawnPolefig});
+    buttonBox->addWidget(new QcrIconTriggerButton{&gGui->triggers->exportPolefig});
 
     auto* controls = new QVBoxLayout;
-    controls->addWidget(gGui->state->polefigShowGridPts);
+    controls->addWidget(new QcrCheckBox{"gridPts", "grid points", &plot->flat});
     controls->addStretch(1); // ---
     controls->addLayout(buttonBox);
 
     auto* layout = new QHBoxLayout;
-    layout->addWidget(plot_);
+    layout->addWidget(plot);
     layout->addLayout(controls);
     layout->setStretch(0,1000);
     setLayout(layout);
-}
-
-void PolefigTab::render()
-{
-    if (!isVisible())
-        return;
-    plot_->refresh();
 }

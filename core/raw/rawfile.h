@@ -21,12 +21,10 @@
 //! A file (loaded from a disk file) that contains a data sequence.
 class Rawfile final {
 public:
-    Rawfile() = delete;
-    Rawfile(const Rawfile&) = delete;
-    // allow move so that the low-level loaders must not bother about shared pointers:
-    Rawfile(Rawfile&&) = default;
-    Rawfile& operator=(Rawfile&&) = default;
     Rawfile(const QString& fileName);
+    Rawfile(const Rawfile&) = delete;
+    Rawfile(Rawfile&&) = default; // needed by loaders
+    Rawfile& operator=(Rawfile&&) = default;
 
     void addDataset(Metadata&&, const size2d&, std::vector<float> &&);
 
@@ -44,7 +42,5 @@ private:
     std::vector<Measurement> measurements_;
     size2d imageSize_;
 };
-
-Q_DECLARE_METATYPE(const Rawfile*)
 
 #endif // RAWFILE_H

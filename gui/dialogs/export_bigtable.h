@@ -15,7 +15,7 @@
 #ifndef EXPORT_BIGTABLE_H
 #define EXPORT_BIGTABLE_H
 
-#include "qcr/widgets/controls.h"
+#include "qcr/widgets/modal_dialogs.h"
 
 //! The modal dialog for saving the main table (fit results and metadata).
 

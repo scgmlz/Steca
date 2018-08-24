@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/def/idiomatic_for.h"
+#include "core/aux/exception.h"
 #include "core/raw/rawfile.h"
 #include "3rdparty/Mar/MarReader.h"
 
@@ -112,7 +112,7 @@ Rawfile loadMar(const QString& filePath) {
     }
 
     // Copy to 32Bit-Array
-    for_i (pixelSize)
+    for (int i=0; i<pixelSize; ++i)
         i4_image[i] = (int)((unsigned short)i2_image[i]);
 
     //***********************************
@@ -137,7 +137,7 @@ Rawfile loadMar(const QString& filePath) {
          *       Beyond the saturation of the ADC, all saturated pixels
          *       get an intensity of 999.999 !
          */
-        for_i (numberOfHigh) {
+        for (int i=0; i<numberOfHigh; ++i) {
             readElements = fread(pair, sizeof(int), 2, fpIn);
             if (readElements < 2)
                 break;
@@ -162,7 +162,7 @@ Rawfile loadMar(const QString& filePath) {
     // Check Pixel Level um Daten mit defekten Pixeln lesen zu k�nnen
     // TODO REVIEW
     //  if (MeasurementData::isPixelLevelUsed()) {
-    //    for_i (pixelSize) {
+    //    for (int i=0; i<pixelSize; ++i) {
     //      if (i4_image[i] > MeasurementData::pixelLevel)
     //        i4_image[i] = -1;
     //    }
@@ -198,7 +198,7 @@ Rawfile loadMar(const QString& filePath) {
     size2d size(pixSizeX, pixSizeY);
     std::vector<float> convertedIntens(pixelSize);
 
-    for_i (pixelSize)
+    for (int i=0; i<pixelSize; ++i)
         convertedIntens[i] = float(i4_image[i]);
 
     Metadata md;

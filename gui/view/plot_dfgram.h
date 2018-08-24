@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/view/plot_dfgram.h
-//! @brief     Defines classes PlotDfgram and Dfgram.
+//! @brief     Defines class PlotDfgram.
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,31 +15,15 @@
 #ifndef PLOT_DFGRAM_H
 #define PLOT_DFGRAM_H
 
-#include "core/typ/curve.h"
-#include "gui/mainwin.h" // for eFittingTab
-#include "gui/view/plot_overlay.h"
-
-//! Listens to mouse events to select subranges of a PlotDfgram.
-
-//! Equips PlotOverlay with domain-specific colors and setter functions.
-
-class PlotDfgramOverlay : public PlotOverlay {
-public:
-    PlotDfgramOverlay(class PlotDfgram&);
-
-private:
-    void addRange(const Range&) final;
-    void subtractRange(const Range&) final;
-    bool addModeColor(QColor&) const final;
-    bool subtractModeColor(QColor&) const final;
-};
-
+#include "core/typ/range.h"
+#include "QCustomPlot/qcustomplot.h"
 
 //! A plot frame that displays diffractogram, background and peak fits, and fit ranges.
 
 class PlotDfgram : public QCustomPlot {
 public:
-    PlotDfgram(class Dfgram&);
+    PlotDfgram();
+    PlotDfgram(const PlotDfgram&) = delete;
 
     void plotEmpty();
     void renderAll();
@@ -49,21 +33,15 @@ public:
 private:
     void addBgItem(const Range&, const QColor&);
     void resizeEvent(QResizeEvent*);
-    void onPeakData();
 
-    Dfgram& diffractogram_;
-
-    QCPGraph *bgGraph_, *dgramGraph_, *dgramBgFittedGraph_, *dgramBgFittedGraph2_, *guesses_,
-        *fits_;
+    QCPGraph *bgGraph_;
+    QCPGraph *dgramGraph_;
+    QCPGraph *dgramBgFittedGraph_;
+    QCPGraph *dgramBgFittedGraph2_;
+    QCPGraph *guesses_;
+    QCPGraph *fits_;
     std::vector<QCPGraph*> reflGraph_;
-    PlotDfgramOverlay* overlay_;
-
-    void calcDgram();
-    void calcBackground();
-    void calcPeaks();
-    Curve dgram_, dgramBgFitted_, bg_;
-    curve_vec refls_;
-    int currReflIndex_ {0};
+    class PlotDfgramOverlay* overlay_;
 };
 
 #endif // PLOT_DFGRAM_H

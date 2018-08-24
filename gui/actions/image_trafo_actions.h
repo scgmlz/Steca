@@ -15,18 +15,18 @@
 #ifndef IMAGE_TRAFO_ACTIONS_H
 #define IMAGE_TRAFO_ACTIONS_H
 
-#include "core/calc/image_transform.h"
+#include "core/pars/image_transform.h"
 #include "qcr/widgets/controls.h"
 
 //! Trigger and toggle to control image rotation and mirror.
 
-class ImageTrafoActions : private QObject {
+class ImageTrafoActions {
 public:
     ImageTrafoActions();
     QcrTrigger rotateImage {"rotateImage", "Rotate", ":/icon/rotate0", Qt::CTRL | Qt::Key_R};
     QcrToggle mirrorImage {"mirrorImage", "Mirror", false, ":/icon/mirrorHorz"};
-    void setImageRotate(const ImageTransform&);
 private:
+    void doImageRotate();
     void setImageMirror(bool on);
 };
 

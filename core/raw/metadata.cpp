@@ -12,9 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#include "metadata.h"
-#include "core/def/idiomatic_for.h"
-#include "qcr/engine/debug.h"
+#include "core/raw/metadata.h"
+//#include "qcr/base/debug.h"
 
 // metadata attributes
 
@@ -189,7 +188,7 @@ QVariant Metadata::attributeValue(int i) const
 std::vector<QVariant> Metadata::attributeValues() const
 {
     std::vector<QVariant> attrs;
-    for_i (int(eAttr::NUM_ALL_ATTRIBUTES))
+    for (int i=0; i<int(eAttr::NUM_ALL_ATTRIBUTES); ++i)
         attrs.push_back(attributeValue(i));
     return attrs;
 }
@@ -236,10 +235,6 @@ Metadata Metadata::computeAverage(const std::vector<const Metadata*>& vec)
         ret.deltaMonitorCount += d->deltaMonitorCount;
         ret.deltaTime += d->deltaTime;
 
-        if (ret.monitorCount > d->monitorCount)
-            qWarning() << "decreasing monitor count in combined cluster";
-        if (ret.time > d->time)
-            qWarning() << "decreasing time in combined cluster";
         ret.monitorCount = d->monitorCount;
         ret.time = d->time;
     }

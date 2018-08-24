@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "subframe_setup.h"
+#include "gui/panels/subframe_setup.h"
 #include "core/session.h"
 #include "gui/panels/controls_baseline.h"
 #include "gui/panels/controls_detector.h"
@@ -20,28 +20,28 @@
 #include "gui/panels/controls_peakfits.h"
 
 SubframeSetup::SubframeSetup()
-    : QcrTabWidget {"setupTab"}
+    : QcrTabWidget {"setupTabs"}
 {
     setTabPosition(QTabWidget::North);
+    setMinimumSize(270,320);
 
-    addTab(new ControlsDetector(), "Detector");
-    addTab(new ControlsBaseline(), "Baseline");
-    addTab(new ControlsPeakfits(), "Peakfits");
-    addTab(new ControlsInterpolation(), "Interpol");
+    addTab(new ControlsDetector(),     "Detector"); //const int idxDetector = 0;
+    addTab(new ControlsBaseline(),     "Baseline"); const int idxBaseline = 1;
+    addTab(new ControlsPeakfits(),     "Peakfits"); const int idxPeakfits = 2;
+    addTab(new ControlsInterpolation(),"Interpol"); //const int idxInterpol = 3;
 
-    connect(gSession, &Session::sigFiles, this, &SubframeSetup::updateTabsAvailability);
-
-    updateTabsAvailability();
-}
-
-void SubframeSetup::updateTabsAvailability()
-{
-    if (gSession->dataset().countFiles()) {
-        setTabEnabled(1, true);
-        setTabEnabled(2, true);
-    } else {
-        setTabEnabled(1, false);
-        setTabEnabled(2, false);
-        programaticallySetValue(0);
-    }
+    setHook([=](int val){
+            ASSERT(val==this->currentIndex());
+            switch (val) {
+            case idxBaseline: gSession->params.editableRange = EditableRange::BASELINE; break;
+            case idxPeakfits: gSession->params.editableRange = EditableRange::PEAKS; break;
+            default:          gSession->params.editableRange = EditableRange::NONE;
+            }
+        });
+    setRemake([=](){
+            setTabEnabled(idxBaseline, gSession->dataset.countFiles());
+            setTabEnabled(idxPeakfits, gSession->dataset.countFiles());
+            if (!currentWidget()->isEnabled())
+                programaticallySetValue(0);
+        });
 }

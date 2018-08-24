@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/def/idiomatic_for.h"
+#include "core/aux/exception.h"
 #include "core/raw/rawfile.h"
 #include <QDataStream>
 #include <QDir>
@@ -94,7 +94,7 @@ static void loadTiff(
     qint16 numDirEntries;
     is >> numDirEntries;
 
-    for_i (numDirEntries) {
+    for (int i=0; i<numDirEntries; ++i) {
         is >> tagId >> dataType >> dataCount >> dataOffset;
         check();
 
@@ -159,7 +159,7 @@ static void loadTiff(
 
     seek(stripOffsets);
 
-    for_i (intens.size())
+    for (int i=0; i<intens.size(); ++i)
         switch (sampleFormat) {
         case 1: {
             qint32 sample;
@@ -256,8 +256,8 @@ Rawfile loadTiffDat(const QString& filePath) {
         try {
             // load one dataseq
             loadTiff(&ret, dir.filePath(tiffFileName), phi, monitor, expTime);
-        } catch (Exception& e) {
-            THROW(tiffFileName + ": " + e.msg());
+        } catch (Exception& ex) {
+            THROW(tiffFileName + ": " + ex.msg());
         }
     }
 

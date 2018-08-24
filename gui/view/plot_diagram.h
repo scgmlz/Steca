@@ -15,7 +15,6 @@
 #ifndef PLOT_DIAGRAM_H
 #define PLOT_DIAGRAM_H
 
-#include "core/data/peak_info.h"
 #include "QCustomPlot/qcustomplot.h"
 
 //! Tab in DiagramsFrame, to display a plot of something against something.
@@ -23,7 +22,7 @@
 class PlotDiagram : public QCustomPlot {
 public:
     PlotDiagram();
-    void set(PeakInfos);
+    PlotDiagram(int, int);
     void refresh();
 private:
     void erase();

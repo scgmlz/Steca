@@ -14,11 +14,10 @@
 
 #include "gui/panels/subframe_files.h"
 #include "core/session.h"
-#include "qcr/widgets/displays.h"
-#include "qcr/widgets/model_view.h"
-#include "gui/mainwin.h"
-#include "gui/actions/toggles.h"
+#include "gui/view/toggles.h"
 #include "gui/actions/triggers.h"
+#include "gui/mainwin.h"
+#include "qcr/widgets/tables.h"
 
 
 //  ***********************************************************************************************
@@ -29,15 +28,23 @@
 class FilesModel : public CheckTableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
     FilesModel() : CheckTableModel("datafiles") {}
-    int highlighted() const final { return gSession->dataset().highlight().fileIndex(); }
-    void setHighlight(int i) final { gSession->dataset().highlight().setFile(i); }
-    bool activated(int i) const { return gSession->dataset().fileAt(i).activated() == Qt::Checked; }
-    void setActivated(int i, bool on) { gSession->dataset().setFileActivation(i, on); }
+
 private:
+    int highlighted() const final;
+    void onHighlight(int i) final { gSession->dataset.highlight().setFile(i); }
+    bool activated(int i) const { return gSession->dataset.fileAt(i).activated() == Qt::Checked; }
+    void setActivated(int i, bool on) { gSession->dataset.setFileActivation(i, on); }
+
     int columnCount() const final { return 3; }
-    int rowCount() const final { return gSession->dataset().countFiles(); }
+    int rowCount() const final { return gSession->dataset.countFiles(); }
     QVariant data(const QModelIndex&, int) const final;
 };
+
+int FilesModel::highlighted() const
+{
+    const Cluster* c = gSession->currentCluster();
+    return c ? c->file().index() : -1;
+}
 
 //! Returns role-specific information about one table cell.
 QVariant FilesModel::data(const QModelIndex& index, int role) const
@@ -45,7 +52,7 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const
     const int row = index.row();
     if (row < 0 || row >= rowCount())
         return {};
-    const Datafile& file = gSession->dataset().fileAt(row);
+    const Datafile& file = gSession->dataset.fileAt(row);
     int col = index.column();
     if (role==Qt::DisplayRole && col==2)
         return file.name();
@@ -53,8 +60,8 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const
         return QString("File %1\ncontains %2 measurements.here numbered %3 to %4")
             .arg(file.name())
             .arg(file.numMeasurements())
-            .arg(gSession->dataset().offset(file)+1)
-            .arg(gSession->dataset().offset(file)+file.numMeasurements());
+            .arg(gSession->dataset.offset(file)+1)
+            .arg(gSession->dataset.offset(file)+file.numMeasurements());
     else if (role==Qt::CheckStateRole && col==1)
         return file.activated();
     else if (role==Qt::BackgroundRole) {
@@ -73,57 +80,35 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const
 
 class FilesView : public CheckTableView {
 public:
-    FilesView();
+    FilesView() : CheckTableView {new FilesModel()} {}
 private:
-    void currentChanged(const QModelIndex& current, const QModelIndex&) override final {
-        gotoCurrent(current); }
-    int sizeHintForColumn(int) const final;
     FilesModel* model() { return static_cast<FilesModel*>(model_); }
 };
-
-FilesView::FilesView()
-    : CheckTableView(new FilesModel())
-{
-    connect(gSession, &Session::sigFiles, this, &TableView::onData);
-    connect(gSession, &Session::sigDataHighlight, this, &TableView::onHighlight);
-    connect(gSession, &Session::sigActivated, this, &CheckTableView::onActivated);
-    connect(this, &FilesView::clicked, model(), &FilesModel::onClicked);
-}
-
-int FilesView::sizeHintForColumn(int col) const
-{
-    switch (col) {
-    case 1: {
-        return 2*mWidth();
-    } default:
-        return 10*mWidth();
-    }
-}
 
 
 //  ***********************************************************************************************
 //! @class SubframeFiles
 
 SubframeFiles::SubframeFiles()
+    : QcrDockWidget("files")
 {
     setFeatures(DockWidgetMovable);
     setWindowTitle("Files");
-    setObjectName("dock-files");
 
-    // layout
     setWidget(new QWidget);
 
     auto* dataControls = new QHBoxLayout;
     dataControls->addStretch();
-    dataControls->addWidget(new QcrIconButton(&gGui->triggers->addFiles));
-    dataControls->addWidget(new QcrIconButton(&gGui->triggers->removeFile));
+    dataControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->addFiles));
+    dataControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->removeFile));
 
-    auto* corrFileView = new XLineDisplay;
+    auto* corrFileView = new QcrLineDisplay {[]()->QString {
+            return gSession->corrset.fileName(); }};
 
     auto* corrControls = new QHBoxLayout;
     corrControls->addWidget(corrFileView);
-    corrControls->addWidget(new QcrIconButton(&gGui->triggers->corrFile));
-    corrControls->addWidget(new QcrIconButton(&gGui->toggles->enableCorr));
+    corrControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->corrFile));
+    corrControls->addWidget(new QcrIconToggleButton(&gGui->toggles->enableCorr));
 
     auto* box = new QVBoxLayout;
     box->addLayout(dataControls);
@@ -132,9 +117,4 @@ SubframeFiles::SubframeFiles()
     box->addLayout(corrControls);
     box->setContentsMargins(0,0,0,0);
     widget()->setLayout(box);
-
-    // inbound connection
-    connect(gSession, &Session::sigCorr, [corrFileView]() {
-            corrFileView->setText( gSession->corrset().hasFile() ?
-                                   gSession->corrset().raw().fileName() : ""); });
 }

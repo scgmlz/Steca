@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#include "core/typ/ij.h"
 #include "core/typ/json.h"
+#include "core/aux/exception.h"
 #include "core/typ/range.h"
 #include <QStringList> // needed under Travis
 
@@ -177,11 +177,4 @@ Range JsonObj::loadRange(const QString& key) const
     Range range;
     range.fromJson(loadObj(key));
     return range;
-}
-
-IJ JsonObj::loadIJ(const QString& key) const
-{
-    IJ ij;
-    ij.fromJson(loadObj(key));
-    return ij;
 }

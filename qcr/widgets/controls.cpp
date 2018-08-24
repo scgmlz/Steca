@@ -3,7 +3,7 @@
 //  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/widgets/controls.cpp
-//! @brief     Implements functions that return new Qt objects
+//! @brief     Implements enhanced control widgets like QcrAction, QcrSpinBox, and many others
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,12 +12,11 @@
 //
 //  ***********************************************************************************************
 
-#include "controls.h"
-#include "qcr/engine/debug.h"
-#include "qcr/engine/qcrexception.h"
+#include "qcr/widgets/controls.h"
+#include "qcr/base/qcrexception.h"
+#include "qcr/base/string_ops.h"
 #include "qcr/engine/console.h"
-#include "qcr/engine/string_ops.h"
-#include "qcr/widgets/displays.h"
+//#include "qcr/base/debug.h"
 #include <QApplication> // for qApp for new Action
 #include <iostream> // debug
 
@@ -30,58 +29,110 @@
 
 QcrAction::QcrAction(const QString& text)
     : QAction(text, qApp)
-    , tooltip_(text.toLower())
+    , tooltip_(text)
 {}
+
+bool QcrAction::hasFocus()
+{
+    for (const QWidget* w: associatedWidgets())
+        if (w->hasFocus())
+            return true;
+    return false;
+}
 
 //  ***********************************************************************************************
 //! @class QcrTrigger
 
 QcrTrigger::QcrTrigger(const QString& rawname, const QString& text, const QString& iconFile)
-    : QcrAction(text)
-    , CSettable(rawname)
+    : QcrAction {text}
+    , QcrSettable {*this, rawname}
 {
     //QAction::setObjectName(name());
     if (iconFile!="")
         setIcon(QIcon(iconFile));
     connect(this, &QAction::triggered, [this]()->void {
-            gConsole->log(name()); });
+            gConsole->log(name());
+            triggerHook_();
+            gRoot->remakeAll(); });
     connect(this, &QAction::changed, [this]()->void {
             QString txt = tooltip_;
             if (!isEnabled())
                 txt += "\nThis trigger is currently inoperative.";
             setToolTip(txt); });
-    EMITS(("Trigger "+name()),changed());
 };
 
 QcrTrigger::QcrTrigger(
     const QString& name, const QString& text, const QString& iconFile, const QKeySequence& shortcut)
-    : QcrTrigger(name, text, iconFile)
+    : QcrTrigger {name, text, iconFile}
 {
     setShortcut(shortcut);
 }
 
-void QcrTrigger::onCommand(const QString& arg)
+void QcrTrigger::executeConsoleCommand(const QString& arg)
 {
     if (arg!="")
         throw QcrException("Found unexpected argument to trigger command");
+    if (!isEnabled()) {
+        qDebug() << "Ignoring command" << arg << "because trigger" << name() << "is not enabled.";
+        return;
+    }
     trigger();
+}
+
+//  ***********************************************************************************************
+//! trigger button classes
+
+QcrTextTriggerButton::QcrTextTriggerButton(QcrTrigger* action)
+    : QcrMixin(*this, action->name()+"Btn")
+{
+    setDefaultAction(action);
+    setToolButtonStyle(Qt::ToolButtonTextOnly);
+    setRemake([=](){action->remake();});
+}
+
+QcrIconTriggerButton::QcrIconTriggerButton(QcrTrigger* action)
+    : QcrMixin(*this, action->name()+"Btn")
+{
+    setDefaultAction(action);
+    setToolButtonStyle(Qt::ToolButtonIconOnly);
+    setRemake([=](){action->remake();});
 }
 
 //  ***********************************************************************************************
 //! @class QcrToggle
 
-QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on, const QString& iconFile)
-    : QcrAction(text)
-    , QcrControl<bool>(rawname)
+QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on,
+                     const QString& iconFile, const QKeySequence& shortcut)
+    : QcrAction {text}
+    , QcrControl<bool> {*this, rawname, on}
 {
-    init();
-    //QAction::setObjectName(CSettable::name());
+    initToggle(iconFile, shortcut);
+}
+
+QcrToggle::QcrToggle(const QString& rawname, QcrCell<bool>* cell, const QString& text,
+                     const QString& iconFile, const QKeySequence& shortcut)
+    : QcrAction {text}
+    , QcrControl<bool> {*this, rawname, cell}
+
+{
+    initToggle(iconFile, shortcut);
+}
+
+void QcrToggle::initToggle(const QString& iconFile, const QKeySequence& shortcut)
+{
+    setShortcut(shortcut);
+    setCheckable(true);
+    //QAction::setObjectName(QcrSettable::name());
     if (iconFile!="")
         setIcon(QIcon(iconFile));
-    setCheckable(true);
-    programaticallySetValue(on);
-    connect(this, &QAction::toggled, this, [this](bool val){onChangedValue(true, val);});
+    doSetValue(cell_->val());
+    connect(this, &QAction::toggled, this, [this](bool val){
+            //qDebug()<<"TOGGLE "<<name()<<"toggled";
+            onChangedValue(val);});
     connect(this, &QAction::changed, [this]()->void {
+            // Called upon any property change.
+            // Also called when this is toggled (https://bugreports.qt.io/browse/QTBUG-68213)
+            //qDebug()<<"TOGGLE "<<name()<<"changed";
             QString txt = tooltip_;
             if (!isEnabled())
                 txt += "\nThis toggle is currently inoperative.";
@@ -90,29 +141,25 @@ QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on, const
             else
                 txt += "\nThis toggle is currently unchecked. Click to check.";
             setToolTip(txt); });
-    EMITS(("Toggle "+name()),changed());
 };
 
-QcrToggle::QcrToggle(const QString& name, const QString& text, bool on, const QString& iconFile,
-                 const QKeySequence& shortcut)
-    : QcrToggle(name, text, on, iconFile)
-{
-    setShortcut(shortcut);
-}
-
 //  ***********************************************************************************************
-//! @classes with no console connection
+//! toggle button classes
 
-QcrTextButton::QcrTextButton(QcrAction* action)
+QcrTextToggleButton::QcrTextToggleButton(QcrToggle* action)
+    : QcrMixin(*this, action->name()+"Btn")
 {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonTextOnly);
+    setRemake([=](){action->remake();});
 }
 
-QcrIconButton::QcrIconButton(QcrAction* action)
+QcrIconToggleButton::QcrIconToggleButton(QcrToggle* action)
+    : QcrMixin(*this, action->name()+"Btn")
 {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonIconOnly);
+    setRemake([=](){action->remake();});
 }
 
 //  Control widget classes with console connection
@@ -129,239 +176,209 @@ QcrIconButton::QcrIconButton(QcrAction* action)
 //! https://forum.qt.io/topic/89011. Here, we explicitly deal with editingFinished and
 //! mouse release events.
 
-QcrSpinBox::QcrSpinBox(
-    const QString& _name, int ndigits, bool withDot, int min, int max, const QString& tooltip)
-    : QcrControl<int>(_name)
+QcrSpinBox::QcrSpinBox(const QString& _name, QcrCell<int>* cell, int ndigits,
+                       bool withDot, int min, int max, const QString& tooltip)
+    : QcrControl<int> {*this, _name, cell}
 {
-    init();
-    widgetUtils::setWidth(this, 2+ndigits, withDot);
+    initSpinBox(ndigits, withDot, min, max, tooltip);
+}
+
+void QcrSpinBox::initSpinBox(int ndigits, bool withDot, int min, int max, const QString& tooltip)
+{
+    strOp::setWidth(this, 2+ndigits, withDot);
+    ASSERT(min<=max);
     setMinimum(min);
-    setMaximum(max > min ? max : min);
+    setMaximum(max);
     if (tooltip!="")
         setToolTip(tooltip);
-    reportedValue_ = value();
-    connect(this, &QSpinBox::editingFinished, this, &QcrSpinBox::reportChange);
+    ASSERT(min<=cell_->val() && cell_->val()<=max);
+    doSetValue(cell_->val());
+    connect(this, &QSpinBox::editingFinished, this, [this]() {
+            onChangedValue(value()); });
     connect(this, _SLOT_(QSpinBox,valueChanged,int), [this](int val)->void {
             if(!hasFocus())
-                onChangedValue(hasFocus(), val); });
+                onChangedValue(val); });
 }
 
-void QcrSpinBox::mouseReleaseEvent(QMouseEvent *event)
+void QcrSpinBox::mouseReleaseEvent(QMouseEvent* event)
 {
     QSpinBox::mouseReleaseEvent(event);
-    reportChange();
+    onChangedValue(value());
 }
 
-void QcrSpinBox::reportChange()
-{
-    int val = value();
-    if (val == reportedValue_)
-        return;
-    reportedValue_ = val;
-    onChangedValue(hasFocus(), val);
-    EMITS("QcrSpinBox::reportChange", valueReleased(val));
-}
-
-void QcrSpinBox::onCommand(const QString& arg)
+void QcrSpinBox::executeConsoleCommand(const QString& arg)
 {
     int val = strOp::to_i(arg);
-    programaticallySetValue(val);
-    EMITS("QcrSpinBox::onCommand", valueReleased(val));
+    doSetValue(val);
 }
 
 //  ***********************************************************************************************
 //! @class QcrDoubleSpinBox
 
-QcrDoubleSpinBox::QcrDoubleSpinBox(const QString& _name, int ndigits, double min, double max)
-    : QcrControl<double>(_name)
+QcrDoubleSpinBox::QcrDoubleSpinBox(
+    const QString& _name, QcrCell<double>* cell, int nDigits, int nDecimals,
+    double min, double max, const QString& tooltip)
+    : QcrControl<double> {*this, _name, cell}
 {
-    init();
-    widgetUtils::setWidth(this, 2+ndigits, true);
-    if (min>max)
-        qSwap(min, max);
+    initDoubleSpinBox(nDigits, nDecimals, min, max, tooltip);
+}
+
+void QcrDoubleSpinBox::initDoubleSpinBox(
+    int nDigits, int nDecimals, double min, double max, const QString& tooltip)
+{
+    strOp::setWidth(this, nDigits, true);
+    setDecimals(nDecimals);
+    ASSERT(min<=max);
     setMinimum(min);
     setMaximum(max);
-    reportedValue_ = value();
-    connect(this, &QDoubleSpinBox::editingFinished, this, &QcrDoubleSpinBox::reportChange);
+    if (tooltip!="")
+        setToolTip(tooltip);
+    ASSERT(min<=cell_->val() && cell_->val()<=max);
+    doSetValue(cell_->val());
+    connect(this, &QDoubleSpinBox::editingFinished, this, [this]() {
+            onChangedValue(value()); });
     connect(this, _SLOT_(QDoubleSpinBox,valueChanged,double), [this](double val)->void {
             if(!hasFocus())
-                onChangedValue(hasFocus(), val); });
+                onChangedValue(val); });
 }
 
-void QcrDoubleSpinBox::mouseReleaseEvent(QMouseEvent *event)
+void QcrDoubleSpinBox::mouseReleaseEvent(QMouseEvent* event)
 {
     QDoubleSpinBox::mouseReleaseEvent(event);
-    reportChange();
+    onChangedValue(value());
 }
 
-void QcrDoubleSpinBox::reportChange()
-{
-    double val = value();
-    if (val == reportedValue_)
-        return;
-    reportedValue_ = val;
-    onChangedValue(hasFocus(), val);
-    EMITS("QcrDoubleSpinBox::reportChange", valueReleased(val));
-}
-
-void QcrDoubleSpinBox::onCommand(const QString& arg)
+void QcrDoubleSpinBox::executeConsoleCommand(const QString& arg)
 {
     double val = strOp::to_d(arg);
-    programaticallySetValue(val);
-    EMITS("QcrDoubleSpinBox::onCommand", valueReleased(val));
+    doSetValue(val);
 }
 
 //  ***********************************************************************************************
 //! @class QcrCheckBox
 
-QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, bool val)
-    : QCheckBox(text)
-    , QcrControl<bool>(_name)
+QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, QcrCell<bool>* cell)
+    : QCheckBox {text}
+    , QcrControl<bool> {*this, _name, cell}
 {
-    doSetValue(val);
-    init();
+    doSetValue(cell_->val());
     connect(this, _SLOT_(QCheckBox,stateChanged,int), [this](int val)->void {
-            onChangedValue(hasFocus(), (bool)val); });
+            onChangedValue((bool)val); });
 }
 
 //  ***********************************************************************************************
 //! @class QcrRadioButton
 
-QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text)
-    : QRadioButton(text)
-    , QcrControl<bool>(_name)
+QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, bool val)
+    : QRadioButton {text}
+    , QcrControl<bool> {*this, _name, val}
 {
-    init();
-    connect(this, &QRadioButton::toggled, [this](bool val)->void {
-            onChangedValue(hasFocus(), val); });
+    doSetValue(cell_->val());
+    setAutoExclusive(false); // TODO provide int-valued Qcr wrapper for exclusive radio buttons
+    connect(this, _SLOT_(QRadioButton,toggled,bool), [this,_name](bool val)->void {
+            onChangedValue(val); });
+}
+
+QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, QcrCell<bool>* cell)
+    : QRadioButton {text}
+    , QcrControl<bool> {*this, _name, cell}
+{
+    doSetValue(cell_->val());
+    setAutoExclusive(false);
+    connect(this, _SLOT_(QRadioButton,toggled,bool), [this](bool val)->void {
+            onChangedValue(val); });
 }
 
 //  ***********************************************************************************************
 //! @class QcrComboBox
 
-QcrComboBox::QcrComboBox(const QString& _name, const QStringList& items)
-    : QcrControl<int>(_name)
+QcrComboBox::QcrComboBox(
+    const QString& _name, QcrCell<int>* _cell, std::function<QStringList()> _makeTags)
+    : QcrControl<int> {*this, _name, _cell}
+    , makeTags_(_makeTags)
 {
-    init();
-    addItems(items);
+    tags_ = makeTags_();
+    QComboBox::addItems(tags_);
+    doSetValue(cell_->val());
     connect(this, _SLOT_(QComboBox,currentIndexChanged,int), [this](int val)->void {
-            onChangedValue(hasFocus(), val); });
+            if (!spuriousCall_)
+                onChangedValue(val); });
+}
+
+void QcrComboBox::remake()
+{
+    if (isVisible()) {
+        QStringList newTags = makeTags_();
+        if (newTags!=tags_) { // clear&addItems only when needed, to avoid changes of currentIndex
+            const int oldIdx = currentIndex();
+            spuriousCall_ = true;
+            QComboBox::clear();
+            QComboBox::addItems(newTags);
+            QComboBox::setCurrentIndex(0<=oldIdx&&oldIdx<count()?oldIdx:0);
+            spuriousCall_ = false;
+            tags_ = newTags;
+        }
+    }
+    QcrMixin::remake();
 }
 
 //  ***********************************************************************************************
 //! @class QcrLineEdit
 
 QcrLineEdit::QcrLineEdit(const QString& _name, const QString& val)
-    : QcrControl<QString>(_name)
+    : QcrControl<QString> {*this, _name, val}
 {
-    init();
+    doSetValue(cell_->val());
     // For unknown reason, hasFocus() is not always false when setText is called programmatically;
     // therefore we must use another criterion to distinuish user actions from other calls.
     // The following works, but has the drawback that a user action is logged not only as such,
     // but also in a second line as if there were an indirect call.
     connect(this, _SLOT_(QLineEdit,textEdited,const QString&),
             [this](const QString& val)->void {
-                onChangedValue(hasFocus(), val); });
+                onChangedValue(val); });
     connect(this, _SLOT_(QLineEdit,textChanged,const QString&),
             [this](const QString& val)->void {
-                onChangedValue(hasFocus(), val); });
-    programaticallySetValue(val);
+                onChangedValue(val); });
 }
 
 //  ***********************************************************************************************
 //! @class QcrTabWidget
 
 QcrTabWidget::QcrTabWidget(const QString& _name)
-    : QcrControl<int>(_name)
+    : QcrControl<int> {*this, _name, 0}
 {
-    init();
-    connect(this->tabBar(), &QTabBar::tabBarClicked, [this](int val) {
-            if (!isTabEnabled(val))
-                throw QcrException("Chosen tab is not enabled");
-            onChangedValue(hasFocus(), val); });
+    doSetValue(cell_->val());
     connect(this, &QTabWidget::currentChanged, [this](int val) {
-            if (!isTabEnabled(val))
-                throw QcrException("Chosen tab is not enabled");
-            onChangedValue(hasFocus(), val); });
+            if (spuriousCall_)
+                return;
+            onChangedValue(val); });
 }
 
-//  ***********************************************************************************************
-//! @class QcrDialog
-
-QcrDialog::QcrDialog(QWidget *parent, const QString &caption)
-    : QDialog(parent)
-    , CModal("dlog")
-    , CSettable("dlog")
+void QcrTabWidget::addTab(QWidget* page, const QString& label)
 {
-    setWindowTitle(caption);
+    spuriousCall_ = true;
+    QTabWidget::addTab(page, label);
+    spuriousCall_ = false;
 }
 
-QcrDialog::~QcrDialog()
+void QcrTabWidget::setTabEnabled(int index, bool on)
+    // Needs to be encapsulate because of side effect upon currentIndex.
+    // See https://bugreports.qt.io/browse/QTBUG-69930.
 {
-    gConsole->log("dlog closing");
+    spuriousCall_ = true;
+    QTabWidget::setTabEnabled(index, on);
+    spuriousCall_ = false;
 }
 
-int QcrDialog::exec()
+void QcrTabWidget::setCurrentIndex(int val)
 {
-    if (gConsole->hasCommandsOnStack()) {
-        open();
-        gConsole->commandsFromStack();
-        close();
-        return QDialog::Accepted;
-    } else
-        return QDialog::exec();
+    QTabWidget::setCurrentIndex(val);
 }
 
-void QcrDialog::onCommand(const QString& arg)
+bool QcrTabWidget::anyEnabled() const
 {
-    if (arg=="")
-        throw QcrException("Empty argument in Dialog command");
-    if (arg=="close") {
-        accept();
-        return;
-    }
-}
-
-//  ***********************************************************************************************
-//! @class QcrFileDialog
-
-QcrFileDialog::QcrFileDialog(
-    QWidget *parent, const QString &caption, const QString &directory, const QString &filter)
-    : QFileDialog(parent, caption, directory, filter)
-    , CModal("fdia")
-    , CSettable("fdia")
-{}
-
-QcrFileDialog::~QcrFileDialog()
-{
-    gConsole->log("fdia select "+selectedFiles().join(';'));
-}
-
-int QcrFileDialog::exec()
-{
-    if (gConsole->hasCommandsOnStack()) {
-        open();
-        gConsole->commandsFromStack();
-        close();
-        return QDialog::Accepted;
-    } else
-        return QDialog::exec();
-}
-
-void QcrFileDialog::onCommand(const QString& arg)
-{
-    if (arg=="")
-        throw QcrException("Empty argument in FileDialog command");
-    if (arg=="close") {
-        accept();
-        return;
-    }
-    QStringList args = arg.split(' ');
-    if (args[0]!="select")
-        throw QcrException("Unexpected filedialog command");
-    if (args.size()<2)
-        throw QcrException("Missing argument to command 'select'");
-    QStringList list = args[1].split(';');
-    QString tmp = '"' + list.join("\" \"") + '"';
-    selectFile(tmp);
+    for (int i=0; i<count(); ++i)
+        if (isTabEnabled(i))
+            return true;
+    return false;
 }

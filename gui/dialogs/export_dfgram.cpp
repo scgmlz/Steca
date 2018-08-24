@@ -12,18 +12,16 @@
 //
 //  ***********************************************************************************************
 
-#include "export_dfgram.h"
-#include "core/algo/collect_intensities.h"
-#include "core/def/idiomatic_for.h"
-#include "core/typ/async.h"
+#include "gui/dialogs/export_dfgram.h"
+#include "core/aux/async.h"
+#include "core/aux/exception.h"
 #include "core/session.h"
+#include "gui/dialogs/subdialog_file.h"
 #include "gui/dialogs/file_dialog.h"
-#include "gui/dialogs/exportfile_dialogfield.h"
 #include "gui/mainwin.h"
-#include "qcr/engine/debug.h"
+//#include "qcr/base/debug.h"
 #include <qmath.h>
 #include <QGroupBox>
-#include <QMessageBox>
 
 namespace {
 
@@ -31,6 +29,8 @@ namespace {
 void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
                 const Range& rgeGma, const QString& separator)
 {
+    if (curve.isEmpty())
+        qFatal("curve is empty");
     ASSERT(rgeGma.isValid());
     const Metadata& md = cluster->avgMetadata();
     stream << "Comment: " << md.comment << '\n';
@@ -38,12 +38,12 @@ void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
     stream << "Gamma range min: " << rgeGma.min << '\n';
     stream << "Gamma range max: " << rgeGma.max << '\n';
 
-    for_i (Metadata::numAttributes(true))
+    for (int i=0; i<Metadata::numAttributes(true); ++i)
         stream << Metadata::attributeTag(i, true) << ": "
                << md.attributeValue(i).toDouble() << '\n';
 
     stream << "Tth" << separator << "Intensity" << '\n';
-    for_i (curve.xs().size())
+    for (int i=0; i<curve.xs().size(); ++i)
         stream << curve.x(i) << separator << curve.y(i) << '\n';
 
     stream.flush(); // not sure whether we need this
@@ -60,7 +60,6 @@ QString numberedName(const QString& templatedName, int num, int maxNum) {
     QString ret = templatedName;
     int nDigits = (int)log10((double)maxNum)+1;
     ret.replace("%d", QString("%1").arg(num, nDigits, 10, QLatin1Char('0')));
-    qDebug() << "PATH " << templatedName << " -> " << ret;
     return ret;
 }
 
@@ -110,7 +109,6 @@ void ExportDfgram::save()
         close();
     } catch(Exception& ex) {
         qWarning() << "Could not save:\n" << ex.msg() << "\n";
-        gSession->clear();
     }
 }
 
@@ -120,22 +118,21 @@ void ExportDfgram::saveCurrent()
     if (!file)
         return;
     QTextStream stream(file);
-    const Cluster* cluster = gSession->dataset().highlight().cluster();
+    const Cluster* cluster = gSession->currentCluster();
     ASSERT(cluster);
-    const Curve& curve = algo::projectCluster(*cluster, cluster->rgeGma());
-    if (curve.isEmpty())
-        qFatal("curve is empty");
+    const Curve& curve = cluster->currentDfgram().curve;
     writeCurve(stream, curve, cluster, cluster->rgeGma(), fileField_->separator());
 }
 
 void ExportDfgram::saveAll(bool oneFile)
 {
-    const ActiveClusters& expt = gSession->activeClusters();
     // In one-file mode, start output stream; in multi-file mode, only do prepations.
     QString path = fileField_->path(true, !oneFile);
     if (path.isEmpty())
         return;
     QTextStream* stream = nullptr;
+    int nClusters = gSession->activeClusters.size();
+    ASSERT(nClusters>0);
     if (oneFile) {
         QFile* file = fileField_->file();
         if (!file)
@@ -144,34 +141,35 @@ void ExportDfgram::saveAll(bool oneFile)
     } else {
         // check whether any of the numbered files already exists
         QStringList existingFiles;
-        for_i (expt.size()) {
-            QString currPath = numberedName(path, i, expt.size()+1);
+        for (int i=0; i<nClusters; ++i) {
+            QString currPath = numberedName(path, i, nClusters+1);
             if (QFile(currPath).exists())
                 existingFiles << QFileInfo(currPath).fileName();
         }
         if (existingFiles.size() &&
-            !file_dialog::confirmOverwrite(existingFiles.size()>1 ? "Files exist" : "File exists", this, existingFiles.join(", ")))
+            !file_dialog::confirmOverwrite(existingFiles.size()>1 ?
+                                           "Files exist" : "File exists",
+                                           this, existingFiles.join(", ")))
             return;
     }
-    Progress progress(&fileField_->progressBar, "save diffractograms", expt.size());
+    TakesLongTime progress("save diffractograms", nClusters, &fileField_->progressBar);
     int picNum = 0;
     int fileNum = 0;
-    int nSlices = gSession->gammaSelection().numSlices();
-    for (const Cluster* cluster : expt.clusters()) {
+    int nSlices = gSession->gammaSelection.numSlices.val();
+    for (const Cluster* cluster : gSession->activeClusters.clusters.get()) {
         ++picNum;
         progress.step();
         for (int i=0; i<qMax(1,nSlices); ++i) {
             if (!oneFile) {
-                QFile* file = new QFile(numberedName(path, ++fileNum, expt.size()+1));
+                QFile* file = new QFile(numberedName(path, ++fileNum, nClusters+1));
                 if (!file->open(QIODevice::WriteOnly | QIODevice::Text))
                     THROW("Cannot open file for writing: " + path);
                 delete stream;
                 stream = new QTextStream(file);
             }
             ASSERT(stream);
-            const Range gmaStripe = gSession->gammaSelection().slice2range(i);
-            const Curve& curve = algo::projectCluster(*cluster, gmaStripe);
-            ASSERT(!curve.isEmpty());
+            const Range gmaStripe = gSession->gammaSelection.slice2range(i);
+            const Curve& curve = cluster->dfgrams.getget(cluster,i).curve;
             *stream << "Picture Nr: " << picNum << '\n';
             if (nSlices > 1)
                 *stream << "Gamma slice Nr: " << i+1 << '\n';

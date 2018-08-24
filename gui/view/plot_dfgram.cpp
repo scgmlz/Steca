@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/view/plot_dfgram.cpp
-//! @brief     Implements classes PlotDfgram and Dfgram.
+//! @brief     Implements class PlotDfgram. Has local class PlotDfgramOverlay.
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,71 +12,114 @@
 //
 //  ***********************************************************************************************
 
-#include "plot_dfgram.h"
-#include "qcr/engine/console.h"
-#include "core/algo/collect_intensities.h"
+#include "gui/view/plot_dfgram.h"
 #include "core/session.h"
-#include "core/def/idiomatic_for.h"
-#include "gui/state.h"
-#include "gui/actions/toggles.h"
+#include "gui/view/toggles.h"
+#include "gui/mainwin.h"
+#include "gui/view/plot_overlay.h"
+#include "gui/view/range_control.h"
+#include "qcr/base/qcrexception.h"
+
+namespace colors {
+QColor baseEmph{0x00, 0xff, 0x00, 0x50}; // green
+QColor baseStd {0x87, 0xce, 0x87, 0x50}; // light green
+QColor baseEdit{0x00, 0xff, 0x00, 0x30}; // as Emph, but more transparent
+QColor peakEdit{0x00, 0xff, 0xff, 0x50}; // cyan
+QColor peakStd {0x87, 0xce, 0xfa, 0x50}; // light blue
+QColor peakFit {0x00, 0x00, 0xff, 0xff}; // blue
+QColor pen     {0x21, 0xa1, 0x21, 0xff};
+QColor scatter {255, 0, 0};
+}
 
 //  ***********************************************************************************************
 //! @class PlotDfgramOverlay
 
-PlotDfgramOverlay::PlotDfgramOverlay(PlotDfgram& parent)
-    : PlotOverlay(parent)
-{}
+//! Listens to mouse events to select subranges of a PlotDfgram.
+
+//! Equips PlotOverlay with domain-specific colors and setter functions.
+
+class PlotDfgramOverlay : public PlotOverlay, public QcrSettable {
+public:
+    PlotDfgramOverlay(class PlotDfgram& parent)
+        : PlotOverlay{parent, RangeControl::STEP}, QcrSettable{*this,"dfgram"} {}
+private:
+    void executeConsoleCommand(const QString&) final;
+    void addRange(const Range&) final;
+    void selectRange(double x) final;
+    const QColor* mousedColor() const final;
+};
+
 
 void PlotDfgramOverlay::addRange(const Range& range)
 {
-    if        (gGui->state->editingBaseline) {
-        gSession->baseline().addRange(range);
-    } else if (gGui->state->editingPeakfits) {
-        if (Peak* peak = gSession->peaks().selectedPeak()) {
-            peak->setRange(range);
-            gConsole->log("peakRangeMin "+QString::number(range.min));
-            gConsole->log("peakRangeMax "+QString::number(range.max));
-        }
+    doLog(QString("dfgram add %1 %2").arg(range.min).arg(range.max));
+    switch (gSession->params.editableRange) {
+    case EditableRange::BASELINE:
+        gSession->baseline.ranges.add(range);
+        gSession->onBaseline();
+        break;
+    case EditableRange::PEAKS:
+        gSession->peaks.add(range);
+        gSession->onPeaks();
+        break;
+    default:
+        return;
     }
+    gRoot->remakeAll();
 }
 
-void PlotDfgramOverlay::subtractRange(const Range& range)
+//! Selects the range that contains pixel x.
+
+void PlotDfgramOverlay::selectRange(double x)
 {
-    if        (gGui->state->editingBaseline) {
-        gSession->baseline().removeRange(range);
-    } else if (gGui->state->editingPeakfits) {
-        ; // do nothing
+    doLog(QString("dfgram sel %1").arg(x));
+    switch (gSession->params.editableRange) {
+    case EditableRange::BASELINE:
+        gSession->baseline.ranges.selectByValue(x);
+        break;
+    case EditableRange::PEAKS:
+        gSession->peaks.selectByValue(x);
+        break;
+    default:
+        return;
     }
+    gRoot->remakeAll();
 }
 
-bool PlotDfgramOverlay::addModeColor(QColor& color) const
+void PlotDfgramOverlay::executeConsoleCommand(const QString& arg)
 {
-    if        (gGui->state->editingBaseline) {
-        color = {0x98, 0xfb, 0x98, 0x70}; // medium green
-        return true;
-    } else if (gGui->state->editingPeakfits) {
-        color = {0x87, 0xce, 0xfa, 0x70}; // medium blue
-        return true;
-    }
-    return false;
+    QStringList args = arg.split(' ');
+    if (args[0]=="add") {
+        if (args.size()<3)
+            throw QcrException("Missing arguments to command 'add'");
+        addRange(Range(strOp::to_d(args[1]), strOp::to_d(args[2])));
+    } else if (args[0]=="sel") {
+        if (args.size()<2)
+            throw QcrException("Missing argument to command 'sel'");
+        selectRange(strOp::to_d(args[1]));
+    } else
+        throw QcrException("Unexpected dfgram command");
 }
 
-bool PlotDfgramOverlay::subtractModeColor(QColor& color) const
+//! Returns color to be used when the mouse is marking a range.
+
+const QColor* PlotDfgramOverlay::mousedColor() const
 {
-    if        (gGui->state->editingBaseline) {
-        color = {0xf8, 0xf8, 0xff, 0x90}; // almost white
-        return true;
+    switch (gSession->params.editableRange) {
+    case EditableRange::BASELINE:
+        return &colors::baseEdit;
+    case EditableRange::PEAKS:
+        return &colors::peakEdit;
+    default:
+        return nullptr;
     }
-    return false;
 }
-
 
 //  ***********************************************************************************************
 //! @class PlotDfgram
 
-PlotDfgram::PlotDfgram(Dfgram& diffractogram)
-    : diffractogram_(diffractogram)
-    , overlay_(new PlotDfgramOverlay(*this))
+PlotDfgram::PlotDfgram()
+    : overlay_(new PlotDfgramOverlay(*this))
 {
     QCPAxisRect* ar = axisRect();
 
@@ -95,7 +138,7 @@ PlotDfgram::PlotDfgram(Dfgram& diffractogram)
 
     // graphs in the "main" layer; in the display order
     bgGraph_ = addGraph();
-    bgGraph_->setPen(QPen(QColor(0x21, 0xa1, 0x21, 0xff), 2));
+    bgGraph_->setPen(QPen(colors::pen, 2));
 
     dgramGraph_ = addGraph();
     dgramGraph_->setLineStyle(QCPGraph::LineStyle::lsNone);
@@ -106,7 +149,7 @@ PlotDfgram::PlotDfgram(Dfgram& diffractogram)
     dgramBgFittedGraph2_->setVisible(false);
     dgramBgFittedGraph2_->setLineStyle(QCPGraph::LineStyle::lsNone);
     dgramBgFittedGraph2_->setScatterStyle(
-        QCPScatterStyle(QCPScatterStyle::ScatterShape::ssDisc, QColor(255, 0, 0), 4));
+        QCPScatterStyle(QCPScatterStyle::ScatterShape::ssDisc, colors::scatter, 4));
 
     dgramBgFittedGraph_ = addGraph();
     dgramBgFittedGraph_->setPen(QPen(Qt::black, 2));
@@ -126,10 +169,6 @@ PlotDfgram::PlotDfgram(Dfgram& diffractogram)
     fits_->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 8));
     fits_->setLineStyle(QCPGraph::lsNone);
     fits_->setPen(QPen(Qt::red));
-
-    // inbound connections:
-    connect(gSession, &Session::sigPeaks, this, &PlotDfgram::renderAll);
-    connect(gSession, &Session::sigDfgram, this, &PlotDfgram::renderAll);
 }
 
 void PlotDfgram::clearReflLayer()
@@ -168,67 +207,47 @@ void PlotDfgram::resizeEvent(QResizeEvent* e)
     overlay_->setGeometry(0, 0, size.width(), size.height());
 }
 
-void PlotDfgram::onPeakData()
-{
-    Peak* peak = gSession->peaks().selectedPeak();
-    guesses_->clearData();
-    fits_->clearData();
-
-    if (peak && gSession->dataset().highlight().cluster()) {
-        const PeakFunction& fun = peak->peakFunction();
-
-        const qpair gp = fun.guessedPeak();
-        if (gp.isValid()) {
-            guesses_->addData(gp.x, gp.y);
-            double gw2 = fun.guessedFWHM() / 2;
-            guesses_->addData(gp.x - gw2, gp.y / 2);
-            guesses_->addData(gp.x + gw2, gp.y / 2);
-        }
-
-        const qpair fp = fun.fittedPeak();
-        if (fp.isValid()) {
-            fits_->addData(fp.x, fp.y);
-            double fw2 = fun.fittedFWHM() / 2;
-            fits_->addData(fp.x - fw2, fp.y / 2);
-            fits_->addData(fp.x + fw2, fp.y / 2);
-        }
-    }
-    renderAll();
-}
-
 //! Repaints everything, including the colored background areas.
 void PlotDfgram::renderAll()
 {
     clearItems();
 
-    const Ranges& rs = gSession->baseline().ranges();
-    for_i (rs.count())
-        addBgItem(rs.at(i), {0x98, 0xfb, 0x98, 0x50}); // light green
-    for_i (gSession->peaks().count()) {
-        addBgItem(gSession->peaks().at(i).range(), i==gSession->peaks().selectedIndex() ?
-                  QColor(0x87, 0xce, 0xfa, 0x70) : // medium blue
-                  QColor(0x87, 0xce, 0xfa, 0x50)); // light blue
-    }
+    // Render colored background areas to indicate baseline and peak fit ranges.
+    const Ranges& ranges = gSession->baseline.ranges;
+    bool showingBaseline = gSession->params.editableRange == EditableRange::BASELINE;
+    for (int jR=0; jR<ranges.size(); ++jR)
+        addBgItem(ranges.at(jR),
+                  showingBaseline && jR==gSession->baseline.ranges.selectedIndex() ?
+                  colors::baseEmph : colors::baseStd);
+    for (int jP=0; jP<gSession->peaks.size(); ++jP)
+        addBgItem(gSession->peaks.at(jP).range(),
+                  !showingBaseline && jP==gSession->peaks.selectedIndex() ?
+                  colors::peakEdit : colors::peakStd);
 
-    if (!gSession->dataset().highlight().cluster()) {
+    if (!gSession->hasData() || !gSession->currentCluster()) {
         plotEmpty();
         return;
     }
-    calcDgram();
-    if (dgram_.isEmpty()) {
-        plotEmpty();
-        return;
-    }
-    calcBackground();
-    calcPeaks();
 
-    const Range& tthRange = dgram_.rgeX();
+    const Dfgram* dfgram = gSession->currentOrAvgeDfgram();
+    ASSERT(!dfgram->curve.isEmpty());
+
+    // retrieve background
+    const Curve& bg           = dfgram->getBgAsCurve();
+    const Curve& curveMinusBg = dfgram->getCurveMinusBg();
+
+    // calculate peaks
+    std::vector<Curve> fitCurves;
+    for (int jP=0; jP<gSession->peaks.size(); ++jP)
+        fitCurves.push_back(dfgram->getPeakAsCurve(jP));
+
+    const Range& tthRange = dfgram->curve.rgeX();
     Range intenRange;
-    if (gGui->toggles->fixedIntenDgram.getValue()) {
-        intenRange = gSession->dataset().highlight().cluster()->rgeInten();
+    if (gGui->toggles->fixedIntenDfgram.getValue()) {
+        intenRange = gSession->currentCluster()->rgeInten();
     } else {
-        intenRange = dgramBgFitted_.rgeY();
-        intenRange.extendBy(dgram_.rgeY());
+        intenRange = curveMinusBg.rgeY();
+        intenRange.extendBy(dfgram->curve.rgeY());
     }
 
     xAxis->setRange(tthRange.min, tthRange.max);
@@ -237,85 +256,32 @@ void PlotDfgram::renderAll()
     xAxis->setVisible(true);
     yAxis->setVisible(true);
 
-    if (gGui->toggles->showBackground.getValue())
-        bgGraph_->setData(QVector<double>::fromStdVector(bg_.xs()),
-                          QVector<double>::fromStdVector(bg_.ys()));
+    if (gGui->toggles->showBackground.getValue() && !bg.isEmpty())
+        bgGraph_->setData(QVector<double>::fromStdVector(bg.xs()),
+                          QVector<double>::fromStdVector(bg.ys()));
     else
         bgGraph_->clearData();
 
-    dgramGraph_->setData(QVector<double>::fromStdVector(dgram_.xs()),
-                         QVector<double>::fromStdVector(dgram_.ys()));
-    dgramBgFittedGraph_->setData(QVector<double>::fromStdVector(dgramBgFitted_.xs()),
-                                 QVector<double>::fromStdVector(dgramBgFitted_.ys()));
-    dgramBgFittedGraph2_->setData(QVector<double>::fromStdVector(dgramBgFitted_.xs()),
-                                  QVector<double>::fromStdVector(dgramBgFitted_.ys()));
+    dgramGraph_->setData(QVector<double>::fromStdVector(dfgram->curve.xs()),
+                         QVector<double>::fromStdVector(dfgram->curve.ys()));
+    dgramBgFittedGraph_->setData(QVector<double>::fromStdVector(curveMinusBg.xs()),
+                                 QVector<double>::fromStdVector(curveMinusBg.ys()));
+    dgramBgFittedGraph2_->setData(QVector<double>::fromStdVector(curveMinusBg.xs()),
+                                  QVector<double>::fromStdVector(curveMinusBg.ys()));
 
     clearReflLayer();
     setCurrentLayer("refl");
 
-    for_i (refls_.size()) {
-        const Curve& r = refls_.at(i);
+    for (int jP=0; jP<fitCurves.size(); ++jP) {
+        const Curve& r = fitCurves.at(jP);
         QCPGraph* graph = addGraph();
         reflGraph_.push_back(graph);
-        graph->setPen(QPen(Qt::green, i == currReflIndex_ ? 2 : 1));
+        graph->setPen(QPen(colors::peakFit, 2));
         graph->setData(QVector<double>::fromStdVector(r.xs()),
                        QVector<double>::fromStdVector(r.ys()));
     }
 
     replot();
-}
-
-void PlotDfgram::calcDgram()
-{
-    dgram_.clear();
-    if (!gSession->hasData())
-        return;
-    if (gGui->toggles->combinedDgram.getValue())
-        dgram_ = gSession->activeClusters().avgCurve();
-    else
-        dgram_ = algo::projectCluster(*gSession->dataset().highlight().cluster(),
-                                      gSession->gammaSelection().range());
-}
-
-void PlotDfgram::calcBackground()
-{
-    bg_.clear();
-    dgramBgFitted_.clear();
-
-    const Polynom& bgPolynom = Polynom::fromFit(
-        gSession->baseline().polynomDegree(), dgram_, gSession->baseline().ranges());
-        // TODO bundle this code line which similarly appears in at least one other place
-
-    for_i (dgram_.count()) {
-        double x = dgram_.x(i), y = bgPolynom.y(x);
-        bg_.append(x, y);
-        dgramBgFitted_.append(x, dgram_.y(i) - y);
-    }
-}
-
-void PlotDfgram::calcPeaks()
-{
-    refls_.clear();
-    currReflIndex_ = 0;
-
-    for_i (gSession->peaks().count()) {
-        Peak& r = gSession->peaks().at(i);
-        if (&r == gSession->peaks().selectedPeak())
-            currReflIndex_ = i;
-
-        r.fit(dgramBgFitted_);
-
-        const Range& rge = r.range();
-        const PeakFunction& fun = r.peakFunction();
-
-        Curve c;
-        for_i (dgramBgFitted_.count()) {
-            double x = dgramBgFitted_.x(i);
-            if (rge.contains(x))
-                c.append(x, fun.y(x));
-        }
-        refls_.push_back(c);
-    }
 }
 
 void PlotDfgram::plotEmpty()

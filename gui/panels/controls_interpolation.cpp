@@ -12,69 +12,54 @@
 //
 //  ***********************************************************************************************
 
-#include "controls_interpolation.h"
+#include "gui/panels/controls_interpolation.h"
 #include "core/session.h"
+#include "qcr/widgets/controls.h"
 
 ControlsInterpolation::ControlsInterpolation()
 {
-    // inbound connection
-    connect(gSession, &Session::sigInterpol, this, &ControlsInterpolation::fromCore);
+    auto& P = gSession->params;
+    auto* doInterpol =
+        new QcrCheckBox      {"doInterpol", "enabled", &P.interpolParams.enabled};
+    auto* stepAlpha  =
+        new QcrDoubleSpinBox {"stepAlpha",  &P.interpolParams.stepAlpha,  6, 2, 1., 30.};
+    auto* stepBeta   =
+        new QcrDoubleSpinBox {"stepBeta",   &P.interpolParams.stepBeta,   6, 2, 1., 30.};
+    auto* idwRadius  =
+        new QcrDoubleSpinBox {"idwRadius",  &P.interpolParams.idwRadius,  6, 2, 0., 90.};
+    auto* avgAlphaMax=
+        new QcrDoubleSpinBox {"avgAlphaMax",&P.interpolParams.avgAlphaMax,6, 2, 0., 90.};
+    auto* avgRadius  =
+        new QcrDoubleSpinBox {"avgRadius",  &P.interpolParams.avgRadius,  6, 2, 0., 90.};
+    auto* threshold  =
+        new QcrSpinBox       {"threshold",  &P.interpolParams.threshold,  6, true, 0, 100};
 
-    // outbound connections
-    connect(&doInterpol_, &QCheckBox::toggled, [](bool on) {
-            gSession->interpol().setEnabled(on); });
-    connect(&stepAlpha_, &QcrDoubleSpinBox::valueReleased, [](double val) {
-            gSession->interpol().setStepAlpha(val); });
-    connect(&avgAlphaMax_, &QcrDoubleSpinBox::valueReleased, [](double val) {
-            gSession->interpol().setAvgAlphaMax(val); });
-    connect(&stepBeta_, &QcrDoubleSpinBox::valueReleased, [](double val) {
-            gSession->interpol().setStepBeta(val); });
-    connect(&avgRadius_, &QcrDoubleSpinBox::valueReleased, [](double val) {
-            gSession->interpol().setAvgRadius(val); });
-    connect(&idwRadius_, &QcrDoubleSpinBox::valueReleased, [](double val) {
-            gSession->interpol().setIdwRadius(val); });
-    connect(&threshold_, &QcrSpinBox::valueReleased, [](int val) {
-            gSession->interpol().setThreshold(val); });
-
-    // layout
     auto* grid = new QGridLayout;
-    grid->addWidget(&doInterpol_,              0, 1);
+    grid->addWidget(doInterpol,              0, 1);
     grid->addWidget(new QLabel("step α"),      1, 0, Qt::AlignRight);
-    grid->addWidget(&stepAlpha_,               1, 1);
+    grid->addWidget(stepAlpha,               1, 1);
     grid->addWidget(new QLabel("avg. α max"),  2, 0, Qt::AlignRight);
-    grid->addWidget(&avgAlphaMax_,             2, 1);
+    grid->addWidget(avgAlphaMax,             2, 1);
     grid->addWidget(new QLabel("β"),           3, 0, Qt::AlignRight);
-    grid->addWidget(&stepBeta_,                3, 1);
+    grid->addWidget(stepBeta,                3, 1);
     grid->addWidget(new QLabel("radius"),      4, 0, Qt::AlignRight);
-    grid->addWidget(&avgRadius_,               4, 1);
+    grid->addWidget(avgRadius,               4, 1);
     grid->addWidget(new QLabel("idw radius"),  5, 0, Qt::AlignRight);
-    grid->addWidget(&idwRadius_,               5, 1);
+    grid->addWidget(idwRadius,               5, 1);
     grid->addWidget(new QLabel("inclusion %"), 6, 0, Qt::AlignRight);
-    grid->addWidget(&threshold_,               6, 1);
+    grid->addWidget(threshold,               6, 1);
 
     grid->setColumnStretch(grid->columnCount(), 1000);
     grid->setRowStretch   (grid->   rowCount(), 1000);
     setLayout(grid);
 
-    fromCore();
-}
-
-
-void ControlsInterpolation::fromCore()
-{
-    doInterpol_ .programaticallySetValue(gSession->interpol().enabled());
-    stepAlpha_  .programaticallySetValue(gSession->interpol().stepAlpha());
-    stepBeta_   .programaticallySetValue(gSession->interpol().stepBeta());
-    idwRadius_  .programaticallySetValue(gSession->interpol().idwRadius());
-    avgAlphaMax_.programaticallySetValue(gSession->interpol().avgAlphaMax());
-    avgRadius_  .programaticallySetValue(gSession->interpol().avgRadius());
-    threshold_  .programaticallySetValue(gSession->interpol().threshold());
-
-    bool on = gSession->interpol().enabled();
-    stepAlpha_  .setEnabled(on);
-    stepBeta_   .setEnabled(on);
-    idwRadius_  .setEnabled(on);
-    avgAlphaMax_.setEnabled(on);
-    avgRadius_  .setEnabled(on);
-    threshold_  .setEnabled(on);
+    setRemake([=](){
+            bool on = gSession->params.interpolParams.enabled.val();
+            stepAlpha  ->setEnabled(on);
+            stepBeta   ->setEnabled(on);
+            idwRadius  ->setEnabled(on);
+            avgAlphaMax->setEnabled(on);
+            avgRadius  ->setEnabled(on);
+            threshold  ->setEnabled(on);
+        });
 }

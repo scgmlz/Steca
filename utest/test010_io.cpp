@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 #include "core/loaders/loaders.h"
 #include "core/session.h"
-#include "core/typ/exception.h"
+#include "core/aux/exception.h"
 #include "testdata.h"
 
 TEST(IO, Caress) {

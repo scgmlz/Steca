@@ -12,11 +12,11 @@
 //
 //  ***********************************************************************************************
 
-#include "menus.h"
-#include "gui/mainwin.h"
+#include "gui/actions/menus.h"
 #include "gui/actions/image_trafo_actions.h"
+#include "gui/view/toggles.h"
 #include "gui/actions/triggers.h"
-#include "gui/actions/toggles.h"
+#include "gui/mainwin.h"
 
 //! Initialize the menu bar.
 Menus::Menus(QMenuBar* mbar)
@@ -45,16 +45,14 @@ Menus::Menus(QMenuBar* mbar)
 #ifndef Q_OS_OSX // Mac puts Quit into the Apple menu
                 separator(),
 #endif
-                &triggers->quit,
-        });
+                &triggers->quit });
 
     export_ = actionsToMenu(
         "&Export",
         {       &triggers->exportDfgram,
                 &triggers->exportBigtable,
                 &triggers->exportDiagram,
-                &triggers->exportPolefig,
-        });
+                &triggers->exportPolefig });
 
     image_ = actionsToMenu(
         "&Image",
@@ -63,21 +61,21 @@ Menus::Menus(QMenuBar* mbar)
                 &toggles->fixedIntenImage,
                 &toggles->linkCuts,
                 &toggles->crosshair,
-                &toggles->showBins,
-        });
+                &toggles->showBins });
 
     dgram_ = actionsToMenu(
         "&Diffractogram",
         {   &toggles->showBackground,
-                &triggers->clearBackground,
-                &triggers->clearPeaks,
+                &triggers->baserangeAdd,
+                &triggers->baserangeRemove,
+                &triggers->baserangesClear,
                 separator(),
-                &triggers->addPeak,
-                &triggers->removePeak,
+                &triggers->peakAdd,
+                &triggers->peakRemove,
+                &triggers->peaksClear,
                 separator(),
-                &toggles->combinedDgram,
-                &toggles->fixedIntenDgram,
-        });
+                &toggles->combinedDfgram,
+                &toggles->fixedIntenDfgram });
 
     actionsToMenu(
         "&View",
@@ -94,15 +92,13 @@ Menus::Menus(QMenuBar* mbar)
                 &triggers->spawnDiagram,
                 &triggers->spawnPolefig,
                 separator(),
-                &triggers->viewReset,
-        });
+                &triggers->viewsReset });
 
     actionsToMenu(
         "&Help",
         {   &triggers->about, // Mac puts About into the Apple menu
                 &triggers->online,
-                &triggers->checkUpdate,
-        });
+                &triggers->checkUpdate });
 }
 
 QAction* Menus::separator() const
@@ -114,7 +110,8 @@ QAction* Menus::separator() const
 
 QMenu* Menus::actionsToMenu(const char* menuName, QList<QAction*> actions)
 {
-    QMenu* menu = mbar_->addMenu(menuName);
+    QMenu* menu = new QMenu { menuName };
+    mbar_->addMenu(menu);
     menu->addActions(actions);
     QString prefix = QString("%1: ").arg(menu->title().remove('&'));
     for (auto action : actions)

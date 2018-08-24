@@ -12,26 +12,24 @@
 //
 //  ***********************************************************************************************
 
-#include "popup_polefig.h"
-#include "gui/view/plot_polefig.h"
+#include "gui/dialogs/popup_polefig.h"
 #include "gui/mainwin.h"
+#include "gui/view/plot_polefig.h"
+#include <QLayout>
 
 PopupPolefig::PopupPolefig()
-    : CModelessDialog(gGui, "polefig#")
+    : QcrModelessDialog(gGui, "polefig#")
 {
     setWindowTitle("Steca " + name());
 
-    // initializations
-    auto* plot = new PlotPolefig; // the main subframe
+    auto* plot = new PlotPolefig(false); // the main subframe
     plot->setMinimumSize(300,300); // TODO store and reuse user setting; freeze aspect ratio
 
-    // layout
     auto* layout = new QVBoxLayout;
     layout->addWidget(plot);
     layout->setStretch(0,1000);
     // TODO (issue#76) add info about used parameters
     setLayout(layout);
 
-    plot->refresh();
     show();
 }

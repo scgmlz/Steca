@@ -12,9 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#include "curve.h"
-#include "qcr/engine/debug.h"
-#include "core/def/idiomatic_for.h"
+#include "core/typ/curve.h"
+#include "qcr/base/debug.h"
 
 void Curve::clear()
 {
@@ -29,19 +28,16 @@ bool Curve::isEmpty() const
     return xs_.empty();
 }
 
-int Curve::count() const
+int Curve::size() const
 {
     ASSERT(xs_.size() == ys_.size());
     return xs_.size();
 }
 
-bool Curve::isOrdered() const
-{
-    return std::is_sorted(xs_.cbegin(), xs_.cend());
-}
-
 void Curve::append(double x, double y)
 {
+    if (!xs_.empty() && x<=xs_.back())
+        qFatal("diffractogram data are not ordered");
     xs_.push_back(x);
     ys_.push_back(y);
     rgeX_.extendBy(x);
@@ -52,10 +48,9 @@ Curve Curve::intersect(const Range& range) const
 {
     if (range.isEmpty())
         return {};
-    ASSERT(isOrdered());
     Curve ret;
     int xi = 0;
-    const int cnt = count();
+    const int cnt = size();
     while (xi < cnt && xs_.at(xi) < range.min)
         ++xi;
     while (xi < cnt && xs_.at(xi) <= range.max) {
@@ -72,9 +67,8 @@ Curve Curve::intersect(const Range& range) const
 Curve Curve::intersect(const Ranges& ranges) const
 {
     Curve ret;
-    ASSERT(isOrdered());
-    int xi = 0, cnt = count();
-    for_i (ranges.count()) {
+    int xi = 0, cnt = size();
+    for (int i=0; i<ranges.size(); ++i) {
         const Range& range = ranges.at(i);
         while (xi < cnt && xs_.at(xi) < range.min)
             ++xi;
@@ -87,19 +81,21 @@ Curve Curve::intersect(const Ranges& ranges) const
 }
 
 //! Subtracts a background that is given as a funtion y(x).
-void Curve::subtract(const std::function<double(double)>& func)
+Curve Curve::subtract(const std::function<double(double)>& func) const
 {
-    for_i (count())
-        ys_[i] -= func(xs_.at(i));
+    Curve ret = *this;
+    for (int i=0; i<size(); ++i)
+        ret.ys_[i] = ys_[i] - func(xs_.at(i));
+    return ret;
 }
 
-int Curve::maqpairindex() const
+int Curve::idxMax() const
 {
     if (isEmpty())
         return 0;
     double yMax = ys_.front();
     int ret = 0;
-    for_i (count()) {
+    for (int i=0; i<size(); ++i) {
         const double y = ys_.at(i);
         if (y > yMax) {
             yMax = y;
@@ -112,7 +108,7 @@ int Curve::maqpairindex() const
 double Curve::sumY() const
 {
     double ret = 0;
-    for_i (count())
-        ret += ys_.at(i);
+    for (double yy: ys_)
+        ret += yy;
     return ret;
 }
