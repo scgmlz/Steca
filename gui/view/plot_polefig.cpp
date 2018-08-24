@@ -48,7 +48,7 @@ std::vector<PolefigPoint> computePoints(const bool flat, const bool withHighligh
 //! Color map for polefigure: shades of blue.
 QColor intenGraph(double inten, bool highlight) {
     if (!qIsFinite(inten))
-        return { qRgb(0x00, 0x00, 0x00) };
+        return { qRgb(0xff, 0x00, 0x00) };
     int saturation = 0xff - (int)(0xff * inten) / 3;
     if (highlight)
         return { qRgb(0, saturation, saturation) };
@@ -97,7 +97,10 @@ void paintPoints(QPainter& painter, const std::vector<PolefigPoint>& points, con
         QColor color = intenGraph(p.intensity, p.highlight);
         painter.setPen(color);
         painter.setBrush(color);
-        circle(painter, pp, p.intensity * radius / 60); // TODO scale to max inten
+        if (qIsFinite(p.intensity))
+            circle(painter, pp, p.intensity * radius / 60);
+        else
+            circle(painter, pp, .2 * radius / 60);
     }
 }
 
