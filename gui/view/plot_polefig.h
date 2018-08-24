@@ -19,7 +19,12 @@
 #include "qcr/widgets/views.h"
 #include <memory>
 
-class InfoSequence;
+struct PolefigPoint {
+    double alpha;
+    double beta;
+    double intensity;
+    bool   highlight;
+};
 
 //! Tab in PoleFiguresFrame, to display the pole figure.
 
@@ -32,7 +37,7 @@ public:
 private:
     void paintEvent(QPaintEvent*);
 
-    const InfoSequence* peakInfos_ {nullptr};
+    std::vector<PolefigPoint> points_;
 };
 
 #endif // PLOT_POLEFIG_H

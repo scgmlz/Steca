@@ -21,10 +21,9 @@
 namespace {
 
 //! Color map for polefigure: shades of blue.
-QColor intenGraph(double inten, double maxInten) {
-    if (!qIsFinite(inten) || qIsNaN(maxInten) || maxInten <= 0)
+QColor intenGraph(double inten) {
+    if (!qIsFinite(inten))
         return { qRgb(0x00, 0x00, 0x00) };
-    inten /= maxInten;
     return { qRgb(0, 0, int(0xff * (1 - inten / 3))) };
 }
 
@@ -63,32 +62,39 @@ void paintGrid(QPainter& painter, const double radius)
     circle(painter, centre, radius * avgAlphaMax / 90);
 }
 
-
-void paintPoints(
-    QPainter& painter, const InfoSequence& peakInfos, const bool flat, const double radius)
+void paintPoints(QPainter& painter, const std::vector<PolefigPoint>& points, const double radius)
 {
-    double rgeMax = 0;
-    for (const PeakInfo& r : peakInfos.peaks())
-        rgeMax = std::max(rgeMax, r.inten());
+    for (const PolefigPoint& p : points) {
+        const QPointF& pp = angles2xy(radius, p.alpha, p.beta);
+        QColor color = intenGraph(p.intensity);
+        painter.setPen(color);
+        painter.setBrush(color);
+        circle(painter, pp, p.intensity * radius / 60); // TODO scale to max inten
+    }
+}
 
-    for (const PeakInfo& r : peakInfos.peaks()) {
-        double inten = r.inten();
-        if (!qIsFinite(inten)) // NaN's may occur in interpolated (but not in direct) peakInfos
-            continue;
-        const QPointF& pp = angles2xy(radius, r.alpha(), r.beta());
-        if (flat) {
-            QColor color(Qt::blue);
-            painter.setPen(color);
-            painter.setBrush(color);
-            circle(painter, pp, .5);
-        } else {
-            inten /= rgeMax;
-            QColor color = intenGraph(inten, 1);
-            painter.setPen(color);
-            painter.setBrush(color);
-            circle(painter, pp, inten * radius / 60); // TODO scale to max inten
+std::vector<PolefigPoint> computePoints(const bool flat, const bool withHighlight)
+{
+    const InfoSequence* allPeaks = gSession->allPeaks.currentInfoSequence();
+    if (!allPeaks)
+        return {};
+
+    std::vector<PolefigPoint> ret;
+    if (flat) {
+        for (const PeakInfo& r : allPeaks->peaks())
+            ret.push_back({r.alpha(), r.beta(), .2, false});
+
+    } else {
+        double rgeMax = 0;
+        for (const PeakInfo& r : allPeaks->peaks())
+            rgeMax = std::max(rgeMax, r.inten());
+        for (const PeakInfo& r : allPeaks->peaks()) {
+            //if (!qIsFinite(r.inten())) // NaN's may occur in interpolated allPeaks
+            //    continue;
+            ret.push_back({r.alpha(), r.beta(), r.inten()/rgeMax, false});
         }
     }
+    return ret;
 }
 
 } //namespace
@@ -97,7 +103,7 @@ void paintPoints(
 PlotPolefig::PlotPolefig()
 {
     setRemake([this](){
-            peakInfos_ = gSession->allPeaks.currentInfoSequence();
+            points_ = computePoints(flat.val(), true);
             QWidget::update(); // Which then calls paintEvent. Only so we can use QPainter.
         });
 }
@@ -114,8 +120,5 @@ void PlotPolefig::paintEvent(QPaintEvent*)
     painter.translate(w / 2, h / 2);
 
     paintGrid(painter, radius);
-    if (peakInfos_) {
-        ASSERT(peakInfos_);
-        paintPoints(painter, *peakInfos_, flat.val(), radius);
-    }
+    paintPoints(painter, points_, radius);
 }
