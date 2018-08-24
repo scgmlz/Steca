@@ -20,6 +20,31 @@
 
 namespace {
 
+std::vector<PolefigPoint> computePoints(const bool flat, const bool withHighlight)
+{
+    const InfoSequence* allPeaks = gSession->allPeaks.currentInfoSequence();
+    if (!allPeaks)
+        return {};
+
+    std::vector<PolefigPoint> ret;
+    if (flat) {
+        for (const PeakInfo& r : allPeaks->peaks())
+            ret.push_back({r.alpha(), r.beta(), .2, false});
+
+    } else {
+        double rgeMax = 0;
+        for (const PeakInfo& r : allPeaks->peaks())
+            rgeMax = std::max(rgeMax, r.inten());
+        for (const PeakInfo& r : allPeaks->peaks()) {
+            bool highlight = false;
+            if (withHighlight)
+                highlight = false; // TODO find out whether this comes from highlighted cluster
+            ret.push_back({r.alpha(), r.beta(), r.inten()/rgeMax, highlight});
+        }
+    }
+    return ret;
+}
+
 //! Color map for polefigure: shades of blue.
 QColor intenGraph(double inten, bool highlight) {
     if (!qIsFinite(inten))
@@ -74,33 +99,6 @@ void paintPoints(QPainter& painter, const std::vector<PolefigPoint>& points, con
         painter.setBrush(color);
         circle(painter, pp, p.intensity * radius / 60); // TODO scale to max inten
     }
-}
-
-std::vector<PolefigPoint> computePoints(const bool flat, const bool withHighlight)
-{
-    const InfoSequence* allPeaks = gSession->allPeaks.currentInfoSequence();
-    if (!allPeaks)
-        return {};
-
-    std::vector<PolefigPoint> ret;
-    if (flat) {
-        for (const PeakInfo& r : allPeaks->peaks())
-            ret.push_back({r.alpha(), r.beta(), .2, false});
-
-    } else {
-        double rgeMax = 0;
-        for (const PeakInfo& r : allPeaks->peaks())
-            rgeMax = std::max(rgeMax, r.inten());
-        for (const PeakInfo& r : allPeaks->peaks()) {
-            //if (!qIsFinite(r.inten())) // NaN's may occur in interpolated allPeaks
-            //    continue;
-            bool highlight = false;
-            if (withHighlight)
-                highlight = false; // TODO find out whether this comes from highlighted cluster
-            ret.push_back({r.alpha(), r.beta(), r.inten()/rgeMax, highlight});
-        }
-    }
-    return ret;
 }
 
 } //namespace
