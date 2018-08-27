@@ -47,38 +47,6 @@ auto transformToVector(Container cont , Function func)
 }
 
 
-void readInstrument(const YamlNode& node, Rawfile& rawfile)
-{
-    if (!node.IsDefined())
-        return;
-    // const auto name       = node["name"].value();
-    // const auto operators  = transformToVector(node["operators"],
-    //         [](const auto& n){return n.value();});
-    // const auto facility   = node["facility"].value();
-    // const auto website    = node["website"].value();
-    // const auto references = transformToVector(node["references"],
-    //         [](const auto& n){return n.value();});
-}
-
-void readFormat(const YamlNode& node, Rawfile& rawfile)
-{
-    if (!node.IsDefined())
-        return;
-    // const auto identifier = node["identifier"].value();
-    // units = name: unit. eg: time: second, or clearance: millimeter:
-    // const auto units      = node["units"].as<std::map<std::string, std::string>>();
-}
-
-void readExperiment(const YamlNode& node, Rawfile& rawfile)
-{
-    if (!node.IsDefined())
-        return;
-    // const auto number = node["number"].value();
-    // const auto proposal = node["proposal"].value();
-    // const auto title = node["title"].value();
-    // const auto remark = node["remark"].value();
-}
-
 void readSample(const YamlNode& node, Metadata& metadata)
 {
     if (!node.IsDefined())
