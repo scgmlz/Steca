@@ -28,7 +28,7 @@ using loadYAML::YamlNode;
 /// @param  func The transform function of following signature: `Ret fun(const Type &a);`.
 /// @return A new std::vector<Ret> with the stored results
 template <class InputIt, class Function>
-auto&& transformToVector(InputIt begin, InputIt end , Function func)
+auto transformToVector(InputIt begin, InputIt end , Function func)
 {
     std::vector<typename std::result_of<Function(const typename InputIt::value_type&)>::type> ret;
     std::transform(begin, end, std::back_inserter(ret), func);
@@ -41,7 +41,7 @@ auto&& transformToVector(InputIt begin, InputIt end , Function func)
 /// @param  func The transform function of following signature: `Ret fun(const Type &a);`.
 /// @return A new std::vector<Ret> with the stored results
 template <class Container, class Function>
-auto&& transformToVector(Container cont , Function func)
+auto transformToVector(Container cont , Function func)
 {
     return transformToVector(cont.begin(), cont.end(), func);
 }
@@ -115,7 +115,6 @@ void readSingleScan(const YamlNode& node, Metadata& metadata, Rawfile& rawfile)
 
     metadata.time         = node["time"].doubleValue(Q_QNAN);
     metadata.monitorCount = node["monitor"].doubleValue(Q_QNAN);
-    const auto sum        = node["sum"].doubleValue(Q_QNAN);
     const auto image      = node["image"].array2dValue();
 
     const size2d size(image->width, image->height);
