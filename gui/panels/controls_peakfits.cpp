@@ -146,20 +146,20 @@ void PeakfitOutcomeView::refresh()
     ASSERT(dfgram); // the entire tab should be disabled if there is no active cluster
 
     int jP = gSession->peaks.selectedIndex();
-    const RawOutcome& outcome = dfgram->getRawOutcome(jP);
-    showRawOutcomeX_.setText(safeRealText(outcome.getCenter()));
-    showRawOutcomeD_.setText(safeRealText(outcome.getFwhm()));
-    showRawOutcomeY_.setText(safeRealText(outcome.getIntensity()));
+    const Optional<RawOutcome>& outcome = dfgram->getRawOutcome(jP);
+    showRawOutcomeX_.setText(safeRealText(CALL(outcome, getCenter).get(Q_QNAN)));
+    showRawOutcomeD_.setText(safeRealText(CALL(outcome, getFwhm).get(Q_QNAN)));
+    showRawOutcomeY_.setText(safeRealText(CALL(outcome, getIntensity).get(Q_QNAN)));
 
     if (peak->isRaw())
         return enable(true, false);
-    const Fitted& pFct = dfgram->getPeakFit(jP);
-    const auto* peakFit = dynamic_cast<const PeakFunction*>(pFct.f);
-    ASSERT(peakFit);
-    const PeakOutcome out = peakFit->outcome(pFct);
-    showFittedX_.setText(par2text(out.center));
-    showFittedD_.setText(par2text(out.fwhm));
-    showFittedY_.setText(par2text(out.intensity));
+    const Optional<Fitted>& pFct = dfgram->getPeakFit(jP);
+    const auto peakFit = dynamic_optional_cast<const PeakFunction>(GET_SAFE(pFct,f));
+    //ASSERT(peakFit);
+    const Optional<PeakOutcome> out = APPLY(pFct, pFct, { return CALLP(peakFit, outcome, pFct); });
+    showFittedX_.setText(par2text(GET_SAFE(out,center).get({Q_QNAN, 0})));
+    showFittedD_.setText(par2text(GET_SAFE(out,fwhm).get({Q_QNAN, 0})));
+    showFittedY_.setText(par2text(GET_SAFE(out,intensity).get({Q_QNAN, 0})));
     enable(true, true);
 }
 

@@ -28,8 +28,8 @@ public:
     PeakInfo(deg alpha, deg beta, Range, double, double /*error*/, deg, deg /*error*/,
              double, double /*error*/);
     PeakInfo(deg alpha, deg beta);
-    PeakInfo(const PeakInfo&) = delete;
-    PeakInfo(PeakInfo&&) = default;
+    //PeakInfo(const PeakInfo&) = delete;
+    //PeakInfo(PeakInfo&&) = default;
 
     enum class eReflAttr {
         ALPHA,

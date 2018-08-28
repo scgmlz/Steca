@@ -54,14 +54,11 @@ public:
     Fitted(const FitFunction* _f,
            const std::vector<double>& _parVal,
            const std::vector<double>& _parErr); //!< To hold outcome of successful fit
-    ~Fitted() { delete f; }
-    Fitted(const Fitted&) = delete;
-    Fitted(Fitted&&) = default;
 
     double y(const double x) const;
 
     const bool success {false};
-    const FitFunction* f {nullptr};
+    const std::shared_ptr<const FitFunction> f {nullptr};
     const std::vector<double> parVal;
     const std::vector<double> parErr;
 

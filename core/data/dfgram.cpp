@@ -50,34 +50,37 @@ Curve computeCurveMinusBg(const Dfgram* parent)
     return ret;
 }
 
-RawOutcome computeRawOutcome(const Dfgram* parent, int jP)
+Optional<RawOutcome> computeRawOutcome(const Dfgram* parent, int jP)
 {
     Peak& peak = gSession->peaks.at(jP);
     const Curve& peakCurve = parent->getCurveMinusBg().intersect(peak.range());
-    return RawOutcome(peakCurve);
+    if (peakCurve.size() > 0)
+        return RawOutcome(peakCurve);
+    else
+        return emptyOptional;
 }
 
-Fitted computePeakFit(const Dfgram* parent, int jP)
+Optional<Fitted> computePeakFit(const Dfgram* parent, int jP)
 {
     Peak& peak = gSession->peaks.at(jP);
-    return PeakFunction::fromFit(
+    return APPLY(parent->getRawOutcome(jP), v, { return PeakFunction::fromFit(
         peak.functionName(), parent->getCurveMinusBg().intersect(peak.range()),
-        parent->getRawOutcome(jP));
+        v); });
 }
 
 Curve computePeakAsCurve(const Dfgram* parent, int jP)
 {
     Peak& peak = gSession->peaks.at(jP);
     const Curve& curveMinusBg = parent->getCurveMinusBg();
-    const Fitted& fun = parent->getPeakFit(jP);
-    if (!fun.success)
+    const Optional<Fitted>& fun = parent->getPeakFit(jP);
+    if (fun.isEmpty() || !fun->success)
         return {};
     const Range& rge = peak.range();
     Curve ret;
     for (int i=0; i<curveMinusBg.size(); ++i) {
         double x = curveMinusBg.x(i);
         if (rge.contains(x))
-            ret.append(x, fun.y(x));
+            ret.append(x, fun->y(x)); // we know fun exists here...
     }
     return ret;
 }
@@ -89,14 +92,15 @@ Dfgram::Dfgram(Curve&& c)
     , bgFit_        {&computeBgFit}
     , bgAsCurve_    {&computeBgAsCurve}
     , curveMinusBg_ {&computeCurveMinusBg}
-    , rawOutcomes_ {[]()->int {return gSession->peaks.size();},
-              [](const Dfgram* parent, int jP)->RawOutcome{
-                  return computeRawOutcome(parent, jP); } }
+    , rawOutcomes_ {
+        []()->int { return gSession->peaks.size(); },
+        [](const Dfgram* parent, int jP){ return computeRawOutcome(parent, jP); }
+    }
     , peakFits_ {[]()->int {return gSession->peaks.size();},
-              [](const Dfgram* parent, int jP)->Fitted{
+              [](const Dfgram* parent, int jP){
                   return computePeakFit(parent, jP); } }
     , peaksAsCurve_ {[]()->int {return gSession->peaks.size();},
-              [](const Dfgram* parent, int jP)->Curve{
+              [](const Dfgram* parent, int jP){
                   return computePeakAsCurve(parent, jP); } }
 {}
 
