@@ -23,11 +23,17 @@
 
 PlotDiagram::PlotDiagram()
 {
-    graph_   = addGraph();
+    graph_ = addGraph();
+    graph_->setErrorType(QCPGraph::ErrorType::etValue);
 
-    graph_->setScatterStyle(QCPScatterStyle::ssCircle);
+    auto ss = graph_->scatterStyle();
+    ss.setBrush(QBrush(Qt::BrushStyle::NoBrush));
+    ss.setShape(QCPScatterStyle::ssCircle);
+    ss.setSize(5);
+    graph_->setScatterStyle(ss);
+
+    graph_->setLineStyle(QCPGraph::LineStyle::lsNone);
     graph_->setPen(QPen(Qt::blue));
-    //graph_->setErrorBarSize(1);
     graph_->setErrorPen(QPen(Qt::black));
 }
 
@@ -49,16 +55,12 @@ void PlotDiagram::refresh()
 
     std::vector<double> xs, ys, ysSigma;
     gSession->allPeaks.currentInfoSequence()->getValuesAndSigma(idxX, idxY, xs, ys, ysSigma);
-    //std::vector<double> xs, ys, ysLow, ysHig;
-    //gSession->allPeaks.currentInfoSequence()->get4(idxX, idxY, xs, ys, ysLow, ysHig);
-
 
     if (!xs.size())
         return erase();
 
     Range rgeX(xs);
     Range rgeY(ys);
-    //Range rgeY = Range(ysLow).intersect(Range(ysHig));
     if (rgeX.isEmpty() || rgeY.isEmpty())
         return erase();
 
@@ -66,7 +68,6 @@ void PlotDiagram::refresh()
     yAxis->setRange(rgeY.min, rgeY.max);
     xAxis->setVisible(true);
     yAxis->setVisible(true);
-    graph_->setErrorType(QCPGraph::ErrorType::etValue);
     graph_->setDataValueError(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ys), QVector<double>::fromStdVector(ysSigma));
     replot();
 }
