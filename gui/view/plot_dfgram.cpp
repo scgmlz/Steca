@@ -73,17 +73,11 @@ void PlotDfgramOverlay::addRange(const Range& range)
 void PlotDfgramOverlay::selectRange(double x)
 {
     doLog(QString("dfgram sel %1").arg(x));
-    switch (gSession->params.editableRange) {
-    case EditableRange::BASELINE:
-        gSession->baseline.ranges.selectByValue(x);
-        break;
-    case EditableRange::PEAKS:
-        gSession->peaks.selectByValue(x);
-        break;
-    default:
-        return;
+    if (gSession->peaks.selectByValue(x)
+     || gSession->baseline.ranges.selectByValue(x)) {
+        //found either a peak or a baseline.range, so redraw all:
+        gRoot->remakeAll();
     }
-    gRoot->remakeAll();
 }
 
 void PlotDfgramOverlay::executeConsoleCommand(const QString& arg)

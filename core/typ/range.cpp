@@ -216,14 +216,16 @@ void Ranges::select(int i)
 }
 
 //! Selects the range that contains x. If there is no such range, then selected_ is left unchanged.
-void Ranges::selectByValue(double x)
+//! Returns true if a range has been found else returns false.
+bool Ranges::selectByValue(double x)
 {
     for (int i=0; i<size(); ++i) {
         if (at(i).contains(x)) {
             selected_ = i;
-            return;
+            return true;
         }
     }
+    return false;
 }
 
 void Ranges::sort()
