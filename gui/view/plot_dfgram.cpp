@@ -73,11 +73,19 @@ void PlotDfgramOverlay::addRange(const Range& range)
 void PlotDfgramOverlay::selectRange(double x)
 {
     doLog(QString("dfgram sel %1").arg(x));
-    if (gSession->peaks.selectByValue(x)
-     || gSession->baseline.ranges.selectByValue(x)) {
-        //found either a peak or a baseline.range, so redraw all:
-        gRoot->remakeAll();
+    bool selectionChanged = false;
+    switch (gSession->params.editableRange) {
+    case EditableRange::BASELINE: // prioritize baseline sel. when editing baselines
+        selectionChanged = gSession->baseline.ranges.selectByValue(x);
+        // fallthrough
+    [[clang::fallthrough]];
+    default:
+        if (!selectionChanged)
+            selectionChanged = gSession->peaks.selectByValue(x);
     }
+
+    if (selectionChanged) //found either a peak or a baseline.range, so redraw all:
+        gRoot->remakeAll();
 }
 
 void PlotDfgramOverlay::executeConsoleCommand(const QString& arg)
