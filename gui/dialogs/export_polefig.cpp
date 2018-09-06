@@ -60,10 +60,6 @@ ExportPolefig::ExportPolefig()
         exportMulti_.setEnabled(false);
         exportCombi_.setEnabled(false);
     }
-    bool interpolated = gSession->params.interpolParams.enabled.val();
-    gridOriginal_.programaticallySetValue(!interpolated);
-    gridInterpol_.setEnabled(interpolated);
-    gridInterpol_.programaticallySetValue(interpolated);
 
     fileField_ = new ExportfileDialogfield(this, true, [this]()->void{save();});
 
@@ -83,17 +79,9 @@ ExportPolefig::ExportPolefig()
     auto* savePeaks = new QGroupBox {"Save which peaks"};
     savePeaks->setLayout(savePeaksLayout);
 
-    auto* saveGridLayout = new QVBoxLayout;
-    saveGridLayout->addWidget(&gridOriginal_);
-    saveGridLayout->addWidget(&gridInterpol_);
-
-    auto* saveGrid = new QGroupBox {"Save which grid"};
-    saveGrid->setEnabled(false);
-    saveGrid->setLayout(saveGridLayout);
 
     auto* vbox = new QVBoxLayout();
     vbox->addWidget(savePeaks);
-    vbox->addWidget(saveGrid);
     vbox->addLayout(fileField_);
     setLayout(vbox);
 }

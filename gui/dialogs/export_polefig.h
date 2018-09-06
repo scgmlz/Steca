@@ -32,8 +32,6 @@ private:
     QcrRadioButton exportCurrent_ {"exportCurrent", "Current peak only"};
     QcrRadioButton exportMulti_   {"exportMulti",   "All peaks to numbered files"};
     QcrRadioButton exportCombi_   {"exportCombi",   "All peaks to one file"};
-    QcrRadioButton gridOriginal_  {"gridOriginal",  "Original α-β grid"};
-    QcrRadioButton gridInterpol_  {"gridInterpol",  "Interpolated α-β grid"};
     QButtonGroup exportModeGroup;
 
     void save();
