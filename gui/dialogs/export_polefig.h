@@ -19,6 +19,8 @@
 #include "qcr/widgets/modal_dialogs.h"
 #include <QButtonGroup>
 
+class InfoSequence;
+
 //! The modal dialog for saving the main polefig (fit results and metadata).
 
 class ExportPolefig : public QcrDialog {
@@ -32,14 +34,19 @@ private:
     QcrRadioButton exportCombi_   {"exportCombi",   "All peaks to one file"};
     QcrRadioButton gridOriginal_  {"gridOriginal",  "Original α-β grid"};
     QcrRadioButton gridInterpol_  {"gridInterpol",  "Interpolated α-β grid"};
-    QButtonGroup exportMode;
+    QButtonGroup exportModeGroup;
 
-    bool interpolated();
     void save();
-    void saveCurrent();
-    void saveAll(bool oneFile);
+    //void saveCurrent();
+    void saveAll(bool oneFile, QString path, const std::vector<InfoSequence const *> &peaks);
 
     void executeConsoleCommand(const QString&) override {}
+
+    enum class ExportMode {
+        CURRENT_PEAK = 0,
+        ALL_PEAKS_MULTIPLE_FILES = 1,
+        ALL_PEAKS_SINGLE_FILE = 2,
+    };
 };
 
 #endif // EXPORT_POLEFIG_H

@@ -19,6 +19,13 @@
 #include "qcr/widgets/modal_dialogs.h"
 #include <QProgressBar>
 
+//! Returns templatedName with '%d' replaced by string representation of num.
+
+//!  The string representation of num has leading zeros, and its number of
+//!  digits is determined by the maximum value maxNum.
+
+QString numberedFileName(const QString& templatedName, int num, int maxNum);
+
 //! Base class for dialogs for saving some output to a file.
 
 class ExportfileDialogfield : public QVBoxLayout {
