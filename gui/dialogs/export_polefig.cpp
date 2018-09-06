@@ -71,7 +71,7 @@ void writePeakInfo(QTextStream& stream, bool interpolated, const QString& separa
 ExportPolefig::ExportPolefig()
     : QcrDialog(gGui, "Export Polefigure")
 {
-    if (false && gSession->peaks.size()>1) { // TODO restore once peak fits are cached
+    if (gSession->peaks.size()>1) { // TODO restore once peak fits are cached
         exportCombi_.programaticallySetValue(true);
     } else {
         exportCurrent_.programaticallySetValue(true);
@@ -92,8 +92,11 @@ ExportPolefig::ExportPolefig()
     // layout
     auto* savePeaksLayout = new QVBoxLayout;
     savePeaksLayout->addWidget(&exportCurrent_);
+    exportMode.addButton(&exportCurrent_);
     savePeaksLayout->addWidget(&exportMulti_);
+    exportMode.addButton(&exportMulti_);
     savePeaksLayout->addWidget(&exportCombi_);
+    exportMode.addButton(&exportCombi_);
 
     auto* savePeaks = new QGroupBox {"Save which peaks"};
     savePeaks->setLayout(savePeaksLayout);

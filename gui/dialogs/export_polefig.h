@@ -17,6 +17,7 @@
 
 #include "qcr/widgets/controls.h"
 #include "qcr/widgets/modal_dialogs.h"
+#include <QButtonGroup>
 
 //! The modal dialog for saving the main polefig (fit results and metadata).
 
@@ -31,6 +32,7 @@ private:
     QcrRadioButton exportCombi_   {"exportCombi",   "All peaks to one file"};
     QcrRadioButton gridOriginal_  {"gridOriginal",  "Original α-β grid"};
     QcrRadioButton gridInterpol_  {"gridInterpol",  "Interpolated α-β grid"};
+    QButtonGroup exportMode;
 
     bool interpolated();
     void save();
