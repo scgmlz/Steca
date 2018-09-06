@@ -103,6 +103,7 @@ ExportPolefig::ExportPolefig()
     saveGridLayout->addWidget(&gridInterpol_);
 
     auto* saveGrid = new QGroupBox {"Save which grid"};
+    saveGrid->setEnabled(false);
     saveGrid->setLayout(saveGridLayout);
 
     auto* vbox = new QVBoxLayout();
