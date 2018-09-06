@@ -16,10 +16,11 @@
 #define POPUP_BIGTABLE_H
 
 #include "qcr/engine/mixin.h"
+#include "popup_base_dialog.h"
 
 //! Popup display of the present XY diagram.
 
-class PopupBigtable : public QcrModelessDialog {
+class PopupBigtable : public PopupBaseDialog {
 public:
     PopupBigtable();
 };

@@ -18,10 +18,8 @@
 #include <QVBoxLayout>
 
 PopupDiagram::PopupDiagram()
-    : QcrModelessDialog(gGui, "polefig#")
+    : PopupBaseDialog(gGui, "diagram#", "Diagram")
 {
-    setWindowTitle("Steca " + name());
-
     // initializations
     auto* plot = new PlotDiagram(300,300); // TODO store and reuse user setting; freeze aspect ratio
 
