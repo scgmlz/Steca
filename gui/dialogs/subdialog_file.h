@@ -42,7 +42,7 @@ private:
     QLineEdit* dir_;
     QLineEdit* file_;
     QcrRadioButton rbDat_ {"fmtDat", ".dat"};
-    QcrRadioButton rbCsv_ {"fmtCsv", ".ext"};
+    QcrRadioButton rbCsv_ {"fmtCsv", ".csv"};
     QcrTrigger actBrowse_ {"selectDir", "Browse..."};
     QcrTrigger actCancel_ {"cancel", "Cancel"};
     QcrTrigger actSave_ {"save", "Save"};
