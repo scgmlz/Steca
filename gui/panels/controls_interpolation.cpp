@@ -33,6 +33,9 @@ ControlsInterpolation::ControlsInterpolation()
         new QcrSpinBox       {"threshold",  &P.interpolParams.threshold,  6, true, 0, 100};
 
     auto* grid = new QGridLayout;
+    auto* explanatoryLabel = new QLabel("Options for interpolated polefigure grid.");
+    explanatoryLabel->setStyleSheet("font-style: italic");
+    grid->addWidget(explanatoryLabel,          0, 0, 1, 2, Qt::AlignHCenter);
     grid->addWidget(new QLabel("step α"),      1, 0, Qt::AlignRight);
     grid->addWidget(stepAlpha,                 1, 1);
     grid->addWidget(new QLabel("avg. α max"),  2, 0, Qt::AlignRight);
