@@ -36,7 +36,8 @@ private:
 
     void save();
     //void saveCurrent();
-    void saveAll(bool oneFile, QString path, const std::vector<InfoSequence const *> &peaks);
+    void saveAll(bool oneFile, const QString &path, const QString &separator,
+                 const std::vector<InfoSequence const *> &peaks);
 
     void executeConsoleCommand(const QString&) override {}
 

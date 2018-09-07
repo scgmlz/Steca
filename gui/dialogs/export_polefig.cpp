@@ -28,19 +28,17 @@ namespace {
 
 // TODO move file saving code to Core
 
-inline QTextStream& writePeakInfo(QTextStream& stream, const PeakInfo &info)
+inline void writePeakInfo(QTextStream& stream, const PeakInfo &info, const QString &separator)
 {
-    const auto writeVal = [](auto &s, const auto &v) { s << " " << v; };
-    stream << info.alpha();
-    writeVal(stream, info.beta());
-    writeVal(stream, info.inten());
-    return stream;
+    stream << info.alpha() << separator
+           << info.beta()  << separator
+           << info.inten() << "\n";
 }
 
-void writeInfoSequence(QTextStream& stream, const InfoSequence &peakInfos)
+void writeInfoSequence(QTextStream& stream, const InfoSequence &peakInfos, const QString &separator)
 {
     for (auto& info : peakInfos.peaks()) {
-        writePeakInfo(stream, info) << "\n";
+        writePeakInfo(stream, info, separator);
     }
 }
 
@@ -99,13 +97,14 @@ void ExportPolefig::save()
         peaks = gSession->allPeaks.allInfoSequences();
     }
 
-    saveAll(! (exportMode==ExportMode::ALL_PEAKS_MULTIPLE_FILES), path, peaks);
+    saveAll(! (exportMode==ExportMode::ALL_PEAKS_MULTIPLE_FILES), path, fileField_->separator(), peaks);
 
     close();
 }
 
 
-void saveOneFile(QString path, const std::vector<InfoSequence const *> &peaks, TakesLongTime &progress)
+void saveOneFile(QString &path, const QString &separator, const std::vector<InfoSequence const *>
+                 &peaks, TakesLongTime &progress)
 {
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -118,13 +117,14 @@ void saveOneFile(QString path, const std::vector<InfoSequence const *> &peaks, T
         progress.step();
         if (peaks.size() > 1)
             stream << "Picture Nr: " << picNum << '\n';
-        writeInfoSequence(stream, *peak);
+        writeInfoSequence(stream, *peak, separator);
     }
 }
 
 // TODO: adapt from ExportDfgram, and activate it once peak fits are cached
 
-void ExportPolefig::saveAll(bool oneFile, QString path, const std::vector<InfoSequence const *> &peaks)
+void ExportPolefig::saveAll(bool oneFile, const QString &path, const QString &separator,
+                            const std::vector<InfoSequence const *> &peaks)
 {
     // In one-file mode, start output stream; in multi-file mode, only do prepations.
     if (path.isEmpty())
@@ -133,7 +133,7 @@ void ExportPolefig::saveAll(bool oneFile, QString path, const std::vector<InfoSe
     QStringList paths;
     if (oneFile)
             paths << path;
-    else for (uint i=0; i<peaks.size(); ++i)
+    else for (int i=0; i<peaks.size(); ++i)
         paths << numberedFileName(path, i, peaks.size()+1);
 
     // check whether any of the file(s) already exists
@@ -151,10 +151,10 @@ void ExportPolefig::saveAll(bool oneFile, QString path, const std::vector<InfoSe
     TakesLongTime progress("save diffractograms", peaks.size(), &fileField_->progressBar);
 
     if (paths.size() == 1) {
-        saveOneFile(paths[0], peaks, progress);
+        saveOneFile(paths[0], separator, peaks, progress);
     } else {
         for (uint i=0; i<peaks.size(); ++i)  {
-            saveOneFile(paths[i], { peaks[i] }, progress);
+            saveOneFile(paths[i], separator, { peaks[i] }, progress);
         }
 
     }
