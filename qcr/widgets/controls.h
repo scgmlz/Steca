@@ -167,7 +167,7 @@ public:
     QcrLineEdit(const QString& name, const QString& val = "");
     QString doGetValue() const final { return text(); }
 private:
-    void doSetValue(QString val) final { setText(val); }
+    void doSetValue(QString val) final;
     // hide some member functions of QLineEdit:
     void setText(QString val) { QLineEdit::setText(val); }
 };

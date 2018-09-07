@@ -338,7 +338,15 @@ QcrLineEdit::QcrLineEdit(const QString& _name, const QString& val)
                 onChangedValue(val); });
     connect(this, _SLOT_(QLineEdit,textChanged,const QString&),
             [this](const QString& val)->void {
-                onChangedValue(val); });
+        onChangedValue(val); });
+}
+
+void QcrLineEdit::doSetValue(QString val)
+{
+    //keep cursor pos, so the cursor doesn't always jump to the end:
+    int oldCursorPos = cursorPosition();
+    setText(val);
+    this->setCursorPosition(oldCursorPos);
 }
 
 //  ***********************************************************************************************
