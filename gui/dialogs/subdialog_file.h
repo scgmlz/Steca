@@ -18,6 +18,7 @@
 #include "qcr/widgets/controls.h"
 #include "qcr/widgets/modal_dialogs.h"
 #include <QProgressBar>
+#include <QButtonGroup>
 
 //! Returns templatedName with '%d' replaced by string representation of num.
 
@@ -43,6 +44,7 @@ private:
     QLineEdit* file_;
     QcrRadioButton rbDat_ {"fmtDat", ".dat"};
     QcrRadioButton rbCsv_ {"fmtCsv", ".csv"};
+    QButtonGroup fileExtensionGroup;
     QcrTrigger actBrowse_ {"selectDir", "Browse..."};
     QcrTrigger actCancel_ {"cancel", "Cancel"};
     QcrTrigger actSave_ {"save", "Save"};

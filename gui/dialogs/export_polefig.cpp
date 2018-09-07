@@ -68,11 +68,11 @@ ExportPolefig::ExportPolefig()
     // layout
     auto* savePeaksLayout = new QVBoxLayout;
     savePeaksLayout->addWidget(&exportCurrent_);
-    exportModeGroup.addButton(&exportCurrent_);
+    exportModeGroup.addButton(&exportCurrent_, 0);
     savePeaksLayout->addWidget(&exportMulti_);
-    exportModeGroup.addButton(&exportMulti_);
+    exportModeGroup.addButton(&exportMulti_, 1);
     savePeaksLayout->addWidget(&exportCombi_);
-    exportModeGroup.addButton(&exportCombi_);
+    exportModeGroup.addButton(&exportCombi_, 2);
 
     auto* savePeaks = new QGroupBox {"Save which peaks"};
     savePeaks->setLayout(savePeaksLayout);
@@ -87,7 +87,7 @@ ExportPolefig::ExportPolefig()
 void ExportPolefig::save()
 {
     int checkedId = exportModeGroup.checkedId();
-    const auto exportMode = ExportMode(-checkedId-2); // Why Qt, why!?
+    const auto exportMode = ExportMode(checkedId);
     const auto path = fileField_->path(true, exportMode==ExportMode::ALL_PEAKS_MULTIPLE_FILES);
 
     std::vector<InfoSequence const *> peaks;

@@ -72,7 +72,9 @@ ExportfileDialogfield::ExportfileDialogfield(
 
     auto* ftypeGrid = new QVBoxLayout;
     ftypeGrid->addWidget(&rbDat_);
+    fileExtensionGroup.addButton(&rbDat_);
     ftypeGrid->addWidget(&rbCsv_);
+    fileExtensionGroup.addButton(&rbCsv_);
 
     auto* ftype = new QGroupBox("File type");
     ftype->setVisible(withTypes);
