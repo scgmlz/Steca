@@ -53,13 +53,13 @@ ControlsInterpolation::ControlsInterpolation()
     grid->setRowStretch   (grid->   rowCount(), 1000);
     setLayout(grid);
 
-    setRemake([=](){
-            bool on = gSession->params.interpolParams.enabled.val();
-            stepAlpha  ->setEnabled(on);
-            stepBeta   ->setEnabled(on);
-            idwRadius  ->setEnabled(on);
-            avgAlphaMax->setEnabled(on);
-            avgRadius  ->setEnabled(on);
-            threshold  ->setEnabled(on);
-        });
+    //setRemake([=](){
+    //        bool on = gSession->params.interpolParams.enabled.val();
+    //        stepAlpha  ->setEnabled(on);
+    //        stepBeta   ->setEnabled(on);
+    //        idwRadius  ->setEnabled(on);
+    //        avgAlphaMax->setEnabled(on);
+    //        avgRadius  ->setEnabled(on);
+    //        threshold  ->setEnabled(on);
+    //    });
 }
