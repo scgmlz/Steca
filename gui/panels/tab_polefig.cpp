@@ -14,6 +14,7 @@
 
 #include "gui/panels/tab_polefig.h"
 #include "gui/actions/triggers.h"
+#include "core/session.h"
 #include "gui/mainwin.h"
 #include "gui/view/plot_polefig.h"
 
@@ -28,6 +29,7 @@ PolefigTab::PolefigTab()
 
     auto* controls = new QVBoxLayout;
     controls->addWidget(new QcrCheckBox{"gridPts", "grid points", &plot->flat});
+    controls->addWidget(new QcrCheckBox{"doInterpolPoleFig", "interpolated", &gSession->params.interpolParams.enabled});
     controls->addStretch(1); // ---
     controls->addLayout(buttonBox);
 
