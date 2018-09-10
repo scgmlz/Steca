@@ -16,6 +16,7 @@
 #include "core/session.h"
 #include "gui/mainwin.h"
 #include "qcr/widgets/controls.h"
+#include <algorithm>
 //#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
@@ -50,14 +51,23 @@ void PlotDiagram::refresh()
     const int idxX = int(gSession->params.diagramX.val());
     const int idxY = int(gSession->params.diagramY.val());
 
-    std::vector<double> xs, ys, ysLow, ysHig;
-    gSession->allPeaks.currentInfoSequence()->get4(idxX, idxY, xs, ys, ysLow, ysHig);
+    std::vector<double> xs, ys_mut, ysLow, ysHig;
+    gSession->allPeaks.currentInfoSequence()->get4(idxX, idxY, xs, ys_mut, ysLow, ysHig);
+    const std::vector<double> &ys = ys_mut;
 
     if (!xs.size())
         return erase();
 
     Range rgeX(xs);
     Range rgeY = Range(ysLow).intersect(Range(ysHig));
+    if (rgeY.isEmpty()) {
+        std::vector<double> nanFree;
+        // because a std::filter() function doesn't exist:
+        for (auto v : ys)
+            if (!qIsNaN(v))
+                nanFree.push_back(v);
+        rgeY = Range(nanFree);
+    }
     if (rgeX.isEmpty() || rgeY.isEmpty())
         return erase();
 
