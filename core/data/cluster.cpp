@@ -12,10 +12,11 @@
 //
 //  ***********************************************************************************************
 
-#include "cluster.h"
+#include "core/data/cluster.h"
+#include "core/data/from_map.h"
 #include "core/session.h"
-#include "qcr/engine/debug.h"
-#include <qmath.h>
+#include "core/data/collect_intensities.h"
+#include "qcr/base/debug.h" // warning
 
 //  ***********************************************************************************************
 //! @class Sequence
@@ -24,6 +25,34 @@ Sequence::Sequence(const std::vector<const Measurement*>& measurements)
     : members_(measurements)
     , metadata_(computeAvgMetadata())
 {}
+
+Range Sequence::rgeGma() const {
+    Range ret;
+    for (const Measurement* m : members_)
+        ret.extendBy(fromMap::rgeGma(m));
+    return ret;
+}
+
+Range Sequence::rgeGmaFull() const {
+    Range ret;
+    for (const Measurement* m : members_)
+        ret.extendBy(fromMap::rgeGmaFull(m));
+    return ret;
+}
+
+Range Sequence::rgeTth() const {
+    Range ret;
+    for (const Measurement* m : members_)
+        ret.extendBy(fromMap::rgeTth(m));
+    return ret;
+}
+
+Range Sequence::rgeInten() const {
+    Range ret;
+    for (const Measurement* m : members_)
+        ret.intersect(m->rgeInten());
+    return ret;
+}
 
 //! Returns metadata, averaged over Sequence members.
 Metadata Sequence::computeAvgMetadata() const
@@ -38,7 +67,7 @@ Metadata Sequence::computeAvgMetadata() const
     double avg = 0;                             \
     for (const Measurement* one : members_)     \
         avg += one->what_function();            \
-    avg /= count();                             \
+    avg /= size();                             \
     return avg;
 
 deg Sequence::omg() const { AVG_ONES(omg) }
@@ -46,21 +75,6 @@ deg Sequence::omg() const { AVG_ONES(omg) }
 deg Sequence::phi() const { AVG_ONES(phi) }
 
 deg Sequence::chi() const { AVG_ONES(chi) }
-
-// combined range of combined cluster
-#define RGE_COMBINE(combineOp, what)            \
-    Range rge;                                  \
-    for (const Measurement* one : members_)     \
-        rge.combineOp(one->what);               \
-    return rge;
-
-Range Sequence::rgeGma() const { RGE_COMBINE(extendBy, rgeGma()) }
-
-Range Sequence::rgeGmaFull() const { RGE_COMBINE(extendBy, rgeGmaFull()) }
-
-Range Sequence::rgeTth() const { RGE_COMBINE(extendBy, rgeTth()) }
-
-Range Sequence::rgeInten() const { RGE_COMBINE(intersect, rgeInten()) }
 
 double Sequence::avgMonitorCount() const { AVG_ONES(monitorCount) }
 
@@ -80,21 +94,21 @@ double Sequence::normFactor() const
 {
     double num = 1, den = 1; // numerator, denominator
 
-    switch (gSession->normMode()) {
+    switch ((eNorm)gSession->params.howtoNormalize.val()) {
     case eNorm::MONITOR:
-        num = gSession->activeClusters().avgMonitorCount();
+        num = gSession->activeClusters.grandAvgMonitorCount.get();
         den = avgMonitorCount();
         break;
     case eNorm::DELTA_MONITOR:
-        num = gSession->activeClusters().avgDeltaMonitorCount();
+        num = gSession->activeClusters.grandAvgDeltaMonitorCount.get();
         den = avgDeltaMonitorCount();
         break;
     case eNorm::TIME:
-        num = gSession->activeClusters().avgTime();
+        num = gSession->activeClusters.grandAvgTime.get();
         den = avgTime();
         break;
     case eNorm::DELTA_TIME:
-        num = gSession->activeClusters().avgDeltaTime();
+        num = gSession->activeClusters.grandAvgDeltaTime.get();
         den = avgDeltaTime();
         break;
     case eNorm::NONE:
@@ -107,26 +121,30 @@ double Sequence::normFactor() const
     return ret;
 }
 
+
 //  ***********************************************************************************************
 //! @class Cluster
+
+namespace {
+Dfgram computeSectorDfgram(const Cluster* const parent, const int jS)
+{
+    int nS = gSession->gammaSelection.numSlices.val();
+    return Dfgram(algo::projectCluster(*parent, parent->rgeGma().slice(jS,nS)));
+}
+} //namespace
 
 Cluster::Cluster(
     const std::vector<const Measurement*>& measurements,
     const class Datafile& file, const int index, const int offset)
     : Sequence(measurements)
+    , dfgrams([]()->int{return gSession->gammaSelection.numSlices.val();},
+              [](const Cluster* parent, int jS)->Dfgram{
+                  return computeSectorDfgram(parent, jS); })
     , file_(file)
     , index_(index)
     , offset_(offset)
     , activated_(true)
 {}
-
-//! note: the caller must emit sigActivated
-void Cluster::setActivated(bool on)
-{
-    if (on==activated_)
-        return;
-    activated_ = on;
-}
 
 int Cluster::totalOffset() const
 {
@@ -135,22 +153,10 @@ int Cluster::totalOffset() const
 
 bool Cluster::isIncomplete() const
 {
-    return count()<gSession->dataset().binning();
+    return size() < gSession->dataset.binning.val();
 }
 
-void Cluster::setCurve(int i, Curve&& c) const
+const Dfgram& Cluster::currentDfgram() const
 {
-    if (i<0 || i>curves_.size())
-        qFatal("Cluster::setCurve called with invalid i");
-    if (i<curves_.size())
-        curves_[i] = std::move(c);
-    else
-        curves_.push_back(std::move(c));
-}
-
-const Curve& Cluster::curve(int i) const
-{
-    if (i<0 || i>=curves_.size())
-        qFatal("Cluster::curve called with invalid i");
-    return curves_[i];
+    return dfgrams.getget(this, gSession->gammaSelection.currSlice.val()-1);
 }

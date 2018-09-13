@@ -15,19 +15,13 @@
 #ifndef CONTROLS_PEAKFITS_H
 #define CONTROLS_PEAKFITS_H
 
-#include "qcr/widgets/controls.h"
+#include "qcr/widgets/views.h"
 
-//! A widget with controls to view and change the detector geometry.
+//! A widget with controls to view and change the detector detector.
 
-class ControlsPeakfits : public QWidget {
+class ControlsPeakfits : public QcrWidget {
 public:
     ControlsPeakfits();
-private:
-    void onPeaks();
-    QHBoxLayout topControls_;
-    QcrComboBox comboReflType_;
-    void hideEvent(QHideEvent*) final;
-    void showEvent(QShowEvent*) final;
 };
 
 #endif // CONTROLS_PEAKFITS_H

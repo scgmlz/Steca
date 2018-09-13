@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "core/typ/matrix.h"
+#include "core/calc/matrix.h"
 
 TEST(MatrixTest, VectorTrivialities) {
     vec3f f(1, 2, 3);

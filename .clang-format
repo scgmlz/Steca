@@ -1,3 +1,7 @@
+# for use with clang-format version 6 or higher
+
+# put this in the root source directory, then call: clang-format -i -style=file <sources>
+
 Language: Cpp
 Standard: Cpp11
 BasedOnStyle: WebKit
@@ -10,23 +14,27 @@ AlignConsecutiveDeclarations: false
 AlignOperands: false
 AllowShortBlocksOnASingleLine: true
 AllowShortCaseLabelsOnASingleLine : true
-AllowShortFunctionsOnASingleLine: Inline
+AllowShortFunctionsOnASingleLine: All
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 AlwaysBreakAfterReturnType: None
 BinPackArguments: true
 BinPackParameters: true
 BreakBeforeBinaryOperators: NonAssignment
-BreakBeforeBraces: Attach
+BreakBeforeBraces: Custom
+BreakConstructorInitializers: BeforeComma
+BraceWrapping:
+    AfterFunction: true
+    SplitEmptyFunction: true
 ColumnLimit: 100
 CommentPragmas: \/\/!
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
 ConstructorInitializerIndentWidth: 4
 ContinuationIndentWidth: 4
-Cpp11BracedListStyle: false
+Cpp11BracedListStyle: true
 DerivePointerAlignment: false
-# FixNamespaceComments: true
-ForEachMacros:   [ for_int, for_int_down, for_i, for_i_down, for_ij ]
+FixNamespaceComments: false
+ForEachMacros:   [ 'for_int', 'for_i', 'for_ij' ]
 IndentCaseLabels: false
 IndentWrappedFunctionNames: false
 MaxEmptyLinesToKeep: 2

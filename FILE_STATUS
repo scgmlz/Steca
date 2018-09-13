@@ -1,0 +1,98 @@
+./qcr/base/debug.h (only)                 very small, ok (mainly includes QtDebug, QtGlobal)
+./qcr/base/qcrexception.h (only)          very small, ok
+./qcr/base/string_ops.h&cpp               small and good
+./qcr/engine/cell.h (only, tpl)
+./qcr/engine/console.h&cpp
+./qcr/engine/mixin.h&cpp
+./qcr/engine/single_value.h (only, tpl)
+./qcr/widgets/controls.h&cpp
+./qcr/widgets/modal_dialogs.h&cpp
+./qcr/widgets/tables.h&cpp
+./qcr/widgets/views.h&cpp                 ok
+./core/def/idiomatic_for.h                TODO get rid of
+./core/aux/angles.h&cpp                   simple and good, has tests (003)
+./core/aux/async.h&cpp                    simple and good
+./core/aux/exception.h&cpp                simple and good
+./core/aux/settings.h&cpp                 simple and good, need unclear
+./core/aux/variant.h&cpp                  need unclear, revise along with meta pars
+./core/typ/bool_vector.h&cpp              simple and good
+./core/typ/cached.h (only)                work in progress TODO needs tests
+./core/typ/curve.h&cpp                    ok, may need SubCurve for speed
+./core/typ/json.h&cpp                     unclear whether needed
+./core/typ/range.h&cpp                    TODO rm old-style caching
+./core/typ/size2d.h&cpp                   ok, TODO: consider QRect
+./core/pars/baseline.h&cpp                ok, class wraps just two variables
+./core/pars/detector.h&cpp                simple and good
+./core/pars/image_transform.h&cpp         ugly and broken, revise along with lens.h&cpp
+./core/pars/interpol_params.h&cpp         trivial, revise along with interpolation
+./core/pars/metadata.h&cpp                TODO revise metadata to make them more flexible
+./core/pars/params.h (only)               ok, TODO resuscitate clear(), revise eNorm
+./core/pars/peak.h&cpp                    revise along with fitting
+./core/raw/angle_map.h&cpp                someday revise the projection
+./core/raw/image.h&cpp                    ok, unless review needed for speed
+./core/raw/measurement.h&cpp              review along with metadata
+./core/raw/rawfile.h&cpp                  ok
+./core/loaders/fastyamlloader.h&cpp       review later
+./core/loaders/load_caress.cpp (no h!)    don't touch, 3rd party
+./core/loaders/loaders.h&cpp              review later
+./core/loaders/load_mar.cpp (no h!)       don't touch, 3rd party
+./core/loaders/load_tiff.cpp (no h!)      don't touch, 3rd party
+./core/loaders/load_yaml.cpp (no h!)      TODO get rid of warnings; otherwise review later
+./core/fit/fit_fun.h&cpp                  unclear whether inheritance is needed, revise a/w fitting
+./core/fit/fit_methods.h&cpp              revise along with fitting (convert to lmfit)
+./core/fit/fit_par.h&cpp                  revise along with fitting
+./core/fit/peak_functions.h&cpp           revise along with fitting, TODO restore Lorentz & Voigt
+./core/fit/raw_outcome.h&cpp              good & simple
+./core/data/cluster.h&cpp                 revise along with meta pars
+./core/data/collect_intensities.h&cpp     revise along with math
+./core/data/corrset.h&cpp                 follows dataset.h&cpp
+./core/data/dataset.h&cpp                 complex datastructures, keep revising
+./core/data/dfgram.h&cpp                  good, given the complexity
+./core/data/gamma_selection.h&cpp         TODO revise caching; unclear whether class is needed
+./core/data/lens.h&cpp                    TODO functionality broken
+./core/data/theta_selection.h&cpp         TODO unclear whether class is needed
+./core/calc/active_clusters.h&cpp         ok, revise along with meta pars
+./core/calc/coord_trafos.h&cpp            revise along with math
+./core/calc/interpolate_polefig.h&cpp     too long & complex, revise along with math
+./core/calc/matrix.h&cpp                  unclear whether needed, revise along with math
+./core/calc/peak_info.h&cpp               revise along with meta pars
+./core/session.h&cpp                      ok
+./gui/cfg/msg_handler.h&cpp               ok, stable and isolated
+./gui/panels/controls_baseline.h&cpp
+./gui/panels/controls_detector.h&cpp
+./gui/panels/controls_interpolation.h&cpp
+./gui/panels/controls_peakfits.h&cpp
+./gui/panels/mainframe.h&cpp
+./gui/panels/subframe_clusters.h&cpp
+./gui/panels/subframe_dfgram.h&cpp
+./gui/panels/subframe_files.h&cpp
+./gui/panels/subframe_metadata.h&cpp
+./gui/panels/subframe_setup.h&cpp
+./gui/panels/tab_bigtable.h&cpp
+./gui/panels/tab_diagram.h&cpp
+./gui/panels/tab_image.h&cpp
+./gui/panels/tab_polefig.h&cpp
+./gui/view/bigtable.h&cpp
+./gui/view/plot_dfgram.h&cpp
+./gui/view/plot_diagram.h&cpp
+./gui/view/plot_overlay.h&cpp
+./gui/view/plot_polefig.h&cpp
+./gui/view/range_control.h&cpp
+./gui/dialogs/check_update.h&cpp           ok, stable and isolated
+./gui/dialogs/export_bigtable.h&cpp
+./gui/dialogs/export_dfgram.h&cpp
+./gui/dialogs/export_diagram.h&cpp
+./gui/dialogs/exportfile_dialogfield.h&cpp
+./gui/dialogs/export_polefig.h&cpp
+./gui/dialogs/file_dialog.h&cpp            ok, stable and isolated (except for capture&replay)
+./gui/dialogs/message_boxes.h&cpp          ok, stable and isolated
+./gui/dialogs/popup_bigtable.h&cpp
+./gui/dialogs/popup_diagram.h&cpp
+./gui/dialogs/popup_polefig.h&cpp
+./gui/actions/image_trafo_actions.h&cpp
+./gui/actions/menus.h&cpp                  ok, stable and isolated
+./gui/actions/toggles.h&cpp
+./gui/actions/triggers.h&cpp
+./gui/state.h&cpp                          TODO get rid of this?
+./gui/mainwin.h&cpp
+./main/steca.h&cpp                         ok, rarely touched

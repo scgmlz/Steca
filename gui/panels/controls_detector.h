@@ -15,11 +15,11 @@
 #ifndef CONTROLS_DETECTOR_H
 #define CONTROLS_DETECTOR_H
 
-#include <QWidget>
+#include "qcr/widgets/views.h"
 
 //! Aggregated control widgets that govern the detector setup.
 
-class ControlsDetector : public QWidget {
+class ControlsDetector : public QcrWidget {
 public:
     ControlsDetector();
 };

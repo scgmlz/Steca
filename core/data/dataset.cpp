@@ -12,10 +12,11 @@
 //
 //  ***********************************************************************************************
 
-#include "core/session.h"
 #include "core/data/cluster.h"
 #include "core/loaders/loaders.h"
-#include "qcr/engine/debug.h"
+#include "core/session.h"
+#include "qcr/engine/mixin.h" // remakeAll
+#include "qcr/base/debug.h" // ASSERT
 
 //  ***********************************************************************************************
 //! @class Datafile
@@ -43,21 +44,14 @@ Qt::CheckState Datafile::activated() const
 void HighlightedData::clear()
 {
     current_ = nullptr;
-    EMITS("HighlightedData::clear", gSession->sigDataHighlight());
-}
-
-//! temporarily clear, don't emit signal
-void HighlightedData::unset()
-{
-    current_ = nullptr;
 }
 
 void HighlightedData::setFile(int i)
 {
     if (i<0)
         return clear();
-    ASSERT(i<gSession->dataset().countFiles());
-    setCluster(gSession->dataset().fileAt(i).clusters_[0]->index());
+    ASSERT(i<gSession->dataset.countFiles());
+    setCluster(gSession->dataset.fileAt(i).clusters_[0]->index());
     ASSERT(i==current_->file().index_);
 }
 
@@ -65,86 +59,64 @@ void HighlightedData::setCluster(int i)
 {
     if (i<0)
         return clear();
-    ASSERT(i<gSession->dataset().countClusters());
-    current_ = &gSession->dataset().clusterAt(i);
-    EMITS("HighlightedData::setCluster", gSession->sigDataHighlight());
+    ASSERT(i<gSession->dataset.allClusters.size());
+    current_ = gSession->dataset.allClusters.at(i).get();
 }
 
 void HighlightedData::reset()
 {
-    if (!gSession->dataset().countClusters())
+    if (!gSession->dataset.allClusters.size())
         return clear();
     setCluster(0);
-}
-
-void HighlightedData::setMeasurement(int val)
-{
-    measurement_ = current_ ? qMin( val, current_->count()-1 ) : 0;
-    EMITS("HighlightedData::setMeasurement", gSession->sigDataHighlight());
-}
-
-const Datafile* HighlightedData::file() const
-{
-    if (!current_)
-        return nullptr;
-    return &current_->file();
-}
-
-int HighlightedData::fileIndex() const
-{
-    return current_ ? file()->index_ : -1;
-}
-
-int HighlightedData::clusterIndex() const
-{
-    return current_ ? current_->index() : -1;
-}
-
-const Measurement* HighlightedData::measurement() const
-{
-    return current_ ? current_->at(measurement_) : nullptr;
 }
 
 
 //  ***********************************************************************************************
 //! @class Dataset
 
+Dataset::Dataset() {
+    binning.       setHook( [this](int)  { onClusteringChanged(); } );
+    dropIncomplete.setHook( [this](bool) { onClusteringChanged(); } );
+}
+
 void Dataset::clear()
 {
-    qDebug() << "Dataset::clear";
-    highlight().clear();
+    //qDebug() << "Dataset::clear";
+    highlight_.clear();
     files_.clear();
     onFileChanged();
     gSession->updateImageSize();
-    gSession->imageCut().clear();
-    qDebug() << "Dataset::clear/";
+    gSession->params.imageCut.clear();
+    gRoot->remakeAll();
+    //qDebug() << "Dataset::clear/";
 }
 
 void Dataset::removeFile()
 {
-    int i = highlight().fileIndex();
-    highlight().unset(); // to avoid conflicts; will be reset below
+    const Cluster* cluster = highlight_.cluster();
+    if (!cluster)
+        return;
+    int i = cluster->file().index();
     files_.erase(files_.begin()+i);
-    onFileChanged();
-    gSession->updateImageSize();
     if (files_.empty())
-        gSession->imageCut().clear();
-    if (countFiles()) {
-        // reset highlight, which was temporarily unset at the beginning of this function
-        if (i<countFiles())
-            highlight().setFile(i);
-        else if (i>0)
-            highlight().setFile(i-1);
-        else
-            qFatal("impossible case in Dataset::removeFile");
-    } else
-        highlight().clear(); // TODO or directly emit signal ?
+        return clear();
+    onFileChanged();
+    // reset highlight, which was temporarily unset at the beginning of this function
+    if (i<countFiles())
+        highlight_.setFile(i);
+    else if (i>0)
+        highlight_.setFile(i-1);
+    else
+        qFatal("impossible case in Dataset::removeFile");
+    gRoot->remakeAll();
 }
 
 void Dataset::addGivenFiles(const QStringList& filePaths)
 {
-    int i = highlight().fileIndex();
-    highlight().unset(); // to avoid conflicts; will be reset below
+    int i = 0;
+    if (const Cluster* cluster = highlight_.cluster())
+        i = cluster->file().index();
+    highlight_.clear();
     for (const QString& path: filePaths) {
         if (path.isEmpty() || hasFile(path))
             continue;
@@ -154,30 +126,14 @@ void Dataset::addGivenFiles(const QStringList& filePaths)
         onFileChanged();
     }
     if (countFiles())
-        highlight().setFile( i<0 ? 0 : i );
+        highlight_.setFile( i<0 ? 0 : i );
+    gRoot->remakeAll();
 }
 
-void Dataset::setBinning(int by)
+void Dataset::setClusterActivation(int index, bool on)
 {
-    if (by==binning_)
-        return;
-    binning_ = by;
-    onClusteringChanged();
-}
-
-void Dataset::setDropIncomplete(bool on)
-{
-    if (on==dropIncomplete_)
-        return;
-    dropIncomplete_ = on;
-    onClusteringChanged();
-}
-
-void Dataset::activateCluster(int index, bool on)
-{
-    allClusters_.at(index)->setActivated(on);
-    updateActiveClusters();
-    EMITS("Dataset::activateCluster", gSession->sigActivated());
+    allClusters.at(index)->setActivated(on);
+    gSession->activeClusters.invalidate();
 }
 
 void Dataset::setFileActivation(int index, bool on)
@@ -185,8 +141,7 @@ void Dataset::setFileActivation(int index, bool on)
     const Datafile& fil = fileAt(index);
     for (Cluster* cluster : fil.clusters_)
         cluster->setActivated(on);
-    updateActiveClusters();
-    EMITS("Dataset::setFileActivation", gSession->sigActivated());
+    gSession->activeClusters.invalidate();
 }
 
 void Dataset::onFileChanged()
@@ -199,62 +154,45 @@ void Dataset::onFileChanged()
         cnt += file.numMeasurements();
     }
     updateClusters();
-    EMITS("Dataset::onFileChanged", gSession->sigFiles());
-    EMITS("Dataset::onFileChanged", gSession->sigClusters());
-    EMITS("Dataset::onFileChanged", gSession->sigActivated());
 }
 
 void Dataset::onClusteringChanged()
 {
     updateClusters();
-    highlight().reset();
-    EMITS("Dataset::onClusteringChanged", gSession->sigClusters());
-    EMITS("Dataset::onClusteringChanged", gSession->sigActivated());
-    EMITS("Dataset::onClusteringChanged", gSession->sigDataHighlight());
+    highlight_.reset();
 }
 
 void Dataset::updateClusters()
 {
-    allClusters_.clear();
+    allClusters.clear();
     hasIncomplete_ = false;
     for (Datafile& file : files_) {
         file.clusters_.clear();
-        for (int i=0; i<file.numMeasurements(); i+=binning_) {
-            if (i+binning_>file.numMeasurements()) {
+        for (int i=0; i<file.numMeasurements(); i+=binning.val()) {
+            if (i+binning.val()>file.numMeasurements()) {
                 hasIncomplete_ = true;
-                if (dropIncomplete_)
+                if (dropIncomplete.val())
                     break;
             }
             std::vector<const Measurement*> group;
-            for (int ii=i; ii<file.numMeasurements() && ii<i+binning_; ii++)
+            for (int ii=i; ii<file.numMeasurements() && ii<i+binning.val(); ii++)
                 group.push_back(file.raw_.measurements().at(ii));
-            std::unique_ptr<Cluster> cluster(new Cluster(group, file, allClusters_.size(), i));
+            std::unique_ptr<Cluster> cluster(new Cluster(group, file, allClusters.size(), i));
             file.clusters_.push_back(cluster.get());
-            allClusters_.push_back(std::move(cluster));
+            allClusters.push_back(std::move(cluster));
         }
     }
-    updateActiveClusters();
+    gSession->activeClusters.invalidate();
 }
 
-void Dataset::updateActiveClusters()
+//! Returns list of activated clusters.
+std::vector<const Cluster*> Dataset::activeClustersList() const
 {
-    activeClusters_ = {};
-    for (const auto& cluster : allClusters_) {
-        if (cluster->isActivated())
-            activeClusters_.appendHere(cluster.get());
-    }
-}
-
-const Datafile& Dataset::fileAt(int i) const
-{
-    ASSERT(0<=i && i<countFiles());
-    return files_[i];
-}
-
-const Cluster& Dataset::clusterAt(int i) const
-{
-    ASSERT(0<=i && i<countClusters());
-    return *allClusters_[i];
+    std::vector<const Cluster*> ret;
+    for (const auto& pCluster : allClusters)
+        if (pCluster->isActivated())
+            ret.push_back(pCluster.get());
+    return ret;
 }
 
 QJsonObject Dataset::toJson() const
@@ -264,7 +202,7 @@ QJsonObject Dataset::toJson() const
     for (const Datafile& file : files_)
         arr.append(file.raw_.fileInfo().absoluteFilePath());
     ret.insert("files", arr);
-    ret.insert("binning", binning_);
+    ret.insert("binning", binning.val());
     return ret;
 }
 
@@ -275,7 +213,7 @@ void Dataset::fromJson(const JsonObj& obj)
     for (const QJsonValue& file : files)
         paths.append(file.toString());
     addGivenFiles(paths);
-    setBinning(obj.loadPint("binning", 1));
+    binning.setVal(obj.loadPint("binning", 1));
 }
 
 bool Dataset::hasFile(const QString& fileName) const

@@ -12,21 +12,18 @@
 //
 //  ***********************************************************************************************
 
-#include "popup_diagram.h"
-#include "core/session.h"
-#include "gui/view/plot_diagram.h"
+#include "gui/dialogs/popup_diagram.h"
 #include "gui/mainwin.h"
-#include "gui/state.h"
+#include "gui/view/plot_diagram.h"
 #include <QVBoxLayout>
 
 PopupDiagram::PopupDiagram()
-    : CModelessDialog(gGui, "polefig#")
+    : QcrModelessDialog(gGui, "polefig#")
 {
     setWindowTitle("Steca " + name());
 
     // initializations
-    auto* plot = new PlotDiagram; // the main subframe
-    plot->setMinimumSize(300,300); // TODO store and reuse user setting; freeze aspect ratio
+    auto* plot = new PlotDiagram(300,300); // TODO store and reuse user setting; freeze aspect ratio
 
     // layout
     auto* layout = new QVBoxLayout;

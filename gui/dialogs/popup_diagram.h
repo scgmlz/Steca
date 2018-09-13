@@ -15,11 +15,11 @@
 #ifndef POPUP_DIAGRAM_H
 #define POPUP_DIAGRAM_H
 
-#include "qcr/engine/enhance_widgets.h"
+#include "qcr/engine/mixin.h"
 
 //! Popup display of the present XY diagram.
 
-class PopupDiagram : public CModelessDialog {
+class PopupDiagram : public QcrModelessDialog {
 public:
     PopupDiagram();
 };

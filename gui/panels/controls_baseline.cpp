@@ -12,12 +12,13 @@
 //
 //  ***********************************************************************************************
 
-#include "controls_baseline.h"
+#include "gui/panels/controls_baseline.h"
 #include "core/session.h"
-#include "qcr/widgets/model_view.h"
-#include "gui/mainwin.h"
-#include "gui/state.h"
 #include "gui/actions/triggers.h"
+#include "gui/mainwin.h"
+#include "gui/view/range_control.h"
+#include "qcr/widgets/tables.h"
+#include "qcr/base/debug.h" // ASSERT
 
 //  ***********************************************************************************************
 //! @class BaseRangesModel, used in BaseRangesView (local scope)
@@ -28,14 +29,15 @@ class BaseRangesModel : public TableModel {
 public:
     BaseRangesModel() : TableModel("baseline") {}
 
+    enum { COL_RANGE = 1, NUM_COLUMNS };
+
+private:
     int columnCount() const final { return NUM_COLUMNS; }
-    int rowCount() const final { return gSession->baseline().ranges().count(); }
-    int highlighted() const final { return 0; } // dummy
-    void setHighlight(int row) final {}         // no need to select and highlight ranges
+    int rowCount() const final { return gSession->baseline.ranges.size(); }
+    int highlighted() const final { return gSession->baseline.ranges.selectedIndex(); }
+    void onHighlight(int row) final { gSession->baseline.ranges.select(row); }
 
     QVariant data(const QModelIndex&, int) const;
-
-    enum { COL_RANGE = 1, NUM_COLUMNS };
 };
 
 QVariant BaseRangesModel::data(const QModelIndex& index, int role) const
@@ -43,7 +45,7 @@ QVariant BaseRangesModel::data(const QModelIndex& index, int role) const
     int row = index.row();
     if (row < 0 || rowCount() <= row)
         return {};
-    const Range& range = gSession->baseline().ranges().at(row);
+    const Range& range = gSession->baseline.ranges.at(row);
     switch (role) {
     case Qt::DisplayRole: {
         int col = index.column();
@@ -62,6 +64,8 @@ QVariant BaseRangesModel::data(const QModelIndex& index, int role) const
         return QColor(Qt::black);
     }
     case Qt::BackgroundRole: {
+        if (row==highlighted())
+            return QColor(Qt::green);
         return QColor(Qt::white);
     }
     default:
@@ -74,48 +78,40 @@ QVariant BaseRangesModel::data(const QModelIndex& index, int role) const
 
 //! List view of user-defined Bragg peaks.
 
-class BaseRangesView final : public TableView {
+class BaseRangesView : public TableView {
 public:
-    BaseRangesView();
-private:
-    void currentChanged(const QModelIndex& current, const QModelIndex&) override final {
-        gotoCurrent(current); }
+    BaseRangesView() : TableView{new BaseRangesModel()} {}
 };
-
-BaseRangesView::BaseRangesView()
-    : TableView(new BaseRangesModel())
-{
-    connect(gSession, &Session::sigBaseline, this, &BaseRangesView::onData);
-}
 
 //  ***********************************************************************************************
 //! @class ControlsBaseline
 
 ControlsBaseline::ControlsBaseline()
 {
-    hb_.addWidget(new QLabel("Pol. degree:"));
-    hb_.addWidget(&spinDegree_);
-    hb_.addStretch(1);
-    hb_.addWidget(new QcrIconButton(&gGui->triggers->clearBackground));
-    box_.addLayout(&hb_);
+    auto* box = new QVBoxLayout;
+    auto* hb  = new QHBoxLayout;
+    auto* spinDegree = new QcrSpinBox{
+        "degree", &gSession->baseline.polynomDegree, 4, false, 0, 4,
+        "Degree of the polynomial used to fit the baseline"};
+    hb->addWidget(new QLabel("Pol. degree:"));
+    hb->addWidget(spinDegree);
+    hb->addStretch(1);
+    hb->addWidget(new QcrIconTriggerButton(&gGui->triggers->baserangeAdd));
+    hb->addWidget(new QcrIconTriggerButton(&gGui->triggers->baserangeRemove));
+    hb->addWidget(new QcrIconTriggerButton(&gGui->triggers->baserangesClear));
+    box->addLayout(hb);
 
-    box_.addWidget(new BaseRangesView());
-    box_.addStretch(1);
-    setLayout(&box_);
-
-    connect(&spinDegree_, &QcrSpinBox::valueReleased, [](int degree_) {
-            gSession->baseline().setPolynomDegree(degree_); });
-
-    connect(gSession, &Session::sigBaseline, [this]() {
-            spinDegree_.programaticallySetValue(gSession->baseline().polynomDegree()); });
-}
-
-void ControlsBaseline::hideEvent(QHideEvent*)
-{
-    gGui->state->editingBaseline = false;
-}
-
-void ControlsBaseline::showEvent(QShowEvent*)
-{
-    gGui->state->editingBaseline = true;
+    box->addWidget(new BaseRangesView());
+    box->addWidget(
+        new RangeControl(
+            "base",
+            []()->const Range*{return gSession->baseline.ranges.selectedRange();},
+            [](double val, bool namelyMax)->void{
+                Range* r = gSession->baseline.ranges.selectedRange();
+                ASSERT(r);
+                r->setOne(val, namelyMax);
+                gSession->onBaseline();
+            }));
+    box->addStretch(1);
+    setLayout(box);
 }

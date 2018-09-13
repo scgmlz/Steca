@@ -15,8 +15,9 @@
 #ifndef CLUSTER_H
 #define CLUSTER_H
 
+#include "core/typ/cached.h"
+#include "core/data/dfgram.h"
 #include "core/raw/measurement.h"
-class Curve;
 
 //! A group of one or more Measurement|s.
 
@@ -30,7 +31,7 @@ public:
     Sequence(const Sequence&) = delete;
     Sequence(const std::vector<const Measurement*>& measurements);
 
-    const int count() const { return members_.size(); }
+    const int size() const { return members_.size(); }
     const Measurement* first() const { return members_.front(); }
     const Measurement* at(int i) const { return members_.at(i); }
     const std::vector<const Measurement*>& members() const { return members_; }
@@ -46,14 +47,15 @@ public:
     double normFactor() const;
 
     const Metadata& avgMetadata() const { return metadata_; }
+
+    size2d imageSize() const;
+
+private:
     double avgMonitorCount() const;
     double avgDeltaMonitorCount() const;
     double avgTime() const;
     double avgDeltaTime() const;
 
-    size2d imageSize() const;
-
-private:
     const std::vector<const Measurement*> members_; //!< points to Dataset:vec<Datafile>:vec<M'ments>
     const Metadata metadata_; //!< averaged Metadata
 
@@ -66,11 +68,11 @@ private:
 class Cluster : public Sequence {
 public:
     Cluster() = delete;
-    Cluster(const Cluster&) = delete;
     Cluster(const std::vector<const Measurement*>& measurements,
             const class Datafile& file, const int index, const int offset);
+    Cluster(const Cluster&) = delete;
 
-    void setActivated(bool on);
+    void setActivated(bool on) { activated_ = on; }
 
     const class Datafile& file() const { return file_; }
     int index() const { return index_; }
@@ -78,15 +80,15 @@ public:
     int totalOffset() const;
     bool isIncomplete() const;
     bool isActivated() const { return activated_; }
-    void setCurve(int, Curve&&) const;
-    const Curve& curve(int) const;
+
+    mutable SelfKachingVector<Cluster,Dfgram> dfgrams; //! One Dfgram per gamma section
+    const Dfgram& currentDfgram() const;
 
 private:
     const class Datafile& file_;
     const int index_; //!< index in total list of Cluster|s
     const int offset_; //!< index of first Measurement in file_
     bool activated_ {true}; //!< checked in list, selected for use
-    mutable std::vector<Curve> curves_;
 };
 
 #endif // CLUSTER_H

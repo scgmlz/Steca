@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/dialogs/file_dialog.cpp
-//! @brief     Implements functions queryImportFileName(s), queryExportFileName, queryDirectory in ns file_dialog
+//! @brief     Implements functions in namespace file_dialog
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -14,18 +14,17 @@
 
 #include "file_dialog.h"
 #include "core/loaders/loaders.h"
-#include "qcr/widgets/controls.h"
-#include "qcr/engine/debug.h"
+#include "qcr/base/debug.h" // qWarning
+#include "qcr/base/string_ops.h"
+#include "qcr/widgets/modal_dialogs.h"
 #include <QFileSystemModel>
 #include <QMessageBox>
 #include <QSortFilterProxyModel>
 
-//  ***********************************************************************************************
-//! @class OpenFileProxyModel (local scope)
-
 namespace {
 
-//! ??, for use in queryImportFileNames.
+//  ***********************************************************************************************
+//! @class OpenFileProxyModel for local use in queryImportFileNames.
 
 class OpenFileProxyModel : public QSortFilterProxyModel {
 public:
@@ -66,14 +65,9 @@ QVariant OpenFileProxyModel::data(const QModelIndex& idx, int role) const
     return QSortFilterProxyModel::data(idx, role);
 }
 
-} // namespace
-
 //  ***********************************************************************************************
-//! @class FileDialog (local scope)
+//! @class FileDialog for local use in Steca file dialogs. Manages default directory.
 
-namespace {
-
-//! Base class for all Steca file dialogs. Manages default directory.
 class FileDialog : public QcrFileDialog {
 public:
     FileDialog(QWidget*, const QString&, QDir&, const QString& filter = QString());
@@ -121,8 +115,7 @@ static eFileOverwritePolicy fileOverwritePolicy = eFileOverwritePolicy::PROMPT;
 void setFileOverwritePolicy(eFileOverwritePolicy val)
 {
     fileOverwritePolicy = val;
-
-    qDebug() << "fileOverwritePolicy set to " << (int)fileOverwritePolicy << "\n";
+    //qDebug() << "fileOverwritePolicy set to " << (int)fileOverwritePolicy << "\n";
 }
 
 bool confirmOverwrite(const QString& name, QWidget* parent, const QString& path)
@@ -132,9 +125,11 @@ bool confirmOverwrite(const QString& name, QWidget* parent, const QString& path)
         return QMessageBox::question(parent, "File exists", "Overwrite " + path + " ?")
                 == QMessageBox::Yes;
         break;
-    case eFileOverwritePolicy::PANIC:
-        qFatal("attempting to write to existing file '%s'", path.toLatin1().constData());
+    case eFileOverwritePolicy::PANIC: {
+        QByteArray tmp = path.toLatin1();
+        qFatal("attempting to write to existing file '%s'", tmp.constData());
         break;
+    }
     case eFileOverwritePolicy::SILENT_OVERWRITE:
         return true;
         break;

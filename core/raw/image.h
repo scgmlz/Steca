@@ -15,37 +15,29 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
-#include "core/typ/size2d.h"
 #include "core/typ/range.h"
+#include "core/typ/size2d.h"
 
 //! Holds a detector image, and provides read and write access
 class Image {
 public:
-    Image() = delete;
+    Image() {} // empty image
     Image(const size2d&, float val);
     Image(const size2d& size, std::vector<float>&& intens);
     Image(const Image&) = delete;
     Image(Image&&) = default;
-
-    const size2d& size() const { return size_; }
+    Image& operator=(Image&&) = default;
 
     void clear();
+    void fill(float val, const size2d& size);
+    void setInten1d(int i, float val) { intens_[i] = val; }
+    void setInten2d(int ix, int iy, float val) { setInten1d(pointToIndex(ix, iy), val); }
+    void addImage(const Image&); //!< add pointwise
 
     bool isEmpty() const { return intens_.empty(); }
-
-    void fill(float val, const size2d& size);
-
+    const size2d& size() const { return size_; }
     float inten1d(int i) const { return intens_[i]; }
-
     float inten2d(int ix, int iy) const { return inten1d(pointToIndex(ix, iy)); }
-
-    void setInten1d(int i, float val) { intens_[i] = val; }
-
-    void setInten2d(int ix, int iy, float val) { setInten1d(pointToIndex(ix, iy), val); }
-
-    // Sum all intensities with new ones.
-    void addImage(const Image&);
-
     const Range& rgeInten() const { return rangeInten_; }
 
 private:

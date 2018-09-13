@@ -12,10 +12,11 @@
 //
 //  ***********************************************************************************************
 
-#include "console.h"
-#include "qcr/engine/qcrexception.h"
-#include "qcr/engine/string_ops.h"
-#include <QDebug>
+#include "qcr/engine/console.h"
+#include "qcr/engine/mixin.h"
+#include "qcr/base/qcrexception.h"
+#include "qcr/base/string_ops.h"
+#include "qcr/base/debug.h" // ASSERT
 #include <QFile>
 
 #ifdef Q_OS_WIN
@@ -27,6 +28,8 @@
 
 Console* gConsole; //!< global
 
+QTextStream qterr(stderr);
+
 //  ***********************************************************************************************
 //! @class CommandRegistry
 
@@ -34,20 +37,23 @@ Console* gConsole; //!< global
 class CommandRegistry {
 public:
     CommandRegistry() = delete;
+    CommandRegistry(const CommandRegistry&) = delete;
     CommandRegistry(const QString& _name) : name_(_name) {}
-    QString learn(const QString&, CSettable*);
+    QString learn(const QString&, QcrSettable*);
     void forget(const QString&);
-    CSettable* find(const QString& name);
+    QcrSettable* find(const QString& name);
     void dump(QTextStream&);
     QString name() const { return name_; }
 private:
     const QString name_;
-    std::map<const QString, CSettable*> widgets_;
+    std::map<const QString, QcrSettable*> widgets_;
     std::map<const QString, int> numberedEntries_;
 };
 
-QString CommandRegistry::learn(const QString& name, CSettable* widget)
+QString CommandRegistry::learn(const QString& name, QcrSettable* widget)
 {
+    ASSERT(name!=""); // empty name only allowed for non-settable QcrMixin
+    // qterr << "Registry " << name_ << " learns '" << name << "'\n"; qterr.flush();
     QString ret = name;
     if (ret.contains("#")) {
         auto numberedEntry = numberedEntries_.find(name);
@@ -58,27 +64,28 @@ QString CommandRegistry::learn(const QString& name, CSettable* widget)
             idxEntry = ++(numberedEntry->second);
         ret.replace("#", QString::number(idxEntry));
     }
-    //qDebug() << "registry " << name_ << " learns " << ret;
-    if (widgets_.find(ret)!=widgets_.end())
-        qFatal("Duplicate widget registry entry '%s'", ret.toLatin1().constData());
+    if (widgets_.find(ret)!=widgets_.end()) {
+        QByteArray tmp = ret.toLatin1();
+        qFatal("Duplicate widget registry entry '%s'", tmp.constData());
+    }
     widgets_[ret] = widget;
     return ret;
 }
 
 void CommandRegistry::forget(const QString& name)
 {
-    //qDebug() << "registry " << name_ << " forgets " << name;
+    // qterr << "Registry " << name_ << " forgets '" << name << "'\n"; qterr.flush();
     auto it = widgets_.find(name);
-    if (it==widgets_.end())
+    if (it==widgets_.end()) {
+        QByteArray tmp1 = name.toLatin1();
+        QByteArray tmp2 = name_.toLatin1();
         qFatal("Cannot deregister, there is no entry '%s' in the widget registry '%s'",
-               name.toLatin1().constData(), name_.toLatin1().constData());
-    else
-        qDebug("Deregister entry '%s' from the widget registry '%s'",
-               name.toLatin1().constData(), name_.toLatin1().constData());
+               tmp1.constData(), tmp2.constData());
+    }
     widgets_.erase(it);
 }
 
-CSettable* CommandRegistry::find(const QString& name)
+QcrSettable* CommandRegistry::find(const QString& name)
 {
     auto entry = widgets_.find(name);
     if (entry==widgets_.end())
@@ -91,6 +98,7 @@ void CommandRegistry::dump(QTextStream& stream)
     stream << "commands:\n";
     for (auto it: widgets_)
         stream << " " << it.first << "\n";
+    stream.flush();
 }
 
 //  ***********************************************************************************************
@@ -102,10 +110,10 @@ Console::Console()
 
 #ifdef Q_OS_WIN
 	notifier_ = new QWinEventNotifier();// GetStdHandle(STD_INPUT_HANDLE));
-	connect(notifier_, &QWinEventNotifier::activated, [this] (HANDLE) {readLine(); });
+	QObject::connect(notifier_, &QWinEventNotifier::activated, [this] (HANDLE) {readLine(); });
 #else
-	notifier_ = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read, this);
-    connect(notifier_, &QSocketNotifier::activated, [this](int) { readLine(); });
+	notifier_ = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read);
+        QObject::connect(notifier_, &QSocketNotifier::activated, [this](int) { readLine(); });
 #endif
 
     // start registry
@@ -137,7 +145,7 @@ void Console::readLine()
     QTextStream qtin(stdin);
     QString line = qtin.readLine();
     caller_ = Caller::cli;
-    exec(line);
+    executeLine(line);
     caller_ = Caller::gui;
 }
 
@@ -155,8 +163,7 @@ void Console::readFile(const QString& fName)
         if (line[0]=='[') {
             int i = line.indexOf(']');
             if (i==-1) {
-                QTextStream qterr(stderr);
-                qterr << "unbalanced '['\n";
+                qterr << "unbalanced '['\n"; qterr.flush();
                 return;
             }
             line = line.mid(i+1);
@@ -175,7 +182,7 @@ void Console::commandsFromStack()
         if (line=="@close")
             return;
         caller_ = Caller::stack;
-        Result ret = exec(line);
+        Result ret = executeLine(line);
         caller_ = Caller::gui;
         if (ret==Result::err) {
             commandLifo_.clear();
@@ -189,13 +196,12 @@ void Console::commandsFromStack()
 void Console::call(const QString& line)
 {
     caller_ = Caller::sys;
-    exec(line);
+    executeLine(line);
     caller_ = Caller::gui;
 }
 
-Console::Result Console::exec(QString line)
+Console::Result Console::executeLine(QString line)
 {
-    QTextStream qterr(stderr);
     if (line[0]=='#')
         return Result::ok; // comment => nothing to do
     QString cmd, arg;
@@ -203,47 +209,63 @@ Console::Result Console::exec(QString line)
     if (cmd[0]=='@') {
         log(line);
         if (cmd=="@ls") {
+            qterr << "registry " << registryStack_.top()->name() << " has commands:\n";
+            qterr.flush();
             registryStack_.top()->dump(qterr);
-        } else if (cmd=="@push") {
-            if (arg=="") {
-                qterr << "command @push needs argument <name>\n";
-                return Result::err;
-            }
-            registryStack_.push(new CommandRegistry(arg));
-        } else if (cmd=="@pop") {
-            if (registryStack_.empty()) {
-                qterr << "cannot pop: registry stack is empty\n";
-                return Result::err;
-            }
-            delete registryStack_.top();
-            registryStack_.pop();
         } else if (cmd=="@file") {
             readFile(arg);
         } else if (cmd=="@close") {
             return Result::suspend;
         } else {
-            qterr << "@ command " << cmd << " not known\n";
+            qterr << "@ command " << cmd << " not known\n"; qterr.flush();
             return Result::err;
         }
         return Result::ok;
     }
-    CSettable* f = registry().find(cmd);
+    QcrSettable* f = registry().find(cmd);
     if (!f) {
-        qterr << "Command '" << cmd << "' not found\n";
+        qterr << "Command '" << cmd << "' not found\n"; qterr.flush();
         return Result::err;
     }
     try {
-        f->onCommand(arg); // execute command
+        f->executeConsoleCommand(arg); // execute command
         return Result::ok;
     } catch (QcrException &ex) {
-        qterr << "Command '" << line << "' failed:\n" << ex.msg() << "\n";
+        qterr << "Command '" << line << "' failed:\n" << ex.msg() << "\n"; qterr.flush();
     }
     return Result::err;
 }
 
-QString Console::learn(const QString& name, CSettable* widget)
+QString Console::learn(QString name, QcrSettable* widget)
 {
+    if (name[0]=='@') {
+        QStringList args = name.split(' ');
+        if (args.size()<2) {
+            QByteArray tmp = name.toLatin1();
+            qFatal("invalid @ construct in learn(%s)", tmp.constData());
+        }
+        if (args[0]!="@push") {
+            QByteArray tmp = name.toLatin1();
+            qFatal("invalid @ command in learn(%s)", tmp.constData());
+        }
+        name = args[1];
+        registryStack_.push(new CommandRegistry(name));
+    }
     return registry().learn(name, widget);
+}
+
+void Console::pop()
+{
+    if (registryStack_.empty()) {
+        qterr << "cannot pop: registry stack is empty\n"; qterr.flush();
+        return;
+    }
+    //qterr << "going to pop registry " << registryStack_.top()->name() << "\n";
+    //qterr.flush();
+    delete registryStack_.top();
+    registryStack_.pop();
+    //qterr << "top registry is now " << registryStack_.top()->name() << "\n";
+    //qterr.flush();
 }
 
 void Console::forget(const QString& name)
@@ -251,35 +273,32 @@ void Console::forget(const QString& name)
     registry().forget(name);
 }
 
-void Console::log2(bool hadFocus, const QString& line)
-{
-    if (caller_==Caller::gui && !hadFocus)
-        log("#: " + line);
-    else
-        log(line);
-}
-
-void Console::log(const QString& line)
+void Console::log(QString line) const
 {
     static auto lastTime = startTime_;
     auto currTime = QDateTime::currentDateTime();
     int tDiff = lastTime.msecsTo(currTime);
     lastTime = currTime;
-    log_ << "[";
+    QString prefix = "[";
     if (caller_==Caller::gui && line[0]!='#') {
-        log_ << "       "; // direct user action: we don't care how long the user was idle
+        prefix += "       "; // direct user action: we don't care how long the user was idle
     } else {
-        log_ << QString::number(tDiff).rightJustified(5) << "ms";
+        prefix += QString::number(tDiff).rightJustified(5) + "ms";
         computingTime_ += tDiff;
     }
-    log_ << " " << registry().name() << "]";
+    prefix += " " + registry().name() + "]";
     if      (caller_==Caller::gui || caller_==Caller::stack)
-        log_ << line << "\n";
+        ; // no further embellishment
     else if (caller_==Caller::cli)
-        log_ << "#: " << line << "\n";
+        line = "#c " + line;
     else if (caller_==Caller::sys)
-        log_ << "#! " << line << "\n";
+        line = "#s " + line;
     else
         qFatal("invalid case");
+    log_ << prefix << line << "\n";
     log_.flush();
+    if (line.indexOf("##")!=0) {
+        qterr << line << "\n";
+        qterr.flush();
+    }
 }

@@ -12,67 +12,52 @@
 //
 //  ***********************************************************************************************
 
-#include "subframe_dfgram.h"
+#include "gui/panels/subframe_dfgram.h"
 #include "core/session.h"
-#include "gui/view/plot_dfgram.h"
-#include "gui/actions/toggles.h"
+#include "gui/view/toggles.h"
 #include "gui/actions/triggers.h"
+#include "gui/view/plot_dfgram.h"
+#include "gui/mainwin.h"
+
 #define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 
 //  ***********************************************************************************************
-//! @class Dfgram (local scope)
+//! @class DfPanel (local scope)
 
 //! A diffractogram display, with associated controls, for use in SubframeDfgram.
 
-class Dfgram : public QWidget {
+class DfPanel : public QcrWidget {
 public:
-    Dfgram();
+    DfPanel();
+    DfPanel(const DfPanel&) = delete;
 private:
     void onNormChanged();
     void onHighlight();
 
     class PlotDfgram* plot_;
-    QcrComboBox comboNormType_ {"normTyp", {"none", "monitor", "Δ monitor", "time", "Δ time"}};
-    QcrRadioButton intenSum_ {"intenSum", "sum"};
-    QcrRadioButton intenAvg_ {"intenAvg", "avg ×"};
-    QcrDoubleSpinBox intenScale_ {"intenScale", 6, 0.001};
+    QcrComboBox comboNormType_;
+    QcrRadioButton intenSum_;
+    QcrRadioButton intenAvg_;
+    QcrDoubleSpinBox intenScale_;
     QcrToggle actZoom_ {"actZoom", "zoom", false, ":/icon/zoom"};
 };
 
 
-Dfgram::Dfgram()
+DfPanel::DfPanel()
+    : comboNormType_ {"normTyp", &gSession->params.howtoNormalize,
+        []()->QStringList{return {"none", "monitor", "Δ monitor", "time", "Δ time"};}}
+    , intenSum_ {"intenSum", "sum"}
+    , intenAvg_ {"intenAvg", "avg ×", &gSession->params.intenScaledAvg}
+    , intenScale_ {"intenScale", &gSession->params.intenScale, 5, 1, 0.001}
 {
-    // initializations
-    plot_ = new PlotDfgram(*this);
-    gGui->toggles->showBackground.programaticallySetValue(true);
+    plot_ = new PlotDfgram();
     intenAvg_.programaticallySetValue(true);
-    intenScale_.setDecimals(3);
 
-    // inbound connections
-    connect(gSession, &Session::sigDataHighlight, this, &Dfgram::onHighlight);
-    connect(gSession, &Session::sigNorm, this, &Dfgram::onNormChanged);
-
-    // internal connections
-    connect(&actZoom_, &QAction::toggled, this, [this](bool on) {
+    actZoom_.setHook([this](bool on) {
         plot_->setInteraction(QCP::iRangeDrag, on);
         plot_->setInteraction(QCP::iRangeZoom, on);
-        plot_->enterZoom(on);
-    });
+        plot_->enterZoom(on); });
 
-    // outbound connections
-    connect(&comboNormType_, _SLOT_(QComboBox,currentIndexChanged,int), [](int index) {
-            gSession->setNormMode(eNorm(index)); });
-    connect(&intenAvg_, &QRadioButton::toggled, [this](bool on) {
-        intenScale_.setEnabled(on);
-        intenScale_.programaticallySetValue(gSession->intenScale());
-        gSession->setIntenScaleAvg(on, intenScale_.getValue());
-    });
-    connect(&intenScale_, &QcrDoubleSpinBox::valueReleased, [](double val) {
-        if (val > 0)
-            gSession->setIntenScaleAvg(gSession->intenScaledAvg(), val);
-    });
-
-    // layout
     auto* hb = new QHBoxLayout;
     hb->addWidget(new QLabel("normalize to:"));
     hb->addWidget(&comboNormType_);
@@ -81,31 +66,36 @@ Dfgram::Dfgram()
     hb->addWidget(&intenAvg_);
     hb->addWidget(&intenScale_);
     hb->addStretch(); // ---
-    hb->addWidget(new QcrIconButton {&actZoom_});
+    hb->addWidget(new QcrIconToggleButton {&actZoom_});
     hb->addStretch(); // ---
-    hb->addWidget(new QcrIconButton {&gGui->toggles->combinedDgram});
-    hb->addWidget(new QcrIconButton {&gGui->toggles->fixedIntenDgram});
-    hb->addWidget(new QcrIconButton {&gGui->toggles->showBackground});
+    hb->addWidget(new QcrIconToggleButton {&gGui->toggles->combinedDfgram});
+    hb->addWidget(new QcrIconToggleButton {&gGui->toggles->fixedIntenDfgram});
+    hb->addWidget(new QcrIconToggleButton {&gGui->toggles->showBackground});
     hb->addStretch(); // ---
-    hb->addWidget(new QcrIconButton {&gGui->triggers->exportDfgram});
+    auto* btnExport = new QcrIconTriggerButton {&gGui->triggers->exportDfgram};
+    hb->addWidget(btnExport);
 
     auto* box = new QVBoxLayout;
     box->addWidget(plot_);
     box->addLayout(hb);
     setLayout(box);
+
+    setRemake([=](){
+            btnExport->setEnabled(gSession->activeClusters.size());
+            plot_->renderAll(); });
 }
 
-void Dfgram::onNormChanged()
+void DfPanel::onNormChanged()
 {
-    intenScale_.programaticallySetValue(gSession->intenScale()); // TODO own signal
-    if (gSession->intenScaledAvg())
+    intenScale_.programaticallySetValue(gSession->params.intenScale.val()); // TODO own signal
+    if (gSession->params.intenScaledAvg.val())
         intenAvg_.programaticallySetValue(true);
     else
         intenSum_.programaticallySetValue(true);
     plot_->renderAll();
 }
 
-void Dfgram::onHighlight()
+void DfPanel::onHighlight() // TODO currently unused
 {
     actZoom_.programaticallySetValue(false);
     plot_->renderAll();
@@ -115,7 +105,9 @@ void Dfgram::onHighlight()
 //! @class SubframeDfgram
 
 SubframeDfgram::SubframeDfgram()
+    : QcrTabWidget {"dfgramTabs"}
 {
     setTabPosition(QTabWidget::North);
-    addTab(new Dfgram, "Diffractogram");
+    addTab(new DfPanel, "Diffractogram");
+    setRemake([this](){setEnabled(gSession->activeClusters.size());});
 }

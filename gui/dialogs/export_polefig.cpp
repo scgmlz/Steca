@@ -12,24 +12,23 @@
 //
 //  ***********************************************************************************************
 
-#include "export_polefig.h"
+#include "gui/dialogs/export_polefig.h"
+#include "core/data/collect_intensities.h"
 #include "core/session.h"
-#include "core/algo/collect_intensities.h"
-#include "core/def/idiomatic_for.h"
-#include "gui/dialogs/exportfile_dialogfield.h"
+#include "gui/dialogs/subdialog_file.h"
 #include "gui/mainwin.h"
-#include "qcr/engine/debug.h"
+#include "qcr/base/debug.h"
 #include <QGroupBox>
-#include <QButtonGroup>
 
 namespace {
 
 // TODO move file saving code to Core
 void writePeakInfoInterpolated(QTextStream& stream)
 {
-    const PeakInfos& peakInfos = gSession->interpolatedPeakInfos();
+    const InfoSequence* peakInfos = gSession->allPeaks.currentInterpolated();
+    ASSERT(peakInfos);
     int col = 0;
-    for (auto& info : peakInfos.peaks()) {
+    for (auto& info : peakInfos->peaks()) {
         double val = info.inten();
         if (qIsNaN(val))
             stream << " -1";
@@ -45,8 +44,9 @@ void writePeakInfoInterpolated(QTextStream& stream)
 
 void writePeakInfoOriginalGrid(QTextStream& stream)
 {
-    const PeakInfos& peakInfos = gSession->directPeakInfos();
-    for (auto& info : peakInfos.peaks()) {
+    const InfoSequence* peakInfos = gSession->allPeaks.currentDirect();
+    ASSERT(peakInfos);
+    for (auto& info : peakInfos->peaks()) {
         double val = info.inten();
         stream << double(info.alpha()) << " "
                << double(info.beta()) << " "
@@ -71,14 +71,14 @@ void writePeakInfo(QTextStream& stream, bool interpolated, const QString& separa
 ExportPolefig::ExportPolefig()
     : QcrDialog(gGui, "Export Polefigure")
 {
-    if (false && gSession->peaks().count()>1) { // TODO restore once peak fits are cached
+    if (false && gSession->peaks.size()>1) { // TODO restore once peak fits are cached
         exportCombi_.programaticallySetValue(true);
     } else {
         exportCurrent_.programaticallySetValue(true);
         exportMulti_.setEnabled(false);
         exportCombi_.setEnabled(false);
     }
-    bool interpolated = gSession->interpol().enabled();
+    bool interpolated = gSession->params.interpolParams.enabled.val();
     gridOriginal_.programaticallySetValue(!interpolated);
     gridInterpol_.setEnabled(interpolated);
     gridInterpol_.programaticallySetValue(interpolated);
@@ -137,7 +137,7 @@ void ExportPolefig::saveCurrent()
     if (!file)
         return;
     QTextStream stream(file);
-    const Cluster* cluster = gSession->dataset().highlight().cluster();
+    const Cluster* cluster = gSession->currentCluster();
     ASSERT(cluster);
     const Curve& curve = algo::projectCluster(*cluster, cluster->rgeGma());
     if (curve.isEmpty())
@@ -163,7 +163,7 @@ void ExportPolefig::saveAll(bool oneFile)
     } else {
         // check whether any of the numbered files already exists
         QStringList existingFiles;
-        for_i (expt.size()) {
+        for (int i=0; i<expt.size(); ++i) {
             QString currPath = numberedName(path, i, expt.size()+1);
             if (QFile(currPath).exists())
                 existingFiles << QFileInfo(currPath).fileName();
@@ -174,10 +174,10 @@ void ExportPolefig::saveAll(bool oneFile)
             QMessageBox::Yes)
             return;
     }
-    Progress progress(&fileField_->progressBar, "save diffractograms", expt.size());
+    TakesLongTime progress(&fileField_->progressBar, "save diffractograms", expt.size());
     int picNum = 0;
     int fileNum = 0;
-    int nSlices = gSession->gammaSelection().numSlices();
+    int nSlices = gSession->gammaSelection.numSlices();
     for (const Cluster* cluster : expt.clusters()) {
         ++picNum;
         progress.step();
@@ -190,7 +190,7 @@ void ExportPolefig::saveAll(bool oneFile)
                 stream = new QTextStream(file);
             }
             ASSERT(stream);
-            const Range gmaStripe = gSession->gammaSelection().slice2range(i);
+            const Range gmaStripe = gSession->gammaSelection.slice2range(i);
             const Curve& curve = cluster->toCurve(gmaStripe);
             ASSERT(!curve.isEmpty());
             *stream << "Picture Nr: " << picNum << '\n';

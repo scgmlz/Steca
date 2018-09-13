@@ -15,11 +15,11 @@
 #ifndef EXPORT_DIAGRAM_H
 #define EXPORT_DIAGRAM_H
 
-#include "qcr/engine/enhance_widgets.h"
+#include "qcr/widgets/modal_dialogs.h"
 
 //! The modal dialog for the data shown in the diagram
 
-class ExportDiagram : private CModal, public QDialog {
+class ExportDiagram : public QcrDialog {
 public:
     ExportDiagram();
 private:

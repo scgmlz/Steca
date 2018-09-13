@@ -12,33 +12,28 @@
 //
 //  ***********************************************************************************************
 
-#include "tab_bigtable.h"
+#include "gui/panels/tab_bigtable.h"
 #include "core/session.h"
-#include "core/def/idiomatic_for.h"
 #include "gui/actions/triggers.h"
-#include "gui/view/bigtable.h"
 #include "gui/mainwin.h"
-#include "gui/state.h"
-#include "qcr/engine/debug.h"
-#include <QScrollArea>
-#include <QThread> // for sleep for debugging
+#include "gui/view/bigtable.h"
+//#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class ColumnSelector (local scope)
 
 //! A row of controls for choosing which data columns are to be displayed in a TabTable.
 
-class ColumnSelector : public QWidget {
+class ColumnSelector : public QcrWidget {
 public:
     ColumnSelector();
 private:
-    std::vector<QcrCheckBox*> showCols_;
-    QcrRadioButton rbHidden_ {"rbHidden", ""};
     QcrRadioButton rbAll_ {"rbAll", "all"};
     QcrRadioButton rbNone_ {"rbNone", "none"};
     QcrRadioButton rbInten_ {"rbInten", "Intensity"};
     QcrRadioButton rbTth_ {"rbTth", "2θ"};
     QcrRadioButton rbFWHM_ {"rbFWHM", "fwhm"};
+    std::vector<QcrCheckBox*> showCols_;
     void setAll(bool on);
     void updateRadiobuttons();
     using eReflAttr = PeakInfo::eReflAttr;
@@ -46,20 +41,21 @@ private:
 
 ColumnSelector::ColumnSelector()
 {
-    const QStringList& headers = PeakInfo::dataTags(false);
-    rbHidden_.hide();
-
     auto* box = new QVBoxLayout;
-    box->addWidget(&rbHidden_);
-    box->addWidget(&rbAll_);
-    box->addWidget(&rbNone_);
+    box->addWidget(&rbAll_  );
+    box->addWidget(&rbNone_ );
     box->addWidget(&rbInten_);
-    box->addWidget(&rbTth_);
-    box->addWidget(&rbFWHM_);
+    box->addWidget(&rbTth_  );
+    box->addWidget(&rbFWHM_ );
     box->addSpacing(8);
+
+    const QStringList& headers = PeakInfo::dataTags(false);
+    for (int i=0; i<headers.count(); ++i)
+        gSession->params.bigMetaSelection.vec.push_back({true});
     showCols_.resize(headers.count());
-    for_i (showCols_.size()) {
-        showCols_[i] = new QcrCheckBox("cb"+QString::number(i), headers[i], true);
+    for (int i=0; i<showCols_.size(); ++i) {
+        showCols_[i] = new QcrCheckBox(
+            "cb"+QString::number(i), headers[i], &gSession->params.bigMetaSelection.vec[i]);
         box->addWidget(showCols_[i]);
     }
     setLayout(box);
@@ -78,12 +74,7 @@ ColumnSelector::ColumnSelector()
             setAll(false);
             showCols_.at(int(eReflAttr::FWHM))->programaticallySetValue(true); });
 
-    for_i (showCols_.size())
-        connect(showCols_.at(i), &QCheckBox::toggled, [this, i](bool on) {
-                gGui->state->bigtableShowCol[i] = on;
-                updateRadiobuttons();
-                EMITS("ColumnSelector "<<i,gSession->sigBigtableCols());
-            });
+    setRemake([=](){ updateRadiobuttons(); });
 }
 
 void ColumnSelector::setAll(bool on)
@@ -97,7 +88,7 @@ void ColumnSelector::updateRadiobuttons()
     bool isAll = true, isNone = true, isOther = false;
     int nInten = 0, nTth = 0, nFwhm = 0;
 
-    for_i (showCols_.size()) {
+    for (int i=0; i<showCols_.size(); ++i) {
         if (!showCols_.at(i)->getValue()) {
             isAll = false;
             continue;
@@ -117,7 +108,6 @@ void ColumnSelector::updateRadiobuttons()
         }
     }
 
-    rbHidden_.programaticallySetValue(true);
     rbNone_.programaticallySetValue(isNone);
     rbAll_.programaticallySetValue(isAll);
 
@@ -132,20 +122,17 @@ void ColumnSelector::updateRadiobuttons()
 //! @class BigtableTab
 
 BigtableTab::BigtableTab()
-    : bigtableView_ {new BigtableView()}
 {
-    // inbound connection
-    connect(gSession, &Session::sigRawFits, [this]() { render(); });
+    auto bigtableView = new BigtableView;
 
-    // layout
-    auto* colSelBox = new QScrollArea;
+    auto* colSelBox = new QcrScrollArea;
     colSelBox->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     colSelBox->setWidget(new ColumnSelector());
 
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);
-    buttonBox->addWidget(new QcrIconButton {&gGui->triggers->spawnTable});
-    buttonBox->addWidget(new QcrIconButton {&gGui->triggers->exportBigtable});
+    buttonBox->addWidget(new QcrIconTriggerButton {&gGui->triggers->spawnTable});
+    buttonBox->addWidget(new QcrIconTriggerButton {&gGui->triggers->exportBigtable});
 
     auto* sideBox = new QVBoxLayout;
     sideBox->addWidget(colSelBox);
@@ -153,15 +140,10 @@ BigtableTab::BigtableTab()
     sideBox->setStretch(0,1000);
 
     auto* layout = new QHBoxLayout;
-    layout->addWidget(bigtableView_);
+    layout->addWidget(bigtableView);
     layout->addLayout(sideBox);
     layout->setStretch(0,1000);
     setLayout(layout);
-}
 
-void BigtableTab::render()
-{
-    if (!isVisible())
-        return;
-    bigtableView_->refresh();
+    setRemake([=](){bigtableView->refresh();});
 }

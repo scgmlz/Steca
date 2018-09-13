@@ -12,9 +12,9 @@
 //
 //  ***********************************************************************************************
 
-#include "core/session.h"
 #include "gui/panels/subframe_metadata.h"
-#include "qcr/widgets/model_view.h"
+#include "core/session.h"
+#include "qcr/widgets/tables.h"
 
 //  ***********************************************************************************************
 //! @class MetabigtableModel (local scope)
@@ -25,19 +25,21 @@ class MetabigtableModel : public CheckTableModel {
 public:
     MetabigtableModel() : CheckTableModel("meta") {}
 
-    void reset();
+    enum { COL_CHECK = 1, COL_TAG, COL_VALUE, NUM_COLUMNS };
+
+private:
+    int highlighted() const final { return highlighted_; }
+    void onHighlight(int i) final { highlighted_ = i; }
+    bool activated(int row) const { return gSession->params.smallMetaSelection.isSelected(row); }
+    void setActivated(int row, bool on) { gSession->params.smallMetaSelection.set(row, on); }
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return Metadata::numAttributes(false); }
-    int highlighted() const final { return 0; }// gSession->dataset().highlight().clusterIndex(); }
-    void setHighlight(int i) final { ; } //gSession->dataset().highlight().setCluster(i); }
-    bool activated(int row) const { return gSession->metaSelected(row); }
-    void setActivated(int row, bool on) { gSession->setMetaSelected(row, on); }
 
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const { return {}; }
 
-    enum { COL_CHECK = 1, COL_TAG, COL_VALUE, NUM_COLUMNS };
+    int highlighted_ {0};
 };
 
 QVariant MetabigtableModel::data(const QModelIndex& index, int role) const
@@ -56,12 +58,14 @@ QVariant MetabigtableModel::data(const QModelIndex& index, int role) const
         case COL_TAG:
             return Metadata::attributeTag(row, false);
         case COL_VALUE:
-            const Cluster* highlight = gSession->dataset().highlight().cluster();
+            const Cluster* highlight = gSession->currentCluster();
             if (!highlight)
                 return "-";
             return highlight->avgMetadata().attributeStrValue(row);
         }
-        break;
+        return "";
+    case Qt::BackgroundRole:
+        return QColor(Qt::white);
     }
     return {};
 }
@@ -76,41 +80,28 @@ class MetabigtableView : public CheckTableView {
 public:
     MetabigtableView();
 private:
-    void currentChanged(const QModelIndex& current, const QModelIndex&) override final {
-        gotoCurrent(current); }
-    int sizeHintForColumn(int) const final;
     MetabigtableModel* model() { return static_cast<MetabigtableModel*>(model_); }
 };
 
 MetabigtableView::MetabigtableView()
     : CheckTableView(new MetabigtableModel())
 {
-    // inbound connections:
-    connect(gSession, &Session::sigDataHighlight, this, &TableView::onData);
-    connect(gSession, &Session::sigClusters, this, &TableView::onData);
-    connect(gSession, &Session::sigMetaSelection, this, &TableView::onHighlight);
-
-    // internal connection:
-    connect(this, &MetabigtableView::clicked, model(), &CheckTableModel::onClicked);
-}
-
-int MetabigtableView::sizeHintForColumn(int col) const
-{
-    switch (col) {
-    case MetabigtableModel::COL_CHECK:
-        return 2*mWidth();
-    default:
-        return 3*mWidth();
-    }
+    setColumnWidth(0, 0);
+    setColumnWidth(1,  .5*mWidth());
+    setColumnWidth(2, 6. *mWidth());
+    setColumnWidth(3, 7.5*mWidth());
 }
 
 //  ***********************************************************************************************
 //! @class SubframeMetadata
 
 SubframeMetadata::SubframeMetadata()
+    : QcrDockWidget("metadata")
 {
+    for (int i=0; i<Metadata::size(); ++i)
+        gSession->params.smallMetaSelection.vec.push_back({false});
     setFeatures(DockWidgetMovable);
     setWindowTitle("Metadata");
-    setObjectName("dock-metadata");
     setWidget(new MetabigtableView());
+    setRemake([this](){setEnabled(gSession->hasData());});
 }

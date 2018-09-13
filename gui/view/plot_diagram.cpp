@@ -12,45 +12,52 @@
 //
 //  ***********************************************************************************************
 
-#include "plot_diagram.h"
-#include "qcr/engine/debug.h"
-#include "core/def/idiomatic_for.h"
+#include "gui/view/plot_diagram.h"
 #include "core/session.h"
 #include "gui/mainwin.h"
-#include "gui/state.h"
 #include "qcr/widgets/controls.h"
+//#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class PlotDiagram
 
 PlotDiagram::PlotDiagram()
 {
-    graph_ = addGraph();
+    graph_   = addGraph();
     graphLo_ = addGraph();
     graphUp_ = addGraph();
 
-    graph_->setPen(QPen(Qt::blue));
+    graph_  ->setPen(QPen(Qt::blue));
     graphUp_->setPen(QPen(Qt::red));
     graphLo_->setPen(QPen(Qt::green));
 }
 
+PlotDiagram::PlotDiagram(int w, int h)
+    : PlotDiagram()
+{
+    setMinimumSize(w, h);
+}
+
 void PlotDiagram::refresh()
 {
-    graph_->clearData();
+    if (!gSession->activeClusters.size() || !gSession->peaks.size())
+        return;
+
+    graph_  ->clearData();
     graphUp_->clearData();
     graphLo_->clearData();
 
-    const int xi = int(gGui->state->diagramX->getValue());
-    const int yi = int(gGui->state->diagramY->getValue());
+    const int idxX = int(gSession->params.diagramX.val());
+    const int idxY = int(gSession->params.diagramY.val());
 
     std::vector<double> xs, ys, ysLow, ysHig;
-    gSession->peakInfos().get4(xi, yi, xs, ys, ysLow, ysHig);
+    gSession->allPeaks.currentInfoSequence()->get4(idxX, idxY, xs, ys, ysLow, ysHig);
 
     if (!xs.size())
         return erase();
 
     Range rgeX(xs);
-    Range rgeY(ys);
+    Range rgeY = Range(ysLow).intersect(Range(ysHig));
     if (rgeX.isEmpty() || rgeY.isEmpty())
         return erase();
 
@@ -59,9 +66,9 @@ void PlotDiagram::refresh()
     xAxis->setVisible(true);
     yAxis->setVisible(true);
 
-    graph_->addData(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ys));
-    graphUp_->addData(QVector<double>::fromStdVector(xs),QVector<double>::fromStdVector( ysHig));
-    graphLo_->addData(QVector<double>::fromStdVector(xs),QVector<double>::fromStdVector( ysLow));
+    graph_  ->addData(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ys));
+    graphUp_->addData(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ysHig));
+    graphLo_->addData(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ysLow));
 
     replot();
 }

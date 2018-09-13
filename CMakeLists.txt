@@ -26,8 +26,9 @@ if(MSVC)
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -DQT_LOGGING_RULES=\"*.debug=true\"")
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} /wd4267 /wd4305 /wd4244 /wd4068 /wd4996 /wd4101 /wd4715 -D_CRT_SECURE_NO_WARNINGS -D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING -DQT_LOGGING_RULES=\"*.debug=false\"")
 else()
-	set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -O0 -g -Wall -DQT_LOGGING_RULES=\"*.debug=true\"")
-	set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -w -DQT_LOGGING_RULES=\"*.debug=false\"")
+  # -fsanitize=address
+  set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -O0 -g -Wall -Wno-sign-compare -fsanitize=undefined -fno-omit-frame-pointer -DQT_LOGGING_RULES=\"*.debug=true\"")
+  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -w -DQT_LOGGING_RULES=\"*.debug=false\"")
 endif()
 
 

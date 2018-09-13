@@ -12,41 +12,55 @@
 //
 //  ***********************************************************************************************
 
-#include "triggers.h"
+#include "gui/actions/triggers.h"
 #include "manifest.h"
 #include "core/session.h"
-#include "gui/mainwin.h"
-#include "gui/dialogs/about.h"
+#include "gui/dialogs/message_boxes.h"
 #include "gui/dialogs/check_update.h"
-#include "gui/dialogs/export_dfgram.h"
 #include "gui/dialogs/export_bigtable.h"
+#include "gui/dialogs/export_dfgram.h"
 #include "gui/dialogs/export_diagram.h"
 #include "gui/dialogs/export_polefig.h"
+#include "gui/dialogs/io_session.h"
+#include "gui/dialogs/load_data.h"
 #include "gui/dialogs/popup_bigtable.h"
 #include "gui/dialogs/popup_diagram.h"
 #include "gui/dialogs/popup_polefig.h"
+#include "gui/mainwin.h"
 #include <QDesktopServices>
 
 Triggers::Triggers()
 {
-#define AT &QAction::triggered
-    connect(&about, AT, [](){ AboutBox().exec(); });
-    connect(&addFiles, AT, []() { gGui->addFiles(); });
-    connect(&checkUpdate, AT, []() { CheckUpdate _(gGui); });
-    connect(&clearBackground, AT, []() { gSession->baseline().setRanges({}); });
-    connect(&clearSession, AT, []() { gSession->clear(); });
-    connect(&corrFile, AT, []() { gGui->loadCorrFile(); });
-    connect(&exportDfgram, AT, [](){ ExportDfgram().exec(); });
-    connect(&exportPolefig, AT, [](){ ExportPolefig().exec(); });
-    connect(&exportBigtable, AT, [](){ ExportBigtable().exec(); });
-    connect(&exportDiagram, AT, [](){ ExportDiagram().exec(); });
-    connect(&loadSession, AT, []() { gGui->loadSession(); });
-    connect(&online, AT, []() { QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
-    connect(&quit, AT, []() { gGui->deleteLater(); });
-    connect(&removeFile, AT, []() { gSession->dataset().removeFile(); });
-    connect(&saveSession, AT, []() { gGui->saveSession(); });
-    connect(&spawnDiagram, AT, [](){ new PopupDiagram(); });
-    connect(&spawnTable, AT, [](){ new PopupBigtable(); });
-    connect(&spawnPolefig, AT, [](){ new PopupPolefig(); });
-    connect(&viewReset, AT, []() { gGui->viewReset(); });
+    about          .setTriggerHook([](){ AboutBox().exec(); });
+    baserangeAdd   .setTriggerHook([](){ AddRangeBox("baseline").exec(); });
+    baserangesClear.setTriggerHook([](){ gSession->baseline.clear();          });
+    baserangeRemove.setTriggerHook([](){ gSession->baseline.removeSelected(); });
+    peakAdd        .setTriggerHook([](){ AddRangeBox("peak").exec(); });
+    addFiles       .setTriggerHook([](){ loadData::addFiles(gGui); });
+    checkUpdate    .setTriggerHook([](){ CheckUpdate _(gGui); });
+    clearSession   .setTriggerHook([](){ gSession->clear(); });
+    corrFile       .setTriggerHook([](){ loadData::loadCorrFile(gGui); });
+    exportDfgram   .setTriggerHook([](){ ExportDfgram().exec(); });
+    exportPolefig  .setTriggerHook([](){ ExportPolefig().exec(); });
+    exportBigtable .setTriggerHook([](){ ExportBigtable().exec(); });
+    exportDiagram  .setTriggerHook([](){ ExportDiagram().exec(); });
+    loadSession    .setTriggerHook([](){ ioSession::load(gGui); });
+    online         .setTriggerHook([](){ QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
+    peakRemove     .setTriggerHook([](){ gSession->peaks.removeSelected(); });
+    peaksClear     .setTriggerHook([](){ gSession->peaks.clear();          });
+    quit           .setTriggerHook([](){ gGui->deleteLater(); });
+    removeFile     .setTriggerHook([](){ gSession->dataset.removeFile(); });
+    saveSession    .setTriggerHook([](){ ioSession::save(gGui); });
+    spawnDiagram   .setTriggerHook([](){ new PopupDiagram(); });
+    spawnTable     .setTriggerHook([](){ new PopupBigtable(); });
+    spawnPolefig   .setTriggerHook([](){ new PopupPolefig(); });
+    viewsReset     .setTriggerHook([](){ gGui->resetViews(); });
+
+    // Remakes (others are set more conveniently in Mainwindow::refresh):
+    corrFile.setRemake([this]() {
+            bool hasCorr = gSession->hasCorrFile();
+            corrFile.setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
+            QString text = QString(hasCorr ? "Remove" : "Add") + " correction file";
+            corrFile.setText(text);
+            corrFile.setToolTip(text.toLower()); });
 }

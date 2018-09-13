@@ -12,23 +12,22 @@
 //
 //  ***********************************************************************************************
 
-#include "image_trafo_actions.h"
+#include "gui/actions/image_trafo_actions.h"
 #include "core/session.h"
-#include "qcr/engine/debug.h"
+//#include "qcr/base/debug.h"
 
 ImageTrafoActions::ImageTrafoActions()
 {
-    connect(&mirrorImage, &QAction::toggled, [this](bool on) { setImageMirror(on); });
-    connect(&rotateImage, &QAction::triggered, [this]() { setImageRotate(
-                gSession->imageTransform().nextRotate()); });
+    mirrorImage.setHook([this](bool on){ setImageMirror(on); });
+    rotateImage.setTriggerHook([this](){ doImageRotate(); });
 }
 
-void ImageTrafoActions::setImageRotate(const ImageTransform& rot)
+void ImageTrafoActions::doImageRotate()
 {
+    gSession->params.imageTransform.doRotate();
     const char* rotateIconFile;
     const char* mirrorIconFile;
-
-    switch (rot.val & 3) {
+    switch (gSession->params.imageTransform.rotation) {
     case 0:
         rotateIconFile = ":/icon/rotate0";
         mirrorIconFile = ":/icon/mirrorHorz";
@@ -48,17 +47,11 @@ void ImageTrafoActions::setImageRotate(const ImageTransform& rot)
     default:
         qFatal("impossible rotation");
     }
-
     rotateImage.setIcon(QIcon(rotateIconFile));
     mirrorImage.setIcon(QIcon(mirrorIconFile));
-    gSession->setImageTransformRotate(rot);
-    // TODO gSession->imageCut().prevent_invalid_cuts()
-    EMITS("ImageTrafoActions::setImageRotate", gSession->sigDetector());
 }
 
 void ImageTrafoActions::setImageMirror(bool on)
 {
-    mirrorImage.programaticallySetValue(on);
-    gSession->setImageTransformMirror(on);
-    EMITS("ImageTrafoActions::setImageMirror", gSession->sigDetector());
+    gSession->params.imageTransform.mirror = on;
 }

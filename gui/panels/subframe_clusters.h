@@ -15,14 +15,14 @@
 #ifndef SUBFRAME_CLUSTERS_H
 #define SUBFRAME_CLUSTERS_H
 
-#include <QDockWidget>
+#include "qcr/widgets/views.h"
 
 //! Part of the main window that controls the measurements selection.
 
 //! Shows the measurements in the selected files, and allow to select some of them
 //! and to combine them by a constant factor
 
-class SubframeClusters : public QDockWidget {
+class SubframeClusters : public QcrDockWidget {
 public:
     SubframeClusters();
 };

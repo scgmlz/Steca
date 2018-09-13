@@ -15,39 +15,29 @@
 #ifndef PLOT_POLEFIG_H
 #define PLOT_POLEFIG_H
 
-#include "core/data/peak_info.h"
-#include "qcr/widgets/controls.h"
-#include "QCustomPlot/qcustomplot.h"
+#include "qcr/engine/cell.h"
+#include "qcr/widgets/views.h"
+#include <memory>
+
+struct PolefigPoint {
+    double alpha;
+    double beta;
+    double intensity;
+    bool   highlight;
+};
 
 //! Tab in PoleFiguresFrame, to display the pole figure.
 
-class PlotPolefig : public QWidget {
+class PlotPolefig : public QcrWidget {
 public:
-    PlotPolefig();
-    void refresh();
+    PlotPolefig(bool alive);
+
+    QcrCell<bool> flat {false};
 
 private:
-    void update();
-
-    PeakInfos rs_;
     void paintEvent(QPaintEvent*);
 
-    QPointF p(deg alpha, deg beta) const;
-    deg alpha(const QPointF&) const;
-    deg beta(const QPointF&) const;
-
-    void circle(QPointF c, double r);
-
-    void paintGrid();
-    void paintPoints();
-
-    // valid during paintEvent
-    QPainter* p_;
-    QPointF c_;
-    double r_;
-
-    bool flat_;
-    double alphaMax_, avgAlphaMax_;
+    std::vector<PolefigPoint> points_;
 };
 
 #endif // PLOT_POLEFIG_H

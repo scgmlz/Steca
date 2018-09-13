@@ -15,36 +15,43 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include "qcr/engine/enhance_widgets.h"
-#include <stack>
-#include <QTextStream>
 #include <QDateTime>
+#include <QTextStream>
+#include <stack>
 
-extern class Console* gConsole; //!< global
+extern class Console* gConsole; //!< global handle that points to _the_ Console.
 
-//! Reads commands from stdin, and emits signal transmitLine
-class Console : public QObject
+//! Logs user actions, and executes console commands, based on a command registry.
+
+//! To be instantiated exactly once, and to be accessed through the global handle gConsole.
+
+class Console
 {
-    Q_OBJECT
 public:
     Console();
     ~Console();
-    QString learn(const QString& name, CSettable*);
+    Console(const Console&) = delete;
+
+    QString learn(QString name, class QcrSettable*); //!< learns _not_ commands, but widget names!
     void forget(const QString& name);
+    void pop();
     void readFile(const QString& fName);
     void call(const QString&);
-    bool hasCommandsOnStack() const { return !commandLifo_.empty(); }
-    void commandsFromStack();
-    void log(const QString&);
-    void log2(bool, const QString&);
+    void commandsFromStack();  //!< needed by modal dialogs
+
+    void log(QString) const;
+    bool hasCommandsOnStack() const { return !commandLifo_.empty(); } //!< needed by modal dialogs
+
 private:
-    class CommandRegistry& registry() { return *registryStack_.top(); }
-    QDateTime startTime_;
-    int computingTime_ {0};
-    QTextStream log_;
     enum class Caller { gui, cli, stack, sys } caller_ { Caller::gui };
     enum class Result : int { ok, err, suspend };
-    Result exec(QString);
+
+    class CommandRegistry& registry() const { return *registryStack_.top(); }
+
+    void readLine();
+    Result executeLine(QString);
+
+    QDateTime startTime_;
 #ifdef Q_OS_WIN
 	class QWinEventNotifier *notifier_;
 #else
@@ -52,8 +59,9 @@ private:
 #endif
     std::stack<class CommandRegistry*> registryStack_;
     std::deque<QString> commandLifo_;
-private slots:
-    void readLine();
+
+    mutable int computingTime_ {0};
+    mutable QTextStream log_;
 };
 
 #endif // CONSOLE_H

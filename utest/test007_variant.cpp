@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "core/typ/variant.h"
+#include "core/aux/variant.h"
 
 TEST(Variant, Comparison) {
     QVariant v1(1), v2(2);

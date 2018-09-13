@@ -15,52 +15,24 @@
 #ifndef TAB_IMAGE_H
 #define TAB_IMAGE_H
 
+#include "qcr/widgets/views.h"
+#include "qcr/engine/cell.h"
+#include "core/raw/measurement.h"
 #include "core/raw/image.h"
-#include "qcr/widgets/controls.h"
-#include <QPainter>
-
-//! Displays a 2d detector image, and possibly some overlay. Used in ImageTab.
-
-class ImageView final : public QWidget {
-public:
-    ImageView();
-    void setPixmap(const QPixmap&);
-    void setScale();
-private:
-    void resizeEvent(QResizeEvent*);
-    void paintEvent(QPaintEvent*);
-    double scale_;
-    QPixmap original_, scaled_;
-};
-
-//! A spin box that governs which measurement out of the highlighted group shall be shown.
-
-class IdxMeas : public QcrSpinBox {
-public:
-    IdxMeas();
-private:
-    void fromCore();
-};
 
 //! Pure virtual base class for DataImageTab and CorrImageTab, shows a detector image and controls.
 
-class ImageTab : public QWidget {
+class ImageTab : public QcrWidget {
 public:
     ImageTab();
 protected:
-    virtual QPixmap pixmap() = 0;
-    QPixmap makePixmap(const Image&);
-    QPixmap makeOverlayPixmap(const class Measurement&);
-    QPixmap makeBlankPixmap();
-    QImage makeImage(const Image&);
-    ImageView imageView_;
-    QHBoxLayout box_;
-    QVBoxLayout controls_;
-    QHBoxLayout box1_;
-private:
     void render();
-    QcrIconButton btnScale_;
-    QcrIconButton btnOverlay_;
+    virtual QPixmap pixmap() = 0;
+    QPixmap blankPixmap();
+    QImage makeImage(const Image&);
+    class QHBoxLayout* box1_;
+    class QVBoxLayout* controls_;
+    class ImageView* imageView_;
 };
 
 //! A tab for a data image and associated controls.
@@ -71,19 +43,10 @@ private:
 class DataImageTab : public ImageTab {
 public:
     DataImageTab();
-    ~DataImageTab();
 private:
-    QGridLayout boxIdx_;
-    QGridLayout boxRanges_;
+    const Measurement* measurement();
     QPixmap pixmap() final;
-    IdxMeas idxMeas_;
-    QcrSpinBox idxSlice_{"idxSlice", 4, false, 1, INT_MAX, "Number of γ slice to be shown" };
-    QcrSpinBox idxTheta_ {"idxTheta", 4, false, 1, INT_MAX, "Number of 2θ bin to be shown" };
-    QLabel gammaRangeTotal_;
-    QLabel gammaRangeSlice_;
-    QLabel thetaRangeTotal_;
-    QLabel thetaRangeBin_;
-    QcrIconButton btnShowBins_;
+    QcrCell<int> iMeas {1};
 };
 
 //! A tab for the correction image and associated controls.

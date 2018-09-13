@@ -15,18 +15,13 @@
 #ifndef TAB_BIGTABLE_H
 #define TAB_BIGTABLE_H
 
-#include <QWidget>
+#include "qcr/widgets/views.h"
 
 //! Tabular display of fit results and metadata, with associated controls.
 
-class BigtableTab : public QWidget {
+class BigtableTab : public QcrWidget {
 public:
     BigtableTab();
-    const class BigtableView& bigtableView() const { return *bigtableView_; }
-private:
-    void render();
-    void showEvent(QShowEvent*) { render(); }
-    class BigtableView* bigtableView_;
 };
 
 #endif // TAB_BIGTABLE_H

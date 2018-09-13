@@ -12,25 +12,69 @@
 //
 //  ***********************************************************************************************
 
-#include "core/session.h"
+#include "core/data/corrset.h"
 #include "core/loaders/loaders.h"
-#include "core/def/idiomatic_for.h"
-#include "qcr/engine/debug.h"
+#include "core/session.h"
+#include "qcr/engine/mixin.h" // remakeAll
+#include "qcr/base/debug.h"
+
+namespace {
+
+Image recomputeNormalizer(const Image& corrImage)
+{
+    size2d size = corrImage.size();
+    if (size.isEmpty())
+        return {};
+
+    // only use pixels that are not cut
+    size = size - gSession->params.imageCut.marginSize();
+    ASSERT(!size.isEmpty());
+    int w = size.w;
+    int h = size.h;
+    int di = gSession->params.imageCut.left.val();
+    int dj = gSession->params.imageCut.top .val();
+
+    double sum = 0;
+    for (int i=0; i<w; ++i)
+        for (int j=0; j<h; ++j)
+            sum += corrImage.inten2d(i + di, j + dj);
+    double avg = sum / (w * h);
+
+    Image ret(corrImage.size(), 1.);
+
+    for (int i=0; i<w; ++i) {
+        for (int j=0; j<h; ++j) {
+            const float inten = corrImage.inten2d(i + di, j + dj);
+            double fact;
+            if (inten > 0) {
+                fact = avg / inten;
+            } else {
+                fact = Q_QNAN;
+            }
+            ret.setInten2d(i + di, j + dj, float(fact));
+        }
+    }
+    return ret;
+}
+
+} // namespace
+
+
+Corrset::Corrset()
+    : normalizer_{[this]()->Image{ return recomputeNormalizer(image()); }}
+{}
 
 void Corrset::clear()
 {
     removeFile();
-    enabled_ = true;
-    hasNANs_ = false;
+    enabled.setVal(true);
 }
 
 void Corrset::removeFile()
 {
     raw_.release();
-    // TODO empty image? was corrImage_.clear();
-    normalizer_.release();
+    invalidateNormalizer();
     gSession->updateImageSize();
-    EMITS("Corrset::removeFile", gSession->sigCorr());
 }
 
 void Corrset::loadFile(const QString& filePath)
@@ -41,59 +85,11 @@ void Corrset::loadFile(const QString& filePath)
     if (!raw_.get())
         return;
     gSession->setImageSize(raw_->imageSize());
-    corrImage_.reset(new Image{raw_->summedImage()});
-    normalizer_.release(); // will be calculated when needed
+    corrImage_ = raw_->summedImage();
+    invalidateNormalizer();
     // all ok
-    enabled_ = true;
-    EMITS("Corrset::loadFile", gSession->sigCorr());
-}
-
-void Corrset::tryEnable(bool on)
-{
-    if ((on && !hasFile()) || on==enabled_)
-        return;
-    enabled_ = on;
-    EMITS("Corrset::tryEnable", gSession->sigCorr());
-}
-
-const Image* Corrset::normalizer() const
-{
-    if (!hasFile() || !enabled_)
-        return nullptr;
-    if (!normalizer_.get())
-        calcNormalizer();
-    return normalizer_.get();
-}
-
-void Corrset::calcNormalizer() const
-{
-    hasNANs_ = false;
-
-    ASSERT(corrImage_.get());
-    size2d size = corrImage_->size() - gSession->imageCut().marginSize();
-    ASSERT(!size.isEmpty());
-
-    int w = size.w, h = size.h;
-    int di = gSession->imageCut().left(), dj = gSession->imageCut().top();
-
-    double sum = 0;
-    for_ij (w, h)
-        sum += corrImage_->inten2d(i + di, j + dj);
-    double avg = sum / (w * h);
-
-    normalizer_.reset(new Image(corrImage_->size(), 1.));
-
-    for_ij (w, h) {
-        const float inten = corrImage_->inten2d(i + di, j + dj);
-        double fact;
-        if (inten > 0) {
-            fact = avg / inten;
-        } else {
-            fact = Q_QNAN;
-            hasNANs_ = true;
-        }
-        normalizer_->setInten2d(i + di, j + dj, float(fact));
-    }
+    enabled.setVal(true);
+    gRoot->remakeAll();
 }
 
 QJsonObject Corrset::toJson() const
@@ -101,7 +97,7 @@ QJsonObject Corrset::toJson() const
     QJsonObject ret;
     if (hasFile())
         ret.insert("file", raw_->fileInfo().absoluteFilePath());
-    ret.insert("enabled", enabled_);
+    ret.insert("enabled", enabled.val());
     return ret;
 }
 
@@ -109,5 +105,5 @@ void Corrset::fromJson(const JsonObj& obj)
 {
     if (obj.find("file") != obj.end())
         loadFile(obj.loadString("file"));
-    tryEnable(obj.loadBool("enabled", true));
+    enabled.setVal(obj.loadBool("enabled", true));
 }

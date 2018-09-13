@@ -15,8 +15,8 @@
 #ifndef DATASET_H
 #define DATASET_H
 
-#include "core/data/active_clusters.h"
 #include "core/data/cluster.h"
+#include "qcr/engine/cell.h"
 #include <memory>
 
 //! A Rawfile and associated information.
@@ -24,48 +24,46 @@
 class Datafile {
 public:
     Datafile() = delete;
+    Datafile(Rawfile&& raw) : raw_(std::move(raw)) {}
     Datafile(const Datafile&) = delete;
     Datafile(Datafile&&) = default;
     Datafile& operator=(Datafile&&) = default;
-    Datafile(Rawfile&& raw) : raw_(std::move(raw)) {}
 
     int numMeasurements() const { return raw_.numMeasurements(); }
+    int index() const { return index_; }
     QString name() const { return raw_.fileName(); }
     Qt::CheckState activated() const;
 
     int offset_;  //!< first index in total list of Measurement|s
+
 private:
     friend class Dataset;
     friend class HighlightedData;
+
     Rawfile raw_; //!< owned by this
     int index_; //!< index in files_
-    std::vector<Cluster*> clusters_; //!< back links to Cluster|s made from this
+    std::vector<Cluster*> clusters_; //!< back links to Cluster|s made from this,
+                                     //!< set by Dataset::updateClusters
 };
 
 
 //! Pointer to highlighted data.
 
-class HighlightedData {
+class HighlightedData { // TODO ? mv to cluster.h ?
 public:
-    HighlightedData() = default;
+    HighlightedData() {}
     HighlightedData(const HighlightedData&) = delete;
+
     void clear();
-    void unset();
     void setFile(int);
     void setCluster(int);
     void reset();
-    void setMeasurement(int val);
 
     const Cluster* cluster() const { return current_; }
-    int clusterIndex() const;
-    const Datafile* file() const;
-    int fileIndex() const;
-    const Measurement* measurement() const;
-    int measurementIndex() const { return measurement_; }
+    Cluster* cluster() { return current_; }
 
 private:
-    const Cluster* current_ { nullptr };
-    int measurement_ {0}; //!< selected for image display (index in highlighted cluster)
+    Cluster* current_ { nullptr };
 };
 
 
@@ -73,50 +71,38 @@ private:
 
 class Dataset {
 public:
-    Dataset() = default;
+    Dataset();
     Dataset(const Dataset&) = delete;
 
-    // Accessor methods
+    void fromJson(const JsonObj& obj);
+    void clear();
+    void addGivenFiles(const QStringList& filePaths);
+    void removeFile();
+    void setClusterActivation(int index, bool on);
+    void setFileActivation(int index, bool on);
+
     HighlightedData& highlight() { return highlight_; }
     const HighlightedData& highlight() const { return highlight_; }
 
-    // Modifying methods:
-    void clear();
-    void fromJson(const JsonObj& obj);
-    void addGivenFiles(const QStringList& filePaths);
-    void removeFile();
-    void setBinning(int by);
-    void setDropIncomplete(bool on);
-    void activateCluster(int index, bool on);
-    void setFileActivation(int index, bool on);
-
-    // Const methods:
-    int countFiles() const { return files_.size(); }
-    int countClusters() const { return allClusters_.size(); }
-    const Datafile& fileAt(int i) const;
-    const Cluster& clusterAt(int i) const;
-    int offset(const Datafile& file) const { return file.offset_; }
-
-    int binning() const { return binning_; }
-    bool dropIncomplete() const { return dropIncomplete_; }
-    bool hasIncomplete() const { return hasIncomplete_; }
-
-    const ActiveClusters& activeClusters() const { return activeClusters_; }
-
     QJsonObject toJson() const;
+    int countFiles() const { return files_.size(); }
+    const Datafile& fileAt(int i) const { return files_.at(i); }
+    int offset(const Datafile& file) const { return file.offset_; }
+    bool hasIncomplete() const { return hasIncomplete_; }
+    std::vector<const Cluster*> activeClustersList() const;
+
+    QcrCell<int> binning {1};             //!< bin so many Measurement|s into one cluster
+    QcrCell<bool> dropIncomplete {false}; //!< drop Clusters with less than 'binning' members.
+
+    std::vector<std::unique_ptr<Cluster>> allClusters; //!< all Cluster|s are owned by this
 
 private:
     std::vector<Datafile> files_; //!< loaded Datafile|s only live here
-    std::vector<std::unique_ptr<Cluster>> allClusters_; //!< all Cluster|s are owned by this
     // leave this a unique_ptr because other vectors backlink through Cluster* pointers
 
-    int binning_ {1}; //!< bin so many Measurement|s into one cluster
-    bool dropIncomplete_ {false}; //!< drop Cluster|s that have less than binning_ members.
-    bool hasIncomplete_; //!< current binning does result in at least one incomplete cluster
+    bool hasIncomplete_ {false}; //!< current binning does result in at least one incomplete cluster
 
     HighlightedData highlight_; //!< wraps pointer to highlighted Datafile and Cluster
-
-    ActiveClusters activeClusters_; //!< active clusters
 
     void onFileChanged();
     void onClusteringChanged();

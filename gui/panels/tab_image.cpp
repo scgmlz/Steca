@@ -12,14 +12,13 @@
 //
 //  ***********************************************************************************************
 
-#include "tab_image.h"
+#include "gui/panels/tab_image.h"
+#include "core/data/lens.h"
 #include "core/session.h"
-#include "core/calc/lens.h"
-#include "core/def/idiomatic_for.h"
-#include "core/raw/angle_map.h"
-#include "gui/actions/toggles.h"
 #include "gui/mainwin.h"
-#include "qcr/engine/debug.h"
+#include "gui/view/plot_image.h"
+#include "gui/view/toggles.h"
+//#include "qcr/base/debug.h"
 #include <qmath.h>
 
 namespace {
@@ -49,187 +48,60 @@ QRgb intenImage(float inten, float maxInten, bool curved) {
     return qRgb(int(0xff * (inten - high) * 4), 0xff, 0xff);
 }
 
+void addOverlay(QImage& img, double midTth)
+{
+    gSession->gammaSelection.onData();
+    gSession->thetaSelection.onData();
+    const AngleMap& angleMap = gSession->angleMap.get(midTth);
+    const Range& rgeGma = gSession->gammaSelection.range();
+    const Range& rgeTth = gSession->thetaSelection.range();
+    for (int j=0; j<img.size().height(); ++j) {
+        for (int i=0; i<img.size().width(); ++i) {
+            const ScatterDirection& a = angleMap.dirAt2(i, j);
+            QColor color = img.pixel(i, j);
+            if (rgeGma.contains(a.gma)) {
+                if (rgeTth.contains(a.tth))
+                    color = Qt::yellow;
+                else
+                    color.setGreen(qFloor(color.green() * .3 + 255 * .7));
+            } else if (rgeTth.contains(a.tth)) {
+                color.setGreen(qFloor(color.green() * .3 + 255 * .7));
+            }
+            img.setPixel(i, j, color.rgb());
+        }
+    }
+}
+
 } // namespace
 
 //  ***********************************************************************************************
-//! @class ImageView
-
-ImageView::ImageView()
-    : scale_(0)
-{
-    setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-
-    connect(&gGui->toggles->crosshair, &QAction::toggled, [this](bool /*unused*/) { update(); });
-}
-
-void ImageView::setPixmap(const QPixmap& pixmap)
-{
-    original_ = pixmap;
-    setScale();
-}
-
-void ImageView::setScale()
-{
-    if (original_.isNull()) {
-        scale_ = 0;
-    } else {
-        const QSize& sz = size();
-        const QSize& os = original_.size();
-        scale_ = qMin(double(sz.width() - 2) / os.width(), double(sz.height() - 2) / os.height());
-    }
-
-    if (scale_ <= 0)
-        scaled_ = QPixmap();
-    else
-        scaled_ = original_.scaled(original_.size() * scale_);
-
-    update();
-}
-
-void ImageView::resizeEvent(QResizeEvent* e)
-{
-    QWidget::resizeEvent(e);
-    setScale();
-}
-
-void ImageView::paintEvent(QPaintEvent*)
-{
-    // paint centered
-    const QSize margin = (size() - scaled_.size()) / 2;
-    const QRect rect(QPoint(margin.width(), margin.height()), scaled_.size());
-
-    QPainter p(this);
-
-    // image
-    p.drawPixmap(rect.left(), rect.top(), scaled_);
-
-    // crosshair overlay
-    if (gGui->toggles->crosshair.getValue()) {
-        p.setPen(Qt::lightGray);
-
-        // cut
-        const ImageCut& cut = gSession->imageCut();
-        const QRect r = rect.adjusted(-1, -1, 0, 0)
-                      .adjusted(
-                          qRound(scale_ * cut.left()), qRound(scale_ * cut.top()),
-                          -qRound(scale_ * cut.right()), -qRound(scale_ * cut.bottom()));
-        p.drawRect(r);
-
-        const QPoint rc = r.center();
-        const int rcx = rc.x(), rcy = rc.y();
-
-        int rl, rt, rr, rb;
-        r.getCoords(&rl, &rt, &rr, &rb);
-        const int rw = rr - rl;
-
-        // cross
-        const IJ& off = gSession->geometry().midPixOffset();
-        const int x = qRound(rcx + scale_ * off.i);
-        const int y = qRound(rcy + scale_ * off.j);
-        p.drawLine(x, rt, x, rb);
-        p.drawLine(rl, y, rr, y);
-
-        // text
-        QPoint pos(rr - rw / 5, rcy);
-        p.setPen(Qt::cyan);
-        p.drawText(pos, "γ=0");
-    }
-
-    // frame
-    p.setPen(Qt::black);
-    p.drawRect(rect.adjusted(-1, -1, 0, 0));
-}
-
-//  ***********************************************************************************************
-//! @class IdxMeas
-
-IdxMeas::IdxMeas()
-    : QcrSpinBox {"idxMeas", 4, false, 1, INT_MAX,
-        "Number of measurement within the current group of measurements"}
-{
-    connect(gSession, &Session::sigDataHighlight, this, &IdxMeas::fromCore);
-    connect(this, &QcrSpinBox::valueReleased, [](int val) {
-            gSession->dataset().highlight().setMeasurement(val-1); });
-    fromCore();
-}
-
-void IdxMeas::fromCore()
-{
-    auto& hl = gSession->dataset().highlight();
-    if (!hl.cluster()) {
-        setEnabled(false);
-        programaticallySetValue(1);
-        return;
-    }
-    setEnabled( gSession->dataset().binning() > 1);
-    int max = hl.cluster()->count();
-    setMaximum(max);
-    if ( hl.measurementIndex()+1>max )
-        hl.setMeasurement(max-1);
-    programaticallySetValue(hl.measurementIndex()+1);
-}
-
-//  ***********************************************************************************************
-//  base class ImageTab
-//  ***********************************************************************************************
+//! @class ImageTab
 
 ImageTab::ImageTab()
-    : btnScale_ {&gGui->toggles->fixedIntenImage}
-    , btnOverlay_ {&gGui->toggles->crosshair}
 {
-    // inbound connections
-    connect(gSession, &Session::sigImage, [this]() { render(); });
+    box1_ = new QHBoxLayout;
+    box1_->addWidget(new QcrIconToggleButton{&gGui->toggles->fixedIntenImage}, Qt::AlignLeft);
+    box1_->addWidget(new QcrIconToggleButton{&gGui->toggles->crosshair}, Qt::AlignLeft);
 
-    // internal connections
-    connect(&gGui->toggles->enableCorr, &QAction::toggled, [this](bool /*unused*/) { render(); });
-    connect(&gGui->toggles->showBins, &QAction::toggled, [this](bool /*unused*/) { render(); });
+    controls_ = new QVBoxLayout;
+    controls_->addLayout(box1_);
 
-    // layout
-    box1_.addWidget(&btnScale_, Qt::AlignLeft);
-    box1_.addWidget(&btnOverlay_, Qt::AlignLeft);
-    controls_.addLayout(&box1_);
+    imageView_ = new ImageView;
 
-    box_.addLayout(&controls_);
-    box_.addWidget(&imageView_);
-    setLayout(&box_);
+    auto* box = new QHBoxLayout;
+    box->addLayout(controls_);
+    box->addWidget(imageView_);
+    setLayout(box);
+
+    setRemake([this](){ render(); });
 }
 
 void ImageTab::render()
 {
-    gSession->corrset().clearIntens(); // trigger redisplay // TODO move this to more appriate place
-    imageView_.setPixmap(pixmap());
+    imageView_->setPixmap(pixmap());
 }
 
-QPixmap ImageTab::makePixmap(const Image& image)
-{
-    QImage im = makeImage(image);
-    return QPixmap::fromImage(im);
-}
-
-QPixmap ImageTab::makeOverlayPixmap(const Measurement& measurement)
-{
-    QImage im = makeImage(measurement.image());
-    const AngleMap& angleMap = measurement.angleMap();
-    const Range& rgeGma = gSession->gammaSelection().range();
-    const Range& rgeTth = gSession->thetaSelection().range();
-    const QSize& size = im.size();
-    for_ij (size.width(), size.height()) {
-        const ScatterDirection& a = angleMap.dirAt2(i, j);
-        QColor color = im.pixel(i, j);
-        if (rgeGma.contains(a.gma)) {
-            if (rgeTth.contains(a.tth))
-                color = Qt::yellow;
-            else
-                color.setGreen(qFloor(color.green() * .3 + 255 * .7));
-        } else if (rgeTth.contains(a.tth)) {
-            color.setGreen(qFloor(color.green() * .3 + 255 * .7));
-        }
-        im.setPixel(i, j, color.rgb());
-    }
-    return QPixmap::fromImage(im);
-}
-
-QPixmap ImageTab::makeBlankPixmap()
+QPixmap ImageTab::blankPixmap()
 {
     const size2d size = gSession->imageSize();
     QPixmap pixmap(size.w, size.h);
@@ -240,84 +112,112 @@ QPixmap ImageTab::makeBlankPixmap()
 QImage ImageTab::makeImage(const Image& image)
 {
     ImageLens imageLens(image, true, false);
-    const size2d size = imageLens.imgSize();
-    if (size.isEmpty())
+    const size2d sz = imageLens.imgSize();
+    if (sz.isEmpty())
         return {};
 
-    QImage ret(QSize(size.w, size.h), QImage::Format_RGB32);
+    QImage ret(QSize(sz.w, sz.h), QImage::Format_RGB32);
 
-    bool fixedScale = gGui->toggles->fixedIntenImage.getValue();
+    bool fixedScale = gSession->params.showAvgeDfgram.val();
     const Range rgeInten = imageLens.rgeInten(fixedScale);
     float maxInten = float(rgeInten.max);
 
-    for_ij (size.w, size.h)
-        ret.setPixel(i, j, intenImage(imageLens.imageInten(i, j), maxInten, !fixedScale));
+    for (int j=0; j<sz.h; ++j)
+        for (int i=0; i<sz.w; ++i)
+            ret.setPixel(i, j, intenImage(imageLens.imageInten(i, j), maxInten, !fixedScale));
     return ret;
 }
+
 
 //  ***********************************************************************************************
 //! @class DataImageTab
 
 DataImageTab::DataImageTab()
-    : btnShowBins_ {&gGui->toggles->showBins}
 {
-    // inbound connection
-    connect(gSession, &Session::sigGamma, [this]() {
-            idxSlice_.programaticallySetValue(gSession->gammaSelection().idxSlice()+1);
-            const Measurement* measurement = gSession->dataset().highlight().measurement();
-            gammaRangeTotal_.setText(measurement->rgeGmaFull().to_s()+" deg");
-            gammaRangeSlice_.setText(gSession->gammaSelection().range().to_s()+" deg");
-            thetaRangeTotal_.setText(measurement->rgeTth().to_s()+" deg");
-            EMITS("DataImageTab",gSession->sigImage()); });
-    connect(gSession, &Session::sigTheta, [this]() {
-            idxTheta_.programaticallySetValue(gSession->thetaSelection().iSlice()+1);
-            EMITS("DataImageTab",gSession->sigImage()); });
+    auto* idxMeas  = new QcrSpinBox{
+        "idxMeas", &iMeas, 4, false, 1, INT_MAX,
+        "Index of measurement within the current group of measurements"};
+    auto* idxTheta = new QcrSpinBox{
+        "idxTheta", &gSession->thetaSelection.currArc,
+        4, false, 1, INT_MAX, "Index of 2θ bin to be shown" };
+    auto* idxSlice = new QcrSpinBox{
+        "idxSlice", &gSession->gammaSelection.currSlice,
+        4, false, 1, INT_MAX, "Index of γ slice to be shown" };
+    auto* gammaRangeTotal = new QLabel{"gammaRangeTotal"};
+    auto* gammaRangeSlice = new QLabel{"gammaRangeSlice"};
+    auto* thetaRangeTotal = new QLabel{"thetaRangeTotal"};
+    auto* thetaRangeBin   = new QLabel{"thetaRangeBin"};
+    setRemake( [=]() {
+            gSession->gammaSelection.onData();
+            gSession->thetaSelection.onData();
 
-    // outbound connections and control widget setup
-    connect(&idxTheta_, &QcrSpinBox::valueReleased, [](int val) {
-            gSession->thetaSelection().selectSlice(val-1); });
-    connect(&idxSlice_, &QcrSpinBox::valueReleased, [](int val) {
-            gSession->gammaSelection().selectSlice(val-1); });
+            const Cluster* cluster = gSession->currentCluster();
+            int n = cluster ? cluster->size() : 1;
+            idxMeas->setMaximum(n);
+            if (n>1) {
+                idxMeas->setMinimum(1);
+                idxMeas->setEnabled(true);
+                idxMeas->setToolTip(
+                    "Index of measurement within the current group of " +
+                    QString::number(n) + " measurements");
+            } else {
+                idxMeas->setEnabled(false);
+                idxMeas->setToolTip(
+                    "Index of measurement within the current group of measurements");
+            }
 
-    // layout
-    box1_.addWidget(&btnShowBins_, Qt::AlignLeft);
+            int nGamma = gSession->gammaSelection.numSlices.val();
+            idxSlice->setMaximum(nGamma);
+            idxSlice->setEnabled(nGamma>1);
 
-    boxIdx_.addWidget(new QLabel("image #"), 0, 0, Qt::AlignLeft);
-    boxIdx_.addWidget(&idxMeas_, 0, 1, Qt::AlignLeft);
-    boxIdx_.addWidget(new QLabel("ϑ bin #"), 1, 0, Qt::AlignLeft);
-    boxIdx_.addWidget(&idxTheta_, 1, 1, Qt::AlignLeft);
-    boxIdx_.addWidget(new QLabel("γ slice #"), 2, 0, Qt::AlignLeft);
-    boxIdx_.addWidget(&idxSlice_, 2, 1, Qt::AlignLeft);
-    controls_.addStretch(100);
-    controls_.addLayout(&boxIdx_);
+            gammaRangeTotal->setText(cluster ? cluster->rgeGmaFull().to_s("deg") : "");
+            gammaRangeSlice->setText(gSession->gammaSelection.range().to_s("deg"));
 
-    controls_.addStretch(1000);
-    boxRanges_.addWidget(new QLabel("γ total:"), 0, 0, Qt::AlignLeft);
-    boxRanges_.addWidget(new QLabel("γ slice:"), 1, 0, Qt::AlignLeft);
-    boxRanges_.addWidget(new QLabel("ϑ total:" ), 2, 0, Qt::AlignLeft);
-    boxRanges_.addWidget(new QLabel("ϑ bin:"   ), 3, 0, Qt::AlignLeft);
-    boxRanges_.addWidget(&gammaRangeTotal_, 0, 1, Qt::AlignLeft);
-    boxRanges_.addWidget(&gammaRangeSlice_, 1, 1, Qt::AlignLeft);
-    boxRanges_.addWidget(&thetaRangeTotal_, 2, 1, Qt::AlignLeft);
-    boxRanges_.addWidget(&thetaRangeBin_,   3, 1, Qt::AlignLeft);
-    controls_.addLayout(&boxRanges_, Qt::AlignLeft|Qt::AlignBottom);
-}
+            thetaRangeTotal->setText(cluster ? cluster->rgeTth().to_s("deg") : "");
+            thetaRangeBin->setText(gSession->thetaSelection.range().to_s("deg"));
 
-DataImageTab::~DataImageTab()
-{
-    box1_.removeWidget(&btnShowBins_);
-    controls_.removeItem(&boxIdx_);
-    controls_.removeItem(&boxRanges_);
+            render(); });
+
+    box1_->addWidget(new QcrIconToggleButton{&gGui->toggles->showBins}, Qt::AlignLeft);
+
+    auto* boxIdx = new QGridLayout;
+    boxIdx->addWidget(new QLabel("idx (image)"), 0, 0, Qt::AlignLeft);
+    boxIdx->addWidget(idxMeas, 0, 1, Qt::AlignLeft);
+    boxIdx->addWidget(new QLabel("idx (ϑ)"), 1, 0, Qt::AlignLeft);
+    boxIdx->addWidget(idxTheta, 1, 1, Qt::AlignLeft);
+    boxIdx->addWidget(new QLabel("idx (γ)"), 2, 0, Qt::AlignLeft);
+    boxIdx->addWidget(idxSlice, 2, 1, Qt::AlignLeft);
+    controls_->addStretch(100);
+    controls_->addLayout(boxIdx);
+
+    controls_->addStretch(1000);
+    auto* boxRanges = new QGridLayout;
+    boxRanges->addWidget(new QLabel("γ total:"), 0, 0, Qt::AlignLeft);
+    boxRanges->addWidget(new QLabel("γ slice:"), 1, 0, Qt::AlignLeft);
+    boxRanges->addWidget(new QLabel("ϑ total:" ), 2, 0, Qt::AlignLeft);
+    boxRanges->addWidget(new QLabel("ϑ bin:"   ), 3, 0, Qt::AlignLeft);
+    boxRanges->addWidget(gammaRangeTotal, 0, 1, Qt::AlignLeft);
+    boxRanges->addWidget(gammaRangeSlice, 1, 1, Qt::AlignLeft);
+    boxRanges->addWidget(thetaRangeTotal, 2, 1, Qt::AlignLeft);
+    boxRanges->addWidget(thetaRangeBin,   3, 1, Qt::AlignLeft);
+    controls_->addLayout(boxRanges, Qt::AlignLeft|Qt::AlignBottom);
 }
 
 QPixmap DataImageTab::pixmap()
 {
-    const Measurement* measurement = gSession->dataset().highlight().measurement();
-    if (!measurement)
-        return makeBlankPixmap();
+    const Measurement* m = measurement();
+    if (!m)
+        return blankPixmap();
+    QImage img = makeImage(m->image());
     if (gGui->toggles->showBins.getValue())
-        return makeOverlayPixmap(*measurement);
-    return makePixmap(measurement->image());
+        addOverlay(img, m->midTth());
+    return QPixmap::fromImage(img);
+}
+
+const Measurement* DataImageTab::measurement()
+{
+    const Cluster* cluster = gSession->currentCluster();
+    return cluster ? cluster->at(iMeas.val()-1) : nullptr;
 }
 
 //  ***********************************************************************************************
@@ -325,12 +225,12 @@ QPixmap DataImageTab::pixmap()
 
 CorrImageTab::CorrImageTab()
 {
-    controls_.addStretch(1);
+    controls_->addStretch(1);
 }
 
 QPixmap CorrImageTab::pixmap()
 {
-    if (!gSession->corrset().hasFile())
-        return makeBlankPixmap();
-    return makePixmap(gSession->corrset().image());
+    if (!gSession->corrset.hasFile())
+        return blankPixmap();
+    return QPixmap::fromImage(makeImage(gSession->corrset.image()));
 }

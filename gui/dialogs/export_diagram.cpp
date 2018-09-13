@@ -12,20 +12,17 @@
 //
 //  ***********************************************************************************************
 
-#include "export_diagram.h"
+#include "gui/dialogs/export_diagram.h"
 #include "core/session.h"
-#include "core/def/idiomatic_for.h"
-#include "gui/dialogs/exportfile_dialogfield.h"
+#include "gui/dialogs/subdialog_file.h"
 #include "gui/mainwin.h"
-#include "gui/state.h"
-#include "qcr/engine/debug.h"
+//#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class ExportDiagram
 
 ExportDiagram::ExportDiagram()
-    : CModal("xdia")
-    , QDialog(gGui)
+    : QcrDialog(gGui, "Export diagram")
 {
     fileField_ = new ExportfileDialogfield(this, true, [this]()->void{save();});
 
@@ -46,17 +43,15 @@ void ExportDiagram::save()
     QString separator = fileField_->separator();
 
     // get data
-    const int xi = int(gGui->state->diagramX->getValue());
-    const int yi = int(gGui->state->diagramY->getValue());
+    const int idxX = int(gSession->params.diagramX.val());
+    const int idxY = int(gSession->params.diagramY.val());
     std::vector<double> xs, ys, ysLow, ysHig;
-    gSession->peakInfos().get4(xi, yi, xs, ys, ysLow, ysHig);
-    if (!xs.size()) {
-        qWarning() << "no data available";
-        return;
-    }
-
+    const InfoSequence* peakInfos = gSession->allPeaks.currentInfoSequence();
+    ASSERT(peakInfos);
+    peakInfos->get4(idxX, idxY, xs, ys, ysLow, ysHig);
+    ASSERT(xs.size());
     // write data table
-    for_i (xs.size()) {
+    for (int i=0; i<xs.size(); ++i) {
         stream << xs[i] << separator << ys[i];
         if (ysLow.size())
             stream << separator << ysLow[i] << separator << ysHig[i];

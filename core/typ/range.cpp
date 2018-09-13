@@ -14,11 +14,10 @@
 //
 //  ***********************************************************************************************
 
-#include "range.h"
-#include "qcr/engine/debug.h"
-#include "core/def/comparators.h"
-#include "core/def/idiomatic_for.h"
+#include "core/typ/range.h"
+#include "core/aux/exception.h"
 #include "core/typ/json.h"
+#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class Range
@@ -53,16 +52,6 @@ Range Range::infinite()
     return Range(-Q_INFINITY, +Q_INFINITY);
 }
 
-int Range::compare(const Range& that) const
-{
-    ASSERT(isValid() && that.isValid());
-    RET_COMPARE_VALUE(min)
-    RET_COMPARE_VALUE(max)
-    return 0;
-}
-
-VALID_EQ_NE_OPERATOR(Range)
-
 void Range::invalidate()
 {
     set(Q_QNAN, Q_QNAN);
@@ -93,31 +82,35 @@ Range Range::slice(int i, int n) const
     if (!isValid())
         THROW("BUG: Range::slice called for invalid range");
     if (n<1)
-        THROW("BUG: Range::slice called with invalid n");
+        THROW("BUG: Range::slice called with invalid n="+QString::number(n));
     if (i<0 || i>=n)
-        THROW("BUG  Range::slice called with invalid i");
+        THROW("BUG  Range::slice called with invalid i="
+              +QString::number(i)+" where n="+QString::number(n));
     double delta = width()/n;
     return Range(min+i*delta, min+(i+1)*delta);
 }
 
-void Range::set(double min_, double max_) {
-    min = min_;
-    max = max_;
+void Range::set(double _min, double _max)
+{
+    min = _min;
+    max = _max;
     ASSERT(!isValid() || min <= max);
 }
 
-void Range::safeSet(double v1, double v2)
+void Range::setOne(double val, bool namelyMax) // sets either min or max
 {
-    if (v1 > v2)
-        qSwap(v1, v2);
-    set(v1, v2);
+    if (namelyMax)
+        max = val;
+    else
+        min = val;
+    ASSERT(!isValid() || min <= max);
 }
 
 Range Range::safeFrom(double v1, double v2)
 {
-    Range range;
-    range.safeSet(v1, v2);
-    return range;
+    if (v1<=v2)
+        return {v1, v2};
+    return {v2, v1};
 }
 
 void Range::extendBy(double val)
@@ -161,13 +154,6 @@ Range Range::intersect(const Range& that) const
     return Range(val, val); // empty, isValid()
 }
 
-double Range::bound(double value) const
-{
-    if (isValid() && !qIsNaN(value))
-        return qBound(min, value, max);
-    return Q_QNAN;
-}
-
 QJsonObject Range::toJson() const
 {
     return { { "min", double_to_json(min) }, { "max", double_to_json(max) } };
@@ -179,70 +165,71 @@ void Range::fromJson(const JsonObj& obj)
     max = obj.loadQreal("max");
 }
 
-QString Range::to_s(int precision, int digitsAfter) const
+QString Range::to_s(const QString& unit, int precision, int digitsAfter) const
 {
-    return QString("%1 .. %2")
+    return isValid()
+        ? QString("%1 .. %2 %3")
         .arg(min, precision, 'f', digitsAfter)
-        .arg(max, precision, 'f', digitsAfter);
+        .arg(max, precision, 'f', digitsAfter)
+        .arg(unit)
+        : "undefined";
 }
+
 
 //  ***********************************************************************************************
 //! @class Ranges
 
-bool Ranges::add(const Range& range)
+void Ranges::clear() {
+    ranges_.clear();
+}
+
+//! Adds given range to *this, and removes ranges from *this that intersect.
+
+void Ranges::add(const Range& range)
 {
-    std::vector<Range> newRanges;
-    Range addRange = range;
-    for (const Range& r : ranges_) {
-        if (r.contains(range))
-            return false;
-        if (!range.contains(r)) {
-            if (range.intersects(r))
-                addRange.extendBy(r);
-            else
-                newRanges.push_back(r);
-        }
-    }
-    newRanges.push_back(addRange);
-    ranges_ = newRanges;
+    ranges_.erase(std::remove_if(ranges_.begin(), ranges_.end(), [=](const Range& r) {
+                return r.intersects(range); }), ranges_.end());
+    ranges_.push_back(range);
     sort();
-    return true;
-}
-
-bool Ranges::remove(const Range& removeRange)
-{
-    std::vector<Range> newRanges;
-    bool changed = false;
-
-    for (const Range& r : ranges_) {
-        if (!r.intersect(removeRange).isEmpty()) {
-            changed = true;
-            if (r.min < removeRange.min)
-                newRanges.push_back(Range(r.min, removeRange.min));
-            if (r.max > removeRange.max)
-                newRanges.push_back(Range(removeRange.max, r.max));
-        } else {
-            newRanges.push_back(r);
+    // not elegant: find the newly added range
+    for (int i=0; i<size(); ++i) {
+        if (at(i).intersects(range)) {
+            selected_ = i;
+            return;
         }
     }
-
-    if (changed)
-        ranges_ = newRanges;
-    return changed;
 }
 
-static bool lessThan(const Range& r1, const Range& r2)
+void Ranges::removeSelected()
 {
-    if (r1.min < r2.min)
-        return true;
-    if (r1.min > r2.min)
-        return false;
-    return r1.max < r2.max;
+    ASSERT(0<=selected_ && selected_<size());
+    ranges_.erase(ranges_.begin()+selected_);
+    selected_ -= 1;
+    if (selected_<0 && size())
+        selected_ = 0;
+}
+
+void Ranges::select(int i)
+{
+    ASSERT(0<=i && i<size());
+    selected_ = i;
+}
+
+//! Selects the range that contains x. If there is no such range, then selected_ is left unchanged.
+void Ranges::selectByValue(double x)
+{
+    for (int i=0; i<size(); ++i) {
+        if (at(i).contains(x)) {
+            selected_ = i;
+            return;
+        }
+    }
 }
 
 void Ranges::sort()
 {
-    std::sort(ranges_.begin(), ranges_.end(), lessThan);
+    std::sort(ranges_.begin(), ranges_.end(), [](const Range& r1, const Range& r2) {
+            return r1.min < r2.min; } );
 }
 
 QJsonArray Ranges::toJson() const
@@ -255,9 +242,9 @@ QJsonArray Ranges::toJson() const
 
 void Ranges::fromJson(const QJsonArray& arr)
 {
-    for_i (arr.count()) {
+    for (const auto& ele: arr) {
         Range range;
-        range.fromJson(arr.at(i).toObject());
+        range.fromJson(ele.toObject());
         ranges_.push_back(range);
     }
 }

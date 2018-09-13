@@ -12,12 +12,10 @@
 //
 //  ***********************************************************************************************
 
-#include "bigtable.h"
-#include "qcr/engine/debug.h"
-#include "core/def/idiomatic_for.h"
+#include "gui/view/bigtable.h"
 #include "core/session.h"
 #include "gui/mainwin.h"
-#include "gui/state.h"
+#include "qcr/base/debug.h"
 #include <QApplication>
 #include <QClipboard>
 #include <QHeaderView>
@@ -31,22 +29,25 @@
 BigtableModel::BigtableModel()
     : TableModel("data#")
 {
-    gGui->state->bigtableModel = this;
+    gGui->bigtableModel = this; // for use in export dialog
     headers_ = PeakInfo::dataTags(false);
     comparators_ = PeakInfo::dataCmps();
-    ASSERT(comparators_.size() == headers_.count());
-    numCols_ = headers_.size();
+    numCols_ = headers_.count();
+    ASSERT((int)comparators_.size() == numCols_);
     colIndexMap_.resize(numCols_);
-    for_i (numCols_)
+    for (int i=0; i<numCols_; ++i)
         colIndexMap_[i] = i;
 }
 
 void BigtableModel::refresh()
 {
+    if (!gSession->activeClusters.size() || !gSession->peaks.size())
+        return;
     beginResetModel();
     rows_.clear();
-    for (const PeakInfo& r : gSession->peakInfos().peaks())
-        rows_.push_back(XRow(rows_.size() + 1, r.data()));
+    if (const InfoSequence* peakInfos = gSession->allPeaks.currentInfoSequence())
+        for (const PeakInfo& r : peakInfos->peaks())
+            rows_.push_back(XRow(rows_.size() + 1, r.data()));
     sortData();
     endResetModel();
 }
@@ -93,7 +94,7 @@ QVariant BigtableModel::headerData(int section, Qt::Orientation, int role) const
 //! Called upon QHeaderView::sectionMoved.
 void BigtableModel::onColumnMove(int from, int to)
 {
-    ASSERT(from < colIndexMap_.size() && to < colIndexMap_.size());
+    ASSERT(from < (int)colIndexMap_.size() && to < (int)colIndexMap_.size());
     qSwap(colIndexMap_[from], colIndexMap_[to]);
 }
 
@@ -109,7 +110,8 @@ const std::vector<QVariant>& BigtableModel::row(int index) const
 
 void BigtableModel::sortData()
 {
-    auto _cmpRows = [this](int col, const std::vector<QVariant>& r1, const std::vector<QVariant>& r2) {
+    auto _cmpRows = [this](int col,
+                           const std::vector<QVariant>& r1, const std::vector<QVariant>& r2) {
         col = colIndexMap_.at(col);
         return comparators_.at(col)(r1.at(col), r2.at(col));
     };
@@ -129,16 +131,15 @@ void BigtableModel::sortData()
                 return false;
         }
 
-        for_int (col, numCols_) {
-            if (col != sortColumn_) {
-                int c = _cmpRows(col, r1.row, r2.row);
-                if (c < 0)
-                    return true;
-                if (c > 0)
-                    return false;
-            }
+        for (int col=0; col<numCols_; ++col) {
+            if (col == sortColumn_)
+                continue;
+            int c = _cmpRows(col, r1.row, r2.row);
+            if (c < 0)
+                return true;
+            if (c > 0)
+                return false;
         }
-
         return false;
     };
 
@@ -151,18 +152,19 @@ QStringList BigtableModel::getHeaders() const
 {
     QStringList ret;
     const QStringList& headers = PeakInfo::dataTags(true);
-    for_i (headers.count())
-        if (gGui->state->bigtableShowCol.at(i))
-            ret.append(headers.at(i));
+    for (int i=0; i<headers.count(); ++i)
+        if (gSession->params.bigMetaSelection.isSelected(i))
+            ret.append(headers[i]);
     return ret;
 }
 
 std::vector<std::vector<const QVariant*>> BigtableModel::getData() const
 {
     std::vector<std::vector<const QVariant*>> ret(rowCount());
-    for_ij (rowCount(), columnCount()-1)
-        if (gGui->state->bigtableShowCol.at(j))
-            ret.at(i).push_back(&(rows_.at(i).row.at(j)));
+    for (int i=0; i<rowCount(); ++i)
+        for (int j=0; j<columnCount()-1; ++j)
+            if (gSession->params.bigMetaSelection.isSelected(j))
+                ret.at(i).push_back(&(rows_.at(i).row.at(j)));
     return ret;
 }
 
@@ -186,26 +188,20 @@ BigtableView::BigtableView()
     int w = QFontMetrics(h->font()).width("000000000");
     setColumnWidth(0, w);
 
-    // inbound connections:
-    connect(gSession, &Session::sigBigtableCols, this, &BigtableView::updateShownColumns);
-
     // internal connections:
-    connect(
-        header(), &QHeaderView::sectionMoved,
-        [this](int /*logicalIndex*/, int oldVisualIndex, int newVisualIndex) {
-            ASSERT(oldVisualIndex > 0 && newVisualIndex > 0);
-            header()->setSortIndicatorShown(false);
-            model()->onColumnMove(oldVisualIndex-1, newVisualIndex-1);
-            model()->sortData();
-        });
+    connect(header(), &QHeaderView::sectionMoved,
+            [this](int /*logicalIndex*/, int oldVisualIndex, int newVisualIndex) {
+                ASSERT(oldVisualIndex > 0 && newVisualIndex > 0);
+                header()->setSortIndicatorShown(false);
+                model()->onColumnMove(oldVisualIndex-1, newVisualIndex-1);
+                model()->sortData(); });
 
     connect(header(), &QHeaderView::sectionClicked, [this](int logicalIndex) {
         QHeaderView* h = header();
         h->setSortIndicatorShown(true);
         h->setSortIndicator(logicalIndex, Qt::AscendingOrder);
         model()->setSortColumn(logicalIndex-1);
-        model()->sortData();
-    });
+        model()->sortData(); });
 }
 
 void BigtableView::refresh()
@@ -216,8 +212,8 @@ void BigtableView::refresh()
 void BigtableView::updateShownColumns()
 {
     int nCol = model()->columnCount();
-    for_i (nCol-1) {
-        if (gGui->state->bigtableShowCol[i])
+    for (int i=0; i<nCol-1; ++i) {
+        if (gSession->params.bigMetaSelection.isSelected(i))
             showColumn(i + 1);
         else
             hideColumn(i + 1);

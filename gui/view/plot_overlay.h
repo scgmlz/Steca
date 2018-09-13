@@ -20,17 +20,17 @@
 
 //! Listens to mouse events to select subranges of a plot.
 
-class PlotOverlay : public QWidget {
+class PlotOverlay : public QWidget /* sic, no QcrWidget here */ {
 public:
-    PlotOverlay(QCustomPlot&);
+    PlotOverlay(QCustomPlot&, double _step);
+    PlotOverlay(const PlotOverlay&) = delete;
 
     void setMargins(int left, int right);
 
 protected:
     virtual void addRange(const Range&) = 0;
-    virtual void subtractRange(const Range&) = 0;
-    virtual bool addModeColor(QColor&) const = 0;
-    virtual bool subtractModeColor(QColor&) const = 0;
+    virtual void selectRange(double x) = 0;
+    virtual const QColor* mousedColor() const = 0;
 
     QCustomPlot& plot_;
 
@@ -45,10 +45,14 @@ private:
     void paintCursor();
     void updateCursorRegion();
 
+    double pix2roundedCoord(double) const;
+    double pix2roundedPixel(double) const;
+
     int marginLeft_, marginRight_;
     int cursorPos_, mouseDownPos_;
     bool hasCursor_, mouseDown_;
     Qt::MouseButton mouseButton_;
+    double step_;
 };
 
 #endif // PLOT_OVERLAY_H

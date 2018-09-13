@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/def/idiomatic_for.h"
+#include "core/aux/exception.h"
 #include "core/raw/rawfile.h"
 #include <qmath.h>
 #include <sstream>
@@ -151,7 +151,7 @@ Rawfile loadCaress(const QString& filePath) {
                 double tempTime = 0;
                 if ((y < 2015)
                     || ((y == 2015) && ((s_m.compare("Jan") == 0) || (s_m.compare("Feb") == 0)))) {
-                    tempTime = double(tim1) / 100; // HACK REVIEW how deltaTime is used!!
+                    tempTime = double(tim1) / 100; // TODO REVIEW this HACK how deltaTime is used!!
                 } else {
                     tempTime = double(tim1);
                 }
@@ -164,7 +164,7 @@ Rawfile loadCaress(const QString& filePath) {
                 if (!(imageSize > 0 && imageSize == detRel * detRel)) THROW("bad image size");
 
                 std::vector<float> convertedIntens(imageSize);
-                for_i (imageSize)
+                for (int i=0; i<imageSize; ++i)
                     convertedIntens[i] = intens[i];
 
                 size2d size(detRel, detRel);
