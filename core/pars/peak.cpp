@@ -95,14 +95,17 @@ void Peaks::removeSelected()
     gSession->onPeaks();
 }
 
-void Peaks::selectByValue(double x)
+//! Selects the range that contains x. If there is no such range, then selected_ is left unchanged.
+//! Returns true if a range has been found else returns false.
+bool Peaks::selectByValue(double x)
 {
     for (int i=0; i<size(); ++i) {
         if (at(i).range().contains(x)) {
             selected_ = i;
-            return;
+            return true;
         }
     }
+    return false;
 }
 
 QJsonArray Peaks::toJson() const
