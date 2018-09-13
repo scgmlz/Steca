@@ -73,17 +73,15 @@ void PlotDfgramOverlay::addRange(const Range& range)
 void PlotDfgramOverlay::selectRange(double x)
 {
     doLog(QString("dfgram sel %1").arg(x));
-    switch (gSession->params.editableRange) {
-    case EditableRange::BASELINE:
-        gSession->baseline.ranges.selectByValue(x);
-        break;
-    case EditableRange::PEAKS:
-        gSession->peaks.selectByValue(x);
-        break;
-    default:
-        return;
-    }
-    gRoot->remakeAll();
+    bool selectionChanged = false;
+    // prioritize baseline sel. when editing baselines
+    if (gSession->params.editableRange == EditableRange::BASELINE)
+        selectionChanged = gSession->baseline.ranges.selectByValue(x);
+    if (!selectionChanged) // no baseline found:
+        selectionChanged = gSession->peaks.selectByValue(x);
+    //if a peak or a baseline.range has been selected, redraw all:
+    if (selectionChanged)
+        gRoot->remakeAll();
 }
 
 void PlotDfgramOverlay::executeConsoleCommand(const QString& arg)
@@ -214,14 +212,15 @@ void PlotDfgram::renderAll()
 
     // Render colored background areas to indicate baseline and peak fit ranges.
     const Ranges& ranges = gSession->baseline.ranges;
-    bool showingBaseline = gSession->params.editableRange == EditableRange::BASELINE;
+    bool showBaselineHighlight = gSession->params.editableRange == EditableRange::BASELINE;
+    bool showPeakHighlight = true;
     for (int jR=0; jR<ranges.size(); ++jR)
         addBgItem(ranges.at(jR),
-                  showingBaseline && jR==gSession->baseline.ranges.selectedIndex() ?
+                  showBaselineHighlight && jR==gSession->baseline.ranges.selectedIndex() ?
                   colors::baseEmph : colors::baseStd);
     for (int jP=0; jP<gSession->peaks.size(); ++jP)
         addBgItem(gSession->peaks.at(jP).range(),
-                  !showingBaseline && jP==gSession->peaks.selectedIndex() ?
+                  showPeakHighlight && jP==gSession->peaks.selectedIndex() ?
                   colors::peakEdit : colors::peakStd);
 
     if (!gSession->hasData() || !gSession->currentCluster()) {
