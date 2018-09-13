@@ -17,6 +17,17 @@
 //#include "qcr/base/debug.h"
 #include <QGroupBox>
 
+//! Implementation of numberedFileName in header.
+
+QString numberedFileName(const QString& templatedName, int num, int maxNum) {
+    if (!templatedName.contains("%d"))
+        qFatal("path does not contain placeholder %%d");
+    QString ret = templatedName;
+    int nDigits = (int)log10((double)maxNum)+1;
+    ret.replace("%d", QString("%1").arg(num, nDigits, 10, QLatin1Char('0')));
+    return ret;
+}
+
 namespace {
 static QString const
     DAT_EXT(".dat"), DAT_SEP(" "), // extension, separator
@@ -61,7 +72,9 @@ ExportfileDialogfield::ExportfileDialogfield(
 
     auto* ftypeGrid = new QVBoxLayout;
     ftypeGrid->addWidget(&rbDat_);
+    fileExtensionGroup.addButton(&rbDat_);
     ftypeGrid->addWidget(&rbCsv_);
+    fileExtensionGroup.addButton(&rbCsv_);
 
     auto* ftype = new QGroupBox("File type");
     ftype->setVisible(withTypes);

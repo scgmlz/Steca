@@ -26,7 +26,7 @@ public:
     void refresh();
 private:
     void erase();
-    QCPGraph *graph_, *graphLo_, *graphUp_;
+    QCPGraph *graph_;//, *graphLo_, *graphUp_;
 };
 
 #endif // PLOT_DIAGRAM_H

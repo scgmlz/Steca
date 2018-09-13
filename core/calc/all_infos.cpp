@@ -130,6 +130,28 @@ const InfoSequence* AllInfos::currentInterpolated() const
 
 const InfoSequence* AllInfos::currentInfoSequence() const
 {
+    return gSession->params.interpolParams.enabled.val() ? currentInterpolated() : currentDirect();
+}
+
+const std::vector<InfoSequence const *> AllInfos::allInterpolated() const
+{
+    std::vector<InfoSequence const *> ret;
+    for (const auto & v : interpolated.data())
+        ret.push_back(&v.get(this));
+    return ret;
+}
+
+const std::vector<InfoSequence const *> AllInfos::allDirect() const
+{
+    std::vector<InfoSequence const *> ret;
+    for (const auto & v : direct.data())
+        ret.push_back(&v.get(this));
+    return ret;
+
+}
+
+const std::vector<InfoSequence const *> AllInfos::allInfoSequences() const
+{
     return gSession->params.interpolParams.enabled.val() ?
-        currentInterpolated() : currentDirect();
+                allInterpolated() : allDirect();
 }

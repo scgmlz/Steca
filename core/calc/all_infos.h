@@ -27,6 +27,9 @@ public:
     const InfoSequence* currentDirect() const;
     const InfoSequence* currentInterpolated() const;
     const InfoSequence* currentInfoSequence() const;
+    const std::vector<InfoSequence const *> allDirect() const;
+    const std::vector<InfoSequence const *> allInterpolated() const;
+    const std::vector<InfoSequence const *> allInfoSequences() const;
     void invalidateAll() const;
     void invalidateAt(int) const;
     void invalidateInterpolated() const;

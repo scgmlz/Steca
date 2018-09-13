@@ -78,6 +78,9 @@ public:
     void invalidate() const {
         data_.clear();
     }
+    const std::vector<T> &data() const {
+        return data_;
+    }
 private:
     void resize(const Parent* parent) const {
         int n = nFct_();

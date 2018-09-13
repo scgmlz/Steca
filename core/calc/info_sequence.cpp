@@ -96,6 +96,43 @@ void InfoSequence::get4(const int idxX, const int idxY,
     }
 }
 
+
+//! Returns entries idxX and idxY, as sorted vectors X and Ylow,Y,Yhig, for use in diagrams.
+
+void InfoSequence::getValuesAndSigma(const size_t idxX, const size_t idxY,
+                                     std::vector<double>& xs, std::vector<double>& ys,
+                                     std::vector<double>& ysSigma) const
+{
+    size_t n = peaks_.size();
+    xs.resize(n);
+    ys.resize(n);
+
+    for (size_t i=0; i<n; ++i) {
+        const std::vector<QVariant> row = peaks_.at(i).data();
+        xs[i] = row.at(idxX).toDouble();
+        ys[i] = row.at(idxY).toDouble();
+    }
+
+    std::vector<int> is;
+    sortColumns(xs, ys, is);
+
+    using eReflAttr = PeakInfo::eReflAttr;
+    eReflAttr ye = (eReflAttr) idxY;
+    const Peak* peak = gSession->peaks.selectedPeak();
+    if (peak
+        && !peak->isRaw()
+        && (ye==eReflAttr::INTEN || ye==eReflAttr::TTH || ye==eReflAttr::FWHM)) {
+
+        ysSigma.resize(n);
+        for (auto i : is) {
+            const std::vector<QVariant> row = peaks_.at(i).data();
+            ysSigma[i] = row.at(idxY+1).toDouble(); // SIGMA_X has tag position of X plus 1
+        }
+    } else {
+        ysSigma.resize(0);
+    }
+}
+
 //! For debugging only.
 
 void InfoSequence::inspect(const QString& header) const

@@ -60,7 +60,7 @@ public:
     void add(const Range&);
     void removeSelected();
     void select(int i);
-    void selectByValue(double x);
+    bool selectByValue(double x);
 
     Range* selectedRange() { return isEmpty() ? nullptr : &ranges_.at(selected_); }
 
