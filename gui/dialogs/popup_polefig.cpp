@@ -18,10 +18,8 @@
 #include <QLayout>
 
 PopupPolefig::PopupPolefig()
-    : QcrModelessDialog(gGui, "polefig#")
+    : PopupBaseDialog(gGui, "polefig#", "Polefigure")
 {
-    setWindowTitle("Steca " + name());
-
     auto* plot = new PlotPolefig(false); // the main subframe
     plot->setMinimumSize(300,300); // TODO store and reuse user setting; freeze aspect ratio
 
@@ -30,6 +28,7 @@ PopupPolefig::PopupPolefig()
     layout->setStretch(0,1000);
     // TODO (issue#76) add info about used parameters
     setLayout(layout);
+
 
     show();
 }

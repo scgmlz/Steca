@@ -16,10 +16,11 @@
 #define POPUP_POLEFIG_H
 
 #include "qcr/engine/mixin.h"
+#include "popup_base_dialog.h"
 
 //! Popup display of the present pole figure.
 
-class PopupPolefig : public QcrModelessDialog {
+class PopupPolefig : public PopupBaseDialog {
 public:
     PopupPolefig();
 };
