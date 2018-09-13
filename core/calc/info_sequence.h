@@ -31,6 +31,9 @@ public:
     void get4(const int idxX, const int idxY,
               std::vector<double>& xs, std::vector<double>& ys,
               std::vector<double>& ysLow, std::vector<double>& ysHig) const;
+    void getValuesAndSigma(const size_t idxX, const size_t idxY,
+              std::vector<double>& xs, std::vector<double>& ys,
+              std::vector<double>& ysSigma) const;
     void inspect(const QString& header) const;
 
 private:

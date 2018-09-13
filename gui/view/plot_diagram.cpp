@@ -23,13 +23,18 @@
 
 PlotDiagram::PlotDiagram()
 {
-    graph_   = addGraph();
-    graphLo_ = addGraph();
-    graphUp_ = addGraph();
+    graph_ = addGraph();
+    graph_->setErrorType(QCPGraph::ErrorType::etValue);
 
-    graph_  ->setPen(QPen(Qt::blue));
-    graphUp_->setPen(QPen(Qt::red));
-    graphLo_->setPen(QPen(Qt::green));
+    auto ss = graph_->scatterStyle();
+    ss.setBrush(QBrush(Qt::BrushStyle::NoBrush));
+    ss.setShape(QCPScatterStyle::ssCircle);
+    ss.setSize(5);
+    graph_->setScatterStyle(ss);
+
+    graph_->setLineStyle(QCPGraph::LineStyle::lsNone);
+    graph_->setPen(QPen(Qt::blue));
+    graph_->setErrorPen(QPen(Qt::black));
 }
 
 PlotDiagram::PlotDiagram(int w, int h)
@@ -44,20 +49,18 @@ void PlotDiagram::refresh()
         return;
 
     graph_  ->clearData();
-    graphUp_->clearData();
-    graphLo_->clearData();
 
     const int idxX = int(gSession->params.diagramX.val());
     const int idxY = int(gSession->params.diagramY.val());
 
-    std::vector<double> xs, ys, ysLow, ysHig;
-    gSession->allPeaks.currentInfoSequence()->get4(idxX, idxY, xs, ys, ysLow, ysHig);
+    std::vector<double> xs, ys, ysSigma;
+    gSession->allPeaks.currentInfoSequence()->getValuesAndSigma(idxX, idxY, xs, ys, ysSigma);
 
     if (!xs.size())
         return erase();
 
     Range rgeX(xs);
-    Range rgeY = Range(ysLow).intersect(Range(ysHig));
+    Range rgeY(ys);
     if (rgeX.isEmpty() || rgeY.isEmpty())
         return erase();
 
@@ -65,11 +68,7 @@ void PlotDiagram::refresh()
     yAxis->setRange(rgeY.min, rgeY.max);
     xAxis->setVisible(true);
     yAxis->setVisible(true);
-
-    graph_  ->addData(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ys));
-    graphUp_->addData(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ysHig));
-    graphLo_->addData(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ysLow));
-
+    graph_->setDataValueError(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ys), QVector<double>::fromStdVector(ysSigma));
     replot();
 }
 
