@@ -13,53 +13,33 @@
 //  ***********************************************************************************************
 
 #include "gui/dialogs/export_polefig.h"
+#include "core/aux/async.h"
 #include "core/data/collect_intensities.h"
 #include "core/session.h"
+#include "core/aux/exception.h"
 #include "gui/dialogs/subdialog_file.h"
+#include "gui/dialogs/file_dialog.h"
 #include "gui/mainwin.h"
 #include "qcr/base/debug.h"
 #include <QGroupBox>
+#include <algorithm>
 
 namespace {
 
 // TODO move file saving code to Core
-void writePeakInfoInterpolated(QTextStream& stream)
+
+inline void writePeakInfo(QTextStream& stream, const PeakInfo &info, const QString &separator)
 {
-    const InfoSequence* peakInfos = gSession->allPeaks.currentInterpolated();
-    ASSERT(peakInfos);
-    int col = 0;
-    for (auto& info : peakInfos->peaks()) {
-        double val = info.inten();
-        if (qIsNaN(val))
-            stream << " -1";
-        else
-            stream << val;
-        if (++col==9) {
-            stream  << '\n';
-            col = 0;
-        } else
-            stream << " ";
-    }
+    stream << info.alpha() << separator
+           << info.beta()  << separator
+           << info.inten() << "\n";
 }
 
-void writePeakInfoOriginalGrid(QTextStream& stream)
+void writeInfoSequence(QTextStream& stream, const InfoSequence &peakInfos, const QString &separator)
 {
-    const InfoSequence* peakInfos = gSession->allPeaks.currentDirect();
-    ASSERT(peakInfos);
-    for (auto& info : peakInfos->peaks()) {
-        double val = info.inten();
-        stream << double(info.alpha()) << " "
-               << double(info.beta()) << " "
-               << val << '\n';
+    for (auto& info : peakInfos.peaks()) {
+        writePeakInfo(stream, info, separator);
     }
-}
-
-void writePeakInfo(QTextStream& stream, bool interpolated, const QString& separator)
-{
-    if (interpolated)
-        writePeakInfoInterpolated(stream);
-    else
-        writePeakInfoOriginalGrid(stream);
 }
 
 } // namespace
@@ -71,17 +51,13 @@ void writePeakInfo(QTextStream& stream, bool interpolated, const QString& separa
 ExportPolefig::ExportPolefig()
     : QcrDialog(gGui, "Export Polefigure")
 {
-    if (false && gSession->peaks.size()>1) { // TODO restore once peak fits are cached
+    if (gSession->peaks.size()>1) { // TODO restore once peak fits are cached
         exportCombi_.programaticallySetValue(true);
     } else {
         exportCurrent_.programaticallySetValue(true);
         exportMulti_.setEnabled(false);
         exportCombi_.setEnabled(false);
     }
-    bool interpolated = gSession->params.interpolParams.enabled.val();
-    gridOriginal_.programaticallySetValue(!interpolated);
-    gridInterpol_.setEnabled(interpolated);
-    gridInterpol_.programaticallySetValue(interpolated);
 
     fileField_ = new ExportfileDialogfield(this, true, [this]()->void{save();});
 
@@ -92,113 +68,95 @@ ExportPolefig::ExportPolefig()
     // layout
     auto* savePeaksLayout = new QVBoxLayout;
     savePeaksLayout->addWidget(&exportCurrent_);
+    exportModeGroup.addButton(&exportCurrent_, 0);
     savePeaksLayout->addWidget(&exportMulti_);
+    exportModeGroup.addButton(&exportMulti_, 1);
     savePeaksLayout->addWidget(&exportCombi_);
+    exportModeGroup.addButton(&exportCombi_, 2);
 
     auto* savePeaks = new QGroupBox {"Save which peaks"};
     savePeaks->setLayout(savePeaksLayout);
 
-    auto* saveGridLayout = new QVBoxLayout;
-    saveGridLayout->addWidget(&gridOriginal_);
-    saveGridLayout->addWidget(&gridInterpol_);
-
-    auto* saveGrid = new QGroupBox {"Save which grid"};
-    saveGrid->setLayout(saveGridLayout);
 
     auto* vbox = new QVBoxLayout();
     vbox->addWidget(savePeaks);
-    vbox->addWidget(saveGrid);
     vbox->addLayout(fileField_);
     setLayout(vbox);
 }
 
-bool ExportPolefig::interpolated() {
-    ASSERT(gridInterpol_.getValue() != gridOriginal_.getValue());
-    return gridInterpol_.getValue();
-}
-
 void ExportPolefig::save()
 {
-    if      (exportCurrent_.getValue())
-        saveCurrent();
-/*    else if (exportMulti_.getValue())
-        saveAll(false);
-    else if (exportCombi_.getValue())
-        saveAll(true);
-*/
-    else
-        qFatal("invalid case in ExportPolefig::save");
+    int checkedId = exportModeGroup.checkedId();
+    const auto exportMode = ExportMode(checkedId);
+    const auto path = fileField_->path(true, exportMode==ExportMode::ALL_PEAKS_MULTIPLE_FILES);
+
+    std::vector<InfoSequence const *> peaks;
+    if (exportMode == ExportMode::CURRENT_PEAK) {
+        peaks.push_back(gSession->allPeaks.currentInfoSequence());
+    } else {
+        peaks = gSession->allPeaks.allInfoSequences();
+    }
+
+    saveAll(! (exportMode==ExportMode::ALL_PEAKS_MULTIPLE_FILES), path, fileField_->separator(), peaks);
+
     close();
 }
 
-void ExportPolefig::saveCurrent()
+
+void saveOneFile(QString &path, const QString &separator, const std::vector<InfoSequence const *>
+                 &peaks, TakesLongTime &progress)
 {
-    QFile* file = fileField_->file();
-    if (!file)
-        return;
-    QTextStream stream(file);
-    const Cluster* cluster = gSession->currentCluster();
-    ASSERT(cluster);
-    const Curve& curve = algo::projectCluster(*cluster, cluster->rgeGma());
-    if (curve.isEmpty())
-        qFatal("curve is empty");
-    writePeakInfo(stream, interpolated(), fileField_->separator());
+    QFile file(path);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        THROW("Cannot open file for writing: " + path);
+    QTextStream stream(&file);
+
+    int picNum = 0;
+    for (const auto peak : peaks) {
+        ++picNum;
+        progress.step();
+        if (peaks.size() > 1)
+            stream << "Picture Nr: " << picNum << '\n';
+        writeInfoSequence(stream, *peak, separator);
+    }
 }
 
 // TODO: adapt from ExportDfgram, and activate it once peak fits are cached
-/*
-void ExportPolefig::saveAll(bool oneFile)
+
+void ExportPolefig::saveAll(bool oneFile, const QString &path, const QString &separator,
+                            const std::vector<InfoSequence const *> &peaks)
 {
-    const ActiveClusters& expt = gSession->activeClusters();
     // In one-file mode, start output stream; in multi-file mode, only do prepations.
-    QString path = fileField_->path(true, !oneFile);
     if (path.isEmpty())
         return;
-    QTextStream* stream = nullptr;
-    if (oneFile) {
-        QFile* file = file_dialog::openFileConfirmOverwrite("file", this, path);
-        if (!file)
-            return;
-        stream = new QTextStream(file);
+
+    QStringList paths;
+    if (oneFile)
+            paths << path;
+    else for (int i=0; i<peaks.size(); ++i)
+        paths << numberedFileName(path, i, peaks.size()+1);
+
+    // check whether any of the file(s) already exists
+    QStringList existingFiles;
+    for (const auto &currPath : paths) {
+        if (QFile::exists(currPath))
+            existingFiles << QFileInfo(currPath).fileName();
+    }
+    if (existingFiles.size() &&
+        !file_dialog::confirmOverwrite(existingFiles.size()>1 ?
+                                       "Files exist" : "File exists",
+                                       this, existingFiles.join(", ")))
+        return;
+
+    TakesLongTime progress("save diffractograms", peaks.size(), &fileField_->progressBar);
+
+    if (paths.size() == 1) {
+        saveOneFile(paths[0], separator, peaks, progress);
     } else {
-        // check whether any of the numbered files already exists
-        QStringList existingFiles;
-        for (int i=0; i<expt.size(); ++i) {
-            QString currPath = numberedName(path, i, expt.size()+1);
-            if (QFile(currPath).exists())
-                existingFiles << QFileInfo(currPath).fileName();
+        for (uint i=0; i<peaks.size(); ++i)  {
+            saveOneFile(paths[i], separator, { peaks[i] }, progress);
         }
-        if (existingFiles.size() &&
-            QMessageBox::question(this, existingFiles.size()>1 ? "Files exist" : "File exists",
-                                  "Overwrite files " + existingFiles.join(", ") + " ?") !=
-            QMessageBox::Yes)
-            return;
+
     }
-    TakesLongTime progress(&fileField_->progressBar, "save diffractograms", expt.size());
-    int picNum = 0;
-    int fileNum = 0;
-    int nSlices = gSession->gammaSelection.numSlices();
-    for (const Cluster* cluster : expt.clusters()) {
-        ++picNum;
-        progress.step();
-        for (int i=0; i<qMax(1,nSlices); ++i) {
-            if (!oneFile) {
-                QFile* file = new QFile(numberedName(path, ++fileNum, expt.size()+1));
-                if (!file->open(QIODevice::WriteOnly | QIODevice::Text))
-                    THROW("Cannot open file for writing: " + path);
-                delete stream;
-                stream = new QTextStream(file);
-            }
-            ASSERT(stream);
-            const Range gmaStripe = gSession->gammaSelection.slice2range(i);
-            const Curve& curve = cluster->toCurve(gmaStripe);
-            ASSERT(!curve.isEmpty());
-            *stream << "Picture Nr: " << picNum << '\n';
-            if (nSlices > 1)
-                *stream << "Gamma slice Nr: " << i+1 << '\n';
-            writeCurve(*stream, curve, cluster, gmaStripe, fileField_->separator());
-        }
-    }
-    delete stream;
 }
-*/
+
