@@ -14,8 +14,8 @@
 
 #include "gui/dialogs/load_data.h"
 #include "core/session.h"
-#include "core/aux/async.h"
-#include "core/aux/exception.h"
+#include "core/misc/async.h"
+#include "core/misc/exception.h"
 #include "gui/dialogs/file_dialog.h"
 #include "qcr/base/debug.h" // warning
 #include <QDir>

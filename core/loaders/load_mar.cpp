@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/aux/exception.h"
+#include "core/misc/exception.h"
 #include "core/raw/rawfile.h"
 #include "3rdparty/Mar/MarReader.h"
 

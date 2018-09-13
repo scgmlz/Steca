@@ -15,7 +15,7 @@
 #ifndef BIGTABLE_H
 #define BIGTABLE_H
 
-#include "core/aux/variant.h"
+#include "core/misc/variant.h"
 #include "qcr/widgets/tables.h"
 
 //! Model for the BigtableView view.

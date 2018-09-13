@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/loaders/fastyamlloader.h"
-#include "core/aux/exception.h"
+#include "core/misc/exception.h"
 #include <sstream>
 
 // Allows for a very verbious yaml parser for debugging purposes:

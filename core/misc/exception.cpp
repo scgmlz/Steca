@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/aux/variant.h
-//! @brief     Defines helper functions related to QVariant
+//! @file      core/misc/exception.cpp
+//! @brief     Implements class Exception
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,19 +12,11 @@
 //
 //  ***********************************************************************************************
 
-#ifndef VARIANT_H
-#define VARIANT_H
+#include "core/misc/exception.h"
+#include "qcr/base/debug.h"
 
-#include <QVariant>
-
-bool isNumeric(const QVariant&);
-
-// The usual comparators: <0, 0, >0
-typedef int VariantComparator(const QVariant&, const QVariant&);
-
-int cmp_int(const QVariant&, const QVariant&);
-int cmp_str(const QVariant&, const QVariant&);
-int cmp_real(const QVariant&, const QVariant&);
-int cmp_date(const QVariant&, const QVariant&);
-
-#endif // VARIANT_H
+Exception::Exception(const QString& msg) noexcept
+    : msg_(msg)
+{
+    qWarning() << "Exception: " << msg;
+}

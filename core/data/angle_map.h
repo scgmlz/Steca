@@ -15,7 +15,7 @@
 #ifndef ANGLE_MAP_H
 #define ANGLE_MAP_H
 
-#include "core/aux/angles.h"
+#include "core/misc/angles.h"
 #include "core/typ/range.h"
 #include "core/typ/size2d.h"
 #include <QSharedPointer> // no auto rm
