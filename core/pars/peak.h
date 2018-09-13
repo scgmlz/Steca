@@ -51,7 +51,7 @@ public:
     void add(const Range&);
     void removeSelected();
     void select(int i) { selected_ = i; }
-    void selectByValue(double x);
+    bool selectByValue(double x);
 
     Peak* selectedPeak() {
         return 0<=selected_ && selected_<size() ? &peaks_[selected_] : nullptr; }

@@ -12,17 +12,25 @@
 //
 //  ***********************************************************************************************
 
-#ifndef POPUP_DIAGRAM_H
-#define POPUP_DIAGRAM_H
+#ifndef POPUP_BSE_DIALOG_H
+#define POPUP_BSE_DIALOG_H
 
 #include "qcr/engine/mixin.h"
-#include "popup_base_dialog.h"
+#include "core/session.h"
 
 //! Popup display of the present XY diagram.
 
-class PopupDiagram : public PopupBaseDialog {
-public:
-    PopupDiagram();
+class PopupBaseDialog : public QcrModelessDialog {
+protected:
+    PopupBaseDialog(QWidget* parent, const QString& name, const QString& title)
+        : QcrModelessDialog(parent, name)
+    {
+        int peakIndex = gSession->peaks.selectedIndex();
+        bool isInterpolated = gSession->params.interpolParams.enabled.val();
+        setWindowTitle(title + " for peak " + QString::number(peakIndex + 1)
+                       + (isInterpolated ? " (interpolated)" : ""));
+    }
+
 };
 
-#endif // POPUP_DIAGRAM_H
+#endif // POPUP_BSE_DIALOG_H

@@ -49,20 +49,6 @@ void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
     stream.flush(); // not sure whether we need this
 }
 
-//! Returns templatedName with '%d' replaced by string representation of num.
-
-//!  The string representation of num has leading zeros, and its number of
-//!  digits is determined by the maximum value maxNum.
-
-QString numberedName(const QString& templatedName, int num, int maxNum) {
-    if (!templatedName.contains("%d"))
-        qFatal("path does not contain placeholder %%d");
-    QString ret = templatedName;
-    int nDigits = (int)log10((double)maxNum)+1;
-    ret.replace("%d", QString("%1").arg(num, nDigits, 10, QLatin1Char('0')));
-    return ret;
-}
-
 } // namespace
 
 
@@ -83,8 +69,11 @@ ExportDfgram::ExportDfgram()
     // layout
     auto* saveWhatLayout = new QVBoxLayout;
     saveWhatLayout->addWidget(&rbCurrent_);
+    fileExtensionGroup.addButton(&rbCurrent_);
     saveWhatLayout->addWidget(&rbAllSequential_);
+    fileExtensionGroup.addButton(&rbAllSequential_);
     saveWhatLayout->addWidget(&rbAll_);
+    fileExtensionGroup.addButton(&rbAll_);
 
     auto* saveWhat = new QGroupBox {"Save what"};
     saveWhat->setLayout(saveWhatLayout);
@@ -142,7 +131,7 @@ void ExportDfgram::saveAll(bool oneFile)
         // check whether any of the numbered files already exists
         QStringList existingFiles;
         for (int i=0; i<nClusters; ++i) {
-            QString currPath = numberedName(path, i, nClusters+1);
+            QString currPath = numberedFileName(path, i, nClusters+1);
             if (QFile(currPath).exists())
                 existingFiles << QFileInfo(currPath).fileName();
         }
@@ -161,7 +150,7 @@ void ExportDfgram::saveAll(bool oneFile)
         progress.step();
         for (int i=0; i<qMax(1,nSlices); ++i) {
             if (!oneFile) {
-                QFile* file = new QFile(numberedName(path, ++fileNum, nClusters+1));
+                QFile* file = new QFile(numberedFileName(path, ++fileNum, nClusters+1));
                 if (!file->open(QIODevice::WriteOnly | QIODevice::Text))
                     THROW("Cannot open file for writing: " + path);
                 delete stream;
