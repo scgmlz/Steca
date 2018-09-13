@@ -16,6 +16,7 @@
 #include "gui/dialogs/file_dialog.h"
 //#include "qcr/base/debug.h"
 #include <QGroupBox>
+#include <cmath>
 
 //! Implementation of numberedFileName in header.
 
