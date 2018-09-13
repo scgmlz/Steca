@@ -26,7 +26,7 @@ namespace loadYAML {
 ///
 /// YamlArray2d contains the width, height and data of the !array2d.
 struct YamlArray2d {
-    int width = 0, height = 0;
+    size_t width = 0, height = 0;
     std::vector<float> data;
 };
 
@@ -114,7 +114,7 @@ public:
         return ok ? result : defaultVal;
     }
 
-    inline float floatValue(float defaultVal = Q_QNAN) const
+    inline float floatValue(float defaultVal = float(Q_QNAN)) const
     {
         bool ok = false;
         auto result = getScalar().toFloat(&ok);
@@ -151,17 +151,17 @@ public:
         return getMap().find(key).value();
     }
 
-    inline YamlNode& operator[](const int& index)
+    inline YamlNode& operator[](const size_t& index)
     {
         return getSequence().at(index);
     }
 
-    inline const YamlNode& operator[](const int& index) const
+    inline const YamlNode& operator[](const size_t& index) const
     {
         return getSequence().at(index);
     }
 
-    const int size() const {
+    size_t size() const {
         return sequence_->size();
     }   inline SequenceType::iterator begin();
 
@@ -171,7 +171,7 @@ public:
 
     SequenceType::const_iterator end() const;
 
-    inline const eNodeType nodeType() const { return nodeType_; }
+    inline eNodeType nodeType() const { return nodeType_; }
 
     friend YamlNode&& parseYamlFast(YamlParserType parser, YamlNode&& node);
     friend YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent);
