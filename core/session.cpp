@@ -69,6 +69,12 @@ void Session::onInterpol() const
     allPeaks.invalidateInterpolated();
 }
 
+void Session::onNormalization() const
+{
+    for (auto const& cluster: dataset.allClusters)
+        cluster->dfgrams.invalidate();
+}
+
 //! Removes all data, sets all parameters to their defaults. No need to invalidate caches?
 void Session::clear()
 {
