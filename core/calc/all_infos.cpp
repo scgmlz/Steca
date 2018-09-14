@@ -23,7 +23,7 @@
 namespace {
 
 //! Fits peak to the given gamma gRange and constructs a PeakInfo.
-PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
+Optional<PeakInfo> getPeak(int jP, const Cluster& cluster, int iGamma)
 {
     const Peak& peak = gSession->peaks.at(jP);
     const Range& fitrange = peak.range();
@@ -34,34 +34,38 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
     algo::calculateAlphaBeta(alpha, beta, fitrange.center(), gRange.center(),
                              cluster.chi(), cluster.omg(), cluster.phi());
     if (fitrange.isEmpty())
-        return {metadata, alpha, beta, gRange};
+        return PeakInfo{metadata, alpha, beta, gRange};
 
     const Dfgram& dfgram = cluster.dfgrams.getget(&cluster, iGamma);
 
     // TODO: the following could be simplified if RawOutcome were replaced by PeakOutcome
-    std::unique_ptr<DoubleWithError> center;
-    std::unique_ptr<DoubleWithError> fwhm;
-    std::unique_ptr<DoubleWithError> intensity;
+    Optional<DoubleWithError> center;
+    Optional<DoubleWithError> fwhm;
+    Optional<DoubleWithError> intensity;
     if (peak.isRaw()) {
-        const RawOutcome& out = dfgram.getRawOutcome(jP);
-        center    .reset(new DoubleWithError{out.getCenter(),0});
-        fwhm      .reset(new DoubleWithError{out.getFwhm(),0});
-        intensity .reset(new DoubleWithError{out.getIntensity(),0});
+        const Optional<RawOutcome>& out = dfgram.getRawOutcome(jP);
+        center    = APPLY(out, v, { return DoubleWithError{v.getCenter(), 0}; });
+        fwhm      = APPLY(out, v, { return DoubleWithError{v.getFwhm(), 0}; });
+        intensity = APPLY(out, v, { return DoubleWithError{v.getIntensity(), 0}; });
     } else {
-        const Fitted& pFct = dfgram.getPeakFit(jP);
-        const auto* peakFit = dynamic_cast<const PeakFunction*>(pFct.f);
-        ASSERT(peakFit);
-        const PeakOutcome out = peakFit->outcome(pFct);
-        center    .reset(new DoubleWithError{out.center});
-        fwhm      .reset(new DoubleWithError{out.fwhm});
-        intensity .reset(new DoubleWithError{out.intensity});
+        const Optional<Fitted>& pFct = dfgram.getPeakFit(jP);
+        const auto peakFit = dynamic_optional_cast<const PeakFunction>(GET_SAFE(pFct,f));
+        //ASSERT(peakFit);
+        const Optional<PeakOutcome> out = APPLY(pFct, pFct, { return CALLP(peakFit, outcome, pFct); });
+        center    = GET_SAFE(out, center);
+        fwhm      = GET_SAFE(out, fwhm);
+        intensity = GET_SAFE(out, intensity);
     }
 
+    if (center.isEmpty() || fwhm.isEmpty() || intensity.isEmpty())
+        return emptyOptional;
+    // center, fwhm and intensity must have a value from here on...
+
     if (!fitrange.contains(center->value)) // TODO/math generalize to fitIsCredible
-        return {metadata, alpha, beta, gRange};
+        return PeakInfo{metadata, alpha, beta, gRange};
 
     // TODO pass PeakOutcome instead of 6 components
-    return {metadata, alpha, beta, gRange, intensity->value, intensity->error,
+    return PeakInfo{metadata, alpha, beta, gRange, intensity->value, intensity->error,
             deg(center->value), deg(center->error), fwhm->value, fwhm->error};
 }
 
@@ -73,9 +77,10 @@ InfoSequence computeDirectInfoSequence(int jP)
     for (const Cluster* cluster : gSession->activeClusters.clusters.get()) {
         progress.step();
         for (int i=0; i<nGamma; ++i) {
-            PeakInfo refInfo = getPeak(jP, *cluster, i);
-            if (!qIsNaN(refInfo.inten()))
-                ret.appendPeak(std::move(refInfo));
+            APPLY(getPeak(jP, *cluster, i), refInfo, {
+                if (!qIsNaN(refInfo.inten()))
+                    ret.appendPeak(PeakInfo(refInfo));
+            });
         }
     }
     return ret;
