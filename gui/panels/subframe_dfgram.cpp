@@ -18,6 +18,7 @@
 #include "gui/actions/triggers.h"
 #include "gui/view/plot_dfgram.h"
 #include "gui/mainwin.h"
+#include <QButtonGroup>
 
 #define _SLOT_(Class, method, argType) static_cast<void (Class::*)(argType)>(&Class::method)
 
@@ -39,6 +40,7 @@ private:
     QcrRadioButton intenSum_;
     QcrRadioButton intenAvg_;
     QcrDoubleSpinBox intenScale_;
+    QButtonGroup normalSrc_;
     QcrToggle actZoom_ {"actZoom", "zoom", false, ":/icon/zoom"};
 };
 
@@ -63,7 +65,9 @@ DfPanel::DfPanel()
     hb->addWidget(&comboNormType_);
     hb->addWidget(new QLabel(" intensity from:"));
     hb->addWidget(&intenSum_);
+    normalSrc_.addButton(&intenSum_);
     hb->addWidget(&intenAvg_);
+    normalSrc_.addButton(&intenAvg_);
     hb->addWidget(&intenScale_);
     hb->addStretch(); // ---
     hb->addWidget(new QcrIconToggleButton {&actZoom_});
