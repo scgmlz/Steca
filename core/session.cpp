@@ -18,7 +18,7 @@
 #endif
 
 #include "core/session.h"
-#include "core/aux/exception.h"
+#include "core/base/exception.h"
 #include "qcr/base/debug.h" // ASSERT
 #include <QJsonDocument>
 
@@ -67,6 +67,12 @@ void Session::onPeakAt(int jP) const
 void Session::onInterpol() const
 {
     allPeaks.invalidateInterpolated();
+}
+
+void Session::onNormalization() const
+{
+    for (auto const& cluster: dataset.allClusters)
+        cluster->dfgrams.invalidate();
 }
 
 //! Removes all data, sets all parameters to their defaults. No need to invalidate caches?

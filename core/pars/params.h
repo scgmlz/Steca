@@ -28,7 +28,7 @@ enum class EditableRange { NONE, BASELINE, PEAKS };
 
 class Params {
 public:
-    Params() {}
+    Params();
     Params(const Params&) = delete;
     // void clear() { *this = {}; } TODO restore (broken because BoolVector disallows copying
 

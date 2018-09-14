@@ -15,7 +15,7 @@
 #include "core/fit/raw_outcome.h"
 #include "core/typ/curve.h"
 #include "qcr/base/debug.h"
-#include <cmath>
+#include <qmath.h>
 
 //! Computes raw peak characteristics.
 

@@ -17,7 +17,7 @@
 #include "core/fit/fit_methods.h"
 #include "core/fit/raw_outcome.h"
 #include "qcr/base/debug.h" // ASSERT
-#include <cmath>
+#include <qmath.h>
 
 #define SQR(x) ((x)*(x))
 

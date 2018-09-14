@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/aux/variant.h
-//! @brief     Defines helper functions related to QVariant
+//! @file      core/pars/params.cpp
+//! @brief     Implements class Params
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,19 +12,12 @@
 //
 //  ***********************************************************************************************
 
-#ifndef VARIANT_H
-#define VARIANT_H
+#include "params.h"
+#include "core/session.h"
 
-#include <QVariant>
-
-bool isNumeric(const QVariant&);
-
-// The usual comparators: <0, 0, >0
-typedef int VariantComparator(const QVariant&, const QVariant&);
-
-int cmp_int(const QVariant&, const QVariant&);
-int cmp_str(const QVariant&, const QVariant&);
-int cmp_real(const QVariant&, const QVariant&);
-int cmp_date(const QVariant&, const QVariant&);
-
-#endif // VARIANT_H
+Params::Params()
+{
+    intenScaledAvg.setHook([](bool){ gSession->onNormalization(); });; // if not, summed
+    intenScale.setHook([](double){ gSession->onNormalization(); });;
+    howtoNormalize.setHook([](int){ gSession->onNormalization(); });
+}

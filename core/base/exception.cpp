@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/calc/coord_trafos.h
-//! @brief     Defines function calculateAlphaBeta
+//! @file      core/base/exception.cpp
+//! @brief     Implements class Exception
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,15 +12,11 @@
 //
 //  ***********************************************************************************************
 
-#ifndef COORD_TRAFOS_H
-#define COORD_TRAFOS_H
+#include "core/base/exception.h"
+#include "qcr/base/debug.h"
 
-#include "core/base/angles.h" // no auto rm
-
-namespace algo {
-
-void calculateAlphaBeta(deg& alpha, deg& beta, deg tth, deg gma, deg chi, deg omg, deg phi);
-
-} // namespace algo
-
-#endif // COORD_TRAFOS_H
+Exception::Exception(const QString& msg) noexcept
+    : msg_(msg)
+{
+    qWarning() << "Exception: " << msg;
+}
