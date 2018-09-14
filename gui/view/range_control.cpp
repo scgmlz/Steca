@@ -16,7 +16,7 @@
 #include "core/session.h"
 #include "qcr/widgets/controls.h"
 //#include "qcr/base/debug.h"
-#include <qmath> //round
+#include <qmath.h> //round
 
 const double RangeControl::STEP {0.05};
 

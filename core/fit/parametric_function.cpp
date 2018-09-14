@@ -15,7 +15,7 @@
 #include "core/fit/parametric_function.h"
 #include "core/typ/curve.h"
 #include "qcr/base/debug.h" // ASSERT
-#include <qmath>
+#include <qmath.h>
 
 //  ***********************************************************************************************
 //! @class DoubleWithError
