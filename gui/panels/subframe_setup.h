@@ -22,6 +22,12 @@
 class SubframeSetup : public QcrTabWidget {
 public:
     SubframeSetup();
+    enum tabChoice { 
+        idxDetector = 0, 
+        idxBaseline = 1, 
+        idxPeakfits = 2, 
+        idxInterpol = 3 
+    };
 };
 
 #endif // SUBFRAME_SETUP_H

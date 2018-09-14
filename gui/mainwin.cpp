@@ -13,8 +13,8 @@
 //  ***********************************************************************************************
 
 #include "gui/mainwin.h"
-#include "core/aux/async.h"
-#include "core/aux/settings.h"
+#include "core/misc/async.h"
+#include "core/misc/settings.h"
 #include "core/session.h"
 #include "gui/actions/image_trafo_actions.h"
 #include "gui/actions/menus.h"

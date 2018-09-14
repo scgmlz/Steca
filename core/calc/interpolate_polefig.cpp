@@ -14,7 +14,7 @@
 
 #include "core/calc/interpolate_polefig.h"
 #include "core/session.h"
-#include "core/aux/async.h"
+#include "core/misc/async.h"
 #include "qcr/base/debug.h" // ASSERT
 #include <qmath.h>
 

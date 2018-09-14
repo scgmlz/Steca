@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/typ/json.h"
-#include "core/aux/exception.h"
+#include "core/misc/exception.h"
 #include "core/typ/range.h"
 #include <QStringList> // needed under Travis
 

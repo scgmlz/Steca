@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/aux/exception.h
+//! @file      core/misc/exception.h
 //! @brief     Defines class Exception
 //!
 //! @homepage  https://github.com/scgmlz/Steca

@@ -15,7 +15,7 @@
 #ifndef COORD_TRAFOS_H
 #define COORD_TRAFOS_H
 
-#include "core/aux/angles.h" // no auto rm
+#include "core/misc/angles.h" // no auto rm
 
 namespace algo {
 

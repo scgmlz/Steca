@@ -13,10 +13,10 @@
 //  ***********************************************************************************************
 
 #include "gui/dialogs/export_polefig.h"
-#include "core/aux/async.h"
+#include "core/misc/async.h"
 #include "core/data/collect_intensities.h"
 #include "core/session.h"
-#include "core/aux/exception.h"
+#include "core/misc/exception.h"
 #include "gui/dialogs/subdialog_file.h"
 #include "gui/dialogs/file_dialog.h"
 #include "gui/mainwin.h"

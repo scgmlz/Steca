@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/calc/all_infos.h"
-#include "core/aux/async.h"
+#include "core/misc/async.h"
 #include "core/calc/coord_trafos.h"
 #include "core/calc/interpolate_polefig.h"
 #include "core/fit/peak_function.h"

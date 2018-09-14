@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/aux/variant.cpp
+//! @file      core/misc/variant.cpp
 //! @brief     Implements helper functions related to QVariant
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/aux/variant.h"
+#include "core/misc/variant.h"
 #include <QDate>
 
 bool isNumeric(const QVariant& v)

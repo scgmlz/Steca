@@ -10,11 +10,11 @@
 ./qcr/widgets/tables.h&cpp
 ./qcr/widgets/views.h&cpp                 ok
 ./core/def/idiomatic_for.h                TODO get rid of
-./core/aux/angles.h&cpp                   simple and good, has tests (003)
-./core/aux/async.h&cpp                    simple and good
-./core/aux/exception.h&cpp                simple and good
-./core/aux/settings.h&cpp                 simple and good, need unclear
-./core/aux/variant.h&cpp                  need unclear, revise along with meta pars
+./core/misc/angles.h&cpp                   simple and good, has tests (003)
+./core/misc/async.h&cpp                    simple and good
+./core/misc/exception.h&cpp                simple and good
+./core/misc/settings.h&cpp                 simple and good, need unclear
+./core/misc/variant.h&cpp                  need unclear, revise along with meta pars
 ./core/typ/bool_vector.h&cpp              simple and good
 ./core/typ/cached.h (only)                work in progress TODO needs tests
 ./core/typ/curve.h&cpp                    ok, may need SubCurve for speed
