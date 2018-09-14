@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "gui/dialogs/export_polefig.h"
-#include "core/aux/async.h"
+#include "core/base/async.h"
 #include "core/data/collect_intensities.h"
 #include "core/session.h"
 #include "core/aux/exception.h"

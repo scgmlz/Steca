@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "gui/mainwin.h"
-#include "core/aux/async.h"
+#include "core/base/async.h"
 #include "core/aux/settings.h"
 #include "core/session.h"
 #include "gui/actions/image_trafo_actions.h"

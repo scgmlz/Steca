@@ -14,7 +14,7 @@
 
 #include "gui/dialogs/io_session.h"
 #include "core/session.h"
-#include "core/aux/async.h"
+#include "core/base/async.h"
 #include "core/aux/exception.h"
 #include "gui/dialogs/file_dialog.h"
 #include "qcr/base/debug.h" // warning
