@@ -15,8 +15,8 @@
 #ifndef METADATA_H
 #define METADATA_H
 
-#include "core/aux/angles.h"
-#include "core/aux/variant.h"
+#include "core/base/angles.h"
+#include "core/base/variant.h"
 
 //! The meta data associated with one Measurement.
 

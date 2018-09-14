@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/loaders/fastyamlloader.h"
-#include "core/aux/exception.h"
+#include "core/base/exception.h"
 #include "qcr/base/debug.h"
 #include <functional>
 

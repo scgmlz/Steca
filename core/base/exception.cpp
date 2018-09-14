@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/aux/exception.cpp
+//! @file      core/base/exception.cpp
 //! @brief     Implements class Exception
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/aux/exception.h"
+#include "core/base/exception.h"
 #include "qcr/base/debug.h"
 
 Exception::Exception(const QString& msg) noexcept
