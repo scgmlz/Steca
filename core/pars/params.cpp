@@ -17,7 +17,7 @@
 
 Params::Params()
 {
-    intenScaledAvg.setHook([](bool){ gSession->onNormalization(); });; // if not, summed
-    intenScale.setHook([](double){ gSession->onNormalization(); });;
-    howtoNormalize.setHook([](int){ gSession->onNormalization(); });
+    intenScaledAvg.addCallback([](bool){ gSession->onNormalization(); });; // if not, summed
+    intenScale.addCallback([](double){ gSession->onNormalization(); });;
+    howtoNormalize.addCallback([](int){ gSession->onNormalization(); });
 }
