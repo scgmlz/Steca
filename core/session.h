@@ -52,6 +52,7 @@ public:
     void onPeaks() const;         //!< a peak has been added or removed
     void onPeakAt(int) const;     //!< settings for one peak fit have changed
     void onInterpol() const;      //!< interpolation control parameters have changed
+    void onNormalization() const;      //!< normalization parameters have changed
 
     // const methods:
     QByteArray serializeSession() const; // TODO rename toJson
