@@ -16,7 +16,7 @@
 #include "core/base/async.h"
 #include "core/data/collect_intensities.h"
 #include "core/session.h"
-#include "core/aux/exception.h"
+#include "core/base/exception.h"
 #include "gui/dialogs/subdialog_file.h"
 #include "gui/dialogs/file_dialog.h"
 #include "gui/mainwin.h"
