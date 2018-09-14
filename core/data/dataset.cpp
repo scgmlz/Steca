@@ -75,8 +75,8 @@ void HighlightedData::reset()
 //! @class Dataset
 
 Dataset::Dataset() {
-    binning.       setHook( [this](int)  { onClusteringChanged(); } );
-    dropIncomplete.setHook( [this](bool) { onClusteringChanged(); } );
+    binning.       addCallback( [this](int)  { onClusteringChanged(); } );
+    dropIncomplete.addCallback( [this](bool) { onClusteringChanged(); } );
 }
 
 void Dataset::clear()

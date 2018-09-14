@@ -18,7 +18,7 @@
 
 ImageTrafoActions::ImageTrafoActions()
 {
-    mirrorImage.setHook([this](bool on){ setImageMirror(on); });
+    mirrorImage.addCallback([this](bool on){ setImageMirror(on); });
     rotateImage.setTriggerHook([this](){ doImageRotate(); });
 }
 

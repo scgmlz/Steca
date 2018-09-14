@@ -192,7 +192,7 @@ ControlsPeakfits::ControlsPeakfits()
     auto* comboPeakFct = new QcrComboBox{
         "reflTyp", &gSession->params.defaultPeakFunction,
         []()->QStringList{return Peak::keys;} };
-    comboPeakFct->setHook([](int i){
+    comboPeakFct->addCallback([](int i){
             const QString& name = Peak::keys[i];
             if (Peak* p = gSession->peaks.selectedPeak())
                 p->setPeakFunction(name);

@@ -28,13 +28,13 @@ InterpolParams::InterpolParams()
     { double val; s.getReal("avg radius", val); avgRadius.setVal(val); }
     { int    val; s.getInt ("threshold", val);  threshold.setVal(val); }
 
-    enabled.setHook    ([](bool  ){gSession->onInterpol(); });
-    stepAlpha.setHook  ([](double){gSession->onInterpol(); });
-    stepBeta.setHook   ([](double){gSession->onInterpol(); });
-    idwRadius.setHook  ([](double){gSession->onInterpol(); });
-    avgAlphaMax.setHook([](double){gSession->onInterpol(); });
-    avgRadius.setHook  ([](double){gSession->onInterpol(); });
-    threshold.setHook  ([](int   ){gSession->onInterpol(); });
+    enabled.addCallback    ([](bool  ){gSession->onInterpol(); });
+    stepAlpha.addCallback  ([](double){gSession->onInterpol(); });
+    stepBeta.addCallback   ([](double){gSession->onInterpol(); });
+    idwRadius.addCallback  ([](double){gSession->onInterpol(); });
+    avgAlphaMax.addCallback([](double){gSession->onInterpol(); });
+    avgRadius.addCallback  ([](double){gSession->onInterpol(); });
+    threshold.addCallback  ([](int   ){gSession->onInterpol(); });
 /* TODO do we want to duplicate these constraints (the are also imposed in the GUI)
 void InterpolParams::setStepAlpha(double val) {
     stepAlpha_ = qMax(0., qMin(val, 90.)); }

@@ -32,7 +32,7 @@ public:
     virtual T doGetValue() const = 0; //!< to be overriden by the widget-specific get function
     virtual void executeConsoleCommand(const QString& arg);
     QcrCell<T>* cell() { return cell_; }
-    void setHook(std::function<void(const T)> f) { cell()->setHook(f); }
+    void addCallback(std::function<void(const T)> f) { cell()->addCallback(f); }
 protected:
     void onChangedValue(T val);
     QcrCell<T>* cell_ {nullptr};
@@ -50,7 +50,7 @@ QcrControl<T>::QcrControl(QObject& object, const QString& name, QcrCell<T>* cell
     : QcrSettable {object, name}
     , cell_ {cell}
 {
-    cell_->setCallbacks([this](){return doGetValue();}, [this](const T val){doSetValue(val);});
+    cell_->addCallback([this](const T &val){doSetValue(val);});
 }
 
 //! Constructs a QcrControl that owns a QcrCell.
@@ -60,7 +60,7 @@ QcrControl<T>::QcrControl(QObject& object, const QString& name, const T val)
     , ownsItsCell_ {true}
 {
     cell_ = new QcrCell<T>(val); // TODO RECONSIDER smart pointer
-    cell_->setCallbacks([this](){return doGetValue();}, [this](const T val){doSetValue(val);});
+    cell_->addCallback([this](const T &val){doSetValue(val);});
 }
 
 template<class T>

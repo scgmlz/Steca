@@ -18,7 +18,7 @@
 
 GammaSelection::GammaSelection()
 {
-    numSlices.setHook([](int){gSession->onDetector();});
+    numSlices.addCallback([](int){gSession->onDetector();});
 }
 
 QJsonObject GammaSelection::toJson() const
