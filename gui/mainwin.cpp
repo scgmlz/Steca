@@ -14,7 +14,7 @@
 
 #include "gui/mainwin.h"
 #include "core/base/async.h"
-#include "core/aux/settings.h"
+#include "core/base/settings.h"
 #include "core/session.h"
 #include "gui/actions/image_trafo_actions.h"
 #include "gui/actions/menus.h"
