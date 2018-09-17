@@ -202,7 +202,7 @@ ControlsPeakfits::ControlsPeakfits()
         if (const Peak *peak = gSession->peaks.selectedPeak()) {
             QString key = peak->functionName();
             int peakFunctIndex = Peak::keys.indexOf(key);
-            gSession->params.defaultPeakFunction.setVal(peakFunctIndex);
+            gSession->params.defaultPeakFunction.pureSetVal(peakFunctIndex);
         }
     });
 
