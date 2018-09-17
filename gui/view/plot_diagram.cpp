@@ -64,7 +64,6 @@ void PlotDiagram::refresh()
 
     Range rgeX(xs);
     Range rgeY(ys);
-
     if (rgeX.isEmpty() || rgeY.isEmpty())
         return erase();
 
