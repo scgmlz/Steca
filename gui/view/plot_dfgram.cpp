@@ -53,6 +53,11 @@ private:
 void PlotDfgramOverlay::addRange(const Range& range)
 {
     doLog(QString("dfgram add %1 %2").arg(range.min).arg(range.max));
+
+    // is it a valid range?
+    if(gSession->currentOrAvgeDfgram()->curve.intersect(range).size() < 1)
+        return; // No data points inside range, so do nothin'.
+
     switch (gSession->params.editableRange) {
     case EditableRange::BASELINE:
         gSession->baseline.ranges.add(range);
