@@ -18,6 +18,7 @@
 #include "qcr/widgets/controls.h"
 #include <algorithm>
 //#include "qcr/base/debug.h"
+#include <iostream>
 
 //  ***********************************************************************************************
 //! @class PlotDiagram
@@ -63,6 +64,8 @@ void PlotDiagram::refresh()
 
     Range rgeX(xs);
     Range rgeY(ys);
+    std::cout << rgeY.min << ", " << rgeY.max << ", " << ys.size() << std::endl;
+
     if (rgeX.isEmpty() || rgeY.isEmpty())
         return erase();
 
@@ -70,7 +73,10 @@ void PlotDiagram::refresh()
     yAxis->setRange(rgeY.min, rgeY.max);
     xAxis->setVisible(true);
     yAxis->setVisible(true);
-    graph_->setDataValueError(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ys), QVector<double>::fromStdVector(ysSigma));
+    if (ysSigma.size() > 0) // has valueError
+        graph_->setDataValueError(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ys), QVector<double>::fromStdVector(ysSigma));
+    else
+        graph_->setData(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ys));
     replot();
 }
 
