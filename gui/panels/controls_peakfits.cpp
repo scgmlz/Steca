@@ -198,6 +198,14 @@ ControlsPeakfits::ControlsPeakfits()
                 p->setPeakFunction(name);
             gSession->onPeaks(); });
 
+    comboPeakFct->setRemake([&](){ // updates the combobox, when a diffeent peak gets selected:
+        if (const Peak *peak = gSession->peaks.selectedPeak()) {
+            QString key = peak->functionName();
+            int peakFunctIndex = Peak::keys.indexOf(key);
+            gSession->params.defaultPeakFunction.pureSetVal(peakFunctIndex);
+        }
+    });
+
     auto* box = new QVBoxLayout;
 
     auto* topControls = new QHBoxLayout;
