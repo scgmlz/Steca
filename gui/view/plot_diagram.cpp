@@ -70,7 +70,10 @@ void PlotDiagram::refresh()
     yAxis->setRange(rgeY.min, rgeY.max);
     xAxis->setVisible(true);
     yAxis->setVisible(true);
-    graph_->setDataValueError(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ys), QVector<double>::fromStdVector(ysSigma));
+    if (ysSigma.size() > 0) // has valueError
+        graph_->setDataValueError(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ys), QVector<double>::fromStdVector(ysSigma));
+    else
+        graph_->setData(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ys));
     replot();
 }
 
