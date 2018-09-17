@@ -30,7 +30,7 @@ SubframeSetup::SubframeSetup()
     addTab(new ControlsPeakfits(),     "Peakfits"); // 2
     addTab(new ControlsInterpolation(),"Interpol"); // 3
 
-    setHook([=](const int val){
+    addCallback([=](const int val){
             ASSERT(val==this->currentIndex());
             switch (val) {
             case 1:   gSession->params.editableRange = EditableRange::BASELINE; break;

@@ -55,7 +55,7 @@ DfPanel::DfPanel()
     plot_ = new PlotDfgram();
     intenAvg_.programaticallySetValue(true);
 
-    actZoom_.setHook([this](bool on) {
+    actZoom_.addCallback([this](bool on) {
         plot_->setInteraction(QCP::iRangeDrag, on);
         plot_->setInteraction(QCP::iRangeZoom, on);
         plot_->enterZoom(on); });

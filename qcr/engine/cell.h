@@ -15,9 +15,11 @@
 #ifndef CELL_H
 #define CELL_H
 
-//#include "qcr/base/debug.h"
+#include "qcr/base/debug.h"
 #include <functional>
 #include <memory>
+#include <vector>
+#include <algorithm>
 
 //! Holds a single value, and a hook that is executed when the value has changed.
 template<class T>
@@ -29,51 +31,51 @@ public:
     QcrCell(QcrCell&&) = default;
 
     void setVal(const T);
-    void pureSetVal(const T);
+    void pureSetVal(const T v) { setVal(v); }
     void setCoerce  (std::function<T   (const T)> f) { coerce_ = f; }
-    void setHook    (std::function<void(const T)> f) { hook_ = f; }
-    void setCallbacks(
-        std::function<T   (       )> _get,
-        std::function<void(const T)> _set)
-        {
-            callbackGet_.reset(new std::function<T()>{_get});
-            callbackSet_ = _set;
-        }
-
     T val() const { return value_; }
-    bool amCalling {false};
+
+    bool amCalling {false}; // make private?
+
+    void addCallback(std::function<void(const T&)> callback) { callbacks_.push_back(callback); }
+
+    bool removeCallback(const std::function<void(const T&)> &callback);
+
 private:
     T value_;
     std::function<T   (const T)> coerce_      = [](const T v){ return v;};
-    std::function<void(const T)> hook_        = [](const T)  {;};
-    std::unique_ptr<std::function<T()>> callbackGet_;
-    std::function<void(const T)> callbackSet_ = [](const T)  {;};
+    std::vector<std::function<void(const T&)>> callbacks_;
+
+    void valueChanged(const T& v) {
+        for (const auto &callback : callbacks_)
+            callback(v);
+    }
 };
 
 //  ***********************************************************************************************
 //  class QcrCell implementation
+
+template<class T>
+bool QcrCell<T>::removeCallback(const std::function<void(const T&)> &callback)
+{
+    const auto it = std::find(callbacks_.begin(), callbacks_.end(), callback);
+    if (it != callbacks_.end())
+        callbacks_.erase(it);
+    return it != callbacks_.end();
+}
 
 //! Sets value of cell, sets value of owning widget, and runs hook if value has changed.
 template<class T>
 void QcrCell<T>::setVal(const T v)
 {
     const T oldvalue = value_;
-    pureSetVal(v);
-    if (value_!=oldvalue)
-        hook_(value_);
-}
-
-//! Sets value of cell, calls callback to set value of controlling widget, but does not calls hook.
-template<class T>
-void QcrCell<T>::pureSetVal(const T v)
-{
     value_ = coerce_(v);
-    if (!callbackGet_)
-        return; // no owning widget => nothing to do
-    amCalling = true;
-    callbackSet_(value_); // set value of owning widget
-    value_ = (*callbackGet_)();
-    amCalling = false;
+    if (value_!=oldvalue) {
+        ASSERT(amCalling == false);
+        amCalling = true;
+        valueChanged(value_); // set value of owning widget
+        amCalling = false;
+    }
 }
 
 #endif // CELL_H

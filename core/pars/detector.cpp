@@ -36,10 +36,10 @@ Detector::Detector()
     // detectorDistance_ = qMin(qMax(detectorDistance, 10.), 9999.);
     // pixSize_ = qMin(qMax(pixSize, .1), 9.9);
 
-    detectorDistance.setHook([](double){ gSession->onDetector(); });
-    pixSize         .setHook([](double){ gSession->onDetector(); });
-    pixOffset[0]    .setHook([](int   ){ gSession->onDetector(); });
-    pixOffset[1]    .setHook([](int   ){ gSession->onDetector(); });
+    detectorDistance.addCallback([](double){ gSession->onDetector(); });
+    pixSize         .addCallback([](double){ gSession->onDetector(); });
+    pixOffset[0]    .addCallback([](int   ){ gSession->onDetector(); });
+    pixOffset[1]    .addCallback([](int   ){ gSession->onDetector(); });
 }
 
 Detector::~Detector()
@@ -76,10 +76,10 @@ QJsonObject Detector::toJson() const
 
 ImageCut::ImageCut()
 {
-    left  .setHook([this](int val){ sync(val, right, top,   bottom); });
-    right .setHook([this](int val){ sync(val, left,  top,   bottom); });
-    top   .setHook([this](int val){ sync(val, left,  right, bottom); });
-    bottom.setHook([this](int val){ sync(val, left,  right, top   ); });
+    left  .addCallback([this](int val){ sync(val, right, top,   bottom); });
+    right .addCallback([this](int val){ sync(val, left,  top,   bottom); });
+    top   .addCallback([this](int val){ sync(val, left,  right, bottom); });
+    bottom.addCallback([this](int val){ sync(val, left,  right, top   ); });
 }
 
 void ImageCut::sync(int val, QcrCell<int>& _1, QcrCell<int>& _2, QcrCell<int>& _3)
