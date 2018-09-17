@@ -18,7 +18,6 @@
 #include "qcr/widgets/controls.h"
 #include <algorithm>
 //#include "qcr/base/debug.h"
-#include <iostream>
 
 //  ***********************************************************************************************
 //! @class PlotDiagram
