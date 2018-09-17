@@ -19,7 +19,7 @@
 #include "qcr/base/debug.h" // ASSERT
 #include <qmath.h>
 
-#define SQR(x) (x)*(x)
+#define SQR(x) ((x)*(x))
 
 //! A Gaussian as a peak fit function.
 
