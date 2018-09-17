@@ -64,7 +64,6 @@ void PlotDiagram::refresh()
 
     Range rgeX(xs);
     Range rgeY(ys);
-    std::cout << rgeY.min << ", " << rgeY.max << ", " << ys.size() << std::endl;
 
     if (rgeX.isEmpty() || rgeY.isEmpty())
         return erase();
