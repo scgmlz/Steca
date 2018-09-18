@@ -72,7 +72,7 @@ double Range::center() const
 Range Range::slice(int i, int n) const
 {
     if (!isValid())
-            THROW("BUG: Range::slice called for invalid range");
+        THROW("BUG: Range::slice called for invalid range");
     if (n<1)
         THROW("BUG: Range::slice called with invalid n="+QString::number(n));
     if (i<0 || i>=n)
