@@ -127,6 +127,7 @@ void Dataset::addGivenFiles(const QStringList& filePaths)
     }
     if (countFiles())
         highlight_.setFile( i<0 ? 0 : i );
+    onFileChanged();
     gRoot->remakeAll();
 }
 
@@ -183,6 +184,9 @@ void Dataset::updateClusters()
         }
     }
     gSession->activeClusters.invalidate();
+
+    gSession->gammaSelection.onData();
+    gSession->thetaSelection.onData();
 }
 
 //! Returns list of activated clusters.

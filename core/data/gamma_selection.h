@@ -15,7 +15,9 @@
 #ifndef GAMMA_SELECTION_H
 #define GAMMA_SELECTION_H
 
+#include "core/typ/range.h"
 #include "qcr/engine/cell.h"
+#include <QJsonArray>
 
 //! Supports different ways of setting a gamma range.
 
