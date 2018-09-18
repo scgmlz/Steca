@@ -34,17 +34,9 @@ Range::Range(double min, double max)
 
 Range::Range(const std::vector<double>& vec)
 {
-    if (!vec.size()) {
-        invalidate();
-        return;
-    }
-    double min = vec[0];
-    double max = vec[0];
-    for (int i=1; i<vec.size(); ++i) {
-        if (vec[i]<min) min = vec[i];
-        if (vec[i]>max) max = vec[i];
-    }
-    set(min, max);
+    invalidate(); //always invalidate, in case vec contains *only*  NaNs.
+    for (auto val : vec)
+        extendBy(val);
 }
 
 Range Range::infinite()
