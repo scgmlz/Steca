@@ -12,6 +12,7 @@
 //
 //  ***********************************************************************************************
 
+#include "core/fit/peak_function.h"
 #include "gui/view/plot_dfgram.h"
 #include "core/session.h"
 #include "gui/view/toggles.h"
@@ -53,15 +54,29 @@ private:
 void PlotDfgramOverlay::addRange(const Range& range)
 {
     doLog(QString("dfgram add %1 %2").arg(range.min).arg(range.max));
+
+    // is it a valid range?
+    const auto datapointCount = gSession->currentOrAvgeDfgram()->curve.intersect(range).size();
+    if (datapointCount < 1)
+        return; // No data points inside range, so do nothin'.
+
     switch (gSession->params.editableRange) {
     case EditableRange::BASELINE:
         gSession->baseline.ranges.add(range);
         gSession->onBaseline();
         break;
-    case EditableRange::PEAKS:
-        gSession->peaks.add(range);
-        gSession->onPeaks();
-        break;
+    case EditableRange::PEAKS: {
+        // make sure enough datapoints are selected for fitting the peak:
+        // raw Peaks can live with any number of datapoints.
+        const Peak peak(range, Peak::keys.at(gSession->params.defaultPeakFunction.val()));
+        const Curve rawCurve = gSession->currentOrAvgeDfgram()->getCurveMinusBg().intersect(range);
+        const Fitted fitted = PeakFunction::fromFit(peak.functionName(), rawCurve,
+                                                    RawOutcome(rawCurve));
+        if (peak.isRaw() || (fitted.success && fitted.f->nPar() <= datapointCount)) {
+            gSession->peaks.add(range);
+            gSession->onPeaks();
+        }
+    } break;
     default:
         return;
     }
