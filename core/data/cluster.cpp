@@ -116,8 +116,11 @@ double Sequence::normFactor() const
     }
 
     double ret = float((num > 0 && den > 0) ? num / den : Q_QNAN);
-    if (qIsNaN(ret))
-        qWarning() << "Bad normalisation value";
+    if (qIsNaN(ret)) {
+        gSession->params.howtoNormalize.setVal((int)eNorm::NONE);
+        ret = 1;
+        qWarning() << "Bad normalisation value.\n normalization reset to 'None'.";
+    }
     return ret;
 }
 
