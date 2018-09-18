@@ -125,7 +125,7 @@ void InfoSequence::getValuesAndSigma(const size_t idxX, const size_t idxY,
 
         ysSigma.resize(n);
         for (auto i : is) {
-            const std::vector<QVariant> row = peaks_.at(i).data();
+            const std::vector<QVariant> row = peaks_.at(is.at(i)).data();
             ysSigma[i] = row.at(idxY+1).toDouble(); // SIGMA_X has tag position of X plus 1
         }
     } else {
