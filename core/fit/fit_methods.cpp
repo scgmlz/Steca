@@ -49,12 +49,15 @@ Fitted FitWrapper::execFit(const FitFunction* f,const Curve& curve, std::vector<
     DelegateCalculationDbl Jacobian(this, &FitWrapper::callbackJacobianLM);
 
     try {
+        size_t workVectorMinSize = LM_BC_DER_WORKSZ(nPar, curve.size());
+        std::vector<double> workVector(workVectorMinSize);
+
         dlevmar_bc_der(
             &fitFct, &Jacobian, parValue.data(), remove_const(curve.ys().data()), nPar,
             curve.size(),
             nullptr /* remove_const(parMin.data()) */,
             nullptr /* remove_const(parMax.data()) */,
-            nullptr, maxIterations, opts, info, nullptr, covar.data(), nullptr);
+            nullptr, maxIterations, opts, info, workVector.data(), covar.data(), nullptr);
     } catch (...) {
         qWarning() << "dlevmar_bc_der failed!";
         return {};
