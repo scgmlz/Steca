@@ -48,6 +48,7 @@ Fitted FitWrapper::execFit(const FitFunction* f,const Curve& curve, std::vector<
     DelegateCalculationDbl fitFct(this, &FitWrapper::callbackY);
     DelegateCalculationDbl Jacobian(this, &FitWrapper::callbackJacobianLM);
 
+    // workspace for dlevmar_bc_der():
     size_t workVectorMinSize = LM_BC_DER_WORKSZ(nPar, curve.size());
     std::vector<double> workVector(workVectorMinSize);
 
