@@ -43,7 +43,7 @@ Qt::CheckState Datafile::activated() const
 
 void HighlightedData::clear()
 {
-    currentClusterIndex_ = -1;
+    setCluster(-1);
 }
 
 void HighlightedData::setFile(int i)
