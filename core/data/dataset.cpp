@@ -43,7 +43,7 @@ Qt::CheckState Datafile::activated() const
 
 void HighlightedData::clear()
 {
-    current_ = nullptr;
+    setCluster(-1);
 }
 
 void HighlightedData::setFile(int i)
@@ -52,15 +52,13 @@ void HighlightedData::setFile(int i)
         return clear();
     ASSERT(i<gSession->dataset.countFiles());
     setCluster(gSession->dataset.fileAt(i).clusters_[0]->index());
-    ASSERT(i==current_->file().index_);
+    ASSERT(i==cluster()->file().index_);
 }
 
 void HighlightedData::setCluster(int i)
 {
-    if (i<0)
-        return clear();
     ASSERT(i<gSession->dataset.allClusters.size());
-    current_ = gSession->dataset.allClusters.at(i).get();
+    currentClusterIndex_ = i;
 }
 
 void HighlightedData::reset()
@@ -68,6 +66,24 @@ void HighlightedData::reset()
     if (!gSession->dataset.allClusters.size())
         return clear();
     setCluster(0);
+}
+
+const Cluster *HighlightedData::cluster() const
+{
+    if (currentClusterIndex_ >= gSession->dataset.allClusters.size())
+        return nullptr;
+    if (currentClusterIndex_ < 0)
+        return nullptr;
+    return gSession->dataset.allClusters.at(currentClusterIndex_).get();
+}
+
+Cluster *HighlightedData::cluster()
+{
+    if (currentClusterIndex_ >= gSession->dataset.allClusters.size())
+        return nullptr;
+    if (currentClusterIndex_ < 0)
+        return nullptr;
+    return gSession->dataset.allClusters.at(currentClusterIndex_).get();
 }
 
 

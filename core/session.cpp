@@ -31,6 +31,8 @@ Session::Session()
 
 void Session::onDetector() const
 {
+    gSession->gammaSelection.onData();
+    gSession->thetaSelection.onData();
     angleMap.invalidate();
     activeClusters.avgDfgram.invalidate();
     for (auto const& cluster: dataset.allClusters)

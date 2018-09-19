@@ -53,7 +53,7 @@ void addOverlay(QImage& img, double midTth)
     gSession->gammaSelection.onData();
     gSession->thetaSelection.onData();
     const AngleMap& angleMap = gSession->angleMap.get(midTth);
-    const Range& rgeGma = gSession->gammaSelection.range();
+    const Range& rgeGma = gSession->gammaSelection.currentRange();
     const Range& rgeTth = gSession->thetaSelection.range();
     for (int j=0; j<img.size().height(); ++j) {
         for (int i=0; i<img.size().width(); ++i) {
@@ -171,7 +171,7 @@ DataImageTab::DataImageTab()
             idxSlice->setEnabled(nGamma>1);
 
             gammaRangeTotal->setText(cluster ? cluster->rgeGmaFull().to_s("deg") : "");
-            gammaRangeSlice->setText(gSession->gammaSelection.range().to_s("deg"));
+            gammaRangeSlice->setText(gSession->gammaSelection.currentRange().to_s("deg"));
 
             thetaRangeTotal->setText(cluster ? cluster->rgeTth().to_s("deg") : "");
             thetaRangeBin->setText(gSession->thetaSelection.range().to_s("deg"));

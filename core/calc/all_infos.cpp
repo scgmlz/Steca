@@ -28,7 +28,7 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
     const Peak& peak = gSession->peaks.at(jP);
     const Range& fitrange = peak.range();
     const Metadata* metadata = &cluster.avgMetadata();
-    const Range gRange = gSession->gammaSelection.slice2range(iGamma);
+    const Range gRange = gSession->gammaSelection.slice2range(cluster.rgeGma(), iGamma);
     deg alpha, beta;
     // TODO/math use fitted tth center, not center of given fit range
     algo::calculateAlphaBeta(alpha, beta, fitrange.center(), gRange.center(),
