@@ -96,6 +96,7 @@ TableView::TableView(TableModel* model)
     : QcrSettable {*this, model->name()}
     , model_(model)
 {
+    model->setName(name());
     // set model
     QTreeView::setModel(model);
     hideColumn(0); // this should look like a list; 0th column is tree-like
