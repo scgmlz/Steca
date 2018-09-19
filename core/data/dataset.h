@@ -17,6 +17,7 @@
 
 #include "core/data/cluster.h"
 #include "qcr/engine/cell.h"
+#include "core/raw/rawfile.h"
 #include <memory>
 
 //! A Rawfile and associated information.
@@ -59,11 +60,12 @@ public:
     void setCluster(int);
     void reset();
 
-    const Cluster* cluster() const { return current_; }
-    Cluster* cluster() { return current_; }
+    const Cluster* cluster() const;
+    Cluster* cluster();
 
 private:
-    Cluster* current_ { nullptr };
+    int currentClusterIndex_ = -1;
+    //Cluster* current_ { nullptr };
 };
 
 
