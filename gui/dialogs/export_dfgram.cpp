@@ -157,7 +157,7 @@ void ExportDfgram::saveAll(bool oneFile)
                 stream = new QTextStream(file);
             }
             ASSERT(stream);
-            const Range gmaStripe = gSession->gammaSelection.slice2range(i);
+            const Range gmaStripe = gSession->gammaSelection.slice2range(cluster->rgeGma(), i);
             const Curve& curve = cluster->dfgrams.getget(cluster,i).curve;
             *stream << "Picture Nr: " << picNum << '\n';
             if (nSlices > 1)
