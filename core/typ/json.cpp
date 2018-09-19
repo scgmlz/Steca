@@ -97,7 +97,7 @@ int JsonObj::loadUint(const QString& key, int def) const
 int JsonObj::loadPint(const QString& key) const
 {
     int num = loadUint(key);
-    if (!(num > 0)) THROW("expecting positive number");
+    if (!(num > 0)) THROW("expecting positive number for '" + key + "'");
     return num;
 }
 
@@ -135,7 +135,7 @@ double JsonObj::loadQreal(const QString& key, double def) const
 double JsonObj::loadPreal(const QString& key) const
 {
     double num = loadQreal(key);
-    if (!(num > 0)) THROW("expecting positive number");
+    if (!(num > 0)) THROW("expecting positive number for '" + key + "'");
     return num;
 }
 
