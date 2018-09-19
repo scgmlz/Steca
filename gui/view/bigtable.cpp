@@ -26,8 +26,8 @@
 //!
 //! The first column contains row numbers. The remaining numCols columns contain data.
 
-BigtableModel::BigtableModel()
-    : TableModel("data#")
+BigtableModel::BigtableModel(const QString &name)
+    : TableModel(name)
 {
     gGui->bigtableModel = this; // for use in export dialog
     headers_ = PeakInfo::dataTags(false);
@@ -172,8 +172,8 @@ std::vector<std::vector<const QVariant*>> BigtableModel::getData() const
 //!  @class BigtableView
 //!
 
-BigtableView::BigtableView()
-    : TableView {new BigtableModel}
+BigtableView::BigtableView(const QString &name)
+    : TableView {new BigtableModel(name)}
 {
     setHeader(new QHeaderView(Qt::Horizontal));
     setAlternatingRowColors(true);
