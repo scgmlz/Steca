@@ -33,6 +33,7 @@ public:
     int columnCount(const QModelIndex& /*unused*/) const { return columnCount(); }
     int rowCount(const QModelIndex& /*unused*/) const { return rowCount(); }
     const QString& name() const { return name_; }
+    void setName(const QString &name) { name_ = name; }
 
     // interaction with data
     virtual int columnCount() const = 0;
