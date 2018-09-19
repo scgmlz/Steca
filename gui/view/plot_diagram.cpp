@@ -70,10 +70,32 @@ void PlotDiagram::refresh()
     yAxis->setRange(rgeY.min, rgeY.max);
     xAxis->setVisible(true);
     yAxis->setVisible(true);
-    if (ysSigma.size() > 0) // has valueError
-        graph_->setDataValueError(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ys), QVector<double>::fromStdVector(ysSigma));
-    else
-        graph_->setData(QVector<double>::fromStdVector(xs), QVector<double>::fromStdVector(ys));
+    if (ysSigma.size() > 0) {// has valueError
+        std::vector<double> xsSafe;
+        std::vector<double> ysSafe;
+        std::vector<double> ysSigmaSafe;
+        for (size_t i = 0; i < xs.size(); ++i) {
+            if (   qIsNaN(xs.at(i)) || qIsInf(xs.at(i))
+                || qIsNaN(ys.at(i)) || qIsInf(ys.at(i))) 
+                continue;
+            xsSafe.push_back(xs.at(i));
+            ysSafe.push_back(ys.at(i));
+            ysSigmaSafe.push_back(ysSigma.at(i));
+        }
+
+        graph_->setDataValueError(QVector<double>::fromStdVector(xsSafe), QVector<double>::fromStdVector(ysSafe), QVector<double>::fromStdVector(ysSigmaSafe));
+    } else {
+        std::vector<double> xsSafe;
+        std::vector<double> ysSafe;
+        for (size_t i = 0; i < xs.size(); ++i) {
+            if (   qIsNaN(xs.at(i)) || qIsInf(xs.at(i))
+                || qIsNaN(ys.at(i)) || qIsInf(ys.at(i)))
+                continue;
+            xsSafe.push_back(xs.at(i));
+            ysSafe.push_back(ys.at(i));
+        }
+        graph_->setData(QVector<double>::fromStdVector(xsSafe), QVector<double>::fromStdVector(ysSafe));
+    }
     replot();
 }
 
