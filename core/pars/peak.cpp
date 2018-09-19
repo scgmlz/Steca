@@ -45,6 +45,7 @@ JsonObj Peak::toJson() const
 {
     QJsonObject ret;
     ret.insert("range", range_.toJson() );
+    ret.insert("type", functionName());
     return ret;
 }
 
