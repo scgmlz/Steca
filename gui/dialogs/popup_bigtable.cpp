@@ -20,7 +20,9 @@
 PopupBigtable::PopupBigtable()
     : PopupBaseDialog(gGui, "table#", "Table")
 {
-    auto* bigtableView = new BigtableView;
+    static int datatableCounter = -1;
+    datatableCounter++;
+    auto* bigtableView = new BigtableView("datatable" + QString::number(datatableCounter));
     bigtableView->setMinimumSize(600,600);
 
     auto* layout = new QVBoxLayout;

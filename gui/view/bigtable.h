@@ -22,7 +22,7 @@
 
 class BigtableModel : public TableModel {
 public:
-    BigtableModel();
+    BigtableModel(const QString& name);
     BigtableModel(const BigtableModel&) = delete;
 
     void refresh();
@@ -63,7 +63,7 @@ private:
 
 class BigtableView : public TableView {
 public:
-    BigtableView();
+    BigtableView(const QString& name);
     BigtableView(const BigtableView&) = delete;
 
     void refresh();
