@@ -57,7 +57,7 @@ void HighlightedData::setFile(int i)
 
 void HighlightedData::setCluster(int i)
 {
-    ASSERT(i<gSession->dataset.allClusters.size());
+    ASSERT(i < (int)gSession->dataset.allClusters.size());
     currentClusterIndex_ = i;
 }
 
@@ -70,7 +70,7 @@ void HighlightedData::reset()
 
 const Cluster *HighlightedData::cluster() const
 {
-    if (currentClusterIndex_ >= gSession->dataset.allClusters.size())
+    if (currentClusterIndex_ >= (int)gSession->dataset.allClusters.size())
         return nullptr;
     if (currentClusterIndex_ < 0)
         return nullptr;
@@ -79,7 +79,7 @@ const Cluster *HighlightedData::cluster() const
 
 Cluster *HighlightedData::cluster()
 {
-    if (currentClusterIndex_ >= gSession->dataset.allClusters.size())
+    if (currentClusterIndex_ >= (int)gSession->dataset.allClusters.size())
         return nullptr;
     if (currentClusterIndex_ < 0)
         return nullptr;
