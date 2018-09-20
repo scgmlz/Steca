@@ -48,7 +48,8 @@ class Voigt : public PeakFunction {
 public:
     void setY(const double* P, const int nXY, const double* X, double* Y) const final;
     void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
-    int nPar() const final { return 3; };
+    int nPar() const final { return 4; }
+    PeakOutcome outcome(const Fitted&) const final;
 };
 
 //  ***********************************************************************************************
@@ -65,7 +66,6 @@ PeakOutcome PeakFunction::outcome(const Fitted& F) const
 Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const RawOutcome& rawOutcome)
 {
     const PeakFunction* f;
-    int nPar = 3;
     if        (name=="Raw") {
         return {};
     } else if (name=="Gaussian") {
@@ -76,7 +76,7 @@ Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const RawO
         f = new Voigt();
     } else
         qFatal("Impossible case");
-    std::vector<double> startParams(nPar);
+    std::vector<double> startParams(f->nPar());
     startParams[0] = rawOutcome.getCenter();
     startParams[1] = rawOutcome.getFwhm();
     startParams[2] = rawOutcome.getIntensity();
@@ -184,6 +184,14 @@ void Voigt::setDY(const double* P, const int nXY, const double* X, double* Jacob
 }
 
 
+PeakOutcome Voigt::outcome(const Fitted& F) const
+{
+    return {
+        {F.parVal.at(0), F.parErr.at(0)},
+        {F.parVal.at(1), F.parErr.at(1)},
+        {F.parVal.at(2), F.parErr.at(2)},
+        std::optional<DoubleWithError>({F.parVal.at(3), F.parErr.at(3)}) };
+}
 
 
 
