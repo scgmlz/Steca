@@ -1,4 +1,4 @@
-# CMake module to search for the libyaml library
+# CMake module to search for the C library libyaml
 # (library for parsing YAML files)
 #
 # If it's found it sets LIBYAML_FOUND to TRUE
@@ -6,9 +6,9 @@
 #    LIBYAML_INCLUDE_DIR
 #    LIBYAML_LIBRARY
 
-FIND_PATH(LIBYAML_INCLUDE_DIR NAMES yaml.h)
-FIND_LIBRARY(LIBYAML_LIBRARY NAMES yaml libyaml)
+find_path(LIBYAML_INCLUDE_DIR NAMES yaml.h)
+find_library(LIBYAML_LIBRARY NAMES yaml libyaml)
 
-INCLUDE(FindPackageHandleStandardArgs)
-FIND_PACKAGE_HANDLE_STANDARD_ARGS(LibYaml DEFAULT_MSG LIBYAML_LIBRARY LIBYAML_INCLUDE_DIR)
-MARK_AS_ADVANCED(LIBYAML_INCLUDE_DIR LIBYAML_LIBRARY)
+include(FindPackageHandleStandardArgs)
+find_package_handle_standard_args(LibYaml DEFAULT_MSG LIBYAML_LIBRARY LIBYAML_INCLUDE_DIR)
+mark_as_advanced(LIBYAML_INCLUDE_DIR LIBYAML_LIBRARY)
