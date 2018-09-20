@@ -39,5 +39,6 @@ addons:
     sources:
     - sourceline: ppa:beineri/opt-qt-5.10.1-trusty
     packages:
+    - libcerf-dev
     - qt510base
     - xvfb
