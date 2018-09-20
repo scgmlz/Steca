@@ -230,7 +230,7 @@ Console::Result Console::executeLine(QString line)
     try {
         f->executeConsoleCommand(arg); // execute command
         return Result::ok;
-    } catch (QcrException &ex) {
+    } catch (const QcrException &ex) {
         qterr << "Command '" << line << "' failed:\n" << ex.msg() << "\n"; qterr.flush();
     }
     return Result::err;
