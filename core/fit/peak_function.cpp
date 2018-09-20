@@ -17,6 +17,7 @@
 #include "core/fit/fit_methods.h"
 #include "core/fit/raw_outcome.h"
 #include "qcr/base/debug.h" // ASSERT
+#include "3rdparty/libcerf/lib/cerf.h"
 #include <qmath.h>
 
 #define SQR(x) ((x)*(x))
@@ -35,6 +36,15 @@ private:
 //! A Lorentzian as a peak fit function.
 
 class Lorentzian : public PeakFunction {
+public:
+    void setY(const double* P, const int nXY, const double* X, double* Y) const final;
+    void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
+    int nPar() const final { return 3; };
+};
+
+//! A Lorentzian as a peak fit function.
+
+class Voigt : public PeakFunction {
 public:
     void setY(const double* P, const int nXY, const double* X, double* Y) const final;
     void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
@@ -62,6 +72,8 @@ Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const RawO
         f = new Gaussian();
     } else if (name=="Lorentzian") {
         f = new Lorentzian();
+    } else if (name=="Voigt") {
+        f = new Voigt();
     } else
         qFatal("Impossible case");
     std::vector<double> startParams(nPar);
@@ -123,3 +135,77 @@ void Lorentzian::setDY(const double* P, const int nXY, const double* X, double* 
         *Jacobian++ = hwhm/M_PI/deno;
     }
 }
+
+void Voigt::setY(const double *P, const int nXY, const double *X, double *Y) const
+{
+    for (int i=0 ; i<nXY; ++i)
+        Y[i] = voigt(X[i] - P[0], P[1], P[2]) * P[3];
+
+            //const DoubleWithError center;
+            //const DoubleWithError fwhm;
+            //const DoubleWithError intensity;
+}
+
+double pow1(double x) { return x; }
+double pow2(double x) { return x*x; }
+double pow3(double x) { return x*x*x; }
+double pow4(double x) { return x*x*x*x; }
+
+void Voigt::setDY(const double* P, const int nXY, const double* X, double* Jacobian) const
+{
+    // V[x - a, b, c] * f
+//    funct == 1
+//            * 1/(2 c Sqrt[2 \[Pi]])
+//            * f (E^((b - I (-a + x))^2/(2 c^2)) Erfc[(b - I (-a + x))/(Sqrt[2] c)] + E^((b + I (-a + x))^2/(2 c^2)) Erfc[(b + I (-a + x))/(Sqrt[2] c)])
+
+    for (int i=0; i<nXY; ++i) {
+        *Jacobian++ = voigt(X[i] - (P[0] + 0.5), P[1], P[2]) * P[3] - voigt(X[i] - (P[0] - 0.5), P[1], P[2]) * P[3];
+        *Jacobian++ = voigt(X[i] - P[0], P[1] + 0.5, P[2]) * P[3]   - voigt(X[i] - P[0], P[1] - 0.5, P[2]) * P[3];
+        *Jacobian++ = voigt(X[i] - P[0], P[1], P[2] + 0.5) * P[3]   - voigt(X[i] - P[0], P[1], P[2] - 0.5) * P[3];
+        *Jacobian++ = voigt(X[i] - P[0], P[1], P[2]) * (P[3] + 0.5) - voigt(X[i] - P[0], P[1], P[2]) * (P[3] - 0.5);
+//        P[0] == (1/(2 c Sqrt[2 \[Pi]]))f ((I E^((b - I (-a + x))^2/(2 c^2)) (b - I (-a + x)) Erfc[(b - I (-a + x))/(Sqrt[2] c)])/c^2 - (I E^((b + I (-a + x))^2/(2 c^2)) (b + I (-a + x)) Erfc[(b + I (-a + x))/(Sqrt[2] c)])/c^2);
+//                 1/(2 c Sqrt[2 \[Pi]]) f (E^((b - I (-a + x))^2/(2 c^2)) Erfc[(b - I (-a + x))/(Sqrt[2] c)] + E^((b + I (-a + x))^2/(2 c^2)) Erfc[(b + I (-a + x))/(Sqrt[2] c)])
+//        P[0] == (1/(2 c Sqrt[2 \[Pi]]))f ((I E^((b - I (-a + x))^2/(2 c^2)) (b - I (-a + x)) Erfc[(b - I (-a + x))/(Sqrt[2] c)]) - (I E^((b + I (-a + x))^2/(2 c^2)) (b + I (-a + x)) Erfc[(b + I (-a + x))/(Sqrt[2] c)]))/c^2;
+
+
+//        P[0] == 1
+//                * 1/(2*c^3 Sqrt[2 \[Pi]])
+//                * I
+//                * f
+//                * (E^(-((-a + I b + x)^2/(2 c^2))) (I a + b - I x) Erfc[(I a + b - I x)/(Sqrt[2] c)] - E^((b + I (-a + x))^2/(2 c^2)) (b + I (-a + x)) Erfc[(b + I (-a + x))/(Sqrt[2] c)])
+
+//        P[1] == (1/(2 c^3 Sqrt[2 \[Pi]]))f (-2 c Sqrt[2/\[Pi]] + E^(-((-a + I b + x)^2/(2 c^2))) (I a + b - I x) Erfc[(I a + b - I x)/(Sqrt[2] c)] + E^((b + I (-a + x))^2/(2 c^2)) (b + I (-a + x)) Erfc[(b + I (-a + x))/(Sqrt[2] c)])
+
+//        P[2] == -(1/(2 c^4 Sqrt[2 \[Pi]]))f (-2 b c Sqrt[2/\[Pi]] + c^2 E^(-((-a + I b + x)^2/(2 c^2))) Erfc[(I a + b - I x)/(Sqrt[2] c)] - E^(-((-a + I b + x)^2/(2 c^2))) (-a + I b + x)^2 Erfc[(I a + b - I x)/(Sqrt[2] c)] + c^2 E^((b + I (-a + x))^2/(2 c^2)) Erfc[(b + I (-a + x))/(Sqrt[2] c)] + E^((b + I (-a + x))^2/(2 c^2)) (b + I (-a + x))^2 Erfc[(b + I (-a + x))/(Sqrt[2] c)])
+
+//        P[3] == (E^(-((a + I b - x)^2/(2 c^2))) (E^((2 I b (a - x))/c^2) Erfc[(I a + b - I x)/(Sqrt[2] c)] + Erfc[(b + I (-a + x))/(Sqrt[2] c)]))/(2 c Sqrt[2 \[Pi]])
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
