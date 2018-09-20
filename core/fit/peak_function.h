@@ -17,6 +17,12 @@
 
 #include "core/fit/parametric_function.h"
 #include <QString>
+#include <experimental/optional>
+
+namespace std {
+template <typename T>
+using optional = std::experimental::optional<T>;
+}
 
 class RawOutcome;
 
@@ -27,6 +33,7 @@ public:
     const DoubleWithError center;
     const DoubleWithError fwhm;
     const DoubleWithError intensity;
+    const std::optional<DoubleWithError> sigmaOverGamma;
 };
 
 //! Abstract peak function

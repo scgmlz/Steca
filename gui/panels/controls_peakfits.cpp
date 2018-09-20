@@ -101,10 +101,11 @@ public:
     PeakfitOutcomeView();
 private:
     void refresh();
-    void enable(bool haveRaw, bool haveFit);
+    void enable(bool haveRaw, bool haveFit, bool haveSoG);
     QcrLineDisplay showFittedX_ {10, true};
     QcrLineDisplay showFittedD_ {10, true};
     QcrLineDisplay showFittedY_ {10, true};
+    QcrLineDisplay showFittedSG_ {10, true};
     QcrLineDisplay showRawOutcomeX_ { 5, true};
     QcrLineDisplay showRawOutcomeY_ { 5, true};
     QcrLineDisplay showRawOutcomeD_ { 5, true};
@@ -130,6 +131,9 @@ PeakfitOutcomeView::PeakfitOutcomeView()
     grid->addWidget(&showRawOutcomeY_, 3, 1);
     grid->addWidget(&showFittedY_, 3, 2);
 
+    grid->addWidget(new QLabel("σ/γ"), 4, 0);
+    grid->addWidget(&showFittedSG_, 4, 2);
+
     grid->setColumnStretch(4, 1);
     setLayout(grid);
 
@@ -140,7 +144,7 @@ void PeakfitOutcomeView::refresh()
 {
     const Peak* peak = gSession->peaks.selectedPeak();
     if (!peak)
-        return enable(false, false);
+        return enable(false, false, false);
 
     const Dfgram* dfgram = gSession->currentOrAvgeDfgram();
     ASSERT(dfgram); // the entire tab should be disabled if there is no active cluster
@@ -152,7 +156,7 @@ void PeakfitOutcomeView::refresh()
     showRawOutcomeY_.setText(safeRealText(outcome.getIntensity()));
 
     if (peak->isRaw())
-        return enable(true, false);
+        return enable(true, false, false);
     const Fitted& pFct = dfgram->getPeakFit(jP);
     const auto* peakFit = dynamic_cast<const PeakFunction*>(pFct.f);
     ASSERT(peakFit);
@@ -160,10 +164,11 @@ void PeakfitOutcomeView::refresh()
     showFittedX_.setText(par2text(out.center));
     showFittedD_.setText(par2text(out.fwhm));
     showFittedY_.setText(par2text(out.intensity));
-    enable(true, true);
+    showFittedSG_.setText(par2text(out.sigmaOverGamma.value_or(DoubleWithError{Q_QNAN, Q_QNAN})));
+    enable(true, true, !!out.sigmaOverGamma);
 }
 
-void PeakfitOutcomeView::enable(bool haveRaw, bool haveFit)
+void PeakfitOutcomeView::enable(bool haveRaw, bool haveFit, bool haveSoG)
 {
     showRawOutcomeX_.setEnabled(haveRaw);
     showRawOutcomeD_.setEnabled(haveRaw);
@@ -182,6 +187,10 @@ void PeakfitOutcomeView::enable(bool haveRaw, bool haveFit)
         showFittedD_.setText("");
         showFittedY_.setText("");
     }
+
+    showFittedSG_.setEnabled(haveSoG);
+    if (!haveSoG)
+        showFittedSG_.setText("");
 }
 
 //  ***********************************************************************************************
