@@ -96,7 +96,7 @@ void ExportDfgram::save()
         else
             qFatal("invalid case in ExportDfgram::save");
         close();
-    } catch(Exception& ex) {
+    } catch(const Exception& ex) {
         qWarning() << "Could not save:\n" << ex.msg() << "\n";
     }
 }

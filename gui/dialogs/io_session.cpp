@@ -39,7 +39,7 @@ void ioSession::load(QWidget* parent)
     try {
         TakesLongTime __("loadSession");
         gSession->sessionFromJson(file.readAll());
-    } catch(Exception& ex) {
+    } catch(const Exception& ex) {
         qWarning() << "Could not load session from file " << fileName << ":\n"
                    << ex.msg() << "\n"
                    << "The application may now be in an inconsistent state.\n"
