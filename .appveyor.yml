@@ -6,7 +6,8 @@ platform:
 configuration:
   - Release
 
-# http://www.appveyor.com/docs/installed-software
+# rely on installed software as per http://www.appveyor.com/docs/windows-images-software/
+
 environment:
   global:
     BUILD_CONF: $(configuration)
@@ -16,15 +17,15 @@ environment:
     CMAKE_GENERATOR: "Visual Studio 15 2017 Win64"
 build:
   parallel: true
-    
+
 before_build:
 - echo "Steca before_build"
 - echo %PATH%
-- C:\cygwin\bin\wget -q http://apps.jcns.fz-juelich.de/doku/sc/_media/steca2:local_x64.zip -O %temp%\local_x64.zip
+- C:\cygwin\bin\wget -q http://apps.jcns.fz-juelich.de/doku/sc/_media/steca2:local_x64.zip -O %temp%\local_x64.zip # provides yaml.h yaml.dll yaml.lib
 - 7z x %temp%\local_x64.zip -oC:\opt > null
 
 build_script:
-- git submodule update --init --recursive
+#- git submodule update --init --recursive # there are no submodules
 - mkdir build
 - cd build
 - cmake -G "%CMAKE_GENERATOR%" -DCMAKE_INCLUDE_PATH=C:/opt/local_x64/include -DCMAKE_LIBRARY_PATH=C:/opt/local_x64/lib -DBUILD_SHARED_LIBS=OFF ..
