@@ -2,7 +2,7 @@
 
 cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
 
-set(CMAKE_MODULE_PATH 
+set(CMAKE_MODULE_PATH
   ${CMAKE_SOURCE_DIR}/cmake
   ${CMAKE_SOURCE_DIR}/cmake/steca/modules)
 include(PreventInSourceBuilds)
@@ -36,7 +36,7 @@ find_package(Qt5Core    REQUIRED)
 find_package(Qt5Gui     REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Network REQUIRED)
-find_package(LibYaml    REQUIRED)
+find_package(YAML       REQUIRED)
 message(STATUS "found Qt5Core=${Qt5Core_VERSION_STRING}, Qt5Gui=${Qt5Gui_VERSION_STRING}")
 message(STATUS "Qt5Core=${Qt5Core_DIR}, Qt5=${Qt5Gui_DIR}")
 
