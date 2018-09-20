@@ -15,11 +15,4 @@ set_target_properties(
 
 target_link_libraries(${library_name} m)
 
-install(
-    TARGETS ${library_name} LIBRARY
-    DESTINATION ${destination}/lib
-    COMPONENT Libraries)
-install(
-    FILES ${inc_files}
-    DESTINATION ${destination}/include
-    COMPONENT Headers)
+#{Steca patch}: no installation
