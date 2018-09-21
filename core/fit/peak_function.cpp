@@ -18,6 +18,7 @@
 #include "core/fit/raw_outcome.h"
 #include "qcr/base/debug.h" // ASSERT
 #include "3rdparty/libcerf/lib/cerf.h"
+#include "LevMar/LM/levmar.h"
 #include <qmath.h>
 #include <iostream>
 
@@ -175,7 +176,6 @@ inline double derivative(double y_base, double x, const double *P, uint par) {
 
 void Voigt::setDY(const double* P, const int nXY, const double* X, double* Jacobian) const
 {
-#define DRIVATIVE(a, b, c, d)
     for (int i=0; i<nXY; ++i) {
         double base = callVoigt(X[i], getParams(P));
         for (uint j = 0; j < nPar(); ++j)
@@ -184,13 +184,49 @@ void Voigt::setDY(const double* P, const int nXY, const double* X, double* Jacob
 }
 
 
+//! A asddfgdh as a peak fit function.
+
+class FindFwhm : public FitFunction {
+public:
+    FindFwhm(const Fitted& fitted) : fitted_(fitted) { }
+    void setY(const double* P, const int nXY, const double* X, double* Y) const final;
+    void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
+    int nPar() const final { return 1; };
+private:
+    const Fitted& fitted_;
+};
+
+
+void FindFwhm::setY(const double* P, const int nXY, const double* X, double* Y) const
+{
+    *Y = fitted_.y(*X + *P*0.5);
+}
+void FindFwhm::setDY(const double* P, const int nXY, const double* X, double* Jacobian) const
+{
+    const double rho = 1e-3;
+    const double delta = std::copysign(rho*(fabs(*P*0.5)+rho), *P);
+
+    *Jacobian = (fitted_.y(*X + *P*0.5 + delta) - fitted_.y(*X + *P*0.5)) / delta;
+}
+
+DoubleWithError getFwhm(const Fitted& F) {
+    std::vector<double> P = F.parVal;
+    double ampl = F.y(P[0]);
+
+    Curve curve;
+    curve.append(P[0], ampl/2.0);
+
+    Fitted res = FitWrapper().execFit(new FindFwhm(F), curve, {F.parVal[1]});
+    return {res.parVal[0], res.parErr[0]+0}; // TODO: find propper fwhm error!!!!
+}
+
 PeakOutcome Voigt::outcome(const Fitted& F) const
 {
     return {
         {F.parVal.at(0), F.parErr.at(0)},
-        {F.parVal.at(1), F.parErr.at(1)},
+        getFwhm(F),
         {F.parVal.at(2), F.parErr.at(2)},
-        std::optional<DoubleWithError>({F.parVal.at(3), F.parErr.at(3)}) };
+        std::optional<DoubleWithError>({F.parVal.at(1) / F.parVal.at(3), F.parErr.at(1)+F.parErr.at(3)}) };
 }
 
 
