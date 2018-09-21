@@ -136,6 +136,30 @@ void Lorentzian::setDY(const double* P, const int nXY, const double* X, double* 
     }
 }
 
+inline double callVoigt(double x, double center, double sigma, double inten, double gamma) {
+    return inten * voigt(x - center, sigma, gamma);
+}
+
+inline double callVoigt(double x, std::array<double, 4> p) {
+    return p[2] * voigt(x - p[0], p[1], p[3]);
+}
+
+inline std::array<double, 4> getParams(const double *P) {
+    //const double center = P[0];
+    //const double sigma  = P[1]/ sqrt(8.0*log(2.0));
+    //const double inten  = P[2];
+    //const double gamma  = P[3]/2.0;
+    return { P[0], P[1]/ sqrt(8.0*log(2.0)), P[2], P[3]/2.0 };
+}
+
+inline std::array<double, 4> getParams(const std::array<double, 4> &P) {
+    //const double center = P[0];
+    //const double sigma  = P[1]/ sqrt(8.0*log(2.0));
+    //const double inten  = P[2];
+    //const double gamma  = P[3]/2.0;
+    return { P[0], P[1]/ sqrt(8.0*log(2.0)), P[2], P[3]/2.0 };
+}
+
 void Voigt::setY(const double *P, const int nXY, const double *X, double *Y) const
 {
     for (int i=0 ; i<nXY; ++i)
