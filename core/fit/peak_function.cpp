@@ -154,11 +154,7 @@ inline std::array<double, 4> getParams(const double P[4]) {
 }
 
 inline std::array<double, 4> getParams(const std::array<double, 4> &P) {
-    //const double center = P[0];
-    //const double sigma  = P[1]/ sqrt(8.0*log(2.0));
-    //const double inten  = P[2];
-    //const double gamma  = P[3]/2.0;
-    return { P[0], P[1]/ sqrt(8.0*log(2.0)), P[2], P[3]/2.0 };
+    return getParams(P.data());
 }
 
 void Voigt::setY(const double *P, const int nXY, const double *X, double *Y) const
@@ -166,32 +162,24 @@ void Voigt::setY(const double *P, const int nXY, const double *X, double *Y) con
     const auto params = getParams(P);
     for (int i=0 ; i<nXY; ++i)
         Y[i] = callVoigt(X[i], params);
-
-            //const DoubleWithError center;
-            //const DoubleWithError fwhm;
-            //const DoubleWithError intensity;
 }
 
-inline double deltaFor(double p) {
+inline double derivative(double y_base, double x, const double *P, uint par) {
     const double rho = 1e-3;
-    return std::copysign(rho*(fabs(p)+rho), p);
-}
+    const double delta = std::copysign(rho*(fabs(P[par])+rho), P[par]);
 
-inline double derivative(double y_base, double x, const double *P, double d0, double d1, double d2, double d3) {
-    return (callVoigt(x, getParams({ P[0]+d0,P[1]+d1,P[2]+d2,P[3]+d3 })) - y_base) / (d0+d1+d2+d3);
+    std::array<double, 4> params{ P[0], P[1], P[2], P[3] };
+    params[par] += delta;
+    return (callVoigt(x, getParams(params)) - y_base) / delta;
 }
 
 void Voigt::setDY(const double* P, const int nXY, const double* X, double* Jacobian) const
 {
 #define DRIVATIVE(a, b, c, d)
-    auto params = getParams(P);
     for (int i=0; i<nXY; ++i) {
-        const double x = X[i];
-        double base = callVoigt(x, params);
-            *Jacobian++ = derivative(base, x, P, deltaFor(P[0]), 0, 0, 0);
-            *Jacobian++ = derivative(base, x, P, 0, deltaFor(P[1]), 0, 0);
-            *Jacobian++ = derivative(base, x, P, 0, 0, deltaFor(P[2]), 0);
-            *Jacobian++ = derivative(base, x, P, 0, 0, 0, deltaFor(P[3]));
+        double base = callVoigt(X[i], getParams(P));
+        for (uint j = 0; j < nPar(); ++j)
+            *Jacobian++ = derivative(base, X[i], P, j);
     }
 }
 
