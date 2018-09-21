@@ -76,7 +76,7 @@ Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const RawO
         f = new Voigt();
     } else
         qFatal("Impossible case");
-    std::vector<double> startParams(f->nPar());
+    std::vector<double> startParams(f->nPar(), 1.);
     startParams[0] = rawOutcome.getCenter();
     startParams[1] = rawOutcome.getFwhm();
     startParams[2] = rawOutcome.getIntensity();
