@@ -1,4 +1,0 @@
-- update Qt on Travis, Appveyor, and our vagrant (Juan)
-- replace comparator macros
-- wrap get_data_unit in load_caress
-- find out which examples are in which format
