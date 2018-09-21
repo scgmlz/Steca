@@ -19,6 +19,7 @@
 #include "qcr/base/debug.h" // ASSERT
 #include "3rdparty/libcerf/lib/cerf.h"
 #include <qmath.h>
+#include <iostream>
 
 #define SQR(x) ((x)*(x))
 
@@ -162,8 +163,9 @@ inline std::array<double, 4> getParams(const std::array<double, 4> &P) {
 
 void Voigt::setY(const double *P, const int nXY, const double *X, double *Y) const
 {
+    const auto params = getParams(P);
     for (int i=0 ; i<nXY; ++i)
-        Y[i] = voigt(X[i] - P[0], P[1], P[2]) * P[3];
+        Y[i] = callVoigt(X[i], params);
 
             //const DoubleWithError center;
             //const DoubleWithError fwhm;
@@ -173,7 +175,22 @@ void Voigt::setY(const double *P, const int nXY, const double *X, double *Y) con
 void Voigt::setDY(const double* P, const int nXY, const double* X, double* Jacobian) const
 {
 
+    const double rho = 1e-3;
+    auto params = getParams(P);
     for (int i=0; i<nXY; ++i) {
+        const double x = X[i];
+        double base = callVoigt(x, params);
+        const double d = rho*(base+rho);
+
+        *Jacobian++ = (callVoigt(x, getParams({ P[0]+d, P[1], P[2], P[3] })) - base)/d;
+        *Jacobian++ = (callVoigt(x, getParams({ P[0], P[1]+d, P[2], P[3] })) - base)/d;
+        *Jacobian++ = (callVoigt(x, getParams({ P[0], P[1], P[2]+d, P[3] })) - base)/d;
+        *Jacobian++ = (callVoigt(x, getParams({ P[0], P[1], P[2], P[3]+d })) - base)/d;
+
+        //*Jacobian++ = (callVoigt(x, getParams({ P[0]+d, P[1], P[2], P[3] })) - callVoigt(x, getParams({ P[0]-d, P[1], P[2], P[3] })))/(2*d);
+        //*Jacobian++ = (callVoigt(x, getParams({ P[0], P[1]+d, P[2], P[3] })) - callVoigt(x, getParams({ P[0], P[1]-d, P[2], P[3] })))/(2*d);
+        //*Jacobian++ = (callVoigt(x, getParams({ P[0], P[1], P[2]+d, P[3] })) - callVoigt(x, getParams({ P[0], P[1], P[2]-d, P[3] })))/(2*d);
+        //*Jacobian++ = (callVoigt(x, getParams({ P[0], P[1], P[2], P[3]+d })) - callVoigt(x, getParams({ P[0], P[1], P[2], P[3]-d })))/(2*d);
     }
 }
 
