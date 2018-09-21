@@ -177,10 +177,6 @@ inline double deltaFor(double p) {
     return std::copysign(rho*(fabs(p)+rho), p);
 }
 
-inline std::array<double, 4> getPD(const double *P, double d0, double d1, double d2, double d3) {
-    return getParams({ P[0]+d0, P[1]+d1, P[2]+d2, P[3]+d3 });
-}
-
 inline double derivative(double y_base, double x, const double *P, double d0, double d1, double d2, double d3) {
     return (callVoigt(x, getParams({ P[0]+d0,P[1]+d1,P[2]+d2,P[3]+d3 })) - y_base) / (d0+d1+d2+d3);
 }
@@ -196,11 +192,6 @@ void Voigt::setDY(const double* P, const int nXY, const double* X, double* Jacob
             *Jacobian++ = derivative(base, x, P, 0, deltaFor(P[1]), 0, 0);
             *Jacobian++ = derivative(base, x, P, 0, 0, deltaFor(P[2]), 0);
             *Jacobian++ = derivative(base, x, P, 0, 0, 0, deltaFor(P[3]));
-
-        //*Jacobian++ = (callVoigt(x, getParams({ P[0]+d, P[1], P[2], P[3] })) - callVoigt(x, getParams({ P[0]-d, P[1], P[2], P[3] })))/(2*d);
-        //*Jacobian++ = (callVoigt(x, getParams({ P[0], P[1]+d, P[2], P[3] })) - callVoigt(x, getParams({ P[0], P[1]-d, P[2], P[3] })))/(2*d);
-        //*Jacobian++ = (callVoigt(x, getParams({ P[0], P[1], P[2]+d, P[3] })) - callVoigt(x, getParams({ P[0], P[1], P[2]-d, P[3] })))/(2*d);
-        //*Jacobian++ = (callVoigt(x, getParams({ P[0], P[1], P[2], P[3]+d })) - callVoigt(x, getParams({ P[0], P[1], P[2], P[3]-d })))/(2*d);
     }
 }
 
