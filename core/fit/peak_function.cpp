@@ -68,6 +68,7 @@ PeakOutcome PeakFunction::outcome(const Fitted& F) const
 Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const RawOutcome& rawOutcome)
 {
     const PeakFunction* f;
+    bool onlyPositiveParams = false;
     if        (name=="Raw") {
         return {};
     } else if (name=="Gaussian") {
@@ -76,13 +77,14 @@ Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const RawO
         f = new Lorentzian();
     } else if (name=="Voigt") {
         f = new Voigt();
+        onlyPositiveParams = true;
     } else
         qFatal("Impossible case");
     std::vector<double> startParams(f->nPar(), 1.);
     startParams[0] = rawOutcome.getCenter();
     startParams[1] = rawOutcome.getFwhm();
     startParams[2] = rawOutcome.getIntensity();
-    return FitWrapper().execFit(f, curve, startParams);
+    return FitWrapper().execFit(f, curve, startParams, onlyPositiveParams);
 }
 
 //  ***********************************************************************************************
