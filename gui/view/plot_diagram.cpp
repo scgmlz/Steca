@@ -58,35 +58,18 @@ void PlotDiagram::refresh()
     std::vector<double> xs, ys, ysSigma;
     gSession->allPeaks.currentInfoSequence()->getValuesAndSigma(idxX, idxY, xs, ys, ysSigma);
 
-    if (!xs.size())
-        return erase();
-
-    Range rgeX(xs);
-    Range rgeY(ys);
-    if (rgeX.isEmpty() || rgeY.isEmpty())
-        return erase();
-
-    xAxis->setRange(rgeX.min, rgeX.max);
-    yAxis->setRange(rgeY.min, rgeY.max);
-    xAxis->setVisible(true);
-    yAxis->setVisible(true);
+    std::vector<double> xsSafe, ysSafe, ysSigmaSafe;
     if (ysSigma.size() > 0) {// has valueError
-        std::vector<double> xsSafe;
-        std::vector<double> ysSafe;
-        std::vector<double> ysSigmaSafe;
         for (size_t i = 0; i < xs.size(); ++i) {
             if (   qIsNaN(xs.at(i)) || qIsInf(xs.at(i))
-                || qIsNaN(ys.at(i)) || qIsInf(ys.at(i))) 
+                || qIsNaN(ys.at(i)) || qIsInf(ys.at(i)))
                 continue;
             xsSafe.push_back(xs.at(i));
             ysSafe.push_back(ys.at(i));
             ysSigmaSafe.push_back(ysSigma.at(i));
         }
-
         graph_->setDataValueError(QVector<double>::fromStdVector(xsSafe), QVector<double>::fromStdVector(ysSafe), QVector<double>::fromStdVector(ysSigmaSafe));
     } else {
-        std::vector<double> xsSafe;
-        std::vector<double> ysSafe;
         for (size_t i = 0; i < xs.size(); ++i) {
             if (   qIsNaN(xs.at(i)) || qIsInf(xs.at(i))
                 || qIsNaN(ys.at(i)) || qIsInf(ys.at(i)))
@@ -96,6 +79,20 @@ void PlotDiagram::refresh()
         }
         graph_->setData(QVector<double>::fromStdVector(xsSafe), QVector<double>::fromStdVector(ysSafe));
     }
+
+    if (!xsSafe.size())
+        return erase();
+
+    Range rgeX(xsSafe);
+    Range rgeY(ysSafe);
+    if (rgeX.isEmpty() || rgeY.isEmpty())
+        return erase();
+
+    xAxis->setRange(rgeX.min, rgeX.max);
+    yAxis->setRange(rgeY.min, rgeY.max);
+    xAxis->setVisible(true);
+    yAxis->setVisible(true);
+
     replot();
 }
 
