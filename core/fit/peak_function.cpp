@@ -52,6 +52,22 @@ public:
     void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
     int nPar() const final { return 4; }
     PeakOutcome outcome(const Fitted&) const final;
+private:
+    static inline double getY(double x, const double *P);
+};
+
+//! A Fwhm finder as a fit function. avoids reimplementing
+
+class FindFwhm : public FitFunction {
+public:
+    static DoubleWithError fromFitted(const Fitted& F);
+    void setY(const double* P, const int nXY, const double* X, double* Y) const final;
+    void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
+    int nPar() const final { return 1; }
+private:
+    FindFwhm(const Fitted& fitted) : fitted_(fitted) { }
+    double getY(double x, const double *P) const;
+    const Fitted& fitted_;
 };
 
 //  ***********************************************************************************************
@@ -140,85 +156,78 @@ void Lorentzian::setDY(const double* P, const int nXY, const double* X, double* 
     }
 }
 
+namespace  {
+//! approximates the parameter derivative for f. fxp0 = f(x, p0)
+template <typename F>
+inline void derivative(const F f, double fxp0, double x, const double *P, uint nPar, double* Jacobian) {
+    const double rho = 1e-3;
+    double *params = const_cast<double*>(P);
+    for (uint i = 0; i < nPar; ++i) {
+        // get appropriate delta for param:
+        double delta = rho*(fabs(params[i])+rho);
+        delta = std::copysign(delta / (delta + 1), params[i]);
+
+        double origParam = params[i];
+        params[i] += delta;
+        Jacobian[i] = (f(x, params) - fxp0) / delta;
+        // make sure to retain const-ness of P:
+        params[i] = origParam;
+    }
+    return;
+}
+
+}
+
 //  ***********************************************************************************************
 //! @class Voigt
 
-inline double callVoigt(double x, std::array<double, 4> p) {
-    return p[2] * voigt(x - p[0], p[1], p[3]);
-}
-
-inline std::array<double, 4> getParams(const double P[4]) {
-
-    //const double center = P[0];
-    //const double sigma  = P[1];/// sqrt(8.0*log(2.0));
-    //const double inten  = P[2];
-    //const double gamma  = P[3]/2.0;
-    return {
-        P[0],
-        P[1],// sqrt(8.0*log(2.0)),
-        P[2],
-        P[1]*P[3]//2
-    };
-}
-
-inline std::array<double, 4> getParams(const std::array<double, 4> &P) {
-    return getParams(P.data());
+inline double Voigt::getY(double x, const double *P) {
+    return P[2] * voigt(x - P[0], P[1], P[1]*P[3]);
 }
 
 void Voigt::setY(const double *P, const int nXY, const double *X, double *Y) const
 {
-    const auto params = getParams(P);
     for (int i=0 ; i<nXY; ++i)
-        Y[i] = callVoigt(X[i], params);
-}
-
-inline double derivative(double y_base, double x, const double *P, uint par) {
-    const double rho = 1e-3;
-    double delta = rho*(fabs(P[par])+rho);
-    delta = delta / (fabs(delta)+1);
-
-    std::array<double, 4> params{ P[0], P[1], P[2], P[3] };
-    params[par] += delta;
-    return (callVoigt(x, getParams(params)) - y_base) / delta;
+        Y[i] = getY(X[i], P);
 }
 
 void Voigt::setDY(const double* P, const int nXY, const double* X, double* Jacobian) const
 {
     for (int i=0; i<nXY; ++i) {
-        double base = callVoigt(X[i], getParams(P));
-        for (uint j = 0; j < nPar(); ++j)
-            *Jacobian++ = derivative(base, X[i], P, j);
+        double base = getY(X[i], P);
+        derivative(&getY, base, X[i], P, nPar(), Jacobian);
+        Jacobian += nPar();
     }
 }
 
-
-//! A asddfgdh as a peak fit function.
-
-class FindFwhm : public FitFunction {
-public:
-    FindFwhm(const Fitted& fitted) : fitted_(fitted) { }
-    void setY(const double* P, const int nXY, const double* X, double* Y) const final;
-    void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
-    int nPar() const final { return 1; }
-private:
-    const Fitted& fitted_;
-};
-
-
-void FindFwhm::setY(const double* P, const int nXY, const double* X, double* Y) const
+PeakOutcome Voigt::outcome(const Fitted& F) const
 {
-    *Y = fitted_.y(*X + *P*0.5);
+    return {
+        {F.parVal.at(0), F.parErr.at(0)},
+        FindFwhm::fromFitted(F),
+        {F.parVal.at(2), F.parErr.at(2)},
+        std::optional<DoubleWithError>({1.0 / F.parVal.at(3), F.parErr.at(3)}) };
+}
+
+//  ***********************************************************************************************
+//! @class FindFwhm
+
+double FindFwhm::getY(double x, const double *P) const
+{
+    return fitted_.y(x + *P*0.5);
+}
+void FindFwhm::setY(const double* P, const int nXY, const double* X, double* Y) const
+{   // 'curve' has only one point.
+    *Y = getY(*X, P);
 }
 
 void FindFwhm::setDY(const double* P, const int nXY, const double* X, double* Jacobian) const
 {
-    const double rho = 1e-3;
-    const double delta = std::copysign(rho*(fabs(*P*0.5)+rho), *P);
-
-    *Jacobian = (fitted_.y(*X + *P*0.5 + delta) - fitted_.y(*X + *P*0.5)) / delta;
+    auto f = [this](double x, const double*P){ return getY(x, P); };  // why c++, why?
+    derivative(f, f(*X, P), *X, P, nPar(), Jacobian);
 }
 
-DoubleWithError getFwhm(const Fitted& F) {
+DoubleWithError FindFwhm::fromFitted(const Fitted& F) {
     std::vector<double> P = F.parVal;
     double ampl = F.y(P[0]);
 
@@ -226,16 +235,7 @@ DoubleWithError getFwhm(const Fitted& F) {
     curve.append(P[0], ampl/2.0);
 
     Fitted res = FitWrapper().execFit(new FindFwhm(F), curve, {1});
-    return {res.parVal[0], res.parErr[0]+0}; // TODO: find propper fwhm error!!!!
-}
-
-PeakOutcome Voigt::outcome(const Fitted& F) const
-{
-    return {
-        {F.parVal.at(0), F.parErr.at(0)},
-        getFwhm(F),
-        {F.parVal.at(2), F.parErr.at(2)},
-        std::optional<DoubleWithError>({1.0 / F.parVal.at(3), F.parErr.at(3)}) };
+    return {fabs(res.parVal[0]), res.parErr[0]+0}; // TODO: find propper fwhm error!!!!
 }
 
 
