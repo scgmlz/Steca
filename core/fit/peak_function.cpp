@@ -202,9 +202,10 @@ void Voigt::setDY(const double* P, const int nXY, const double* X, double* Jacob
 
 PeakOutcome Voigt::outcome(const Fitted& F) const
 {
+    double fwhm = FindFwhm::fromFitted(F).value;
     return {
         {F.parVal.at(0), F.parErr.at(0)},
-        FindFwhm::fromFitted(F),
+        DoubleWithError{fwhm, fwhm / F.parVal.at(1) * F.parErr.at(1)},
         {F.parVal.at(2), F.parErr.at(2)},
         std::unique_ptr<DoubleWithError>(new DoubleWithError{1.0 / F.parVal.at(3), F.parErr.at(3)}) };
 }
@@ -235,5 +236,5 @@ DoubleWithError FindFwhm::fromFitted(const Fitted& F) {
     curve.append(P[0], ampl/2.0);
 
     Fitted res = FitWrapper().execFit(new FindFwhm(F), curve, {1});
-    return {fabs(res.parVal[0]), res.parErr[0]+0}; // TODO: find propper fwhm error!!!!
+    return {fabs(res.parVal[0]), res.parErr[0]+0};
 }
