@@ -164,7 +164,10 @@ void PeakfitOutcomeView::refresh()
     showFittedX_.setText(par2text(out.center));
     showFittedD_.setText(par2text(out.fwhm));
     showFittedY_.setText(par2text(out.intensity));
-    showFittedSG_.setText(par2text(out.sigmaOverGamma.value_or(DoubleWithError{Q_QNAN, Q_QNAN})));
+    if (out.sigmaOverGamma)
+        showFittedSG_.setText(par2text(*out.sigmaOverGamma));
+    else
+        showFittedSG_.setText(par2text({Q_QNAN, Q_QNAN}));
     enable(true, true, !!out.sigmaOverGamma);
 }
 

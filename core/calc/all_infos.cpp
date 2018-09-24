@@ -56,8 +56,8 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
         center        .reset(new DoubleWithError{out.center});
         fwhm          .reset(new DoubleWithError{out.fwhm});
         intensity     .reset(new DoubleWithError{out.intensity});
-        sigmaOverGamma.reset(new DoubleWithError{
-                                 out.sigmaOverGamma.value_or(DoubleWithError{Q_QNAN, Q_QNAN})});
+        if (out.sigmaOverGamma)
+            sigmaOverGamma.reset(new DoubleWithError(*out.sigmaOverGamma));
     }
 
     if (!fitrange.contains(center->value)) // TODO/math generalize to fitIsCredible

@@ -206,7 +206,7 @@ PeakOutcome Voigt::outcome(const Fitted& F) const
         {F.parVal.at(0), F.parErr.at(0)},
         FindFwhm::fromFitted(F),
         {F.parVal.at(2), F.parErr.at(2)},
-        std::optional<DoubleWithError>({1.0 / F.parVal.at(3), F.parErr.at(3)}) };
+        std::unique_ptr<DoubleWithError>(new DoubleWithError{1.0 / F.parVal.at(3), F.parErr.at(3)}) };
 }
 
 //  ***********************************************************************************************
