@@ -30,7 +30,7 @@ class Gaussian : public PeakFunction {
 public:
     void setY(const double* P, const int nXY, const double* X, double* Y) const final;
     void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
-    int nPar() const final { return 3; };
+    int nPar() const final { return 3; }
 private:
     const double prefac = 1 / sqrt(2*M_PI);
 };
@@ -41,7 +41,7 @@ class Lorentzian : public PeakFunction {
 public:
     void setY(const double* P, const int nXY, const double* X, double* Y) const final;
     void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
-    int nPar() const final { return 3; };
+    int nPar() const final { return 3; }
 };
 
 //! A Lorentzian as a peak fit function.
@@ -140,20 +140,25 @@ void Lorentzian::setDY(const double* P, const int nXY, const double* X, double* 
     }
 }
 
-inline double callVoigt(double x, double center, double sigma, double inten, double gamma) {
-    return inten * voigt(x - center, sigma, gamma);
-}
+//  ***********************************************************************************************
+//! @class Voigt
 
 inline double callVoigt(double x, std::array<double, 4> p) {
     return p[2] * voigt(x - p[0], p[1], p[3]);
 }
 
 inline std::array<double, 4> getParams(const double P[4]) {
+
     //const double center = P[0];
-    //const double sigma  = P[1]/ sqrt(8.0*log(2.0));
+    //const double sigma  = P[1];/// sqrt(8.0*log(2.0));
     //const double inten  = P[2];
     //const double gamma  = P[3]/2.0;
-    return { P[0], P[1]/ sqrt(8.0*log(2.0)), P[2], P[3]/2.0 };
+    return {
+        P[0],
+        P[1],// sqrt(8.0*log(2.0)),
+        P[2],
+        P[1]*P[3]//2
+    };
 }
 
 inline std::array<double, 4> getParams(const std::array<double, 4> &P) {
@@ -169,7 +174,8 @@ void Voigt::setY(const double *P, const int nXY, const double *X, double *Y) con
 
 inline double derivative(double y_base, double x, const double *P, uint par) {
     const double rho = 1e-3;
-    const double delta = std::copysign(rho*(fabs(P[par])+rho), P[par]);
+    double delta = rho*(fabs(P[par])+rho);
+    delta = delta / (fabs(delta)+1);
 
     std::array<double, 4> params{ P[0], P[1], P[2], P[3] };
     params[par] += delta;
@@ -193,7 +199,7 @@ public:
     FindFwhm(const Fitted& fitted) : fitted_(fitted) { }
     void setY(const double* P, const int nXY, const double* X, double* Y) const final;
     void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
-    int nPar() const final { return 1; };
+    int nPar() const final { return 1; }
 private:
     const Fitted& fitted_;
 };
@@ -203,6 +209,7 @@ void FindFwhm::setY(const double* P, const int nXY, const double* X, double* Y) 
 {
     *Y = fitted_.y(*X + *P*0.5);
 }
+
 void FindFwhm::setDY(const double* P, const int nXY, const double* X, double* Jacobian) const
 {
     const double rho = 1e-3;
@@ -218,7 +225,7 @@ DoubleWithError getFwhm(const Fitted& F) {
     Curve curve;
     curve.append(P[0], ampl/2.0);
 
-    Fitted res = FitWrapper().execFit(new FindFwhm(F), curve, {F.parVal[1]});
+    Fitted res = FitWrapper().execFit(new FindFwhm(F), curve, {1});
     return {res.parVal[0], res.parErr[0]+0}; // TODO: find propper fwhm error!!!!
 }
 
@@ -228,7 +235,7 @@ PeakOutcome Voigt::outcome(const Fitted& F) const
         {F.parVal.at(0), F.parErr.at(0)},
         getFwhm(F),
         {F.parVal.at(2), F.parErr.at(2)},
-        std::optional<DoubleWithError>({F.parVal.at(1) / F.parVal.at(3), F.parErr.at(1)+F.parErr.at(3)}) };
+        std::optional<DoubleWithError>({1.0 / F.parVal.at(3), F.parErr.at(3)}) };
 }
 
 
