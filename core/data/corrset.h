@@ -43,7 +43,7 @@ public:
     void invalidateNormalizer() const { normalizer_.invalidate(); }
     const Image& getNormalizer() const { return normalizer_.get(); }
 
-    QcrCell<bool> enabled {true};
+    QcrCell<bool> enabled {false};
 
 private:
     std::unique_ptr<const Rawfile> raw_; //!< owned by this
