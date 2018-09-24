@@ -53,10 +53,11 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
         const auto* peakFit = dynamic_cast<const PeakFunction*>(pFct.f);
         ASSERT(peakFit);
         const PeakOutcome out = peakFit->outcome(pFct);
-        center    .reset(new DoubleWithError{out.center});
-        fwhm      .reset(new DoubleWithError{out.fwhm});
-        intensity .reset(new DoubleWithError{out.intensity});
-        intensity .reset(new DoubleWithError{out.sigmaOverGamma.value_or(DoubleWithError{Q_QNAN, Q_QNAN})});
+        center        .reset(new DoubleWithError{out.center});
+        fwhm          .reset(new DoubleWithError{out.fwhm});
+        intensity     .reset(new DoubleWithError{out.intensity});
+        sigmaOverGamma.reset(new DoubleWithError{
+                                 out.sigmaOverGamma.value_or(DoubleWithError{Q_QNAN, Q_QNAN})});
     }
 
     if (!fitrange.contains(center->value)) // TODO/math generalize to fitIsCredible
