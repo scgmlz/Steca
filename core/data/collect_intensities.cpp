@@ -41,6 +41,7 @@ void projectMeasurement(
     ASSERT(deltaTth > 0);
 
     const Image& normalizer = gSession->corrset.getNormalizer();
+    const bool isNormalizerEnabled = gSession->corrset.enabled.val();
 
     // TODO: MOST TIME IS SPENT HERE => OPTIMIZE !
     for (int i = gmaIndexMin; i < gmaIndexMax; ++i) {
@@ -49,7 +50,7 @@ void projectMeasurement(
         if (qIsNaN(inten))
             continue;
 
-        if (!normalizer.isEmpty()) {
+        if (isNormalizerEnabled) {
             float corr = normalizer.inten1d(ind);
             if (qIsNaN(corr)) // TODO: correct handling of corr=0
                 continue;
