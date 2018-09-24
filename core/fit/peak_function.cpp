@@ -237,28 +237,3 @@ DoubleWithError FindFwhm::fromFitted(const Fitted& F) {
     Fitted res = FitWrapper().execFit(new FindFwhm(F), curve, {1});
     return {fabs(res.parVal[0]), res.parErr[0]+0}; // TODO: find propper fwhm error!!!!
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
