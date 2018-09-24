@@ -18,7 +18,7 @@
 #include "core/typ/range.h"
 #include "qcr/engine/cell.h"
 
-//! Settings needed for fitting the baseline.
+//! Parametrizes the baseline fits.
 
 class Baseline {
 public:
@@ -26,7 +26,6 @@ public:
     Baseline(const Baseline&) = delete;
 
     void fromJson(const JsonObj obj);
-    void setOneLimit(double val, bool namelyMax);
     void clear();
     void removeSelected();
     QJsonObject toJson() const;
