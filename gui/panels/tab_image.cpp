@@ -118,13 +118,15 @@ QImage ImageTab::makeImage(const Image& image)
 
     QImage ret(QSize(sz.w, sz.h), QImage::Format_RGB32);
 
-    bool fixedScale = gSession->params.showAvgeDfgram.val();
+    bool fixedScale = gGui->toggles->fixedIntenImage.getValue();
     const Range rgeInten = imageLens.rgeInten(fixedScale);
+
     float maxInten = float(rgeInten.max);
 
     for (int j=0; j<sz.h; ++j)
         for (int i=0; i<sz.w; ++i)
-            ret.setPixel(i, j, intenImage(imageLens.imageInten(i, j), maxInten, !fixedScale));
+            ret.setPixel(i, j, intenImage(imageLens.imageInten(i, j), maxInten,
+                                          true/*formerly !fixedScale. why?*/));
     return ret;
 }
 

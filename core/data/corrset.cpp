@@ -62,7 +62,9 @@ Image recomputeNormalizer(const Image& corrImage)
 
 Corrset::Corrset()
     : normalizer_{[this]()->Image{ return recomputeNormalizer(image()); }}
-{}
+{
+    enabled.setHook([](auto){ gSession->onNormalization(); });
+}
 
 void Corrset::clear()
 {
@@ -73,6 +75,7 @@ void Corrset::clear()
 void Corrset::removeFile()
 {
     raw_.release();
+    enabled.setVal(false);
     invalidateNormalizer();
     gSession->updateImageSize();
 }
@@ -89,6 +92,7 @@ void Corrset::loadFile(const QString& filePath)
     invalidateNormalizer();
     // all ok
     enabled.setVal(true);
+    gSession->onNormalization();
     gRoot->remakeAll();
 }
 
