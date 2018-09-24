@@ -27,25 +27,25 @@ XSettings::~XSettings()
     // qDebug() << "XSettings END";
 }
 
-bool XSettings::readBool(const QString& key, bool def)
+void XSettings::setBool(const QString& key, QcrCell<bool>& cell)
 {
-    return value(key, def).toBool();
+    cell.setVal( value(key, cell.val()).toBool() );
 }
 
-int XSettings::readInt(const QString& key, int def)
+void XSettings::setInt(const QString& key, QcrCell<int>& cell)
 {
-    auto var = value(key);
     bool ok;
-    int val = var.toInt(&ok);
-    return ok ? val : def;
+    int val = value(key).toInt(&ok);
+    if (ok)
+        cell.setVal(val);
 }
 
-double XSettings::readReal(const QString& key, double def)
+void XSettings::setReal(const QString& key, QcrCell<double>& cell)
 {
-    auto var = value(key);
     bool ok;
-    double val = var.toDouble(&ok);
-    return ok ? val : def;
+    double val = value(key).toDouble(&ok);
+    if (ok)
+        cell.setVal(val);
 }
 
 //! Update target if settings have a bool value with given key

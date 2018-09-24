@@ -15,6 +15,7 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
+#include "qcr/engine/cell.h"
 #include <QSettings>
 
 //! Used to save and retrieve the main window detector, and certain parameter settings.
@@ -24,17 +25,16 @@ public:
     XSettings(const QString& group = "");
     ~XSettings();
 
-    bool readBool(const QString& key, bool def = false);
+    void setBool(const QString& key, QcrCell<bool>& cell);
     void getBool(const QString& key, bool& val);
 
-    int readInt(const QString& key, int def = 0);
+    void setInt(const QString& key, QcrCell<int>& cell);
     void getInt(const QString& key, int& target);
 
-    double readReal(const QString& key, double def = 0);
+    void setReal(const QString& key, QcrCell<double>& cell);
     void getReal(const QString& key, double& target);
 
-    QString readStr(const QString& key, const QString& def = "") {
-        return value(key, def).toString(); }
+    void setStr(const QString& key, QString& var) { var = value(key).toString(); }
 };
 
 #endif // SETTINGS_H
