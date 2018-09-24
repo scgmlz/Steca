@@ -42,6 +42,7 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
     std::unique_ptr<DoubleWithError> center;
     std::unique_ptr<DoubleWithError> fwhm;
     std::unique_ptr<DoubleWithError> intensity;
+    std::unique_ptr<DoubleWithError> sigmaOverGamma{new DoubleWithError{Q_QNAN, Q_QNAN}};
     if (peak.isRaw()) {
         const RawOutcome& out = dfgram.getRawOutcome(jP);
         center    .reset(new DoubleWithError{out.getCenter(),0});
@@ -52,9 +53,11 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
         const auto* peakFit = dynamic_cast<const PeakFunction*>(pFct.f);
         ASSERT(peakFit);
         const PeakOutcome out = peakFit->outcome(pFct);
-        center    .reset(new DoubleWithError{out.center});
-        fwhm      .reset(new DoubleWithError{out.fwhm});
-        intensity .reset(new DoubleWithError{out.intensity});
+        center        .reset(new DoubleWithError{out.center});
+        fwhm          .reset(new DoubleWithError{out.fwhm});
+        intensity     .reset(new DoubleWithError{out.intensity});
+        if (out.sigmaOverGamma)
+            sigmaOverGamma.reset(new DoubleWithError(*out.sigmaOverGamma));
     }
 
     if (!fitrange.contains(center->value)) // TODO/math generalize to fitIsCredible
@@ -62,7 +65,8 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
 
     // TODO pass PeakOutcome instead of 6 components
     return {metadata, alpha, beta, gRange, intensity->value, intensity->error,
-            deg(center->value), deg(center->error), fwhm->value, fwhm->error};
+            deg(center->value), deg(center->error), fwhm->value, fwhm->error,
+            sigmaOverGamma->value, sigmaOverGamma->error};
 }
 
 InfoSequence computeDirectInfoSequence(int jP)

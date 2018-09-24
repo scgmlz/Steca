@@ -17,6 +17,8 @@
 
 #include "core/fit/parametric_function.h"
 #include <QString>
+#include <memory>
+
 
 class RawOutcome;
 
@@ -27,6 +29,7 @@ public:
     const DoubleWithError center;
     const DoubleWithError fwhm;
     const DoubleWithError intensity;
+    const std::shared_ptr<DoubleWithError> sigmaOverGamma; // an optional value, it might NOT exist
 };
 
 //! Abstract peak function

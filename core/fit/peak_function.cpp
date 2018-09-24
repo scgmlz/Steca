@@ -17,7 +17,10 @@
 #include "core/fit/fit_methods.h"
 #include "core/fit/raw_outcome.h"
 #include "qcr/base/debug.h" // ASSERT
+#include "3rdparty/libcerf/lib/cerf.h"
+#include "LevMar/LM/levmar.h"
 #include <qmath.h>
+#include <iostream>
 
 #define SQR(x) ((x)*(x))
 
@@ -27,7 +30,7 @@ class Gaussian : public PeakFunction {
 public:
     void setY(const double* P, const int nXY, const double* X, double* Y) const final;
     void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
-    int nPar() const final { return 3; };
+    int nPar() const final { return 3; }
 private:
     const double prefac = 1 / sqrt(2*M_PI);
 };
@@ -38,7 +41,33 @@ class Lorentzian : public PeakFunction {
 public:
     void setY(const double* P, const int nXY, const double* X, double* Y) const final;
     void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
-    int nPar() const final { return 3; };
+    int nPar() const final { return 3; }
+};
+
+//! A Lorentzian as a peak fit function.
+
+class Voigt : public PeakFunction {
+public:
+    void setY(const double* P, const int nXY, const double* X, double* Y) const final;
+    void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
+    int nPar() const final { return 4; }
+    PeakOutcome outcome(const Fitted&) const final;
+private:
+    static inline double getY(double x, const double *P);
+};
+
+//! A Fwhm finder as a fit function. avoids reimplementing
+
+class FindFwhm : public FitFunction {
+public:
+    static DoubleWithError fromFitted(const Fitted& F);
+    void setY(const double* P, const int nXY, const double* X, double* Y) const final;
+    void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
+    int nPar() const final { return 1; }
+private:
+    FindFwhm(const Fitted& fitted) : fitted_(fitted) { }
+    double getY(double x, const double *P) const;
+    const Fitted& fitted_;
 };
 
 //  ***********************************************************************************************
@@ -55,20 +84,23 @@ PeakOutcome PeakFunction::outcome(const Fitted& F) const
 Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const RawOutcome& rawOutcome)
 {
     const PeakFunction* f;
-    int nPar = 3;
+    bool onlyPositiveParams = false;
     if        (name=="Raw") {
         return {};
     } else if (name=="Gaussian") {
         f = new Gaussian();
     } else if (name=="Lorentzian") {
         f = new Lorentzian();
+    } else if (name=="Voigt") {
+        f = new Voigt();
+        onlyPositiveParams = true;
     } else
         qFatal("Impossible case");
-    std::vector<double> startParams(nPar);
+    std::vector<double> startParams(f->nPar(), 1.);
     startParams[0] = rawOutcome.getCenter();
     startParams[1] = rawOutcome.getFwhm();
     startParams[2] = rawOutcome.getIntensity();
-    return FitWrapper().execFit(f, curve, startParams);
+    return FitWrapper().execFit(f, curve, startParams, onlyPositiveParams);
 }
 
 //  ***********************************************************************************************
@@ -122,4 +154,87 @@ void Lorentzian::setDY(const double* P, const int nXY, const double* X, double* 
         *Jacobian++ = inten/2/M_PI/deno * (1 - 2*SQR(hwhm)/deno);
         *Jacobian++ = hwhm/M_PI/deno;
     }
+}
+
+namespace  {
+//! approximates the parameter derivative for f. fxp0 = f(x, p0)
+template <typename F>
+inline void derivative(const F f, double fxp0, double x, const double *P, uint nPar, double* Jacobian) {
+    const double rho = 1e-3;
+    double *params = const_cast<double*>(P);
+    for (uint i = 0; i < nPar; ++i) {
+        // get appropriate delta for param:
+        double delta = rho*(fabs(params[i])+rho);
+        delta = std::copysign(delta / (delta + 1), params[i]);
+
+        double origParam = params[i];
+        params[i] += delta;
+        Jacobian[i] = (f(x, params) - fxp0) / delta;
+        // make sure to retain const-ness of P:
+        params[i] = origParam;
+    }
+    return;
+}
+
+}
+
+//  ***********************************************************************************************
+//! @class Voigt
+
+inline double Voigt::getY(double x, const double *P) {
+    return P[2] * voigt(x - P[0], P[1], P[1]*P[3]);
+}
+
+void Voigt::setY(const double *P, const int nXY, const double *X, double *Y) const
+{
+    for (int i=0 ; i<nXY; ++i)
+        Y[i] = getY(X[i], P);
+}
+
+void Voigt::setDY(const double* P, const int nXY, const double* X, double* Jacobian) const
+{
+    for (int i=0; i<nXY; ++i) {
+        double base = getY(X[i], P);
+        derivative(&getY, base, X[i], P, nPar(), Jacobian);
+        Jacobian += nPar();
+    }
+}
+
+PeakOutcome Voigt::outcome(const Fitted& F) const
+{
+    double fwhm = FindFwhm::fromFitted(F).value;
+    return {
+        {F.parVal.at(0), F.parErr.at(0)},
+        DoubleWithError{fwhm, fwhm / F.parVal.at(1) * F.parErr.at(1)},
+        {F.parVal.at(2), F.parErr.at(2)},
+        std::unique_ptr<DoubleWithError>(new DoubleWithError{1.0 / F.parVal.at(3), F.parErr.at(3)}) };
+}
+
+//  ***********************************************************************************************
+//! @class FindFwhm
+
+double FindFwhm::getY(double x, const double *P) const
+{
+    return fitted_.y(x + *P*0.5);
+}
+void FindFwhm::setY(const double* P, const int nXY, const double* X, double* Y) const
+{   // 'curve' has only one point.
+    *Y = getY(*X, P);
+}
+
+void FindFwhm::setDY(const double* P, const int nXY, const double* X, double* Jacobian) const
+{
+    auto f = [this](double x, const double*P){ return getY(x, P); };  // why c++, why?
+    derivative(f, f(*X, P), *X, P, nPar(), Jacobian);
+}
+
+DoubleWithError FindFwhm::fromFitted(const Fitted& F) {
+    std::vector<double> P = F.parVal;
+    double ampl = F.y(P[0]);
+
+    Curve curve;
+    curve.append(P[0], ampl/2.0);
+
+    Fitted res = FitWrapper().execFit(new FindFwhm(F), curve, {1});
+    return {fabs(res.parVal[0]), res.parErr[0]+0};
 }
