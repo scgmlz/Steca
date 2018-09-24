@@ -24,7 +24,8 @@
 //! as -1 when output is written for these programs (polefigure!).
 
 PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma, double inten,
-                   double intenError, deg tth, deg tthError, double fwhm, double fwhmError)
+                   double intenError, deg tth, deg tthError, double fwhm, double fwhmError,
+                   double sog, double sogError)
     : md_(md)
     , alpha_(alpha)
     , beta_(beta)
@@ -35,6 +36,14 @@ PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma, double
     , tthError_(tthError)
     , fwhm_(fwhm)
     , fwhmError_(fwhmError)
+    , sigmaOverGamma_(sog)
+    , sigmaOverGammaError_(sogError)
+{}
+
+PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma, double inten,
+                   double intenError, deg tth, deg tthError, double fwhm, double fwhmError)
+    : PeakInfo(md, alpha, beta, rgeGma, inten, intenError, tth, tthError, fwhm, fwhmError,
+               Q_QNAN, Q_QNAN)
 {}
 
 PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma)
@@ -74,7 +83,7 @@ std::vector<VariantComparator*> PeakInfo::dataCmps()
     static std::vector<VariantComparator*> ret;
     if (ret.empty()) {
         ret = std::vector<VariantComparator*>{ cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
-                        cmp_real, cmp_real, cmp_real, cmp_real, cmp_real };
+                        cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real };
         for (auto* cmp: Metadata::attributeCmps())
             ret.push_back(cmp);
     }
@@ -84,10 +93,13 @@ std::vector<VariantComparator*> PeakInfo::dataCmps()
 std::vector<QVariant> PeakInfo::data() const
 {
     std::vector<QVariant> ret{
-        QVariant(alpha()),      QVariant(beta()),     QVariant(rgeGma().min),
-            QVariant(rgeGma().max), QVariant(inten()),    QVariant(intenError()),
-            QVariant(tth()),        QVariant(tthError()), QVariant(fwhm()),
-            QVariant(fwhmError()) };
+        QVariant(alpha()),      QVariant(beta()),
+        QVariant(rgeGma().min), QVariant(rgeGma().max),
+        QVariant(inten()),      QVariant(intenError()),
+        QVariant(tth()),        QVariant(tthError()),
+        QVariant(fwhm()),       QVariant(fwhmError()),
+        QVariant(sigmaOverGamma()), QVariant(sigmaOverGammaError())
+    };
     auto values_to_append = md_ ? md_->attributeValues() : Metadata::attributeNaNs();
     ret.insert(ret.end(), values_to_append.begin(), values_to_append.end());
     return ret;
@@ -106,6 +118,8 @@ QString const PeakInfo::reflStringTag(int attr, bool out)
     case eReflAttr::SIGMA_TTH: return out ? "s2theta" : "σ2θ";
     case eReflAttr::FWHM: return "fwhm";
     case eReflAttr::SIGMA_FWHM: return out ? "sfwhm" : "σfwhm";
+    case eReflAttr::SIGMA_OVER_GAMMA: return out ? "sigma/gamma" : "σ/γ";
+    case eReflAttr::SIGMA_SIGMA_OVER_GAMMA: return out ? "s(sigma/gamma)" : "σ(σ/γ)";
     default: ;
     }
     qFatal("impossible case");

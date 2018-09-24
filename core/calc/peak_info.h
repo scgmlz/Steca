@@ -23,6 +23,8 @@
 class PeakInfo final {
 public:
     PeakInfo(const Metadata*, deg alpha, deg beta, Range, double, double /*error*/,
+             deg, deg /*error*/, double, double /*error*/, double, double /*error*/);
+    PeakInfo(const Metadata*, deg alpha, deg beta, Range, double, double /*error*/,
              deg, deg /*error*/, double, double /*error*/);
     PeakInfo(const Metadata*, deg alpha, deg beta, Range);
     PeakInfo(deg alpha, deg beta, Range, double, double /*error*/, deg, deg /*error*/,
@@ -42,6 +44,8 @@ public:
         SIGMA_TTH,
         FWHM,
         SIGMA_FWHM,
+        SIGMA_OVER_GAMMA,
+        SIGMA_SIGMA_OVER_GAMMA,
         NUM_REFL_ATTR,
     };
 
@@ -58,6 +62,8 @@ public:
     deg tthError() const { return tthError_; }
     double fwhm() const { return fwhm_; }
     double fwhmError() const { return fwhmError_; }
+    double sigmaOverGamma() const { return sigmaOverGamma_; }
+    double sigmaOverGammaError() const { return sigmaOverGammaError_; }
     std::vector<QVariant> data() const;
 
 private:
@@ -67,6 +73,7 @@ private:
     double inten_, intenError_;
     deg tth_, tthError_;
     double fwhm_, fwhmError_;
+    double sigmaOverGamma_, sigmaOverGammaError_;
 
     static QString const reflStringTag(int attr, bool out);
 };
