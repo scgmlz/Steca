@@ -36,8 +36,8 @@ PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma, double
     , tthError_(tthError)
     , fwhm_(fwhm)
     , fwhmError_(fwhmError)
-    , sigmaOverGamma_(sog)
-    , sigmaOverGammaError_(sogError)
+    , gammOverSigma_(sog)
+    , gammOverSigmaError_(sogError)
 {}
 
 PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma, double inten,
@@ -98,7 +98,7 @@ std::vector<QVariant> PeakInfo::data() const
         QVariant(inten()),      QVariant(intenError()),
         QVariant(tth()),        QVariant(tthError()),
         QVariant(fwhm()),       QVariant(fwhmError()),
-        QVariant(sigmaOverGamma()), QVariant(sigmaOverGammaError())
+        QVariant(gammOverSigma()), QVariant(gammOverSigmaError())
     };
     auto values_to_append = md_ ? md_->attributeValues() : Metadata::attributeNaNs();
     ret.insert(ret.end(), values_to_append.begin(), values_to_append.end());
@@ -118,8 +118,8 @@ QString const PeakInfo::reflStringTag(int attr, bool out)
     case eReflAttr::SIGMA_TTH: return out ? "s2theta" : "σ2θ";
     case eReflAttr::FWHM: return "fwhm";
     case eReflAttr::SIGMA_FWHM: return out ? "sfwhm" : "σfwhm";
-    case eReflAttr::SIGMA_OVER_GAMMA: return out ? "sigma/gamma" : "σ/γ";
-    case eReflAttr::SIGMA_SIGMA_OVER_GAMMA: return out ? "s(sigma/gamma)" : "σ(σ/γ)";
+    case eReflAttr::GAMMA_OVER_SIGMA: return out ? "gamma/sigma" : "γ/σ";
+    case eReflAttr::SIGMA_GAMMA_OVER_SIGMA: return out ? "s(gamma/sigma)" : "σ(γ/σ)";
     default: ;
     }
     qFatal("impossible case");
