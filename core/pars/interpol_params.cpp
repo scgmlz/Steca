@@ -20,13 +20,13 @@ InterpolParams::InterpolParams()
 {
     // from settings:
     XSettings s("interpolation parameters");
-    s.setBool("enabled",    enabled);
-    s.setReal("step alpha", stepAlpha);
-    s.setReal("step beta",  stepBeta);
-    s.setReal("idw radius", idwRadius);
-    s.setReal("alpha max",  avgAlphaMax);
-    s.setReal("avg radius", avgRadius);
-    s.setInt ("threshold",  threshold);
+    enabled.setVal    (s.readBool("enabled",    enabled.val()));
+    stepAlpha.setVal  (s.readReal("step alpha", stepAlpha.val()));
+    stepBeta.setVal   (s.readReal("step beta",  stepBeta.val()));
+    idwRadius.setVal  (s.readReal("idw radius", idwRadius.val()));
+    avgAlphaMax.setVal(s.readReal("alpha max",  avgAlphaMax.val()));
+    avgRadius.setVal  (s.readReal("avg radius", avgRadius.val()));
+    threshold.setVal  (s.readInt("threshold",   threshold.val()));
 
     enabled.setHook    ([](bool  ){gSession->onInterpol(); });
     stepAlpha.setHook  ([](double){gSession->onInterpol(); });
