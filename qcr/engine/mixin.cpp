@@ -73,9 +73,8 @@ QcrSettable::QcrSettable(QObject& object, const QString& name, bool _modal)
     : QcrMixin {object, gConsole->learn(name, this)} // console may change name (expand macros)
 {}
 
-// Not inlined to isolate dependence on console.h.
-
 void QcrSettable::doLog(const QString& msg)
+// Trivial, but not inlined to isolate dependence on console.h.
 {
     gConsole->log(msg);
 }
