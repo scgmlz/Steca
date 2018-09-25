@@ -19,18 +19,14 @@
 //  ***********************************************************************************************
 //! @class Detector
 
-// StressSpec standard detector:
-double const Detector::DEF_DETECTOR_DISTANCE = 1035;
-double const Detector::DEF_DETECTOR_PIXEL_SIZE = 1;
-
 Detector::Detector()
 {
     // from settings:
     XSettings s("DetectorDetector");
-    detectorDistance.setVal(s.readReal("detectorDistance", DEF_DETECTOR_DISTANCE));
-    pixSize         .setVal(s.readReal("pixelSize", DEF_DETECTOR_PIXEL_SIZE));
-    pixOffset[0]    .setVal(s.readInt("offsetX", 0));
-    pixOffset[1]    .setVal(s.readInt("offsetY", 0));
+    s.setReal("detectorDistance", detectorDistance);
+    s.setReal("pixelSize",        pixSize         );
+    s.setInt ("offsetX",          pixOffset[0]    );
+    s.setInt ("offsetX",          pixOffset[1]    );
 
     // TODO restore constraints?
     // detectorDistance_ = qMin(qMax(detectorDistance, 10.), 9999.);
