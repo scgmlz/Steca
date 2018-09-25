@@ -73,7 +73,7 @@ public:
 private:
     void sort();
     std::vector<Range> ranges_;
-    int selected_;
+    int selected_ = 0;
 };
 
 #endif // RANGE_H
