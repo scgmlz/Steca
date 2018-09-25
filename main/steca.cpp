@@ -35,6 +35,7 @@
 #include <QApplication>
 #include <QLoggingCategory>
 #include <QStyleFactory>
+#include <QTimer>
 
 const char* version =
 #include "../VERSION"
@@ -99,6 +100,6 @@ int main(int argc, char* argv[]) {
     Session session;
     new MainWin; // must be pointer, because it can be deleted by 'quit' trigger
     if (nonoptArgs.size())
-        gConsole->call("@file " + nonoptArgs[0]);
+        QTimer::singleShot(25, &app, [=](){ gConsole->call("@file " + nonoptArgs[0]); });
     return app.exec();
 }
