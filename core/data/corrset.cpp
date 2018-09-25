@@ -69,7 +69,7 @@ Corrset::Corrset()
 void Corrset::clear()
 {
     removeFile();
-    enabled.setVal(true);
+    enabled.setVal(false);
 }
 
 void Corrset::removeFile()
@@ -109,5 +109,5 @@ void Corrset::fromJson(const JsonObj& obj)
 {
     if (obj.find("file") != obj.end())
         loadFile(obj.loadString("file"));
-    enabled.setVal(obj.loadBool("enabled", true));
+    enabled.setVal(obj.loadBool("enabled", false));
 }
