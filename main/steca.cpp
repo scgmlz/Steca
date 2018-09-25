@@ -100,5 +100,5 @@ int main(int argc, char* argv[]) {
     new MainWin; // must be pointer, because it can be deleted by 'quit' trigger
     if (nonoptArgs.size())
         gConsole->call("@file " + nonoptArgs[0]);
-    app.exec();
+    return app.exec();
 }
