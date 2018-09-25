@@ -41,7 +41,7 @@ void projectMeasurement(
     ASSERT(deltaTth > 0);
 
     const Image& normalizer = gSession->corrset.getNormalizer();
-    const bool isNormalizerEnabled = gSession->corrset.enabled.val();
+    const bool isNormalizerEnabled = gSession->corrset.isEnabledAndValid();
 
     // TODO: MOST TIME IS SPENT HERE => OPTIMIZE !
     for (int i = gmaIndexMin; i < gmaIndexMax; ++i) {
