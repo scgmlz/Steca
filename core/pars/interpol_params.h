@@ -23,7 +23,6 @@
 class InterpolParams {
 public:
     InterpolParams();
-    ~InterpolParams();
 
     void fromJson(const JsonObj& obj);
 

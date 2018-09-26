@@ -27,7 +27,6 @@ public:
     static double const DEF_DETECTOR_PIXEL_SIZE;
 
     Detector();
-    ~Detector();
     Detector(const Detector&) = delete;
 
     void fromJson(const JsonObj& obj);
