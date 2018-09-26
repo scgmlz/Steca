@@ -104,36 +104,30 @@ void ColumnSelector::setAll(bool on)
 
 void ColumnSelector::updateRadiobuttons()
 {
-    bool isAll = true, isNone = true, isOther = false;
+    //bool isAll = true, isNone = true, isOther = false;
     int nInten = 0, nTth = 0, nFwhm = 0;
+    bool isAll = true;
+    bool isNone = true;
+    bool isInten = true;
+    bool isTth = true;
+    bool isFwhm = true;
 
     for (int i=0; i<gSession->params.bigMetaSelection.vec.size(); ++i) {
-        if (!gSession->params.bigMetaSelection.vec.at(i).val()) {
-            isAll = false;
-            continue;
-        }
-        isNone = false;
-        switch (eReflAttr(i)) {
-        case eReflAttr::ALPHA:
-        case eReflAttr::BETA:
-            ++nInten;
-            ++nTth;
-            ++nFwhm;
-            break;
-        case eReflAttr::INTEN: ++nInten; break;
-        case eReflAttr::TTH: ++nTth; break;
-        case eReflAttr::FWHM: ++nFwhm; break;
-        default: isOther = true; break;
-        }
+        const bool val = gSession->params.bigMetaSelection.vec.at(i).val();
+
+        isAll   &= val;
+        isNone  &= !val;
+        isInten &= val == (eReflAttr(i) == eReflAttr::INTEN);
+        isTth   &= val == (eReflAttr(i) == eReflAttr::TTH);
+        isFwhm  &= val == (eReflAttr(i) == eReflAttr::FWHM);
+
     }
 
-    rbNone_.programaticallySetValue(isNone);
-    rbAll_.programaticallySetValue(isAll);
-
-    int const PRESET_SELECTION = 1;
-    rbInten_.programaticallySetValue(!isOther && PRESET_SELECTION == nInten);
-    rbTth_.programaticallySetValue(!isOther && PRESET_SELECTION == nTth);
-    rbFWHM_.programaticallySetValue(!isOther && PRESET_SELECTION == nFwhm);
+    rbAll_.cell()->pureSetVal(isAll);
+    rbNone_.cell()->pureSetVal(isNone);
+    rbInten_.cell()->pureSetVal(isInten);
+    rbTth_.cell()->pureSetVal(isTth);
+    rbFWHM_.cell()->pureSetVal(isFwhm);
 };
 
 
