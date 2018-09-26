@@ -207,6 +207,7 @@ BigtableView::BigtableView()
 void BigtableView::refresh()
 {
     model()->refresh();
+    updateShownColumns();
 }
 
 void BigtableView::updateShownColumns()
