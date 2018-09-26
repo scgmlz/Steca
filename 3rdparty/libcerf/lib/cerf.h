@@ -72,35 +72,35 @@ __BEGIN_DECLS
 #endif
 
 // compute w(z) = exp(-z^2) erfc(-iz), Faddeeva's scaled complex error function
-cmplx w_of_z   (cmplx z);
-double         im_w_of_x(double x); // special case Im[w(x)] of real x
-double re_w_of_z( double x, double y );
-double im_w_of_z( double x, double y );
+cmplx  w_of_z   (cmplx z);
+double im_w_of_x(double x); // special case Im[w(x)] of real x
+double re_w_of_z(double x, double y);
+double im_w_of_z(double x, double y);
 
 // compute erf(z), the error function of complex arguments
-cmplx cerf  (cmplx z);
+cmplx cerf(cmplx z);
 
 // compute erfc(z) = 1 - erf(z), the complementary error function
 cmplx cerfc(cmplx z);
 
 // compute erfcx(z) = exp(z^2) erfc(z), an underflow-compensated version of erfc
 cmplx cerfcx(cmplx z);
-double         erfcx (double x); // special case for real x
+double erfcx(double x); // special case for real x
 
 // compute erfi(z) = -i erf(iz), the imaginary error function
 cmplx cerfi(cmplx z);
-double         erfi (double x); // special case for real x
+double erfi (double x); // special case for real x
 
 // compute dawson(z) = sqrt(pi)/2 * exp(-z^2) * erfi(z), Dawson's integral
 cmplx cdawson(cmplx z);
-double         dawson (double x); // special case for real x
+double dawson(double x); // special case for real x
 
 // compute voigt(x,??), the convolution of a Gaussian and a Lorentzian
-double voigt( double x, double sigma, double gamma );
+double voigt(double x, double sigma, double gammax);
 
 // EXPERIMENTAL
-double cerf_experimental_imw( double x, double y );
-double cerf_experimental_rew( double x, double y );
+double cerf_experimental_imw(double x, double y);
+double cerf_experimental_rew(double x, double y);
 
 __END_DECLS
 #endif /* __CERF_H__ */
