@@ -34,6 +34,7 @@ private:
     QcrRadioButton rbTth_ {"rbTth", "2θ"};
     QcrRadioButton rbFWHM_ {"rbFWHM", "fwhm"};
     std::vector<QcrCheckBox*> showCols_;
+    void setOne(int pos, bool on);
     void setAll(bool on);
     void updateRadiobuttons();
     using eReflAttr = PeakInfo::eReflAttr;
@@ -60,27 +61,45 @@ ColumnSelector::ColumnSelector()
     }
     setLayout(box);
 
-    connect(&rbAll_, &QRadioButton::clicked, [this]() {
-            setAll(true); });
-    connect(&rbNone_, &QRadioButton::clicked, [this]() {
-            setAll(false); });
-    connect(&rbInten_, &QRadioButton::clicked, [this]() {
+    rbAll_.cell()->setHook([this](bool on) {
+        if (on)
+            setAll(true);
+    });
+    rbNone_.cell()->setHook([this](bool on) {
+        if (on)
             setAll(false);
-            showCols_.at(int(eReflAttr::INTEN))->programaticallySetValue(true); });
-    connect(&rbTth_, &QRadioButton::clicked, [this]() {
+    });
+    rbInten_.cell()->setHook([this](bool on) {
+        if (on) {
             setAll(false);
-            showCols_.at(int(eReflAttr::TTH))->programaticallySetValue(true); });
-    connect(&rbFWHM_, &QRadioButton::clicked, [this]() {
+            setOne(int(eReflAttr::INTEN), true);
+        }
+    });
+    rbTth_.cell()->setHook([this](bool on) {
+        if (on) {
             setAll(false);
-            showCols_.at(int(eReflAttr::FWHM))->programaticallySetValue(true); });
+            setOne(int(eReflAttr::TTH), true);
+        }
+    });
+    rbFWHM_.cell()->setHook([this](bool on) {
+        if (on) {
+            setAll(false);
+            setOne(int(eReflAttr::FWHM), true);
+        }
+    });
 
     setRemake([=](){ updateRadiobuttons(); });
 }
 
+void ColumnSelector::setOne(int pos, bool on)
+{
+    gSession->params.bigMetaSelection.vec.at(pos).setVal(on);
+}
+
 void ColumnSelector::setAll(bool on)
 {
-    for (auto* col : showCols_)
-        col->programaticallySetValue(on);
+    for (auto& col : gSession->params.bigMetaSelection.vec)
+        col.setVal(on);
 }
 
 void ColumnSelector::updateRadiobuttons()
@@ -88,8 +107,8 @@ void ColumnSelector::updateRadiobuttons()
     bool isAll = true, isNone = true, isOther = false;
     int nInten = 0, nTth = 0, nFwhm = 0;
 
-    for (int i=0; i<showCols_.size(); ++i) {
-        if (!showCols_.at(i)->getValue()) {
+    for (int i=0; i<gSession->params.bigMetaSelection.vec.size(); ++i) {
+        if (!gSession->params.bigMetaSelection.vec.at(i).val()) {
             isAll = false;
             continue;
         }
