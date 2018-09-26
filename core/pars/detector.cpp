@@ -12,12 +12,15 @@
 //
 //  ***********************************************************************************************
 
-#include "core/base/settings.h"
 #include "core/session.h"
 //#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class Detector
+
+// StressSpec standard detector:
+double const Detector::DEF_DETECTOR_DISTANCE = 1035;
+double const Detector::DEF_DETECTOR_PIXEL_SIZE = 1;
 
 Detector::Detector()
 {

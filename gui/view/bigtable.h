@@ -39,6 +39,7 @@ public:
     QStringList getHeaders() const;
     std::vector<std::vector<const QVariant*>> getData() const;
     int highlighted() const final { return 0; } // unused
+    void onClicked(const QModelIndex& cell) override { Q_UNUSED(cell); } // unused
 
 private:
     QStringList headers_;
@@ -67,10 +68,12 @@ public:
     BigtableView(const BigtableView&) = delete;
 
     void refresh();
+protected:
+    void currentChanged(const QModelIndex&, const QModelIndex&) override final {}
 
 private:
     void updateShownColumns();
-    void keyPressEvent(QKeyEvent *event);
+    void keyPressEvent(QKeyEvent *event) override;
 
     BigtableModel* model() const { return dynamic_cast<BigtableModel*>(model_); }
     QString exportSelection() const;

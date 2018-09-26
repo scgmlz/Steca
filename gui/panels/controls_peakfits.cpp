@@ -131,7 +131,7 @@ PeakfitOutcomeView::PeakfitOutcomeView()
     grid->addWidget(&showRawOutcomeY_, 3, 1);
     grid->addWidget(&showFittedY_, 3, 2);
 
-    grid->addWidget(new QLabel("σ/γ"), 4, 0);
+    grid->addWidget(new QLabel("γ/σ"), 4, 0);
     grid->addWidget(&showFittedSG_, 4, 2);
 
     grid->setColumnStretch(4, 1);
@@ -164,11 +164,11 @@ void PeakfitOutcomeView::refresh()
     showFittedX_.setText(par2text(out.center));
     showFittedD_.setText(par2text(out.fwhm));
     showFittedY_.setText(par2text(out.intensity));
-    if (out.sigmaOverGamma)
-        showFittedSG_.setText(par2text(*out.sigmaOverGamma));
+    if (out.gammOverSigma)
+        showFittedSG_.setText(par2text(*out.gammOverSigma));
     else
         showFittedSG_.setText(par2text({Q_QNAN, Q_QNAN}));
-    enable(true, true, !!out.sigmaOverGamma);
+    enable(true, true, !!out.gammOverSigma);
 }
 
 void PeakfitOutcomeView::enable(bool haveRaw, bool haveFit, bool haveSoG)

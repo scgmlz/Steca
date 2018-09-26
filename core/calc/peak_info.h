@@ -44,8 +44,8 @@ public:
         SIGMA_TTH,
         FWHM,
         SIGMA_FWHM,
-        SIGMA_OVER_GAMMA,
-        SIGMA_SIGMA_OVER_GAMMA,
+        GAMMA_OVER_SIGMA,
+        SIGMA_GAMMA_OVER_SIGMA,
         NUM_REFL_ATTR,
     };
 
@@ -62,8 +62,8 @@ public:
     deg tthError() const { return tthError_; }
     double fwhm() const { return fwhm_; }
     double fwhmError() const { return fwhmError_; }
-    double sigmaOverGamma() const { return sigmaOverGamma_; }
-    double sigmaOverGammaError() const { return sigmaOverGammaError_; }
+    double gammOverSigma() const { return gammOverSigma_; }
+    double gammOverSigmaError() const { return gammOverSigmaError_; }
     std::vector<QVariant> data() const;
 
 private:
@@ -73,7 +73,7 @@ private:
     double inten_, intenError_;
     deg tth_, tthError_;
     double fwhm_, fwhmError_;
-    double sigmaOverGamma_, sigmaOverGammaError_;
+    double gammOverSigma_, gammOverSigmaError_;
 
     static QString const reflStringTag(int attr, bool out);
 };

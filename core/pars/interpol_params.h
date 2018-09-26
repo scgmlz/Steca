@@ -35,7 +35,6 @@ public:
     QcrCell<double> avgAlphaMax {5.};
     QcrCell<double> avgRadius   {5.};
     QcrCell<int>    threshold   {100};
-
 };
 
 #endif // INTERPOL_PARAMS_H

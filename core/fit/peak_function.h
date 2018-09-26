@@ -29,7 +29,7 @@ public:
     const DoubleWithError center;
     const DoubleWithError fwhm;
     const DoubleWithError intensity;
-    const std::shared_ptr<DoubleWithError> sigmaOverGamma; // an optional value, it might NOT exist
+    const std::shared_ptr<DoubleWithError> gammOverSigma; // an optional value, it might NOT exist
 };
 
 //! Abstract peak function

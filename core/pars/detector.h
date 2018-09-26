@@ -23,6 +23,9 @@
 //! Detector detector.
 class Detector {
 public:
+    static double const DEF_DETECTOR_DISTANCE;
+    static double const DEF_DETECTOR_PIXEL_SIZE;
+
     Detector();
     Detector(const Detector&) = delete;
 
@@ -30,8 +33,8 @@ public:
 
     QJsonObject toJson() const;
 
-    QcrCell<double> detectorDistance {1035.};
-    QcrCell<double> pixSize          {1.};
+    QcrCell<double> detectorDistance {DEF_DETECTOR_DISTANCE};
+    QcrCell<double> pixSize          {DEF_DETECTOR_PIXEL_SIZE};
     std::array<QcrCell<int>,2> pixOffset {{0, 0}};
 };
 
