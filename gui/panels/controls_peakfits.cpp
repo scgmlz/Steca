@@ -159,6 +159,10 @@ void PeakfitOutcomeView::refresh()
         return enable(true, false, false);
     const Fitted& pFct = dfgram->getPeakFit(jP);
     const auto* peakFit = dynamic_cast<const PeakFunction*>(pFct.f);
+
+    const DoubleWithError nanVal = {Q_QNAN, Q_QNAN};
+    // if peakFit exists, use it, otherwise use NaNs:
+    const PeakOutcome out = peakFit ? peakFit->outcome(pFct) : PeakOutcome{nanVal, nanVal, nanVal, nullptr};
     showFittedX_.setText(par2text(out.center));
     showFittedD_.setText(par2text(out.fwhm));
     showFittedY_.setText(par2text(out.intensity));
@@ -166,9 +170,6 @@ void PeakfitOutcomeView::refresh()
         showFittedSG_.setText(par2text(*out.gammOverSigma));
     else
         showFittedSG_.setText(par2text({Q_QNAN, Q_QNAN}));
-    const DoubleWithError nanVal = {Q_QNAN, Q_QNAN};
-    // if peakFit exists, use it, otherwise use NaNs:
-    const PeakOutcome out = peakFit ? peakFit->outcome(pFct) : PeakOutcome{nanVal, nanVal, nanVal, nullptr};
     enable(true, true, !!out.gammOverSigma);
 }
 
