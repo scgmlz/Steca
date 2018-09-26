@@ -51,8 +51,11 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
     } else {
         const Fitted& pFct = dfgram.getPeakFit(jP);
         const auto* peakFit = dynamic_cast<const PeakFunction*>(pFct.f);
-        ASSERT(peakFit);
-        const PeakOutcome out = peakFit->outcome(pFct);
+
+        const DoubleWithError nanVal = {Q_QNAN, Q_QNAN};
+        // if peakFit exists, use it, otherwise use NaNs:
+        const PeakOutcome out = peakFit ? peakFit->outcome(pFct)
+                                        : PeakOutcome{nanVal, nanVal, nanVal, nullptr};
         center        .reset(new DoubleWithError{out.center});
         fwhm          .reset(new DoubleWithError{out.fwhm});
         intensity     .reset(new DoubleWithError{out.intensity});
