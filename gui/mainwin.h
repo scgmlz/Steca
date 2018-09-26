@@ -24,7 +24,8 @@ extern class MainWin* gGui; //!< global pointer to _the_ main window
 class MainWin : public QcrMainWindow {
     Q_OBJECT
 public:
-    MainWin();
+    MainWin() = delete;
+    MainWin(const QString& startupScript);
     ~MainWin();
 
     class Triggers* triggers;

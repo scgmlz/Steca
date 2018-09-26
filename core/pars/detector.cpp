@@ -12,7 +12,6 @@
 //
 //  ***********************************************************************************************
 
-#include "core/base/settings.h"
 #include "core/session.h"
 //#include "qcr/base/debug.h"
 

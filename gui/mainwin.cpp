@@ -14,7 +14,6 @@
 
 #include "gui/mainwin.h"
 #include "core/base/async.h"
-#include "core/base/settings.h"
 #include "core/session.h"
 #include "gui/actions/image_trafo_actions.h"
 #include "gui/actions/menus.h"
@@ -26,19 +25,24 @@
 #include "gui/panels/subframe_files.h"
 #include "gui/panels/subframe_metadata.h"
 #include "gui/panels/subframe_setup.h"
+#include "qcr/engine/console.h"
 //#include "qcr/base/debug.h"
+#include <QApplication>
 #include <QProgressBar>
+#include <QSettings>
 #include <QSplitter>
 #include <QStatusBar>
+#include <QTimer>
 
 MainWin* gGui; //!< global pointer to _the_ main window
 
 //  ***********************************************************************************************
 //! @class MainWin
 
-MainWin::MainWin()
+MainWin::MainWin(const QString& startupScript)
 {
     gGui = this;
+    Qcr::replay = (startupScript!="");
 
     triggers = new Triggers;
     toggles = new Toggles;
@@ -89,6 +93,9 @@ MainWin::MainWin()
     setRemake( [=]() { refresh(); } );
     show(); // must be called before initial remakeAll because remakeAll depends on visibility
     remakeAll();
+    if (startupScript!="")
+        QTimer::singleShot(25, qApp, [=](){ gConsole->call("@file " + startupScript); });
+    Qcr::replay = false;
 }
 
 MainWin::~MainWin()
@@ -141,14 +148,16 @@ void MainWin::readSettings()
 {
     if (initialState_.isEmpty())
         initialState_ = saveState();
-    XSettings s("MainWin");
+    QSettings s;
+    s.beginGroup("MainWin");
     restoreGeometry(s.value("geometry").toByteArray());
     restoreState(s.value("state").toByteArray());
 }
 
 void MainWin::saveSettings() const
 {
-    XSettings s("MainWin");
+    QSettings s;
+    s.beginGroup("MainWin");
     s.setValue("geometry", saveGeometry()); // this mainwindow's widget geometry
     s.setValue("state", saveState()); // state of this mainwindow's toolbars and dockwidgets
 }
