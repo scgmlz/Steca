@@ -5,11 +5,11 @@
  * File test1.c:
  *   Test implementation of Faddeeva, Dawson, and error functions
  *   by checking against values computed using Maple and Wolfram Alfa.
- * 
+ *
  * Copyright:
  *   (C) 2012 Massachusetts Institute of Technology
  *   (C) 2013 Forschungszentrum Jülich GmbH
- * 
+ *
  * Licence:
  *   Permission is hereby granted, free of charge, to any person obtaining
  *   a copy of this software and associated documentation files (the
@@ -18,17 +18,17 @@
  *   distribute, sublicense, and/or sell copies of the Software, and to
  *   permit persons to whom the Software is furnished to do so, subject to
  *   the following conditions:
- * 
+ *
  *   The above copyright notice and this permission notice shall be
  *   included in all copies or substantial portions of the Software.
- * 
+ *
  *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  *   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  *   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  *   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
  *   LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  *   OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- *   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+ *   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * Authors:
  *   Steven G. Johnson, Massachusetts Institute of Technology, 2012, core author
@@ -46,14 +46,11 @@
 
 #include "cerf.h"
 
-#define _GNU_SOURCE // enable GNU libc NAN extension if possible
-
 #include <float.h>
 #include <math.h>
+#include <stdio.h>
 
 #include "defs.h" // defines cmplx, CMPLX, NaN
-
-#include <stdio.h>
 
 /******************************************************************************/
 /*  Auxiliary routines                                                        */
@@ -76,48 +73,48 @@ static double relerr(double a, double b) {
 
 // For testing the complex and real Dawson and error functions.
 
-double TST( char* Fname, cmplx (*F)(cmplx), double (*FRE)(double), double isc,
+double TST(const char* Fname, cmplx (*F)(cmplx), double (*FRE)(double), double isc,
          int nTst, cmplx *w, cmplx *z )
 {
     printf("############# %s(z) tests #############\n", Fname);
-    double errmax = 0;                                         
-    for (int i = 0; i < nTst; ++i) {                           
-        cmplx fw = F(z[i]);                                    
-        double re_err = relerr(creal(w[i]), creal(fw));        
-        double im_err = relerr(cimag(w[i]), cimag(fw));        
+    double errmax = 0;
+    for (int i = 0; i < nTst; ++i) {
+        cmplx fw = F(z[i]);
+        double re_err = relerr(creal(w[i]), creal(fw));
+        double im_err = relerr(cimag(w[i]), cimag(fw));
         printf("%s(%g%+gi) = %g%+gi (vs. %g%+gi), "
                "re/im rel. err. = %0.2g/%0.2g)\n", Fname,
                creal(z[i]), cimag(z[i]), creal(fw), cimag(fw),
-               creal(w[i]), cimag(w[i]), 
-               re_err, im_err);                                        
-        if (re_err > errmax) errmax = re_err;                          
-        if (im_err > errmax) errmax = im_err;                          
-    }                                                                  
-    if (errmax > 1e-13) {                                              
-        printf("FAILURE -- relative error %g too large!\n", errmax);   
-        return errmax;                                                      
-    }                                                                  
-    printf("Checking %s(x) special case...\n", Fname);                 
-    for (int i = 0; i < 10000; ++i) {                                  
-        double x = pow(10., -300. + i * 600. / (10000 - 1));           
-        double re_err = relerr(FRE(x), creal(F(C(x,x*isc))));          
-        if (re_err > errmax) errmax = re_err;                          
-        re_err = relerr(FRE(-x), creal(F(C(-x,x*isc))));               
-        if (re_err > errmax) errmax = re_err;                          
-    }                                                                  
-    {                                                                  
-        double re_err = relerr(FRE(Inf), creal(F(C(Inf,0.))));         
-        if (re_err > errmax) errmax = re_err;                          
-        re_err = relerr(FRE(-Inf), creal(F(C(-Inf,0.))));              
-        if (re_err > errmax) errmax = re_err;                          
-        re_err = relerr(FRE(NaN), creal(F(C(NaN,0.))));                
-        if (re_err > errmax) errmax = re_err;                          
-    }                                                                  
-    if (errmax > 1e-13) {                                              
-        printf("FAILURE -- relative error %g too large!\n", errmax);   
-        return errmax;                                                      
-    }                                                                  
-    printf("SUCCESS (max relative error = %g)\n", errmax);             
+               creal(w[i]), cimag(w[i]),
+               re_err, im_err);
+        if (re_err > errmax) errmax = re_err;
+        if (im_err > errmax) errmax = im_err;
+    }
+    if (errmax > 1e-13) {
+        printf("FAILURE -- relative error %g too large!\n", errmax);
+        return errmax;
+    }
+    printf("Checking %s(x) special case...\n", Fname);
+    for (int i = 0; i < 10000; ++i) {
+        double x = pow(10., -300. + i * 600. / (10000 - 1));
+        double re_err = relerr(FRE(x), creal(F(C(x,x*isc))));
+        if (re_err > errmax) errmax = re_err;
+        re_err = relerr(FRE(-x), creal(F(C(-x,x*isc))));
+        if (re_err > errmax) errmax = re_err;
+    }
+    {
+        double re_err = relerr(FRE(Inf), creal(F(C(Inf,0.))));
+        if (re_err > errmax) errmax = re_err;
+        re_err = relerr(FRE(-Inf), creal(F(C(-Inf,0.))));
+        if (re_err > errmax) errmax = re_err;
+        re_err = relerr(FRE(NaN), creal(F(C(NaN,0.))));
+        if (re_err > errmax) errmax = re_err;
+    }
+    if (errmax > 1e-13) {
+        printf("FAILURE -- relative error %g too large!\n", errmax);
+        return errmax;
+    }
+    printf("SUCCESS (max relative error = %g)\n", errmax);
     return errmax;
 }
 

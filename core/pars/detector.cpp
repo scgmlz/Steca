@@ -26,7 +26,9 @@ Detector::Detector()
 {
     // TODO restore constraints?
     // detectorDistance_ = qMin(qMax(detectorDistance, 10.), 9999.);
-    // pixSize_ = qMin(qMax(pixSize, .1), 9.9);
+
+    // ensure pixSize never reaches zero:
+    pixSize.setCoerce([](double v){ return std::max(v, 0.1); });
 
     detectorDistance.setHook([](double){ gSession->onDetector(); });
     pixSize         .setHook([](double){ gSession->onDetector(); });

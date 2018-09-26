@@ -63,8 +63,6 @@
 
 #include "cerf.h"
 
-#define _GNU_SOURCE // enable GNU libc NAN extension if possible
-
 #include <float.h>
 #include <math.h>
 

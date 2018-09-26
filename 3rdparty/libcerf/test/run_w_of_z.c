@@ -4,10 +4,10 @@
  *
  * File runvoigt.c:
  *   Interactive evaluation of Voigt's function.
- * 
+ *
  * Copyright:
  *   (C) 2013 Forschungszentrum Jülich GmbH
- * 
+ *
  * Licence:
  *   Public domain.
  *
@@ -21,7 +21,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "cerf.h"
-#include "../lib/defs.h"
+#include "defs.h"
 
 extern int faddeeva_algorithm, faddeeva_nofterms;
 
@@ -38,8 +38,8 @@ int main( int argc, char **argv )
     x = atof( argv[1] );
     y = atof( argv[2] );
 
-    double _Complex w = w_of_z( C(x,y) );
-    
+    cmplx w = w_of_z( C(x,y) );
+
     double v[2][2];
     v[0][0] = creal(w);
     v[0][1] = cimag(w);
