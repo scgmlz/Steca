@@ -76,7 +76,9 @@ QVariant PeaksModel::data(const QModelIndex& index, int role) const
         }
     }
     case Qt::ForegroundRole: {
-        if (peak.range().isEmpty())
+        const auto & dfgramRange = gSession->currentOrAvgeDfgram()->curve.rgeX();
+        const bool isBadRange = peak.range().isEmpty() || !dfgramRange.contains(peak.range());
+        if (isBadRange && index.column() == COL_RANGE)
             return QColor(Qt::red);
         return QColor(Qt::black);
     }
