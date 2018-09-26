@@ -163,13 +163,12 @@ void PeakfitOutcomeView::refresh()
     const DoubleWithError nanVal = {Q_QNAN, Q_QNAN};
     // if peakFit exists, use it, otherwise use NaNs:
     const PeakOutcome out = peakFit ? peakFit->outcome(pFct) : PeakOutcome{nanVal, nanVal, nanVal, nullptr};
-    showFittedX_.setText(par2text(out.center));
-    showFittedD_.setText(par2text(out.fwhm));
-    showFittedY_.setText(par2text(out.intensity));
-    if (out.gammOverSigma)
-        showFittedSG_.setText(par2text(*out.gammOverSigma));
-    else
-        showFittedSG_.setText(par2text({Q_QNAN, Q_QNAN}));
+
+    showFittedX_ .setText(par2text(out.center));
+    showFittedD_ .setText(par2text(out.fwhm));
+    showFittedY_ .setText(par2text(out.intensity));
+    showFittedSG_.setText(par2text(out.gammOverSigma ? *out.gammOverSigma : nanVal));
+
     enable(true, true, !!out.gammOverSigma);
 }
 
