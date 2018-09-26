@@ -95,7 +95,7 @@ double erfi (double x); // special case for real x
 cmplx cdawson(cmplx z);
 double dawson(double x); // special case for real x
 
-// compute voigt(x,??), the convolution of a Gaussian and a Lorentzian
+// compute voigt(x,...), the convolution of a Gaussian and a Lorentzian
 double voigt(double x, double sigma, double gammax);
 
 // EXPERIMENTAL
