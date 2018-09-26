@@ -17,6 +17,7 @@
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"
 #include "gui/view/bigtable.h"
+#include <QButtonGroup>
 //#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
@@ -34,6 +35,7 @@ private:
     QcrRadioButton rbTth_ {"rbTth", "2θ"};
     QcrRadioButton rbFWHM_ {"rbFWHM", "fwhm"};
     std::vector<QcrCheckBox*> showCols_;
+    void setOne(int pos, bool on);
     void setAll(bool on);
     void updateRadiobuttons();
     using eReflAttr = PeakInfo::eReflAttr;
@@ -60,61 +62,73 @@ ColumnSelector::ColumnSelector()
     }
     setLayout(box);
 
-    connect(&rbAll_, &QRadioButton::clicked, [this]() {
-            setAll(true); });
-    connect(&rbNone_, &QRadioButton::clicked, [this]() {
-            setAll(false); });
-    connect(&rbInten_, &QRadioButton::clicked, [this]() {
+    rbAll_.cell()->setHook([this](bool on) {
+        if (on)
+            setAll(true);
+    });
+    rbNone_.cell()->setHook([this](bool on) {
+        if (on)
             setAll(false);
-            showCols_.at(int(eReflAttr::INTEN))->programaticallySetValue(true); });
-    connect(&rbTth_, &QRadioButton::clicked, [this]() {
+    });
+    rbInten_.cell()->setHook([this](bool on) {
+        if (on) {
             setAll(false);
-            showCols_.at(int(eReflAttr::TTH))->programaticallySetValue(true); });
-    connect(&rbFWHM_, &QRadioButton::clicked, [this]() {
+            setOne(int(eReflAttr::INTEN), true);
+        }
+    });
+    rbTth_.cell()->setHook([this](bool on) {
+        if (on) {
             setAll(false);
-            showCols_.at(int(eReflAttr::FWHM))->programaticallySetValue(true); });
+            setOne(int(eReflAttr::TTH), true);
+        }
+    });
+    rbFWHM_.cell()->setHook([this](bool on) {
+        if (on) {
+            setAll(false);
+            setOne(int(eReflAttr::FWHM), true);
+        }
+    });
 
     setRemake([=](){ updateRadiobuttons(); });
 }
 
+void ColumnSelector::setOne(int pos, bool on)
+{
+    gSession->params.bigMetaSelection.vec.at(pos).pureSetVal(on);
+}
+
 void ColumnSelector::setAll(bool on)
 {
-    for (auto* col : showCols_)
-        col->programaticallySetValue(on);
+    for (auto& col : gSession->params.bigMetaSelection.vec)
+        col.pureSetVal(on);
 }
 
 void ColumnSelector::updateRadiobuttons()
 {
-    bool isAll = true, isNone = true, isOther = false;
+    //bool isAll = true, isNone = true, isOther = false;
     int nInten = 0, nTth = 0, nFwhm = 0;
+    bool isAll = true;
+    bool isNone = true;
+    bool isInten = true;
+    bool isTth = true;
+    bool isFwhm = true;
 
-    for (int i=0; i<showCols_.size(); ++i) {
-        if (!showCols_.at(i)->getValue()) {
-            isAll = false;
-            continue;
-        }
-        isNone = false;
-        switch (eReflAttr(i)) {
-        case eReflAttr::ALPHA:
-        case eReflAttr::BETA:
-            ++nInten;
-            ++nTth;
-            ++nFwhm;
-            break;
-        case eReflAttr::INTEN: ++nInten; break;
-        case eReflAttr::TTH: ++nTth; break;
-        case eReflAttr::FWHM: ++nFwhm; break;
-        default: isOther = true; break;
-        }
+    for (int i=0; i<gSession->params.bigMetaSelection.vec.size(); ++i) {
+        const bool isOn = gSession->params.bigMetaSelection.vec.at(i).val();
+        const bool isAlphOrBeta = (eReflAttr(i)==eReflAttr::ALPHA) || (eReflAttr(i)==eReflAttr::BETA);
+
+        isAll   &= isOn;
+        isNone  &= !isOn;
+        isInten &= (isOn == (eReflAttr(i) == eReflAttr::INTEN)) || isAlphOrBeta;
+        isTth   &= (isOn == (eReflAttr(i) == eReflAttr::TTH)  ) || isAlphOrBeta;
+        isFwhm  &= (isOn == (eReflAttr(i) == eReflAttr::FWHM) ) || isAlphOrBeta;
     }
 
-    rbNone_.programaticallySetValue(isNone);
-    rbAll_.programaticallySetValue(isAll);
-
-    int const PRESET_SELECTION = 1;
-    rbInten_.programaticallySetValue(!isOther && PRESET_SELECTION == nInten);
-    rbTth_.programaticallySetValue(!isOther && PRESET_SELECTION == nTth);
-    rbFWHM_.programaticallySetValue(!isOther && PRESET_SELECTION == nFwhm);
+    rbAll_.cell()->pureSetVal(isAll);
+    rbNone_.cell()->pureSetVal(isNone);
+    rbInten_.cell()->pureSetVal(isInten);
+    rbTth_.cell()->pureSetVal(isTth);
+    rbFWHM_.cell()->pureSetVal(isFwhm);
 };
 
 

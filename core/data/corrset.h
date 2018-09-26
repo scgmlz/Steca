@@ -42,6 +42,7 @@ public:
     const Image& image() const { return corrImage_; }
     void invalidateNormalizer() const { normalizer_.invalidate(); }
     const Image& getNormalizer() const { return normalizer_.get(); }
+    bool isEnabledAndValid() const { return enabled.val() && !getNormalizer().size().isEmpty(); }
 
     QcrCell<bool> enabled {false};
 
