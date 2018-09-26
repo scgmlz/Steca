@@ -24,7 +24,8 @@
 RawOutcome::RawOutcome(const Curve& curve)
 {
     int n = curve.size();
-    ASSERT(n>0);
+    if (n <= 0)
+        return; // all members are default initialized to Q_QNAN
     intensity_ = 0;
     center_ = 0;
     double stdv = 0; // TODO compute stdv in one pass

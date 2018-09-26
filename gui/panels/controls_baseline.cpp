@@ -59,7 +59,9 @@ QVariant BaseRangesModel::data(const QModelIndex& index, int role) const
         }
     }
     case Qt::ForegroundRole: {
-        if (range.isEmpty())
+        const auto & dfgramRange = gSession->currentOrAvgeDfgram()->curve.rgeX();
+        const bool isBadRange = range.isEmpty() || !dfgramRange.contains(range);
+        if (isBadRange && index.column() == COL_RANGE)
             return QColor(Qt::red);
         return QColor(Qt::black);
     }
