@@ -43,6 +43,7 @@ macro(SET_OPTION option value)
   set(${option} ${value} CACHE INTERNAL "" FORCE)
 endmacro()
 SET_OPTION(LIB_MAN OFF)
+SET_OPTION(LIB_INSTALL OFF)
 SET_OPTION(CERF_CPP ON)
 
 add_subdirectory(3rdparty/LevMar)

@@ -6,8 +6,9 @@ include(PreventInSourceBuilds)
 set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 
-option(CERF_CPP "Build as native C++" OFF)
-option(LIB_MAN "Build library man pages" ON)
+option(CERF_CPP "Build libcerf as native C++" OFF)
+option(LIB_MAN "Build libcerf man pages" ON)
+option(LIB_INSTALL "Install libcerf" ON)
 
 if (${CERF_CPP})
     project(cerfcpp CXX)

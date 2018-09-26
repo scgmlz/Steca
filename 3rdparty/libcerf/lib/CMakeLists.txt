@@ -27,11 +27,13 @@ endif()
 
 target_link_libraries(${library_name} m)
 
-install(
-    TARGETS ${library_name} LIBRARY
-    DESTINATION ${destination}/lib
-    COMPONENT Libraries)
-install(
-    FILES ${inc_files}
-    DESTINATION ${destination}/include
-    COMPONENT Headers)
+if (${LIB_INSTALL})
+    install(
+        TARGETS ${library_name} LIBRARY
+        DESTINATION ${destination}/lib
+        COMPONENT Libraries)
+    install(
+        FILES ${inc_files}
+        DESTINATION ${destination}/include
+        COMPONENT Headers)
+endif()
