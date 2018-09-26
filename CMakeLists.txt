@@ -39,6 +39,13 @@ find_package(YAML       REQUIRED)
 message(STATUS "found Qt5Core=${Qt5Core_VERSION_STRING}, Qt5Gui=${Qt5Gui_VERSION_STRING}")
 message(STATUS "Qt5Core=${Qt5Core_DIR}, Qt5=${Qt5Gui_DIR}")
 
+macro(SET_OPTION option value)
+  set(${option} ${value} CACHE INTERNAL "" FORCE)
+endmacro()
+SET_OPTION(LIB_MAN OFF)
+SET_OPTION(LIB_INSTALL OFF)
+SET_OPTION(CERF_CPP ON)
+
 add_subdirectory(3rdparty/LevMar)
 add_subdirectory(3rdparty/QCustomPlot)
 add_subdirectory(3rdparty/Caress)

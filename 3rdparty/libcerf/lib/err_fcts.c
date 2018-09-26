@@ -10,11 +10,11 @@
  *   to compute, except for certain regions where we have to
  *   switch to Taylor expansions to avoid cancellation errors
  *   [e.g. near the origin for erf(z)].
- * 
+ *
  * Copyright:
  *   (C) 2012 Massachusetts Institute of Technology
  *   (C) 2013 Forschungszentrum Jülich GmbH
- * 
+ *
  * Licence:
  *   Permission is hereby granted, free of charge, to any person obtaining
  *   a copy of this software and associated documentation files (the
@@ -23,17 +23,17 @@
  *   distribute, sublicense, and/or sell copies of the Software, and to
  *   permit persons to whom the Software is furnished to do so, subject to
  *   the following conditions:
- * 
+ *
  *   The above copyright notice and this permission notice shall be
  *   included in all copies or substantial portions of the Software.
- * 
+ *
  *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  *   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  *   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  *   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
  *   LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  *   OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- *   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+ *   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * Authors:
  *   Steven G. Johnson, Massachusetts Institute of Technology, 2012, core author
@@ -50,8 +50,6 @@
  */
 
 #include "cerf.h"
-
-#define _GNU_SOURCE // enable GNU libc NAN extension if possible
 
 #include <math.h>
 #include <stdlib.h>
@@ -180,7 +178,7 @@ cmplx cerf(cmplx z)
                     IEEE will give us a NaN when it should be Inf */
                  y*y > 720 ? (y > 0 ? Inf : -Inf)
                  : exp(y*y) * im_w_of_x(y));
-  
+
     double mRe_z2 = (y - x) * (x + y); // Re(-z^2), being careful of overflow
     double mIm_z2 = -2*x*y; // Im(-z^2)
     if (mRe_z2 < -750) // underflow
@@ -230,11 +228,11 @@ taylor:
                                                + mz2 * 0.0052239776254421878422))));
     }
 
-    /* for small |x| and small |xy|, 
+    /* for small |x| and small |xy|,
        use Taylor series to avoid cancellation inaccuracy:
        erf(x+iy) = erf(iy)
        + 2*exp(y^2)/sqrt(pi) *
-       [ x * (1 - x^2 * (1+2y^2)/3 + x^4 * (3+12y^2+4y^4)/30 + ... 
+       [ x * (1 - x^2 * (1+2y^2)/3 + x^4 * (3+12y^2+4y^4)/30 + ...
        - i * x^2 * y * (1 - x^2 * (3+2y^2)/6 + ...) ]
        where:
        erf(iy) = exp(y^2) * Im[w(y)]
@@ -251,8 +249,8 @@ taylor_erfi:
                                      + y2 * (0.45135166683820502956
                                              + 0.15045055561273500986*y2))),
              expy2 * (im_w_of_x(y)
-                      - x2*y * (1.1283791670955125739 
-                                - x2 * (0.56418958354775628695 
+                      - x2*y * (1.1283791670955125739
+                                - x2 * (0.56418958354775628695
                                         + 0.37612638903183752464*y2))));
     }
 } // cerf
@@ -281,7 +279,7 @@ cmplx cerfc(cmplx z)
         if (x*x > 750) // underflow
             return C(x >= 0 ? 0.0 : 2.0,
                      -y); // preserve sign of 0
-        return C(x >= 0 ? exp(-x*x) * erfcx(x) 
+        return C(x >= 0 ? exp(-x*x) * erfcx(x)
                  : 2. - exp(-x*x) * erfcx(-x),
                  -y); // preserve sign of zero
     }
@@ -327,7 +325,7 @@ cmplx cdawson(cmplx z)
                                   + y2 * 0.26666666666666666666666666666666666667)));
         }
         return C(x, // preserve sign of 0
-                 spi2 * (y >= 0 
+                 spi2 * (y >= 0
                          ? exp(y2) - erfcx(y)
                          : erfcx(-y) - exp(y2)));
     }
@@ -369,14 +367,14 @@ taylor:
                 + mz2 * (0.6666666666666666666666666666666666666667
                          + mz2 * 0.2666666666666666666666666666666666666667));
 
-    /* for small |y| and small |xy|, 
+    /* for small |y| and small |xy|,
        use Taylor series to avoid cancellation inaccuracy:
        dawson(x + iy)
        = D + y^2 (D + x - 2Dx^2)
        + y^4 (D/2 + 5x/6 - 2Dx^2 - x^3/3 + 2Dx^4/3)
        + iy [ (1-2Dx) + 2/3 y^2 (1 - 3Dx - x^2 + 2Dx^3)
        + y^4/15 (4 - 15Dx - 9x^2 + 20Dx^3 + 2x^4 - 4Dx^5) ] + ...
-       where D = dawson(x) 
+       where D = dawson(x)
 
        However, for large |x|, 2Dx -> 1 which gives cancellation problems in
        this series (many of the leading terms cancel).  So, for large |x|,
@@ -397,7 +395,7 @@ taylor:
        Finally, for |x| > 5e7, we can use a simpler 1-term continued-fraction
        expansion for the real part, and a 2-term expansion for the imaginary
        part.  (This avoids overflow problems for huge |x|.)  This yields:
-     
+
        Re dawson(x + iy) = [1 + y^2 (1 + y^2/2 - (xy)^2/3)] / (2x)
        Im dawson(x + iy) = y [ -1 - 2/3 y^2 + y^4/15 (2x^2 - 4) ] / (2x^2 - 1)
 

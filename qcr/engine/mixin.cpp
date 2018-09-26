@@ -18,6 +18,7 @@
 #include <QAction>
 
 QcrRoot* gRoot {nullptr};
+bool Qcr::replay = false;
 
 //  ***********************************************************************************************
 //! @class QcrMixin

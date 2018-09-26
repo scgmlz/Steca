@@ -14,6 +14,7 @@ target_link_libraries (${lib}
     LevMar
     caress_loader
     mar_loader
-    cerf
+    cerfcpp
+    lmfit
     ${LIBYAML_LIBRARY}
 )

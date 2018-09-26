@@ -35,31 +35,44 @@
 #include <QApplication>
 #include <QLoggingCategory>
 #include <QStyleFactory>
-#include <QTimer>
 
 const char* version =
 #include "../VERSION"
     ;
 
+void exit_help()
+{
+    std::cout << APPLICATION_CLAIM << "\n\n"
+              << "Usage: " << APPLICATION_NAME << " [options]\n\n"
+              << "Options:\n"
+              << "  -h  Print this message.\n"
+              << "  -v  Print " << APPLICATION_NAME << " version.\n"
+              << "  -c  Read commands from console instead of starting the GUI.\n"
+              << "  -p  Sets the file overwrite policy to 'Panic'. Default is 'Prompt'.\n"
+              << "  -s  Sets the file overwrite policy to 'Silent Overwrite'. Default is 'Prompt'.\n";
+    exit(0);
+}
+
+void exit_version()
+{
+    std::cout << APPLICATION_NAME << " version " << version << "\n";
+    exit(0);
+}
+
 int main(int argc, char* argv[]) {
     struct optparse options;
     optparse_init(&options, argv);
     int opt;
+    if (argc>1 && QString(argv[1])=="--help")
+        exit_help();
+    if (argc>1 && QString(argv[1])=="--version")
+        exit_version();
     while ((opt = optparse(&options, "hvcps")) != -1) {
         switch (opt) {
         case 'h':
-            std::cout << APPLICATION_CLAIM << "\n\n"
-                      << "Usage: " << APPLICATION_NAME << " [options]\n\n"
-                      << "Options:\n"
-                      << "  -h  Print this message.\n"
-                      << "  -v  Print " << APPLICATION_NAME << " version.\n"
-                      << "  -c  Read commands from console instead of starting the GUI.\n"
-                      << "  -p  Sets the file overwrite policy to 'Panic'. Default is 'Promt'.\n"
-                      << "  -s  Sets the file overwrite policy to 'Silent Overwrite'. Default is 'Promt'.\n";
-            exit(0);
+            exit_help();
         case 'v':
-            std::cout << APPLICATION_NAME << " version " << version << "\n";
-            exit(0);
+            exit_version();
         case 'p':
             setFileOverwritePolicy(file_dialog::eFileOverwritePolicy::PANIC);
             break;
@@ -69,11 +82,8 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    QStringList nonoptArgs;
-    const char* tmp;
-    while ((tmp = optparse_arg(&options)))
-        nonoptArgs.append(tmp);
-    if (nonoptArgs.size()>1) {
+    QString startupScript = "";
+    if ((startupScript = optparse_arg(&options))!="" && optparse_arg(&options)) {
         std::cerr << "More than one command-line argument given\n";
         exit(-1);
     }
@@ -93,13 +103,11 @@ int main(int argc, char* argv[]) {
     app.setStyle(QStyleFactory::create("Fusion"));
 #endif
 
-    Console console;
+    new Console;
     QLoggingCategory::setFilterRules("*.debug=true\nqt.*.debug=false");
     qInstallMessageHandler(messageHandler);
 
     Session session;
-    new MainWin; // must be pointer, because it can be deleted by 'quit' trigger
-    if (nonoptArgs.size())
-        QTimer::singleShot(25, &app, [=](){ gConsole->call("@file " + nonoptArgs[0]); });
+    new MainWin(startupScript); // must be pointer, because it can be deleted by 'quit' trigger
     return app.exec();
 }

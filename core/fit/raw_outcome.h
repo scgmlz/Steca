@@ -15,6 +15,8 @@
 #ifndef RAW_OUTCOME_H
 #define RAW_OUTCOME_H
 
+#include <QtNumeric>
+
 class Curve;
 
 // TODO rather use PeakOutcome to report result of raw analysis;
@@ -25,13 +27,13 @@ class Curve;
 class RawOutcome {
 public:
     RawOutcome(const Curve&);
-    const double getCenter() const { return center_; }
-    const double getFwhm() const { return fwhm_; }
-    const double getIntensity() const { return intensity_; }
+    double getCenter() const { return center_; }
+    double getFwhm() const { return fwhm_; }
+    double getIntensity() const { return intensity_; }
 private:
-    double center_;
-    double fwhm_;
-    double intensity_;
+    double center_ = Q_QNAN;
+    double fwhm_ = Q_QNAN;
+    double intensity_ = Q_QNAN;
 };
 
 #endif // RAW_OUTCOME_H

@@ -17,7 +17,8 @@
 #include "core/fit/fit_methods.h"
 #include "core/fit/raw_outcome.h"
 #include "qcr/base/debug.h" // ASSERT
-#include "3rdparty/libcerf/lib/cerf.h"
+#include "libcerf/lib/cerf.h"
+#include "lmfit/lib/lmmin.h"
 #include "LevMar/LM/levmar.h"
 #include <qmath.h>
 #include <iostream>
@@ -182,7 +183,7 @@ inline void derivative(const F f, double fxp0, double x, const double *P, uint n
 //! @class Voigt
 
 inline double Voigt::getY(double x, const double *P) {
-    return P[2] * voigt(x - P[0], P[1], P[1]*P[3]);
+    return P[2] * lm_enorm(0, NULL); // TMP  * voigt(x - P[0], P[1], P[1]*P[3]);
 }
 
 void Voigt::setY(const double *P, const int nXY, const double *X, double *Y) const

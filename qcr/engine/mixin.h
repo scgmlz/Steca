@@ -19,6 +19,10 @@
 #include <QDialog>
 #include <functional>
 
+namespace Qcr {
+extern bool replay;
+}
+
 extern class QcrRoot* gRoot;
 
 //! Mix-in for QObject, enforcing a name, and providing recompute functionality.

@@ -14,6 +14,7 @@
 
 #include "core/pars/peak.h"
 #include "core/session.h"
+#include "core/base/exception.h"
 #include "qcr/base/debug.h"
 
 const QStringList Peak::keys = { "Raw", "Gaussian", "Lorentzian", "Voigt" }; //TODO: add enum for PeakTypes
@@ -51,8 +52,10 @@ JsonObj Peak::toJson() const
 
 Peak Peak::fromJson(const JsonObj& obj)
 {
-    return {obj.loadRange("range"), obj.loadString("type")};
-    gSession->onPeaks(); // TODO PeakAt(index())
+    QString type = obj.loadString("type");
+    if (!keys.contains(type)) // validate peak fit function, so we dont get any surprises later.
+        THROW(QString("'") + type + "' is not a valid fit function!");
+    return {obj.loadRange("range"), type};
 }
 
 

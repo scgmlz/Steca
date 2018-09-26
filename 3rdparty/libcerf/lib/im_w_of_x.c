@@ -5,11 +5,11 @@
  * File im_w_of_x.c:
  *   Compute scaled Dawson integral im_w_of_x(x) = 2*dawson(x)/sqrt(pi),
  *   equivalent to the imaginary part of the Faddeeva function w(x) for real x.
- * 
+ *
  * Copyright:
  *   (C) 2012 Massachusetts Institute of Technology
  *   (C) 2013 Forschungszentrum Jülich GmbH
- * 
+ *
  * Licence:
  *   Permission is hereby granted, free of charge, to any person obtaining
  *   a copy of this software and associated documentation files (the
@@ -18,17 +18,17 @@
  *   distribute, sublicense, and/or sell copies of the Software, and to
  *   permit persons to whom the Software is furnished to do so, subject to
  *   the following conditions:
- * 
+ *
  *   The above copyright notice and this permission notice shall be
  *   included in all copies or substantial portions of the Software.
- * 
+ *
  *   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  *   EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  *   MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  *   NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
  *   LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
  *   OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- *   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
+ *   WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  *
  * Authors:
  *   Steven G. Johnson, Massachusetts Institute of Technology, 2012, core author
@@ -45,8 +45,6 @@
  */
 
 #include "cerf.h"
-
-#define _GNU_SOURCE // enable GNU libc NAN extension if possible
 
 #include <math.h>
 
@@ -461,7 +459,7 @@ static double w_im_y100(double y100, double x)
     }
     case 97: case 98:
     case 99: case 100: { // use Taylor expansion for small x (|x| <= 0.0309...)
-        //  (2/sqrt(pi)) * (x - 2/3 x^3  + 4/15 x^5  - 8/105 x^7 + 16/945 x^9) 
+        //  (2/sqrt(pi)) * (x - 2/3 x^3  + 4/15 x^5  - 8/105 x^7 + 16/945 x^9)
         double x2 = x*x;
         return x * (1.1283791670955125739
                     - x2 * (0.75225277806367504925

@@ -1,5 +1,10 @@
 == Revision history of libcerf, maintained by Joachim Wuttke ==
 
+libcerf-1.7, released 26sep18:
+  - Option -DCERF_CPP allows to choose C++ compilation, which is useful
+    because MS VisualStudio supports C++14, but not yet C99, and in
+    particular does not suppotr complex.h under C.
+
 libcerf-1.6, released 20sep18:
   - Migrated from automake to CMake.
   - Corrected typos in man pages.
