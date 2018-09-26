@@ -17,6 +17,7 @@
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"
 #include "gui/view/bigtable.h"
+#include <QButtonGroup>
 //#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
@@ -93,13 +94,13 @@ ColumnSelector::ColumnSelector()
 
 void ColumnSelector::setOne(int pos, bool on)
 {
-    gSession->params.bigMetaSelection.vec.at(pos).setVal(on);
+    gSession->params.bigMetaSelection.vec.at(pos).pureSetVal(on);
 }
 
 void ColumnSelector::setAll(bool on)
 {
     for (auto& col : gSession->params.bigMetaSelection.vec)
-        col.setVal(on);
+        col.pureSetVal(on);
 }
 
 void ColumnSelector::updateRadiobuttons()
@@ -113,14 +114,14 @@ void ColumnSelector::updateRadiobuttons()
     bool isFwhm = true;
 
     for (int i=0; i<gSession->params.bigMetaSelection.vec.size(); ++i) {
-        const bool val = gSession->params.bigMetaSelection.vec.at(i).val();
+        const bool isOn = gSession->params.bigMetaSelection.vec.at(i).val();
+        const bool isAlphOrBeta = (eReflAttr(i)==eReflAttr::ALPHA) || (eReflAttr(i)==eReflAttr::BETA);
 
-        isAll   &= val;
-        isNone  &= !val;
-        isInten &= val == (eReflAttr(i) == eReflAttr::INTEN);
-        isTth   &= val == (eReflAttr(i) == eReflAttr::TTH);
-        isFwhm  &= val == (eReflAttr(i) == eReflAttr::FWHM);
-
+        isAll   &= isOn;
+        isNone  &= !isOn;
+        isInten &= (isOn == (eReflAttr(i) == eReflAttr::INTEN)) || isAlphOrBeta;
+        isTth   &= (isOn == (eReflAttr(i) == eReflAttr::TTH)  ) || isAlphOrBeta;
+        isFwhm  &= (isOn == (eReflAttr(i) == eReflAttr::FWHM) ) || isAlphOrBeta;
     }
 
     rbAll_.cell()->pureSetVal(isAll);
