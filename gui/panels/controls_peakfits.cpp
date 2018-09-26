@@ -164,7 +164,8 @@ void PeakfitOutcomeView::refresh()
 
     const DoubleWithError nanVal = {Q_QNAN, Q_QNAN};
     // if peakFit exists, use it, otherwise use NaNs:
-    const PeakOutcome out = peakFit ? peakFit->outcome(pFct) : PeakOutcome{nanVal, nanVal, nanVal, nullptr};
+    const PeakOutcome out = peakFit ? peakFit->outcome(pFct)
+                                    : PeakOutcome{nanVal, nanVal, nanVal, nullptr};
 
     showFittedX_ .setText(par2text(out.center));
     showFittedD_ .setText(par2text(out.fwhm));
