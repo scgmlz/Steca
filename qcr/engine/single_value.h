@@ -19,6 +19,8 @@
 #include "qcr/engine/mixin.h"
 #include "qcr/engine/cell.h"
 #include "qcr/base/debug.h" // ASSERT
+#include <QSettings>
+#include <iostream>
 
 //! Base class for all Qcr widgets that hold a single value.
 template<class T>
@@ -50,6 +52,19 @@ QcrControl<T>::QcrControl(QObject& object, const QString& name, QcrCell<T>* cell
     : QcrSettable {object, name}
     , cell_ {cell}
 {
+    if (QcrSettable::name().left(1)!="_") {
+        QSettings s;
+        s.beginGroup("Controls");
+        if (!Qcr::replay) {
+            QVariant v = s.value(QcrSettable::name());
+            if (v != QVariant{}) {
+                T val = v.value<T>();
+                programaticallySetValue(val);
+                doLog(QcrSettable::name()+" "+strOp::to_s(val));
+            }
+        }
+        s.setValue(QcrSettable::name(), cell_->val());
+    }
     cell_->setCallbacks([this](){return doGetValue();}, [this](const T val){doSetValue(val);});
 }
 
@@ -91,9 +106,15 @@ void QcrControl<T>::executeConsoleCommand(const QString& arg)
 template<class T>
 void QcrControl<T>::onChangedValue(T val)
 {
-    ASSERT(val==doGetValue());
+    if (name().left(1)!="_") {
+        QSettings s;
+        s.beginGroup("Controls");
+        s.setValue(name(), val);
+    }
+
     if (cell_->amCalling || val==cell_->val())
         return;
+
     doLog(name()+" "+strOp::to_s(val));
     cell_->setVal(val);
     //qDebug()<<name()<<"remakeAll beg";

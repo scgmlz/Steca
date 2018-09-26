@@ -13,21 +13,10 @@
 //  ***********************************************************************************************
 
 #include "core/pars/interpol_params.h"
-#include "core/base/settings.h"
 #include "core/session.h"
 
 InterpolParams::InterpolParams()
 {
-    // from settings:
-    XSettings s("interpolation parameters");
-    enabled.setVal    (s.readBool("enabled",    enabled.val()));
-    stepAlpha.setVal  (s.readReal("step alpha", stepAlpha.val()));
-    stepBeta.setVal   (s.readReal("step beta",  stepBeta.val()));
-    idwRadius.setVal  (s.readReal("idw radius", idwRadius.val()));
-    avgAlphaMax.setVal(s.readReal("alpha max",  avgAlphaMax.val()));
-    avgRadius.setVal  (s.readReal("avg radius", avgRadius.val()));
-    threshold.setVal  (s.readInt("threshold",   threshold.val()));
-
     enabled.setHook    ([](bool  ){gSession->onInterpol(); });
     stepAlpha.setHook  ([](double){gSession->onInterpol(); });
     stepBeta.setHook   ([](double){gSession->onInterpol(); });
@@ -51,19 +40,6 @@ void InterpolParams::setAvgRadius(double val) {
 void InterpolParams::setThreshold(int val) {
     threshold_ = qMax(0, qMin(val, 1)); // TODO check }
 */
-}
-
-InterpolParams::~InterpolParams()
-{
-    // to settings:
-    XSettings s("interpolation parameters");
-    s.setValue("enabled",    enabled.val());
-    s.setValue("step alpha", stepAlpha.val());
-    s.setValue("step beta",  stepBeta.val());
-    s.setValue("idw radius", idwRadius.val());
-    s.setValue("alpha max",  avgAlphaMax.val());
-    s.setValue("avg radius", avgRadius.val());
-    s.setValue("threshold",  threshold.val());
 }
 
 QJsonObject InterpolParams::toJson() const

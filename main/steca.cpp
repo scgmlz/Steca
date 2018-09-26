@@ -35,7 +35,6 @@
 #include <QApplication>
 #include <QLoggingCategory>
 #include <QStyleFactory>
-#include <QTimer>
 
 const char* version =
 #include "../VERSION"
@@ -69,11 +68,8 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    QStringList nonoptArgs;
-    const char* tmp;
-    while ((tmp = optparse_arg(&options)))
-        nonoptArgs.append(tmp);
-    if (nonoptArgs.size()>1) {
+    QString startupScript = "";
+    if ((startupScript = optparse_arg(&options))!="" && optparse_arg(&options)) {
         std::cerr << "More than one command-line argument given\n";
         exit(-1);
     }
@@ -93,13 +89,11 @@ int main(int argc, char* argv[]) {
     app.setStyle(QStyleFactory::create("Fusion"));
 #endif
 
-    Console console;
+    new Console;
     QLoggingCategory::setFilterRules("*.debug=true\nqt.*.debug=false");
     qInstallMessageHandler(messageHandler);
 
     Session session;
-    new MainWin; // must be pointer, because it can be deleted by 'quit' trigger
-    if (nonoptArgs.size())
-        QTimer::singleShot(25, &app, [=](){ gConsole->call("@file " + nonoptArgs[0]); });
+    new MainWin(startupScript); // must be pointer, because it can be deleted by 'quit' trigger
     return app.exec();
 }
