@@ -40,25 +40,39 @@ const char* version =
 #include "../VERSION"
     ;
 
+void exit_help()
+{
+    std::cout << APPLICATION_CLAIM << "\n\n"
+              << "Usage: " << APPLICATION_NAME << " [options]\n\n"
+              << "Options:\n"
+              << "  -h  Print this message.\n"
+              << "  -v  Print " << APPLICATION_NAME << " version.\n"
+              << "  -c  Read commands from console instead of starting the GUI.\n"
+              << "  -p  Sets the file overwrite policy to 'Panic'. Default is 'Prompt'.\n"
+              << "  -s  Sets the file overwrite policy to 'Silent Overwrite'. Default is 'Prompt'.\n";
+    exit(0);
+}
+
+void exit_version()
+{
+    std::cout << APPLICATION_NAME << " version " << version << "\n";
+    exit(0);
+}
+
 int main(int argc, char* argv[]) {
     struct optparse options;
     optparse_init(&options, argv);
     int opt;
+    if (argc>1 && QString(argv[1])=="--help")
+        exit_help();
+    if (argc>1 && QString(argv[1])=="--version")
+        exit_version();
     while ((opt = optparse(&options, "hvcps")) != -1) {
         switch (opt) {
         case 'h':
-            std::cout << APPLICATION_CLAIM << "\n\n"
-                      << "Usage: " << APPLICATION_NAME << " [options]\n\n"
-                      << "Options:\n"
-                      << "  -h  Print this message.\n"
-                      << "  -v  Print " << APPLICATION_NAME << " version.\n"
-                      << "  -c  Read commands from console instead of starting the GUI.\n"
-                      << "  -p  Sets the file overwrite policy to 'Panic'. Default is 'Promt'.\n"
-                      << "  -s  Sets the file overwrite policy to 'Silent Overwrite'. Default is 'Promt'.\n";
-            exit(0);
+            exit_help();
         case 'v':
-            std::cout << APPLICATION_NAME << " version " << version << "\n";
-            exit(0);
+            exit_version();
         case 'p':
             setFileOverwritePolicy(file_dialog::eFileOverwritePolicy::PANIC);
             break;
