@@ -24,7 +24,6 @@
 class Detector {
 public:
     Detector();
-    ~Detector();
     Detector(const Detector&) = delete;
 
     void fromJson(const JsonObj& obj);

@@ -18,16 +18,6 @@
 
 InterpolParams::InterpolParams()
 {
-    // from settings:
-    XSettings s("interpolation parameters");
-    s.setBool("enabled",    enabled);
-    s.setReal("step alpha", stepAlpha);
-    s.setReal("step beta",  stepBeta);
-    s.setReal("idw radius", idwRadius);
-    s.setReal("alpha max",  avgAlphaMax);
-    s.setReal("avg radius", avgRadius);
-    s.setInt ("threshold",  threshold);
-
     enabled.setHook    ([](bool  ){gSession->onInterpol(); });
     stepAlpha.setHook  ([](double){gSession->onInterpol(); });
     stepBeta.setHook   ([](double){gSession->onInterpol(); });
@@ -51,19 +41,6 @@ void InterpolParams::setAvgRadius(double val) {
 void InterpolParams::setThreshold(int val) {
     threshold_ = qMax(0, qMin(val, 1)); // TODO check }
 */
-}
-
-InterpolParams::~InterpolParams()
-{
-    // to settings:
-    XSettings s("interpolation parameters");
-    s.setValue("enabled",    enabled.val());
-    s.setValue("step alpha", stepAlpha.val());
-    s.setValue("step beta",  stepBeta.val());
-    s.setValue("idw radius", idwRadius.val());
-    s.setValue("alpha max",  avgAlphaMax.val());
-    s.setValue("avg radius", avgRadius.val());
-    s.setValue("threshold",  threshold.val());
 }
 
 QJsonObject InterpolParams::toJson() const
