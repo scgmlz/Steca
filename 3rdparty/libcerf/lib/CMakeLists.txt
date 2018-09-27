@@ -24,7 +24,9 @@ if (${CERF_CPP})
     set_property(TARGET ${lib} PROPERTY LINKER_LANGUAGE CXX)
 endif()
 
-target_link_libraries(${lib} m)
+if(NOT MSVC)
+    target_link_libraries(${lib} m)
+endif()
 
 if (${LIB_INSTALL})
     install(
