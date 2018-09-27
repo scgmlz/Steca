@@ -15,6 +15,6 @@ target_link_libraries (${lib}
     caress_loader
     mar_loader
     ${cerf_LIBRARY}
-    lmfit
+#    lmfit
     ${LIBYAML_LIBRARY}
     )
