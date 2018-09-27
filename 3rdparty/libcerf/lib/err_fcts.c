@@ -50,12 +50,8 @@
  */
 
 #include "cerf.h"
-
 #include <math.h>
-#include <stdlib.h>
-#include <stdio.h>
-
-#include "defs.h" // defines cmplx, CMPLX, NaN
+#include "defs.h" // defines cmplx, NaN, C, cexp, ...
 
 const double spi2 = 0.8862269254527580136490837416705725913990; // sqrt(pi)/2
 const double s2pi = 2.5066282746310005024157652848110; // sqrt(2*pi)

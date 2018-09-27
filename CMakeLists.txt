@@ -44,7 +44,7 @@ macro(SET_OPTION option value)
 endmacro()
 SET_OPTION(LIB_MAN OFF)
 SET_OPTION(LIB_INSTALL OFF)
-SET_OPTION(CERF_CPP OFF)
+SET_OPTION(CERF_CPP ON)
 
 add_subdirectory(3rdparty/LevMar)
 add_subdirectory(3rdparty/QCustomPlot)

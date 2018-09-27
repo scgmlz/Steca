@@ -62,11 +62,9 @@
 */
 
 #include "cerf.h"
-
 #include <float.h>
 #include <math.h>
-
-#include "defs.h" // defines cmplx, CMPLX, NaN
+#include "defs.h" // defines cmplx, NaN, C, cexp, ...
 
 int faddeeva_algorithm, faddeeva_nofterms; // for external analysis
 

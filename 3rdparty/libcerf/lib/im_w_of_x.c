@@ -45,10 +45,8 @@
  */
 
 #include "cerf.h"
-
 #include <math.h>
-
-#include "defs.h" // defines cmplx, CMPLX, NaN
+#include "defs.h" // defines cmplx, NaN, C, cexp, ...
 
 /******************************************************************************/
 /* Lookup-table for Chebyshev polynomials for smaller |x|                     */
@@ -56,7 +54,6 @@
 
 static double w_im_y100(double y100, double x)
 {
-
     // Steven G. Johnson, October 2012.
 
     // Given y100=100*y, where y = 1/(1+x) for x >= 0, compute w_im(x).

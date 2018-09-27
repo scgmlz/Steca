@@ -47,10 +47,8 @@
  */
 
 #include "cerf.h"
-
 #include <math.h>
-
-#include "defs.h" // defines cmplx, CMPLX, NaN
+#include "defs.h" // defines cmplx, NaN, C, cexp, ...
 
 /******************************************************************************/
 /* Lookup-table for Chebyshev polynomials for smaller |x|                     */
