@@ -31,13 +31,14 @@ protected:
     QcrMixin(QObject* object, const QString& name="");
 public:
     QcrMixin(const QcrMixin&) = delete;
-    const QObject& object() const { return object_; }
-    const QString name() const { return object().objectName(); }
+    const QString name() const { return object()->objectName(); }
     virtual void remake();
     void setRemake(std::function<void()> _remake) { remake_ = _remake; }
+protected:
+    const QObject* object() const { return object_; }
 private:
     std::function<void()> remake_ {[](){}};
-    QObject& object_;
+    QObject* object_;
 };
 
 

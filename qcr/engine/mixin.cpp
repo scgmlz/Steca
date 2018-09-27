@@ -24,15 +24,15 @@ bool Qcr::replay = false;
 //! @class QcrMixin
 
 QcrMixin::QcrMixin(QObject* object, const QString& name)
-    : object_ {*object}
+    : object_ {object}
 {
-    object_.setObjectName(name);
+    object_->setObjectName(name);
 }
 
 void QcrMixin::remake()
 {
-    const QWidget* w = dynamic_cast<const QWidget*>(&object());
-    if ((w && w->isVisible()) || dynamic_cast<const QAction*>(&object()))
+    const QWidget* w = dynamic_cast<const QWidget*>(object());
+    if ((w && w->isVisible()) || dynamic_cast<const QAction*>(object()))
         remake_();
 }
 
@@ -54,7 +54,7 @@ void QcrRoot::remakeAll()
     if (remakeLoops>1)
         qFatal("circular remakeAll, it seems");
     remake();
-    for (QWidget* w: object().findChildren<QWidget*>())
+    for (QWidget* w: object()->findChildren<QWidget*>())
         if (QcrMixin* m = dynamic_cast<QcrMixin*>(w))
             m->remake();
     --remakeLoops;
