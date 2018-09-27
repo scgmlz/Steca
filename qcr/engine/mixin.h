@@ -28,7 +28,6 @@ extern class QcrRoot* gRoot;
 //! Mix-in for QObject, enforcing a name, and providing recompute functionality.
 class QcrMixin {
 protected:
-    QcrMixin(QObject& object, const QString& name); // TODO convert everywhere to QObject* form
     QcrMixin(QObject* object, const QString& name="");
 public:
     QcrMixin(const QcrMixin&) = delete;
@@ -53,7 +52,7 @@ public:
 //! Mix-in for QObject, enforcing a unique name, providing Console connection.
 class QcrSettable : public QcrMixin {
 protected:
-    QcrSettable(QObject& object, const QString& name, bool _modal=false);
+    QcrSettable(QObject* object, const QString& name, bool _modal=false);
 public:
     virtual void executeConsoleCommand(const QString&) = 0;
 protected:

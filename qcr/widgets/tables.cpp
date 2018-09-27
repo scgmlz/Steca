@@ -93,7 +93,7 @@ void CheckTableModel::activateAndLog(int row, bool on)
 #pragma GCC diagnostic ignored "-Woverloaded-virtual" // TODO try without
 
 TableView::TableView(TableModel* model)
-    : QcrSettable {*this, model->name()}
+    : QcrSettable {this, model->name()}
     , model_(model)
 {
     model->setName(name());

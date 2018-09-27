@@ -22,7 +22,7 @@
 //  ***********************************************************************************************
 //! @class QcrModal
 
-QcrModal::QcrModal(QObject& object, const QString& name)
+QcrModal::QcrModal(QObject* object, const QString& name)
     : QcrSettable {object, "@push " + name, true}
 {}
 
@@ -38,7 +38,7 @@ QcrModal::~QcrModal()
 
 QcrDialog::QcrDialog(QWidget* parent, const QString& caption)
     : QDialog {parent}
-    , QcrModal {*this, "dlog"}
+    , QcrModal {this, "dlog"}
 {
     setWindowTitle(caption);
 }
@@ -71,7 +71,7 @@ void QcrDialog::executeConsoleCommand(const QString& arg)
 QcrFileDialog::QcrFileDialog(
     QWidget* parent, const QString& caption, const QString& directory, const QString& filter)
     : QFileDialog {parent, caption, directory, filter}
-    , QcrModal {*this, "fdia"}
+    , QcrModal {this, "fdia"}
 {}
 
 QcrFileDialog::~QcrFileDialog()

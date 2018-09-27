@@ -23,12 +23,6 @@ bool Qcr::replay = false;
 //  ***********************************************************************************************
 //! @class QcrMixin
 
-QcrMixin::QcrMixin(QObject& object, const QString& name)
-    : object_ {object}
-{
-    object_.setObjectName(name);
-}
-
 QcrMixin::QcrMixin(QObject* object, const QString& name)
     : object_ {*object}
 {
@@ -70,7 +64,7 @@ void QcrRoot::remakeAll()
 //  ***********************************************************************************************
 //! @class QcrSettable
 
-QcrSettable::QcrSettable(QObject& object, const QString& name, bool _modal)
+QcrSettable::QcrSettable(QObject* object, const QString& name, bool _modal)
     : QcrMixin {object, gConsole->learn(name, this)} // console may change name (expand macros)
 {}
 
@@ -86,7 +80,7 @@ void QcrSettable::doLog(const QString& msg)
 
 QcrModelessDialog::QcrModelessDialog(QWidget* parent, const QString& name)
     : QDialog {parent}
-    , QcrSettable {*this, name}
+    , QcrSettable {this, name}
 {
     setModal(false);
 }

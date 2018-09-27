@@ -45,7 +45,7 @@ bool QcrAction::hasFocus()
 
 QcrTrigger::QcrTrigger(const QString& rawname, const QString& text, const QString& iconFile)
     : QcrAction {text}
-    , QcrSettable {*this, rawname}
+    , QcrSettable {this, rawname}
 {
     //QAction::setObjectName(name());
     if (iconFile!="")
@@ -83,7 +83,7 @@ void QcrTrigger::executeConsoleCommand(const QString& arg)
 //! trigger button classes
 
 QcrTextTriggerButton::QcrTextTriggerButton(QcrTrigger* action)
-    : QcrMixin(*this, action->name()+"Btn")
+    : QcrMixin(this, action->name()+"Btn")
 {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonTextOnly);
@@ -91,7 +91,7 @@ QcrTextTriggerButton::QcrTextTriggerButton(QcrTrigger* action)
 }
 
 QcrIconTriggerButton::QcrIconTriggerButton(QcrTrigger* action)
-    : QcrMixin(*this, action->name()+"Btn")
+    : QcrMixin(this, action->name()+"Btn")
 {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonIconOnly);
@@ -104,7 +104,7 @@ QcrIconTriggerButton::QcrIconTriggerButton(QcrTrigger* action)
 QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on,
                      const QString& iconFile, const QKeySequence& shortcut)
     : QcrAction {text}
-    , QcrControl<bool> {*this, rawname, on}
+    , QcrControl<bool> {this, rawname, on}
 {
     initToggle(iconFile, shortcut);
 }
@@ -112,7 +112,7 @@ QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on,
 QcrToggle::QcrToggle(const QString& rawname, QcrCell<bool>* cell, const QString& text,
                      const QString& iconFile, const QKeySequence& shortcut)
     : QcrAction {text}
-    , QcrControl<bool> {*this, rawname, cell}
+    , QcrControl<bool> {this, rawname, cell}
 
 {
     initToggle(iconFile, shortcut);
@@ -147,7 +147,7 @@ void QcrToggle::initToggle(const QString& iconFile, const QKeySequence& shortcut
 //! toggle button classes
 
 QcrTextToggleButton::QcrTextToggleButton(QcrToggle* action)
-    : QcrMixin(*this, action->name()+"Btn")
+    : QcrMixin(this, action->name()+"Btn")
 {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonTextOnly);
@@ -155,7 +155,7 @@ QcrTextToggleButton::QcrTextToggleButton(QcrToggle* action)
 }
 
 QcrIconToggleButton::QcrIconToggleButton(QcrToggle* action)
-    : QcrMixin(*this, action->name()+"Btn")
+    : QcrMixin(this, action->name()+"Btn")
 {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonIconOnly);
@@ -178,7 +178,7 @@ QcrIconToggleButton::QcrIconToggleButton(QcrToggle* action)
 
 QcrSpinBox::QcrSpinBox(const QString& _name, QcrCell<int>* cell, int ndigits,
                        bool withDot, int min, int max, const QString& tooltip)
-    : QcrControl<int> {*this, _name, cell}
+    : QcrControl<int> {this, _name, cell}
 {
     initSpinBox(ndigits, withDot, min, max, tooltip);
 }
@@ -218,7 +218,7 @@ void QcrSpinBox::executeConsoleCommand(const QString& arg)
 QcrDoubleSpinBox::QcrDoubleSpinBox(
     const QString& _name, QcrCell<double>* cell, int nDigits, int nDecimals,
     double min, double max, const QString& tooltip)
-    : QcrControl<double> {*this, _name, cell}
+    : QcrControl<double> {this, _name, cell}
 {
     initDoubleSpinBox(nDigits, nDecimals, min, max, tooltip);
 }
@@ -259,7 +259,7 @@ void QcrDoubleSpinBox::executeConsoleCommand(const QString& arg)
 
 QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, QcrCell<bool>* cell)
     : QCheckBox {text}
-    , QcrControl<bool> {*this, _name, cell}
+    , QcrControl<bool> {this, _name, cell}
 {
     doSetValue(cell_->val());
     connect(this, _SLOT_(QCheckBox,stateChanged,int), [this](int val)->void {
@@ -271,7 +271,7 @@ QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, QcrCell<bool
 
 QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, bool val)
     : QRadioButton {text}
-    , QcrControl<bool> {*this, _name, val}
+    , QcrControl<bool> {this, _name, val}
 {
     doSetValue(cell_->val());
     setAutoExclusive(false); // TODO provide int-valued Qcr wrapper for exclusive radio buttons
@@ -281,7 +281,7 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, bool v
 
 QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, QcrCell<bool>* cell)
     : QRadioButton {text}
-    , QcrControl<bool> {*this, _name, cell}
+    , QcrControl<bool> {this, _name, cell}
 {
     doSetValue(cell_->val());
     setAutoExclusive(false);
@@ -294,7 +294,7 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, QcrCel
 
 QcrComboBox::QcrComboBox(
     const QString& _name, QcrCell<int>* _cell, std::function<QStringList()> _makeTags)
-    : QcrControl<int> {*this, _name, _cell}
+    : QcrControl<int> {this, _name, _cell}
     , makeTags_(_makeTags)
 {
     tags_ = makeTags_();
@@ -326,7 +326,7 @@ void QcrComboBox::remake()
 //! @class QcrLineEdit
 
 QcrLineEdit::QcrLineEdit(const QString& _name, const QString& val)
-    : QcrControl<QString> {*this, _name, val}
+    : QcrControl<QString> {this, _name, val}
 {
     doSetValue(cell_->val());
     // For unknown reason, hasFocus() is not always false when setText is called programmatically;
@@ -353,7 +353,7 @@ void QcrLineEdit::doSetValue(QString val)
 //! @class QcrTabWidget
 
 QcrTabWidget::QcrTabWidget(const QString& _name)
-    : QcrControl<int> {*this, _name, 0}
+    : QcrControl<int> {this, _name, 0}
 {
     doSetValue(cell_->val());
     connect(this, &QTabWidget::currentChanged, [this](int val) {
