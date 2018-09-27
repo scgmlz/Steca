@@ -4,10 +4,10 @@
  *
  * File runvoigt.c:
  *   Interactive evaluation of Voigt's function.
- * 
+ *
  * Copyright:
  *   (C) 2013 Forschungszentrum Jülich GmbH
- * 
+ *
  * Licence:
  *   Public domain.
  *
