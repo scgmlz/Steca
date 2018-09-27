@@ -43,9 +43,16 @@
  *   w_of_z(3), dawson(3), voigt(3), cerf(3), erfcx(3), erfi(3)
  */
 
-#include <complex.h> // C99 complex-number support
-
 #ifndef __CERF_H
+#  ifndef cmplx
+#    ifdef CERF_AS_CPP
+#      include <complex>
+#      define cmplx std::complex<double>
+#    else
+#      include <complex.h>
+#      define cmplx double _Complex
+#    endif
+#  endif
 #  define __CERF_H
 #  undef __BEGIN_DECLS
 #  undef __END_DECLS
@@ -62,14 +69,6 @@
 #    endif
 #  endif
 __BEGIN_DECLS
-
-#ifndef cmplx
-#  ifdef CERF_AS_CPP
-#    define cmplx std::complex<double>
-#  else
-#    define cmplx double _Complex
-#  endif
-#endif
 
 // compute w(z) = exp(-z^2) erfc(-iz), Faddeeva's scaled complex error function
 cmplx  w_of_z   (cmplx z);
