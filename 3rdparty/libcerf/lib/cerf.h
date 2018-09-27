@@ -43,8 +43,6 @@
  *   w_of_z(3), dawson(3), voigt(3), cerf(3), erfcx(3), erfi(3)
  */
 
-double foigt(double x, double sigma, double gamma);
-
 #include <complex.h> // C99 complex-number support
 
 #ifndef __CERF_H

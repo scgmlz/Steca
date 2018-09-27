@@ -180,7 +180,7 @@ inline void derivative(const F f, double fxp0, double x, const double *P, uint n
 }
 
 double voigt_of_P(double x, const double *P) {
-    return P[2] * foigt(x-P[0], P[1], P[1]*P[3]);
+    return P[2] * voigt(x-P[0], P[1], P[1]*P[3]);
 }
 
 } // namespace

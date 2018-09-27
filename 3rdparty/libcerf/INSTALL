@@ -22,6 +22,9 @@ To choose C++ compilation, do
 
 cmake -DCERF_CPP=ON ..
 
+In this case, the C++ code that calls functions from libcerf
+must be compiled with the option -DCERF_AS_CPP.
+
 == Uninstall ==
 
 CMake does not produce a 'make uninstall' target.
