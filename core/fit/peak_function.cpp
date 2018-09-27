@@ -155,7 +155,11 @@ void Lorentzian::setDY(const double* P, const int nXY, const double* X, double* 
     }
 }
 
-namespace  {
+//  ***********************************************************************************************
+//! @class Voigt
+
+namespace {
+
 //! approximates the parameter derivative for f. fxp0 = f(x, p0)
 template <typename F>
 inline void derivative(const F f, double fxp0, double x, const double *P, uint nPar, double* Jacobian) {
@@ -175,15 +179,10 @@ inline void derivative(const F f, double fxp0, double x, const double *P, uint n
     return;
 }
 
-}
-
-//  ***********************************************************************************************
-//! @class Voigt
-
-namespace {
 double voigt_of_P(double x, const double *P) {
     return P[2] * voigt(x-P[0], P[1], P[1]*P[3]);
 }
+
 } // namespace
 
 void Voigt::setY(const double *P, const int nXY, const double *X, double *Y) const

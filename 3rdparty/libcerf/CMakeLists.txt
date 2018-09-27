@@ -24,6 +24,7 @@ set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   ${CERF_COMPILER_FLAGS}")
 set(CMAKE_CXX_STANDARD 14)
 
 add_subdirectory(lib)
+set(cerf_LIBRARY ${cerf_LIBRARY} PARENT_SCOPE)
 add_subdirectory(test)
 if (${LIB_MAN})
     add_subdirectory(man)
