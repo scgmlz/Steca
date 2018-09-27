@@ -50,6 +50,8 @@
  */
 
 #include "cerf.h"
+double foigt(double x, double sigma, double gamma)
+{ return x+sigma+gamma; }
 #include <math.h>
 #include "defs.h" // defines cmplx, NaN, C, cexp, ...
 
