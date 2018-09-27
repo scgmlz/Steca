@@ -106,7 +106,6 @@ void ColumnSelector::setAll(bool on)
 void ColumnSelector::updateRadiobuttons()
 {
     //bool isAll = true, isNone = true, isOther = false;
-    int nInten = 0, nTth = 0, nFwhm = 0;
     bool isAll = true;
     bool isNone = true;
     bool isInten = true;
@@ -115,7 +114,8 @@ void ColumnSelector::updateRadiobuttons()
 
     for (int i=0; i<gSession->params.bigMetaSelection.vec.size(); ++i) {
         const bool isOn = gSession->params.bigMetaSelection.vec.at(i).val();
-        const bool isAlphOrBeta = (eReflAttr(i)==eReflAttr::ALPHA) || (eReflAttr(i)==eReflAttr::BETA);
+        const bool isAlphOrBeta = (eReflAttr(i)==eReflAttr::ALPHA)
+            || (eReflAttr(i)==eReflAttr::BETA);
 
         isAll   &= isOn;
         isNone  &= !isOn;
