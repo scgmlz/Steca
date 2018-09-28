@@ -20,7 +20,8 @@
 
 //! A polynomial, for fitting the background of a diffractogram
 
-// TODO use Legendre polynomials on rescaled interval to provide an easy approximation of the average.
+// TODO use Legendre polynomials on rescaled interval to provide
+//      an easy approximation of the average.
 class Polynom : public FitFunction {
 public:
     Polynom(int _degree) : nPar_{_degree + 1} {}

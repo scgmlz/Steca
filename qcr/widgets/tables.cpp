@@ -161,7 +161,10 @@ void TableView::gotoCurrent(const QModelIndex& current)
     updateScroll();
 }
 
-//! Highlights one cluster. Called either from GUI > currentChanged [TODO? restore], or through Console command.
+//! Highlights one cluster.
+
+//! Called either from GUI > currentChanged [TODO? restore], or through Console command.
+
 void TableView::highlight(int row)
 {
     if (row==model_->highlighted())

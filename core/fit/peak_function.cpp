@@ -162,7 +162,9 @@ namespace {
 
 //! approximates the parameter derivative for f. fxp0 = f(x, p0)
 template <typename F>
-inline void derivative(const F f, double fxp0, double x, const double *P, uint nPar, double* Jacobian) {
+inline void derivative(
+    const F f, double fxp0, double x, const double *P, uint nPar, double* Jacobian)
+{
     const double rho = 1e-3;
     double *params = const_cast<double*>(P);
     for (uint i = 0; i < nPar; ++i) {

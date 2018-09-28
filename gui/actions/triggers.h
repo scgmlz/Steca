@@ -23,7 +23,9 @@ class Triggers {
 public:
     Triggers();
     QcrTrigger about {"about", "About Steca"};
-    QcrTrigger baserangeAdd {"baserangeAdd", "To add a baseline fit range, mark it in the diffractogram...", ":/icon/add", Qt::CTRL | Qt::Key_O};
+    QcrTrigger baserangeAdd {"baserangeAdd",
+            "To add a baseline fit range, mark it in the diffractogram...",
+            ":/icon/add", Qt::CTRL | Qt::Key_O};
     QcrTrigger baserangeRemove {"baserangeRemove", "Remove baseline range", ":/icon/rem"};
     QcrTrigger baserangesClear {"baserangesClear", "Clear baseline ranges", ":/icon/clear"};
     QcrTrigger addFiles {"addFiles", "Add files...", ":/icon/add", Qt::CTRL | Qt::Key_O};

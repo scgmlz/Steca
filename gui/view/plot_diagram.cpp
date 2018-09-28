@@ -68,7 +68,9 @@ void PlotDiagram::refresh()
             ysSafe.push_back(ys.at(i));
             ysSigmaSafe.push_back(ysSigma.at(i));
         }
-        graph_->setDataValueError(QVector<double>::fromStdVector(xsSafe), QVector<double>::fromStdVector(ysSafe), QVector<double>::fromStdVector(ysSigmaSafe));
+        graph_->setDataValueError(
+            QVector<double>::fromStdVector(xsSafe), QVector<double>::fromStdVector(ysSafe),
+            QVector<double>::fromStdVector(ysSigmaSafe));
     } else {
         for (size_t i = 0; i < xs.size(); ++i) {
             if (   qIsNaN(xs.at(i)) || qIsInf(xs.at(i))
@@ -77,7 +79,8 @@ void PlotDiagram::refresh()
             xsSafe.push_back(xs.at(i));
             ysSafe.push_back(ys.at(i));
         }
-        graph_->setData(QVector<double>::fromStdVector(xsSafe), QVector<double>::fromStdVector(ysSafe));
+        graph_->setData(
+            QVector<double>::fromStdVector(xsSafe), QVector<double>::fromStdVector(ysSafe));
     }
 
     if (!xsSafe.size())

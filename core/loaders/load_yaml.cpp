@@ -35,7 +35,7 @@ auto transformToVector(InputIt begin, InputIt end , Function func)
     return std::move(ret);
 }
 
-/// Applies the given function to the elements of a container and stores the result in a new std::vector.
+/// Applies given function to the container elements, and stores the result in a new std::vector.
 ///
 /// @param  cont Container whos elements are to be transformed
 /// @param  func The transform function of following signature: `Ret fun(const Type &a);`.

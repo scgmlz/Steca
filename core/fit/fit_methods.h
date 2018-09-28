@@ -23,7 +23,9 @@
 
 class FitWrapper {
 public:
-    Fitted execFit(const FitFunction*, const class Curve&, std::vector<double> parValue, bool onlyPositiveParams = false);
+    Fitted execFit(
+        const FitFunction*, const class Curve&, std::vector<double> parValue,
+        bool onlyPositiveParams = false);
 
 private:
     // these pointers are valid during fit() call
