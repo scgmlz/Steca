@@ -166,7 +166,8 @@ void searchInQuadrants(
     }
 }
 
-itf_t inverseDistanceWeighing(const std::vector<double>& distances, const std::vector<PeakInfo const*>& infos)
+itf_t inverseDistanceWeighing(
+    const std::vector<double>& distances, const std::vector<PeakInfo const*>& infos)
 {
     int N = NUM_QUADRANTS;
     // Generally, only distances.count() == values.count() > 0 is needed for this

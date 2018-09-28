@@ -56,7 +56,7 @@ private:
     double avgTime() const;
     double avgDeltaTime() const;
 
-    const std::vector<const Measurement*> members_; //!< points to Dataset:vec<Datafile>:vec<M'ments>
+    const std::vector<const Measurement*> members_; //!< ptr to Dataset:vec<Datafile>:vec<M'ments>
     const Metadata metadata_; //!< averaged Metadata
 
     Metadata computeAvgMetadata() const;
