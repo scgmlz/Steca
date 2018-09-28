@@ -127,12 +127,15 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
         THROW(QString("Got alias (anchor %s)"));
         break;
     case YAML_SCALAR_EVENT:
-        YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_SCALAR_EVENT = " << QString::fromLatin1(reinterpret_cast<char*>(prevEvent.data.scalar.value)));
+        YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_SCALAR_EVENT = "
+                       << QString::fromLatin1(
+                           reinterpret_cast<char*>(prevEvent.data.scalar.value)));
         if (reinterpret_cast<char*>(prevEvent.data.scalar.tag) // handle !array2d tag:
-                && std::string(reinterpret_cast<char*>(prevEvent.data.scalar.tag)) == "!array2d") {
+            && std::string(reinterpret_cast<char*>(prevEvent.data.scalar.tag)) == "!array2d") {
             YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_SCALAR_EVENT, tag = !array2d");
 
-            std::stringstream arrayStr(reinterpret_cast<char*>(prevEvent.data.scalar.value), std::ios_base::in);
+            std::stringstream arrayStr(
+                reinterpret_cast<char*>(prevEvent.data.scalar.value), std::ios_base::in);
 
             std::shared_ptr<YamlArray2d> array2d(new YamlArray2d);
 
@@ -149,7 +152,9 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
             }
             return YamlNode(array2d);
         }
-        YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_SCALAR_EVENT = " << QString::fromLatin1(reinterpret_cast<char*>(prevEvent.data.scalar.value)));
+        YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_SCALAR_EVENT = "
+                       << QString::fromLatin1(
+                           reinterpret_cast<char*>(prevEvent.data.scalar.value)));
         return YamlNode(QString::fromLatin1(reinterpret_cast<char*>(prevEvent.data.scalar.value)));
     default:
         THROW("unexpected node in parseYamlFast");

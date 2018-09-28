@@ -17,7 +17,8 @@
 #include "core/fit/fit_methods.h"
 #include "core/fit/raw_outcome.h"
 #include "qcr/base/debug.h" // ASSERT
-#include "3rdparty/libcerf/lib/cerf.h"
+#include "libcerf/lib/cerf.h"
+#include "lmfit/lib/lmmin.h"
 #include "LevMar/LM/levmar.h"
 #include <qmath.h>
 #include <iostream>
@@ -52,8 +53,6 @@ public:
     void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
     int nPar() const final { return 4; }
     PeakOutcome outcome(const Fitted&) const final;
-private:
-    static inline double getY(double x, const double *P);
 };
 
 //! A Fwhm finder as a fit function. avoids reimplementing
@@ -156,10 +155,16 @@ void Lorentzian::setDY(const double* P, const int nXY, const double* X, double* 
     }
 }
 
-namespace  {
+//  ***********************************************************************************************
+//! @class Voigt
+
+namespace {
+
 //! approximates the parameter derivative for f. fxp0 = f(x, p0)
 template <typename F>
-inline void derivative(const F f, double fxp0, double x, const double *P, uint nPar, double* Jacobian) {
+inline void derivative(
+    const F f, double fxp0, double x, const double *P, uint nPar, double* Jacobian)
+{
     const double rho = 1e-3;
     double *params = const_cast<double*>(P);
     for (uint i = 0; i < nPar; ++i) {
@@ -176,26 +181,23 @@ inline void derivative(const F f, double fxp0, double x, const double *P, uint n
     return;
 }
 
+double voigt_of_P(double x, const double *P) {
+    return P[2] * voigt(x-P[0], P[1], P[1]*P[3]);
 }
 
-//  ***********************************************************************************************
-//! @class Voigt
-
-inline double Voigt::getY(double x, const double *P) {
-    return P[2] * voigt(x - P[0], P[1], P[1]*P[3]);
-}
+} // namespace
 
 void Voigt::setY(const double *P, const int nXY, const double *X, double *Y) const
 {
     for (int i=0 ; i<nXY; ++i)
-        Y[i] = getY(X[i], P);
+        Y[i] = voigt_of_P(X[i], P);
 }
 
 void Voigt::setDY(const double* P, const int nXY, const double* X, double* Jacobian) const
 {
     for (int i=0; i<nXY; ++i) {
-        double base = getY(X[i], P);
-        derivative(&getY, base, X[i], P, nPar(), Jacobian);
+        double base = voigt_of_P(X[i], P);
+        derivative(&voigt_of_P, base, X[i], P, nPar(), Jacobian);
         Jacobian += nPar();
     }
 }
@@ -217,6 +219,7 @@ double FindFwhm::getY(double x, const double *P) const
 {
     return fitted_.y(x + *P*0.5);
 }
+
 void FindFwhm::setY(const double* P, const int nXY, const double* X, double* Y) const
 {   // 'curve' has only one point.
     *Y = getY(*X, P);

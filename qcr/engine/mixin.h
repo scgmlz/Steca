@@ -28,17 +28,17 @@ extern class QcrRoot* gRoot;
 //! Mix-in for QObject, enforcing a name, and providing recompute functionality.
 class QcrMixin {
 protected:
-    QcrMixin(QObject& object, const QString& name); // TODO convert everywhere to QObject* form
     QcrMixin(QObject* object, const QString& name="");
 public:
     QcrMixin(const QcrMixin&) = delete;
-    const QObject& object() const { return object_; }
-    const QString name() const { return object().objectName(); }
+    const QString name() const { return object()->objectName(); }
     virtual void remake();
     void setRemake(std::function<void()> _remake) { remake_ = _remake; }
+protected:
+    const QObject* object() const { return object_; }
 private:
     std::function<void()> remake_ {[](){}};
-    QObject& object_;
+    QObject* object_;
 };
 
 
@@ -53,7 +53,7 @@ public:
 //! Mix-in for QObject, enforcing a unique name, providing Console connection.
 class QcrSettable : public QcrMixin {
 protected:
-    QcrSettable(QObject& object, const QString& name, bool _modal=false);
+    QcrSettable(QObject* object, const QString& name, bool _modal=false);
 public:
     virtual void executeConsoleCommand(const QString&) = 0;
 protected:

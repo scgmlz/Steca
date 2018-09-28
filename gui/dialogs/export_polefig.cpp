@@ -97,7 +97,8 @@ void ExportPolefig::save()
         peaks = gSession->allPeaks.allInfoSequences();
     }
 
-    saveAll(! (exportMode==ExportMode::ALL_PEAKS_MULTIPLE_FILES), path, fileField_->separator(), peaks);
+    saveAll(!(exportMode==ExportMode::ALL_PEAKS_MULTIPLE_FILES),
+            path, fileField_->separator(), peaks);
 
     close();
 }
@@ -159,4 +160,3 @@ void ExportPolefig::saveAll(bool oneFile, const QString &path, const QString &se
 
     }
 }
-

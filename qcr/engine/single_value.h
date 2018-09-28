@@ -26,8 +26,8 @@
 template<class T>
 class QcrControl : public QcrSettable {
 public:
-    QcrControl(QObject& object, const QString& name, QcrCell<T>* cell);
-    QcrControl(QObject& object, const QString& name, const T val); // TODO get rid of this variant?
+    QcrControl(QObject* object, const QString& name, QcrCell<T>* cell);
+    QcrControl(QObject* object, const QString& name, const T val); // TODO get rid of this variant?
     ~QcrControl();
     void programaticallySetValue(T val);
     T getValue() { ASSERT(doGetValue()==cell_->val()); return cell_->val(); }
@@ -48,7 +48,7 @@ private:
 
 //! Constructor that associates this QcrControl with an external QcrCell.
 template<class T>
-QcrControl<T>::QcrControl(QObject& object, const QString& name, QcrCell<T>* cell)
+QcrControl<T>::QcrControl(QObject* object, const QString& name, QcrCell<T>* cell)
     : QcrSettable {object, name}
     , cell_ {cell}
 {
@@ -70,7 +70,7 @@ QcrControl<T>::QcrControl(QObject& object, const QString& name, QcrCell<T>* cell
 
 //! Constructs a QcrControl that owns a QcrCell.
 template<class T>
-QcrControl<T>::QcrControl(QObject& object, const QString& name, const T val)
+QcrControl<T>::QcrControl(QObject* object, const QString& name, const T val)
     : QcrSettable {object, name}
     , ownsItsCell_ {true}
 {

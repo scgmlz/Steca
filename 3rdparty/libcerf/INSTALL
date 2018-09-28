@@ -1,5 +1,8 @@
 Build&install are based on CMake.
 Out-of-source build is enforced.
+
+== Standard build ==
+
 After unpacking the source, go to the source directory and do:
 
 mkdir build
@@ -7,3 +10,25 @@ cd build
 cmake ..
 make
 make install
+
+== Compile as C++ code ==
+
+By default, the sources of libcerf are compiled as C code.
+Alternatively, they can be compiled as C++. This is useful
+under MS VisualStudio, which supports C++14, but not yet C99,
+and in particular does not support complex.h under C.
+
+To choose C++ compilation, do
+
+cmake -DCERF_CPP=ON ..
+
+In this case, the C++ code that calls functions from libcerf
+must be compiled with the option -DCERF_AS_CPP.
+
+== Uninstall ==
+
+CMake does not produce a 'make uninstall' target.
+Instead, use the list of installed files in the
+build directory:
+
+cat install_manifest.txt | xargs rm

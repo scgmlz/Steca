@@ -19,7 +19,6 @@
 #include <QString>
 #include <memory>
 
-
 class RawOutcome;
 
 //! Numeric outcome of peak fit.

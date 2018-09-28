@@ -53,9 +53,9 @@ private:
 
     QDateTime startTime_;
 #ifdef Q_OS_WIN
-	class QWinEventNotifier *notifier_;
+    class QWinEventNotifier *notifier_;
 #else
-	class QSocketNotifier *notifier_;
+    class QSocketNotifier *notifier_;
 #endif
     std::stack<class CommandRegistry*> registryStack_;
     std::deque<QString> commandLifo_;

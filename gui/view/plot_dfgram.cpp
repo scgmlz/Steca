@@ -42,7 +42,7 @@ QColor scatter {255, 0, 0};
 class PlotDfgramOverlay : public PlotOverlay, public QcrSettable {
 public:
     PlotDfgramOverlay(class PlotDfgram& parent)
-        : PlotOverlay{parent, RangeControl::STEP}, QcrSettable{*this,"dfgram"} {}
+        : PlotOverlay{parent, RangeControl::STEP}, QcrSettable{this,"dfgram"} {}
 private:
     void executeConsoleCommand(const QString&) final;
     void addRange(const Range&) final;

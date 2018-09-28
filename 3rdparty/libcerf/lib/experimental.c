@@ -77,7 +77,7 @@ double cerf_experimental_integration( int kind, double x, double y )
 
     // determine range, set p,q
     j=1; p=1.4; q=0.6;
-        
+
     // iterative integration
     if( intgr_debug & 4 )
         N = 100;
@@ -143,7 +143,7 @@ double cerf_experimental_integration( int kind, double x, double y )
             T += fabsl(s);
             if( intgr_debug & 2 )
                 printf( "%2i %6i %12.4Lg %12.4Lg"
-                        " %12.4Lg %12.4Lg %12.4Lg %12.4Lg\n", 
+                        " %12.4Lg %12.4Lg %12.4Lg %12.4Lg\n",
                         iter, kaux, ak[kind][j][iter][kaux+Nm[j][iter]],
                         bk[kind][j][iter][kaux+Nm[j][iter]], f, s, S, T );
         }

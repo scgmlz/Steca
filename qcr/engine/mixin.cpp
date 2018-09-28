@@ -23,22 +23,16 @@ bool Qcr::replay = false;
 //  ***********************************************************************************************
 //! @class QcrMixin
 
-QcrMixin::QcrMixin(QObject& object, const QString& name)
+QcrMixin::QcrMixin(QObject* object, const QString& name)
     : object_ {object}
 {
-    object_.setObjectName(name);
-}
-
-QcrMixin::QcrMixin(QObject* object, const QString& name)
-    : object_ {*object}
-{
-    object_.setObjectName(name);
+    object_->setObjectName(name);
 }
 
 void QcrMixin::remake()
 {
-    const QWidget* w = dynamic_cast<const QWidget*>(&object());
-    if ((w && w->isVisible()) || dynamic_cast<const QAction*>(&object()))
+    const QWidget* w = dynamic_cast<const QWidget*>(object());
+    if ((w && w->isVisible()) || dynamic_cast<const QAction*>(object()))
         remake_();
 }
 
@@ -60,7 +54,7 @@ void QcrRoot::remakeAll()
     if (remakeLoops>1)
         qFatal("circular remakeAll, it seems");
     remake();
-    for (QWidget* w: object().findChildren<QWidget*>())
+    for (QWidget* w: object()->findChildren<QWidget*>())
         if (QcrMixin* m = dynamic_cast<QcrMixin*>(w))
             m->remake();
     --remakeLoops;
@@ -70,7 +64,7 @@ void QcrRoot::remakeAll()
 //  ***********************************************************************************************
 //! @class QcrSettable
 
-QcrSettable::QcrSettable(QObject& object, const QString& name, bool _modal)
+QcrSettable::QcrSettable(QObject* object, const QString& name, bool _modal)
     : QcrMixin {object, gConsole->learn(name, this)} // console may change name (expand macros)
 {}
 
@@ -86,7 +80,7 @@ void QcrSettable::doLog(const QString& msg)
 
 QcrModelessDialog::QcrModelessDialog(QWidget* parent, const QString& name)
     : QDialog {parent}
-    , QcrSettable {*this, name}
+    , QcrSettable {this, name}
 {
     setModal(false);
 }

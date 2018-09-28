@@ -93,7 +93,7 @@ void CheckTableModel::activateAndLog(int row, bool on)
 #pragma GCC diagnostic ignored "-Woverloaded-virtual" // TODO try without
 
 TableView::TableView(TableModel* model)
-    : QcrSettable {*this, model->name()}
+    : QcrSettable {this, model->name()}
     , model_(model)
 {
     model->setName(name());
@@ -161,7 +161,10 @@ void TableView::gotoCurrent(const QModelIndex& current)
     updateScroll();
 }
 
-//! Highlights one cluster. Called either from GUI > currentChanged [TODO? restore], or through Console command.
+//! Highlights one cluster.
+
+//! Called either from GUI > currentChanged [TODO? restore], or through Console command.
+
 void TableView::highlight(int row)
 {
     if (row==model_->highlighted())

@@ -21,7 +21,7 @@
 //! Mix-in for modal (blocking) dialogs.
 class QcrModal : public QcrSettable {
 protected:
-    QcrModal(QObject& object, const QString& name);
+    QcrModal(QObject* object, const QString& name);
     ~QcrModal();
 };
 

@@ -18,14 +18,8 @@
 #include "qcr/base/debug.h"
 #include <qmath.h>
 
-template <typename T>
-T* remove_const(T const* t)
-{
-    return const_cast<T*>(t);
-}
-
-
-Fitted FitWrapper::execFit(const FitFunction* f,const Curve& curve, std::vector<double> parValue, bool onlyPositiveParams)
+Fitted FitWrapper::execFit(
+    const FitFunction* f,const Curve& curve, std::vector<double> parValue, bool onlyPositiveParams)
 {
     int nPar = f->nPar();
     ASSERT(parValue.size()==nPar);
@@ -55,13 +49,13 @@ Fitted FitWrapper::execFit(const FitFunction* f,const Curve& curve, std::vector<
     if (onlyPositiveParams) {
         std::vector<double> minParams (nPar, 0.0);
         dlevmar_bc_der(
-            &fitFct, &Jacobian, parValue.data(), remove_const(curve.ys().data()), nPar,
+            &fitFct, &Jacobian, parValue.data(), const_cast<double*>(curve.ys().data()), nPar,
             curve.size(), minParams.data(), nullptr, // remove_const(parMax.data()),
             nullptr,
             maxIterations, opts, info, workSpace.data(), covar.data(), nullptr);
     } else {
         dlevmar_der(
-            &fitFct, &Jacobian, parValue.data(), remove_const(curve.ys().data()), nPar,
+            &fitFct, &Jacobian, parValue.data(), const_cast<double*>(curve.ys().data()), nPar,
             curve.size(),
             maxIterations, opts, info, workSpace.data(), covar.data(), nullptr);
     }

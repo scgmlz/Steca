@@ -63,7 +63,7 @@ Image recomputeNormalizer(const Image& corrImage)
 Corrset::Corrset()
     : normalizer_{[this]()->Image{ return recomputeNormalizer(image()); }}
 {
-    enabled.setHook([](auto){ gSession->onNormalization(); });
+    enabled.setHook([](const bool){ gSession->onNormalization(); });
 }
 
 void Corrset::clear()

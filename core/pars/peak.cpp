@@ -17,7 +17,7 @@
 #include "core/base/exception.h"
 #include "qcr/base/debug.h"
 
-const QStringList Peak::keys = { "Raw", "Gaussian", "Lorentzian", "Voigt" }; //TODO: add enum for PeakTypes
+const QStringList Peak::keys = { "Raw", "Gaussian", "Lorentzian", "Voigt" };
 
 Peak::Peak(const Range& r, const QString& functionName)
     : range_(r)

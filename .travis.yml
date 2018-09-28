@@ -7,8 +7,8 @@ os:
 # - osx (temporari)
 
 compiler:
-- clang
-# - gcc
+# - clang
+- gcc
 
 branches:
   only:
