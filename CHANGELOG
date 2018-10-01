@@ -1,3 +1,23 @@
+Steca version 2.1.0, released 2018.
+----------------------------------------
+
+New features:
+
+* Single measurements (or groups) can be deselected
+* Table, diagram and polefigure are now tabs in the main frame
+* Improved control tabs for detector, peaks, interpolation
+* Diffractograms can be saved into multiple, numbered files
+* Copy&paste from rectangular selections in data tables (re?)enabled.
+* All user actions are logged
+
+Internal improvements:
+
+* For testing purposes, widgets can be driven from the command line
+* Decoupled "highlighting" (one measurement group) from "selecting" (most or all measurements).
+* Logic moved from table models to datasets.
+* Unified exception handling.
+* Doxygen comments for all files, namespaces, and classes.
+
 Steca version 2.0.6, released 2018.01.19
 ----------------------------------------
 

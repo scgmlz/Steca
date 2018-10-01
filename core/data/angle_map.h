@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,20 +10,21 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef ANGLE_MAP_H
 #define ANGLE_MAP_H
 
-#include "core/data/geometry.h"
+#include "core/base/angles.h"
+#include "core/typ/range.h"
+#include "core/typ/size2d.h"
 #include <QSharedPointer> // no auto rm
 
 //! A pair of angles (gamma, 2theta) that designate a scattering direction.
-
 class ScatterDirection {
 public:
-    ScatterDirection();
-    ScatterDirection(deg, deg);
+    ScatterDirection() : ScatterDirection(0, 0) {}
+    ScatterDirection(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
 
     deg tth;
     deg gma;
@@ -34,31 +35,27 @@ public:
 class AngleMap {
 public:
     AngleMap() = delete;
-    AngleMap(ImageKey const&);
+    AngleMap(const deg tth);
 
-    ScatterDirection const& at(int i) const { return arrAngles_.at(i); }
-    ScatterDirection const& at(int i, int j) const { return arrAngles_.at(i, j); }
+    const ScatterDirection& dirAt1(int i) const { return arrAngles_[i]; }
+    const ScatterDirection& dirAt2(int ix, int iy) const { return dirAt1(pointToIndex(ix, iy)); }
 
     Range rgeTth() const { return rgeTth_; }
     Range rgeGma() const { return rgeGma_; }
     Range rgeGmaFull() const { return rgeGmaFull_; }
 
-    void getGmaIndexes(const Range&, vec<int> const*&, int&, int&) const;
+    void getGmaIndexes(const Range&, std::vector<int> const*&, int&, int&) const;
 
 private:
-    void calculate();
-
-    ImageKey key_;
-
-    Array2D<ScatterDirection> arrAngles_;
+    size2d size_;
+    std::vector<ScatterDirection> arrAngles_;
 
     Range rgeTth_;
     Range rgeGma_, rgeGmaFull_;
+    std::vector<deg> gmas_; //!< sorted gamma values
+    std::vector<int> gmaIndexes_;
 
-    vec<deg> gmas; //!< sorted gamma values
-    vec<int> gmaIndexes;
+    int pointToIndex(int ix, int iy) const { return iy * size_.w + ix; }
 };
-
-typedef QSharedPointer<AngleMap> shp_AngleMap;
 
 #endif // ANGLE_MAP_H

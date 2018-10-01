@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,106 +10,19 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
-#include "core/def/idiomatic_for.h"
-#include "core/data/datafile.h"
-#include "core/data/metadata.h"
-#include "core/typ/exception.h"
+#include "core/base/exception.h"
+#include "core/raw/rawfile.h"
 #include <QDataStream>
 #include <QDir>
 
-namespace io {
+namespace {
 
-// implemented below
-static void loadTiff(Datafile*, rcstr, deg, qreal, qreal) THROWS;
-
-// The dat file looks like so:
-/*
-; comments
-
-; file name, phi, monitor, Exposuretime
-
-Aus-Weimin-00001.tif -90
-Aus-Weimin-00002.tif -85
-Aus-Weimin-00003.tif -80
-Aus-Weimin-00004.tif -75
-Aus-Weimin-00005.tif -70
-Aus-Weimin-00006.tif -65
-Aus-Weimin-00007.tif -60
-Aus-Weimin-00008.tif -55
-Aus-Weimin-00009.tif -50
-*/
-
-Datafile loadTiffDat(rcstr filePath) THROWS {
-    Datafile ret(filePath);
-
-    QFile f(filePath);
-    RUNTIME_CHECK(f.open(QFile::ReadOnly), "cannot open file");
-
-    QFileInfo info(filePath);
-    QDir dir = info.dir();
-
-    QByteArray line;
-    while (!(line = f.readLine()).isEmpty()) {
-        str s = line;
-
-        // cut off comment
-        int commentPos = s.indexOf(';');
-        if (commentPos >= 0)
-            s = s.left(commentPos);
-
-        // split to parts
-        if ((s = s.simplified()).isEmpty())
-            continue;
-
-        const QStringList lst = s.split(' ');
-        const int cnt = lst.count();
-        RUNTIME_CHECK(2 <= cnt && cnt <= 4, "bad metadata format");
-
-        // file, phi, monitor, expTime
-        bool ok;
-        str tiffFileName = lst.at(0);
-        deg phi = lst.at(1).toDouble(&ok);
-        RUNTIME_CHECK(ok, "bad phi value");
-
-        qreal monitor = 0;
-        if (cnt > 2) {
-            monitor = lst.at(2).toDouble(&ok);
-            RUNTIME_CHECK(ok, "bad monitor value");
-        }
-
-        qreal expTime = 0;
-        if (cnt > 3) {
-            expTime = lst.at(3).toDouble(&ok);
-            RUNTIME_CHECK(ok, "bad expTime value");
-        }
-
-        try {
-            // load one dataseq
-            loadTiff(&ret, dir.filePath(tiffFileName), phi, monitor, expTime);
-        } catch (Exception& e) {
-            // add file name to the message
-            e.setMsg(tiffFileName + ": " + e.msg());
-            throw e;
-        }
-    }
-
-    return ret;
-}
-
-#define IS_ASCII RUNTIME_CHECK(2 == dataType, BAD_FORMAT)
-
-#define IS_NUMBER                                                                                  \
-    RUNTIME_CHECK((1 == dataType || 3 == dataType || 4 == dataType) && 1 == dataCount, BAD_FORMAT)
-
-#define CHECK_NUMBER(val)                                                                          \
-    IS_NUMBER;                                                                                     \
-    RUNTIME_CHECK(val == dataOffset, BAD_FORMAT)
-
-static void
-loadTiff(Datafile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) THROWS {
-
+//! Reads one TIFF file.
+static void loadTiff(
+    Rawfile* file, const QString& filePath, deg phi, double monitor, double expTime)
+{
     Metadata md;
     md.motorPhi = phi;
     md.monitorCount = monitor;
@@ -118,12 +31,12 @@ loadTiff(Datafile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) 
     // see http://www.fileformat.info/format/tiff/egff.htm
 
     QFile f(filePath);
-    RUNTIME_CHECK(f.open(QFile::ReadOnly), "cannot open file");
+    if (!(f.open(QFile::ReadOnly))) THROW("cannot open file");
 
     QDataStream is(&f);
     is.setFloatingPointPrecision(QDataStream::SinglePrecision);
 
-    auto check = [&is]() { RUNTIME_CHECK(QDataStream::Ok == is.status(), "could not read data"); };
+    auto check = [&is]() { if (!(QDataStream::Ok == is.status())) THROW("could not read data"); };
 
     // magic
     qint16 magic;
@@ -147,10 +60,10 @@ loadTiff(Datafile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) 
     qint16 tagId, dataType;
     qint32 dataCount, dataOffset;
 
-    auto seek = [&f](qint64 offset) { RUNTIME_CHECK(f.seek(offset), "bad offset"); };
+    auto seek = [&f](qint64 offset) { if (!(f.seek(offset))) THROW("bad offset"); };
 
     auto asUint = [&]() -> int {
-        RUNTIME_CHECK(1 == dataCount, "bad data count");
+        if (!(1 == dataCount)) THROW("bad data count");
         switch (dataType) {
         case 1: // byte
             return dataOffset & 0x000000ff; // some tif files did have trash there
@@ -162,15 +75,15 @@ loadTiff(Datafile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) 
         THROW("not a simple number");
     };
 
-    auto asStr = [&]() {
-        RUNTIME_CHECK(2 == dataType, "bad data type");
+    auto asStr = [&]()->QString {
+        if (!(2 == dataType)) THROW("bad data type");
         auto lastPos = f.pos();
 
         seek(dataOffset);
         QByteArray data = f.readLine(dataCount);
         seek(lastPos);
 
-        return str(data);
+        return QString(data);
     };
 
     qint32 dirOffset;
@@ -181,7 +94,7 @@ loadTiff(Datafile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) 
     qint16 numDirEntries;
     is >> numDirEntries;
 
-    for_i (numDirEntries) {
+    for (int i=0; i<numDirEntries; ++i) {
         is >> tagId >> dataType >> dataCount >> dataOffset;
         check();
 
@@ -191,16 +104,16 @@ loadTiff(Datafile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) 
         case 257: imageHeight = asUint(); break;
         case 258: bitsPerSample = asUint(); break;
         case 259: // Compression
-            RUNTIME_CHECK(1 == asUint(), "compressed data");
+            if (!(1 == asUint())) THROW("compressed data");
             break;
         case 273: stripOffsets = asUint(); break;
         case 277: // SamplesPerPixel
-            RUNTIME_CHECK(1 == asUint(), "more than one sample per pixel");
+            if (!(1 == asUint())) THROW("more than one sample per pixel");
             break;
         case 278: rowsPerStrip = asUint(); break;
         case 279: stripByteCounts = asUint(); break;
         case 284: // PlanarConfiguration
-            RUNTIME_CHECK(1 == asUint(), "not planar");
+            if (!(1 == asUint())) THROW("not planar");
             break;
         case 339:
             sampleFormat = asUint(); // 1 unsigned, 2 signed, 3 IEEE
@@ -219,25 +132,34 @@ loadTiff(Datafile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) 
         }
     }
 
-    RUNTIME_CHECK(
-        imageWidth > 0 && imageHeight > 0 && stripOffsets > 0 && stripByteCounts > 0
-            && imageHeight <= rowsPerStrip,
-        "bad format");
+    if (imageWidth<=0)
+        THROW("cannot read TIFF: unexpected imageWidth");
+    if (imageHeight<=0)
+        THROW("cannot read TIFF: unexpected imageHeight");
+    if (stripOffsets<=0)
+        THROW("cannot read TIFF: unexpected stripOffsets");
+    if (stripByteCounts<=0)
+        THROW("cannot read TIFF: unexpected stripByteCounts");
+    if (imageHeight < rowsPerStrip)
+        THROW("cannot read TIFF: imageHeight >= rowsPerStrip");
 
-    RUNTIME_CHECK(
-        (1 == sampleFormat || 2 == sampleFormat || 3 == sampleFormat) && 32 == bitsPerSample,
-        "unhandled format");
+    if (!(1 == sampleFormat || 2 == sampleFormat || 3 == sampleFormat))
+        THROW("cannot read TIFF: unexpected sampleFormat");
+    if (bitsPerSample!=32)
+        THROW("cannot read TIFF: bitsPerSample!=32");
+
 
     size2d size(imageWidth, imageHeight);
 
     int count = imageWidth * imageHeight;
-    inten_vec intens(count);
+    std::vector<float> intens(count);
 
-    RUNTIME_CHECK((bitsPerSample / 8) * count == stripByteCounts, "bad format");
+    if (!((bitsPerSample / 8) * count == stripByteCounts))
+        THROW("cannot read TIFF: unexpected bitsPerSample");
 
     seek(stripOffsets);
 
-    for_i (intens.count())
+    for (int i=0; i<intens.size(); ++i)
         switch (sampleFormat) {
         case 1: {
             qint32 sample;
@@ -261,7 +183,85 @@ loadTiff(Datafile* file, rcstr filePath, deg phi, qreal monitor, qreal expTime) 
 
     check();
 
-    file->addDataset(md, size, intens);
+    file->addDataset(std::move(md), size, std::move(intens));
 }
 
-} // namespace io
+} // namespace
+
+
+namespace load {
+
+//! Reads a .dat file, which is a digest that contains a list of TIFF files plus a few parameters.
+
+//! The dat file looks like so:
+//!
+//! ; comments
+//!
+//! ; file name, phi, monitor, Exposuretime  [the last two parameters are optional]
+//!
+//! Aus-Weimin-00001.tif -90
+//! Aus-Weimin-00002.tif -85
+//! Aus-Weimin-00003.tif -80
+//! Aus-Weimin-00004.tif -75
+//! Aus-Weimin-00005.tif -70
+//! Aus-Weimin-00006.tif -65
+//! Aus-Weimin-00007.tif -60
+//! Aus-Weimin-00008.tif -55
+//! Aus-Weimin-00009.tif -50
+
+Rawfile loadTiffDat(const QString& filePath) {
+    Rawfile ret(filePath);
+
+    QFile f(filePath);
+    if (!(f.open(QFile::ReadOnly)))
+        THROW("cannot open file");
+
+    QDir dir = QFileInfo(filePath).dir();
+
+    QByteArray line;
+    while (!(line = f.readLine()).isEmpty()) {
+        QString s = line;
+
+        // cut off comment
+        int commentPos = s.indexOf(';');
+        if (commentPos >= 0)
+            s = s.left(commentPos);
+
+        // split to parts
+        if ((s = s.simplified()).isEmpty())
+            continue;
+
+        const QStringList lst = s.split(' ');
+        const int cnt = lst.count();
+        if (!(2 <= cnt && cnt <= 4)) THROW("bad metadata format");
+
+        // file, phi, monitor, expTime
+        bool ok;
+        QString tiffFileName = lst.at(0);
+        deg phi = lst.at(1).toDouble(&ok);
+        if (!(ok)) THROW("bad phi value");
+
+        double monitor = 0;
+        if (cnt > 2) {
+            monitor = lst.at(2).toDouble(&ok);
+            if (!(ok)) THROW("bad monitor value");
+        }
+
+        double expTime = 0;
+        if (cnt > 3) {
+            expTime = lst.at(3).toDouble(&ok);
+            if (!(ok)) THROW("bad expTime value");
+        }
+
+        try {
+            // load one dataseq
+            loadTiff(&ret, dir.filePath(tiffFileName), phi, monitor, expTime);
+        } catch (const Exception& ex) {
+            THROW(tiffFileName + ": " + ex.msg());
+        }
+    }
+
+    return ret;
+}
+
+} // namespace load

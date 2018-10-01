@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,33 +10,28 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
-#include "core/def/idiomatic_for.h"
-#include "core/data/datafile.h"
-#include "core/data/metadata.h"
-#include "core/typ/exception.h"
+#include "core/base/exception.h"
+#include "core/raw/rawfile.h"
 #include "3rdparty/Mar/MarReader.h"
 
-namespace io {
+namespace load {
 
 // Code taken from the original STeCa, only slightly modified.
 
-Datafile loadMar(rcstr filePath) THROWS {
+Rawfile loadMar(const QString& filePath) {
     typedef short WORD;
 
-    Datafile ret(filePath);
+    Rawfile ret(filePath);
 
-    FILE* fpIn;
-
-    RUNTIME_CHECK(
-        (fpIn = fopen(filePath.toLocal8Bit().data(), "rb")), "Cannot open data file " + filePath);
+    FILE* fpIn = fopen(filePath.toLocal8Bit().data(), "rb");
+    if(!fpIn)
+        THROW("Cannot open data file " + filePath);
 
     struct CloseFile { // TODO remove, replace with QFile etc.
         CloseFile(FILE* fpIn) : fpIn_(fpIn) {}
-
         ~CloseFile() { fclose(fpIn_); }
-
     private:
         FILE* fpIn_;
     } _(fpIn);
@@ -45,7 +40,7 @@ Datafile loadMar(rcstr filePath) THROWS {
     int mar345, byteswap, h1;
     size_t readElements = fread(&h1, sizeof(int), 1, fpIn);
 
-    RUNTIME_CHECK(1 == readElements, "bad format");
+    if (!(1 == readElements)) THROW("bad format");
 
     if (h1 == 1200 || h1 == 2000 || h1 == 1600 || h1 == 2300 || h1 == 3450 || h1 == 3000
         || h1 == 2400 || h1 == 1800 || h1 == 2560 || h1 == 3072) {
@@ -111,13 +106,13 @@ Datafile loadMar(rcstr filePath) THROWS {
         fseek(fpIn, pixSizeX + pixSizeY, SEEK_SET);
         int i = (int)fread((unsigned char*)i2_image, sizeof(short), pixelSize, fpIn);
         if (i != (int)pixelSize)
-            throw "WARNING: read not all pixel!";
+            THROW("did not read not all pixels"); // Does this happen? Would a warning suffice?
         if (byteswap)
             swapint16((unsigned char*)i2_image, pixelSize * sizeof(WORD));
     }
 
     // Copy to 32Bit-Array
-    for_i (pixelSize)
+    for (int i=0; i<pixelSize; ++i)
         i4_image[i] = (int)((unsigned short)i2_image[i]);
 
     //***********************************
@@ -142,7 +137,7 @@ Datafile loadMar(rcstr filePath) THROWS {
          *       Beyond the saturation of the ADC, all saturated pixels
          *       get an intensity of 999.999 !
          */
-        for_i (numberOfHigh) {
+        for (int i=0; i<numberOfHigh; ++i) {
             readElements = fread(pair, sizeof(int), 2, fpIn);
             if (readElements < 2)
                 break;
@@ -167,7 +162,7 @@ Datafile loadMar(rcstr filePath) THROWS {
     // Check Pixel Level um Daten mit defekten Pixeln lesen zu k�nnen
     // TODO REVIEW
     //  if (MeasurementData::isPixelLevelUsed()) {
-    //    for_i (pixelSize) {
+    //    for (int i=0; i<pixelSize; ++i) {
     //      if (i4_image[i] > MeasurementData::pixelLevel)
     //        i4_image[i] = -1;
     //    }
@@ -201,10 +196,10 @@ Datafile loadMar(rcstr filePath) THROWS {
     }
 
     size2d size(pixSizeX, pixSizeY);
-    inten_vec convertedIntens(pixelSize);
+    std::vector<float> convertedIntens(pixelSize);
 
-    for_i (pixelSize)
-        convertedIntens[i] = inten_t(i4_image[i]);
+    for (int i=0; i<pixelSize; ++i)
+        convertedIntens[i] = float(i4_image[i]);
 
     Metadata md;
 
@@ -219,7 +214,7 @@ Datafile loadMar(rcstr filePath) THROWS {
 
     // REVIEW ?? pictureOverflow
 
-    ret.addDataset(md, size2d(pixSizeX, pixSizeY), convertedIntens);
+    ret.addDataset(std::move(md), size2d(pixSizeX, pixSizeY), std::move(convertedIntens));
 
     delete[] i2_image;
     delete[] i4_image;
@@ -227,4 +222,4 @@ Datafile loadMar(rcstr filePath) THROWS {
     return ret;
 }
 
-} // namespace io
+} // namespace load

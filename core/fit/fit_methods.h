@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,13 +10,12 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef FIT_METHODS_H
 #define FIT_METHODS_H
 
 #include "core/fit/parametric_function.h"
-#include "core/typ/curve.h"
 
 //! Wraps Levenberg-Marquardt fit function from 3rd-party library.
 
@@ -24,17 +23,19 @@
 
 class FitWrapper {
 public:
-    void fit(Function&, Curve const&);
+    Fitted execFit(
+        const FitFunction*, const class Curve&, std::vector<double> parValue,
+        bool onlyPositiveParams = false);
 
 private:
     // these pointers are valid during fit() call
-    Function* function_;
-    qreal const* xValues_;
+    const FitFunction* f_;
+    const std::vector<double>* X_ {nullptr};
 
-    void fit_exec(qreal*, qreal const*, qreal const*, qreal*, int, qreal const*, int);
+    void callFit(double*, double const*, double const*, double*, int, double const*, int);
 
-    void callbackY(qreal*, qreal*, int, int, void*);
-    void callbackJacobianLM(qreal*, qreal*, int, int, void*);
+    void callbackY(double*, double*, int, int, void*);
+    void callbackJacobianLM(double*, double*, int, int, void*);
 };
 
 #endif // FIT_METHODS_H

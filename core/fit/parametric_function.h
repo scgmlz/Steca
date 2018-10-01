@@ -1,70 +1,71 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
 //! @file      core/fit/parametric_function.h
-//! @brief     Defines class Function
+//! @brief     Defines classes DoubleWithError, FitFunction, Fitted
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef PARAMETRIC_FUNCTION_H
 #define PARAMETRIC_FUNCTION_H
 
-#include "core/typ/json.h"
-#include "core/typ/range.h"
+#include <memory>
+#include <vector>
 
-//! Abstract function with parameters
+//! One double value with error estimate. Used to hold fitted parameter.
 
-class Function {
+class DoubleWithError {
 public:
-    class Parameter final {
-    public:
-        Parameter();
+    double roundedError(int) const;
 
-        qreal value() const { return value_; }
-        qreal error() const { return error_; }
+    const double value;
+    const double error;
+};
 
-        Range valueRange() const; // allowed range of values
-        void setValueRange(qreal min, qreal max);
 
-        void setValue(qreal value, qreal error);
+//! Holds instructions how to compute y(x) and its Jacobian. Base for Polynom and PeakFunction.
 
-        JsonObj to_json() const;
-        void from_json(JsonObj const&) THROWS;
-
-    private:
-        qreal value_, error_;
-        Range range_; //!< allowed range of values
-    };
-
-    virtual ~Function() {}
-
-    // evaluate the function y = f(x), with given (parValues) or own parameters
-    virtual qreal y(qreal x, qreal const* parValues = nullptr) const = 0;
-
-    // partial derivative / parameter, with given (parValues) or own parameters
-    virtual qreal dy(qreal x, int parIndex, qreal const* parValues = nullptr) const = 0;
-
+class FitFunction {
 public:
-    void setParameterCount(int);
-    int parameterCount() const;
-    Parameter& parameterAt(int);
+    FitFunction() {}
+    virtual ~FitFunction() {}
+    FitFunction(const FitFunction&) = delete;
+    FitFunction(FitFunction&&) = default;
+    virtual void setY(const double* P, const int nXY, const double* X, double* Y) const = 0;
+    virtual void setDY(const double* P, const int nXY, const double* X,
+                       double* Jacobian) const = 0;
+    virtual int nPar() const = 0;
+};
 
-    virtual void reset();
+class Curve;
 
-    virtual JsonObj to_json() const;
-    virtual void from_json(JsonObj const&) THROWS;
-    virtual str name() const = 0;
 
-protected:
-    vec<Parameter> parameters_;
-    qreal parValue(int parIndex, qreal const* parValues) const;
-    void setValue(int parIndex, qreal val);
+//! The outcome of a fit: a function, some fitted parameters, and a success flag.
+
+class Fitted {
+public:
+    Fitted() {}                                 //!< When fit has failed.
+    Fitted(const FitFunction* _f,
+           const std::vector<double>& _parVal,
+           const std::vector<double>& _parErr); //!< To hold outcome of successful fit
+    ~Fitted() { delete f; }
+    Fitted(const Fitted&) = delete;
+    Fitted(Fitted&&) = default;
+
+    double y(const double x) const;
+
+    const bool success {false};
+    const FitFunction* f {nullptr};
+    const std::vector<double> parVal;
+    const std::vector<double> parErr;
+
+private:
 };
 
 #endif // PARAMETRIC_FUNCTION_H

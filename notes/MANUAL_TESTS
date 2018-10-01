@@ -1,0 +1,23 @@
+- Files panel:
+  - load and remove files in different orders
+  - highlight files with mouse and with arrow keys
+  - deselect and select files
+
+- Measurements panel:
+  - highlight measurements with mouse and with arrow keys
+  - deselect and select measurements
+  - combine, especially with incommensurate binning number
+  - drop and keep incomplete groups
+  - display last image in complete group, then go to incomplete group
+
+- Metadata panel:
+  - select and unselect lines
+
+- Baseline tab:
+  - set and clear
+  - try all buttons
+
+- Peakfits tab:
+  - set and clear
+  - try all buttons
+  - plausible fit results?

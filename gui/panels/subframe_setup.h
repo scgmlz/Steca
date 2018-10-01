@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,39 +10,18 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef SUBFRAME_SETUP_H
 #define SUBFRAME_SETUP_H
 
-#include "gui/base/new_q.h"
+#include "qcr/widgets/controls.h"
 
-//! Part of the main window that contains geometry, background, and image controls.
+//! Subframe of the main window, with tabs to control detector, fits, &c
 
-class SubframeSetup : public QTabWidget {
+class SubframeSetup : public QcrTabWidget {
 public:
     SubframeSetup();
-
-private:
-    // image geometry tab
-    QDoubleSpinBox *detDistance_, *detPixelSize_;
-    QSpinBox *beamOffsetI_, *beamOffsetJ_;
-    QSpinBox *cutLeft_, *cutTop_, *cutRight_, *cutBottom_;
-
-    // background fit tab
-    QSpinBox* spinDegree_;
-
-    // peak fits tab
-    class ReflectionView* reflectionView_;
-    QComboBox* comboReflType_;
-    QDoubleSpinBox *spinRangeMin_, *spinRangeMax_;
-    QDoubleSpinBox *spinGuessPeakX_, *spinGuessPeakY_, *spinGuessFWHM_;
-    QLineEdit *readFitPeakX_, *readFitPeakY_, *readFitFWHM_;
-
-    bool silentSpin_ = false;
-
-    void setToHub();
-    void setFromHub();
 };
 
 #endif // SUBFRAME_SETUP_H

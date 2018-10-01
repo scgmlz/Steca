@@ -1,127 +1,107 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/subframe_metadata.cpp
-//! @brief     Implements class SubframeMetadata
+//! @brief     Implements class SubframeMetadata, with local model and view
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #include "gui/panels/subframe_metadata.h"
-#include "gui/base/table_model.h"
-#include "gui/thehub.h"
-#include "gui/base/tree_views.h" // inheriting from
+#include "core/session.h"
+#include "qcr/widgets/tables.h"
 
+//  ***********************************************************************************************
+//! @class MetabigtableModel (local scope)
 
-// ************************************************************************** //
-//  local class MetadataModel
-// ************************************************************************** //
+//! The model for MetadatView.
 
-class MetadataModel : public TableModel {
+class MetabigtableModel : public CheckTableModel {
 public:
-    MetadataModel();
-
-    void reset(shp_Cluster dataseq);
-    void flipCheck(int row);
-
-    int columnCount() const final { return NUM_COLUMNS; }
-    int rowCount() const final { return Metadata::numAttributes(false); }
-    QVariant data(const QModelIndex&, int) const;
-    QVariant headerData(int, Qt::Orientation, int) const { return {}; }
-    vec<bool> const& rowsChecked() const { return rowsChecked_; }
+    MetabigtableModel() : CheckTableModel("meta") {}
 
     enum { COL_CHECK = 1, COL_TAG, COL_VALUE, NUM_COLUMNS };
 
 private:
-    shp_Metadata metadata_;
-    vec<bool> rowsChecked_;
+    int highlighted() const final { return highlighted_; }
+    void onHighlight(int i) final { highlighted_ = i; }
+    bool activated(int row) const { return gSession->params.smallMetaSelection.isSelected(row); }
+    void setActivated(int row, bool on) { gSession->params.smallMetaSelection.set(row, on); }
+
+    int columnCount() const final { return NUM_COLUMNS; }
+    int rowCount() const final { return Metadata::numAttributes(false); }
+
+    QVariant data(const QModelIndex&, int) const;
+    QVariant headerData(int, Qt::Orientation, int) const { return {}; }
+
+    int highlighted_ {0};
 };
 
-
-MetadataModel::MetadataModel() {
-    rowsChecked_.fill(false, Metadata::numAttributes(false));
-}
-
-void MetadataModel::reset(shp_Cluster dataseq) {
-    metadata_.clear();
-    if (dataseq)
-        metadata_ = dataseq->avgeMetadata();
-    signalReset();
-}
-
-void MetadataModel::flipCheck(int row) {
-    rowsChecked_[row] = !rowsChecked_[row];
-    signalReset();
-}
-
-QVariant MetadataModel::data(const QModelIndex& index, int role) const {
+QVariant MetabigtableModel::data(const QModelIndex& index, int role) const
+{
     int row = index.row();
     if (row < 0 || rowCount() <= row)
         return {};
     int col = index.column();
     switch (role) {
     case Qt::CheckStateRole:
-        switch (col) {
-        case COL_CHECK:
-            return rowsChecked_.at(row) ? Qt::Checked : Qt::Unchecked;
-        }
+        if (col==COL_CHECK)
+            return activated(row) ? Qt::Checked : Qt::Unchecked;
         break;
     case Qt::DisplayRole:
         switch (col) {
         case COL_TAG:
             return Metadata::attributeTag(row, false);
         case COL_VALUE:
-            return metadata_ ? metadata_->attributeStrValue(row) : "-";
+            const Cluster* highlight = gSession->currentCluster();
+            if (!highlight)
+                return "-";
+            return highlight->avgMetadata().attributeStrValue(row);
         }
-        break;
+        return "";
+    case Qt::BackgroundRole:
+        return QColor(Qt::white);
     }
     return {};
 }
 
 
-// ************************************************************************** //
-//  local class MetadataView
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class MetabigtableView (local scope)
 
-class MetadataView : public ListView {
+//! Main item in SubframeMetadata: View and control the list of Metadata.
+
+class MetabigtableView : public CheckTableView {
 public:
-    MetadataView();
-
+    MetabigtableView();
 private:
-    int sizeHintForColumn(int) const;
-    MetadataModel* model() const { return static_cast<MetadataModel*>(ListView::model()); }
+    MetabigtableModel* model() { return static_cast<MetabigtableModel*>(model_); }
 };
 
-MetadataView::MetadataView() : ListView() {
-    auto metadataModel = new MetadataModel();
-    setModel(metadataModel);
-    connect(gHub, &TheHub::sigClusterSelected,
-            [=](shp_Cluster dataseq) { metadataModel->reset(dataseq); });
-    debug::ensure(dynamic_cast<MetadataModel*>(ListView::model()));
-    connect(this, &MetadataView::clicked, [this](QModelIndex const& index) {
-        model()->flipCheck(index.row());
-        emit gHub->sigMetatagsChosen(model()->rowsChecked());
-    });
+MetabigtableView::MetabigtableView()
+    : CheckTableView(new MetabigtableModel())
+{
+    setColumnWidth(0, 0);
+    setColumnWidth(1,  .5*mWidth());
+    setColumnWidth(2, 6. *mWidth());
+    setColumnWidth(3, 7.5*mWidth());
 }
 
-int MetadataView::sizeHintForColumn(int col) const {
-    switch (col) {
-    case MetadataModel::COL_CHECK:
-        return fontMetrics().width('m');
-    default:
-        return ListView::sizeHintForColumn(col);
-    }
-}
+//  ***********************************************************************************************
+//! @class SubframeMetadata
 
-// ************************************************************************** //
-//  class SubframeMetadata
-// ************************************************************************** //
-
-SubframeMetadata::SubframeMetadata() : DockWidget("Metadata", "dock-metadata") {
-    box_->addWidget((metadataView_ = new MetadataView()));
+SubframeMetadata::SubframeMetadata()
+    : QcrDockWidget("metadata")
+{
+    for (int i=0; i<Metadata::size(); ++i)
+        gSession->params.smallMetaSelection.vec.push_back({false});
+    setFeatures(DockWidgetMovable);
+    setWindowTitle("Metadata");
+    setWidget(new MetabigtableView());
+    setRemake([this](){setEnabled(gSession->hasData());});
 }

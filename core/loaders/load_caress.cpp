@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,26 +10,23 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
-#include "core/def/idiomatic_for.h"
-#include "core/data/datafile.h"
-#include "core/data/metadata.h"
-#include "core/typ/exception.h"
+#include "core/base/exception.h"
+#include "core/raw/rawfile.h"
 #include <qmath.h>
 #include <sstream>
 
 ; // preserve inclusion order
 #include "3rdparty/Caress/raw.h" // inclusion order is critical !
 
-namespace io {
+namespace load {
 
-Datafile loadCaress(rcstr filePath) THROWS {
-    Datafile ret(filePath);
+Rawfile loadCaress(const QString& filePath) {
+    Rawfile ret(filePath);
 
-    RUNTIME_CHECK(
-        0 == open_data_file(filePath.toLocal8Bit().data(), nullptr),
-        "Cannot open data file " + filePath);
+    if(open_data_file(filePath.toLocal8Bit().data(), nullptr))
+        THROW("Cannot open data file " + filePath);
 
     struct CloseFile { // TODO remove, replace with QFile etc.
         ~CloseFile() { close_data_file(); }
@@ -120,7 +117,7 @@ Datafile loadCaress(rcstr filePath) THROWS {
                 else if (tths == 0 && tthr != 0) // it's the table
                     isTable = false;
                 else
-                    throw "inconsistent data set: not clear whether it's robot or table";
+                    THROW("inconsistent data set: not clear whether it's robot or table");
             }
 
             if (isRobot) {
@@ -154,7 +151,7 @@ Datafile loadCaress(rcstr filePath) THROWS {
                 double tempTime = 0;
                 if ((y < 2015)
                     || ((y == 2015) && ((s_m.compare("Jan") == 0) || (s_m.compare("Feb") == 0)))) {
-                    tempTime = double(tim1) / 100; // HACK REVIEW how deltaTime is used!!
+                    tempTime = double(tim1) / 100; // TODO REVIEW this HACK how deltaTime is used!!
                 } else {
                     tempTime = double(tim1);
                 }
@@ -164,10 +161,10 @@ Datafile loadCaress(rcstr filePath) THROWS {
                 prevMon = mon;
 
                 int detRel = qRound(sqrt(imageSize));
-                RUNTIME_CHECK(imageSize > 0 && imageSize == detRel * detRel, "bad image size");
+                if (!(imageSize > 0 && imageSize == detRel * detRel)) THROW("bad image size");
 
-                inten_vec convertedIntens(imageSize);
-                for_i (imageSize)
+                std::vector<float> convertedIntens(imageSize);
+                for (int i=0; i<imageSize; ++i)
                     convertedIntens[i] = intens[i];
 
                 size2d size(detRel, detRel);
@@ -178,8 +175,8 @@ Datafile loadCaress(rcstr filePath) THROWS {
                 // Objekt inizialisieren
                 Metadata md;
 
-                md.date = str::fromStdString(s_date);
-                md.comment = str::fromStdString(s_comment);
+                md.date = QString::fromStdString(s_date);
+                md.comment = QString::fromStdString(s_comment);
 
                 md.motorXT = xAxis;
                 md.motorYT = yAxis;
@@ -206,7 +203,7 @@ Datafile loadCaress(rcstr filePath) THROWS {
                 md.deltaTime = deltaTime;
                 md.time = tempTime;
 
-                ret.addDataset(md, size, convertedIntens);
+                ret.addDataset(std::move(md), size, std::move(convertedIntens));
 
                 delete[] intens;
                 intens = NULL;
@@ -554,13 +551,12 @@ Datafile loadCaress(rcstr filePath) THROWS {
     return ret;
 }
 
-str loadCaressComment(rcstr filePath) {
-    str s_comment;
+QString loadCaressComment(const QString& filePath) {
+    QString s_comment;
 
     try {
-        RUNTIME_CHECK(
-            0 == open_data_file(filePath.toLocal8Bit().data(), nullptr),
-            "Cannot open data file " + filePath);
+        if(open_data_file(filePath.toLocal8Bit().data(), nullptr))
+            THROW("Cannot open data file " + filePath);
 
         struct CloseFile { // TODO remove, replace with QFile etc.
             ~CloseFile() { close_data_file(); }
@@ -596,9 +592,9 @@ str loadCaressComment(rcstr filePath) {
                 delete[] c_comment;
             }
         }
-    } catch (Exception const&) {}
+    } catch (const Exception&) {}
 
     return s_comment;
 }
 
-} // namespace io
+} // namespace load

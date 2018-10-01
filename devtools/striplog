@@ -1,0 +1,34 @@
+#!/usr/bin/env python3
+
+import re, sys
+
+################################################################################
+helptext = """Usage: %s <file>
+
+Strips time stamps and comment lines from Steca log file.
+
+Reads <file>, writes to stdout.
+""" % sys.argv[0]
+################################################################################
+
+def striplog(path):
+    # read in
+    path = re.sub( r'^\./', '', path )
+    fd = open( path, 'r' )
+    t = fd.read()
+    fd.close
+
+    t = re.sub( r'\r', '', t )
+    t = re.sub( r'^\[.*\]', '', t, 0, re.M )
+    t = re.sub( r'^#(.*)\n', '', t, 0, re.M )
+
+    sys.stdout.write(t)
+
+
+if __name__ == "__main__":
+
+    if len(sys.argv)!=2 or sys.argv[1]=="-h":
+        print(helptext)
+        sys.exit(0)
+
+    striplog(sys.argv[1])

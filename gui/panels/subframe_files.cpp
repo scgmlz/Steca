@@ -1,145 +1,120 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
 //! @file      gui/panels/subframe_files.cpp
-//! @brief     Implements class SubframeFiles; defines and implements class FileViews
+//! @brief     Implements class SubframeFiles, with local model and view
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #include "gui/panels/subframe_files.h"
 #include "core/session.h"
-#include "gui/base/table_model.h"
-#include "gui/thehub.h"
-#include "gui/base/new_q.h"
-#include "gui/base/tree_views.h" // inheriting from
-#include <QHeaderView>
+#include "gui/view/toggles.h"
+#include "gui/actions/triggers.h"
+#include "gui/mainwin.h"
+#include "qcr/widgets/tables.h"
 
 
-// ************************************************************************** //
-//  local class FilesModel
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class FilesModel (local scope)
 
 //! The model for FilesView
 
-class FilesModel : public TableModel {
+class FilesModel : public CheckTableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
-    void removeFile(int i) { gHub->removeFile(i); }
+    FilesModel() : CheckTableModel("datafiles") {}
 
-    int columnCount() const final { return 2; }
-    int rowCount() const final { return gSession->numFiles(); }
-    QVariant data(const QModelIndex&, int) const;
+private:
+    int highlighted() const final;
+    void onHighlight(int i) final { gSession->dataset.highlight().setFile(i); }
+    bool activated(int i) const { return gSession->dataset.fileAt(i).activated() == Qt::Checked; }
+    void setActivated(int i, bool on) { gSession->dataset.setFileActivation(i, on); }
+
+    int columnCount() const final { return 3; }
+    int rowCount() const final { return gSession->dataset.countFiles(); }
+    QVariant data(const QModelIndex&, int) const final;
 };
 
+int FilesModel::highlighted() const
+{
+    const Cluster* c = gSession->currentCluster();
+    return c ? c->file().index() : -1;
+}
 
-QVariant FilesModel::data(const QModelIndex& index, int role) const {
-    const int row = index.row(), rowCnt = rowCount();
-    if (row < 0 || rowCnt <= row)
+//! Returns role-specific information about one table cell.
+QVariant FilesModel::data(const QModelIndex& index, int role) const
+{
+    const int row = index.row();
+    if (row < 0 || row >= rowCount())
         return {};
-    const shp_Datafile& file = gSession->file(row);
-    switch (role) {
-    case Qt::DisplayRole:
-        return file->fileName();
-    case Qt::UserRole:
-        return QVariant::fromValue<shp_Datafile>(file);
-    case Qt::ToolTipRole:
-        return QString("File %1\ncontains %2 measurements")
-            .arg(file->fileName())
-            .arg(file->cluster().count());
-    default:
-        return {};
+    const Datafile& file = gSession->dataset.fileAt(row);
+    int col = index.column();
+    if (role==Qt::DisplayRole && col==2)
+        return file.name();
+    else if (role==Qt::ToolTipRole && col>=2)
+        return QString("File %1\ncontains %2 measurements.here numbered %3 to %4")
+            .arg(file.name())
+            .arg(file.numMeasurements())
+            .arg(gSession->dataset.offset(file)+1)
+            .arg(gSession->dataset.offset(file)+file.numMeasurements());
+    else if (role==Qt::CheckStateRole && col==1)
+        return file.activated();
+    else if (role==Qt::BackgroundRole) {
+        if (row==highlighted())
+            return QColor(Qt::cyan);
+        return QColor(Qt::white);
     }
+    return {};
 }
 
 
-// ************************************************************************** //
-//  local class FilesView
-// ************************************************************************** //
+//  ***********************************************************************************************
+//! @class FilesView (local scope)
 
 //! Main item in SubframeFiles: View and control the list of DataFile's
 
-class FilesView : public MultiListView {
+class FilesView : public CheckTableView {
 public:
-    FilesView();
-
+    FilesView() : CheckTableView {new FilesModel()} {}
 private:
-    void selectionChanged(QItemSelection const&, QItemSelection const&);
-    void removeSelected();
-    void recollect();
-
-    FilesModel* model() const { return static_cast<FilesModel*>(MultiListView::model()); }
+    FilesModel* model() { return static_cast<FilesModel*>(model_); }
 };
 
-FilesView::FilesView() : MultiListView() {
-    auto filesModel = new FilesModel();
-    setModel(filesModel);
-    connect(gHub, &TheHub::sigFilesChanged, [=]() { filesModel->signalReset(); });
-    debug::ensure(dynamic_cast<FilesModel*>(MultiListView::model()));
 
-    header()->hide();
+//  ***********************************************************************************************
+//! @class SubframeFiles
 
-    connect(gHub->trigger_removeFile, &QAction::triggered, [this]() { removeSelected(); });
-    connect(gHub, &TheHub::sigFilesChanged, [this]() { selectRows({}); recollect(); });
-    connect(gHub, &TheHub::sigFilesSelected, [this]() { selectRows(gSession->filesSelection()); });
-}
+SubframeFiles::SubframeFiles()
+    : QcrDockWidget("files")
+{
+    setFeatures(DockWidgetMovable);
+    setWindowTitle("Files");
 
-void FilesView::selectionChanged(QItemSelection const& selected, QItemSelection const& deselected) {
-    MultiListView::selectionChanged(selected, deselected);
-    recollect();
-}
+    setWidget(new QWidget);
 
-void FilesView::removeSelected() {
-    const QModelIndexList& indexes = selectedIndexes();
-    // backwards
-    for (int i = indexes.count(); i-- > 0;)
-        model()->removeFile(indexes.at(i).row());
-    selectRows({});
-    recollect();
-}
+    auto* dataControls = new QHBoxLayout;
+    dataControls->addStretch();
+    dataControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->addFiles));
+    dataControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->removeFile));
 
-void FilesView::recollect() {
-    vec<int> rows;
-    for (const QModelIndex& index : selectionModel()->selectedRows())
-        if (index.isValid())
-            rows.append(index.row());
-    gHub->collectDatasetsFromSelection(rows);
-}
+    auto* corrFileView = new QcrLineDisplay {[]()->QString {
+            return gSession->corrset.fileName(); }};
 
-// ************************************************************************** //
-//  class SubframeFiles
-// ************************************************************************** //
+    auto* corrControls = new QHBoxLayout;
+    corrControls->addWidget(corrFileView);
+    corrControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->corrFile));
+    corrControls->addWidget(new QcrIconToggleButton(&gGui->toggles->enableCorr));
 
-SubframeFiles::SubframeFiles() : DockWidget("Files", "dock-files") {
-
-    auto h = newQ::HBoxLayout();
-    box_->addLayout(h);
-
-    h->addStretch();
-    h->addWidget(newQ::IconButton(gHub->trigger_addFiles));
-    h->addWidget(newQ::IconButton(gHub->trigger_removeFile));
-
-    box_->addWidget(new FilesView());
-
-    h = newQ::HBoxLayout();
-    box_->addLayout(h);
-
-    h->addWidget(newQ::Label("Correction file"));
-
-    h = newQ::HBoxLayout();
-    box_->addLayout(h);
-
-    auto* corrFile_ = new QLineEdit();
-    corrFile_->setReadOnly(true);
-    h->addWidget(corrFile_);
-    h->addWidget(newQ::IconButton(gHub->toggle_enableCorr));
-    h->addWidget(newQ::IconButton(gHub->trigger_removeCorr));
-
-    connect(gHub, &TheHub::sigCorrFile,
-            [corrFile_](shp_Datafile file) {
-                corrFile_->setText(file.isNull() ? "" : file->fileName()); });
+    auto* box = new QVBoxLayout;
+    box->addLayout(dataControls);
+    box->addWidget(new FilesView());
+    box->addWidget(new QLabel("Correction file"));
+    box->addLayout(corrControls);
+    box->setContentsMargins(0,0,0,0);
+    widget()->setLayout(box);
 }

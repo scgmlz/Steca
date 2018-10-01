@@ -1,4 +1,4 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
@@ -10,66 +10,47 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
 #ifndef MAINWIN_H
 #define MAINWIN_H
 
-#include "core/typ/singleton.h"
-#include "core/typ/str.h"
-#include <QMainWindow>
-#include <QNetworkAccessManager>
+#include "qcr/widgets/views.h"
 
-extern class MainWin* gMainWin; //!< global pointer to _the_ main window
+extern class MainWin* gGui; //!< global pointer to _the_ main window
 
-//! The main window.
+//! The main window. Its single instance is accessible through the global pointer gGui.
 
-//! This is a singleton class that specializes QMainWindow.
-//! The one instance of this class is accessible from everywhere through
-//! the global pointer gMainWin.
-
-//! The main window coexists with an instance of TheHub, which is responsible
-//! for most of the dynamic functionality. The division of tasks between MainWin
-//! and TheHub is somewhat arbitrary, and we should consider merging both classes.
-
-class MainWin : public QMainWindow, public ISingleton<MainWin> {
+class MainWin : public QcrMainWindow {
+    Q_OBJECT
 public:
-    MainWin();
+    MainWin() = delete;
+    MainWin(const QString& startupScript);
+    ~MainWin();
 
-    void online();
-    void checkUpdate();
+    class Triggers* triggers;
+    class Toggles* toggles;
+    class GuiState* state;
+    class ImageTrafoActions* imageTrafoActions;
 
-    void close();
-
-    void addFiles();
-    void enableCorr();
-
-    void loadSession();
-    void saveSession();
-    void clearSession();
-
-    void execCommand(str);
+    // cross references for use in export; current state of editing
+    const class BigtableModel* bigtableModel;
 
 private:
-    QDockWidget *dockFiles_, *dockMeasurements_, *dockDatasetInfo_;
-    QByteArray initialState_;
-    QNetworkAccessManager netMan_;
-
-    void initLayout();
-    void connectActions();
-
-    void messageDialog(rcstr title, rcstr text);
-    void closeEvent(QCloseEvent*);
+    void refresh();
 
     void readSettings();
-    void saveSettings();
+    void saveSettings() const;
+    void resetViews();
 
-    void viewStatusbar(bool);
-    void viewFullScreen(bool);
-    void viewFiles(bool);
-    void viewDatasets(bool);
-    void viewMetadata(bool);
-    void viewReset();
+    QcrDockWidget* dockFiles_;
+    QcrDockWidget* dockClusters_;
+    QcrDockWidget* dockMetadata_;
+    class Menus* menus_;
+
+    QByteArray initialState_;
+
+    friend Triggers;
 };
 
 #endif // MAINWIN_H

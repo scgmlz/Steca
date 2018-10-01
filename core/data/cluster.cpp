@@ -1,229 +1,165 @@
-// ************************************************************************** //
+//  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
 //
 //! @file      core/data/cluster.cpp
-//! @brief     Implements classes Measurement, Cluster, Experiment
+//! @brief     Implements classes Sequence, Cluster
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-// ************************************************************************** //
+//  ***********************************************************************************************
 
-#include "cluster.h"
-#include "measurement.h"
-#include "metadata.h"
+#include "core/data/cluster.h"
+#include "core/data/from_map.h"
 #include "core/session.h"
-#include "core/typ/matrix.h"
-#include <qmath.h>
+#include "core/data/collect_intensities.h"
+#include "qcr/base/debug.h" // warning
 
-Cluster::Cluster(const Experiment& experiment, const QString tag,
-             const vec<shp_Measurement>& measurements)
-    : vec<shp_Measurement>(measurements)
-    , experiment_(experiment)
-    , tag_(tag)
+//  ***********************************************************************************************
+//! @class Sequence
+
+Sequence::Sequence(const std::vector<const Measurement*>& measurements)
+    : members_(measurements)
+    , metadata_(computeAvgMetadata())
+{}
+
+Range Sequence::rgeGma() const {
+    Range ret;
+    for (const Measurement* m : members_)
+        ret.extendBy(fromMap::rgeGma(m));
+    return ret;
+}
+
+Range Sequence::rgeGmaFull() const {
+    Range ret;
+    for (const Measurement* m : members_)
+        ret.extendBy(fromMap::rgeGmaFull(m));
+    return ret;
+}
+
+Range Sequence::rgeTth() const {
+    Range ret;
+    for (const Measurement* m : members_)
+        ret.extendBy(fromMap::rgeTth(m));
+    return ret;
+}
+
+Range Sequence::rgeInten() const {
+    Range ret;
+    for (const Measurement* m : members_)
+        ret.intersect(m->rgeInten());
+    return ret;
+}
+
+//! Returns metadata, averaged over Sequence members.
+Metadata Sequence::computeAvgMetadata() const
 {
+    std::vector<const Metadata*> vecMeta;
+    for (const Measurement* m : members_)
+        vecMeta.push_back(&m->metadata());
+    return Metadata::computeAverage(vecMeta);
 }
 
-//! Returns metadata, averaged over Cluster members. Result is cached.
-shp_Metadata Cluster::avgeMetadata() const {
-    if (md_.isNull()) {
-        debug::ensure(!isEmpty());
-        compute_metadata();
-    }
-    return md_;
-}
-
-//! Computes metadata cache md_.
-void Cluster::compute_metadata() const {
-    const_cast<Cluster*>(this)->md_ = shp_Metadata(new Metadata);
-    Metadata* m = const_cast<Metadata*>(md_.data());
-
-    debug::ensure(!first()->metadata().isNull());
-    const Metadata& firstMd = *(first()->metadata());
-
-    m->date = firstMd.date;
-    m->comment = firstMd.comment;
-
-    // sums: delta mon. count and time,
-    // takes the last ones (presumed the maximum) of mon. count and time,
-    // averages the rest
-    for (const shp_Measurement& one : *this) {
-        const Metadata* d = one->metadata().data();
-        debug::ensure(d);
-
-        m->motorXT += d->motorXT;
-        m->motorYT += d->motorYT;
-        m->motorZT += d->motorZT;
-
-        m->motorOmg += d->motorOmg;
-        m->motorTth += d->motorTth;
-        m->motorPhi += d->motorPhi;
-        m->motorChi += d->motorChi;
-
-        m->motorPST += d->motorPST;
-        m->motorSST += d->motorSST;
-        m->motorOMGM += d->motorOMGM;
-
-        m->nmT += d->nmT;
-        m->nmTeload += d->nmTeload;
-        m->nmTepos += d->nmTepos;
-        m->nmTeext += d->nmTeext;
-        m->nmXe += d->nmXe;
-        m->nmYe += d->nmYe;
-        m->nmZe += d->nmZe;
-
-        m->deltaMonitorCount += d->deltaMonitorCount;
-        m->deltaTime += d->deltaTime;
-
-        if (m->monitorCount > d->monitorCount)
-            qWarning() << "decreasing monitor count in combined cluster";
-        if (m->time > d->time)
-            qWarning() << "decreasing time in combined cluster";
-        m->monitorCount = d->monitorCount;
-        m->time = d->time;
-    }
-
-    qreal fac = 1.0 / count();
-
-    m->motorXT *= fac;
-    m->motorYT *= fac;
-    m->motorZT *= fac;
-
-    m->motorOmg *= fac;
-    m->motorTth *= fac;
-    m->motorPhi *= fac;
-    m->motorChi *= fac;
-
-    m->motorPST *= fac;
-    m->motorSST *= fac;
-    m->motorOMGM *= fac;
-
-    m->nmT *= fac;
-    m->nmTeload *= fac;
-    m->nmTepos *= fac;
-    m->nmTeext *= fac;
-    m->nmXe *= fac;
-    m->nmYe *= fac;
-    m->nmZe *= fac;
-}
-
-#define AVG_ONES(what)                                                  \
-    debug::ensure(!isEmpty());                                          \
-    qreal avg = 0;                                                      \
-    for (const shp_Measurement& one : *this)                            \
-        avg += one->what();                                             \
-    avg /= count();                                                     \
+#define AVG_ONES(what_function)                 \
+    double avg = 0;                             \
+    for (const Measurement* one : members_)     \
+        avg += one->what_function();            \
+    avg /= size();                             \
     return avg;
 
-deg Cluster::omg() const { AVG_ONES(omg) }
+deg Sequence::omg() const { AVG_ONES(omg) }
 
-deg Cluster::phi() const { AVG_ONES(phi) }
+deg Sequence::phi() const { AVG_ONES(phi) }
 
-deg Cluster::chi() const { AVG_ONES(chi) }
+deg Sequence::chi() const { AVG_ONES(chi) }
 
-// combined range of combined cluster
-#define RGE_COMBINE(combineOp, what)                                    \
-    debug::ensure(!isEmpty());                                          \
-    Range rge;                                                          \
-    for (const shp_Measurement& one : *this)                            \
-        rge.combineOp(one->what);                                       \
-    return rge;
+double Sequence::avgMonitorCount() const { AVG_ONES(monitorCount) }
 
-Range Cluster::rgeGma() const { RGE_COMBINE(extendBy, rgeGma()) }
+double Sequence::avgDeltaMonitorCount() const { AVG_ONES(deltaMonitorCount) }
 
-Range Cluster::rgeGmaFull() const {
-    RGE_COMBINE(extendBy, rgeGmaFull())
-}
+double Sequence::avgTime() const { AVG_ONES(time) }
 
-Range Cluster::rgeTth() const { RGE_COMBINE(extendBy, rgeTth()) }
+double Sequence::avgDeltaTime() const { AVG_ONES(deltaTime) }
 
-Range Cluster::rgeInten() const { RGE_COMBINE(intersect, rgeInten()) }
-
-qreal Cluster::avgMonitorCount() const { AVG_ONES(monitorCount) }
-
-qreal Cluster::avgDeltaMonitorCount() const { AVG_ONES(deltaMonitorCount) }
-
-qreal Cluster::avgDeltaTime() const { AVG_ONES(deltaTime) }
-
-inten_vec Cluster::collectIntens(const Image* intensCorr, const Range& rgeGma) const {
-    const Range tthRge = rgeTth();
-    const deg tthWdt = tthRge.width();
-
-    const ImageCut& cut = gSession->imageCut();
-    const int pixWidth = gSession->imageSize().w - cut.left - cut.right;
-
-    int numBins;
-    if (1 < count()) { // combined cluster
-        const shp_Measurement& one = first();
-        deg delta = one->rgeTth().width() / pixWidth;
-        numBins = qCeil(tthWdt / delta);
-    } else {
-        numBins = pixWidth; // simply match the pixels
-    }
-
-    inten_vec intens(numBins, 0);
-    vec<int> counts(numBins, 0);
-
-    deg minTth = tthRge.min, deltaTth = tthWdt / numBins;
-
-    for (const shp_Measurement& one : *this)
-        one->collectIntens(intensCorr, intens, counts, rgeGma, minTth, deltaTth);
-
-    // sum or average
-    if (gSession->intenScaledAvg()) {
-        qreal scale = gSession->intenScale();
-        for_i (numBins) {
-            int cnt = counts.at(i);
-            if (cnt > 0)
-                intens[i] *= scale / cnt;
-        }
-    }
-
-    return intens;
-}
-
-size2d Cluster::imageSize() const {
-    debug::ensure(!isEmpty());
+size2d Sequence::imageSize() const
+{
     // all images have the same size; simply take the first one
     return first()->imageSize();
 }
 
-//! Calculates the polefigure coordinates alpha and beta with regards to
-//! sample orientation and diffraction angles.
+double Sequence::normFactor() const
+{
+    double num = 1, den = 1; // numerator, denominator
 
-//! tth: Center of reflection's 2theta interval.
-//! gma: Center of gamma slice.
-void Cluster::calculateAlphaBeta(deg tth, deg gma, deg& alpha, deg& beta) const {
-
-    // Rotate a unit vector initially parallel to the y axis with regards to the
-    // angles. As a result, the vector is a point on a unit sphere
-    // corresponding to the location of a polefigure point.
-    // Note that the rotations here do not correspond to C. Randau's dissertation.
-    // The rotations given in [J. Appl. Cryst. (2012) 44, 641-644] are incorrect.
-    vec3r rotated = mat3r::rotationCWz(phi().toRad())
-        * mat3r::rotationCWx(chi().toRad())
-        * mat3r::rotationCWz(omg().toRad())
-        * mat3r::rotationCWx(gma.toRad())
-        * mat3r::rotationCCWz(tth.toRad() / 2) * vec3r(0, 1, 0);
-
-    // Extract alpha (latitude) and beta (longitude).
-    rad alphaRad = acos(rotated._2);
-    rad betaRad = atan2(rotated._0, rotated._1);
-
-    // If alpha is in the wrong hemisphere, mirror both alpha and beta over the
-    // center of a unit sphere.
-    if (alphaRad > M_PI_2) { // REVIEW - seems like that happens only for a very narrow ring
-        alphaRad = qAbs(alphaRad - M_PI);
-        betaRad = betaRad + (betaRad < 0 ? M_PI : -M_PI);
+    switch ((eNorm)gSession->params.howtoNormalize.val()) {
+    case eNorm::MONITOR:
+        num = gSession->activeClusters.grandAvgMonitorCount.get();
+        den = avgMonitorCount();
+        break;
+    case eNorm::DELTA_MONITOR:
+        num = gSession->activeClusters.grandAvgDeltaMonitorCount.get();
+        den = avgDeltaMonitorCount();
+        break;
+    case eNorm::TIME:
+        num = gSession->activeClusters.grandAvgTime.get();
+        den = avgTime();
+        break;
+    case eNorm::DELTA_TIME:
+        num = gSession->activeClusters.grandAvgDeltaTime.get();
+        den = avgDeltaTime();
+        break;
+    case eNorm::NONE:
+        break;
     }
 
-    // Keep beta between 0 and 2pi.
-    if (betaRad < 0)
-        betaRad = betaRad + 2 * M_PI;
+    double ret = float((num > 0 && den > 0) ? num / den : Q_QNAN);
+    if (qIsNaN(ret)) {
+        gSession->params.howtoNormalize.setVal((int)eNorm::NONE);
+        ret = 1;
+        qWarning() << "Bad normalisation value.\n normalization reset to 'None'.";
+    }
+    return ret;
+}
 
-    alpha = alphaRad.toDeg();
-    beta = betaRad.toDeg();
+
+//  ***********************************************************************************************
+//! @class Cluster
+
+namespace {
+Dfgram computeSectorDfgram(const Cluster* const parent, const int jS)
+{
+    int nS = gSession->gammaSelection.numSlices.val();
+    return Dfgram(algo::projectCluster(*parent, parent->rgeGma().slice(jS,nS)));
+}
+} //namespace
+
+Cluster::Cluster(
+    const std::vector<const Measurement*>& measurements,
+    const class Datafile& file, const int index, const int offset)
+    : Sequence(measurements)
+    , dfgrams([]()->int{return gSession->gammaSelection.numSlices.val();},
+              [](const Cluster* parent, int jS)->Dfgram{
+                  return computeSectorDfgram(parent, jS); })
+    , file_(file)
+    , index_(index)
+    , offset_(offset)
+    , activated_(true)
+{}
+
+int Cluster::totalOffset() const
+{
+    return file_.offset_ + offset();
+}
+
+bool Cluster::isIncomplete() const
+{
+    return size() < gSession->dataset.binning.val();
+}
+
+const Dfgram& Cluster::currentDfgram() const
+{
+    return dfgrams.getget(this, gSession->gammaSelection.currSlice.val()-1);
 }
