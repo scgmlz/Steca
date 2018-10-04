@@ -8,7 +8,7 @@
 #   - Cerf_LIBRARIES    .. full path to library
 #   - Cerf_INCLUDE_DIR  .. full path to include directory
 #
-# Copyright 2015 Joachim Wuttke, Forschungszentrum Jülich.
+# Copyright 2015-2018 Joachim Wuttke, Forschungszentrum Jülich.
 # Redistribution permitted.
 
 find_path(Cerf_INCLUDE_DIR cerf.h)
@@ -16,10 +16,12 @@ find_library(Cerf_LIBRARIES NAMES cerf Cerf)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(Cerf DEFAULT_MSG Cerf_LIBRARIES Cerf_INCLUDE_DIR)
+mark_as_advanced(Cerf_INCLUDE_DIR Cerf_LIBRARIES)
 
+if(NOT Cerf_FOUND)
+    return()
+endif()
 include(AssertLibraryFunction)
 assert_library_function(Cerf cerf "")
 assert_library_function(Cerf dawson "")
 assert_library_function(Cerf voigt "")
-
-mark_as_advanced(Cerf_INCLUDE_DIR Cerf_LIBRARIES)
