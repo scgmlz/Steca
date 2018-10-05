@@ -1,34 +1,27 @@
 # Steca top-level configuration
 
-cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 
 set(CMAKE_MODULE_PATH
     ${CMAKE_SOURCE_DIR}/cmake
     ${CMAKE_SOURCE_DIR}/cmake/steca/modules)
 include(PreventInSourceBuilds)
 
-project(Steca)
+project(Steca VERSION 2.1)
+message(STATUS "Building Steca ${Steca_VERSION}")
 
 option(WITH_TESTS "Build with all tests" ON)
 
-macro(SET_OPTION option value)
-    set(${option} ${value} CACHE INTERNAL "" FORCE)
-endmacro()
-SET_OPTION(LIB_MAN OFF)
-SET_OPTION(LIB_INSTALL OFF)
-SET_OPTION(CERF_CPP ON)
-
-if(CMAKE_VERSION VERSION_LESS "3.1")
-    set(CMAKE_CXX_FLAGS "-std=c++14 ${CMAKE_CXX_FLAGS}")
-    set(CMAKE_C_FLAGS   "-std=c99   ${CMAKE_CXX_FLAGS}")
-else()
-    set(CMAKE_CXX_STANDARD 14)
-    set(CMAKE_C_STANDARD   99)
-endif()
+set(LIB_MAN     OFF CACHE INTERNAL "" FORCE)
+set(LIB_INSTALL OFF CACHE INTERNAL "" FORCE)
+set(CERF_CPP    ON  CACHE INTERNAL "" FORCE)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR OFF)
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_C_STANDARD   99)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__STRICT_ANSI__ -DQT_LOGGING_RULES=\"*.debug=true\"")
 if (CERF_CPP)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCERF_AS_CPP")
