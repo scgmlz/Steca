@@ -47,7 +47,8 @@ find_package(YAML       MODULE REQUIRED)
 find_package(LMFit      1.8 MODULE)
 find_package(Cerf       1.8 MODULE)
 
-message(STATUS "libyaml: FOUND=${LibYaml_FOUND}, VERSION=${YAML_VERSION}, LIB=${YAML_LIBRARY}")
+message(STATUS
+    "libyaml: FOUND=${LibYaml_FOUND}, VERSION=${LibYaml_VERSION}, LIB=${LibYaml_LIBRARY}")
 message(STATUS "lmfit:   FOUND=${LMFit_FOUND}, VERSION=${LMFit_VERSION}, LIB=${LMFit_LIBRARY}")
 message(STATUS "libcerf: FOUND=${Cerf_FOUND}, VERSION=${Cerf_VERSION}, LIB=${Cerf_LIBRARY}, "
     "IS_CPP=${Cerf_IS_CPP}")
