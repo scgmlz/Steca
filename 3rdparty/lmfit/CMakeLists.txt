@@ -14,6 +14,7 @@ set(lmfit_VERSION ${lmfit_SOVERSION}.0) # lib version
 # --- Declare project-wide user flags, and set default values ---
 option(FITTEST "Build with FitTest" OFF)
 option(LIB_MAN "Build library man pages" ON)
+option(LIB_INSTALL "Install library" ON)
 
 set(destination ${CMAKE_INSTALL_PREFIX})
 

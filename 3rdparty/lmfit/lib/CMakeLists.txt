@@ -19,11 +19,13 @@ if(NOT MSVC)
     target_link_libraries(${lib} m)
 endif()
 
-install(
-    TARGETS ${lib} LIBRARY
-    DESTINATION ${destination}/lib
-    COMPONENT Libraries)
-install(
-    FILES ${inc_files}
-    DESTINATION ${destination}/include
-    COMPONENT Headers)
+if (${LIB_INSTALL})
+    install(
+        TARGETS ${lib} LIBRARY
+        DESTINATION ${destination}/lib
+        COMPONENT Libraries)
+    install(
+        FILES ${inc_files}
+        DESTINATION ${destination}/include
+        COMPONENT Headers)
+endif()
