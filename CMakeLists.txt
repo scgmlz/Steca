@@ -45,45 +45,37 @@ message(STATUS "Qt5Core=${Qt5Core_DIR}, Qt5=${Qt5Gui_DIR}")
 
 find_package(YAML       MODULE REQUIRED)
 find_package(LMFit      1.8 MODULE)
-
-set(CERF_CPP    ON  CACHE INTERNAL "" FORCE)
 find_package(Cerf       1.8 MODULE)
 
-message(DEBUG " -- LibYaml_FOUND=${LibYaml_FOUND}")
-message(DEBUG " -- LMFit_FOUND=${LMFit_FOUND}")
-message(DEBUG " -- Cerf_FOUND=${Cerf_FOUND}")
+message(STATUS "libyaml: FOUND=${LibYaml_FOUND}, VERSION=${YAML_VERSION}, LIB=${YAML_LIBRARY}")
+message(STATUS "lmfit:   FOUND=${LMFit_FOUND}, VERSION=${LMFit_VERSION}, LIB=${LMFit_LIBRARY}")
+message(STATUS "libcerf: FOUND=${Cerf_FOUND}, VERSION=${Cerf_VERSION}, LIB=${Cerf_LIBRARY}, "
+    "IS_CPP=${Cerf_IS_CPP}")
 
-message(DEBUG " -- LibYaml_VERSION=${YAML_VERSION}")
-message(DEBUG " -- LMFit_VERSION=${LMFit_VERSION}")
-message(DEBUG " -- Cerf_VERSION=${Cerf_VERSION}")
+# how to build 3rd party libraries:
+set(LIB_MAN OFF)
+set(LIB_INSTALL OFF)
 
-message(DEBUG " -- LibYaml_LIB=${YAML_LIBRARY}")
-message(DEBUG " -- LMFit_LIB=${LMFit_LIBRARY}")
-message(DEBUG " -- Cerf_LIB=${Cerf_LIBRARY}")
-
+# build 3rd party libraries:
 add_subdirectory(3rdparty/LevMar)
 add_subdirectory(3rdparty/QCustomPlot)
 add_subdirectory(3rdparty/Caress)
 add_subdirectory(3rdparty/Mar)
 
-set(LIB_MAN OFF)
-set(LIB_INSTALL OFF)
 if (NOT LibYaml_FOUND)
-    message(DEBUG " -- shall we provide 3rdparty/YAML?")
+    message(FATAL " -- shall we provide 3rdparty/YAML?")
 endif()
 if (NOT LMFit_FOUND)
-    message(DEBUG " -- we'll use  3rdparty/lmfit")
+    message(STATUS "we have to build 3rdparty/lmfit")
     add_subdirectory(3rdparty/lmfit)
 endif()
 if (NOT Cerf_FOUND)
-    message(DEBUG " -- we'll use  3rdparty/libcerf")
-    set(CERF_CPP ON)
+    message(STATUS "we have to build 3rdparty/libcerf")
+    set(CERF_CPP ON CACHE INTERNAL "" FORCE)
     add_subdirectory(3rdparty/libcerf)
     set(Cerf_IS_CPP ON)
-    message(DEBUG " -- Cerf_LIB=${Cerf_LIBRARY}")
 endif()
 
-message(DEBUG " -- Cerf_IS_CPP=${Cerf_IS_CPP}")
 if (Cerf_IS_CPP)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCERF_AS_CPP")
 endif()
