@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
+cmake_policy(SET CMP0048 NEW)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(PreventInSourceBuilds)
@@ -19,6 +20,7 @@ set(destination ${CMAKE_INSTALL_PREFIX})
 set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -g -O2 -pedantic -Wall -Wno-sign-compare -Wno-unused-result -Wno-parentheses  -Wno-unknown-pragmas")
 
 add_subdirectory(lib)
+set(LMFit_LIBRARY ${lmfit_LIBRARY} PARENT_SCOPE)
 add_subdirectory(demo)
 if (${LIB_MAN})
     add_subdirectory(man)
