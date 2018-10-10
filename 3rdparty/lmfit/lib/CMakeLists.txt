@@ -13,6 +13,14 @@ set_target_properties(
     VERSION ${lmfit_VERSION}
     SOVERSION ${lmfit_SOVERSION})
 
-target_link_libraries(${library_name} m)
+include(LinkLibMath)
+link_libm(${library_name})
 
-#{Steca patch}: no installation
+install(
+    TARGETS ${library_name} LIBRARY
+    DESTINATION ${destination}/lib
+    COMPONENT Libraries)
+install(
+    FILES ${inc_files}
+    DESTINATION ${destination}/include
+    COMPONENT Headers)
