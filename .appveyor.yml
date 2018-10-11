@@ -31,3 +31,8 @@ build_script:
 - cmake -G "%CMAKE_GENERATOR%" -DCMAKE_INCLUDE_PATH=C:/opt/local_x64/include -DCMAKE_LIBRARY_PATH=C:/opt/local_x64/lib -DBUILD_SHARED_LIBS=OFF ..
 - cmake --build . --config %BUILD_CONF%
 - ctest
+
+artifacts:
+  - path: '**\steca.exe'
+    name: steca.exe
+    type: file
