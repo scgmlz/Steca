@@ -29,11 +29,13 @@ if(MSVC)
     set(MS_NOWARN "/wd4267 /wd4305 /wd4244 /wd4068 /wd4996 /wd4101 /wd4715")
     set(MS_D "-D_CRT_SECURE_NO_WARNINGS -D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${MS_NOWARN} ${MS_D}")
+    set(LIB_SHARED "" CACHE INTERNAL "" FORCE)
 else()
     # -fsanitize=address -fsanitize=undefined
     set(DEB_FLAGS "-Wall -Wno-sign-compare -fno-omit-frame-pointer")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} ${DEB_FLAGS} -O0 -g")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -w")
+    set(LIB_SHARED "SHARED" CACHE INTERNAL "" FORCE)
 endif()
 
 find_package(Qt5Core    REQUIRED)
