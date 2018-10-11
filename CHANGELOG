@@ -1,4 +1,4 @@
-Steca version 2.1.0, released 2018.
+Steca version 2.1.0, released 2018.10.11
 ----------------------------------------
 
 New features:
@@ -12,6 +12,10 @@ New features:
 
 Internal improvements:
 
+* Qt signals are captured by widget wrappers. Everywhere else, Qt signals
+  are replaced by explit function calls. All computation intensive data
+  are cached. In this way, unnecessary computations are avoided. This
+  results in a huge speed gain.
 * For testing purposes, widgets can be driven from the command line
 * Decoupled "highlighting" (one measurement group) from "selecting" (most or all measurements).
 * Logic moved from table models to datasets.
