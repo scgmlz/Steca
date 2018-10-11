@@ -1,49 +1,41 @@
 # Steca top-level configuration
 
-cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
+cmake_policy(SET CMP0048 NEW)
 
 set(CMAKE_MODULE_PATH
     ${CMAKE_SOURCE_DIR}/cmake
     ${CMAKE_SOURCE_DIR}/cmake/steca/modules)
 include(PreventInSourceBuilds)
 
-project(Steca)
+project(Steca VERSION 2.1)
+message(STATUS "Building Steca ${Steca_VERSION}")
 
 option(WITH_TESTS "Build with all tests" ON)
 
-macro(SET_OPTION option value)
-    set(${option} ${value} CACHE INTERNAL "" FORCE)
-endmacro()
-SET_OPTION(LIB_MAN OFF)
-SET_OPTION(LIB_INSTALL OFF)
-SET_OPTION(CERF_CPP ON)
-
-if(CMAKE_VERSION VERSION_LESS "3.1")
-    set(CMAKE_CXX_FLAGS "-std=c++14 ${CMAKE_CXX_FLAGS}")
-    set(CMAKE_C_FLAGS   "-std=c99   ${CMAKE_CXX_FLAGS}")
-else()
-    set(CMAKE_CXX_STANDARD 14)
-    set(CMAKE_C_STANDARD   99)
-endif()
+set(LIB_MAN     OFF CACHE INTERNAL "" FORCE)
+set(LIB_INSTALL OFF CACHE INTERNAL "" FORCE)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR OFF)
+
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_C_STANDARD   99)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__STRICT_ANSI__ -DQT_LOGGING_RULES=\"*.debug=true\"")
-if (CERF_CPP)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCERF_AS_CPP")
-endif()
 
 if(MSVC)
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS}")
     set(MS_NOWARN "/wd4267 /wd4305 /wd4244 /wd4068 /wd4996 /wd4101 /wd4715")
     set(MS_D "-D_CRT_SECURE_NO_WARNINGS -D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${MS_NOWARN} ${MS_D}")
+    set(LIB_SHARED "" CACHE INTERNAL "" FORCE)
 else()
     # -fsanitize=address -fsanitize=undefined
     set(DEB_FLAGS "-Wall -Wno-sign-compare -fno-omit-frame-pointer")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} ${DEB_FLAGS} -O0 -g")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -w")
+    set(LIB_SHARED "SHARED" CACHE INTERNAL "" FORCE)
 endif()
 
 find_package(Qt5Core    REQUIRED)
@@ -54,31 +46,41 @@ message(STATUS "found Qt5Core=${Qt5Core_VERSION_STRING}, Qt5Gui=${Qt5Gui_VERSION
 message(STATUS "Qt5Core=${Qt5Core_DIR}, Qt5=${Qt5Gui_DIR}")
 
 find_package(YAML       MODULE REQUIRED)
-find_package(Cerf       1.8 MODULE)
 find_package(LMFit      1.8 MODULE)
+find_package(Cerf       1.8 MODULE)
 
-message(DEBUG " -- LibYaml_FOUND=${LibYaml_FOUND}")
-message(DEBUG " -- Cerf_FOUND=${Cerf_FOUND}")
-message(DEBUG " -- LMFit_FOUND=${LMFit_FOUND}")
+message(STATUS
+    "libyaml: FOUND=${LibYaml_FOUND}, VERSION=${LibYaml_VERSION}, LIB=${LibYaml_LIBRARY}")
+message(STATUS "lmfit:   FOUND=${LMFit_FOUND}, VERSION=${LMFit_VERSION}, LIB=${LMFit_LIBRARY}")
+message(STATUS "libcerf: FOUND=${Cerf_FOUND}, VERSION=${Cerf_VERSION}, LIB=${Cerf_LIBRARY}, "
+    "IS_CPP=${Cerf_IS_CPP}")
 
-message(DEBUG " -- Cerf_VERSION=${Cerf_VERSION}")
-message(DEBUG " -- LibYaml_VERSION=${YAML_VERSION}")
-message(DEBUG " -- LMFit_VERSION=${LMFit_VERSION}")
+# how to build 3rd party libraries:
+set(LIB_MAN OFF)
+set(LIB_INSTALL OFF)
 
+# build 3rd party libraries:
 add_subdirectory(3rdparty/LevMar)
 add_subdirectory(3rdparty/QCustomPlot)
 add_subdirectory(3rdparty/Caress)
 add_subdirectory(3rdparty/Mar)
+
 if (NOT LibYaml_FOUND)
-    message(DEBUG " -- shall we provide 3rdparty/YAML?")
-endif()
-if (NOT Cerf_FOUND)
-    message(DEBUG " -- we'll use  3rdparty/libcerf")
-    add_subdirectory(3rdparty/libcerf)
+    message(FATAL " -- shall we provide 3rdparty/YAML?")
 endif()
 if (NOT LMFit_FOUND)
-    message(DEBUG " -- we'll use  3rdparty/lmfit")
+    message(STATUS "we have to build 3rdparty/lmfit")
     add_subdirectory(3rdparty/lmfit)
+endif()
+if (NOT Cerf_FOUND)
+    message(STATUS "we have to build 3rdparty/libcerf")
+    set(CERF_CPP ON CACHE INTERNAL "" FORCE)
+    add_subdirectory(3rdparty/libcerf)
+    set(Cerf_IS_CPP ON)
+endif()
+
+if (Cerf_IS_CPP)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCERF_AS_CPP")
 endif()
 
 add_subdirectory(qcr)
