@@ -31,8 +31,8 @@ public:
     void sortData();
     void onHighlight(int i) final { ; }        // unused
 
-    QVariant data(const QModelIndex&, int) const;
-    QVariant headerData(int, Qt::Orientation, int) const;
+    QVariant data(const QModelIndex&, int) const override;
+    QVariant headerData(int, Qt::Orientation, int) const override;
     int columnCount() const final { return numCols_ + 1; }
     int rowCount() const final { return rows_.size(); }
     const std::vector<QVariant>& row(int) const;

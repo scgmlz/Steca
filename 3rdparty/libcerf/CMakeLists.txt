@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
+cmake_policy(SET CMP0048 NEW)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(PreventInSourceBuilds)
@@ -27,7 +28,7 @@ set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   ${CERF_COMPILER_FLAGS}")
 set(CMAKE_CXX_STANDARD 14)
 
 add_subdirectory(lib)
-set(cerf_LIBRARY ${cerf_LIBRARY} PARENT_SCOPE)
+set(Cerf_LIBRARY ${cerf_LIBRARY} PARENT_SCOPE)
 add_subdirectory(test)
 if (${LIB_MAN})
     add_subdirectory(man)
