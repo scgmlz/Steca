@@ -1,0 +1,16 @@
+====== How to make a release ======
+
+export V=
+
+vi CHANGELOG
+vi VERSION
+
+git commit -a -m "This is release $V"
+
+==== Windows build ====
+
+Build by buildbot?
+
+executable is in C:/basedir/Steca-master-Win7/build/release/Steca<…>.exe
+
+scp <…>@scgbuild:/home/buildmaster/win7_shared/Steca-<…>.exe <local>/. ???
