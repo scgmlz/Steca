@@ -16,5 +16,5 @@ target_link_libraries (${lib}
     mar_loader
     ${Cerf_LIBRARY}
     ${LMFit_LIBRARY}
-    ${LIBYAML_LIBRARY}
+    ${yaml_LIBRARY}
     )
