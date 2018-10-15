@@ -7,6 +7,7 @@ include(PreventInSourceBuilds)
 option(CERF_CPP "Build libcerf as native C++" OFF)
 option(LIB_MAN "Build libcerf man pages" ON)
 option(LIB_INSTALL "Install libcerf" ON)
+option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
 if (${CERF_CPP})
     project(cerfcpp CXX)
