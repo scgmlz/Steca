@@ -1,0 +1,12 @@
+====== Detectors to be supported ======
+
+[apr2018]
+
+- at MLZ, Stress-Spec:
+
+  - GasDetector "Zeitlhack1", writes Caress (.dat) or/and YAML
+  - Image plate = PE fast detector, writes .tif, with .dat digest
+
+- at DESY:
+  - "mar" detector, which is an Eiger wrapped by MarXperts,
+       http://photon-science.desy.de/facilities/petra_iii/beamlines/p07_high_energy_materials_science/detectors/index_eng.html
