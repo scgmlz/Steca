@@ -30,7 +30,6 @@ if(MSVC)
     set(MS_D "-D_CRT_SECURE_NO_WARNINGS -D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${MS_NOWARN} ${MS_D}")
     set(LIB_SHARED "" CACHE INTERNAL "" FORCE)
-    set(CMAKE_EXE_LINKER_FLAGS "-static")
 else()
     # -fsanitize=address -fsanitize=undefined
     set(DEB_FLAGS "-Wall -Wno-sign-compare -fno-omit-frame-pointer")
