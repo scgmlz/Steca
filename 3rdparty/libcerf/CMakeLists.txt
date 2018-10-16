@@ -11,8 +11,12 @@ option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
 if (${CERF_CPP})
     project(cerfcpp CXX)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CERF_COMPILER_FLAGS} -DCERF_AS_CPP")
+    set(CMAKE_CXX_STANDARD 14)
 else()
     project(cerf C)
+    set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   ${CERF_COMPILER_FLAGS}")
+    set(CMAKE_C_STANDARD 99)
 endif()
 
 set(CERF_SOVERSION                 1) # API version
@@ -24,9 +28,6 @@ if(MSVC)
 else()
     set(CERF_COMPILER_FLAGS "-g -O2 -pedantic -Wall -Wno-sign-compare -Wno-unused-result -Wno-parentheses -Wno-unknown-pragmas")
 endif()
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CERF_COMPILER_FLAGS} -DCERF_AS_CPP")
-set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   ${CERF_COMPILER_FLAGS}")
-set(CMAKE_CXX_STANDARD 14)
 
 add_subdirectory(lib)
 set(Cerf_LIBRARY ${cerf_LIBRARY} PARENT_SCOPE)
