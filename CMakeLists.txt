@@ -32,6 +32,7 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${MS_NOWARN} ${MS_D}")
     set(BUILD_SHARED_LIBS OFF)
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".lib")
+    set(CTEST_CONFIGURATION_TYPE "${JOB_BUILD_CONFIGURATION}")
 else()
     # -fsanitize=address -fsanitize=undefined
     set(DEB_FLAGS "-Wall -Wno-sign-compare -fno-omit-frame-pointer")
