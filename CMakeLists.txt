@@ -42,7 +42,8 @@ else()
     set(CMAKE_FIND_LIBRARY_SUFFIXES ".la")
 endif()
 
-foreach(comp Qt5Core Qt5Gui Qt5Widgets Qt5Network)
+include(FindStaticQt5)
+foreach(comp Qt5Gui Qt5Widgets Qt5Network) # Qt5Core
     find_package(${comp} REQUIRED)
     message(STATUS "found ${comp}: version=${${comp}_VERSION_STRING} dir=${${comp}_DIR} lib=${${comp}_LIBRARIES}")
 endforeach()
