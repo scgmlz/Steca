@@ -1,6 +1,3 @@
-include_directories (
-    ${CMAKE_HOME_DIRECTORY}
-    ${CMAKE_HOME_DIRECTORY}/3rdparty)
 
 if(WIN32)
     set(WIN_RESOURCE_FILE resources.rc)
@@ -8,6 +5,11 @@ if(WIN32)
 else()
     add_executable (Steca steca.cpp resources.qrc)
 endif()
+
+target_include_directories (Steca
+    PRIVATE
+    ${CMAKE_HOME_DIRECTORY}
+    ${CMAKE_HOME_DIRECTORY}/3rdparty)
 
 target_link_libraries (Steca gui)
 if(WIN32)
