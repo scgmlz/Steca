@@ -8,7 +8,7 @@
 # Prevent in-source builds
 #
 # It is generally acknowledged that it is preferable to run CMake out of source,
-# in a dedicated build directory (typically named "build"). To prevent users from
+# in a dedicated build directory(typically named "build"). To prevent users from
 # accidentally running CMake in the source directory, just include this module.
 
 # make sure the user doesn't play dirty with symlinks

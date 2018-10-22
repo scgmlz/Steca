@@ -5,11 +5,11 @@ set(tests
     )
 
 foreach(test ${tests})
-    if (${CERF_CPP})
+    if(${CERF_CPP})
         set_property(SOURCE ${test}.c PROPERTY LANGUAGE CXX)
     endif()
     add_executable(${test} ${test}.c)
-    if (${CERF_CPP})
+    if(${CERF_CPP})
         set_property(TARGET ${test} PROPERTY LINKER_LANGUAGE CXX)
     endif()
     target_link_libraries(${test} ${cerf_LIBRARY})
