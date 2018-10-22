@@ -10,7 +10,9 @@ target_include_directories (${lib}
     )
 
 target_link_libraries (${lib}
+    PUBLIC
     core
+    PRIVATE
     Qt5::Network
     steca_QCP
     )

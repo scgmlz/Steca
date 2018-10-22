@@ -11,7 +11,9 @@ target_include_directories (${lib}
     )
 
 target_link_libraries (${lib}
+    PUBLIC
     qcr
+    PRIVATE
     LevMar
     caress_loader
     mar_loader

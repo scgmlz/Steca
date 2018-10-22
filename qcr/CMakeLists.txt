@@ -4,12 +4,13 @@ file (GLOB_RECURSE files *.h *.cpp)
 add_library (${lib} ${files})
 
 target_include_directories (${lib}
-  PRIVATE
-  ${CMAKE_HOME_DIRECTORY}
-  ${CMAKE_HOME_DIRECTORY}/3rdparty
-)
+    PRIVATE
+    ${CMAKE_HOME_DIRECTORY}
+    ${CMAKE_HOME_DIRECTORY}/3rdparty
+    )
 
 target_link_libraries (${lib}
-  Qt5::Gui
-  Qt5::Widgets
-)
+    PUBLIC
+    Qt5::Gui
+    Qt5::Widgets
+    )
