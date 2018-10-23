@@ -10,11 +10,9 @@ macro(_qt5_Core_check_file_exists file)
 endmacro()
 
 
-set(_Qt5Core_OWN_INCLUDE_DIRS "${_qt5Core_install_prefix}/include/x86_64-linux-gnu/qt5/" "${_qt5Core_install_prefix}/include/x86_64-linux-gnu/qt5/QtCore")
-set(Qt5Core_PRIVATE_INCLUDE_DIRS
-    "${_qt5Core_install_prefix}/include/x86_64-linux-gnu/qt5/QtCore/5.11.1"
-    "${_qt5Core_install_prefix}/include/x86_64-linux-gnu/qt5/QtCore/5.11.1/QtCore"
-    )
+set(_Qt5Core_OWN_INCLUDE_DIRS
+    ${_qt5Core_install_prefix}/include/x86_64-linux-gnu/qt5/
+    ${_qt5Core_install_prefix}/include/x86_64-linux-gnu/qt5/QtCore)
 
 foreach(_dir ${_Qt5Core_OWN_INCLUDE_DIRS})
     _qt5_Core_check_file_exists(${_dir})
@@ -33,7 +31,6 @@ set(Qt5Core_INCLUDE_DIRS ${_Qt5Core_OWN_INCLUDE_DIRS})
 
 set(Qt5Core_DEFINITIONS -DQT_CORE_LIB)
 set(Qt5Core_COMPILE_DEFINITIONS QT_CORE_LIB)
-set(Qt5Core_OWN_PRIVATE_INCLUDE_DIRS ${Qt5Core_PRIVATE_INCLUDE_DIRS})
 
 set(_Qt5Core_FIND_DEPENDENCIES_REQUIRED)
 if (Qt5Core_FIND_REQUIRED)
@@ -51,13 +48,11 @@ endif()
 set(Qt5Core_EXECUTABLE_COMPILE_FLAGS "")
 
 list(REMOVE_DUPLICATES Qt5Core_INCLUDE_DIRS)
-list(REMOVE_DUPLICATES Qt5Core_PRIVATE_INCLUDE_DIRS)
 list(REMOVE_DUPLICATES Qt5Core_DEFINITIONS)
 list(REMOVE_DUPLICATES Qt5Core_COMPILE_DEFINITIONS)
 list(REMOVE_DUPLICATES Qt5Core_EXECUTABLE_COMPILE_FLAGS)
 
 set(_Qt5Core_LIB_DEPENDENCIES "")
-
 
 add_library(Qt5::Core SHARED IMPORTED)
 
@@ -65,29 +60,6 @@ set_property(TARGET Qt5::Core PROPERTY
     INTERFACE_INCLUDE_DIRECTORIES ${_Qt5Core_OWN_INCLUDE_DIRS})
 set_property(TARGET Qt5::Core PROPERTY
     INTERFACE_COMPILE_DEFINITIONS QT_CORE_LIB)
-
-set(_Qt5Core_PRIVATE_DIRS_EXIST TRUE)
-foreach (_Qt5Core_PRIVATE_DIR ${Qt5Core_OWN_PRIVATE_INCLUDE_DIRS})
-    if (NOT EXISTS ${_Qt5Core_PRIVATE_DIR})
-        set(_Qt5Core_PRIVATE_DIRS_EXIST FALSE)
-    endif()
-endforeach()
-
-if (_Qt5Core_PRIVATE_DIRS_EXIST)
-    add_library(Qt5::CorePrivate INTERFACE IMPORTED)
-    set_property(TARGET Qt5::CorePrivate PROPERTY
-        INTERFACE_INCLUDE_DIRECTORIES ${Qt5Core_OWN_PRIVATE_INCLUDE_DIRS}
-        )
-    set(_Qt5Core_PRIVATEDEPS)
-    foreach(dep ${_Qt5Core_LIB_DEPENDENCIES})
-        if (TARGET ${dep}Private)
-            list(APPEND _Qt5Core_PRIVATEDEPS ${dep}Private)
-        endif()
-    endforeach()
-    set_property(TARGET Qt5::CorePrivate PROPERTY
-        INTERFACE_LINK_LIBRARIES Qt5::Core ${_Qt5Core_PRIVATEDEPS}
-        )
-endif()
 
 set_property(TARGET Qt5::Core APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 
