@@ -1,8 +1,8 @@
-#get_filename_component(_IMPORT_PREFIX "${CMAKE_CURRENT_LIST_FILE}" PATH)
 set(_qt5Core_install_prefix "/usr")
 
 set(Qt5Core_LIBRARIES Qt5::Core)
 
+# The following macro is also used by files Qt5Core*.cmake that are included below.
 macro(_qt5_Core_check_file_exists file)
     if(NOT EXISTS "${file}" )
         message(FATAL_ERROR "FindStaticQt5 cannot find file \"${file}\".")
@@ -21,7 +21,6 @@ macro(_populate_Core_target_properties Configuration LIB_LOCATION IMPLIB_LOCATIO
         # For backward compatibility with CMake < 2.8.12
         "IMPORTED_LINK_INTERFACE_LIBRARIES_${Configuration}" "${_Qt5Core_LIB_DEPENDENCIES}"
     )
-
 endmacro()
 
 
@@ -33,10 +32,10 @@ set(Qt5Core_PRIVATE_INCLUDE_DIRS
 
 foreach(_dir ${_Qt5Core_OWN_INCLUDE_DIRS})
     _qt5_Core_check_file_exists(${_dir})
+    message(STATUS "StaticQt5: found include dir ${_dir}")
 endforeach()
 
-# Only check existence of private includes if the Private component is
-# specified.
+# Only check existence of private includes if the Private component is specified.
 list(FIND Qt5Core_FIND_COMPONENTS Private _check_private)
 if (NOT _check_private STREQUAL -1)
     foreach(_dir ${Qt5Core_PRIVATE_INCLUDE_DIRS})
@@ -48,9 +47,6 @@ set(Qt5Core_INCLUDE_DIRS ${_Qt5Core_OWN_INCLUDE_DIRS})
 
 set(Qt5Core_DEFINITIONS -DQT_CORE_LIB)
 set(Qt5Core_COMPILE_DEFINITIONS QT_CORE_LIB)
-set(_Qt5Core_MODULE_DEPENDENCIES "")
-
-
 set(Qt5Core_OWN_PRIVATE_INCLUDE_DIRS ${Qt5Core_PRIVATE_INCLUDE_DIRS})
 
 set(_Qt5Core_FIND_DEPENDENCIES_REQUIRED)
@@ -68,27 +64,6 @@ endif()
 
 set(Qt5Core_EXECUTABLE_COMPILE_FLAGS "")
 
-foreach(_module_dep ${_Qt5Core_MODULE_DEPENDENCIES})
-    if (NOT Qt5${_module_dep}_FOUND)
-        find_package(Qt5${_module_dep}
-            5.11.1 ${_Qt5Core_FIND_VERSION_EXACT}
-            ${_Qt5Core_DEPENDENCIES_FIND_QUIET}
-            ${_Qt5Core_FIND_DEPENDENCIES_REQUIRED}
-            PATHS "${CMAKE_CURRENT_LIST_DIR}/.." NO_DEFAULT_PATH
-            )
-    endif()
-
-    if (NOT Qt5${_module_dep}_FOUND)
-        set(Qt5Core_FOUND False)
-        return()
-    endif()
-
-    list(APPEND Qt5Core_INCLUDE_DIRS "${Qt5${_module_dep}_INCLUDE_DIRS}")
-    list(APPEND Qt5Core_PRIVATE_INCLUDE_DIRS "${Qt5${_module_dep}_PRIVATE_INCLUDE_DIRS}")
-    list(APPEND Qt5Core_DEFINITIONS ${Qt5${_module_dep}_DEFINITIONS})
-    list(APPEND Qt5Core_COMPILE_DEFINITIONS ${Qt5${_module_dep}_COMPILE_DEFINITIONS})
-    list(APPEND Qt5Core_EXECUTABLE_COMPILE_FLAGS ${Qt5${_module_dep}_EXECUTABLE_COMPILE_FLAGS})
-endforeach()
 list(REMOVE_DUPLICATES Qt5Core_INCLUDE_DIRS)
 list(REMOVE_DUPLICATES Qt5Core_PRIVATE_INCLUDE_DIRS)
 list(REMOVE_DUPLICATES Qt5Core_DEFINITIONS)
@@ -131,25 +106,8 @@ endif()
 _populate_Core_target_properties(RELEASE "libQt5Core.so.5.11.1" "" )
 
 
-file(GLOB pluginTargets "${CMAKE_CURRENT_LIST_DIR}/Qt5Core_*Plugin.cmake")
-
-macro(_populate_Core_plugin_properties Plugin Configuration PLUGIN_LOCATION)
-    set_property(TARGET Qt5::${Plugin} APPEND PROPERTY IMPORTED_CONFIGURATIONS ${Configuration})
-
-    set(imported_location "${_qt5Core_install_prefix}/lib/x86_64-linux-gnu/qt5/plugins/${PLUGIN_LOCATION}")
-    _qt5_Core_check_file_exists(${imported_location})
-    set_target_properties(Qt5::${Plugin} PROPERTIES
-        "IMPORTED_LOCATION_${Configuration}" ${imported_location}
-        )
-endmacro()
-
-if (pluginTargets)
-    foreach(pluginTarget ${pluginTargets})
-        include(${pluginTarget})
-    endforeach()
-endif()
-
 set(Qt5CoreConfigDir "/usr/lib/x86_64-linux-gnu/cmake/Qt5Core")
+message(STATUS "StaticQt5: run code from ${Qt5CoreConfigDir}")
 include("${Qt5CoreConfigDir}/Qt5CoreConfigExtras.cmake")
 include("${Qt5CoreConfigDir}/Qt5CoreMacros.cmake")
 _qt5_Core_check_file_exists("${Qt5CoreConfigDir}/Qt5CoreConfigVersion.cmake")
