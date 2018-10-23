@@ -1,9 +1,4 @@
-## parametrization (version, platform-specific paths)
-
-set(qt5_lib_extension so.5.11.1)
-set(qt5_install_prefix /usr)
-set(qt5_include_prefix ${qt5_install_prefix}/include/x86_64-linux-gnu/qt5)
-set(qt5_lib_path ${qt5_install_prefix}/lib/x86_64-linux-gnu)
+message(STATUS "Setup Qt5 library dependences according to ${qt5_settings}")
 
 ## set paths
 
