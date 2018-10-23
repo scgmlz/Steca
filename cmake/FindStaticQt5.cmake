@@ -68,9 +68,7 @@ _qt5_Core_check_file_exists(${imported_location})
 set_target_properties(Qt5::Core PROPERTIES
     INTERFACE_LINK_LIBRARIES    "${_Qt5Core_LIB_DEPENDENCIES}"
     IMPORTED_LOCATION_RELEASE   ${imported_location}
-    IMPORTED_SONAME_RELEASE     "libQt5Core.so.5"
-    # For backward compatibility with CMake < 2.8.12
-    IMPORTED_LINK_INTERFACE_LIBRARIES_RELEASE "${_Qt5Core_LIB_DEPENDENCIES}"
+    IMPORTED_SONAME_RELEASE     libQt5Core.so.5
     )
 
 set(Qt5CoreConfigDir "/usr/lib/x86_64-linux-gnu/cmake/Qt5Core")
