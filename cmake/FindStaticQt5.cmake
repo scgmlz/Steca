@@ -1,16 +1,5 @@
-get_filename_component(_IMPORT_PREFIX "${CMAKE_CURRENT_LIST_FILE}" PATH)
-# Use original install prefix when loaded through a
-# cross-prefix symbolic link such as /lib -> /usr/lib.
-get_filename_component(_realCurr "${_IMPORT_PREFIX}" REALPATH)
-get_filename_component(_realOrig "/usr/lib/x86_64-linux-gnu/cmake/Qt5Core" REALPATH)
-if(_realCurr STREQUAL _realOrig)
-    get_filename_component(_qt5Core_install_prefix "/usr/lib/x86_64-linux-gnu/../../" ABSOLUTE)
-else()
-    get_filename_component(_qt5Core_install_prefix "${CMAKE_CURRENT_LIST_DIR}/../../../../" ABSOLUTE)
-endif()
-unset(_realOrig)
-unset(_realCurr)
-unset(_IMPORT_PREFIX)
+#get_filename_component(_IMPORT_PREFIX "${CMAKE_CURRENT_LIST_FILE}" PATH)
+set(_qt5Core_install_prefix "/usr")
 
 set(Qt5Core_LIBRARIES Qt5::Core)
 
@@ -160,8 +149,7 @@ if (pluginTargets)
     endforeach()
 endif()
 
-include("${CMAKE_CURRENT_LIST_DIR}/Qt5CoreConfigExtras.cmake")
-
-include("${CMAKE_CURRENT_LIST_DIR}/Qt5CoreMacros.cmake")
-
-_qt5_Core_check_file_exists("${CMAKE_CURRENT_LIST_DIR}/Qt5CoreConfigVersion.cmake")
+set(Qt5CoreConfigDir "/usr/lib/x86_64-linux-gnu/cmake/Qt5Core")
+include("${Qt5CoreConfigDir}/Qt5CoreConfigExtras.cmake")
+include("${Qt5CoreConfigDir}/Qt5CoreMacros.cmake")
+_qt5_Core_check_file_exists("${Qt5CoreConfigDir}/Qt5CoreConfigVersion.cmake")
