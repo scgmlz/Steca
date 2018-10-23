@@ -7,9 +7,7 @@ set(lib_path ${_qt5_install_prefix}/lib/x86_64-linux-gnu)
 
 ## set paths
 
-set(_qt5Core_install_prefix ${_qt5_install_prefix}) # also used by included Qt5Core*.cmake
-
-set(qt5_components Core Gui)
+set(qt5_components Core Gui Network)
 foreach(comp ${qt5_components})
     set(${comp}_path "${lib_path}/libQt5${comp}.so.${qt5_version}")
     set(Qt5${comp}_INCLUDE_DIRS
@@ -18,6 +16,9 @@ foreach(comp ${qt5_components})
 endforeach()
 
 list(APPEND Qt5Gui_INCLUDE_DIRS ${_qt5_include_prefix}/QtCore)
+list(APPEND Qt5Widgets_INCLUDE_DIRS ${_qt5_include_prefix}/QtCore)
+list(APPEND Qt5Widgets_INCLUDE_DIRS ${_qt5_include_prefix}/QtGui)
+list(APPEND Qt5Network_INCLUDE_DIRS ${_qt5_include_prefix}/QtCore)
 
 ## check file existence
 
@@ -25,9 +26,6 @@ macro(check_file_exists file)
     if(NOT EXISTS "${file}" )
         message(FATAL_ERROR "FindStaticQt5 cannot find file \"${file}\".")
     endif()
-endmacro()
-macro(_qt5_Core_check_file_exists file) # used by included Qt5Core*.cmake
-    check_file_exists(${file})
 endmacro()
 
 foreach(comp ${qt5_components})
@@ -56,7 +54,13 @@ endforeach()
 
 set(Qt5ConfigDir "/usr/lib/x86_64-linux-gnu/cmake")
 message(STATUS "StaticQt5: run code from ${Qt5ConfigDir}/*/")
-foreach(comp ${qt5_components})
+foreach(comp Core Gui)
+    macro(_qt5_${comp}_check_file_exists file)
+        check_file_exists(${file})
+    endmacro()
+    set(_qt5${comp}_install_prefix ${_qt5_install_prefix})
     include("${Qt5ConfigDir}/Qt5${comp}/Qt5${comp}ConfigExtras.cmake")
 endforeach()
+set_property(TARGET Qt5::Network APPEND PROPERTY INTERFACE_COMPILE_OPTIONS -fPIC)
+
 include("${Qt5ConfigDir}/Qt5Core/Qt5CoreMacros.cmake")
