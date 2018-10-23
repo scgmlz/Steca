@@ -43,7 +43,7 @@ else()
 endif()
 
 include(FindStaticQt5)
-foreach(comp Qt5Gui Qt5Widgets Qt5Network) # Qt5Core
+foreach(comp Qt5Widgets Qt5Network) # Qt5Core Qt5Gui
     find_package(${comp} REQUIRED)
     message(STATUS "found ${comp}: version=${${comp}_VERSION_STRING} dir=${${comp}_DIR} lib=${${comp}_LIBRARIES}")
 endforeach()
