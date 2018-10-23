@@ -9,7 +9,6 @@ macro(_qt5_Core_check_file_exists file)
     endif()
 endmacro()
 
-
 set(_Qt5Core_OWN_INCLUDE_DIRS
     ${_qt5Core_install_prefix}/include/x86_64-linux-gnu/qt5/
     ${_qt5Core_install_prefix}/include/x86_64-linux-gnu/qt5/QtCore)
@@ -52,24 +51,18 @@ list(REMOVE_DUPLICATES Qt5Core_DEFINITIONS)
 list(REMOVE_DUPLICATES Qt5Core_COMPILE_DEFINITIONS)
 list(REMOVE_DUPLICATES Qt5Core_EXECUTABLE_COMPILE_FLAGS)
 
-set(_Qt5Core_LIB_DEPENDENCIES "")
-
-add_library(Qt5::Core SHARED IMPORTED)
-
-set_property(TARGET Qt5::Core PROPERTY
-    INTERFACE_INCLUDE_DIRECTORIES ${_Qt5Core_OWN_INCLUDE_DIRS})
-set_property(TARGET Qt5::Core PROPERTY
-    INTERFACE_COMPILE_DEFINITIONS QT_CORE_LIB)
-
-set_property(TARGET Qt5::Core APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
-
 set(imported_location "${_qt5Core_install_prefix}/lib/x86_64-linux-gnu/libQt5Core.so.5.11.1")
 _qt5_Core_check_file_exists(${imported_location})
+
+add_library(Qt5::Core SHARED IMPORTED)
 set_target_properties(Qt5::Core PROPERTIES
-    INTERFACE_LINK_LIBRARIES    "${_Qt5Core_LIB_DEPENDENCIES}"
-    IMPORTED_LOCATION_RELEASE   ${imported_location}
-    IMPORTED_SONAME_RELEASE     libQt5Core.so.5
+    INTERFACE_INCLUDE_DIRECTORIES   "${_Qt5Core_OWN_INCLUDE_DIRS}"
+    INTERFACE_COMPILE_DEFINITIONS   QT_CORE_LIB
+    INTERFACE_LINK_LIBRARIES        ""
+    IMPORTED_LOCATION_RELEASE       ${imported_location}
+    IMPORTED_SONAME_RELEASE         libQt5Core.so.5
     )
+set_property(TARGET Qt5::Core APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
 
 set(Qt5CoreConfigDir "/usr/lib/x86_64-linux-gnu/cmake/Qt5Core")
 message(STATUS "StaticQt5: run code from ${Qt5CoreConfigDir}")
