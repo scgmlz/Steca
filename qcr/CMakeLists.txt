@@ -11,6 +11,5 @@ target_include_directories(${lib}
 
 target_link_libraries(${lib}
     PUBLIC
-    Qt5::Gui
-    Qt5::Widgets
+    Qt5::Widgets # depends on Qt5::Gui which depends on Qt5::Core
     )
