@@ -1,6 +1,7 @@
 ## parametrization (version, platform-specific paths)
 
 set(qt5_settings "JWuOffice" CACHE INTERNAL "")
+set(qt5_link_mode "SHARED" CACHE INTERNAL "")
 set(qt5_install_prefix /usr CACHE INTERNAL "")
 set(qt5_include_prefix ${qt5_install_prefix}/include/x86_64-linux-gnu/qt5 CACHE INTERNAL "")
 set(qt5_lib_prefix ${qt5_install_prefix}/lib/x86_64-linux-gnu/lib CACHE INTERNAL "")
