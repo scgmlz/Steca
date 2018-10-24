@@ -51,15 +51,14 @@ endforeach()
 
 ## invoke some more CMake files
 
-set(Qt5ConfigDir "/usr/lib/x86_64-linux-gnu/cmake")
-message(STATUS "StaticQt5: run code from ${Qt5ConfigDir}/*/")
+message(STATUS "StaticQt5: run code from ${qt5_config_dir}/*/")
 foreach(comp Core Gui Widgets)
     macro(_qt5_${comp}_check_file_exists file)
         check_file_exists(${file})
     endmacro()
     set(_qt5${comp}_install_prefix ${qt5_install_prefix})
-    include("${Qt5ConfigDir}/Qt5${comp}/Qt5${comp}ConfigExtras.cmake")
+    include("${qt5_config_dir}/Qt5${comp}/Qt5${comp}ConfigExtras.cmake")
 endforeach()
 
-include("${Qt5ConfigDir}/Qt5Core/Qt5CoreMacros.cmake")
-include("${Qt5ConfigDir}/Qt5Widgets/Qt5WidgetsMacros.cmake")
+include("${qt5_config_dir}/Qt5Core/Qt5CoreMacros.cmake")
+include("${qt5_config_dir}/Qt5Widgets/Qt5WidgetsMacros.cmake")
