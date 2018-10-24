@@ -16,7 +16,7 @@ list(APPEND Qt5Widgets_INCLUDE_DIRS ${qt5_include_prefix}/QtGui)
 list(APPEND Qt5Network_INCLUDE_DIRS ${qt5_include_prefix}/QtCore)
 
 set(Gui_LIB_DEPENDENCIES     "Qt5::Core")
-set(Widgets_LIB_DEPENDENCIES "Qt5::Gui;Qt5::Core")
+set(Widgets_LIB_DEPENDENCIES "Qt5::Gui")
 set(Network_LIB_DEPENDENCIES "Qt5::Core")
 
 ## check file existence
