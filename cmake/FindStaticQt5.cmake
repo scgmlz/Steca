@@ -4,7 +4,7 @@ message(STATUS "Setup Qt5 library dependences according to ${qt5_settings}")
 
 set(qt5_components Core Gui Widgets Network)
 foreach(comp ${qt5_components})
-    set(${comp}_path "${qt5_lib_path}/libQt5${comp}.${qt5_lib_extension}")
+    set(${comp}_path "${qt5_lib_prefix}Qt5${comp}.${qt5_lib_postfix}")
     set(Qt5${comp}_INCLUDE_DIRS
         ${qt5_include_prefix}
         ${qt5_include_prefix}/Qt${comp})
