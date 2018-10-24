@@ -28,8 +28,8 @@ macro(check_file_exists file)
 endmacro()
 
 foreach(comp ${qt5_components})
-    check_file_exists(${${comp}_path})
     message(STATUS "StaticQt5: require lib ${${comp}_path}")
+    check_file_exists(${${comp}_path})
     foreach(_dir ${Qt5${comp}_INCLUDE_DIRS})
         message(STATUS "StaticQt5: require include dir ${_dir}")
         check_file_exists(${_dir})
@@ -44,9 +44,10 @@ foreach(comp ${qt5_components})
     set_target_properties(Qt5::${comp} PROPERTIES
         INTERFACE_INCLUDE_DIRECTORIES   "${Qt5${comp}_INCLUDE_DIRS}"
         INTERFACE_LINK_LIBRARIES        "${${comp}_LIB_DEPENDENCIES}"
+        IMPORTED_CONFIGURATIONS         RELEASE
         IMPORTED_LOCATION_RELEASE       ${${comp}_path}
         )
-    set_property(TARGET Qt5::${comp} APPEND PROPERTY IMPORTED_CONFIGURATIONS RELEASE)
+    message(STATUS "StaticQt5: target Qt5::${comp} has location ${${comp}_path}")
 endforeach()
 
 ## invoke some more CMake files
