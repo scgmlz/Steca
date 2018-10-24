@@ -7,29 +7,12 @@ include(cmake/utils.cmake) # defines cxx_executable, cxx_test
 
 enable_testing()
 
-include_directories(
+set(inc_dirs
     ${gtest_SOURCE_DIR}/include
     ${gtest_SOURCE_DIR}
     ../ThirdParty
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_BINARY_DIR}
-    )
-
-link_directories(
-    ${gtest_BINARY_DIR}/src
-    ../ThirdParty
-    ../core
-    )
-
-set(core_test_link_libs
-    gtest_main
-    core
-    )
-
-set(gui_test_link_libs
-    gtest_main
-    core
-    gui
     )
 
 # We glob test sources, though this is often considered evil.
@@ -47,7 +30,8 @@ foreach(test_src ${core_test_sources})
     string(REGEX REPLACE ".*/" "" test_name "${test_src}")
     string(REGEX REPLACE "\\.cpp$" "" test_name "${test_name}")
     cxx_test(${test_name} "")
-    target_link_libraries(${test_name} "${core_test_link_libs}")
+    target_include_directories(${test_name} PRIVATE ${inc_dirs})
+    target_link_libraries(${test_name} PRIVATE gtest_main core)
 endforeach(test_src)
 
 foreach(test_src ${gui_test_sources})
@@ -55,5 +39,6 @@ foreach(test_src ${gui_test_sources})
     string(REGEX REPLACE ".*/" "" test_name "${test_src}")
     string(REGEX REPLACE "\\.cpp$" "" test_name "${test_name}")
     cxx_test(${test_name} "")
-    target_link_libraries(${test_name} "${gui_test_link_libs}")
+    target_include_directories(${test_name} PRIVATE ${inc_dirs})
+    target_link_libraries(${test_name} PRIVATE gtest_main core gui)
 endforeach(test_src)

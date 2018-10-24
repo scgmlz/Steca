@@ -5,13 +5,13 @@
 # ASSERT_LIBRARY_FUNCTION checks whether given libraries contain
 # a given function. If this is not the case, a fatal error is raised.
 #
-# CHECK_LIBRARY_EXISTS (LIBNAME FUNCTION LOCATION)
+# CHECK_LIBRARY_EXISTS(LIBNAME FUNCTION LOCATION)
 #
 # ::
 #
-#   LIBNAME  - library name (case sensitive)
+#   LIBNAME  - library name(case sensitive)
 #   FUNCTION - name of the function to be searched in ${LIBNAME}_LIBRARIES
-#   LOCATION - where the library should be found (if unsure, use "")
+#   LOCATION - where the library should be found(if unsure, use "")
 #
 #
 # The following variables may be set before calling this macro to modify
@@ -20,7 +20,7 @@
 # ::
 #
 #   CMAKE_REQUIRED_FLAGS = string of compile command line flags
-#   CMAKE_REQUIRED_DEFINITIONS = list of macros to define (-DFOO=bar)
+#   CMAKE_REQUIRED_DEFINITIONS = list of macros to define(-DFOO=bar)
 #   CMAKE_REQUIRED_LIBRARIES = list of libraries to link
 #   CMAKE_REQUIRED_QUIET = execute quietly without messages
 #
@@ -52,9 +52,9 @@
 # ${LIBNAME}_${FUNCTION}.
 
 #=============================================================================
-# Based on CheckLibrariesExists (Copyright 2002-2009 Kitware, Inc.)
-# Author: Joachim Wuttke (Copyright 2015 Forschungszentrum Jülich)
-# License: BSD (see cmake License for details)
+# Based on CheckLibrariesExists(Copyright 2002-2009 Kitware, Inc.)
+# Author: Joachim Wuttke(Copyright 2015 Forschungszentrum Jülich)
+# License: BSD(see cmake License for details)
 #=============================================================================
 
 

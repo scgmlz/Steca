@@ -17,8 +17,8 @@ for constrained non-linear least squares, allowing linear equation, box and line
 inequality constraints. The following options regarding the solution of the underlying
 augmented normal equations are offered:
 
-1) Assuming that you have LAPACK (or an equivalent vendor library such as ESSL, MKL,
-   NAG, ...) installed, you can use the included LAPACK-based solvers (default).
+1) Assuming that you have LAPACK(or an equivalent vendor library such as ESSL, MKL,
+   NAG, ...) installed, you can use the included LAPACK-based solvers(default).
 
 2) If you don't have LAPACK or decide not to use it, undefine HAVE_LAPACK in levmar.h
    and a LAPACK-free, LU-based linear systems solver will by used. Also, the line
@@ -32,10 +32,10 @@ for general comments. An example of using levmar for data fitting is in expfit.c
 
 The mathematical theory behind levmar is described in the lecture notes entitled
 "Methods for Non-Linear Least Squares Problems", by K. Madsen, H.B. Nielsen and O. Tingleff,
-Technical University of Denmark (http://www.imm.dtu.dk/courses/02611/nllsq.pdf). 
+Technical University of Denmark(http://www.imm.dtu.dk/courses/02611/nllsq.pdf). 
 
 LICENSE
-levmar is released under the GNU Public License (GPL), which can be found in the included
+levmar is released under the GNU Public License(GPL), which can be found in the included
 LICENSE file. Note that under the terms of GPL, commercial use is allowed only if a software
 employing levmar is also published in source under the GPL. However, if you are interested
 in using levmar in a proprietary commercial application, a commercial license for levmar
@@ -72,4 +72,4 @@ Axb_core.c is included by Axb.c, to provide single and double precision
 routine versions.
 
 
-Send your comments/bug reports to lourakis (at) ics (dot) forth (dot) gr
+Send your comments/bug reports to lourakis(at) ics(dot) forth(dot) gr

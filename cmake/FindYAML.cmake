@@ -1,5 +1,5 @@
 # CMake module to search for the C library libyaml
-# (library for parsing YAML files)
+#(library for parsing YAML files)
 #
 # If it's found it sets LIBYAML_FOUND to TRUE
 # and following variables are set:

@@ -9,5 +9,5 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_VARIADIC_MAX=10 /wd4100 /wd4275")
 endif()
 
-option(BUILD_SHARED_LIBS "Build shared libraries (DLLs)." ON)
+option(BUILD_SHARED_LIBS "Build shared libraries(DLLs)." ON)
 add_subdirectory(gtest-1.8.0)
