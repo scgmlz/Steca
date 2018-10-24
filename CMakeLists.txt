@@ -3,16 +3,13 @@
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 cmake_policy(SET CMP0048 NEW)
 
-set(CMAKE_MODULE_PATH
-    ${CMAKE_SOURCE_DIR}/cmake
-    ${CMAKE_SOURCE_DIR}/cmake/steca/modules)
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(PreventInSourceBuilds)
 
 project(Steca VERSION 2.1)
 message(STATUS "Building Steca ${Steca_VERSION}")
 
 option(WITH_TESTS "Build with all tests" OFF)
-option(GIVEN_QT "Use our own way to find the Qt libraries" ON)
 
 set(LIB_MAN     OFF CACHE INTERNAL "" FORCE)
 set(LIB_INSTALL OFF CACHE INTERNAL "" FORCE)
