@@ -45,7 +45,7 @@ foreach(comp ${qt5_components})
         INTERFACE_INCLUDE_DIRECTORIES   "${qt5_${comp}_inc_dirs}"
         INTERFACE_LINK_LIBRARIES        "${qt5_${comp}_link_libs}"
         IMPORTED_CONFIGURATIONS         RELEASE
-        IMPORTED_LOCATION_RELEASE       ${qt5_${comp}_location}
+        IMPORTED_LOCATION               ${qt5_${comp}_location}
         )
     message(STATUS "StaticQt5: target Qt5::${comp} has location ${qt5_${comp}_location}")
 endforeach()
