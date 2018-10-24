@@ -16,10 +16,14 @@ option(FITTEST "Build with FitTest" OFF)
 option(LIB_MAN "Build library man pages" ON)
 option(LIB_INSTALL "Install library" ON)
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+option(DEVELOPER_BUILD "Be pedantic, use all warnings, ..." OFF)
 
 set(destination ${CMAKE_INSTALL_PREFIX})
 
-set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} -g -O2 -pedantic -Wall -Wno-sign-compare -Wno-unused-result -Wno-parentheses  -Wno-unknown-pragmas")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O2")
+if (DEVELOPER_BUILD)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror -pedantic -Wall -Wno-sign-compare -Wno-unused-result -Wno-parentheses  -Wno-unknown-pragmas")
+endif()
 
 add_subdirectory(lib)
 set(LMFit_LIBRARY ${lmfit_LIBRARY} PARENT_SCOPE)
