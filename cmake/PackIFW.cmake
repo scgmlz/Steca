@@ -1,23 +1,15 @@
 # Steca Windows packaging #
 
+set(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-Installer")
 
-# Name of the package
-set(CPACK_PACKAGE_FILE_NAME
-  "${CMAKE_PROJECT_NAME}-Installer")
-
-# Enable IFW generator
 set(CPACK_GENERATOR IFW)
 
-# Default Directories for installation and Start Menu
-set(CPACK_IFW_PACKAGE_START_MENU_DIRECTORY "A Steca Istallation with IFW")
+set(CPACK_IFW_PACKAGE_START_MENU_DIRECTORY "") # empty => default is install to top-level (?)
 set(CPACK_IFW_TARGET_DIRECTORY "@HomeDir@/${CMAKE_PROJECT_NAME}")
 set(CPACK_IFW_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/main/icons/Steca.ico")
 set(CPACK_IFW_PACKAGE_WINDOW_ICON "${CMAKE_SOURCE_DIR}/main/icons/Steca.png")
 
-# If not set, all components will be merged in the group
 set(CPACK_COMPONENTS_GROUPING IGNORE)
-
-# The parent group
 set(CPACK_IFW_PACKAGE_GROUP Steca)
 
 include(CPack)
@@ -36,12 +28,6 @@ find_package(Qt5Core REQUIRED)
 get_target_property(_qmake_executable Qt5::qmake IMPORTED_LOCATION)
 get_filename_component(_qt_bin_dir "${_qmake_executable}" DIRECTORY)
 find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${_qt_bin_dir}")
-
-# Running this with MSVC 2015 requires CMake 3.6+
-if((MSVC_VERSION VERSION_EQUAL 1900 OR MSVC_VERSION VERSION_GREATER 1900)
-  AND CMAKE_VERSION VERSION_LESS "3.6")
-  message(WARNING "Deploying with MSVC 2015+ requires CMake 3.6+")
-endif()
 
 # Add commands that copy the Qt runtime to the target's output directory after
 # build and install the Qt runtime to the specified directory
