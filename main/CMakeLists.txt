@@ -11,6 +11,7 @@ target_include_directories(Steca
     ${CMAKE_HOME_DIRECTORY}/3rdparty)
 
 target_link_libraries(Steca PRIVATE gui)
+
 if(WIN32)
-    include(CPackWindows)
+    include(PackIFW)
 endif()
