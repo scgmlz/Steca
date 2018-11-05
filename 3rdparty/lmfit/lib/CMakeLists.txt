@@ -13,8 +13,6 @@ set_target_properties(
     VERSION ${lmfit_VERSION}
     SOVERSION ${lmfit_SOVERSION})
 
-# include(LinkLibMath)
-# link_libm(${lib})
 if(NOT MSVC)
     target_link_libraries(${lib} m)
 endif()

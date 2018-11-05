@@ -20,9 +20,9 @@ option(DEVELOPER_BUILD "Be pedantic, use all warnings, ..." OFF)
 
 set(destination ${CMAKE_INSTALL_PREFIX})
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O2")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2")
 if (DEVELOPER_BUILD)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror -pedantic -Wall -Wno-sign-compare -Wno-unused-result -Wno-parentheses  -Wno-unknown-pragmas")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Werror -pedantic -Wall -Wno-sign-compare -Wno-unused-result -Wno-parentheses  -Wno-unknown-pragmas")
 endif()
 
 add_subdirectory(lib)
