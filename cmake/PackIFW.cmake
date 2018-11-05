@@ -19,15 +19,20 @@ include(CPackIFW)
 #https://hk.saowen.com/a/d1cf90fcfea6d511629fd5a6c8113808721a7f19656677e8a5fab370a8d35cd4
 #########################################################################################
 
-# Add some required libraries
-set(CMAKE_INSTALL_UCRT_LIBRARIES TRUE)
+# Search for compiler-provided system runtime libraries and add install rules for them.
+# Options must be given before the include.
+set(CMAKE_INSTALL_UCRT_LIBRARIES TRUE) # install Windows Universal CRT libs for app-local deployment
 include(InstallRequiredSystemLibraries)
 
-# Find windeployqt (according to the Qt docs, it is in QTDIR/bin)
+# Find windeployqt.exe (a Qt tool, should be in QTDIR/bin, along with qmake.exe, uic.exe etc)
 if(NOT DEFINED ENV{QTDIR})
-    message(FATAL "QTDIR not defined")
+    message(FATAL_ERROR "QTDIR not defined")
 endif()
 find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS $ENV{QTDIR}/bin)
+message(STATUS "found windeployqt tool at ${WINDEPLOYQT_EXECUTABLE}")
+if(NOT WINDEPLOYQT_EXECUTABLE)
+    message(FATAL_ERROR "windeployqt not found")
+endif()
 
 # Add commands that copy the Qt runtime to the target's output directory after
 # build and install the Qt runtime to the specified directory
@@ -91,14 +96,11 @@ endfunction()
 mark_as_advanced(WINDEPLOYQT_EXECUTABLE)
 #########################################################################################
 
-# 1. add/configure component group
-# 2. install component
-# 3. add/configure component
 cpack_add_component_group(Steca EXPANDED)
 cpack_ifw_configure_component_Group(Steca NAME fzj.jcns.scg.steca)
-install(TARGETS Steca
-  DESTINATION bin
-  COMPONENT Steca.exe)
+
+install(TARGETS Steca DESTINATION bin COMPONENT Steca.exe)
 windeployqt("Steca" "bin")
+
 cpack_add_component(Steca.exe ENABLED GROUP Steca)
 cpack_ifw_configure_component(Steca.exe NAME fzj.jcns.scg.steca.exe SCRIPT ${CMAKE_SOURCE_DIR}/StecaInstallScript.qs)
