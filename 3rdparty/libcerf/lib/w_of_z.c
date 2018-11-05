@@ -293,7 +293,7 @@ cmplx w_of_z(cmplx z)
                 1 + ax2 * (1 + ax2 * (0.5 + 0.166666666666666666667*ax2));
             const double expm2ax =
                 1 - ax2 * (1 - ax2 * (0.5 - 0.166666666666666666667*ax2));
-            for (int n = 1; 1; ++n) {
+            for (int n = 1; ; ++n) {
                 ++faddeeva_nofterms;
                 const double coef = expa2n2[n-1] * expx2 / (a2*(n*n) + y*y);
                 prod2ax *= exp2ax;
@@ -313,7 +313,7 @@ cmplx w_of_z(cmplx z)
             faddeeva_algorithm += 2;
             expx2 = exp(-x*x);
             const double exp2ax = exp((2*a)*x), expm2ax = 1 / exp2ax;
-            for (int n = 1; 1; ++n) {
+            for (int n = 1; ; ++n) {
                 ++faddeeva_nofterms;
                 const double coef = expa2n2[n-1] * expx2 / (a2*(n*n) + y*y);
                 prod2ax *= exp2ax;

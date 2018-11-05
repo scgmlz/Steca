@@ -145,8 +145,9 @@ double voigt( double x, double sigma, double gamma )
             return gam / pi / (x*x + gam*gam);
         } else {
             // Regular case, both parameters are nonzero
-            cmplx z = C(x,gam) / sqrt(2) / sig;
-            return creal( w_of_z(z) ) / s2pi / sig;
+            double w = sqrt(gam*gam+sig*sig); // to work in reduced units
+            cmplx z = C(x/w,gam/w) / sqrt(2) / (sig/w);
+            return creal( w_of_z(z) ) / s2pi / (sig/w);
         }
     }
 }
