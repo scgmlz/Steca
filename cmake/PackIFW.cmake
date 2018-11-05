@@ -23,11 +23,11 @@ include(CPackIFW)
 set(CMAKE_INSTALL_UCRT_LIBRARIES TRUE)
 include(InstallRequiredSystemLibraries)
 
-#Find windeployqt
-find_package(Qt5Core REQUIRED)
-get_target_property(_qmake_executable Qt5::qmake IMPORTED_LOCATION)
-get_filename_component(_qt_bin_dir "${_qmake_executable}" DIRECTORY)
-find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS "${_qt_bin_dir}")
+# Find windeployqt (according to the Qt docs, it is in QTDIR/bin)
+if(NOT DEFINED ENV{QTDIR})
+    message(FATAL "QTDIR not defined")
+endif()
+find_program(WINDEPLOYQT_EXECUTABLE windeployqt HINTS $ENV{QTDIR}/bin)
 
 # Add commands that copy the Qt runtime to the target's output directory after
 # build and install the Qt runtime to the specified directory
