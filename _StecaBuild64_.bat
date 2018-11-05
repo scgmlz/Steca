@@ -1,5 +1,5 @@
 set QTDIR=C:\Qt5\5.11.2\msvc2017_64
-set PATH=C:\Qt5\5.11.2\msvc2017_64\lib;C:\yaml.win64\local_x64;%PATH%
+set PATH=C:\Qt5\5.11.2\msvc2017_64\lib;C:\yaml.win64\local_x64;C:\Qt5\QtIFW-3.0.4\bin;%PATH%
 set Qt5Core_DIR=C:\Qt5\5.11.2\msvc2017_64\lib\cmake
 set Qt5Gui_DIR=C:\Qt5\5.11.2\msvc2017_64\lib\cmake
 set Qt5Widgets_DIR=C:\Qt5\5.11.2\msvc2017_64\lib\cmake
