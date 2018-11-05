@@ -1,4 +1,7 @@
-# Steca Windows packaging #
+# Configure a Steca installer.
+# Currently only tested and used for Windows.
+# Relies on code adapted from "Using windeployqt with CPack",
+#   https://hk.saowen.com/a/d1cf90fcfea6d511629fd5a6c8113808721a7f19656677e8a5fab370a8d35cd4
 
 set(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-Installer")
 
@@ -14,10 +17,6 @@ set(CPACK_IFW_PACKAGE_GROUP Steca)
 
 include(CPack)
 include(CPackIFW)
-
-#The following code was adapted from "Using windeployqt with CPack":
-#https://hk.saowen.com/a/d1cf90fcfea6d511629fd5a6c8113808721a7f19656677e8a5fab370a8d35cd4
-#########################################################################################
 
 # Search for compiler-provided system runtime libraries and add install rules for them.
 # Options must be given before the include.
@@ -35,16 +34,13 @@ if(NOT WINDEPLOYQT_EXECUTABLE)
     message(FATAL_ERROR "windeployqt not found")
 endif()
 
-
-#########################################################################################
-
 cpack_add_component_group(Steca EXPANDED)
-cpack_ifw_configure_component_Group(Steca NAME fzj.jcns.scg.steca)
+cpack_ifw_configure_component_group(Steca NAME fzj.jcns.scg.steca)
 
 install(TARGETS Steca DESTINATION bin COMPONENT Steca.exe)
 
-# Add commands that copy the Qt runtime to the target's output directory after
-# build and install the Qt runtime to the specified directory
+# Add commands that copy the Qt runtime to the target's output directory
+# after build and install the Qt runtime to the specified directory
 
 # Run windeployqt immediately after build
 add_custom_command(TARGET Steca POST_BUILD
@@ -90,6 +86,7 @@ install(CODE
     "
     COMPONENT "QtLibs"
     )
+
 # windeployqt doesn't work correctly with the system runtime libraries,
 # so we fall back to one of CMake's own modules for copying them over
 foreach(lib ${CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS})
