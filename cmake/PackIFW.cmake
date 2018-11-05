@@ -4,6 +4,13 @@
 #   https://hk.saowen.com/a/d1cf90fcfea6d511629fd5a6c8113808721a7f19656677e8a5fab370a8d35cd4
 
 set(CPACK_PACKAGE_FILE_NAME "${CMAKE_PROJECT_NAME}-Installer")
+set(CPACK_PACKAGE_VENDOR "Forschungszentrum Juelich GmbH")
+# the next three lines are required for CMake <3.12
+set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
+
+set(CPACK_VERBATIM_VARIABLES TRUE) # urgent advise from Scott book
 
 set(CPACK_GENERATOR IFW)
 
