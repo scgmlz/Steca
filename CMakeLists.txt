@@ -3,9 +3,7 @@
 cmake_minimum_required(VERSION 3.1 FATAL_ERROR)
 cmake_policy(SET CMP0048 NEW)
 
-set(CMAKE_MODULE_PATH
-    ${CMAKE_SOURCE_DIR}/cmake
-    ${CMAKE_SOURCE_DIR}/cmake/steca/modules)
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(PreventInSourceBuilds)
 
 project(Steca VERSION 2.1)
