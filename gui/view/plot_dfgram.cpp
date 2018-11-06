@@ -223,6 +223,7 @@ void PlotDfgram::resizeEvent(QResizeEvent* e)
 //! Repaints everything, including the colored background areas.
 void PlotDfgram::renderAll()
 {
+    qDebug() << "PD:rA1";
     clearItems();
 
     // Render colored background areas to indicate baseline and peak fit ranges.
@@ -247,14 +248,17 @@ void PlotDfgram::renderAll()
     ASSERT(!dfgram->curve.isEmpty());
 
     // retrieve background
+    qDebug() << "PD:rA2";
     const Curve& bg           = dfgram->getBgAsCurve();
     const Curve& curveMinusBg = dfgram->getCurveMinusBg();
 
     // calculate peaks
+    qDebug() << "PD:rA3";
     std::vector<Curve> fitCurves;
     for (int jP=0; jP<gSession->peaks.size(); ++jP)
         fitCurves.push_back(dfgram->getPeakAsCurve(jP));
 
+    qDebug() << "PD:rA4";
     const Range& tthRange = dfgram->curve.rgeX();
     Range intenRange;
     if (gGui->toggles->fixedIntenDfgram.getValue()) {
@@ -283,6 +287,7 @@ void PlotDfgram::renderAll()
     dgramBgFittedGraph2_->setData(QVector<double>::fromStdVector(curveMinusBg.xs()),
                                   QVector<double>::fromStdVector(curveMinusBg.ys()));
 
+    qDebug() << "PD:rA7";
     clearReflLayer();
     setCurrentLayer("refl");
 
@@ -295,7 +300,9 @@ void PlotDfgram::renderAll()
                        QVector<double>::fromStdVector(r.ys()));
     }
 
+    qDebug() << "PD:rA9";
     replot();
+    qDebug() << "PD:rA/";
 }
 
 void PlotDfgram::plotEmpty()
