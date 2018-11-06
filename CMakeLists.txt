@@ -8,9 +8,9 @@ include(PreventInSourceBuilds)
 
 project(Steca VERSION 2.1)
 message(STATUS "Building Steca ${Steca_VERSION}")
-set(CMAKE_PROJECT_DESCRIPTION
-    "The stress and texture calculator Steca is an interactive, graphical data reduction program"
-    "for neutron and x-ray materials diffractometers [http://apps.jcns.fz-juelich.de/steca].")
+
+set(CMAKE_PROJECT_DESCRIPTION # for display in installer
+    "Steca - the stress and texture calculator.")
 
 option(WITH_TESTS "Build with all tests" ON)
 
