@@ -30,7 +30,7 @@ else()
 endif()
 
 add_subdirectory(lib)
-set(Cerf_LIBRARY ${cerf_LIBRARY} PARENT_SCOPE)
+set(Cerf_LIBRARIES ${cerf_LIBRARY} PARENT_SCOPE)
 add_subdirectory(test)
 if(${LIB_MAN})
     add_subdirectory(man)

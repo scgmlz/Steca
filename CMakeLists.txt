@@ -40,7 +40,6 @@ else()
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} ${DEB_FLAGS} -O0 -g")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -w")
     set(BUILD_SHARED_LIBS ON)
-    set(CMAKE_FIND_LIBRARY_SUFFIXES ".la")
 endif()
 
 foreach(comp Qt5Core Qt5Gui Qt5Widgets Qt5Network)
@@ -54,9 +53,9 @@ find_package(LMFit      1.8 MODULE)
 find_package(Cerf       1.8 MODULE)
 
 message(STATUS
-    "libyaml: FOUND=${yaml_FOUND}, VERSION=${yaml_VERSION}, LIB=${yaml_LIBRARY}")
-message(STATUS "lmfit:   FOUND=${LMFit_FOUND}, VERSION=${LMFit_VERSION}, LIB=${LMFit_LIBRARY}")
-message(STATUS "libcerf: FOUND=${Cerf_FOUND}, VERSION=${Cerf_VERSION}, LIB=${Cerf_LIBRARY}, "
+    "libyaml: FOUND=${yaml_FOUND}, VERSION=${yaml_VERSION}, LIB=${yaml_LIBRARIES}")
+message(STATUS "lmfit:   FOUND=${LMFit_FOUND}, VERSION=${LMFit_VERSION}, LIB=${LMFit_LIBRARIES}")
+message(STATUS "libcerf: FOUND=${Cerf_FOUND}, VERSION=${Cerf_VERSION}, LIB=${Cerf_LIBRARIES}, "
     "IS_CPP=${Cerf_IS_CPP}")
 
 # how to build 3rd party libraries:

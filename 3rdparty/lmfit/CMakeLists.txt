@@ -26,7 +26,7 @@ if (DEVELOPER_BUILD)
 endif()
 
 add_subdirectory(lib)
-set(LMFit_LIBRARY ${lmfit_LIBRARY} PARENT_SCOPE)
+set(LMFit_LIBRARIES ${lmfit_LIBRARY} PARENT_SCOPE)
 add_subdirectory(demo)
 if(${LIB_MAN})
     add_subdirectory(man)

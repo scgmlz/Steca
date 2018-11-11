@@ -53,7 +53,7 @@ configure_file(
   )
 
 add_library(yaml ${SRCS})
-set(yaml_LIBRARY yaml PARENT_SCOPE)
+set(yaml_LIBRARIES yaml PARENT_SCOPE)
 
 if(NOT BUILD_SHARED_LIBS)
   set_target_properties(yaml
