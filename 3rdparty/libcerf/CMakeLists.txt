@@ -31,6 +31,7 @@ endif()
 
 add_subdirectory(lib)
 set(Cerf_LIBRARIES ${cerf_LIBRARY} PARENT_SCOPE)
+set(Cerf_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib PARENT_SCOPE)
 add_subdirectory(test)
 if(${LIB_MAN})
     add_subdirectory(man)

@@ -5,7 +5,7 @@ add_library(${lib} ${files})
 
 target_include_directories(${lib}
     PRIVATE
-    ${LIBYAML_INCLUDE_DIR}
+    ${yaml_INCLUDE_DIR}
     ${CMAKE_HOME_DIRECTORY}
     ${CMAKE_HOME_DIRECTORY}/3rdparty
     )

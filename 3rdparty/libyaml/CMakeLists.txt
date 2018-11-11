@@ -54,6 +54,7 @@ configure_file(
 
 add_library(yaml ${SRCS})
 set(yaml_LIBRARIES yaml PARENT_SCOPE)
+set(yaml_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include PARENT_SCOPE)
 
 if(NOT BUILD_SHARED_LIBS)
   set_target_properties(yaml
