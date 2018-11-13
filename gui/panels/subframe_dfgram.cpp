@@ -35,7 +35,7 @@ private:
     void onNormChanged();
     void onHighlight();
 
-    class PlotDfgram* plot_;
+    PlotDfgram* plot_;
     QcrComboBox comboNormType_;
     QcrRadioButton intenSum_;
     QcrRadioButton intenAvg_;
