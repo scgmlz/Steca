@@ -16,21 +16,21 @@
 #include "qcr/base/string_ops.h"
 
 QcrIcon::QcrIcon(const QString& fileName)
-    : QcrMixin {this}
+    : QcrMixin{this, "icon:"+fileName}
 {
     int h = sizeHint().height();
     setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
 }
 
 QcrLineDisplay::QcrLineDisplay(std::function<QString()> freshText)
-    : QcrMixin {this}
+    : QcrMixin{this, "lineDisplay"}
 {
     setReadOnly(true);
     setRemake( [this, freshText]() { setText( freshText() ); } );
 }
 
 QcrLineDisplay::QcrLineDisplay(int ndigits, bool withDot)
-    : QcrMixin {this}
+    : QcrMixin{this, "lineDisplay"}
 {
     strOp::setWidth(this, ndigits, withDot);
     setText("???");

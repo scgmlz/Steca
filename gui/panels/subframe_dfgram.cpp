@@ -46,7 +46,8 @@ private:
 
 
 DfPanel::DfPanel()
-    : comboNormType_ {"normTyp", &gSession->params.howtoNormalize,
+    : QcrWidget("DfPanel")
+    , comboNormType_ {"normTyp", &gSession->params.howtoNormalize,
         []()->QStringList{return {"none", "monitor", "Δ monitor", "time", "Δ time"};}}
     , intenSum_ {"intenSum", "sum"}
     , intenAvg_ {"intenAvg", "avg ×", &gSession->params.intenScaledAvg}

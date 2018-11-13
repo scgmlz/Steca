@@ -114,6 +114,7 @@ private:
 };
 
 PeakfitOutcomeView::PeakfitOutcomeView()
+    : QcrWidget("PeakfitOutcomeView")
 {
     auto* grid = new QGridLayout;
     grid->addWidget(new QLabel("direct"), 0, 1);
@@ -204,6 +205,7 @@ void PeakfitOutcomeView::enable(bool haveRaw, bool haveFit, bool haveSoG)
 //! @class ControlsPeakfits
 
 ControlsPeakfits::ControlsPeakfits()
+    : QcrWidget("ControlsPeakfits")
 {
     auto* comboPeakFct = new QcrComboBox{
         "reflTyp", &gSession->params.defaultPeakFunction,

@@ -41,7 +41,7 @@ void QcrMixin::remake()
 //! @class QcrRoot
 
 QcrRoot::QcrRoot(QObject* object)
-    : QcrMixin {object}
+    : QcrMixin {object, "root"}
 {
     gRoot = this;
 }

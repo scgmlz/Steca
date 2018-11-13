@@ -78,6 +78,7 @@ void addOverlay(QImage& img, double midTth)
 //! @class ImageTab
 
 ImageTab::ImageTab()
+    : QcrWidget("ImageTab")
 {
     box1_ = new QHBoxLayout;
     box1_->addWidget(new QcrIconToggleButton{&gGui->toggles->fixedIntenImage}, Qt::AlignLeft);

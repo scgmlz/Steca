@@ -22,6 +22,7 @@
 //! @class DiagramTab
 
 DiagramTab::DiagramTab()
+    : QcrWidget("DiagramTab")
 {
     auto* plot = new PlotDiagram; // the main subframe
 

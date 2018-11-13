@@ -17,6 +17,7 @@
 #include "qcr/widgets/controls.h"
 
 ControlsInterpolation::ControlsInterpolation()
+    : QcrWidget("ControlsInterpolation")
 {
     auto& P = gSession->params;
     auto* doInterpol =

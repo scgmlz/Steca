@@ -29,17 +29,20 @@ public:
 
 class QcrWidget : public QWidget, public QcrMixin {
 public:
-    QcrWidget() : QcrMixin(this) {}
+    QcrWidget() = delete;
+    QcrWidget(const QString& name) : QcrMixin(this, name) {}
 };
 
 class QcrFrame : public QFrame, public QcrMixin {
 public:
-    QcrFrame() : QcrMixin{this} {}
+    QcrFrame() = delete;
+    QcrFrame(const QString& name) : QcrMixin{this, name} {}
 };
 
 class QcrScrollArea : public QScrollArea, public QcrMixin {
 public:
-    QcrScrollArea() : QcrMixin{this} {}
+    QcrScrollArea() = delete;
+    QcrScrollArea(const QString& name) : QcrMixin{this, name} {}
 };
 
 class QcrDockWidget : public QDockWidget, public QcrMixin {

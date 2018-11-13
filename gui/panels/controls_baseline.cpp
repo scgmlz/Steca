@@ -89,6 +89,7 @@ public:
 //! @class ControlsBaseline
 
 ControlsBaseline::ControlsBaseline()
+    : QcrWidget("ControlsBaseline")
 {
     auto* box = new QVBoxLayout;
     auto* hb  = new QHBoxLayout;

@@ -31,6 +31,7 @@ public:
 };
 
 DetectorControls::DetectorControls()
+    : QcrWidget("DetectorControls")
 {
     auto* mmGrid = new QGridLayout;
     mmGrid->addWidget(new QLabel("det. distance"), 0, 0);
@@ -86,6 +87,7 @@ public:
 };
 
 CutControls::CutControls()
+    : QcrFrame("CutControls")
 {
     auto* layout = new QGridLayout;
     layout->addWidget(new QLabel("cut"), 1, 0);
@@ -123,6 +125,7 @@ public:
 };
 
 ActiveClustersControls::ActiveClustersControls()
+    : QcrWidget("ActiveClustersControls")
 {
     auto* dropIncompleteAction = new QcrToggle{
         "dropIncomplete", &gSession->dataset.dropIncomplete,
@@ -153,6 +156,7 @@ public:
 };
 
 GammaControls::GammaControls()
+    : QcrWidget("GammaControls")
 {
     auto layout = new QHBoxLayout;
     layout->addWidget(new QLabel("number of γ slices"));
@@ -167,6 +171,7 @@ GammaControls::GammaControls()
 //! @class ControlsDetector
 
 ControlsDetector::ControlsDetector()
+    : QcrWidget("ControlsDetector")
 {
     auto* vbox = new QVBoxLayout;
     vbox->addWidget(new DetectorControls);

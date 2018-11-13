@@ -42,6 +42,7 @@ private:
 };
 
 ColumnSelector::ColumnSelector()
+    : QcrWidget("ColumnSelector")
 {
     auto* box = new QVBoxLayout;
     box->addWidget(&rbAll_  );
@@ -136,10 +137,11 @@ void ColumnSelector::updateRadiobuttons()
 //! @class BigtableTab
 
 BigtableTab::BigtableTab()
+    : QcrWidget("BigtableTab")
 {
     auto bigtableView = new BigtableView;
 
-    auto* colSelBox = new QcrScrollArea;
+    auto* colSelBox = new QcrScrollArea("colSelBox");
     colSelBox->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     colSelBox->setWidget(new ColumnSelector());
 
