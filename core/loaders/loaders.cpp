@@ -76,7 +76,7 @@ bool couldBeTiffDat(const QFileInfo& info) {
 Rawfile load_low_level(const QString& filePath) {
     const QFileInfo info(filePath);
     if (!(info.exists()))
-        THROW("File " % filePath % " does not exist");
+        THROW("File '" % filePath % "' does not exist");
 
     if (couldBeCaress(info))
         return load::loadCaress(filePath);
@@ -87,7 +87,7 @@ Rawfile load_low_level(const QString& filePath) {
     else if (couldBeTiffDat(info))
         return load::loadTiffDat(filePath);
     else
-        THROW("unknown file type: " % filePath);
+        THROW("File '" % filePath % "' has unknown type");
 }
 
 } // local methods
@@ -97,7 +97,7 @@ namespace load {
 Rawfile loadRawfile(const QString& filePath) {
     Rawfile ret {load_low_level(filePath)};
     if (!ret.numMeasurements())
-        THROW("File " % filePath % " contains no cluster");
+        THROW("File '" % filePath % "' contains no cluster");
     return ret;
 }
 
