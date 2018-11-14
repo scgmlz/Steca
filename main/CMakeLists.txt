@@ -1,6 +1,5 @@
 if(WIN32)
-    set(WIN_RESOURCE_FILE resources.rc)
-    add_executable(Steca WIN32 steca.cpp resources.qrc ${WIN_RESOURCE_FILE})
+    add_executable(Steca WIN32 steca.cpp resources.qrc resources.rc)
 else()
     add_executable(Steca steca.cpp resources.qrc)
 endif()
