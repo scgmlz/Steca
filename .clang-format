@@ -14,7 +14,7 @@ AlignConsecutiveDeclarations: false
 AlignOperands: false
 AllowShortBlocksOnASingleLine: true
 AllowShortCaseLabelsOnASingleLine : true
-AllowShortFunctionsOnASingleLine: All
+AllowShortFunctionsOnASingleLine: Inline
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 AlwaysBreakAfterReturnType: None
@@ -34,7 +34,6 @@ ContinuationIndentWidth: 4
 Cpp11BracedListStyle: true
 DerivePointerAlignment: false
 FixNamespaceComments: false
-ForEachMacros:   [ 'for_int', 'for_i', 'for_ij' ]
 IndentCaseLabels: false
 IndentWrappedFunctionNames: false
 MaxEmptyLinesToKeep: 2
