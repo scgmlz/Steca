@@ -40,7 +40,7 @@ bool IsPrime(int n) {
   return true;
 }
 
-#include <limits.h>
+#include <climits>
 #include "gtest/gtest.h"
 
 
