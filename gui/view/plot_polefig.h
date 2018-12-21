@@ -32,7 +32,7 @@ class PlotPolefig : public QcrWidget {
 public:
     PlotPolefig(bool alive);
 
-    QcrCell<bool> flat {false};
+    QcrCell<bool> flat {false}; //!< Show only grid points, and no intensity representation
 
 private:
     void paintEvent(QPaintEvent*);
