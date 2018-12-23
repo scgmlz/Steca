@@ -1,8 +1,7 @@
 # Steca top-level configuration
 
 cmake_minimum_required(VERSION 3.6 FATAL_ERROR) # 3.6+ required by IFW for VS2015+
-# cmake_policy(SET CMP0048 NEW)
-cmake_policy(SET CMP0077 NEW) # to prevent warning from gtest
+cmake_policy(VERSION 3.6)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(PreventInSourceBuilds)
