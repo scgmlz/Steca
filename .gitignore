@@ -5,6 +5,4 @@ html/
 *.tmp
 
 build
-mybuild
 qbuild
-debugbuild
