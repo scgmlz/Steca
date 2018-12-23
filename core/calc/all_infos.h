@@ -34,8 +34,8 @@ public:
     void invalidateAt(int) const;
     void invalidateInterpolated() const;
 private:
-    mutable SelfKachingVector<AllInfos,InfoSequence> direct;
-    mutable SelfKachingVector<AllInfos,InfoSequence> interpolated;
+    mutable lazy_data::SelfKachingVector<AllInfos,InfoSequence> direct;
+    mutable lazy_data::SelfKachingVector<AllInfos,InfoSequence> interpolated;
 };
 
 #endif // ALL_INFOS_H

@@ -15,9 +15,9 @@
 #ifndef CLUSTER_H
 #define CLUSTER_H
 
-#include "lazy_data.h"
 #include "core/data/dfgram.h"
 #include "core/raw/measurement.h"
+#include "lazy_data.h"
 
 //! A group of one or more Measurement|s.
 
@@ -81,7 +81,7 @@ public:
     bool isIncomplete() const;
     bool isActivated() const { return activated_; }
 
-    mutable SelfKachingVector<Cluster,Dfgram> dfgrams; //! One Dfgram per gamma section
+    mutable lazy_data::SelfKachingVector<Cluster,Dfgram> dfgrams; //! One Dfgram per gamma section
     const Dfgram& currentDfgram() const;
 
 private:

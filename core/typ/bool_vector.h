@@ -15,8 +15,8 @@
 #ifndef BOOL_VECTOR_H
 #define BOOL_VECTOR_H
 
-#include "lazy_data.h"
 #include "qcr/engine/cell.h"
+#include "lazy_data.h"
 #include <vector>
 
 //! Selection of meta parameters
@@ -36,7 +36,7 @@ public:
     std::vector<QcrCell<bool>> vec; //!< true if to be displayed
 private:
     // TODO: mv somewhere else, bc it is not BoolVector specific and only used by subframe_clusters:
-    Kached<BoolVector,std::vector<int>> list; //!< indices of metadata items selected for display
+    lazy_data::Kached<BoolVector,std::vector<int>> list; //!< indices of metadata items selected for display
 };
 
 #endif // BOOL_VECTOR_H

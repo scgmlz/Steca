@@ -1,24 +1,25 @@
 //  ***********************************************************************************************
 //
-//  Steca: stress and texture calculator
+//  Lazy Data Library
 //
 //! @file      lazy_data.h
 //! @brief     Defines and implements the class templates Cached, CachingVector, KeyedCache, ...
 //!
 //! @homepage  https://github.com/scgmlz/Steca
-//! @license   GNU General Public License v3 or higher (see COPYING)
-//! @copyright Forschungszentrum Jülich GmbH 2016-2018
-//! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
+//! @license   The Boost Licence
+//! @copyright Forschungszentrum Jülich GmbH 2018-
+//! @author    Joachim Wuttke, Scientific Computing Group at MLZ
 //
 //  ***********************************************************************************************
 
 #ifndef LAZY_DATA_H
 #define LAZY_DATA_H
 
-//#include "qcr/base/debug.h" // TMP
 #include <functional>
 #include <memory>
 #include <vector>
+
+namespace lazy_data {
 
 //! Simple cached object.
 template<typename T>
@@ -130,5 +131,7 @@ private:
     mutable std::unique_ptr<T> cached_;
     mutable K key_;
 };
+
+} // namespace lazy_data
 
 #endif // LAZY_DATA_H

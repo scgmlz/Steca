@@ -17,8 +17,8 @@
 
 #include "core/raw/image.h"
 #include "core/raw/rawfile.h"
-#include "lazy_data.h"
 #include "qcr/engine/cell.h"
+#include "lazy_data.h"
 #include <memory>
 
 //! A correction dataset, consisting of one Rawfile and associated settings.
@@ -49,7 +49,7 @@ public:
 private:
     std::unique_ptr<const Rawfile> raw_; //!< owned by this
     Image corrImage_;
-    mutable Cached<Image> normalizer_;
+    mutable lazy_data::Cached<Image> normalizer_;
 };
 
 #endif // CORRSET_H

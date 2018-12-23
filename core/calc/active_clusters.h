@@ -29,14 +29,14 @@ public:
     void invalidate() const;
     void invalidateAvg() const;
 
-    Cached<std::vector<const Cluster*>> clusters;
-    Cached<Dfgram> avgDfgram;
-    Cached<Range> rgeGma;
-    Cached<Range> rgeFixedInten;
-    Cached<double> grandAvgMonitorCount;
-    Cached<double> grandAvgDeltaMonitorCount;
-    Cached<double> grandAvgTime;
-    Cached<double> grandAvgDeltaTime;
+    lazy_data::Cached<std::vector<const Cluster*>> clusters;
+    lazy_data::Cached<Dfgram> avgDfgram;
+    lazy_data::Cached<Range> rgeGma;
+    lazy_data::Cached<Range> rgeFixedInten;
+    lazy_data::Cached<double> grandAvgMonitorCount;
+    lazy_data::Cached<double> grandAvgDeltaMonitorCount;
+    lazy_data::Cached<double> grandAvgTime;
+    lazy_data::Cached<double> grandAvgDeltaTime;
 };
 
 #endif // ACTIVE_CLUSTERS_H

@@ -15,10 +15,10 @@
 #ifndef DFGRAM_H
 #define DFGRAM_H
 
-#include "lazy_data.h"
 #include "core/typ/curve.h"
 #include "core/fit/raw_outcome.h"
 #include "core/fit/parametric_function.h"
+#include "lazy_data.h"
 
 //! A curve, and associated fit parameters.
 
@@ -42,12 +42,12 @@ public:
     const Curve& getPeakAsCurve(int jP) const { return peaksAsCurve_.get(this,jP).get(this); }
 
 private:
-    mutable Kached<Dfgram,Fitted> bgFit_;
-    mutable Kached<Dfgram,Curve>   bgAsCurve_;
-    mutable Kached<Dfgram,Curve>   curveMinusBg_;
-    mutable SelfKachingVector<Dfgram,RawOutcome> rawOutcomes_;
-    mutable SelfKachingVector<Dfgram,Fitted> peakFits_;
-    mutable SelfKachingVector<Dfgram,Curve> peaksAsCurve_;
+    mutable lazy_data::Kached<Dfgram,Fitted> bgFit_;
+    mutable lazy_data::Kached<Dfgram,Curve>   bgAsCurve_;
+    mutable lazy_data::Kached<Dfgram,Curve>   curveMinusBg_;
+    mutable lazy_data::SelfKachingVector<Dfgram,RawOutcome> rawOutcomes_;
+    mutable lazy_data::SelfKachingVector<Dfgram,Fitted> peakFits_;
+    mutable lazy_data::SelfKachingVector<Dfgram,Curve> peaksAsCurve_;
 };
 
 #endif // DFGRAM_H

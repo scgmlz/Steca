@@ -11,7 +11,7 @@ static int xx;
 
 class Entry {
 public:
-    Cached<Payload> cache{ []()->Payload{ return {xx++}; } };
+    lazy_data::Cached<Payload> cache{ []()->Payload{ return {xx++}; } };
 };
 
 TEST(Caches, OneLevel) {

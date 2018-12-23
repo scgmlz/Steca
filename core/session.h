@@ -74,7 +74,7 @@ public:
     Baseline baseline;                  //!< ranges and other parameters for baseline fitting
     Peaks peaks;                        //!< ranges and other parameters for Bragg peak fitting
     ActiveClusters activeClusters;      //!< list of all clusters except the unselected ones
-    KeyedCache<AngleMap, deg> angleMap; //!< to accelerate the projection image->dfgram
+    lazy_data::KeyedCache<AngleMap, deg> angleMap; //!< to accelerate the projection image->dfgram
 
 private:
     size2d imageSize_; //!< All images must have this same size
