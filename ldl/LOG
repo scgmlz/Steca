@@ -1,0 +1,28 @@
+Analysis how caches are used in Steca2.1
+========================================
+
+all in core/:
+
+calc/active_clusters.h:32:    Cached<std::vector<const Cluster*>> clusters;
+calc/active_clusters.h:33:    Cached<Dfgram> avgDfgram;
+calc/active_clusters.h:34:    Cached<Range> rgeGma;
+calc/active_clusters.h:35:    Cached<Range> rgeFixedInten;
+calc/active_clusters.h:36:    Cached<double> grandAvgMonitorCount;
+calc/active_clusters.h:37:    Cached<double> grandAvgDeltaMonitorCount;
+calc/active_clusters.h:38:    Cached<double> grandAvgTime;
+calc/active_clusters.h:39:    Cached<double> grandAvgDeltaTime;
+data/corrset.h:52:            Cached<Image> normalizer_;
+
+data/dfgram.h:45:             Kached<Dfgram,Fitted> bgFit_;
+data/dfgram.h:46:             Kached<Dfgram,Curve>   bgAsCurve_;
+data/dfgram.h:47:             Kached<Dfgram,Curve>   curveMinusBg_;
+typ/bool_vector.h:39:         Kached<BoolVector,std::vector<int>> list;
+
+calc/all_infos.h:37:          SelfKachingVector<AllInfos,InfoSequence> direct;
+calc/all_infos.h:38:          SelfKachingVector<AllInfos,InfoSequence> interpolated;
+data/dfgram.h:48:             SelfKachingVector<Dfgram,RawOutcome> rawOutcomes_;
+data/dfgram.h:49:             SelfKachingVector<Dfgram,Fitted> peakFits_;
+data/dfgram.h:50:             SelfKachingVector<Dfgram,Curve> peaksAsCurve_;
+data/cluster.h:84:            SelfKachingVector<Cluster,Dfgram> dfgrams;
+
+session.h:77:                 KeyedCache<AngleMap, deg> angleMap;
