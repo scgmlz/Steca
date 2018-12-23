@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "core/typ/cached.h"
+#include "lazy_data.h"
 
 class Payload {
 public:

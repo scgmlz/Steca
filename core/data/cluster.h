@@ -15,7 +15,7 @@
 #ifndef CLUSTER_H
 #define CLUSTER_H
 
-#include "core/typ/cached.h"
+#include "lazy_data.h"
 #include "core/data/dfgram.h"
 #include "core/raw/measurement.h"
 

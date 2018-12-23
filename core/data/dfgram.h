@@ -15,7 +15,7 @@
 #ifndef DFGRAM_H
 #define DFGRAM_H
 
-#include "core/typ/cached.h"
+#include "lazy_data.h"
 #include "core/typ/curve.h"
 #include "core/fit/raw_outcome.h"
 #include "core/fit/parametric_function.h"

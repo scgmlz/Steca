@@ -25,7 +25,7 @@
 #include "core/pars/params.h"
 #include "core/pars/peak.h"
 #include "core/data/angle_map.h"
-#include "core/typ/cached.h"
+#include "lazy_data.h"
 
 extern class Session* gSession;
 

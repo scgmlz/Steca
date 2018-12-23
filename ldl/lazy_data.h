@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/typ/cached.h
+//! @file      lazy_data.h
 //! @brief     Defines and implements the class templates Cached, CachingVector, KeyedCache, ...
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef CACHED_H
-#define CACHED_H
+#ifndef LAZY_DATA_H
+#define LAZY_DATA_H
 
 //#include "qcr/base/debug.h" // TMP
 #include <functional>
@@ -131,4 +131,4 @@ private:
     mutable K key_;
 };
 
-#endif // CACHED_H
+#endif // LAZY_DATA_H

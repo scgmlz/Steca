@@ -16,7 +16,7 @@
 #define ACTIVE_CLUSTERS_H
 
 #include "core/data/cluster.h"
-#include "core/typ/cached.h"
+#include "lazy_data.h"
 
 //! The list of activated Cluster|s, their average Dfgram, and a few more cached properties.
 
