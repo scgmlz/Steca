@@ -30,7 +30,7 @@ public:
     void invalidateAvg() const;
 
     lazy_data::Cached<std::vector<const Cluster*>> clusters;
-    lazy_data::Cached<Dfgram> avgDfgram;
+    lazy_data::Cached<Dfgram> avgDfgram; //!< Average diffractogram, shown iff params.showAvgeDfgram
     lazy_data::Cached<Range> rgeGma;
     lazy_data::Cached<Range> rgeFixedInten;
     lazy_data::Cached<double> grandAvgMonitorCount;

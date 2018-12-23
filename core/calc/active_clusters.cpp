@@ -71,7 +71,8 @@ double recomputeAvg(const ActiveClusters*const ac, std::function<double(const Me
 
 
 ActiveClusters::ActiveClusters()
-    : clusters {[]()->std::vector<const Cluster*>{return gSession->dataset.activeClustersList();}}
+    : clusters {[]()->std::vector<const Cluster*>{
+        return gSession->dataset.activeClustersList();}}
     , avgDfgram {[this]()->Dfgram{
         return Dfgram(computeAvgCurve(this));}}
     , rgeGma {[this]()->Range{

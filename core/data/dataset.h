@@ -96,11 +96,13 @@ public:
     QcrCell<int> binning {1};             //!< bin so many Measurement|s into one cluster
     QcrCell<bool> dropIncomplete {false}; //!< drop Clusters with less than 'binning' members.
 
-    std::vector<std::unique_ptr<Cluster>> allClusters; //!< all Cluster|s are owned by this
+    //! Owning all Cluster|s. Recomputed in updateClusters.
+    //! Use of unique_ptr is unavoidable because of deleted default constructors (confirmed dec18).
+    std::vector<std::unique_ptr<Cluster>> allClusters;
 
 private:
-    std::vector<Datafile> files_; //!< loaded Datafile|s only live here
-    // leave this a unique_ptr because other vectors backlink through Cluster* pointers
+    //! Owning the loaded Datafile|s.
+    std::vector<Datafile> files_;
 
     bool hasIncomplete_ {false}; //!< current binning does result in at least one incomplete cluster
 
