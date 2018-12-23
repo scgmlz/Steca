@@ -48,11 +48,13 @@ public:
     Kached(const Kached&) = delete;
     Kached(Kached&&) = default;
     void invalidate() const { cached_.release(); }
+    //! Lookup and recompute if needed
     const T& get(const Parent* parent) const {
         if (!cached_)
             cached_.reset( new T{remake_(parent)} );
         return *cached_;
     }
+    //! Lookup but don't recompute
     const T* getif(const Parent* parent) const { return cached_ ? cached_.get() : nullptr; }
 private:
     mutable std::unique_ptr<T> cached_;
