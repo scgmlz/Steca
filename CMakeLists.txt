@@ -50,7 +50,7 @@ foreach(comp Qt5Core Qt5Gui Qt5Widgets Qt5Network)
 endforeach()
 
 find_package(YAML      MODULE)
-find_package(LMFit 1.8 MODULE)
+# waiting for activation find_package(LMFit 8.1 MODULE)
 find_package(Cerf  1.8 MODULE)
 
 message(STATUS

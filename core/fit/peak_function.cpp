@@ -18,8 +18,8 @@
 #include "core/fit/raw_outcome.h"
 #include "qcr/base/debug.h" // ASSERT
 #include "libcerf/lib/cerf.h"
-#include "lmfit/lib/lmmin.h"
 #include "LevMar/LM/levmar.h"
+// waiting for activation #include "lmfit/lib/lmmin.h"
 #include <qmath.h>
 #include <iostream>
 
