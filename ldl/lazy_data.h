@@ -8,7 +8,7 @@
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   The Boost Licence
 //! @copyright Forschungszentrum Jülich GmbH 2018-
-//! @author    Joachim Wuttke, Scientific Computing Group at MLZ
+//! @author    Joachim Wuttke, Scientific Computing Group at MLZ <j.wuttke@fz-juelich.de>
 //
 //  ***********************************************************************************************
 
@@ -22,22 +22,26 @@
 namespace lazy_data {
 
 //! Simple cached object.
-template<typename T>
+template<typename TPayload, typename... TRemakeArgs>
 class Cached {
 public:
     Cached() = delete;
-    Cached(std::function<T(void)> f) : remake_(f) {}
+    Cached(std::function<TPayload(TRemakeArgs...)> f) : remake_(f) {}
     Cached(const Cached&) = delete;
     void invalidate() const { cached_.release(); }
-    const T& get() const {
-        if (!cached_)
-            cached_.reset( new T{remake_()} );
-        return *cached_;
-    }
+    const TPayload& get(TRemakeArgs...) const;
 private:
-    mutable std::unique_ptr<T> cached_;
-    const std::function<T(void)> remake_;
+    mutable std::unique_ptr<TPayload> cached_;
+    const std::function<TPayload(TRemakeArgs...)> remake_;
 };
+
+template<typename TPayload, typename... TRemakeArgs>
+const TPayload& Cached<TPayload,TRemakeArgs...>::get(TRemakeArgs... args) const
+{
+    if (!cached_)
+        cached_.reset( new TPayload{remake_(args...)} );
+    return *cached_;
+}
 
 //! Cached object with parent-dependent remake.
 template<typename Parent, typename T>
