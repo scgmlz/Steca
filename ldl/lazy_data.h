@@ -28,8 +28,9 @@ public:
     Cached() = delete;
     Cached(std::function<TPayload(TRemakeArgs...)> f) : remake_(f) {}
     Cached(const Cached&) = delete;
+    Cached(Cached&&) = default;
     void invalidate() const { cached_.release(); }
-    const TPayload& get(const TRemakeArgs... args) const {
+    const TPayload& get(TRemakeArgs... args) const {
         if (!cached_)
             cached_.reset( new TPayload{remake_(args...)} );
         return *cached_;
@@ -101,14 +102,14 @@ private:
 
 //! Caching vector of cached objects.
 template<typename Parent, typename T>
-class SelfKachingVector : public KachingVector<Parent, Kached<Parent,T>> {
-    using Base = KachingVector<Parent, Kached<Parent,T>>;
+class SelfKachingVector : public KachingVector<Parent, Cached<T,const Parent*>> {
+    using Base = KachingVector<Parent, Cached<T,const Parent*>>;
 public:
     SelfKachingVector() = delete;
     SelfKachingVector(const std::function<int()> nFct,
                       const std::function<T(const Parent*,int)> rFct)
         : Base(nFct, [rFct](const Parent* p, int i){
-                return Kached<Parent,T>([rFct,i](const Parent* p)->T{return rFct(p,i);}); } )
+                return Cached<T,const Parent*>([rFct,i](const Parent* p)->T{return rFct(p,i);}); } )
     {}
     const T& getget(const Parent* parent, int i) const { return Base::get(parent,i).get(parent); }
     void forAllValids(const Parent* parent, std::function<void(const T& t)> f) const {
