@@ -29,19 +29,16 @@ public:
     Cached(std::function<TPayload(TRemakeArgs...)> f) : remake_(f) {}
     Cached(const Cached&) = delete;
     void invalidate() const { cached_.release(); }
-    const TPayload& get(TRemakeArgs...) const;
+    const TPayload& get(const TRemakeArgs... args) const {
+        if (!cached_)
+            cached_.reset( new TPayload{remake_(args...)} );
+        return *cached_;
+    }
+    const TPayload* getif() const { return cached_ ? cached_.get() : nullptr; }
 private:
     mutable std::unique_ptr<TPayload> cached_;
     const std::function<TPayload(TRemakeArgs...)> remake_;
 };
-
-template<typename TPayload, typename... TRemakeArgs>
-const TPayload& Cached<TPayload,TRemakeArgs...>::get(TRemakeArgs... args) const
-{
-    if (!cached_)
-        cached_.reset( new TPayload{remake_(args...)} );
-    return *cached_;
-}
 
 //! Cached object with parent-dependent remake.
 template<typename Parent, typename T>
@@ -59,7 +56,7 @@ public:
         return *cached_;
     }
     //! Lookup but don't recompute
-    const T* getif(const Parent* parent) const { return cached_ ? cached_.get() : nullptr; }
+    const T* getif() const { return cached_ ? cached_.get() : nullptr; }
 private:
     mutable std::unique_ptr<T> cached_;
     const std::function<T(const Parent*)> remake_;
@@ -116,7 +113,7 @@ public:
     const T& getget(const Parent* parent, int i) const { return Base::get(parent,i).get(parent); }
     void forAllValids(const Parent* parent, std::function<void(const T& t)> f) const {
         for (int i=0; i<Base::size(parent); ++i)
-            if (const T* d = Base::get(parent,i).getif(parent))
+            if (const T* d = Base::get(parent,i).getif())
                 f(*d);
     }
 };
