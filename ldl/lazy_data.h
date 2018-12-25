@@ -42,15 +42,16 @@ private:
 };
 
 //! Caching vector. Vector elements are recomputed when vector size changes.
-template<typename Parent, typename T>
+template<typename Parent, typename TPayload>
 class KachingVector {
 public:
     KachingVector() = delete;
-    KachingVector(const std::function<int()> nFct, const std::function<T(const Parent*,int)> rFct)
+    KachingVector(const std::function<int()> nFct,
+                  const std::function<TPayload(const Parent*,int)> rFct)
         : nFct_(nFct), remake_(rFct) {}
     KachingVector(const KachingVector&) = delete;
     KachingVector(KachingVector&&) = default; // TODO rm after removal of CachingVector
-    const T& get(const Parent* parent, int i) const {
+    const TPayload& get(const Parent* parent, int i) const {
         resize(parent);
         return data_.at(i);
     }
@@ -61,7 +62,7 @@ public:
     void invalidate() const {
         data_.clear();
     }
-    const std::vector<T> &data() const {
+    const std::vector<TPayload> &data() const {
         return data_;
     }
 private:
@@ -74,44 +75,46 @@ private:
             data_.push_back(remake_(parent,i));
     }
     const std::function<int()> nFct_;
-    const std::function<T(const Parent*,int)> remake_;
-    mutable std::vector<T> data_;
+    const std::function<TPayload(const Parent*,int)> remake_;
+    mutable std::vector<TPayload> data_;
 };
 
 //! Caching vector of cached objects.
-template<typename Parent, typename T>
-class SelfKachingVector : public KachingVector<Parent, Cached<T,const Parent*>> {
-    using Base = KachingVector<Parent, Cached<T,const Parent*>>;
+template<typename Parent, typename TPayload>
+class SelfKachingVector : public KachingVector<Parent, Cached<TPayload,const Parent*>> {
+    using Base = KachingVector<Parent, Cached<TPayload,const Parent*>>;
 public:
     SelfKachingVector() = delete;
     SelfKachingVector(const std::function<int()> nFct,
-                      const std::function<T(const Parent*,int)> rFct)
+                      const std::function<TPayload(const Parent*,int)> rFct)
         : Base(nFct, [rFct](const Parent* p, int i){
-                return Cached<T,const Parent*>([rFct,i](const Parent* p)->T{return rFct(p,i);}); } )
+                return Cached<TPayload,const Parent*>(
+                    [rFct,i](const Parent* p)->TPayload{return rFct(p,i);}); } )
     {}
-    const T& getget(const Parent* parent, int i) const { return Base::get(parent,i).get(parent); }
-    void forAllValids(const Parent* parent, std::function<void(const T& t)> f) const {
+    const TPayload& getget(const Parent* parent, int i) const {
+        return Base::get(parent,i).get(parent); }
+    void forAllValids(const Parent* parent, std::function<void(const TPayload& t)> f) const {
         for (int i=0; i<Base::size(parent); ++i)
-            if (const T* d = Base::get(parent,i).getif())
+            if (const TPayload* d = Base::get(parent,i).getif())
                 f(*d);
     }
 };
 
 //! Cached object with key.
-template<typename T, typename K>
+template<typename TPayload, typename TKey>
 class KeyedCache {
 public:
     void invalidate() const { cached_.release(); }
-    const T& get(const K key) const {
+    const TPayload& get(const TKey key) const {
         if (!cached_ || key!=key_) {
-            cached_.reset( new T(key) );
+            cached_.reset( new TPayload(key) );
             key_ = key;
         }
         return *cached_;
     }
 private:
-    mutable std::unique_ptr<T> cached_;
-    mutable K key_;
+    mutable std::unique_ptr<TPayload> cached_;
+    mutable TKey key_;
 };
 
 } // namespace lazy_data
