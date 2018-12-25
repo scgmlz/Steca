@@ -35,8 +35,9 @@ public:
 
     std::vector<QcrCell<bool>> vec; //!< true if to be displayed
 private:
+    //! indices of metadata items selected for display
     // TODO: mv somewhere else, bc it is not BoolVector specific and only used by subframe_clusters:
-    lazy_data::Kached<BoolVector,std::vector<int>> list; //!< indices of metadata items selected for display
+    lazy_data::Cached<std::vector<int>,const BoolVector*> list;
 };
 
 #endif // BOOL_VECTOR_H
