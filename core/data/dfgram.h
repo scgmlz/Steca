@@ -42,9 +42,9 @@ public:
     const Curve& getPeakAsCurve(int jP) const { return peaksAsCurve_.get(this,jP).get(this); }
 
 private:
-    mutable lazy_data::Kached<Dfgram,Fitted> bgFit_;
-    mutable lazy_data::Kached<Dfgram,Curve>   bgAsCurve_;
-    mutable lazy_data::Kached<Dfgram,Curve>   curveMinusBg_;
+    mutable lazy_data::Cached<Fitted,const Dfgram*> bgFit_;
+    mutable lazy_data::Cached<Curve, const Dfgram*> bgAsCurve_;
+    mutable lazy_data::Cached<Curve, const Dfgram*> curveMinusBg_;
     mutable lazy_data::SelfKachingVector<Dfgram,RawOutcome> rawOutcomes_;
     mutable lazy_data::SelfKachingVector<Dfgram,Fitted> peakFits_;
     mutable lazy_data::SelfKachingVector<Dfgram,Curve> peaksAsCurve_;

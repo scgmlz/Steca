@@ -41,28 +41,6 @@ private:
     const std::function<TPayload(TRemakeArgs...)> remake_;
 };
 
-//! Cached object with parent-dependent remake.
-template<typename Parent, typename T>
-class Kached {
-public:
-    Kached() = delete;
-    Kached(std::function<T(const Parent*)> f) : remake_(f) {}
-    Kached(const Kached&) = delete;
-    Kached(Kached&&) = default;
-    void invalidate() const { cached_.release(); }
-    //! Lookup and recompute if needed
-    const T& get(const Parent* parent) const {
-        if (!cached_)
-            cached_.reset( new T{remake_(parent)} );
-        return *cached_;
-    }
-    //! Lookup but don't recompute
-    const T* getif() const { return cached_ ? cached_.get() : nullptr; }
-private:
-    mutable std::unique_ptr<T> cached_;
-    const std::function<T(const Parent*)> remake_;
-};
-
 //! Caching vector. Vector elements are recomputed when vector size changes.
 template<typename Parent, typename T>
 class KachingVector {
