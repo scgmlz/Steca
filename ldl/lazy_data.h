@@ -51,10 +51,6 @@ public:
         : nFct_(nFct), remake_(rFct) {}
     KachingVector(const KachingVector&) = delete;
     KachingVector(KachingVector&&) = default;
-    const TPayload& get(const Parent* parent, int i) const {
-        resize(parent);
-        return data_.at(i);
-    }
     int size(const Parent* parent) const {
         resize(parent);
         return data_.size();
@@ -65,6 +61,12 @@ public:
     const std::vector<TPayload> &data() const {
         return data_;
     }
+protected:
+    const TPayload& get(const Parent* parent, int i) const {
+        resize(parent);
+        return data_.at(i);
+    }
+    mutable std::vector<TPayload> data_;
 private:
     void resize(const Parent* parent) const {
         int n = nFct_();
@@ -76,7 +78,6 @@ private:
     }
     const std::function<int()> nFct_;
     const std::function<TPayload(const Parent*,int)> remake_;
-    mutable std::vector<TPayload> data_;
 };
 
 //! Caching vector of cached objects.
@@ -91,6 +92,7 @@ public:
                 return Cached<TPayload,const Parent*>(
                     [rFct,i](const Parent* p)->TPayload{return rFct(p,i);}); } )
     {}
+    void invalidate_at(int i) const { Base::data_.at(i).invalidate(); }
     const TPayload& getget(const Parent* parent, int i) const {
         return Base::get(parent,i).get(parent); }
     void forAllValids(const Parent* parent, std::function<void(const TPayload& t)> f) const {

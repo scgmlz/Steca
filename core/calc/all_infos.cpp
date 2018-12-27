@@ -108,8 +108,8 @@ void AllInfos::invalidateAll() const
 
 void AllInfos::invalidateAt(int jP) const
 {
-    direct      .get(this,jP).invalidate();
-    interpolated.get(this,jP).invalidate();
+    direct      .invalidate_at(jP);
+    interpolated.invalidate_at(jP);
 }
 
 void AllInfos::invalidateInterpolated() const
