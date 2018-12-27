@@ -103,6 +103,11 @@ AllInfos::AllInfos()
 void AllInfos::invalidateAll() const
 {
     direct      .invalidate();
+    invalidateInterpolated();
+}
+
+void AllInfos::invalidateInterpolated() const
+{
     interpolated.invalidate();
 }
 
@@ -110,11 +115,6 @@ void AllInfos::invalidateAt(int jP) const
 {
     direct      .invalidate_at(jP);
     interpolated.invalidate_at(jP);
-}
-
-void AllInfos::invalidateInterpolated() const
-{
-    interpolated.invalidate();
 }
 
 const InfoSequence* AllInfos::currentDirect() const

@@ -31,8 +31,8 @@ public:
     const std::vector<InfoSequence const *> allInterpolated() const;
     const std::vector<InfoSequence const *> allInfoSequences() const;
     void invalidateAll() const;
-    void invalidateAt(int) const;
     void invalidateInterpolated() const;
+    void invalidateAt(int) const;
 private:
     mutable lazy_data::SelfKachingVector<AllInfos,InfoSequence> direct;
     mutable lazy_data::SelfKachingVector<AllInfos,InfoSequence> interpolated;
