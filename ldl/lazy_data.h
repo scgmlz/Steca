@@ -50,7 +50,7 @@ public:
                   const std::function<TPayload(const Parent*,int)> rFct)
         : nFct_(nFct), remake_(rFct) {}
     KachingVector(const KachingVector&) = delete;
-    KachingVector(KachingVector&&) = default; // TODO rm after removal of CachingVector
+    KachingVector(KachingVector&&) = default;
     const TPayload& get(const Parent* parent, int i) const {
         resize(parent);
         return data_.at(i);
