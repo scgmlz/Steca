@@ -41,33 +41,40 @@ private:
     const std::function<TPayload(TRemakeArgs...)> remake_;
 };
 
-//! Caching vector. Vector elements are recomputed when vector size changes.
+//! Caching vector of cached objects.
 template<typename Parent, typename TPayload>
-class KachingVector {
+class SelfKachingVector {
 public:
-    KachingVector() = delete;
-    KachingVector(const std::function<int()> nFct,
-                  const std::function<TPayload(const Parent*,int)> rFct)
-        : nFct_(nFct), remake_(rFct) {}
-    KachingVector(const KachingVector&) = delete;
-    KachingVector(KachingVector&&) = default;
+    SelfKachingVector() = delete;
+    SelfKachingVector(const std::function<int()> nFct,
+                      const std::function<TPayload(const Parent*,int)> rFct)
+        : nFct_(nFct)
+        , remake_([rFct](const Parent* p, int i){
+                return Cached<TPayload,const Parent*>(
+                    [rFct,i](const Parent* p)->TPayload{return rFct(p,i);}); } )
+        {}
+    SelfKachingVector(const SelfKachingVector&) = delete;
+    SelfKachingVector(SelfKachingVector&&) = default;
+    void invalidate() const { data_.clear(); }
+    void invalidate_at(int i) const { data_.at(i).invalidate(); }
+    const TPayload& getget(const Parent* parent, int i) const {
+        return get(parent,i).get(parent); }
+    void forAllValids(const Parent* parent, std::function<void(const TPayload& t)> f) const {
+        int n = size(parent);
+        for (int i=0; i<n; ++i)
+            if (const TPayload* d = get(parent,i).getif())
+                f(*d);
+    }
     int size(const Parent* parent) const {
         check_size(parent);
         return data_.size();
     }
-    void invalidate() const {
-        data_.clear();
-    }
-    const std::vector<TPayload> &data() const {
-        return data_;
-    }
-protected:
-    const TPayload& get(const Parent* parent, int i) const {
+    const std::vector<Cached<TPayload,const Parent*>> &data() const { return data_; }
+private:
+    const Cached<TPayload,const Parent*>& get(const Parent* parent, int i) const {
         check_size(parent);
         return data_.at(i);
     }
-    mutable std::vector<TPayload> data_;
-private:
     void check_size(const Parent* parent) const {
         int n = nFct_();
         if (n==data_.size())
@@ -76,30 +83,9 @@ private:
         for (int i=0; i<n; ++i)
             data_.push_back(remake_(parent,i));
     }
+    mutable std::vector<Cached<TPayload,const Parent*>> data_;
     const std::function<int()> nFct_;
-    const std::function<TPayload(const Parent*,int)> remake_;
-};
-
-//! Caching vector of cached objects.
-template<typename Parent, typename TPayload>
-class SelfKachingVector : public KachingVector<Parent, Cached<TPayload,const Parent*>> {
-    using Base = KachingVector<Parent, Cached<TPayload,const Parent*>>;
-public:
-    SelfKachingVector() = delete;
-    SelfKachingVector(const std::function<int()> nFct,
-                      const std::function<TPayload(const Parent*,int)> rFct)
-        : Base(nFct, [rFct](const Parent* p, int i){
-                return Cached<TPayload,const Parent*>(
-                    [rFct,i](const Parent* p)->TPayload{return rFct(p,i);}); } )
-    {}
-    void invalidate_at(int i) const { Base::data_.at(i).invalidate(); }
-    const TPayload& getget(const Parent* parent, int i) const {
-        return Base::get(parent,i).get(parent); }
-    void forAllValids(const Parent* parent, std::function<void(const TPayload& t)> f) const {
-        for (int i=0; i<Base::size(parent); ++i)
-            if (const TPayload* d = Base::get(parent,i).getif())
-                f(*d);
-    }
+    const std::function<Cached<TPayload,const Parent*>(const Parent*,int)> remake_;
 };
 
 //! Cached object with key.
