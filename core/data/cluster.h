@@ -81,7 +81,7 @@ public:
     bool isIncomplete() const;
     bool isActivated() const { return activated_; }
 
-    mutable lazy_data::SelfKachingVector<Cluster,Dfgram> dfgrams; //! One Dfgram per gamma section
+    mutable lazy_data::VectorCache<Cluster,Dfgram> dfgrams; //! One Dfgram per gamma section
     const Dfgram& currentDfgram() const;
 
 private:

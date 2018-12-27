@@ -43,18 +43,18 @@ private:
 
 //! Caching vector of cached objects.
 template<typename Parent, typename TPayload>
-class SelfKachingVector {
+class VectorCache {
 public:
-    SelfKachingVector() = delete;
-    SelfKachingVector(const std::function<int()> nFct,
+    VectorCache() = delete;
+    VectorCache(const std::function<int()> nFct,
                       const std::function<TPayload(const Parent*,int)> rFct)
         : nFct_(nFct)
         , remake_([rFct](const Parent* p, int i){
                 return Cached<TPayload,const Parent*>(
                     [rFct,i](const Parent* p)->TPayload{return rFct(p,i);}); } )
         {}
-    SelfKachingVector(const SelfKachingVector&) = delete;
-    SelfKachingVector(SelfKachingVector&&) = default;
+    VectorCache(const VectorCache&) = delete;
+    VectorCache(VectorCache&&) = default;
     void invalidate() const { data_.clear(); }
     void invalidate_at(int i) const { data_.at(i).invalidate(); }
     const TPayload& getget(const Parent* parent, int i) const {
