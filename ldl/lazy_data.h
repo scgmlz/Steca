@@ -52,7 +52,7 @@ public:
     KachingVector(const KachingVector&) = delete;
     KachingVector(KachingVector&&) = default;
     int size(const Parent* parent) const {
-        resize(parent);
+        check_size(parent);
         return data_.size();
     }
     void invalidate() const {
@@ -63,12 +63,12 @@ public:
     }
 protected:
     const TPayload& get(const Parent* parent, int i) const {
-        resize(parent);
+        check_size(parent);
         return data_.at(i);
     }
     mutable std::vector<TPayload> data_;
 private:
-    void resize(const Parent* parent) const {
+    void check_size(const Parent* parent) const {
         int n = nFct_();
         if (n==data_.size())
             return;
