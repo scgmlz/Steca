@@ -115,9 +115,9 @@ void Dfgram::invalidateBg() const
 
 void Dfgram::invalidatePeaks() const
 {
-    rawOutcomes_.invalidate();
-    peakFits_.invalidate();
-    peaksAsCurve_.invalidate();
+    rawOutcomes_.clear_vector();
+    peakFits_.clear_vector();
+    peaksAsCurve_.clear_vector();
     gSession->allPeaks.invalidateAll();
 }
 

@@ -102,13 +102,13 @@ AllInfos::AllInfos()
 
 void AllInfos::invalidateAll() const
 {
-    direct      .invalidate();
+    direct      .clear_vector();
     invalidateInterpolated();
 }
 
 void AllInfos::invalidateInterpolated() const
 {
-    interpolated.invalidate();
+    interpolated.clear_vector();
 }
 
 void AllInfos::invalidateAt(int jP) const

@@ -36,7 +36,7 @@ void Session::onDetector() const
     angleMap.invalidate();
     activeClusters.avgDfgram.invalidate();
     for (auto const& cluster: dataset.allClusters)
-        cluster->dfgrams.invalidate();
+        cluster->dfgrams.clear_vector();
 }
 
 void Session::onCut() const
@@ -74,7 +74,7 @@ void Session::onInterpol() const
 void Session::onNormalization() const
 {
     for (auto const& cluster: dataset.allClusters)
-        cluster->dfgrams.invalidate();
+        cluster->dfgrams.clear_vector();
 }
 
 //! Removes all data, sets all parameters to their defaults. No need to invalidate caches?

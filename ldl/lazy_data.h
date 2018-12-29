@@ -53,7 +53,7 @@ public:
         {}
     VectorCache(const VectorCache&) = delete;
     VectorCache(VectorCache&&) = default;
-    void invalidate() const { data_.clear(); }
+    void clear_vector() const { data_.clear(); }
     void invalidate_at(int i) const { data_.at(i).invalidate(); }
     int size(TRemakeArgs... args) const {
         check_size(args...);
