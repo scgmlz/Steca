@@ -26,7 +26,10 @@ class Curve;
 
 class RawOutcome {
 public:
+    RawOutcome() = delete;
     RawOutcome(const Curve&);
+    RawOutcome(const RawOutcome&) = delete;
+    RawOutcome(RawOutcome&&) = default;
     double getCenter() const { return center_; }
     double getFwhm() const { return fwhm_; }
     double getIntensity() const { return intensity_; }
