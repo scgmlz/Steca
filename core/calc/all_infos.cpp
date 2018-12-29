@@ -143,7 +143,7 @@ const InfoSequence* AllInfos::currentInfoSequence() const
 const std::vector<InfoSequence const *> AllInfos::allInterpolated() const
 {
     std::vector<InfoSequence const *> ret;
-    for (const auto & v : interpolated.data())
+    for (const auto & v : interpolated.vecRef())
         ret.push_back(&v.yield(this));
     return ret;
 }
@@ -151,7 +151,7 @@ const std::vector<InfoSequence const *> AllInfos::allInterpolated() const
 const std::vector<InfoSequence const *> AllInfos::allDirect() const
 {
     std::vector<InfoSequence const *> ret;
-    for (const auto & v : direct.data())
+    for (const auto & v : direct.vecRef())
         ret.push_back(&v.yield(this));
     return ret;
 

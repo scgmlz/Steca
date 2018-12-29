@@ -28,14 +28,14 @@ namespace {
 
 // TODO move file saving code to Core
 
-inline void writePeakInfo(QTextStream& stream, const PeakInfo &info, const QString &separator)
+inline void writePeakInfo(QTextStream& stream, const PeakInfo& info, const QString& separator)
 {
     stream << info.alpha() << separator
            << info.beta()  << separator
            << info.inten() << "\n";
 }
 
-void writeInfoSequence(QTextStream& stream, const InfoSequence &peakInfos, const QString &separator)
+void writeInfoSequence(QTextStream& stream, const InfoSequence& peakInfos, const QString& separator)
 {
     for (auto& info : peakInfos.peaks()) {
         writePeakInfo(stream, info, separator);
@@ -104,8 +104,8 @@ void ExportPolefig::save()
 }
 
 
-void saveOneFile(QString &path, const QString &separator, const std::vector<InfoSequence const *>
-                 &peaks, TakesLongTime &progress)
+void saveOneFile(QString& path, const QString& separator,
+                 const std::vector<const InfoSequence*>& peaks, TakesLongTime& progress)
 {
     QFile file(path);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -124,8 +124,8 @@ void saveOneFile(QString &path, const QString &separator, const std::vector<Info
 
 // TODO: adapt from ExportDfgram, and activate it once peak fits are cached
 
-void ExportPolefig::saveAll(bool oneFile, const QString &path, const QString &separator,
-                            const std::vector<InfoSequence const *> &peaks)
+void ExportPolefig::saveAll(bool oneFile, const QString& path, const QString& separator,
+                            const std::vector<const InfoSequence*>& peaks)
 {
     // In one-file mode, start output stream; in multi-file mode, only do prepations.
     if (path.isEmpty())

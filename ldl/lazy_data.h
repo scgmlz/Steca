@@ -69,7 +69,7 @@ public:
             if (const TPayload* d = get(i,args...).current())
                 f(*d);
     }
-    const std::vector<Cached<TPayload,TRemakeArgs...>> &data() const { return data_; }
+    const std::vector<Cached<TPayload,TRemakeArgs...>> &vecRef() const { return data_; }
 private:
     const Cached<TPayload,TRemakeArgs...>& get(int i, TRemakeArgs... args) const {
         check_size(args...);
