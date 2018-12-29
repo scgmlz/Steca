@@ -63,10 +63,9 @@ public:
     }
     const TPayload& yield_at(int i, TRemakeArgs... args) const {
         return get(i,args...).yield(args...); }
-    void forAllValids(std::function<void(const TPayload& t)> f, TRemakeArgs... args) const {
-        int n = size(args...);
-        for (int i=0; i<n; ++i)
-            if (const TPayload* d = get(i,args...).current())
+    void forAllValids(std::function<void(const TPayload& t)> f) const {
+        for (int i=0; i<data_.size(); ++i)
+            if (const TPayload* d = data_.at(i).current())
                 f(*d);
     }
     const std::vector<Cached<TPayload,TRemakeArgs...>> &vecRef() const { return data_; }
