@@ -49,9 +49,7 @@ public:
     VectorCache(const std::function<int()> sizeFunction,
                 const std::function<TPayload(int, TRemakeArgs...)> remakeOne)
         : sizeFunction_(sizeFunction)
-        , remakeOne_([remakeOne](int i, TRemakeArgs... args){
-                return Cached<TPayload,TRemakeArgs...>(
-                    [remakeOne,i](TRemakeArgs... args)->TPayload{return remakeOne(i,args...);}); } )
+        , remakeOne_(remakeOne)
         {}
     VectorCache(const VectorCache&) = delete;
     VectorCache(VectorCache&&) = default;
@@ -77,12 +75,14 @@ private:
         if (n==data_.size())
             return;
         data_.clear();
+        // initialize individual caches (without computing their payload)
         for (int i=0; i<n; ++i)
-            data_.push_back(remakeOne_(i,args...));
+            data_.push_back({[this,i](TRemakeArgs... args)->TPayload{
+                        return remakeOne_(i,args...);}});
     }
     mutable std::vector<Cached<TPayload,TRemakeArgs...>> data_;
     const std::function<int()> sizeFunction_;
-    const std::function<Cached<TPayload,TRemakeArgs...>(int,TRemakeArgs...)> remakeOne_;
+    const std::function<TPayload(int,TRemakeArgs...)> remakeOne_;
 };
 
 //! Cached object with key.
