@@ -50,14 +50,14 @@ Curve computeCurveMinusBg(const Dfgram* parent)
     return ret;
 }
 
-RawOutcome computeRawOutcome(const Dfgram* parent, int jP)
+RawOutcome computeRawOutcome(int jP, const Dfgram* parent)
 {
     Peak& peak = gSession->peaks.at(jP);
     const Curve& peakCurve = parent->getCurveMinusBg().intersect(peak.range());
     return RawOutcome(peakCurve);
 }
 
-Fitted computePeakFit(const Dfgram* parent, int jP)
+Fitted computePeakFit(int jP, const Dfgram* parent)
 {
     Peak& peak = gSession->peaks.at(jP);
     return PeakFunction::fromFit(
@@ -65,7 +65,7 @@ Fitted computePeakFit(const Dfgram* parent, int jP)
         parent->getRawOutcome(jP));
 }
 
-Curve computePeakAsCurve(const Dfgram* parent, int jP)
+Curve computePeakAsCurve(int jP, const Dfgram* parent)
 {
     Peak& peak = gSession->peaks.at(jP);
     const Curve& curveMinusBg = parent->getCurveMinusBg();
@@ -90,14 +90,14 @@ Dfgram::Dfgram(Curve&& c)
     , bgAsCurve_    {&computeBgAsCurve}
     , curveMinusBg_ {&computeCurveMinusBg}
     , rawOutcomes_ {[]()->int {return gSession->peaks.size();},
-              [](const Dfgram* parent, int jP)->RawOutcome{
-                  return computeRawOutcome(parent, jP); } }
+              [](int jP, const Dfgram* parent)->RawOutcome{
+                  return computeRawOutcome(jP, parent); } }
     , peakFits_ {[]()->int {return gSession->peaks.size();},
-              [](const Dfgram* parent, int jP)->Fitted{
-                  return computePeakFit(parent, jP); } }
+              [](int jP, const Dfgram* parent)->Fitted{
+                  return computePeakFit(jP, parent); } }
     , peaksAsCurve_ {[]()->int {return gSession->peaks.size();},
-              [](const Dfgram* parent, int jP)->Curve{
-                  return computePeakAsCurve(parent, jP); } }
+              [](int jP, const Dfgram* parent)->Curve{
+                  return computePeakAsCurve(jP, parent); } }
 {}
 
 Dfgram::~Dfgram()

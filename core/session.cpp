@@ -49,21 +49,21 @@ void Session::onBaseline() const
 {
     for (auto const& cluster: dataset.allClusters)
         cluster->dfgrams.forAllValids(
-            cluster.get(), [](const Dfgram& d){d.invalidateBg();});
+            [](const Dfgram& d){d.invalidateBg();}, cluster.get() );
 }
 
 void Session::onPeaks() const
 {
     for (auto const& cluster: dataset.allClusters)
         cluster->dfgrams.forAllValids(
-            cluster.get(), [](const Dfgram& d){d.invalidatePeaks();});
+            [](const Dfgram& d){d.invalidatePeaks();}, cluster.get());
 }
 
 void Session::onPeakAt(int jP) const
 {
     for (auto const& cluster: dataset.allClusters)
         cluster->dfgrams.forAllValids(
-            cluster.get(), [jP](const Dfgram& d){d.invalidatePeakAt(jP);});
+            [jP](const Dfgram& d){d.invalidatePeakAt(jP);}, cluster.get());
 }
 
 void Session::onInterpol() const

@@ -42,50 +42,50 @@ private:
 };
 
 //! Caching vector of cached objects.
-template<typename TPayload, typename Parent>
+template<typename TPayload, typename... TRemakeArgs>
 class VectorCache {
 public:
     VectorCache() = delete;
     VectorCache(const std::function<int()> sizeFunction,
-                const std::function<TPayload(const Parent*,int)> remakeOne)
+                const std::function<TPayload(int, TRemakeArgs...)> remakeOne)
         : sizeFunction_(sizeFunction)
-        , remakeOne_([remakeOne](const Parent* p, int i){
-                return Cached<TPayload,const Parent*>(
-                    [remakeOne,i](const Parent* p)->TPayload{return remakeOne(p,i);}); } )
+        , remakeOne_([remakeOne](int i, TRemakeArgs... args){
+                return Cached<TPayload,TRemakeArgs...>(
+                    [remakeOne,i](TRemakeArgs... args)->TPayload{return remakeOne(i,args...);}); } )
         {}
     VectorCache(const VectorCache&) = delete;
     VectorCache(VectorCache&&) = default;
     void invalidate() const { data_.clear(); }
     void invalidate_at(int i) const { data_.at(i).invalidate(); }
-    int size(const Parent* parent) const {
-        check_size(parent);
+    int size(TRemakeArgs... args) const {
+        check_size(args...);
         return data_.size();
     }
-    const TPayload& getget(const Parent* parent, int i) const {
-        return get(parent,i).yield(parent); }
-    void forAllValids(const Parent* parent, std::function<void(const TPayload& t)> f) const {
-        int n = size(parent);
+    const TPayload& getget(int i, TRemakeArgs... args) const {
+        return get(i,args...).yield(args...); }
+    void forAllValids(std::function<void(const TPayload& t)> f, TRemakeArgs... args) const {
+        int n = size(args...);
         for (int i=0; i<n; ++i)
-            if (const TPayload* d = get(parent,i).current())
+            if (const TPayload* d = get(i,args...).current())
                 f(*d);
     }
-    const std::vector<Cached<TPayload,const Parent*>> &data() const { return data_; }
+    const std::vector<Cached<TPayload,TRemakeArgs...>> &data() const { return data_; }
 private:
-    const Cached<TPayload,const Parent*>& get(const Parent* parent, int i) const {
-        check_size(parent);
+    const Cached<TPayload,TRemakeArgs...>& get(int i, TRemakeArgs... args) const {
+        check_size(args...);
         return data_.at(i);
     }
-    void check_size(const Parent* parent) const {
+    void check_size(TRemakeArgs... args) const {
         int n = sizeFunction_();
         if (n==data_.size())
             return;
         data_.clear();
         for (int i=0; i<n; ++i)
-            data_.push_back(remakeOne_(parent,i));
+            data_.push_back(remakeOne_(i,args...));
     }
-    mutable std::vector<Cached<TPayload,const Parent*>> data_;
+    mutable std::vector<Cached<TPayload,TRemakeArgs...>> data_;
     const std::function<int()> sizeFunction_;
-    const std::function<Cached<TPayload,const Parent*>(const Parent*,int)> remakeOne_;
+    const std::function<Cached<TPayload,TRemakeArgs...>(int,TRemakeArgs...)> remakeOne_;
 };
 
 //! Cached object with key.

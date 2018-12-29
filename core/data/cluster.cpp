@@ -129,7 +129,7 @@ double Sequence::normFactor() const
 //! @class Cluster
 
 namespace {
-Dfgram computeSectorDfgram(const Cluster* const parent, const int jS)
+Dfgram computeSectorDfgram(const int jS, const Cluster* const parent)
 {
     int nS = gSession->gammaSelection.numSlices.val();
     return Dfgram(algo::projectCluster(*parent, parent->rgeGma().slice(jS,nS)));
@@ -141,8 +141,8 @@ Cluster::Cluster(
     const class Datafile& file, const int index, const int offset)
     : Sequence(measurements)
     , dfgrams([]()->int{return gSession->gammaSelection.numSlices.val();},
-              [](const Cluster* parent, int jS)->Dfgram{
-                  return computeSectorDfgram(parent, jS); })
+              [](int jS, const Cluster* parent)->Dfgram{
+                  return computeSectorDfgram(jS, parent); })
     , file_(file)
     , index_(index)
     , offset_(offset)
@@ -161,5 +161,5 @@ bool Cluster::isIncomplete() const
 
 const Dfgram& Cluster::currentDfgram() const
 {
-    return dfgrams.getget(this, gSession->gammaSelection.currSlice.val()-1);
+    return dfgrams.getget(gSession->gammaSelection.currSlice.val()-1, this);
 }
