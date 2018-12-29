@@ -61,7 +61,7 @@ public:
         check_size(args...);
         return data_.size();
     }
-    const TPayload& getget(int i, TRemakeArgs... args) const {
+    const TPayload& yield_at(int i, TRemakeArgs... args) const {
         return get(i,args...).yield(args...); }
     void forAllValids(std::function<void(const TPayload& t)> f, TRemakeArgs... args) const {
         int n = size(args...);

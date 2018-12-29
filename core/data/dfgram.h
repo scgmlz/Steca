@@ -37,9 +37,9 @@ public:
     const Fitted& getBgFit() const { return bgFit_.yield(this); }
     const Curve& getBgAsCurve() const { return bgAsCurve_.yield(this); }
     const Curve& getCurveMinusBg() const { return curveMinusBg_.yield(this); }
-    const RawOutcome& getRawOutcome(int jP) const { return rawOutcomes_.getget(jP,this); }
-    const Fitted& getPeakFit(int jP) const { return peakFits_.getget(jP,this); }
-    const Curve& getPeakAsCurve(int jP) const { return peaksAsCurve_.getget(jP,this); }
+    const RawOutcome& getRawOutcome(int jP) const { return rawOutcomes_.yield_at(jP,this); }
+    const Fitted& getPeakFit(int jP) const { return peakFits_.yield_at(jP,this); }
+    const Curve& getPeakAsCurve(int jP) const { return peaksAsCurve_.yield_at(jP,this); }
 
 private:
     mutable lazy_data::Cached<Fitted,const Dfgram*> bgFit_;

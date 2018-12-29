@@ -161,5 +161,5 @@ bool Cluster::isIncomplete() const
 
 const Dfgram& Cluster::currentDfgram() const
 {
-    return dfgrams.getget(gSession->gammaSelection.currSlice.val()-1, this);
+    return dfgrams.yield_at(gSession->gammaSelection.currSlice.val()-1, this);
 }

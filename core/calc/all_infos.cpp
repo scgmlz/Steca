@@ -36,7 +36,7 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
     if (fitrange.isEmpty())
         return {metadata, alpha, beta, gRange};
 
-    const Dfgram& dfgram = cluster.dfgrams.getget(iGamma, &cluster);
+    const Dfgram& dfgram = cluster.dfgrams.yield_at(iGamma, &cluster);
 
     // TODO: the following could be simplified if RawOutcome were replaced by PeakOutcome
     std::unique_ptr<DoubleWithError> center;
@@ -97,7 +97,7 @@ AllInfos::AllInfos()
             return computeDirectInfoSequence(jP); }}
     , interpolated {[]()->int{return gSession->peaks.size();},
         [](int jP, const AllInfos* parent)->InfoSequence{
-            return algo::interpolateInfos(parent->direct.getget(jP,parent)); }}
+            return algo::interpolateInfos(parent->direct.yield_at(jP,parent)); }}
 {}
 
 void AllInfos::invalidateAll() const
@@ -123,7 +123,7 @@ const InfoSequence* AllInfos::currentDirect() const
         return nullptr;
     ASSERT(direct.size(this)==gSession->peaks.size());
     int jP = gSession->peaks.selectedIndex();
-    return &direct.getget(jP,this);
+    return &direct.yield_at(jP,this);
 }
 
 const InfoSequence* AllInfos::currentInterpolated() const
@@ -132,7 +132,7 @@ const InfoSequence* AllInfos::currentInterpolated() const
         return nullptr;
     ASSERT(interpolated.size(this)==gSession->peaks.size());
     int jP = gSession->peaks.selectedIndex();
-    return &interpolated.getget(jP,this);
+    return &interpolated.yield_at(jP,this);
 }
 
 const InfoSequence* AllInfos::currentInfoSequence() const
