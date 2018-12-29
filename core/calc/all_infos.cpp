@@ -77,7 +77,7 @@ InfoSequence computeDirectInfoSequence(int jP)
     TakesLongTime progress("peak fitting", gSession->activeClusters.size());
     InfoSequence ret;
     int nGamma = qMax(1, gSession->gammaSelection.numSlices.val());
-    for (const Cluster* cluster : gSession->activeClusters.clusters.get()) {
+    for (const Cluster* cluster : gSession->activeClusters.clusters.yield()) {
         progress.step();
         for (int i=0; i<nGamma; ++i) {
             PeakInfo refInfo = getPeak(jP, *cluster, i);
@@ -144,7 +144,7 @@ const std::vector<InfoSequence const *> AllInfos::allInterpolated() const
 {
     std::vector<InfoSequence const *> ret;
     for (const auto & v : interpolated.data())
-        ret.push_back(&v.get(this));
+        ret.push_back(&v.yield(this));
     return ret;
 }
 
@@ -152,7 +152,7 @@ const std::vector<InfoSequence const *> AllInfos::allDirect() const
 {
     std::vector<InfoSequence const *> ret;
     for (const auto & v : direct.data())
-        ret.push_back(&v.get(this));
+        ret.push_back(&v.yield(this));
     return ret;
 
 }

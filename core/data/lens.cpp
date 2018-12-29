@@ -88,7 +88,7 @@ float ImageLens::imageInten(int i, int j) const
 const Range& ImageLens::rgeInten(bool fixed) const
 {
     if (fixed)
-        return gSession->activeClusters.rgeFixedInten.get();
+        return gSession->activeClusters.rgeFixedInten.yield();
            // TODO restore from pre d9714895: (trans_, cut_);
     if (!rgeInten_.isValid()) {
         size2d sz = imgSize();

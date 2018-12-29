@@ -30,12 +30,12 @@ public:
     Cached(const Cached&) = delete;
     Cached(Cached&&) = default;
     void invalidate() const { cached_.release(); }
-    const TPayload& get(TRemakeArgs... args) const {
+    const TPayload& yield(TRemakeArgs... args) const {
         if (!cached_)
             cached_.reset( new TPayload{remake_(args...)} );
         return *cached_;
     }
-    const TPayload* getif() const { return cached_ ? cached_.get() : nullptr; }
+    const TPayload* current() const { return cached_ ? cached_.get() : nullptr; }
 private:
     mutable std::unique_ptr<TPayload> cached_;
     const std::function<TPayload(TRemakeArgs...)> remake_;
@@ -62,11 +62,11 @@ public:
         return data_.size();
     }
     const TPayload& getget(const Parent* parent, int i) const {
-        return get(parent,i).get(parent); }
+        return get(parent,i).yield(parent); }
     void forAllValids(const Parent* parent, std::function<void(const TPayload& t)> f) const {
         int n = size(parent);
         for (int i=0; i<n; ++i)
-            if (const TPayload* d = get(parent,i).getif())
+            if (const TPayload* d = get(parent,i).current())
                 f(*d);
     }
     const std::vector<Cached<TPayload,const Parent*>> &data() const { return data_; }

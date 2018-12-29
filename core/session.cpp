@@ -161,7 +161,7 @@ size2d Session::imageSize() const
 const Dfgram* Session::currentOrAvgeDfgram() const
 {
     if (gSession->params.showAvgeDfgram.val())
-        return &gSession->activeClusters.avgDfgram.get();
+        return &gSession->activeClusters.avgDfgram.yield();
     const Cluster* cluster = gSession->currentCluster();
     ASSERT(cluster);
     return &cluster->currentDfgram();

@@ -145,7 +145,7 @@ void ExportDfgram::saveAll(bool oneFile)
     int picNum = 0;
     int fileNum = 0;
     int nSlices = gSession->gammaSelection.numSlices.val();
-    for (const Cluster* cluster : gSession->activeClusters.clusters.get()) {
+    for (const Cluster* cluster : gSession->activeClusters.clusters.yield()) {
         ++picNum;
         progress.step();
         for (int i=0; i<qMax(1,nSlices); ++i) {

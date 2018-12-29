@@ -27,7 +27,7 @@ Curve computeAvgCurve(const ActiveClusters*const ac)
     TakesLongTime __("computeAvgCurve");
     // flatten Cluster-Measurement hierarchy into one Sequence
     std::vector<const Measurement*> group;
-    for (const Cluster* cluster : ac->clusters.get())
+    for (const Cluster* cluster : ac->clusters.yield())
         for (const Measurement* one: cluster->members())
             group.push_back(one);
     const Sequence seq(group);
@@ -38,7 +38,7 @@ Curve computeAvgCurve(const ActiveClusters*const ac)
 Range computeRgeGma(const ActiveClusters*const ac)
 {
     Range ret;
-    for (const Cluster* cluster : ac->clusters.get())
+    for (const Cluster* cluster : ac->clusters.yield())
         ret.extendBy(cluster->rgeGma());
     return ret;
 }
@@ -48,7 +48,7 @@ Range computeRgeFixedInten(const ActiveClusters*const ac)
     bool trans = false; bool cut = false; // TODO restore (broken after d97148958)
     Range ret;
     TakesLongTime __("rgeFixedInten");
-    for (const Cluster* cluster : ac->clusters.get())
+    for (const Cluster* cluster : ac->clusters.yield())
         for (const Measurement* one : cluster->members())
             ret.extendBy(ImageLens(one->image(), trans, cut).rgeInten(false));
     return ret;
@@ -59,7 +59,7 @@ double recomputeAvg(const ActiveClusters*const ac, std::function<double(const Me
 {
     double sum = 0;
     int cnt = 0;
-    for (const Cluster* cluster : ac->clusters.get()) {
+    for (const Cluster* cluster : ac->clusters.yield()) {
         for (const Measurement* one : cluster->members())
             sum += f(one);
         cnt += cluster->size();

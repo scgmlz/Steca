@@ -34,9 +34,9 @@ public:
     void invalidatePeakAt(int) const;
 
     const Curve curve; // not cached here because recompute depends on context (sector vs avg)
-    const Fitted& getBgFit() const { return bgFit_.get(this); }
-    const Curve& getBgAsCurve() const { return bgAsCurve_.get(this); }
-    const Curve& getCurveMinusBg() const { return curveMinusBg_.get(this); }
+    const Fitted& getBgFit() const { return bgFit_.yield(this); }
+    const Curve& getBgAsCurve() const { return bgAsCurve_.yield(this); }
+    const Curve& getCurveMinusBg() const { return curveMinusBg_.yield(this); }
     const RawOutcome& getRawOutcome(int jP) const { return rawOutcomes_.getget(this,jP); }
     const Fitted& getPeakFit(int jP) const { return peakFits_.getget(this,jP); }
     const Curve& getPeakAsCurve(int jP) const { return peaksAsCurve_.getget(this,jP); }

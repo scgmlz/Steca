@@ -41,7 +41,7 @@ public:
     QString fileName() const { return hasFile() ? raw_->fileName() : ""; }
     const Image& image() const { return corrImage_; }
     void invalidateNormalizer() const { normalizer_.invalidate(); }
-    const Image& getNormalizer() const { return normalizer_.get(); }
+    const Image& getNormalizer() const { return normalizer_.yield(); }
     bool isEnabledAndValid() const { return enabled.val() && !getNormalizer().size().isEmpty(); }
 
     QcrCell<bool> enabled {false};

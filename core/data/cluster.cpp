@@ -96,19 +96,19 @@ double Sequence::normFactor() const
 
     switch ((eNorm)gSession->params.howtoNormalize.val()) {
     case eNorm::MONITOR:
-        num = gSession->activeClusters.grandAvgMonitorCount.get();
+        num = gSession->activeClusters.grandAvgMonitorCount.yield();
         den = avgMonitorCount();
         break;
     case eNorm::DELTA_MONITOR:
-        num = gSession->activeClusters.grandAvgDeltaMonitorCount.get();
+        num = gSession->activeClusters.grandAvgDeltaMonitorCount.yield();
         den = avgDeltaMonitorCount();
         break;
     case eNorm::TIME:
-        num = gSession->activeClusters.grandAvgTime.get();
+        num = gSession->activeClusters.grandAvgTime.yield();
         den = avgTime();
         break;
     case eNorm::DELTA_TIME:
-        num = gSession->activeClusters.grandAvgDeltaTime.get();
+        num = gSession->activeClusters.grandAvgDeltaTime.yield();
         den = avgDeltaTime();
         break;
     case eNorm::NONE:

@@ -30,8 +30,8 @@ public:
     void set(int, bool);
 
     bool isSelected(int i) const { return vec.at(i).val(); }
-    int numSelected() const { return list.get(this).size(); }
-    int selectedOf(int i) const { return list.get(this).at(i); }
+    int numSelected() const { return list.yield(this).size(); }
+    int selectedOf(int i) const { return list.yield(this).at(i); }
 
     std::vector<QcrCell<bool>> vec; //!< true if to be displayed
 private:
