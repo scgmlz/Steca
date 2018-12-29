@@ -46,12 +46,12 @@ template<typename Parent, typename TPayload>
 class VectorCache {
 public:
     VectorCache() = delete;
-    VectorCache(const std::function<int()> nFct,
-                      const std::function<TPayload(const Parent*,int)> rFct)
-        : nFct_(nFct)
-        , remake_([rFct](const Parent* p, int i){
+    VectorCache(const std::function<int()> sizeFunction,
+                const std::function<TPayload(const Parent*,int)> remakeOne)
+        : sizeFunction_(sizeFunction)
+        , remakeOne_([remakeOne](const Parent* p, int i){
                 return Cached<TPayload,const Parent*>(
-                    [rFct,i](const Parent* p)->TPayload{return rFct(p,i);}); } )
+                    [remakeOne,i](const Parent* p)->TPayload{return remakeOne(p,i);}); } )
         {}
     VectorCache(const VectorCache&) = delete;
     VectorCache(VectorCache&&) = default;
@@ -76,16 +76,16 @@ private:
         return data_.at(i);
     }
     void check_size(const Parent* parent) const {
-        int n = nFct_();
+        int n = sizeFunction_();
         if (n==data_.size())
             return;
         data_.clear();
         for (int i=0; i<n; ++i)
-            data_.push_back(remake_(parent,i));
+            data_.push_back(remakeOne_(parent,i));
     }
     mutable std::vector<Cached<TPayload,const Parent*>> data_;
-    const std::function<int()> nFct_;
-    const std::function<Cached<TPayload,const Parent*>(const Parent*,int)> remake_;
+    const std::function<int()> sizeFunction_;
+    const std::function<Cached<TPayload,const Parent*>(const Parent*,int)> remakeOne_;
 };
 
 //! Cached object with key.
