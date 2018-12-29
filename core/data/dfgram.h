@@ -45,9 +45,9 @@ private:
     mutable lazy_data::Cached<Fitted,const Dfgram*> bgFit_;
     mutable lazy_data::Cached<Curve, const Dfgram*> bgAsCurve_;
     mutable lazy_data::Cached<Curve, const Dfgram*> curveMinusBg_;
-    mutable lazy_data::VectorCache<Dfgram,RawOutcome> rawOutcomes_;
-    mutable lazy_data::VectorCache<Dfgram,Fitted> peakFits_;
-    mutable lazy_data::VectorCache<Dfgram,Curve> peaksAsCurve_;
+    mutable lazy_data::VectorCache<RawOutcome,Dfgram> rawOutcomes_;
+    mutable lazy_data::VectorCache<Fitted,Dfgram> peakFits_;
+    mutable lazy_data::VectorCache<Curve,Dfgram> peaksAsCurve_;
 };
 
 #endif // DFGRAM_H

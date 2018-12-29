@@ -42,7 +42,7 @@ private:
 };
 
 //! Caching vector of cached objects.
-template<typename Parent, typename TPayload>
+template<typename TPayload, typename Parent>
 class VectorCache {
 public:
     VectorCache() = delete;
