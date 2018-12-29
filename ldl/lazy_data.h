@@ -57,6 +57,10 @@ public:
     VectorCache(VectorCache&&) = default;
     void invalidate() const { data_.clear(); }
     void invalidate_at(int i) const { data_.at(i).invalidate(); }
+    int size(const Parent* parent) const {
+        check_size(parent);
+        return data_.size();
+    }
     const TPayload& getget(const Parent* parent, int i) const {
         return get(parent,i).get(parent); }
     void forAllValids(const Parent* parent, std::function<void(const TPayload& t)> f) const {
@@ -64,10 +68,6 @@ public:
         for (int i=0; i<n; ++i)
             if (const TPayload* d = get(parent,i).getif())
                 f(*d);
-    }
-    int size(const Parent* parent) const {
-        check_size(parent);
-        return data_.size();
     }
     const std::vector<Cached<TPayload,const Parent*>> &data() const { return data_; }
 private:
