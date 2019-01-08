@@ -16,7 +16,7 @@
 #define BOOL_VECTOR_H
 
 #include "qcr/engine/cell.h"
-#include "lazy_data.h"
+#include "core/typ/lazy_data.h"
 #include <vector>
 
 //! Selection of meta parameters

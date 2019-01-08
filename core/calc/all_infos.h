@@ -16,7 +16,7 @@
 #define ALL_INFOS_H
 
 #include "core/calc/info_sequence.h"
-#include "lazy_data.h"
+#include "core/typ/lazy_data.h"
 
 //! Direct and interpolated InfoSequence for all Bragg peaks.
 

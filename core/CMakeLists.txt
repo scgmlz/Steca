@@ -4,8 +4,6 @@ file(GLOB_RECURSE files *.h *.cpp)
 add_library(${lib} ${files})
 
 target_include_directories(${lib}
-    PUBLIC
-    ${CMAKE_HOME_DIRECTORY}/ldl
     PRIVATE
     ${yaml_INCLUDE_DIR}
     ${CMAKE_HOME_DIRECTORY}/3rdparty

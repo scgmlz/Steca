@@ -1,14 +1,14 @@
 //  ***********************************************************************************************
 //
-//  Lazy Data Library
+//  Steca: stress and texture calculator
 //
-//! @file      lazy_data.h
-//! @brief     Defines and implements the class templates Cached, CachingVector, KeyedCache, ...
+//! @file      core/typ/lazy_data.h
+//! @brief     Defines and implements the class templates Cached, CachingVector, KeyedCache
 //!
 //! @homepage  https://github.com/scgmlz/Steca
-//! @license   The Boost Licence
-//! @copyright Forschungszentrum Jülich GmbH 2018-
-//! @author    Joachim Wuttke, Scientific Computing Group at MLZ <j.wuttke@fz-juelich.de>
+//! @license   GNU General Public License v3 or higher (see COPYING)
+//! @copyright Forschungszentrum Jülich GmbH 2016-2018
+//! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
 //  ***********************************************************************************************
 
@@ -18,6 +18,12 @@
 #include <functional>
 #include <memory>
 #include <vector>
+
+//! Data caches that are evaluated just in time.
+
+//! This namespace contains the class templates Cached, CachingVector, KeyedCache.
+//! These classes hold payload data and computation methods. Payload data are computed
+//! when needed for the first time. Then they remain cached until explicitly invalidated.
 
 namespace lazy_data {
 

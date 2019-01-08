@@ -17,7 +17,7 @@
 
 #include "core/data/dfgram.h"
 #include "core/raw/measurement.h"
-#include "lazy_data.h"
+#include "core/typ/lazy_data.h"
 
 //! A group of one or more Measurement|s.
 

@@ -1,2 +1,2 @@
 #!/bin/sh
-find . \( -name \*.h \) -and \( -path ./qcr/\* -or -path ./ldl/\* -or -path ./core/\* -or -path ./gui/\* \) | sort
+find . \( -name \*.h \) -and \( -path ./qcr/\* -or -path ./core/\* -or -path ./gui/\* \) | sort

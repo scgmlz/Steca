@@ -1,5 +1,5 @@
 #include "gtest/gtest.h"
-#include "lazy_data.h"
+#include "core/typ/lazy_data.h"
 
 class Payload {
 public:

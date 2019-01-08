@@ -9,7 +9,6 @@ set(inc_dirs
     ${gtest_SOURCE_DIR}/include
     ${gtest_SOURCE_DIR}
     ../ThirdParty
-    ${CMAKE_SOURCE_DIR}/ldl
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_BINARY_DIR}
     )
