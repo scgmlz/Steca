@@ -16,9 +16,9 @@
 #include "core/typ/lazy_data.h"
 
 // Minimal example to test and demonstrate usage of Cached<int>.
-TEST(Caches, OneLevel) {
-    static int N = 42;
-    auto f = []()->int{ return {N++}; };
+TEST(Caches, Simple) {
+    static int N = 42; // Auxiliary, to let the remake function depend on something.
+    auto f = []()->int{ return {N++}; }; // The remake function. A complicated computation.
     lazy_data::Cached<int> cache{ f };
     EXPECT_EQ(42, cache.yield());
     EXPECT_EQ(42, cache.yield());
