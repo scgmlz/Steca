@@ -133,7 +133,7 @@ void ExportPolefig::saveAll(bool oneFile, const QString& path, const QString& se
 
     QStringList paths;
     if (oneFile)
-            paths << path;
+        paths << path;
     else for (int i=0; i<peaks.size(); ++i)
         paths << numberedFileName(path, i, peaks.size()+1);
 
@@ -154,9 +154,7 @@ void ExportPolefig::saveAll(bool oneFile, const QString& path, const QString& se
     if (paths.size() == 1) {
         saveOneFile(paths[0], separator, peaks, progress);
     } else {
-        for (uint i=0; i<peaks.size(); ++i)  {
+        for (uint i=0; i<peaks.size(); ++i)
             saveOneFile(paths[i], separator, { peaks[i] }, progress);
-        }
-
     }
 }
