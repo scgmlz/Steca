@@ -19,7 +19,6 @@
 #include <qmath.h>
 
 //! Implementation of numberedFileName in header.
-
 QString numberedFileName(const QString& templatedName, int num, int maxNum) {
     if (!templatedName.contains("%d"))
         qFatal("path does not contain placeholder %%d");
@@ -30,11 +29,8 @@ QString numberedFileName(const QString& templatedName, int num, int maxNum) {
 }
 
 namespace {
-static QString const
-    DAT_EXT(".dat"), DAT_SEP(" "), // extension, separator
-    CSV_EXT(".csv"), CSV_SEP(", ");
-static QString saveFmt = DAT_EXT; //!< setting: default format for data export
-}
+static QString saveFmt = "dat"; //!< setting: default format for data export
+} // namespace
 
 ExportfileDialogfield::ExportfileDialogfield(
     QWidget* parent, bool withTypes, std::function<void(void)> onSave)
@@ -46,14 +42,16 @@ ExportfileDialogfield::ExportfileDialogfield(
     dir_ = new QcrLineEdit("dir", defaultDir.absolutePath());
     file_ = new QcrLineEdit("file");
 
-    auto* rbDat_ = new QcrRadioButton{"fmtDat", ".dat"};
-    auto* rbCsv_ = new QcrRadioButton{"fmtCsv", ".csv"};
     auto* fileExtensionGroup = new QButtonGroup;
-    fileExtensionGroup->addButton(rbDat_);
-    fileExtensionGroup->addButton(rbCsv_);
+    auto* ftypeGrid = new QVBoxLayout;
+    for (const QString fmt: { "dat", "csv" }) {
+        auto* rb = new QcrRadioButton{"fmt."+fmt, "."+fmt};
+        rb->programaticallySetValue(saveFmt == fmt);
+        connect(rb, &QRadioButton::clicked, [fmt]() { saveFmt == fmt; });
+        fileExtensionGroup->addButton(rb);
+        ftypeGrid->addWidget(rb);
+    }
 
-    rbCsv_->programaticallySetValue(saveFmt == CSV_EXT);
-    rbDat_->programaticallySetValue(saveFmt == DAT_EXT);
     dir_->setReadOnly(true);
 
     auto* actBrowse_ = new QcrTrigger{"selectDir", "Browse..."};
@@ -63,8 +61,6 @@ ExportfileDialogfield::ExportfileDialogfield(
     // internal connections
     connect(actBrowse_, &QAction::triggered, [this, parent]() {
             dir_->setText(file_dialog::queryDirectory(parent, "Select folder", dir_->text())); });
-    connect(rbDat_, &QRadioButton::clicked, []() { saveFmt = DAT_EXT; });
-    connect(rbCsv_, &QRadioButton::clicked, []() { saveFmt = CSV_EXT; });
 
     // outgoing connections
     connect(actCancel_, &QAction::triggered, [parent]() { parent->close(); });
@@ -80,10 +76,6 @@ ExportfileDialogfield::ExportfileDialogfield(
 
     auto* destination = new QGroupBox("Destination");
     destination->setLayout(destinationGrid);
-
-    auto* ftypeGrid = new QVBoxLayout;
-    ftypeGrid->addWidget(rbDat_);
-    ftypeGrid->addWidget(rbCsv_);
 
     auto* ftype = new QGroupBox("File type");
     ftype->setVisible(withTypes);
@@ -115,7 +107,7 @@ QString ExportfileDialogfield::path(bool withSuffix, bool withNumber)
     if (withSuffix) {
         QString suffix = saveFmt;
         if ("."+QFileInfo(fileName).suffix().toLower()!=saveFmt.toLower())
-            fileName += saveFmt;
+            fileName += "."+saveFmt;
     }
     file_->setText(fileName);
 
@@ -133,10 +125,10 @@ QFile* ExportfileDialogfield::file()
 
 QString ExportfileDialogfield::separator() const
 {
-    if      (saveFmt==DAT_EXT)
-        return DAT_SEP;
-    else if (saveFmt==CSV_EXT)
-        return CSV_SEP;
+    if      (saveFmt=="dat")
+        return " ";
+    else if (saveFmt=="csv")
+        return ", ";
     else
         qFatal("invalid case in ExportfileDialogfield::separator");
 }
