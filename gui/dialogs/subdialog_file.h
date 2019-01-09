@@ -42,12 +42,6 @@ public:
 private:
     QLineEdit* dir_;
     QLineEdit* file_;
-    QcrRadioButton rbDat_ {"fmtDat", ".dat"};
-    QcrRadioButton rbCsv_ {"fmtCsv", ".csv"};
-    QButtonGroup fileExtensionGroup;
-    QcrTrigger actBrowse_ {"selectDir", "Browse..."};
-    QcrTrigger actCancel_ {"cancel", "Cancel"};
-    QcrTrigger actSave_ {"save", "Save"};
 };
 
 #endif // SUBDIALOG_FILE_H
