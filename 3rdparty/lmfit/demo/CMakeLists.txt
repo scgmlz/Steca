@@ -4,8 +4,8 @@ set(demos
     nonlin1
     )
 
-foreach(demo ${demos})
-    add_executable(${demo} ${demo}.c)
-    target_link_libraries(${demo} ${lmfit_LIBRARY})
-    target_include_directories(${demo} PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${lmfit_SOURCE_DIR}/lib)
+foreach(app ${demos})
+    add_executable(${app} ${app}.c)
+    target_include_directories(${app} PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${lmfit_SOURCE_DIR}/lib)
+    target_link_libraries(${app} ${lmfit_LIBRARY})
 endforeach()

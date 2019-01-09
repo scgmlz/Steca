@@ -4,34 +4,38 @@ cmake_policy(SET CMP0048 NEW)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(PreventInSourceBuilds)
 
-set(CMAKE_DISABLE_SOURCE_CHANGES ON)
-set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
-
 project(lmfit C)
 set(lmfit_SOVERSION                  8) # API version
-set(lmfit_VERSION ${lmfit_SOVERSION}.0) # lib version
+set(lmfit_VERSION ${lmfit_SOVERSION}.2) # lib version
 
 # --- Declare project-wide user flags, and set default values ---
 option(FITTEST "Build with FitTest" OFF)
 option(LIB_MAN "Build library man pages" ON)
-option(LIB_INSTALL "Install library" ON)
-option(BUILD_SHARED_LIBS "Build shared libraries" ON)
-option(DEVELOPER_BUILD "Be pedantic, use all warnings, ..." OFF)
+option(PEDANTIC "Compile with pedantic warnings" ON)
+
+if(MSVC)
+else()
+    add_compile_options(-O2)
+    if(PEDANTIC)
+        add_compile_options(-pedantic -Wall)
+    endif()
+endif()
+
+include(CTest)
 
 set(destination ${CMAKE_INSTALL_PREFIX})
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2")
-if (DEVELOPER_BUILD)
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Werror -pedantic -Wall -Wno-sign-compare -Wno-unused-result -Wno-parentheses  -Wno-unknown-pragmas")
-endif()
+configure_file("lmfit.pc.in" "lmfit.pc" @ONLY)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/lmfit.pc"
+    DESTINATION "${destination}/lib/pkgconfig/")
 
 add_subdirectory(lib)
-set(LMFit_LIBRARIES ${lmfit_LIBRARY} PARENT_SCOPE)
 add_subdirectory(demo)
-if(${LIB_MAN})
+add_subdirectory(test)
+if (${LIB_MAN})
     add_subdirectory(man)
 endif()
-if(${FITTEST})
+if (${FITTEST})
     find_package(FitTest REQUIRED)
     add_subdirectory(fittest)
 endif()

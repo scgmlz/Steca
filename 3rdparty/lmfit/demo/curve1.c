@@ -59,5 +59,10 @@ int main()
         printf( "  t[%2d]=%4g y=%6g fit=%10g residue=%12g\n",
                 i, t[i], y[i], f(t[i],par), y[i] - f(t[i],par) );
 
-    return 0;
+    if (status.outcome<=3) {
+        printf("SUCCESS\n");
+        return 0;
+    }
+    printf("FAILURE\n");
+    return 1;
 }

@@ -1,8 +1,15 @@
-Changes in lmfit-8.1, released
+Changes in lmfit-8.2, released 8jan19
 
-- Minor corrections:
-  - Don't require C++ compiler in CMake project command
-  - Uniform *const declarations in lmmin.h and lmmin.c
+- Relax precision requirement in test (failed ppc64le, aarch64 and s390x in Fedora)
+
+Changes in lmfit-8.1, released 20dec18
+
+- Restore lmfit.pc
+- Don't try to link -lm if math functions are already available (for MSVC)
+- Don't require C++ compiler in CMake project command
+- Uniform *const declarations in lmmin.h and lmmin.c
+- Modernize CMakeLists.txt
+- Put three tests under CTest control
 
 Changes in lmfit-8.0, released 19sep18:
 - Most generic API call is now lmmin2,
