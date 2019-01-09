@@ -22,9 +22,9 @@
 class RangeControl : public QcrWidget {
 public:
     RangeControl() = delete;
-    RangeControl(const QString&,
-                 const std::function<const class Range*()>&,
-                 const std::function<void(double,bool)>&);
+    RangeControl(const QString& _name,
+                 const std::function<const class Range*()>& _getRange,
+                 const std::function<void(double,bool)>& _setOne);
     RangeControl(const RangeControl&) = delete;
     static const double STEP;
 };

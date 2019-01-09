@@ -32,8 +32,8 @@ RangeControl::RangeControl(
     cellMax->setCoerce([](const double val){return STEP*std::round(val/STEP);});
     cellMin->setHook([_setOne](const double val){_setOne(val, false);});
     cellMax->setHook([_setOne](const double val){_setOne(val, true );});
-    auto* spinMin = new QcrDoubleSpinBox{"_"+_name+"Min", cellMin, 5, 2, 0., 90.};
-    auto* spinMax = new QcrDoubleSpinBox{"_"+_name+"Max", cellMax, 5, 2, 0., 90.};
+    auto* spinMin = new QcrDoubleSpinBox{"_"+_name+"Min", cellMin, 5, 2, 0., 180.};
+    auto* spinMax = new QcrDoubleSpinBox{"_"+_name+"Max", cellMax, 5, 2, 0., 180.};
     spinMin->setSingleStep(STEP);
     spinMax->setSingleStep(STEP);
 
@@ -51,7 +51,7 @@ RangeControl::RangeControl(
             setEnabled(range!=nullptr);
             if (!range)
                 return;
-            spinMin->setMaximum(90.);
+            spinMin->setMaximum(180.);
             spinMax->setMinimum( 0.);
             cellMin->pureSetVal(range->min);
             cellMax->pureSetVal(range->max);
