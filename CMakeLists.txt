@@ -2,6 +2,9 @@
 
 cmake_minimum_required(VERSION 3.6 FATAL_ERROR) # 3.6+ required by IFW for VS2015+
 cmake_policy(VERSION 3.6)
+if(POLICY CMP0077)
+    cmake_policy(SET CMP0077 NEW) # since 3.13
+endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(PreventInSourceBuilds)
@@ -98,6 +101,7 @@ if(WITH_TESTS)
     add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND}) # => 'make check' is alias for 'ctest'
     set(gtest_force_shared_crt ON
         CACHE bool "Use shared(DLL) run-time lib even when Google Test is built as static lib.")
+    set(gtest_disable_pthreads ON)
     add_subdirectory(3rdparty/gtest)
     configure_file(testdata/testdata.h.in ${CMAKE_BINARY_DIR}/testdata.h @ONLY)
     add_subdirectory(utest)
