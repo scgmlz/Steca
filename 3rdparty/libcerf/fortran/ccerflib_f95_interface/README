@@ -1,0 +1,52 @@
+Files:
+- this README file
+- a LICENSE statement
+- use_libcerf_mod.f90 : the f95 interface to cerflib
+- cerflib_main_test.f90 : a main program exemplifying the calls to the cerflib functions 
+  from Fortran95
+  
+Prerequisites: 
+- a modern f95 compiler including a f2003-standard ISO_C_BINDING module, 
+  like e.g. gfortran (4.6 or better) or ifort
+- libcerf installed and in the path where the linker searches for libraries 
+  (if this is not so, you have to give the path in the command line when compiling, 
+  preceded by -L, as usual)
+
+
+
+
+Compiling:
+- Put the two .f90 files in the same folder, then on the console give the following commands
+(example with gfortran as compiler):
+
+gfortran -c use_libcerf_mod.f90
+gfortran -o cerflib_main_test cerflib_main_test.f90 use_libcerf_mod.o -lcerf
+
+You may add compiler options (e.g. -O2, -fbounds-check, ...) as you see fit. 
+
+Coding:
+  The use_libcerf_mod.f90 file contains a module 
+
+  MODULE use_libcerf
+  
+  that interfaces Fortran95 code to the libcerf library. 
+  To call the cerflib functions, you need to use the module, that is, in your scoping unit 
+  there must be the code line
+
+  use use_libcerf
+
+  Fortran function names are like in the libcerf 
+  (see http://apps.jcns.fz-juelich.de/libcerf), 
+  with a _F at the end;
+  e.g. erfcx of libcerf becomes erfcx_F in the Fortran95 version. 
+  Arguments are the same, see code for details. 
+  Arguments and results are the equivalent Fortran types to the C types of libcerf
+  (double precision real / 8-byte real) for C double, 
+  double precision complex / 16-byte complex for C double complex).
+  Fortran types are matched to those of your compiler/machine in use_libcerf_mod.f90;
+  arguments are then converted to C types if needed, C-type results are back-converted 
+  into Fortran types. 
+  You may (must not, however) declare your variables using the autodetect types
+  as defined in use_libcerf_mod.f90, that is, 
+  REAL(DP)         for double precision real
+  COMPLEX(DPC)     for double precision complex

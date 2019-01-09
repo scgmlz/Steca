@@ -38,7 +38,7 @@ int main( int argc, char **argv )
     x = atof( argv[1] );
     y = atof( argv[2] );
 
-    cmplx w = w_of_z( C(x,y) );
+    _cerf_cmplx w = w_of_z( C(x,y) );
 
     double v[2][2];
     v[0][0] = creal(w);

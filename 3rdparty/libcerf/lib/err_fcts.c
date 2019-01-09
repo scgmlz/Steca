@@ -51,7 +51,7 @@
 
 #include "cerf.h"
 #include <math.h>
-#include "defs.h" // defines cmplx, NaN, C, cexp, ...
+#include "defs.h" // defines _cerf_cmplx, NaN, C, cexp, ...
 
 const double spi2 = 0.8862269254527580136490837416705725913990; // sqrt(pi)/2
 const double s2pi = 2.5066282746310005024157652848110; // sqrt(2*pi)
@@ -61,7 +61,7 @@ const double pi   = 3.141592653589793238462643383279503;
 /*  Simple wrappers: cerfcx, cerfi, erfi, dawson                              */
 /******************************************************************************/
 
-cmplx cerfcx(cmplx z)
+_cerf_cmplx cerfcx(_cerf_cmplx z)
 {
     // Compute erfcx(z) = exp(z^2) erfc(z),
     // the complex underflow-compensated complementary error function,
@@ -70,12 +70,12 @@ cmplx cerfcx(cmplx z)
     return w_of_z(C(-cimag(z), creal(z)));
 }
 
-cmplx cerfi(cmplx z)
+_cerf_cmplx cerfi(_cerf_cmplx z)
 {
     // Compute erfi(z) = -i erf(iz),
     // the rotated complex error function.
 
-    cmplx e = cerf(C(-cimag(z),creal(z)));
+    _cerf_cmplx e = cerf(C(-cimag(z),creal(z)));
     return C(cimag(e), -creal(e));
 }
 
@@ -145,9 +145,12 @@ double voigt( double x, double sigma, double gamma )
             return gam / pi / (x*x + gam*gam);
         } else {
             // Regular case, both parameters are nonzero
-            double w = sqrt(gam*gam+sig*sig); // to work in reduced units
-            cmplx z = C(x/w,gam/w) / sqrt(2) / (sig/w);
-            return creal( w_of_z(z) ) / s2pi / (sig/w);
+            _cerf_cmplx z = C(x,gam) / sqrt(2) / sig;
+            return creal( w_of_z(z) ) / s2pi / sig;
+            // TODO: correct and activate the following:
+//            double w = sqrt(gam*gam+sig*sig); // to work in reduced units
+//            _cerf_cmplx z = C(x/w,gam/w) / sqrt(2) / (sig/w);
+//            return creal( w_of_z(z) ) / s2pi / (sig/w);
         }
     }
 }
@@ -156,7 +159,7 @@ double voigt( double x, double sigma, double gamma )
 /*  cerf                                                                      */
 /******************************************************************************/
 
-cmplx cerf(cmplx z)
+_cerf_cmplx cerf(_cerf_cmplx z)
 {
 
     // Steven G. Johnson, October 2012.
@@ -217,7 +220,7 @@ cmplx cerf(cmplx z)
     //   erf(z) = 2/sqrt(pi) * z * (1 - z^2/3 + z^4/10 - z^6/42 + z^8/216 + ...)
 taylor:
     {
-        cmplx mz2 = C(mRe_z2, mIm_z2); // -z^2
+        _cerf_cmplx mz2 = C(mRe_z2, mIm_z2); // -z^2
         return z * (1.1283791670955125739
                     + mz2 * (0.37612638903183752464
                              + mz2 * (0.11283791670955125739
@@ -256,7 +259,7 @@ taylor_erfi:
 /*  cerfc                                                                     */
 /******************************************************************************/
 
-cmplx cerfc(cmplx z)
+_cerf_cmplx cerfc(_cerf_cmplx z)
 {
     // Steven G. Johnson, October 2012.
 
@@ -298,7 +301,7 @@ cmplx cerfc(cmplx z)
 /*  cdawson                                                                   */
 /******************************************************************************/
 
-cmplx cdawson(cmplx z)
+_cerf_cmplx cdawson(_cerf_cmplx z)
 {
 
     // Steven G. Johnson, October 2012.
@@ -329,7 +332,7 @@ cmplx cdawson(cmplx z)
 
     double mRe_z2 = (y - x) * (x + y); // Re(-z^2), being careful of overflow
     double mIm_z2 = -2*x*y; // Im(-z^2)
-    cmplx mz2 = C(mRe_z2, mIm_z2); // -z^2
+    _cerf_cmplx mz2 = C(mRe_z2, mIm_z2); // -z^2
 
     /* Handle positive and negative x via different formulas,
        using the mirror symmetries of w, to avoid overflow/underflow
@@ -341,7 +344,7 @@ cmplx cdawson(cmplx z)
             else if (fabs(mIm_z2) < 5e-3)
                 goto taylor_realaxis;
         }
-        cmplx res = cexp(mz2) - w_of_z(z);
+        _cerf_cmplx res = cexp(mz2) - w_of_z(z);
         return spi2 * C(-cimag(res), creal(res));
     }
     else { // y < 0
@@ -353,7 +356,7 @@ cmplx cdawson(cmplx z)
         }
         else if (isnan(y))
             return C(x == 0 ? 0 : NaN, NaN);
-        cmplx res = w_of_z(-z) - cexp(mz2);
+        _cerf_cmplx res = w_of_z(-z) - cexp(mz2);
         return spi2 * C(-cimag(res), creal(res));
     }
 

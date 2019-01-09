@@ -3,7 +3,7 @@
  *   along with Dawson, Faddeeva and Voigt functions
  *
  * File defs.h:
- *   Define cmplx, CMPLX, NaN, for internal use, for when sources are compiled as C++ code
+ *   Define _cerf_cmplx, CMPLX, NaN, for internal use, for when sources are compiled as C++ code
  *
  * Copyright:
  *   (C) 2012 Massachusetts Institute of Technology
@@ -29,8 +29,8 @@
 #define Inf std::numeric_limits<double>::infinity()
 #define NaN std::numeric_limits<double>::quiet_NaN()
 
-#ifndef cmplx
-#  define std::complex<double> cmplx;
+#ifndef _cerf_cmplx
+#  define std::complex<double> _cerf_cmplx;
 #endif
 
 // Use C-like complex syntax, since the C syntax is more restrictive
@@ -39,7 +39,7 @@
 #define cimag(z) std::imag(z)
 #define cpolar(r,t) std::polar(r,t)
 
-#define C(a,b) cmplx(a,b)
+#define C(a,b) _cerf_cmplx(a,b)
 
 #define FADDEEVA(name) Faddeeva::name
 #define FADDEEVA_RE(name) Faddeeva::name

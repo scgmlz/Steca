@@ -64,7 +64,7 @@
 #include "cerf.h"
 #include <float.h>
 #include <math.h>
-#include "defs.h" // defines cmplx, NaN, C, cexp, ...
+#include "defs.h" // defines _cerf_cmplx, NaN, C, cexp, ...
 
 int faddeeva_algorithm, faddeeva_nofterms; // for external analysis
 
@@ -152,7 +152,7 @@ static const double expa2n2[] = {
 /*  w_of_z, Faddeeva's scaled complex error function                          */
 /******************************************************************************/
 
-cmplx w_of_z(cmplx z)
+_cerf_cmplx w_of_z(_cerf_cmplx z)
 {
     faddeeva_nofterms = 0;
 
@@ -177,7 +177,7 @@ cmplx w_of_z(cmplx z)
     const double y = cimag(z);
     const double ya = fabs(y);
 
-    cmplx ret = 0.; // return value
+    _cerf_cmplx ret = 0.; // return value
 
     double sum1 = 0, sum2 = 0, sum3 = 0, sum4 = 0, sum5 = 0;
 

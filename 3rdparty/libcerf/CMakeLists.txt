@@ -1,38 +1,45 @@
 cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
-cmake_policy(SET CMP0048 NEW)
+#cmake_policy(SET CMP0048 NEW)
 
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(PreventInSourceBuilds)
 
 option(CERF_CPP "Build libcerf as native C++" OFF)
 option(LIB_MAN "Build libcerf man pages" ON)
 option(LIB_INSTALL "Install libcerf" ON)
-option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+option(PEDANTIC "Compile with pedantic warnings" ON)
 
-if(${CERF_CPP})
+if (${CERF_CPP})
     project(cerfcpp CXX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CERF_COMPILER_FLAGS} -DCERF_AS_CPP")
+    add_compile_definitions(CERF_AS_CPP)
     set(CMAKE_CXX_STANDARD 14)
 else()
     project(cerf C)
-    set(CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   ${CERF_COMPILER_FLAGS}")
     set(CMAKE_C_STANDARD 99)
 endif()
 
 set(CERF_SOVERSION                 1) # API version
-set(CERF_VERSION ${CERF_SOVERSION}.7) # minor version
-
-set(destination ${CMAKE_INSTALL_PREFIX})
+set(CERF_VERSION ${CERF_SOVERSION}.11) # minor version
 
 if(MSVC)
 else()
-    set(CERF_COMPILER_FLAGS "-g -O2 -pedantic -Wall -Wno-sign-compare -Wno-unused-result -Wno-parentheses -Wno-unknown-pragmas")
+    add_compile_options(-O2)
+    if(PEDANTIC)
+        add_compile_options(-pedantic -Wall)
+    endif()
 endif()
 
+include(CTest)
+
+set(destination ${CMAKE_INSTALL_PREFIX})
+
+configure_file("libcerf.pc.in" "libcerf.pc" @ONLY)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libcerf.pc"
+    DESTINATION "${destination}/lib/pkgconfig/")
+
 add_subdirectory(lib)
-set(Cerf_LIBRARIES ${cerf_LIBRARY} PARENT_SCOPE)
-set(Cerf_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib PARENT_SCOPE)
+add_subdirectory(run)
 add_subdirectory(test)
-if(${LIB_MAN})
+if (${LIB_MAN})
     add_subdirectory(man)
 endif()

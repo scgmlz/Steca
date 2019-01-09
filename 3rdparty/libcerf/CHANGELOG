@@ -1,5 +1,18 @@
 == Revision history of libcerf, maintained by Joachim Wuttke ==
 
+libcerf-1.11, released 28dec18:
+  - Cover voigt by test_voigt
+  - Implement new function voigt_hwhm
+  - Restore libcerf.pc
+  - Add INSTALL instructions, and other minor adjustments for use of libcerf in C++ projects
+  - Support 'ctest', which runs the numeric accuracy tests from test1.c.
+  - Rename type cmplx into _cerf_cmplx to avoid name clash with Gnuplot pre 5.3
+
+libcerf-1.8 [2oct18], libcerf-1.9 [16oct18] and libcerf-1.10 [20dec18]
+  MUST NOT BE USED
+  - A bug introduced in v1.8 had broken the normalization of the Voigt function.
+  - The git history leading to v1.10 has been rewritten, starting anew from v1.7
+
 libcerf-1.7, released 26sep18:
   - Option -DCERF_CPP allows to choose C++ compilation, which is useful
     because MS VisualStudio supports C++14, but not yet C99, and in

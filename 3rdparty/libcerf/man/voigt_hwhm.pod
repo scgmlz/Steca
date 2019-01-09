@@ -1,0 +1,56 @@
+=pod
+
+=begin html
+
+<link rel="stylesheet" href="podstyle.css" type="text/css" />
+
+=end html
+
+=head1 NAME
+
+voigt_hwhm - Half width at half maximum of Voigt's function
+
+=head1 SYNOPSIS
+
+B<#include <cerf.h>>
+
+B<double voigt_hwhm ( double sigma, double gamma );>
+
+=head1 DESCRIPTION
+
+The function B<voigt_hwhm> returns the half width at half maximum of the function B<voigt>.
+
+The function B<voigt> returns Voigt's convolution
+
+  voigt(x,sigma,gamma) = integral G(t,sigma) L(x-t,gamma) dt
+
+of a Gaussian
+
+  G(x,sigma) = 1/sqrt(2*pi)/|sigma| * exp(-x^2/2/sigma^2)
+
+and a Lorentzian
+
+  L(x,gamma) = |gamma| / pi / ( x^2 + gamma^2 ),
+
+with the integral extending from -infinity to +infinity.
+
+=head1 SEE ALSO
+
+B<voigt(3)>
+
+Homepage: http://apps.jcns.fz-juelich.de/libcerf
+
+=head1 AUTHORS
+
+Joachim Wuttke <j.wuttke@fz-juelich.de>, Forschungszentrum Juelich,
+  based on the w_of_z implementation by Steven G. Johnson, http://math.mit.edu/~stevenj, Massachusetts Institute of Technology.
+
+Please report bugs to the authors.
+
+=head1 COPYING
+
+Copyright (c) 2018 Forschungszentrum Juelich GmbH
+
+Software: MIT License.
+
+This documentation: Creative Commons Attribution Share Alike.
