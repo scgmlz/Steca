@@ -45,7 +45,6 @@ ExportfileDialogfield::ExportfileDialogfield(
         ftypeGrid->addWidget(rb);
     }
 
-
     auto* actBrowse_ = new QcrTrigger{"selectDir", "Browse..."};
     auto* actCancel_ = new QcrTrigger{"cancel", "Cancel"};
     auto* actSave_   = new QcrTrigger{"save", "Save"};
@@ -110,7 +109,6 @@ QString ExportfileDialogfield::path(bool withSuffix, bool withNumber)
             fileName += "."+saveFmt;
     }
     qDebug() << "set file name " << fileName;
-    file_->programaticallySetValue(fileName);
 
     return QFileInfo(dir + '/' + fileName).absoluteFilePath();
 }
@@ -121,7 +119,6 @@ QFile* ExportfileDialogfield::file()
     if (tmp.isEmpty())
         return {};
     return file_dialog::openFileConfirmOverwrite("file", parentWidget(), tmp);
-
 }
 
 QString ExportfileDialogfield::separator() const
