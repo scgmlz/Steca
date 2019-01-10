@@ -24,37 +24,6 @@
 #include <qmath.h>
 #include <QGroupBox>
 
-namespace {
-
-// TODO move file saving code to Core
-void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
-                const Range& rgeGma, const QString& separator)
-{
-    if (curve.isEmpty())
-        qFatal("curve is empty");
-    ASSERT(rgeGma.isValid());
-    const Metadata& md = cluster->avgMetadata();
-    stream << "Comment: " << md.comment << '\n';
-    stream << "Date: " << md.date << '\n';
-    stream << "Gamma range min: " << rgeGma.min << '\n';
-    stream << "Gamma range max: " << rgeGma.max << '\n';
-
-    for (int i=0; i<Metadata::numAttributes(true); ++i)
-        stream << Metadata::attributeTag(i, true) << ": "
-               << md.attributeValue(i).toDouble() << '\n';
-
-    stream << "Tth" << separator << "Intensity" << '\n';
-    for (int i=0; i<curve.xs().size(); ++i)
-        stream << curve.x(i) << separator << curve.y(i) << '\n';
-
-    stream.flush(); // not sure whether we need this
-}
-
-} // namespace
-
-
-//  ***********************************************************************************************
-//! @class ExportDfgram
 
 ExportDfgram::ExportDfgram()
     : QcrDialog(gGui, "Export diffractogram")
@@ -111,7 +80,7 @@ void ExportDfgram::saveCurrent(QFile* file)
     const Cluster* cluster = gSession->currentCluster();
     ASSERT(cluster);
     const Curve& curve = cluster->currentDfgram().curve;
-    writeCurve(stream, curve, cluster, cluster->rgeGma(), fileField_->separator());
+    data_export::writeCurve(stream, curve, cluster, cluster->rgeGma(), fileField_->separator());
 }
 
 void ExportDfgram::saveAll(bool oneFile)
@@ -164,7 +133,7 @@ void ExportDfgram::saveAll(bool oneFile)
             *stream << "Picture Nr: " << picNum << '\n';
             if (nSlices > 1)
                 *stream << "Gamma slice Nr: " << i+1 << '\n';
-            writeCurve(*stream, curve, cluster, gmaStripe, fileField_->separator());
+            data_export::writeCurve(*stream, curve, cluster, gmaStripe, fileField_->separator());
         }
     }
     delete stream;

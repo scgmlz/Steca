@@ -13,6 +13,11 @@
 //  ***********************************************************************************************
 
 #include <QString>
+#include <QTextStream>
+
+class Curve;
+class Cluster;
+class Range;
 
 namespace data_export {
 
@@ -22,5 +27,8 @@ namespace data_export {
 //!  digits is determined by the maximum value maxNum.
 
 QString numberedFileName(const QString& templatedName, int num, int maxNum);
+
+void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
+                const Range& rgeGma, const QString& separator);
 
 } // namespace data_export
