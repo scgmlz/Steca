@@ -58,7 +58,7 @@ find_package(Cerf  1.8 MODULE)
 
 message(STATUS
     "libyaml: FOUND=${yaml_FOUND}, VERSION=${yaml_VERSION}, LIB=${yaml_LIBRARIES}")
-message(STATUS "lmfit:   FOUND=${LMFit_FOUND}, VERSION=${LMFit_VERSION}, LIB=${LMFit_LIBRARIES}")
+# message(STATUS "lmfit:   FOUND=${LMFit_FOUND}, VERSION=${LMFit_VERSION}, LIB=${LMFit_LIBRARIES}")
 message(STATUS "libcerf: FOUND=${Cerf_FOUND}, VERSION=${Cerf_VERSION}, LIB=${Cerf_LIBRARIES}, "
     "IS_CPP=${Cerf_IS_CPP}")
 
@@ -76,25 +76,29 @@ if(NOT yaml_FOUND OR BUILD_FALLBACK)
     message(STATUS "we have to build 3rdparty/libyaml")
     add_subdirectory(3rdparty/libyaml)
 endif()
-if(NOT LMFit_FOUND OR BUILD_FALLBACK)
-    message(STATUS "we have to build 3rdparty/lmfit")
-    add_subdirectory(3rdparty/lmfit)
-endif()
+#if(NOT LMFit_FOUND OR BUILD_FALLBACK)
+#    message(STATUS "we have to build 3rdparty/lmfit")
+#    add_subdirectory(3rdparty/lmfit)
+#endif()
 if(NOT Cerf_FOUND OR BUILD_FALLBACK)
     message(STATUS "we have to build 3rdparty/libcerf")
     set(CERF_CPP ON CACHE INTERNAL "" FORCE)
     add_subdirectory(3rdparty/libcerf)
     set(Cerf_IS_CPP ON)
+    set(Cerf_INCLUDE_DIR ${CMAKE_CMAKE_DIR}/3rdparty/libcerf/lib)
 endif()
-
 if(Cerf_IS_CPP)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCERF_AS_CPP")
 endif()
+
+message(STATUS "3rdparty libraries all found or configured")
 
 add_subdirectory(qcr)
 add_subdirectory(core)
 add_subdirectory(gui)
 add_subdirectory(main)
+
+message(STATUS "Steca components all configured")
 
 if(WITH_TESTS)
     include(CTest) # equivalent to "enable_testing() ???
@@ -102,7 +106,9 @@ if(WITH_TESTS)
     set(gtest_force_shared_crt ON
         CACHE bool "Use shared(DLL) run-time lib even when Google Test is built as static lib.")
     set(gtest_disable_pthreads ON)
+    message(STATUS "now configuring gtest")
     add_subdirectory(3rdparty/gtest)
+    message(STATUS "gtest configured")
     configure_file(testdata/testdata.h.in ${CMAKE_BINARY_DIR}/testdata.h @ONLY)
     add_subdirectory(utest)
 else()

@@ -2,6 +2,7 @@
 
 libcerf-1.12
   - Require CMake 3.6, outcomment code that requires 3.13.
+  - Relative paths in CMake sources, for use as subproject.
 
 libcerf-1.11, released 28dec18:
   - Cover voigt by test_voigt.
