@@ -69,11 +69,13 @@ ExportDfgram::ExportDfgram()
     // layout
     auto* saveWhatLayout = new QVBoxLayout;
     saveWhatLayout->addWidget(&rbCurrent_);
-    fileExtensionGroup.addButton(&rbCurrent_);
     saveWhatLayout->addWidget(&rbAllSequential_);
-    fileExtensionGroup.addButton(&rbAllSequential_);
     saveWhatLayout->addWidget(&rbAll_);
-    fileExtensionGroup.addButton(&rbAll_);
+
+    auto* fileExtensionGroup = new QButtonGroup;
+    fileExtensionGroup->addButton(&rbCurrent_);
+    fileExtensionGroup->addButton(&rbAllSequential_);
+    fileExtensionGroup->addButton(&rbAll_);
 
     auto* saveWhat = new QGroupBox {"Save what"};
     saveWhat->setLayout(saveWhatLayout);
