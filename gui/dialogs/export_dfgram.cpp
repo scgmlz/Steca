@@ -15,6 +15,7 @@
 #include "gui/dialogs/export_dfgram.h"
 #include "core/base/async.h"
 #include "core/base/exception.h"
+#include "core/data/export.h"
 #include "core/session.h"
 #include "gui/dialogs/subdialog_file.h"
 #include "gui/dialogs/file_dialog.h"
@@ -90,7 +91,7 @@ void ExportDfgram::save()
 {
     try {
         if      (rbCurrent_.getValue())
-            saveCurrent();
+            saveCurrent(fileField_->file());
         else if (rbAllSequential_.getValue())
             saveAll(false);
         else if (rbAll_.getValue())
@@ -103,11 +104,9 @@ void ExportDfgram::save()
     }
 }
 
-void ExportDfgram::saveCurrent()
+void ExportDfgram::saveCurrent(QFile* file)
 {
-    QFile* file = fileField_->file();
-    if (!file)
-        return;
+    ASSERT(file);
     QTextStream stream(file);
     const Cluster* cluster = gSession->currentCluster();
     ASSERT(cluster);
@@ -133,7 +132,7 @@ void ExportDfgram::saveAll(bool oneFile)
         // check whether any of the numbered files already exists
         QStringList existingFiles;
         for (int i=0; i<nClusters; ++i) {
-            QString currPath = numberedFileName(path, i, nClusters+1);
+            QString currPath = data_export::numberedFileName(path, i, nClusters+1);
             if (QFile(currPath).exists())
                 existingFiles << QFileInfo(currPath).fileName();
         }
@@ -152,7 +151,8 @@ void ExportDfgram::saveAll(bool oneFile)
         progress.step();
         for (int i=0; i<qMax(1,nSlices); ++i) {
             if (!oneFile) {
-                QFile* file = new QFile(numberedFileName(path, ++fileNum, nClusters+1));
+                QFile* file = new QFile(data_export::numberedFileName(
+                                            path, ++fileNum, nClusters+1));
                 if (!file->open(QIODevice::WriteOnly | QIODevice::Text))
                     THROW("Cannot open file for writing: " + path);
                 delete stream;

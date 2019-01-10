@@ -1,9 +1,10 @@
 // test functions from unnamed namespaces in gui/output
 
 #include "gtest/gtest.h"
-#include "gui/dialogs/export_dfgram.cpp"
+#include "core/data/export.h"
 
 TEST(AnonymousOutput, NumberedFileName) {
+    using namespace data_export;
     ASSERT_DEATH(numberedFileName("bla",1,1), "");
     EXPECT_EQ("1", numberedFileName("%d",1,1));
     EXPECT_EQ("1", numberedFileName("%d",1,9));

@@ -20,13 +20,6 @@
 #include <QProgressBar>
 #include <QButtonGroup>
 
-//! Returns templatedName with '%d' replaced by string representation of num.
-
-//!  The string representation of num has leading zeros, and its number of
-//!  digits is determined by the maximum value maxNum.
-
-QString numberedFileName(const QString& templatedName, int num, int maxNum);
-
 //! Base class for dialogs for saving some output to a file.
 
 class ExportfileDialogfield : public QVBoxLayout {
@@ -40,8 +33,8 @@ public:
     QString separator() const;
     QProgressBar progressBar;
 private:
-    QLineEdit* dir_;
-    QLineEdit* file_;
+    QcrLineEdit* dir_;
+    QcrLineEdit* file_;
 };
 
 #endif // SUBDIALOG_FILE_H

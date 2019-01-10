@@ -16,17 +16,6 @@
 #include "gui/dialogs/file_dialog.h"
 //#include "qcr/base/debug.h"
 #include <QGroupBox>
-#include <qmath.h>
-
-//! Implementation of numberedFileName in header.
-QString numberedFileName(const QString& templatedName, int num, int maxNum) {
-    if (!templatedName.contains("%d"))
-        qFatal("path does not contain placeholder %%d");
-    QString ret = templatedName;
-    int nDigits = (int)log10((double)maxNum)+1;
-    ret.replace("%d", QString("%1").arg(num, nDigits, 10, QLatin1Char('0')));
-    return ret;
-}
 
 namespace {
 static QString saveFmt = "dat"; //!< setting: default format for data export
@@ -58,13 +47,20 @@ ExportfileDialogfield::ExportfileDialogfield(
     auto* actCancel_ = new QcrTrigger{"cancel", "Cancel"};
     auto* actSave_   = new QcrTrigger{"save", "Save"};
 
-    // internal connections
     connect(actBrowse_, &QAction::triggered, [this, parent]() {
-            dir_->setText(file_dialog::queryDirectory(parent, "Select folder", dir_->text())); });
-
-    // outgoing connections
+            dir_->programaticallySetValue(
+                file_dialog::queryDirectory(parent, "Select folder", dir_->text())); });
     connect(actCancel_, &QAction::triggered, [parent]() { parent->close(); });
     connect(actSave_, &QAction::triggered, onSave);
+
+    auto updateSaveable = [this,actSave_](const QString) {
+                              qDebug() << "DEBUG  updateSaveable " << path(true)
+                                       << " -> enabled=" << !path(true).isEmpty();
+                              actSave_->setEnabled(!path(true).isEmpty());
+                          };
+    updateSaveable("");
+    dir_ ->setHook(updateSaveable);
+    file_->setHook(updateSaveable);
 
     // layout
     auto* destinationGrid = new QGridLayout;
@@ -109,7 +105,7 @@ QString ExportfileDialogfield::path(bool withSuffix, bool withNumber)
         if ("."+QFileInfo(fileName).suffix().toLower()!=saveFmt.toLower())
             fileName += "."+saveFmt;
     }
-    file_->setText(fileName);
+    file_->programaticallySetValue(fileName);
 
     return QFileInfo(dir + '/' + fileName).absoluteFilePath();
 }

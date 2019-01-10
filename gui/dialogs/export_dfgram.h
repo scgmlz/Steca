@@ -32,7 +32,7 @@ private:
     QcrRadioButton rbAll_           {"rbAll",           "All diffractograms to one file"};
 
     void save();
-    void saveCurrent();
+    void saveCurrent(QFile* file);
     void saveAll(bool oneFile);
 };
 

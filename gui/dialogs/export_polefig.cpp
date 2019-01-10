@@ -17,6 +17,7 @@
 #include "core/data/collect_intensities.h"
 #include "core/session.h"
 #include "core/base/exception.h"
+#include "core/data/export.h"
 #include "gui/dialogs/subdialog_file.h"
 #include "gui/dialogs/file_dialog.h"
 #include "gui/mainwin.h"
@@ -135,7 +136,7 @@ void ExportPolefig::saveAll(bool oneFile, const QString& path, const QString& se
     if (oneFile)
         paths << path;
     else for (int i=0; i<peaks.size(); ++i)
-        paths << numberedFileName(path, i, peaks.size()+1);
+        paths << data_export::numberedFileName(path, i, peaks.size()+1);
 
     // check whether any of the file(s) already exists
     QStringList existingFiles;

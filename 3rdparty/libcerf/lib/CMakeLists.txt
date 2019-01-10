@@ -25,7 +25,7 @@ set_target_properties(
     VERSION ${CERF_VERSION}
     SOVERSION ${CERF_SOVERSION})
 if (${CERF_CPP})
-    set_property(TARGET ${lib} PROPERTY LINKER_LANGUAGE CXX)
+    set_target_properties(${lib} PROPERTIES LINKER_LANGUAGE CXX)
 endif()
 
 if(NOT MSVC)
