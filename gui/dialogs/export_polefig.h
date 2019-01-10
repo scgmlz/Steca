@@ -32,7 +32,7 @@ private:
     QcrRadioButton exportCurrent_ {"exportCurrent", "Current peak only"};
     QcrRadioButton exportMulti_   {"exportMulti",   "All peaks to numbered files"};
     QcrRadioButton exportCombi_   {"exportCombi",   "All peaks to one file"};
-    QButtonGroup exportModeGroup;
+    QButtonGroup exportModeGroup; // not privatizable yet
 
     void save();
     //void saveCurrent();
