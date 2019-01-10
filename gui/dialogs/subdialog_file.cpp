@@ -28,7 +28,11 @@ ExportfileDialogfield::ExportfileDialogfield(
 
     static QDir defaultDir = QDir::homePath();
 
+    // Widgets
+
     dir_ = new QcrLineEdit("dir", defaultDir.absolutePath());
+    dir_->setReadOnly(true);
+
     file_ = new QcrLineEdit("file");
 
     auto* fileExtensionGroup = new QButtonGroup;
@@ -36,12 +40,11 @@ ExportfileDialogfield::ExportfileDialogfield(
     for (const QString fmt: { "dat", "csv" }) {
         auto* rb = new QcrRadioButton{"fmt."+fmt, "."+fmt};
         rb->programaticallySetValue(saveFmt == fmt);
-        connect(rb, &QRadioButton::clicked, [fmt]() { saveFmt == fmt; });
+        connect(rb, &QRadioButton::clicked, [fmt]() { saveFmt = fmt; });
         fileExtensionGroup->addButton(rb);
         ftypeGrid->addWidget(rb);
     }
 
-    dir_->setReadOnly(true);
 
     auto* actBrowse_ = new QcrTrigger{"selectDir", "Browse..."};
     auto* actCancel_ = new QcrTrigger{"cancel", "Cancel"};
@@ -62,7 +65,8 @@ ExportfileDialogfield::ExportfileDialogfield(
     dir_ ->setHook(updateSaveable);
     file_->setHook(updateSaveable);
 
-    // layout
+    // Layout
+
     auto* destinationGrid = new QGridLayout;
     destinationGrid->addWidget(new QLabel("Save to folder:"), 0, 0, Qt::AlignRight);
     destinationGrid->addWidget(dir_,                          0, 1);
@@ -102,9 +106,10 @@ QString ExportfileDialogfield::path(bool withSuffix, bool withNumber)
         fileName += ".%d";
     if (withSuffix) {
         QString suffix = saveFmt;
-        if ("."+QFileInfo(fileName).suffix().toLower()!=saveFmt.toLower())
+        if (QFileInfo(fileName).suffix().toLower()!=saveFmt.toLower())
             fileName += "."+saveFmt;
     }
+    qDebug() << "set file name " << fileName;
     file_->programaticallySetValue(fileName);
 
     return QFileInfo(dir + '/' + fileName).absoluteFilePath();

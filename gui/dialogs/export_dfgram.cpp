@@ -36,7 +36,6 @@ ExportDfgram::ExportDfgram()
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowTitle("Export diffractogram(s)");
 
-    // layout
     auto* saveWhatLayout = new QVBoxLayout;
     saveWhatLayout->addWidget(&rbCurrent_);
     saveWhatLayout->addWidget(&rbAllSequential_);
