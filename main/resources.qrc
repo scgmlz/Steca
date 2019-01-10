@@ -2,6 +2,7 @@
     <qresource prefix="/icon">
         <file alias="add">icons/add.svg</file>
         <file alias="all">icons/all.svg</file>
+        <file alias="All">icons/All.svg</file>
         <file alias="angle">icons/angle.svg</file>
         <file alias="bottom">icons/bottom.svg</file>
         <file alias="clear">icons/clear.svg</file>

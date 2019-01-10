@@ -29,15 +29,9 @@ class ColumnSelector : public QcrWidget {
 public:
     ColumnSelector();
 private:
-    QcrRadioButton rbAll_ {"rbAll", "all"};
-    QcrRadioButton rbNone_ {"rbNone", "none"};
-    QcrRadioButton rbInten_ {"rbInten", "Intensity"};
-    QcrRadioButton rbTth_ {"rbTth", "2θ"};
-    QcrRadioButton rbFWHM_ {"rbFWHM", "fwhm"};
     std::vector<QcrCheckBox*> showCols_;
     void setOne(int pos, bool on);
     void setAll(bool on);
-    void updateRadiobuttons();
     using eReflAttr = PeakInfo::eReflAttr;
 };
 
@@ -45,11 +39,20 @@ ColumnSelector::ColumnSelector()
     : QcrWidget("ColumnSelector")
 {
     auto* box = new QVBoxLayout;
-    box->addWidget(&rbAll_  );
-    box->addWidget(&rbNone_ );
-    box->addWidget(&rbInten_);
-    box->addWidget(&rbTth_  );
-    box->addWidget(&rbFWHM_ );
+
+    auto* trigAll   = new QcrTrigger {"bigtabAll", "select all columns", ":/icon/All"};
+    auto* trigClear = new QcrTrigger {"bigtabClear", "unselect all columns", ":/icon/clear"};
+
+    trigAll  ->setTriggerHook([this](){ setAll(true);  });
+    trigClear->setTriggerHook([this](){ setAll(false); });
+
+    auto* hb = new QHBoxLayout;
+    hb->addSpacing(4);
+    hb->addStretch(1);
+    hb->addWidget(new QcrIconTriggerButton(trigAll));
+    hb->addWidget(new QcrIconTriggerButton(trigClear));
+    hb->addSpacing(4);
+    box->addLayout(hb);
     box->addSpacing(8);
 
     const QStringList& headers = PeakInfo::dataTags(false);
@@ -62,35 +65,6 @@ ColumnSelector::ColumnSelector()
         box->addWidget(showCols_[i]);
     }
     setLayout(box);
-
-    rbAll_.cell()->setHook([this](bool on) {
-        if (on)
-            setAll(true);
-    });
-    rbNone_.cell()->setHook([this](bool on) {
-        if (on)
-            setAll(false);
-    });
-    rbInten_.cell()->setHook([this](bool on) {
-        if (on) {
-            setAll(false);
-            setOne(int(eReflAttr::INTEN), true);
-        }
-    });
-    rbTth_.cell()->setHook([this](bool on) {
-        if (on) {
-            setAll(false);
-            setOne(int(eReflAttr::TTH), true);
-        }
-    });
-    rbFWHM_.cell()->setHook([this](bool on) {
-        if (on) {
-            setAll(false);
-            setOne(int(eReflAttr::FWHM), true);
-        }
-    });
-
-    setRemake([=](){ updateRadiobuttons(); });
 }
 
 void ColumnSelector::setOne(int pos, bool on)
@@ -103,35 +77,6 @@ void ColumnSelector::setAll(bool on)
     for (auto& col : gSession->params.bigMetaSelection.vec)
         col.pureSetVal(on);
 }
-
-void ColumnSelector::updateRadiobuttons()
-{
-    //bool isAll = true, isNone = true, isOther = false;
-    bool isAll = true;
-    bool isNone = true;
-    bool isInten = true;
-    bool isTth = true;
-    bool isFwhm = true;
-
-    for (int i=0; i<gSession->params.bigMetaSelection.vec.size(); ++i) {
-        const bool isOn = gSession->params.bigMetaSelection.vec.at(i).val();
-        const bool isAlphOrBeta = (eReflAttr(i)==eReflAttr::ALPHA)
-            || (eReflAttr(i)==eReflAttr::BETA);
-
-        isAll   &= isOn;
-        isNone  &= !isOn;
-        isInten &= (isOn == (eReflAttr(i) == eReflAttr::INTEN)) || isAlphOrBeta;
-        isTth   &= (isOn == (eReflAttr(i) == eReflAttr::TTH)  ) || isAlphOrBeta;
-        isFwhm  &= (isOn == (eReflAttr(i) == eReflAttr::FWHM) ) || isAlphOrBeta;
-    }
-
-    rbAll_.cell()->pureSetVal(isAll);
-    rbNone_.cell()->pureSetVal(isNone);
-    rbInten_.cell()->pureSetVal(isInten);
-    rbTth_.cell()->pureSetVal(isTth);
-    rbFWHM_.cell()->pureSetVal(isFwhm);
-};
-
 
 //  ***********************************************************************************************
 //! @class BigtableTab
