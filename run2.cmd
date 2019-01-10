@@ -13,4 +13,3 @@
 [        main]dfgram add 45.8 47.3
 [        main]setupTabs 0
 [        main]mainTabs 4
-[        main]quit

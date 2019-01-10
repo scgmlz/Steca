@@ -1,12 +1,15 @@
 == Revision history of libcerf, maintained by Joachim Wuttke ==
 
+libcerf-1.12
+  - Require CMake 3.6, outcomment code that requires 3.13.
+
 libcerf-1.11, released 28dec18:
-  - Cover voigt by test_voigt
-  - Implement new function voigt_hwhm
-  - Restore libcerf.pc
-  - Add INSTALL instructions, and other minor adjustments for use of libcerf in C++ projects
+  - Cover voigt by test_voigt.
+  - Implement new function voigt_hwhm.
+  - Restore libcerf.pc.
+  - Add INSTALL instructions, and other minor adjustments for use of libcerf in C++ projects.
   - Support 'ctest', which runs the numeric accuracy tests from test1.c.
-  - Rename type cmplx into _cerf_cmplx to avoid name clash with Gnuplot pre 5.3
+  - Rename type cmplx into _cerf_cmplx to avoid name clash with Gnuplot pre 5.3.
 
 libcerf-1.8 [2oct18], libcerf-1.9 [16oct18] and libcerf-1.10 [20dec18]
   MUST NOT BE USED
