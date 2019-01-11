@@ -28,6 +28,8 @@ namespace data_export {
 
 extern const QStringList defaultFormats;
 
+QString separator(const QString& format);
+
 QString numberedFileName(const QString& templatedName, int num, int maxNum);
 
 void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,

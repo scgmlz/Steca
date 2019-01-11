@@ -116,10 +116,3 @@ QFile* ExportfileDialogfield::file()
         return {};
     return file_dialog::openFileConfirmOverwrite("file", parentWidget(), tmp);
 }
-
-QString ExportfileDialogfield::separator() const
-{
-    if (saveFmt=="csv")
-        return ", ";
-    return " ";
-}

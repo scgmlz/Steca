@@ -42,13 +42,12 @@ void ExportBigtable::save()
         return;
     QTextStream stream(file);
 
-    QString separator = fileField_->separator();
-
     // get data
     QStringList headers {gGui->bigtableModel->getHeaders()};
     std::vector<std::vector<const QVariant*>> data {gGui->bigtableModel->getData()};
 
     // write header
+    const QString separator = data_export::separator(fileField_->format());
     for (const QString& header: headers)
         stream << header << separator;
     stream << '\n';

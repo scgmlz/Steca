@@ -42,8 +42,6 @@ void ExportDiagram::save()
         return;
     QTextStream stream(file);
 
-    QString separator = fileField_->separator();
-
     // get data
     const int idxX = int(gSession->params.diagramX.val());
     const int idxY = int(gSession->params.diagramY.val());
@@ -53,6 +51,7 @@ void ExportDiagram::save()
     peakInfos->get4(idxX, idxY, xs, ys, ysLow, ysHig);
     ASSERT(xs.size());
     // write data table
+    const QString separator = data_export::separator(fileField_->format());
     for (int i=0; i<xs.size(); ++i) {
         stream << xs[i] << separator << ys[i];
         if (ysLow.size())

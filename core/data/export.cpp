@@ -23,7 +23,15 @@
 
 const QStringList data_export::defaultFormats = { "dat", "csv" };
 
-QString data_export::numberedFileName(const QString& templatedName, int num, int maxNum) {
+QString data_export::separator(const QString& format)
+{
+    if (format=="csv")
+        return ", ";
+    return " ";
+}
+
+QString data_export::numberedFileName(const QString& templatedName, int num, int maxNum)
+{
     if (!templatedName.contains("%d"))
         qFatal("path does not contain placeholder %%d");
     QString ret = templatedName;

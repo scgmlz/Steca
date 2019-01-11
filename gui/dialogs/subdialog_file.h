@@ -30,7 +30,7 @@ public:
 
     QString path(bool withSuffix, bool withNumber=false);
     QFile* file();
-    QString separator() const;
+    QString format() const { return saveFmt; }
     QProgressBar progressBar;
 private:
     QcrLineEdit* dir_;

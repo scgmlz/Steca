@@ -80,7 +80,8 @@ void ExportDfgram::saveCurrent(QFile* file)
     const Cluster* cluster = gSession->currentCluster();
     ASSERT(cluster);
     const Curve& curve = cluster->currentDfgram().curve;
-    data_export::writeCurve(stream, curve, cluster, cluster->rgeGma(), fileField_->separator());
+    const QString separator = data_export::separator(fileField_->format());
+    data_export::writeCurve(stream, curve, cluster, cluster->rgeGma(), separator);
 }
 
 void ExportDfgram::saveAll(bool oneFile)
@@ -115,6 +116,7 @@ void ExportDfgram::saveAll(bool oneFile)
     int picNum = 0;
     int fileNum = 0;
     int nSlices = gSession->gammaSelection.numSlices.val();
+    const QString separator = data_export::separator(fileField_->format());
     for (const Cluster* cluster : gSession->activeClusters.clusters.yield()) {
         ++picNum;
         progress.step();
@@ -133,7 +135,7 @@ void ExportDfgram::saveAll(bool oneFile)
             *stream << "Picture Nr: " << picNum << '\n';
             if (nSlices > 1)
                 *stream << "Gamma slice Nr: " << i+1 << '\n';
-            data_export::writeCurve(*stream, curve, cluster, gmaStripe, fileField_->separator());
+            data_export::writeCurve(*stream, curve, cluster, gmaStripe, separator);
         }
     }
     delete stream;

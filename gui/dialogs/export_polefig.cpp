@@ -100,8 +100,9 @@ void ExportPolefig::save()
         peaks = gSession->allPeaks.allInfoSequences();
     }
 
+    const QString separator = data_export::separator(fileField_->format());
     saveAll(!(exportMode==ExportMode::ALL_PEAKS_MULTIPLE_FILES),
-            path, fileField_->separator(), peaks);
+            path, separator, peaks);
 
     close();
 }
