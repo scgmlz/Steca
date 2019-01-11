@@ -14,6 +14,7 @@
 
 #include "export.h"
 #include "qcr/base/debug.h"
+#include "core/calc/info_sequence.h"
 #include "core/data/cluster.h"
 #include "core/typ/curve.h"
 #include "core/typ/range.h"
@@ -62,4 +63,15 @@ void data_export::writeCurve(
         stream << curve.x(i) << separator << curve.y(i) << '\n';
 
     stream.flush(); // not sure whether we need this
+}
+
+//! Writes pole figure for one Bragg peak.
+
+void data_export::writeInfoSequence(
+    QTextStream& stream, const InfoSequence& peakInfos, const QString& separator)
+{
+    for (auto& info : peakInfos.peaks())
+        stream << info.alpha() << separator
+               << info.beta()  << separator
+               << info.inten() << "\n";
 }

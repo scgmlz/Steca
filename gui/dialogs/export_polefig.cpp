@@ -26,26 +26,6 @@
 #include <QGroupBox>
 #include <algorithm>
 
-namespace {
-
-// TODO move file saving code to Core
-
-inline void writePeakInfo(QTextStream& stream, const PeakInfo& info, const QString& separator)
-{
-    stream << info.alpha() << separator
-           << info.beta()  << separator
-           << info.inten() << "\n";
-}
-
-void writeInfoSequence(QTextStream& stream, const InfoSequence& peakInfos, const QString& separator)
-{
-    for (auto& info : peakInfos.peaks()) {
-        writePeakInfo(stream, info, separator);
-    }
-}
-
-} // namespace
-
 
 //  ***********************************************************************************************
 //! @class ExportPolefig
@@ -122,7 +102,7 @@ void saveOneFile(QString& path, const QString& separator,
         progress.step();
         if (peaks.size() > 1)
             stream << "Picture Nr: " << picNum << '\n';
-        writeInfoSequence(stream, *peak, separator);
+        data_export::writeInfoSequence(stream, *peak, separator);
     }
 }
 

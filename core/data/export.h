@@ -15,8 +15,9 @@
 #include <QString>
 #include <QTextStream>
 
-class Curve;
 class Cluster;
+class Curve;
+class InfoSequence;
 class Range;
 
 namespace data_export {
@@ -34,5 +35,8 @@ QString numberedFileName(const QString& templatedName, int num, int maxNum);
 
 void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
                 const Range& rgeGma, const QString& separator);
+
+void writeInfoSequence(
+    QTextStream& stream, const InfoSequence& peakInfos, const QString& separator);
 
 } // namespace data_export
