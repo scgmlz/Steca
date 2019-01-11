@@ -26,7 +26,7 @@ class ExportfileDialogfield : public QVBoxLayout {
 public:
     ExportfileDialogfield() = delete;
     ExportfileDialogfield(const ExportfileDialogfield&) = delete;
-    ExportfileDialogfield(QWidget* parent, bool withTypes, std::function<void(void)> onSave);
+    ExportfileDialogfield(QWidget* parent, QStringList extensions, std::function<void(void)> onSave);
 
     QString path(bool withSuffix, bool withNumber=false);
     QFile* file();
@@ -35,6 +35,7 @@ public:
 private:
     QcrLineEdit* dir_;
     QcrLineEdit* file_;
+    QString saveFmt {"dat"}; //!< setting: default format for data export
 };
 
 #endif // SUBDIALOG_FILE_H

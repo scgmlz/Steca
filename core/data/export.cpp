@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/data/export.cpp
-//! @brief     Implements
+//! @brief     Implements namespace data_export
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -20,6 +20,8 @@
 #include <qmath.h>
 
 // Covered by test011_export.
+
+const QStringList data_export::defaultFormats = { "dat", "csv" };
 
 QString data_export::numberedFileName(const QString& templatedName, int num, int maxNum) {
     if (!templatedName.contains("%d"))

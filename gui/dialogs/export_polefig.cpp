@@ -15,6 +15,7 @@
 #include "gui/dialogs/export_polefig.h"
 #include "core/base/async.h"
 #include "core/data/collect_intensities.h"
+#include "core/data/export.h"
 #include "core/session.h"
 #include "core/base/exception.h"
 #include "core/data/export.h"
@@ -60,7 +61,8 @@ ExportPolefig::ExportPolefig()
         exportCombi_.setEnabled(false);
     }
 
-    fileField_ = new ExportfileDialogfield(this, true, [this]()->void{save();});
+    fileField_ = new ExportfileDialogfield(
+        this, data_export::defaultFormats, [this]()->void{save();});
 
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);

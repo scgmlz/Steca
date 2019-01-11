@@ -12,6 +12,7 @@
 //
 //  ***********************************************************************************************
 
+#include "core/data/export.h"
 #include "gui/dialogs/export_bigtable.h"
 #include "gui/dialogs/subdialog_file.h"
 #include "gui/mainwin.h"
@@ -23,7 +24,8 @@
 ExportBigtable::ExportBigtable()
     : QcrDialog(gGui, "Export fit results table")
 {
-    fileField_ = new ExportfileDialogfield(this, true, [this]()->void{save();});
+    fileField_ = new ExportfileDialogfield(
+        this, data_export::defaultFormats, [this]()->void{save();});
 
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);

@@ -17,12 +17,8 @@
 //#include "qcr/base/debug.h"
 #include <QGroupBox>
 
-namespace {
-static QString saveFmt = "dat"; //!< setting: default format for data export
-} // namespace
-
 ExportfileDialogfield::ExportfileDialogfield(
-    QWidget* parent, bool withTypes, std::function<void(void)> onSave)
+    QWidget* parent, QStringList extensions, std::function<void(void)> onSave)
 {
     progressBar.hide();
 
@@ -37,10 +33,10 @@ ExportfileDialogfield::ExportfileDialogfield(
 
     auto* fileExtensionGroup = new QButtonGroup;
     auto* ftypeGrid = new QVBoxLayout;
-    for (const QString fmt: { "dat", "csv" }) {
+    for (const QString fmt: extensions) {
         auto* rb = new QcrRadioButton{"fmt."+fmt, "."+fmt};
         rb->programaticallySetValue(saveFmt == fmt);
-        connect(rb, &QRadioButton::clicked, [fmt]() { saveFmt = fmt; });
+        connect(rb, &QRadioButton::clicked, [this,fmt]() { saveFmt = fmt; });
         fileExtensionGroup->addButton(rb);
         ftypeGrid->addWidget(rb);
     }
@@ -77,7 +73,7 @@ ExportfileDialogfield::ExportfileDialogfield(
     destination->setLayout(destinationGrid);
 
     auto* ftype = new QGroupBox("File type");
-    ftype->setVisible(withTypes);
+    ftype->setVisible(extensions.size()>1);
     ftype->setLayout(ftypeGrid);
 
     auto* setup = new QHBoxLayout;
@@ -123,10 +119,7 @@ QFile* ExportfileDialogfield::file()
 
 QString ExportfileDialogfield::separator() const
 {
-    if      (saveFmt=="dat")
-        return " ";
-    else if (saveFmt=="csv")
+    if (saveFmt=="csv")
         return ", ";
-    else
-        qFatal("invalid case in ExportfileDialogfield::separator");
+    return " ";
 }

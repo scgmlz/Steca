@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/data/export.h
-//! @brief     Defines
+//! @brief     Defines namespace data_export
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -25,6 +25,8 @@ namespace data_export {
 
 //!  The string representation of num has leading zeros, and its number of
 //!  digits is determined by the maximum value maxNum.
+
+extern const QStringList defaultFormats;
 
 QString numberedFileName(const QString& templatedName, int num, int maxNum);
 
