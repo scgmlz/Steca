@@ -12,6 +12,7 @@
 //
 //  ***********************************************************************************************
 
+#include <QFile>
 #include <QString>
 #include <QTextStream>
 
@@ -38,5 +39,7 @@ void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
 
 void writeInfoSequence(
     QTextStream& stream, const InfoSequence& peakInfos, const QString& separator);
+
+void saveDiagram (QFile* file, const QString& format);
 
 } // namespace data_export

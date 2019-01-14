@@ -60,7 +60,6 @@ ExportPolefig::ExportPolefig()
     auto* savePeaks = new QGroupBox {"Save which peaks"};
     savePeaks->setLayout(savePeaksLayout);
 
-
     auto* vbox = new QVBoxLayout();
     vbox->addWidget(savePeaks);
     vbox->addLayout(fileField_);
@@ -74,11 +73,10 @@ void ExportPolefig::save()
     const auto path = fileField_->path(true, exportMode==ExportMode::ALL_PEAKS_MULTIPLE_FILES);
 
     std::vector<InfoSequence const *> peaks;
-    if (exportMode == ExportMode::CURRENT_PEAK) {
+    if (exportMode == ExportMode::CURRENT_PEAK)
         peaks.push_back(gSession->allPeaks.currentInfoSequence());
-    } else {
+    else
         peaks = gSession->allPeaks.allInfoSequences();
-    }
 
     const QString separator = data_export::separator(fileField_->format());
     saveAll(!(exportMode==ExportMode::ALL_PEAKS_MULTIPLE_FILES),
@@ -133,7 +131,7 @@ void ExportPolefig::saveAll(bool oneFile, const QString& path, const QString& se
                                        this, existingFiles.join(", ")))
         return;
 
-    TakesLongTime progress("save diffractograms", peaks.size(), &fileField_->progressBar);
+    TakesLongTime progress("save polefigures", peaks.size(), &fileField_->progressBar);
 
     if (paths.size() == 1) {
         saveOneFile(paths[0], separator, peaks, progress);
