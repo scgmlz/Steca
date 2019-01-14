@@ -77,7 +77,7 @@ void data_export::writeInfoSequence(
                << info.inten() << "\n";
 }
 
-void data_export::saveDiagram(QFile* file, const QString& format)
+void data_export::saveDiagram(QFile* file, const QString& format, QcrDialog*)
 {
     ASSERT(file);
     QTextStream stream(file);
@@ -99,4 +99,3 @@ void data_export::saveDiagram(QFile* file, const QString& format)
         stream << '\n';
     }
 }
-

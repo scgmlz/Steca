@@ -18,7 +18,8 @@
 #include <QGroupBox>
 
 ExportfileDialogfield::ExportfileDialogfield(
-    QWidget* parent, QStringList extensions, std::function<void(void)> onSave)
+    QWidget* parent, QStringList extensions,
+    std::function<void(QFile* file, const QString& format, QcrDialog* parent)> onSave)
 {
     progressBar.hide();
 
@@ -49,7 +50,8 @@ ExportfileDialogfield::ExportfileDialogfield(
             dir_->programaticallySetValue(
                 file_dialog::queryDirectory(parent, "Select folder", dir_->text())); });
     connect(actCancel_, &QAction::triggered, [parent]() { parent->close(); });
-    connect(actSave_, &QAction::triggered, onSave);
+    connect(actSave_, &QAction::triggered,
+            [this]()->void{ onSave(file(), format(), this); close(); });
 
     auto updateSaveable = [this,actSave_](const QString) {
                               qDebug() << "DEBUG  updateSaveable " << path(true)

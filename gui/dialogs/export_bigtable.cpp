@@ -24,8 +24,7 @@
 ExportBigtable::ExportBigtable()
     : QcrDialog(gGui, "Export fit results table")
 {
-    fileField_ = new ExportfileDialogfield(
-        this, data_export::defaultFormats, [this]()->void{save();});
+    fileField_ = new ExportfileDialogfield(this, data_export::defaultFormats, save);
 
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
@@ -35,11 +34,9 @@ ExportBigtable::ExportBigtable()
 }
 
 // TODO move to Core
-void ExportBigtable::save()
+void ExportBigtable::save(QFile* file, const QString& format, QcrDialog*)
 {
-    QFile* file = fileField_->file();
-    if (!file)
-        return;
+    ASSERT(file);
     QTextStream stream(file);
 
     // get data
@@ -47,7 +44,7 @@ void ExportBigtable::save()
     std::vector<std::vector<const QVariant*>> data {gGui->bigtableModel->getData()};
 
     // write header
-    const QString separator = data_export::separator(fileField_->format());
+    const QString separator = data_export::separator(format);
     for (const QString& header: headers)
         stream << header << separator;
     stream << '\n';
@@ -63,6 +60,4 @@ void ExportBigtable::save()
         }
         stream << '\n';
     }
-
-    close();
 }

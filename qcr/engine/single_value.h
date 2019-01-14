@@ -30,7 +30,7 @@ public:
     QcrControl(QObject* object, const QString& name, const T val); // TODO get rid of this variant?
     ~QcrControl();
     void programaticallySetValue(T val);
-    T getValue() { ASSERT(doGetValue()==cell_->val()); return cell_->val(); }
+    T getValue() const { ASSERT(doGetValue()==cell_->val()); return cell_->val(); }
     virtual T doGetValue() const = 0; //!< to be overriden by the widget-specific get function
     virtual void executeConsoleCommand(const QString& arg);
     QcrCell<T>* cell() { return cell_; }

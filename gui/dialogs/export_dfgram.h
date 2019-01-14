@@ -31,9 +31,12 @@ private:
     QcrRadioButton rbAllSequential_ {"rbAllSequential", "All diffractograms to numbered files"};
     QcrRadioButton rbAll_           {"rbAll",           "All diffractograms to one file"};
 
-    void save();
-    void saveCurrent(QFile* file);
-    void saveAll(bool oneFile);
+    static void save(QFile* file, const QString& format, QcrDialog* parent);
+    static void saveCurrent(QFile* file, const QString& format);
+    static void saveAll(QFile* file, const QString& format, ExportDfgram* parent);
+
+    bool modeCurrent() const { return rbCurrent_.getValue(); }
+    bool modeSequential() const { return !modeCurrent() && rbAllSequential_.getValue(); }
 };
 
 #endif // EXPORT_DFGRAM_H

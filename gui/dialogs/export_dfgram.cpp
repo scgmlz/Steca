@@ -30,8 +30,7 @@ ExportDfgram::ExportDfgram()
 {
     rbAll_.programaticallySetValue(true);
 
-    fileField_ = new ExportfileDialogfield(
-        this, data_export::defaultFormats, [this]()->void{save();});
+    fileField_ = new ExportfileDialogfield(this, data_export::defaultFormats, save);
 
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
@@ -56,47 +55,41 @@ ExportDfgram::ExportDfgram()
     setLayout(vbox);
 }
 
-void ExportDfgram::save()
+void ExportDfgram::save(QFile* file, const QString& format, QcrDialog* parent)
 {
     try {
-        if      (rbCurrent_.getValue())
-            saveCurrent(fileField_->file());
-        else if (rbAllSequential_.getValue())
-            saveAll(false);
-        else if (rbAll_.getValue())
-            saveAll(true);
+        if      ((static_cast<const ExportDfgram*>(parent))->modeCurrent())
+            saveCurrent(file, format);
+        else if (static_cast<const ExportDfgram*>(parent)->modeSequential())
+            saveAll(file, format, static_cast<ExportDfgram*>(parent));
         else
-            qFatal("invalid case in ExportDfgram::save");
-        close();
+            saveAll(nullptr, format, static_cast<ExportDfgram*>(parent));
     } catch(const Exception& ex) {
         qWarning() << "Could not save:\n" << ex.msg() << "\n";
     }
 }
 
-void ExportDfgram::saveCurrent(QFile* file)
+void ExportDfgram::saveCurrent(QFile* file, const QString& format)
 {
     ASSERT(file);
     QTextStream stream(file);
     const Cluster* cluster = gSession->currentCluster();
     ASSERT(cluster);
     const Curve& curve = cluster->currentDfgram().curve;
-    const QString separator = data_export::separator(fileField_->format());
+    const QString separator = data_export::separator(format);
     data_export::writeCurve(stream, curve, cluster, cluster->rgeGma(), separator);
 }
 
-void ExportDfgram::saveAll(bool oneFile)
+void ExportDfgram::saveAll(QFile* file, const QString& format, ExportDfgram* parent)
 {
     // In one-file mode, start output stream; in multi-file mode, only do prepations.
-    QString path = fileField_->path(true, !oneFile);
+    QString path = parent->fileField_->path(true, !file);
     if (path.isEmpty())
         return;
     QTextStream* stream = nullptr;
     int nClusters = gSession->activeClusters.size();
     ASSERT(nClusters>0);
-    if (oneFile) {
-        QFile* file = fileField_->file();
-        if (!file)
-            return;
+    if (file) {
         stream = new QTextStream(file);
     } else {
         // check whether any of the numbered files already exists
@@ -109,19 +102,19 @@ void ExportDfgram::saveAll(bool oneFile)
         if (existingFiles.size() &&
             !file_dialog::confirmOverwrite(existingFiles.size()>1 ?
                                            "Files exist" : "File exists",
-                                           this, existingFiles.join(", ")))
+                                           parent, existingFiles.join(", ")))
             return;
     }
-    TakesLongTime progress("save diffractograms", nClusters, &fileField_->progressBar);
+    TakesLongTime progress("save diffractograms", nClusters, &parent->fileField_->progressBar);
     int picNum = 0;
     int fileNum = 0;
     int nSlices = gSession->gammaSelection.numSlices.val();
-    const QString separator = data_export::separator(fileField_->format());
+    const QString separator = data_export::separator(format);
     for (const Cluster* cluster : gSession->activeClusters.clusters.yield()) {
         ++picNum;
         progress.step();
         for (int i=0; i<qMax(1,nSlices); ++i) {
-            if (!oneFile) {
+            if (!file) {
                 QFile* file = new QFile(data_export::numberedFileName(
                                             path, ++fileNum, nClusters+1));
                 if (!file->open(QIODevice::WriteOnly | QIODevice::Text))

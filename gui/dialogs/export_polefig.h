@@ -34,10 +34,10 @@ private:
     QcrRadioButton exportCombi_   {"exportCombi",   "All peaks to one file"};
     QButtonGroup exportModeGroup; // not privatizable yet
 
-    void save();
+    static void save(QFile*, const QString& format, QcrDialog* parent);
     //void saveCurrent();
-    void saveAll(bool oneFile, const QString& path, const QString& separator,
-                 const std::vector<const InfoSequence*>& peaks);
+    static void saveAll(bool oneFile, const QString& path, const QString& separator,
+                 const std::vector<const InfoSequence*>& peaks, QcrDialog* parent);
 
     void executeConsoleCommand(const QString&) override {}
 

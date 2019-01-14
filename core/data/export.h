@@ -20,6 +20,7 @@ class Cluster;
 class Curve;
 class InfoSequence;
 class Range;
+class QcrDialog; // TODO get rid
 
 namespace data_export {
 
@@ -40,6 +41,6 @@ void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
 void writeInfoSequence(
     QTextStream& stream, const InfoSequence& peakInfos, const QString& separator);
 
-void saveDiagram (QFile* file, const QString& format);
+void saveDiagram (QFile* file, const QString& format, QcrDialog*);
 
 } // namespace data_export

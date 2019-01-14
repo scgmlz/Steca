@@ -23,7 +23,7 @@ class ExportBigtable : public QcrDialog {
 public:
     ExportBigtable();
 private:
-    void save();
+    static void save(QFile* file, const QString& format, QcrDialog*);
     class ExportfileDialogfield* fileField_;
 };
 

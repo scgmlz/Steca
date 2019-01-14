@@ -26,38 +26,11 @@ ExportDiagram::ExportDiagram()
     : QcrDialog(gGui, "Export diagram")
 {
     fileField_ = new ExportfileDialogfield(
-        this, data_export::defaultFormats, [this]()->void{save();});
+        this, data_export::defaultFormats, data_export::saveDiagram);
 
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowTitle("Export diagram data");
 
     setLayout(fileField_);
-}
-
-void ExportDiagram::save()
-{
-    QFile* file = fileField_->file();
-    if (!file)
-        return;
-    QTextStream stream(file);
-
-    // get data
-    const int idxX = int(gSession->params.diagramX.val());
-    const int idxY = int(gSession->params.diagramY.val());
-    std::vector<double> xs, ys, ysLow, ysHig;
-    const InfoSequence* peakInfos = gSession->allPeaks.currentInfoSequence();
-    ASSERT(peakInfos);
-    peakInfos->get4(idxX, idxY, xs, ys, ysLow, ysHig);
-    ASSERT(xs.size());
-    // write data table
-    const QString separator = data_export::separator(fileField_->format());
-    for (int i=0; i<xs.size(); ++i) {
-        stream << xs[i] << separator << ys[i];
-        if (ysLow.size())
-            stream << separator << ysLow[i] << separator << ysHig[i];
-        stream << '\n';
-    }
-
-    close();
 }

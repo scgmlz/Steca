@@ -41,8 +41,7 @@ ExportPolefig::ExportPolefig()
         exportCombi_.setEnabled(false);
     }
 
-    fileField_ = new ExportfileDialogfield(
-        this, data_export::defaultFormats, [this]()->void{save();});
+    fileField_ = new ExportfileDialogfield(this, data_export::defaultFormats, save);
 
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
@@ -66,11 +65,13 @@ ExportPolefig::ExportPolefig()
     setLayout(vbox);
 }
 
-void ExportPolefig::save()
+void ExportPolefig::save(QFile*, const QString& format, QcrDialog* parent)
 {
-    int checkedId = exportModeGroup.checkedId();
+    auto* myParent = static_cast<ExportPolefig*>(parent);
+    int checkedId = myParent->exportModeGroup.checkedId();
     const auto exportMode = ExportMode(checkedId);
-    const auto path = fileField_->path(true, exportMode==ExportMode::ALL_PEAKS_MULTIPLE_FILES);
+    const auto path = myParent->fileField_->path(
+        true, exportMode==ExportMode::ALL_PEAKS_MULTIPLE_FILES);
 
     std::vector<InfoSequence const *> peaks;
     if (exportMode == ExportMode::CURRENT_PEAK)
@@ -78,11 +79,8 @@ void ExportPolefig::save()
     else
         peaks = gSession->allPeaks.allInfoSequences();
 
-    const QString separator = data_export::separator(fileField_->format());
-    saveAll(!(exportMode==ExportMode::ALL_PEAKS_MULTIPLE_FILES),
-            path, separator, peaks);
-
-    close();
+    const QString separator = data_export::separator(format);
+    saveAll(!(exportMode==ExportMode::ALL_PEAKS_MULTIPLE_FILES), path, separator, peaks, parent);
 }
 
 
@@ -106,9 +104,11 @@ void saveOneFile(QString& path, const QString& separator,
 
 // TODO: adapt from ExportDfgram, and activate it once peak fits are cached
 
-void ExportPolefig::saveAll(bool oneFile, const QString& path, const QString& separator,
-                            const std::vector<const InfoSequence*>& peaks)
+void ExportPolefig::saveAll(
+    bool oneFile, const QString& path, const QString& separator,
+    const std::vector<const InfoSequence*>& peaks, QcrDialog* parent)
 {
+    auto* myParent = static_cast<ExportPolefig*>(parent);
     // In one-file mode, start output stream; in multi-file mode, only do prepations.
     if (path.isEmpty())
         return;
@@ -128,10 +128,10 @@ void ExportPolefig::saveAll(bool oneFile, const QString& path, const QString& se
     if (existingFiles.size() &&
         !file_dialog::confirmOverwrite(existingFiles.size()>1 ?
                                        "Files exist" : "File exists",
-                                       this, existingFiles.join(", ")))
+                                       myParent, existingFiles.join(", ")))
         return;
 
-    TakesLongTime progress("save polefigures", peaks.size(), &fileField_->progressBar);
+    TakesLongTime progress("save polefigures", peaks.size(), &myParent->fileField_->progressBar);
 
     if (paths.size() == 1) {
         saveOneFile(paths[0], separator, peaks, progress);

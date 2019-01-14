@@ -26,7 +26,9 @@ class ExportfileDialogfield : public QVBoxLayout {
 public:
     ExportfileDialogfield() = delete;
     ExportfileDialogfield(const ExportfileDialogfield&) = delete;
-    ExportfileDialogfield(QWidget* parent, QStringList extensions, std::function<void(void)> onSave);
+    ExportfileDialogfield(
+        QWidget* parent, QStringList extensions,
+        std::function<void(QFile* file, const QString& format, QcrDialog* parent)> onSave);
 
     QString path(bool withSuffix, bool withNumber=false);
     QFile* file();
