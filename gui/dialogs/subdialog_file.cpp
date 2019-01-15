@@ -17,22 +17,77 @@
 //#include "qcr/base/debug.h"
 #include <QGroupBox>
 
+//  ***********************************************************************************************
+
+class DialogfieldPath : public QGroupBox {
+public:
+    DialogfieldPath() = delete;
+    DialogfieldPath(QcrDialog* _parent);
+    DialogfieldPath(const DialogfieldPath&) = delete;
+    QString stem();
+    QFile* file();
+    QcrLineEdit* dirEdit;
+    QcrLineEdit* fileEdit;
+private:
+    QcrDialog* parent;
+};
+
+DialogfieldPath::DialogfieldPath(QcrDialog* _parent)
+    : QGroupBox{"ExportPath"}
+    , parent{_parent}
+{
+    static QDir defaultDir = QDir::homePath();
+    dirEdit = new QcrLineEdit("dir", defaultDir.absolutePath());
+    dirEdit->setReadOnly(true);
+
+    fileEdit = new QcrLineEdit("file");
+
+    auto* actBrowse_ = new QcrTrigger{"selectDir", "Browse..."};
+    connect(actBrowse_, &QAction::triggered, [this]() {
+            dirEdit->programaticallySetValue(
+                file_dialog::queryDirectory(
+                    parent, "Select folder", dirEdit->text())); });
+
+    auto* grid = new QGridLayout;
+    grid->addWidget(new QLabel("Save to folder:"),       0, 0, Qt::AlignRight);
+    grid->addWidget(dirEdit,                             0, 1);
+    grid->addWidget(new QcrTextTriggerButton(actBrowse_),0, 2);
+    grid->addWidget(new QLabel("File name:"),            1, 0, Qt::AlignRight);
+    grid->addWidget(fileEdit,                            1, 1);
+
+    setLayout(grid);
+}
+
+QString DialogfieldPath::stem()
+{
+    QString dir = dirEdit->text().trimmed();
+    QString ret = fileEdit->text().trimmed();
+    if (dir.isEmpty() || ret.isEmpty())
+        return "";
+    return ret;
+}
+
+QFile* DialogfieldPath::file()
+{
+    QString tmp = stem();
+    if (tmp.isEmpty())
+        return nullptr;
+    return file_dialog::openFileConfirmOverwrite("file", parentWidget(), tmp);
+}
+
+//  ***********************************************************************************************
+
 ExportfileDialogfield::ExportfileDialogfield(
     QcrDialog* _parent, QStringList extensions,
     std::function<void(QFile* file, const QString& format, QcrDialog* parent)> _onSave)
     : parent{_parent}
     , onSave{_onSave}
 {
-    static QDir defaultDir = QDir::homePath();
     progressBar.hide();
 
     // Widgets
 
-    dir_ = new QcrLineEdit("dir", defaultDir.absolutePath());
-    dir_->setReadOnly(true);
-
-    file_ = new QcrLineEdit("file");
-
+    auto* pathField = new DialogfieldPath{parent};
     auto* fileExtensionGroup = new QButtonGroup;
     auto* ftypeGrid = new QVBoxLayout;
     for (const QString fmt: extensions) {
@@ -43,47 +98,31 @@ ExportfileDialogfield::ExportfileDialogfield(
         ftypeGrid->addWidget(rb);
     }
 
-    auto* actBrowse_ = new QcrTrigger{"selectDir", "Browse..."};
     auto* actCancel_ = new QcrTrigger{"cancel", "Cancel"};
     auto* actSave_   = new QcrTrigger{"save", "Save"};
 
-    connect(actBrowse_, &QAction::triggered, [this]() {
-            dir_->programaticallySetValue(
-                file_dialog::queryDirectory(parent, "Select folder", dir_->text())); });
     connect(actCancel_, &QAction::triggered, [this]() { parent->close(); });
     connect(actSave_, &QAction::triggered,
             [this]()->void{
                 progressBar.show();
-                onSave(file(), format(), parent);
+                onSave(this->pathField->file(), format(), parent);
                 parent->close(); });
 
     auto updateSaveable = [this,actSave_](const QString) {
-                              qDebug() << "DEBUG  updateSaveable " << path(true)
-                                       << " -> enabled=" << !path(true).isEmpty();
-                              actSave_->setEnabled(!path(true).isEmpty());
+                              actSave_->setEnabled(!this->pathField->stem().isEmpty());
                           };
     updateSaveable("");
-    dir_ ->setHook(updateSaveable);
-    file_->setHook(updateSaveable);
+    pathField->dirEdit ->setHook(updateSaveable);
+    pathField->fileEdit->setHook(updateSaveable);
 
     // Layout
-
-    auto* destinationGrid = new QGridLayout;
-    destinationGrid->addWidget(new QLabel("Save to folder:"),       0, 0, Qt::AlignRight);
-    destinationGrid->addWidget(dir_,                                0, 1);
-    destinationGrid->addWidget(new QcrTextTriggerButton(actBrowse_),0, 2);
-    destinationGrid->addWidget(new QLabel("File name:"),            1, 0, Qt::AlignRight);
-    destinationGrid->addWidget(file_,                               1, 1);
-
-    auto* destination = new QGroupBox("Destination");
-    destination->setLayout(destinationGrid);
 
     auto* ftype = new QGroupBox("File type");
     ftype->setVisible(extensions.size()>1);
     ftype->setLayout(ftypeGrid);
 
     auto* setup = new QHBoxLayout;
-    setup->addWidget(destination);
+    setup->addWidget(pathField);
     setup->addWidget(ftype);
 
     auto* bottom = new QHBoxLayout();
@@ -99,10 +138,7 @@ ExportfileDialogfield::ExportfileDialogfield(
 
 QString ExportfileDialogfield::path(bool withSuffix, bool withNumber)
 {
-    QString dir = dir_->text().trimmed();
-    QString fileName = file_->text().trimmed();
-    if (dir.isEmpty() || fileName.isEmpty())
-        return "";
+    QString fileName = pathField->stem();
     if (withNumber && !fileName.contains("%d"))
         fileName += ".%d";
     if (withSuffix) {
@@ -112,13 +148,5 @@ QString ExportfileDialogfield::path(bool withSuffix, bool withNumber)
     }
     qDebug() << "return file name " << fileName;
 
-    return QFileInfo(dir + '/' + fileName).absoluteFilePath();
-}
-
-QFile* ExportfileDialogfield::file()
-{
-    QString tmp = path(true);
-    if (tmp.isEmpty())
-        return {};
-    return file_dialog::openFileConfirmOverwrite("file", parentWidget(), tmp);
+    return QFileInfo(pathField->dirEdit->text() + '/' + fileName).absoluteFilePath();
 }
