@@ -18,7 +18,7 @@
 #include <QGroupBox>
 
 ExportfileDialogfield::ExportfileDialogfield(
-    QWidget* parent, QStringList extensions,
+    QcrDialog* parent, QStringList extensions,
     std::function<void(QFile* file, const QString& format, QcrDialog* parent)> onSave)
 {
     progressBar.hide();
@@ -51,7 +51,7 @@ ExportfileDialogfield::ExportfileDialogfield(
                 file_dialog::queryDirectory(parent, "Select folder", dir_->text())); });
     connect(actCancel_, &QAction::triggered, [parent]() { parent->close(); });
     connect(actSave_, &QAction::triggered,
-            [this]()->void{ onSave(file(), format(), this); close(); });
+            [this,parent,onSave]()->void{ onSave(file(), format(), parent); parent->close(); });
 
     auto updateSaveable = [this,actSave_](const QString) {
                               qDebug() << "DEBUG  updateSaveable " << path(true)
@@ -65,11 +65,11 @@ ExportfileDialogfield::ExportfileDialogfield(
     // Layout
 
     auto* destinationGrid = new QGridLayout;
-    destinationGrid->addWidget(new QLabel("Save to folder:"), 0, 0, Qt::AlignRight);
-    destinationGrid->addWidget(dir_,                          0, 1);
+    destinationGrid->addWidget(new QLabel("Save to folder:"),       0, 0, Qt::AlignRight);
+    destinationGrid->addWidget(dir_,                                0, 1);
     destinationGrid->addWidget(new QcrTextTriggerButton(actBrowse_),0, 2);
-    destinationGrid->addWidget(new QLabel("File name:"),      1, 0, Qt::AlignRight);
-    destinationGrid->addWidget(file_,                         1, 1);
+    destinationGrid->addWidget(new QLabel("File name:"),            1, 0, Qt::AlignRight);
+    destinationGrid->addWidget(file_,                               1, 1);
 
     auto* destination = new QGroupBox("Destination");
     destination->setLayout(destinationGrid);
