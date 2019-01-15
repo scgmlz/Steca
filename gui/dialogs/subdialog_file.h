@@ -20,7 +20,7 @@
 #include <QProgressBar>
 #include <QButtonGroup>
 
-//! Base class for dialogs for saving some output to a file.
+//! Common part of all export dialogs: choice of file and format.
 
 class ExportfileDialogfield : public QVBoxLayout {
 public:
