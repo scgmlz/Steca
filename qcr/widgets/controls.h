@@ -143,18 +143,39 @@ private:
 //! Named non-editable combo box that can be set by console command.
 class QcrComboBox : public QComboBox, public QcrControl<int> {
 public:
+    //! Constructor for fixed tag list case.
     QcrComboBox(const QString& name, QcrCell<int>* cell, const QStringList& tags);
+    //! Constructor for variable tag list case.
     QcrComboBox(const QString& name, QcrCell<int>* cell,
                 const std::function<QStringList()> makeTags);
-    // TODO add simplified API with fixed tag list
     int doGetValue() const final { return (int)currentIndex(); }
     void remake() override;
 private:
+    //! Generic low-level constructor
     QcrComboBox(const QString& name, QcrCell<int>* cell, const bool haveRemakeTagsFunction,
                 const QStringList& tags, const std::function<QStringList()> makeTags);
     QStringList tags_;
     const bool haveRemakeTagsFunction_;
     const std::function<QStringList()> makeTags_;
+    bool spuriousCall_ {false};
+    void doSetValue(int val) final { setCurrentIndex((int)val); }
+    // hide some member functions of QComboBox:
+    void setCurrentIndex(int val) { QComboBox::setCurrentIndex(val); }
+    void setCurrentText(const QString&) = delete;
+    void setEditable() = delete; // stay with default: editable=false
+    void addItems(const QStringList&) = delete;
+    void addItem(const QIcon&, const QVariant&) = delete;
+    void addItem(const QIcon&, const QString&, const QVariant&) = delete;
+};
+
+//! Group of radio buttons, of which exactly one is activated.
+class QcrRadioBox : public QcrControl<int> {
+public:
+    QcrRadioBox(const QString& name, QcrCell<int>* cell, const QStringList& tags);
+    int doGetValue() const final { return (int)currentIndex(); }
+    void remake() override;
+private:
+    QStringList tags_;
     bool spuriousCall_ {false};
     void doSetValue(int val) final { setCurrentIndex((int)val); }
     // hide some member functions of QComboBox:
