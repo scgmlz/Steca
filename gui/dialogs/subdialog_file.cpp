@@ -161,8 +161,8 @@ DialogfieldMultifile::DialogfieldMultifile(
     : DialogfieldFile(_parent, _extensions, _onSave)
 {
     auto* saveWhatLayout = new QVBoxLayout;
-    saveWhatLayout->addWidget(&rbCurrent_);
-    saveWhatLayout->addWidget(&rbAllSequential_);
-    saveWhatLayout->addWidget(&rbAll_);
+    //saveWhatLayout->addWidget(&rbCurrent_);
+    //saveWhatLayout->addWidget(&rbAllSequential_);
+    //saveWhatLayout->addWidget(&rbAll_);
 
 }

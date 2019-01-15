@@ -143,13 +143,18 @@ private:
 //! Named non-editable combo box that can be set by console command.
 class QcrComboBox : public QComboBox, public QcrControl<int> {
 public:
-    QcrComboBox(const QString& name, QcrCell<int>* cell, std::function<QStringList()> makeTags);
+    QcrComboBox(const QString& name, QcrCell<int>* cell, const QStringList& tags);
+    QcrComboBox(const QString& name, QcrCell<int>* cell,
+                const std::function<QStringList()> makeTags);
     // TODO add simplified API with fixed tag list
     int doGetValue() const final { return (int)currentIndex(); }
     void remake() override;
 private:
+    QcrComboBox(const QString& name, QcrCell<int>* cell, const bool haveRemakeTagsFunction,
+                const QStringList& tags, const std::function<QStringList()> makeTags);
     QStringList tags_;
-    std::function<QStringList()> makeTags_;
+    const bool haveRemakeTagsFunction_;
+    const std::function<QStringList()> makeTags_;
     bool spuriousCall_ {false};
     void doSetValue(int val) final { setCurrentIndex((int)val); }
     // hide some member functions of QComboBox:

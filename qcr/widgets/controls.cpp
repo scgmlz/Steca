@@ -293,11 +293,14 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, QcrCel
 //! @class QcrComboBox
 
 QcrComboBox::QcrComboBox(
-    const QString& _name, QcrCell<int>* _cell, std::function<QStringList()> _makeTags)
-    : QcrControl<int> {this, _name, _cell}
-    , makeTags_(_makeTags)
+    const QString& _name, QcrCell<int>* _cell,
+    const bool _haveRemakeTagsFunction, const QStringList& _tags,
+    const std::function<QStringList()> _makeTags)
+    : QcrControl<int>{this, _name, _cell}
+    , haveRemakeTagsFunction_{_haveRemakeTagsFunction}
+    , tags_{_tags}
+    , makeTags_{_makeTags}
 {
-    tags_ = makeTags_();
     QComboBox::addItems(tags_);
     doSetValue(cell_->val());
     connect(this, _SLOT_(QComboBox,currentIndexChanged,int), [this](int val)->void {
@@ -305,9 +308,21 @@ QcrComboBox::QcrComboBox(
                 onChangedValue(val); });
 }
 
+QcrComboBox::QcrComboBox(
+    const QString& _name, QcrCell<int>* _cell, const std::function<QStringList()> _makeTags)
+    : QcrComboBox{_name, _cell, true, _makeTags(), _makeTags}
+{
+}
+
+QcrComboBox::QcrComboBox(
+    const QString& _name, QcrCell<int>* _cell, const QStringList& _tags)
+    : QcrComboBox{_name, _cell, false, _tags, [](){return QStringList{};}}
+{
+}
+
 void QcrComboBox::remake()
 {
-    if (isVisible()) {
+    if (haveRemakeTagsFunction_ && isVisible()) {
         QStringList newTags = makeTags_();
         if (newTags!=tags_) { // clear&addItems only when needed, to avoid changes of currentIndex
             const int oldIdx = currentIndex();
