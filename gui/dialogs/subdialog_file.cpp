@@ -152,3 +152,17 @@ QString DialogfieldFile::path(bool withSuffix, bool withNumber)
 
     return QFileInfo(pathField->dirEdit->text() + '/' + fileName).absoluteFilePath();
 }
+
+//  ***********************************************************************************************
+
+DialogfieldMultifile::DialogfieldMultifile(
+    QcrDialog* _parent, QStringList _extensions,
+    std::function<void(QFile* file, const QString& format, QcrDialog* parent)> _onSave)
+    : DialogfieldFile(_parent, _extensions, _onSave)
+{
+    auto* saveWhatLayout = new QVBoxLayout;
+    saveWhatLayout->addWidget(&rbCurrent_);
+    saveWhatLayout->addWidget(&rbAllSequential_);
+    saveWhatLayout->addWidget(&rbAll_);
+
+}

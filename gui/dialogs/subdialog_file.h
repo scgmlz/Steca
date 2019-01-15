@@ -43,4 +43,17 @@ private:
     std::function<void(QFile* file, const QString& format, QcrDialog* parent)> onSave;
 };
 
+//! Export dialog for multiple files.
+
+class DialogfieldMultifile : public DialogfieldFile {
+public:
+    DialogfieldMultifile() = delete;
+    DialogfieldMultifile(const DialogfieldMultifile&) = delete;
+    DialogfieldMultifile(
+        QcrDialog* _parent, QStringList extensions,
+        std::function<void(QFile* file, const QString& format, QcrDialog* parent)> _onSave);
+private:
+};
+
+
 #endif // SUBDIALOG_FILE_H
