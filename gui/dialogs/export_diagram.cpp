@@ -25,7 +25,7 @@
 ExportDiagram::ExportDiagram()
     : QcrDialog(gGui, "Export diagram")
 {
-    fileField_ = new ExportfileDialogfield(
+    fileField_ = new DialogfieldFile(
         this, data_export::defaultFormats, data_export::saveDiagram);
 
     setModal(true);

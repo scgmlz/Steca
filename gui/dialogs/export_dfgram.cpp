@@ -30,7 +30,7 @@ ExportDfgram::ExportDfgram()
 {
     rbAll_.programaticallySetValue(true);
 
-    fileField_ = new ExportfileDialogfield(this, data_export::defaultFormats, save);
+    fileField_ = new DialogfieldFile(this, data_export::defaultFormats, save);
 
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);

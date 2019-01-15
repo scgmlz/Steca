@@ -28,7 +28,7 @@ public:
     ExportPolefig();
 
 private:
-    class ExportfileDialogfield* fileField_;
+    class DialogfieldFile* fileField_;
     QcrRadioButton exportCurrent_ {"exportCurrent", "Current peak only"};
     QcrRadioButton exportMulti_   {"exportMulti",   "All peaks to numbered files"};
     QcrRadioButton exportCombi_   {"exportCombi",   "All peaks to one file"};

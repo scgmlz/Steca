@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/dialogs/subdialog_file.cpp
-//! @brief     Implements classes ExportfileDialogfield
+//! @brief     Implements classes DialogfieldFile
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -18,6 +18,8 @@
 #include <QGroupBox>
 
 //  ***********************************************************************************************
+
+//! A box with widgets to set the export directory and file name.
 
 class DialogfieldPath : public QGroupBox {
 public:
@@ -77,7 +79,7 @@ QFile* DialogfieldPath::file()
 
 //  ***********************************************************************************************
 
-ExportfileDialogfield::ExportfileDialogfield(
+DialogfieldFile::DialogfieldFile(
     QcrDialog* _parent, QStringList extensions,
     std::function<void(QFile* file, const QString& format, QcrDialog* parent)> _onSave)
     : parent{_parent}
@@ -136,7 +138,7 @@ ExportfileDialogfield::ExportfileDialogfield(
     addLayout(bottom);
 }
 
-QString ExportfileDialogfield::path(bool withSuffix, bool withNumber)
+QString DialogfieldFile::path(bool withSuffix, bool withNumber)
 {
     QString fileName = pathField->stem();
     if (withNumber && !fileName.contains("%d"))

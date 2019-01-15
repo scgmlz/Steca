@@ -33,7 +33,7 @@
 ExportPolefig::ExportPolefig()
     : QcrDialog(gGui, "Export Polefigure")
 {
-    if (gSession->peaks.size()>1) { // TODO restore once peak fits are cached
+    if (gSession->peaks.size()>1) {
         exportCombi_.programaticallySetValue(true);
     } else {
         exportCurrent_.programaticallySetValue(true);
@@ -41,7 +41,7 @@ ExportPolefig::ExportPolefig()
         exportCombi_.setEnabled(false);
     }
 
-    fileField_ = new ExportfileDialogfield(this, data_export::defaultFormats, save);
+    fileField_ = new DialogfieldFile(this, data_export::defaultFormats, save);
 
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
