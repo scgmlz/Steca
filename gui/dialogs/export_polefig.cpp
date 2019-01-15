@@ -68,9 +68,8 @@ ExportPolefig::ExportPolefig()
 void ExportPolefig::save(QFile*, const QString& format, QcrDialog* parent)
 {
     auto* myParent = static_cast<ExportPolefig*>(parent);
-    int checkedId = myParent->exportModeGroup.checkedId();
-    const auto exportMode = ExportMode(checkedId);
-    const auto path = myParent->fileField_->path(
+    const ExportMode exportMode{(ExportMode)myParent->exportModeGroup.checkedId()};
+    const QString path = myParent->fileField_->path(
         true, exportMode==ExportMode::ALL_PEAKS_MULTIPLE_FILES);
 
     std::vector<InfoSequence const *> peaks;

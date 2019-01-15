@@ -83,7 +83,7 @@ void ExportDfgram::saveCurrent(QFile* file, const QString& format)
 void ExportDfgram::saveAll(QFile* file, const QString& format, ExportDfgram* parent)
 {
     // In one-file mode, start output stream; in multi-file mode, only do prepations.
-    QString path = parent->fileField_->path(true, !file);
+    const QString path = parent->fileField_->path(true, !file);
     if (path.isEmpty())
         return;
     QTextStream* stream = nullptr;
