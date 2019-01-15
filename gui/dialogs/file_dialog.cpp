@@ -115,7 +115,6 @@ static eFileOverwritePolicy fileOverwritePolicy = eFileOverwritePolicy::PROMPT;
 void setFileOverwritePolicy(eFileOverwritePolicy val)
 {
     fileOverwritePolicy = val;
-    //qDebug() << "fileOverwritePolicy set to " << (int)fileOverwritePolicy << "\n";
 }
 
 bool confirmOverwrite(const QString& name, QWidget* parent, const QString& path)
@@ -134,7 +133,7 @@ bool confirmOverwrite(const QString& name, QWidget* parent, const QString& path)
         return true;
         break;
     default:
-        qFatal("impossible case");
+        qFatal("confirmOverwrite: impossible case");
         break;
     }
 }

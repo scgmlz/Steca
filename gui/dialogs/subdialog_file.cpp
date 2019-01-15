@@ -21,8 +21,6 @@ ExportfileDialogfield::ExportfileDialogfield(
     QcrDialog* parent, QStringList extensions,
     std::function<void(QFile* file, const QString& format, QcrDialog* parent)> onSave)
 {
-    progressBar.hide();
-
     static QDir defaultDir = QDir::homePath();
 
     // Widgets

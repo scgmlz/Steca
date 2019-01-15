@@ -18,7 +18,7 @@
 #include <QDir>
 #include <QFile>
 
-//! Functions for opening files.
+//! GUI dialog functions for opening files.
 
 namespace file_dialog {
 
