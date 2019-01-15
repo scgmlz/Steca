@@ -28,9 +28,9 @@ DiagramTab::DiagramTab()
 
     // TODO cache tag list
     auto* comboX =
-        new QcrComboBox {"diagramCoordX", &gSession->params.diagramX, &PeakInfo::metaTags};
+        new QcrComboBox{"diagramCoordX", &gSession->params.diagramX, &PeakInfo::metaTags};
     auto* comboY =
-        new QcrComboBox {"diagramCoordY", &gSession->params.diagramY, &PeakInfo::metaTags};
+        new QcrComboBox{"diagramCoordY", &gSession->params.diagramY, &PeakInfo::metaTags};
 
     auto* selectorBox = new QGridLayout;
     selectorBox->addWidget(new QLabel("y"), 0, 0);
@@ -40,8 +40,8 @@ DiagramTab::DiagramTab()
 
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);
-    buttonBox->addWidget(new QcrIconTriggerButton {&gGui->triggers->spawnDiagram});
-    buttonBox->addWidget(new QcrIconTriggerButton {&gGui->triggers->exportDiagram});
+    buttonBox->addWidget(new QcrIconTriggerButton{&gGui->triggers->spawnDiagram});
+    buttonBox->addWidget(new QcrIconTriggerButton{&gGui->triggers->exportDiagram});
 
     auto* controls = new QVBoxLayout;
     controls->addLayout(selectorBox);

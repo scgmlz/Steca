@@ -62,8 +62,8 @@ DialogfieldPath::DialogfieldPath(QcrDialog* _parent)
 
 QString DialogfieldPath::stem()
 {
-    QString dir = dirEdit->text().trimmed();
-    QString ret = fileEdit->text().trimmed();
+    const QString dir = dirEdit->text().trimmed();
+    const QString ret = fileEdit->text().trimmed();
     if (dir.isEmpty() || ret.isEmpty())
         return "";
     return ret;
@@ -71,7 +71,7 @@ QString DialogfieldPath::stem()
 
 QFile* DialogfieldPath::file()
 {
-    QString tmp = stem();
+    const QString tmp = stem();
     if (tmp.isEmpty())
         return nullptr;
     return file_dialog::openFileConfirmOverwrite("file", parentWidget(), tmp);
@@ -89,7 +89,7 @@ DialogfieldFile::DialogfieldFile(
 
     // Widgets
 
-    auto* pathField = new DialogfieldPath{parent};
+    pathField = new DialogfieldPath{parent};
     auto* fileExtensionGroup = new QButtonGroup;
     auto* ftypeGrid = new QVBoxLayout;
     for (const QString fmt: extensions) {
@@ -107,12 +107,11 @@ DialogfieldFile::DialogfieldFile(
     connect(actSave_, &QAction::triggered,
             [this]()->void{
                 progressBar.show();
-                onSave(this->pathField->file(), format(), parent);
+                onSave(pathField->file(), format(), parent);
                 parent->close(); });
 
     auto updateSaveable = [this,actSave_](const QString) {
-                              actSave_->setEnabled(!this->pathField->stem().isEmpty());
-                          };
+                              actSave_->setEnabled(!pathField->stem().isEmpty()); };
     updateSaveable("");
     pathField->dirEdit ->setHook(updateSaveable);
     pathField->fileEdit->setHook(updateSaveable);
@@ -160,7 +159,7 @@ DialogfieldMultifile::DialogfieldMultifile(
     std::function<void(QFile* file, const QString& format, QcrDialog* parent)> _onSave)
     : DialogfieldFile(_parent, _extensions, _onSave)
 {
-    auto* saveWhatLayout = new QVBoxLayout;
+    //auto* saveWhatLayout = new QVBoxLayout;
     //saveWhatLayout->addWidget(&rbCurrent_);
     //saveWhatLayout->addWidget(&rbAllSequential_);
     //saveWhatLayout->addWidget(&rbAll_);
