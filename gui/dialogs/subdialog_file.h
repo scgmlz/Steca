@@ -27,17 +27,19 @@ public:
     ExportfileDialogfield() = delete;
     ExportfileDialogfield(const ExportfileDialogfield&) = delete;
     ExportfileDialogfield(
-        QcrDialog* parent, QStringList extensions,
-        std::function<void(QFile* file, const QString& format, QcrDialog* parent)> onSave);
+        QcrDialog* _parent, QStringList extensions,
+        std::function<void(QFile* file, const QString& format, QcrDialog* parent)> _onSave);
 
     QString path(bool withSuffix, bool withNumber=false);
     QFile* file();
     QString format() const { return saveFmt; }
     QProgressBar progressBar;
 private:
+    QcrDialog* parent;
     QcrLineEdit* dir_;
     QcrLineEdit* file_;
     QString saveFmt {"dat"}; //!< setting: default format for data export
+    std::function<void(QFile* file, const QString& format, QcrDialog* parent)> onSave;
 };
 
 #endif // SUBDIALOG_FILE_H

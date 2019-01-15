@@ -18,10 +18,13 @@
 #include <QGroupBox>
 
 ExportfileDialogfield::ExportfileDialogfield(
-    QcrDialog* parent, QStringList extensions,
-    std::function<void(QFile* file, const QString& format, QcrDialog* parent)> onSave)
+    QcrDialog* _parent, QStringList extensions,
+    std::function<void(QFile* file, const QString& format, QcrDialog* parent)> _onSave)
+    : parent{_parent}
+    , onSave{_onSave}
 {
     static QDir defaultDir = QDir::homePath();
+    progressBar.hide();
 
     // Widgets
 
@@ -44,12 +47,15 @@ ExportfileDialogfield::ExportfileDialogfield(
     auto* actCancel_ = new QcrTrigger{"cancel", "Cancel"};
     auto* actSave_   = new QcrTrigger{"save", "Save"};
 
-    connect(actBrowse_, &QAction::triggered, [this, parent]() {
+    connect(actBrowse_, &QAction::triggered, [this]() {
             dir_->programaticallySetValue(
                 file_dialog::queryDirectory(parent, "Select folder", dir_->text())); });
-    connect(actCancel_, &QAction::triggered, [parent]() { parent->close(); });
+    connect(actCancel_, &QAction::triggered, [this]() { parent->close(); });
     connect(actSave_, &QAction::triggered,
-            [this,parent,onSave]()->void{ onSave(file(), format(), parent); parent->close(); });
+            [this]()->void{
+                progressBar.show();
+                onSave(file(), format(), parent);
+                parent->close(); });
 
     auto updateSaveable = [this,actSave_](const QString) {
                               qDebug() << "DEBUG  updateSaveable " << path(true)
@@ -104,7 +110,7 @@ QString ExportfileDialogfield::path(bool withSuffix, bool withNumber)
         if (QFileInfo(fileName).suffix().toLower()!=saveFmt.toLower())
             fileName += "."+saveFmt;
     }
-    qDebug() << "set file name " << fileName;
+    qDebug() << "return file name " << fileName;
 
     return QFileInfo(dir + '/' + fileName).absoluteFilePath();
 }
