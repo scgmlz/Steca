@@ -53,6 +53,7 @@ public:
         QcrDialog* _parent, QStringList extensions,
         std::function<void(QFile* file, const QString& format, QcrDialog* parent)> _onSave);
 private:
+    QcrCell<int> currentSaveModeIdx {0};
 };
 
 

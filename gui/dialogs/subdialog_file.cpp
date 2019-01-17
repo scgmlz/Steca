@@ -156,12 +156,13 @@ QString DialogfieldFile::path(bool withSuffix, bool withNumber)
 
 DialogfieldMultifile::DialogfieldMultifile(
     QcrDialog* _parent, QStringList _extensions,
-    std::function<void(QFile* file, const QString& format, QcrDialog* parent)> _onSave)
+    std::function<void(QFile* file, const QString& format, QcrDialog* parent)> _onSave,
+    const QString& content)
     : DialogfieldFile(_parent, _extensions, _onSave)
 {
-    //auto* saveWhatLayout = new QVBoxLayout;
-    //saveWhatLayout->addWidget(&rbCurrent_);
-    //saveWhatLayout->addWidget(&rbAllSequential_);
-    //saveWhatLayout->addWidget(&rbAll_);
-
+    const QStringList saveModes { {"Current "+content+" only",
+                                   "All "+content+"s in one file",
+                                   "All "+content+"s to numbered files"} };
+    auto* saveWhat = new QcrRadioBox{ "saveMode", &currentSaveModeIdx, saveModes};
+    insertWidget(0, saveWhat);
 }

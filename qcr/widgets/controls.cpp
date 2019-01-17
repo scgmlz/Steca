@@ -353,7 +353,7 @@ QcrRadioBox::QcrRadioBox(
         rb->setAutoExclusive(true);
         layout_->addWidget(rb);
         group_.addButton(rb);
-        rb->setChecked(i==0);
+        rb->setChecked(i==cell_->val());
         connect(rb, _SLOT_(QRadioButton,toggled,bool),
                 [this,i](bool val)->void { if (val) onChangedValue(i); });
     }
