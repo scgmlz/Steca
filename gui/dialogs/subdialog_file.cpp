@@ -164,6 +164,6 @@ DialogfieldMultifile::DialogfieldMultifile(
                                    "All "+content+"s in one file",
                                    "All "+content+"s to numbered files"} };
     auto* saveWhat = new QcrRadioBox{
-        "saveMode", &currentSaveModeIdx, saveModes, new QVBoxLayout};
+        "saveMode", "Save What", &currentSaveModeIdx, saveModes, new QVBoxLayout};
     insertWidget(0, saveWhat);
 }

@@ -41,26 +41,14 @@ ExportPolefig::ExportPolefig()
         exportCombi_.setEnabled(false);
     }
 
-    fileField_ = new DialogfieldFile(this, data_export::defaultFormats, save);
+    fileField_ = new DialogfieldMultifile(this, data_export::defaultFormats, save, "peak");
 
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
     setWindowTitle("Export pole figure data");
 
     // layout
-    auto* savePeaksLayout = new QVBoxLayout;
-    savePeaksLayout->addWidget(&exportCurrent_);
-    exportModeGroup.addButton(&exportCurrent_, 0);
-    savePeaksLayout->addWidget(&exportMulti_);
-    exportModeGroup.addButton(&exportMulti_, 1);
-    savePeaksLayout->addWidget(&exportCombi_);
-    exportModeGroup.addButton(&exportCombi_, 2);
-
-    auto* savePeaks = new QGroupBox {"Save which peaks"};
-    savePeaks->setLayout(savePeaksLayout);
-
     auto* vbox = new QVBoxLayout();
-    vbox->addWidget(savePeaks);
     vbox->addLayout(fileField_);
     setLayout(vbox);
 }

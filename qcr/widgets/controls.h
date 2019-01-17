@@ -20,6 +20,7 @@
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QComboBox>
+#include <QGroupBox>
 #include <QLabel>
 #include <QLayout>
 #include <QLineEdit>
@@ -170,14 +171,14 @@ private:
 };
 
 //! Group of radio buttons, of which exactly one is activated.
-class QcrRadioBox : public QWidget, public QcrControl<int> {
+class QcrRadioBox : public QGroupBox, public QcrControl<int> {
 public:
     //! Constructor; takes ownership of layout, which is typically provided as "new QVLayout".
-    QcrRadioBox(const QString& name, QcrCell<int>* cell, const QStringList& tags, QLayout* layout);
+    QcrRadioBox(const QString& name, const QString& headline, QcrCell<int>* cell,
+                const QStringList& tags, QLayout* layout);
     int doGetValue() const final { return group_.checkedId(); }
 private:
     QStringList tags_;
-    QLayout* layout_;
     QButtonGroup group_;
     std::vector<QRadioButton*> buttons_;
     void doSetValue(int val) final;

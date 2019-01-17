@@ -46,7 +46,7 @@ ExportDfgram::ExportDfgram()
     fileExtensionGroup->addButton(&rbAllSequential_);
     fileExtensionGroup->addButton(&rbAll_);
 
-    auto* saveWhat = new QGroupBox {"Save what"};
+    auto* saveWhat = new QGroupBox{"Save what"};
     saveWhat->setLayout(saveWhatLayout);
 
     auto* vbox = new QVBoxLayout();

@@ -341,22 +341,24 @@ void QcrComboBox::remake()
 //! @class QcrComboBox
 
 QcrRadioBox::QcrRadioBox(
-    const QString& _name, QcrCell<int>* _cell, const QStringList& _tags, QLayout* _layout)
+    const QString& _name, const QString& _headline, QcrCell<int>* _cell,
+    const QStringList& _tags, QLayout* _layout)
     : QcrControl<int>{this, _name, _cell}
     , tags_{_tags}
-    , layout_{_layout}
 {
     ASSERT(_tags.size()>0);
     for (int i=0; i<_tags.size(); ++i) {
         auto* rb = new QRadioButton{_tags[i]};
         buttons_.push_back(rb);
         rb->setAutoExclusive(true);
-        layout_->addWidget(rb);
+        _layout->addWidget(rb);
         group_.addButton(rb);
         rb->setChecked(i==cell_->val());
         connect(rb, _SLOT_(QRadioButton,toggled,bool),
                 [this,i](bool val)->void { if (val) onChangedValue(i); });
     }
+    setLayout(_layout);
+    setTitle(_headline);
 }
 
 void QcrRadioBox::doSetValue(int val)
