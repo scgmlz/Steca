@@ -51,7 +51,8 @@ public:
     DialogfieldMultifile(const DialogfieldMultifile&) = delete;
     DialogfieldMultifile(
         QcrDialog* _parent, QStringList extensions,
-        std::function<void(QFile* file, const QString& format, QcrDialog* parent)> _onSave);
+        std::function<void(QFile* file, const QString& format, QcrDialog* parent)> _onSave,
+        const QString& content);
 private:
     QcrCell<int> currentSaveModeIdx {0};
 };

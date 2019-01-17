@@ -163,6 +163,7 @@ DialogfieldMultifile::DialogfieldMultifile(
     const QStringList saveModes { {"Current "+content+" only",
                                    "All "+content+"s in one file",
                                    "All "+content+"s to numbered files"} };
-    auto* saveWhat = new QcrRadioBox{ "saveMode", &currentSaveModeIdx, saveModes};
+    auto* saveWhat = new QcrRadioBox{
+        "saveMode", &currentSaveModeIdx, saveModes, new QVBoxLayout};
     insertWidget(0, saveWhat);
 }
