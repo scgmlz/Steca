@@ -17,6 +17,7 @@
 
 #include "qcr/engine/single_value.h"
 #include <QAction>
+#include <QButtonGroup>
 #include <QCheckBox>
 #include <QComboBox>
 #include <QLabel>
@@ -154,8 +155,8 @@ private:
     //! Generic low-level constructor
     QcrComboBox(const QString& name, QcrCell<int>* cell, const bool haveRemakeTagsFunction,
                 const QStringList& tags, const std::function<QStringList()> makeTags);
-    QStringList tags_;
     const bool haveRemakeTagsFunction_;
+    QStringList tags_;
     const std::function<QStringList()> makeTags_;
     bool spuriousCall_ {false};
     void doSetValue(int val) final { setCurrentIndex((int)val); }
@@ -169,22 +170,17 @@ private:
 };
 
 //! Group of radio buttons, of which exactly one is activated.
-class QcrRadioBox : public QcrControl<int> {
+class QcrRadioBox : public QWidget, public QcrControl<int> {
 public:
-    QcrRadioBox(const QString& name, QcrCell<int>* cell, const QStringList& tags);
-    int doGetValue() const final { return (int)currentIndex(); }
-    void remake() override;
+    //! Constructor; takes ownership of layout, which is typically provided as "new QVLayout".
+    QcrRadioBox(const QString& name, QcrCell<int>* cell, const QStringList& tags, QLayout* layout);
+    int doGetValue() const final { return group_.checkedId(); }
 private:
     QStringList tags_;
-    bool spuriousCall_ {false};
-    void doSetValue(int val) final { setCurrentIndex((int)val); }
-    // hide some member functions of QComboBox:
-    void setCurrentIndex(int val) { QComboBox::setCurrentIndex(val); }
-    void setCurrentText(const QString&) = delete;
-    void setEditable() = delete; // stay with default: editable=false
-    void addItems(const QStringList&) = delete;
-    void addItem(const QIcon&, const QVariant&) = delete;
-    void addItem(const QIcon&, const QString&, const QVariant&) = delete;
+    QLayout* layout_;
+    QButtonGroup group_;
+    std::vector<QRadioButton*> buttons_;
+    void doSetValue(int val) final;
 };
 
 //! Named line edit that can be set by console command.
