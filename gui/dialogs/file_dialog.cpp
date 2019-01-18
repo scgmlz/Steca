@@ -70,14 +70,14 @@ QVariant OpenFileProxyModel::data(const QModelIndex& idx, int role) const
 
 class FileDialog : public QcrFileDialog {
 public:
-    FileDialog(QObject*, const QString&, QDir&, const QString& filter = QString());
+    FileDialog(QWidget*, const QString&, QDir&, const QString& filter = QString());
     QStringList getFiles();
     QString getFile();
 private:
     QDir& dir_;
 };
 
-FileDialog::FileDialog(QObject* parent, const QString& caption, QDir& dir, const QString &filter)
+FileDialog::FileDialog(QWidget* parent, const QString& caption, QDir& dir, const QString &filter)
     : QcrFileDialog(parent, caption, dir.absolutePath(), filter)
     , dir_(dir)
 {
@@ -117,7 +117,7 @@ void setFileOverwritePolicy(eFileOverwritePolicy val)
     fileOverwritePolicy = val;
 }
 
-bool confirmOverwrite(const QString& name, QObject* parent, const QString& path)
+bool confirmOverwrite(const QString& name, QWidget* parent, const QString& path)
 {
     switch (fileOverwritePolicy) {
     case eFileOverwritePolicy::PROMPT:
@@ -139,7 +139,7 @@ bool confirmOverwrite(const QString& name, QObject* parent, const QString& path)
 }
 
 //! Opens file for writing; asks for confirmation before overwriting.
-QFile* openFileConfirmOverwrite(const QString& name, QObject* parent, const QString& path)
+QFile* openFileConfirmOverwrite(const QString& name, QWidget* parent, const QString& path)
 {
     QFile* ret = new QFile(path);
     if (ret->exists() &&
@@ -157,7 +157,7 @@ QFile* openFileConfirmOverwrite(const QString& name, QObject* parent, const QStr
 
 //! Runs dialog that prompts for input files. Returns list of absolute paths. May change dir.
 QStringList queryImportFileNames(
-    QObject* parent, const QString& caption, QDir& dir, const QString& filter, bool plural)
+    QWidget* parent, const QString& caption, QDir& dir, const QString& filter, bool plural)
 {
     FileDialog dlg(parent, caption, dir, filter);
     dlg.setAcceptMode(QFileDialog::AcceptOpen);
@@ -171,7 +171,7 @@ QStringList queryImportFileNames(
 
 //! Runs dialog that prompts for one input file. Returns absolute path. May change dir.
 QString queryImportFileName(
-    QObject* parent, const QString& caption, QDir& dir, const QString& filter)
+    QWidget* parent, const QString& caption, QDir& dir, const QString& filter)
 {
     QStringList fileNames = queryImportFileNames(parent, caption, dir, filter, false);
     if (fileNames.isEmpty())
@@ -181,7 +181,7 @@ QString queryImportFileName(
 
 //! Runs dialog that prompts for one output file. Returns absolute path. May change dir.
 QString queryExportFileName(
-    QObject* parent, const QString& caption, QDir& dir, const QString& filter)
+    QWidget* parent, const QString& caption, QDir& dir, const QString& filter)
 {
     FileDialog dlg(parent, caption, dir, filter);
     dlg.setFileMode(QFileDialog::AnyFile);
@@ -193,7 +193,7 @@ QString queryExportFileName(
 
 //! Runs dialog that prompts for a directory. Returns absolute directory path. May change dir.
 // TODO return value VS dir ???
-QString queryDirectory(QObject* parent, const QString& caption, const QString& dirname)
+QString queryDirectory(QWidget* parent, const QString& caption, const QString& dirname)
 {
     QDir dir(dirname);
     FileDialog dlg(parent, caption, dir);

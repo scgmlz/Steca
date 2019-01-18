@@ -213,9 +213,9 @@ void DialogMultisave::saveMultifile()
                 existingPaths << QFileInfo(tmp).fileName();
     }
     if (existingPaths.size() &&
-        !file_dialog::confirmOverwrite(existingPaths.size()>1 ?
-                                       "Files exist" : "File exists",
-                                       parent(), existingPaths.join(", ")))
+        !file_dialog::confirmOverwrite(
+            existingPaths.size()>1 ? "Files exist" : "File exists",
+            static_cast<QWidget*>(parent()), existingPaths.join(", ")))
         return;
     // save files one by one
     TakesLongTime progress("save diffractograms", multiplicity(), &progressBar);

@@ -15,11 +15,11 @@
 #ifndef IO_SESSION_H
 #define IO_SESSION_H
 
-class QObject;
+class QWidget;
 
 namespace ioSession {
-    void load(QObject*);
-    void save(QObject*);
+    void load(QWidget*);
+    void save(QWidget*);
 } // ioSession
 
 #endif // IO_SESSION_H

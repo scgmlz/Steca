@@ -52,6 +52,10 @@ void ExportPolefig::writeJointfile(QTextStream& stream)
 {
 }
 
+void ExportPolefig::writeOnefile(QTextStream& stream, const int idx)
+{
+}
+
 /*
 void ExportPolefig::save(QFile*, const QString& format, QcrDialog* parent)
 {
