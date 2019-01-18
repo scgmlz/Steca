@@ -64,7 +64,7 @@ private:
     virtual int multiplicity() = 0; //!< number of files in multifile mode
     virtual void writeJointfile(QTextStream&) = 0;
     virtual void writeOnefile(QTextStream&, const int) = 0;
-    QString numbered_path(const int num, const int maxNum) const;
+    QString numberedPath(const int num, const int maxNum) const;
 };
 
 #endif // DIALOG_SAVE_H

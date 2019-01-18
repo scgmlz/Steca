@@ -138,7 +138,7 @@ DialogSave::DialogSave(
 
 void DialogSave::saveCurrent()
 {
-    const QString name = pathField->stem();
+    const QString name = path();
     ASSERT(!name.isEmpty()); // "save" button should be disabled if name is empty
     QFile* file = file_dialog::openFileConfirmOverwrite("file", parentWidget(), name);
     QTextStream stream{file};
@@ -195,7 +195,7 @@ void DialogMultisave::save()
 
 void DialogMultisave::saveJointfile()
 {
-    const QString name = pathField->stem();
+    const QString name = path();
     ASSERT(!name.isEmpty()); // "save" button should be disabled if name is empty
     QFile* file = file_dialog::openFileConfirmOverwrite("file", parentWidget(), name);
     QTextStream stream{file};
@@ -220,14 +220,14 @@ void DialogMultisave::saveMultifile()
     // save files one by one
     TakesLongTime progress("save diffractograms", multiplicity(), &progressBar);
     for (int i=0; i<n; ++i) {
-        QFile file{numbered_path(i, n+1)};
+        QFile file{numberedPath(i, n+1)};
         QTextStream stream{&file};
         writeOnefile(stream, i);
         progress.step();
     }
 }
 
-QString DialogMultisave::numbered_path(const int num, const int maxNum) const
+QString DialogMultisave::numberedPath(const int num, const int maxNum) const
 {
     QString name = pathField->stem();
     if (!name.contains("%d"))

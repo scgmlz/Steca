@@ -52,11 +52,6 @@ void ExportDfgram::writeJointfile(QTextStream& stream)
     for (int iCluster=0; iCluster<nCluster; ++iCluster) {
         const Cluster* cluster = gSession->activeClusters.clusters.yield().at(iCluster);
         for (int iSlice=0; iSlice<qMax(1,nSlice); ++iSlice) {
-            const QString fname = data_export::numberedFileName(path(), ++fileNum, nCluster+1);
-            QFile file{fname};
-            if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-                THROW("Cannot open file for writing: " + fname);
-            QTextStream stream{&file};
             const Range gmaStripe = gSession->gammaSelection.slice2range(
                 cluster->rgeGma(), iSlice);
             const Curve& curve = cluster->dfgrams.yield_at(iSlice,cluster).curve;
