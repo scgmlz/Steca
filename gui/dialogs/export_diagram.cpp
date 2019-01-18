@@ -31,8 +31,8 @@ void writeDiagram(QTextStream& stream, const QString& separator)
 
     // write header
 
-    QStringList tags = PeakInfo::metaTags();
-    stream << tags[idxX] << separator << tags[idxY];
+    QStringList tags = PeakInfo::dataTags(true);
+    stream << "# " << tags[idxX] << separator << tags[idxY];
     if (ysSigma.size() > 0)
         stream << separator << "sigma_"  << tags[idxY];
     stream << '\n';

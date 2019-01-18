@@ -26,6 +26,7 @@ void writeBigtable(QTextStream& stream, const QString& separator)
     std::vector<std::vector<const QVariant*>> data {gGui->bigtableModel->getData()};
 
     // write header
+    stream << "# ";
     for (const QString& header: headers)
         stream << header << separator;
     stream << '\n';
