@@ -25,6 +25,9 @@
 
 //! A row of controls for choosing which data columns are to be displayed in a TabTable.
 
+//! User actions become effective through the general remake hook,
+//! which invokes BigtableView::refresh and BigtableView::updateShownColumns().
+
 class ColumnSelector : public QcrWidget {
 public:
     ColumnSelector();
@@ -38,8 +41,6 @@ private:
 ColumnSelector::ColumnSelector()
     : QcrWidget("ColumnSelector")
 {
-    auto* box = new QVBoxLayout;
-
     auto* trigAll   = new QcrTrigger {"bigtabAll", "select all columns", ":/icon/All"};
     auto* trigClear = new QcrTrigger {"bigtabClear", "unselect all columns", ":/icon/clear"};
 
@@ -52,6 +53,8 @@ ColumnSelector::ColumnSelector()
     hb->addWidget(new QcrIconTriggerButton(trigAll));
     hb->addWidget(new QcrIconTriggerButton(trigClear));
     hb->addSpacing(4);
+
+    auto* box = new QVBoxLayout;
     box->addLayout(hb);
     box->addSpacing(8);
 

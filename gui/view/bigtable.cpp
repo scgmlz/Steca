@@ -148,11 +148,18 @@ void BigtableModel::sortData()
     endResetModel();
 }
 
+// TODO in getHeaders and getData: respect column order as modified by the user.
+// WAIT with this until the dfgram-number row is handled as a normal row.
+// Then use colIndexMap_.
+
+//! Returns currently selected column headers, for use in data export.
+
 QStringList BigtableModel::getHeaders() const
 {
     return gSession->params.bigMetaHeaders();
 }
 
+//! Returns currently selected data, for use in data export.
 
 std::vector<std::vector<const QVariant*>> BigtableModel::getData() const
 {
