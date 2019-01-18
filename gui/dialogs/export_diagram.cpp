@@ -18,6 +18,37 @@
 #include "gui/mainwin.h"
 //#include "qcr/base/debug.h"
 
+namespace {
+
+void writeDiagram(QTextStream& stream, const QString& separator)
+{
+    // get data
+
+    const int idxX = int(gSession->params.diagramX.val());
+    const int idxY = int(gSession->params.diagramY.val());
+    std::vector<double> xs, ys, ysSigma;
+    gSession->allPeaks.currentInfoSequence()->getValuesAndSigma(idxX, idxY, xs, ys, ysSigma);
+
+    // write header
+
+    QStringList tags = PeakInfo::metaTags();
+    stream << tags[idxX] << separator << tags[idxY];
+    if (ysSigma.size() > 0)
+        stream << separator << "sigma_"  << tags[idxY];
+    stream << '\n';
+
+    // write data
+
+    for (size_t i = 0; i < xs.size(); ++i) {
+        stream << xs[i] << separator << ys[i];
+        if (ysSigma.size() > 0)
+            stream << separator << ysSigma[i];
+        stream << '\n';
+    }
+}
+
+} // namespace
+
 //  ***********************************************************************************************
 //! @class ExportDiagram
 
@@ -26,6 +57,7 @@ ExportDiagram::ExportDiagram()
 {
 }
 
-void ExportDiagram::writeCurrent(QTextStream&)
+void ExportDiagram::writeCurrent(QTextStream& stream)
 {
+    writeDiagram(stream, data_export::separator(format()));
 }

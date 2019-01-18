@@ -54,7 +54,6 @@ void PlotDiagram::refresh()
     const int idxX = int(gSession->params.diagramX.val());
     const int idxY = int(gSession->params.diagramY.val());
 
-
     std::vector<double> xs, ys, ysSigma;
     gSession->allPeaks.currentInfoSequence()->getValuesAndSigma(idxX, idxY, xs, ys, ysSigma);
 
