@@ -33,7 +33,7 @@
 ExportPolefig::ExportPolefig()
     : DialogMultisave(
         gGui, "ExportPolefig", "Pole figure export",
-        data_export::defaultFormats+QStringList{"pol"}, "peak", gSession->peaks.size()>0)
+        QStringList{"dat", "lst", "csv", "pol"}, "peak", gSession->peaks.size()>0)
 {
 }
 
@@ -53,7 +53,7 @@ void ExportPolefig::writeJointfile(QTextStream& stream)
     TakesLongTime progress("save pole figures", multiplicity(), &progressBar);
     int picNum = 0;
     for (const auto* peak : gSession->allPeaks.allInfoSequences()) {
-        stream << "Picture Nr: " << ++picNum << '\n';
+        stream << "Peak Nr: " << ++picNum << '\n';
         data_export::writeInfoSequence(stream, *peak, data_export::separator(format()));
         progress.step();
     }

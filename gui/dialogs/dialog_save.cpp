@@ -19,6 +19,22 @@
 //#include "qcr/base/debug.h"
 #include <QGroupBox>
 
+namespace {
+
+QString abbreviateList(const QStringList& in, const int maxOut, const int cutAfter)
+{
+    ASSERT(in.size()>0);
+    if (in.size()<=maxOut)
+        return in.join(", ");
+    QString ret = in[0];
+    for (int i=1; i<cutAfter; ++i)
+        ret += ", " + in[i];
+    ret += QString(", and %1 more").arg(in.size()-cutAfter);
+    return ret;
+}
+
+} // namespace
+
 //  ***********************************************************************************************
 
 //! A box with widgets to set the export directory and file name.
@@ -40,10 +56,10 @@ DialogfieldPath::DialogfieldPath(QcrDialog* _parent)
     , parent{_parent}
 {
     static QDir defaultDir = QDir::homePath();
-    dirEdit = new QcrLineEdit("dir", defaultDir.absolutePath());
+    dirEdit = new QcrLineEdit{"dir", defaultDir.absolutePath()};
     dirEdit->setReadOnly(true);
 
-    fileEdit = new QcrLineEdit("file");
+    fileEdit = new QcrLineEdit{"file"};
 
     auto* actBrowse_ = new QcrTrigger{"selectDir", "Browse..."};
     connect(actBrowse_, &QAction::triggered, [this]() {
@@ -74,7 +90,7 @@ QString DialogfieldPath::stem() const
 
 DialogSave::DialogSave(
     QWidget* _parent, const QString& _name, const QString& _title, const QStringList& _extensions)
-    : QcrDialog(_parent, _name)
+    : QcrDialog{_parent, _name}
 {
     // Dialog widget settings
 
@@ -163,7 +179,7 @@ QString DialogSave::name2path(QString name) const
 DialogMultisave::DialogMultisave(
     QWidget* _parent, const QString& _name, const QString& _title,
     const QStringList& _extensions, const QString& _content, const bool _haveMulti)
-    : DialogSave(_parent, _name, _title, _extensions)
+    : DialogSave{_parent, _name, _title, _extensions}
 {
     if (!_haveMulti)
         return; // no multiFileMode menu
@@ -208,19 +224,25 @@ void DialogMultisave::saveMultifile()
     QStringList existingPaths;
     int n = multiplicity();
     for (int i=0; i<n; ++i) {
-        QString tmp = numberedPath(i, n+1);
-        if (QFile(tmp).exists())
-                existingPaths << QFileInfo(tmp).fileName();
+        const QString fname = numberedPath(i, n+1);
+        if (QFile(fname).exists())
+                existingPaths << QFileInfo(fname).fileName();
     }
-    if (existingPaths.size() &&
-        !file_dialog::confirmOverwrite(
-            existingPaths.size()>1 ? "Files exist" : "File exists",
-            static_cast<QWidget*>(parent()), existingPaths.join(", ")))
-        return;
+    if (existingPaths.size()) {
+        if (!file_dialog::confirmOverwrite(
+                existingPaths.size()>1 ? "Files exist" : "File exists",
+                static_cast<QWidget*>(parent()), abbreviateList(existingPaths,7,5)))
+            return;
+    }
     // save files one by one
     TakesLongTime progress("save diffractograms", multiplicity(), &progressBar);
     for (int i=0; i<n; ++i) {
-        QFile file{numberedPath(i, n+1)};
+        const QString fname = numberedPath(i, n+1);
+        QFile file{fname};
+        if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            qWarning() << "Cannot open file for writing: " << fname;
+            return;
+        }
         QTextStream stream{&file};
         writeOnefile(stream, i);
         progress.step();
