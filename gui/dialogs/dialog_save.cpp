@@ -208,7 +208,7 @@ void DialogMultisave::saveMultifile()
     QStringList existingPaths;
     int n = multiplicity();
     for (int i=0; i<n; ++i) {
-        QString tmp = data_export::numberedFileName(path(), i, n+1);
+        QString tmp = numberedPath(i, n+1);
         if (QFile(tmp).exists())
                 existingPaths << QFileInfo(tmp).fileName();
     }
