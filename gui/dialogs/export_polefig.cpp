@@ -33,7 +33,7 @@
 ExportPolefig::ExportPolefig()
     : QcrDialog(gGui, "Export Polefigure")
 {
-    fileField_ = new DialogfieldMultifile(
+    fileField_ = new DialogMultisave(
         this, data_export::defaultFormats, save, "peak", gSession->peaks.size()>1);
 
     setModal(true);
@@ -49,18 +49,18 @@ ExportPolefig::ExportPolefig()
 void ExportPolefig::save(QFile*, const QString& format, QcrDialog* parent)
 {
     auto* myParent = static_cast<ExportPolefig*>(parent);
-    const DialogfieldMultifile::ExportMode exportMode = fileField_->exportMode();
+    const DialogMultisave::ExportMode exportMode = fileField_->exportMode();
     const QString path = myParent->fileField_->path(
-        true, exportMode==DialogfieldMultifile::ExportMode::ALL_PEAKS_MULTIPLE_FILES);
+        true, exportMode==DialogMultisave::ExportMode::ALL_PEAKS_MULTIPLE_FILES);
 
     std::vector<InfoSequence const *> peaks;
-    if (exportMode == DialogfieldMultifile::ExportMode::CURRENT_PEAK)
+    if (exportMode == DialogMultisave::ExportMode::CURRENT_PEAK)
         peaks.push_back(gSession->allPeaks.currentInfoSequence());
     else
         peaks = gSession->allPeaks.allInfoSequences();
 
     const QString separator = data_export::separator(format);
-    saveAll(!(exportMode==DialogfieldMultifile::ExportMode::ALL_PEAKS_MULTIPLE_FILES),
+    saveAll(!(exportMode==DialogMultisave::ExportMode::ALL_PEAKS_MULTIPLE_FILES),
             path, separator, peaks, parent);
 }
 

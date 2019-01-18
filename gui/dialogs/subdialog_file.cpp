@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/dialogs/subdialog_file.cpp
-//! @brief     Implements classes DialogfieldFile
+//! @brief     Implements classes DialogSave
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -79,7 +79,7 @@ QFile* DialogfieldPath::file()
 
 //  ***********************************************************************************************
 
-DialogfieldFile::DialogfieldFile(
+DialogSave::DialogSave(
     QcrDialog* _parent, QStringList extensions,
     std::function<void(QFile* file, const QString& format, QcrDialog* parent)> _onSave)
     : parent{_parent}
@@ -137,7 +137,7 @@ DialogfieldFile::DialogfieldFile(
     addLayout(bottom);
 }
 
-QString DialogfieldFile::path(bool withSuffix, bool withNumber)
+QString DialogSave::path(bool withSuffix, bool withNumber)
 {
     QString fileName = pathField->stem();
     if (withNumber && !fileName.contains("%d"))
@@ -154,11 +154,11 @@ QString DialogfieldFile::path(bool withSuffix, bool withNumber)
 
 //  ***********************************************************************************************
 
-DialogfieldMultifile::DialogfieldMultifile(
+DialogMultisave::DialogMultisave(
     QcrDialog* _parent, QStringList _extensions,
     std::function<void(QFile* file, const QString& format, QcrDialog* parent)> _onSave,
     const QString& content, const bool _haveMulti)
-    : DialogfieldFile(_parent, _extensions, _onSave)
+    : DialogSave(_parent, _extensions, _onSave)
 {
     if (!_haveMulti) // only one file available => no multiFileMode menu
         return;

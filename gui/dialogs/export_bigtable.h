@@ -24,7 +24,7 @@ public:
     ExportBigtable();
 private:
     static void save(QFile* file, const QString& format, QcrDialog*);
-    class DialogfieldFile* fileField_;
+    class DialogSave* fileField_;
 };
 
 #endif // EXPORT_BIGTABLE_H

@@ -24,7 +24,7 @@ public:
     ExportDiagram();
 private:
     void save();
-    class DialogfieldFile* fileField_;
+    class DialogSave* fileField_;
 };
 
 #endif // EXPORT_DIAGRAM_H

@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/dialogs/subdialog_file.h
-//! @brief     Defines class DialogfieldFile
+//! @brief     Defines class DialogSave
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -25,11 +25,11 @@ class DialogfieldPath;
 
 //! Common part of all export dialogs: choice of file and format.
 
-class DialogfieldFile : public QVBoxLayout {
+class DialogSave : public QVBoxLayout {
 public:
-    DialogfieldFile() = delete;
-    DialogfieldFile(const DialogfieldFile&) = delete;
-    DialogfieldFile(
+    DialogSave() = delete;
+    DialogSave(const DialogSave&) = delete;
+    DialogSave(
         QcrDialog* _parent, QStringList extensions,
         std::function<void(QFile* file, const QString& format, QcrDialog* parent)> _onSave);
 
@@ -45,11 +45,11 @@ private:
 
 //! Export dialog for multiple files.
 
-class DialogfieldMultifile : public DialogfieldFile {
+class DialogMultisave : public DialogSave {
 public:
-    DialogfieldMultifile() = delete;
-    DialogfieldMultifile(const DialogfieldMultifile&) = delete;
-    DialogfieldMultifile(
+    DialogMultisave() = delete;
+    DialogMultisave(const DialogMultisave&) = delete;
+    DialogMultisave(
         QcrDialog* _parent, QStringList _extensions,
         std::function<void(QFile* file, const QString& format, QcrDialog* parent)> _onSave,
         const QString& _content, const bool _haveMulti);

@@ -26,7 +26,7 @@ public:
     ExportDfgram();
 
 private:
-    class DialogfieldFile* fileField_;
+    class DialogSave* fileField_;
     QcrRadioButton rbCurrent_       {"rbCurrent",       "Current diffractogram"};
     QcrRadioButton rbAllSequential_ {"rbAllSequential", "All diffractograms to numbered files"};
     QcrRadioButton rbAll_           {"rbAll",           "All diffractograms to one file"};
