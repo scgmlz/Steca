@@ -142,7 +142,7 @@ Rawfile loadYaml(const QString& filePath)
         // readExperiment (yamlFile["experiment"] , rawfile);
         readMeasurement(yamlFile["measurement"], rawfile);
         return rawfile;
-    qDebug() << "DEBUG[load_yaml] done";
+        qDebug() << "DEBUG[load_yaml] done";
     } catch (const Exception& ex) {
         THROW("Invalid data in file "+filePath+":\n" + ex.msg());
     }

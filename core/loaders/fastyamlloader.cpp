@@ -17,6 +17,7 @@
 #include <sstream>
 
 // Allows for a very verbose yaml parser for debugging purposes:
+// #define VERBOSE_YAML_PARSER
 #ifdef VERBOSE_YAML_PARSER
     #define YAML_DEBUG_OUT(a) qDebug() << a;
 #else
@@ -171,10 +172,10 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
                 array2d->data.push_back(v);
             }
             return YamlNode(array2d);
-        }
-        YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_SCALAR_EVENT = "
-                       << QString::fromLatin1(
-                           reinterpret_cast<char*>(prevEvent.data.scalar.value)));
+        } else
+            YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_SCALAR_EVENT = "
+                           << QString::fromLatin1(
+                               reinterpret_cast<char*>(prevEvent.data.scalar.value)));
         return YamlNode(QString::fromLatin1(reinterpret_cast<char*>(prevEvent.data.scalar.value)));
     default:
         THROW("unexpected node in parseYamlFast");
