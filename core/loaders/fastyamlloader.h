@@ -173,9 +173,9 @@ public:
 
 private:
     eNodeType nodeType_;
-    const std::shared_ptr<MapType> map_;// = nullptr;
-    const std::shared_ptr<SequenceType> sequence_;// = nullptr;
-    ScalarType scalar_ = "";
+    const std::shared_ptr<MapType> map_;
+    const std::shared_ptr<SequenceType> sequence_;
+    ScalarType scalar_;
     const std::shared_ptr<YamlArray2d> array2d_;
 
     inline MapType& getMap() { return *map_; }
