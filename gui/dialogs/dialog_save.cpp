@@ -163,11 +163,12 @@ QString DialogSave::path(bool withSuffix, bool withNumber)
 
 DialogMultisave::DialogMultisave(
     QWidget* _parent, const QString& _name, const QString& _title,
-    const QStringList& _extensions, const QString& _content, const bool _haveMulti)
+    const QStringList& _extensions, const QString& _content)
     : DialogSave(_parent, _name, _title, _extensions)
 {
-    if (!_haveMulti) // only one file available => no multiFileMode menu
-        return;
+    ASSERT(multiplicity()>0);
+    if (multiplicity()==1)
+        return; // no multiFileMode menu
     const QStringList saveModes { {"Current "+_content+" only",
                                    "All "+_content+"s in one file",
                                    "All "+_content+"s to numbered files"} };
@@ -204,7 +205,19 @@ void DialogMultisave::saveJointfile()
 
 void DialogMultisave::saveMultifile()
 {
-    qFatal("nyi");
+    // check whether any of the numbered files already exists
+    QStringList paths;
+    for (int i=0; i<nClusters; ++i) {
+        QString currPath = data_export::numberedFileName(path, i, nClusters+1);
+            if (QFile(currPath).exists())
+                paths << QFileInfo(currPath).fileName();
+        }
+        if (paths.size() &&
+            !file_dialog::confirmOverwrite(paths.size()>1 ?
+                                           "Files exist" : "File exists",
+                                           parent, paths.join(", ")))
+            return;
+    }
 }
 
 /*
@@ -220,19 +233,6 @@ void ExportDfgram::saveAll(QFile* file, const QString& format, ExportDfgram* par
     if (file) {
         stream = new QTextStream(file);
     } else {
-        // check whether any of the numbered files already exists
-        QStringList existingFiles;
-        for (int i=0; i<nClusters; ++i) {
-            QString currPath = data_export::numberedFileName(path, i, nClusters+1);
-            if (QFile(currPath).exists())
-                existingFiles << QFileInfo(currPath).fileName();
-        }
-        if (existingFiles.size() &&
-            !file_dialog::confirmOverwrite(existingFiles.size()>1 ?
-                                           "Files exist" : "File exists",
-                                           parent, existingFiles.join(", ")))
-            return;
-    }
     TakesLongTime progress("save diffractograms", nClusters, &parent->fileField_->progressBar);
     int picNum = 0;
     int fileNum = 0;

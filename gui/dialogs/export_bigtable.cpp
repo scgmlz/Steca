@@ -20,14 +20,13 @@
 namespace {
 
 // TODO move to Core (if we want bigtableModel in core)
-void writeBigtable(QTextStream& stream, const QString& format)
+void writeBigtable(QTextStream& stream, const QString& separator)
 {
     // get data
     QStringList headers {gGui->bigtableModel->getHeaders()};
     std::vector<std::vector<const QVariant*>> data {gGui->bigtableModel->getData()};
 
     // write header
-    const QString separator = data_export::separator(format);
     for (const QString& header: headers)
         stream << header << separator;
     stream << '\n';
@@ -58,5 +57,5 @@ ExportBigtable::ExportBigtable()
 
 void ExportBigtable::writeCurrent(QTextStream& stream)
 {
-    writeBigtable(stream, format());
+    writeBigtable(stream, data_export::separator(format()));
 }

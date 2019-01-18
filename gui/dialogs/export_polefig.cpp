@@ -32,8 +32,7 @@
 
 ExportPolefig::ExportPolefig()
     : DialogMultisave(gGui, "ExportPolefig", "Pole figure export",
-                      data_export::defaultFormats+QStringList{"pol"},
-                      "peak", gSession->peaks.size()>1)
+                      data_export::defaultFormats+QStringList{"pol"}, "peak")
 {
 }
 
@@ -42,11 +41,13 @@ int ExportPolefig::multiplicity()
     return gSession->peaks.size();
 }
 
-void ExportPolefig::writeCurrent(QTextStream&)
+void ExportPolefig::writeCurrent(QTextStream& stream)
 {
+    data_export::writeInfoSequence(
+        stream, *gSession->allPeaks.currentInfoSequence(), data_export::separator(format()));
 }
 
-void ExportPolefig::writeJointfile(QTextStream&)
+void ExportPolefig::writeJointfile(QTextStream& stream)
 {
 }
 

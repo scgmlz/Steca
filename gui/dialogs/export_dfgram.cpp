@@ -23,7 +23,7 @@
 
 ExportDfgram::ExportDfgram()
     : DialogMultisave(gGui, "ExportDfgram", "Diffractogram export", data_export::defaultFormats,
-                      "diffractogram", true)
+                      "diffractogram")
 {
 }
 
