@@ -27,6 +27,11 @@ ExportDfgram::ExportDfgram()
 {
 }
 
+int ExportDfgram::multiplicity()
+{
+    return gSession->activeClusters.size();
+}
+
 void ExportDfgram::writeCurrent(QTextStream& stream)
 {
     const Cluster* cluster = gSession->currentCluster();
@@ -34,6 +39,10 @@ void ExportDfgram::writeCurrent(QTextStream& stream)
     const Curve& curve = cluster->currentDfgram().curve;
     const QString separator = data_export::separator(format());
     data_export::writeCurve(stream, curve, cluster, cluster->rgeGma(), separator);
+}
+
+void ExportDfgram::writeJointfile(QTextStream& stream)
+{
 }
 
 /*

@@ -183,16 +183,82 @@ void DialogMultisave::save()
         saveCurrent();
         break;
     case 1:
-        saveAll(false);
+        saveJointfile();
         break;
     case 2:
-        saveAll(true);
+        saveMultifile();
         break;
     default:
         qFatal("impossible case");
     }
 }
 
-void DialogMultisave::saveAll(const bool multifile)
+void DialogMultisave::saveJointfile()
 {
+    const QString name = pathField->stem();
+    ASSERT(!name.isEmpty()); // "save" button should be disabled if name is empty
+    QFile* file = file_dialog::openFileConfirmOverwrite("file", parentWidget(), name);
+    QTextStream stream{file};
+    writeJointfile(stream);
 }
+
+void DialogMultisave::saveMultifile()
+{
+    qFatal("nyi");
+}
+
+/*
+void ExportDfgram::saveAll(QFile* file, const QString& format, ExportDfgram* parent)
+{
+    // In one-file mode, start output stream; in multi-file mode, only do prepations.
+    const QString path = parent->fileField_->path(true, !file);
+    if (path.isEmpty())
+        return;
+    QTextStream* stream = nullptr;
+    int nClusters = gSession->activeClusters.size();
+    ASSERT(nClusters>0);
+    if (file) {
+        stream = new QTextStream(file);
+    } else {
+        // check whether any of the numbered files already exists
+        QStringList existingFiles;
+        for (int i=0; i<nClusters; ++i) {
+            QString currPath = data_export::numberedFileName(path, i, nClusters+1);
+            if (QFile(currPath).exists())
+                existingFiles << QFileInfo(currPath).fileName();
+        }
+        if (existingFiles.size() &&
+            !file_dialog::confirmOverwrite(existingFiles.size()>1 ?
+                                           "Files exist" : "File exists",
+                                           parent, existingFiles.join(", ")))
+            return;
+    }
+    TakesLongTime progress("save diffractograms", nClusters, &parent->fileField_->progressBar);
+    int picNum = 0;
+    int fileNum = 0;
+    int nSlices = gSession->gammaSelection.numSlices.val();
+    const QString separator = data_export::separator(format);
+    for (const Cluster* cluster : gSession->activeClusters.clusters.yield()) {
+        ++picNum;
+        progress.step();
+        for (int i=0; i<qMax(1,nSlices); ++i) {
+            if (!file) {
+                QFile* file = new QFile(data_export::numberedFileName(
+                                            path, ++fileNum, nClusters+1));
+                if (!file->open(QIODevice::WriteOnly | QIODevice::Text))
+                    THROW("Cannot open file for writing: " + path);
+                delete stream;
+                stream = new QTextStream(file);
+            }
+            ASSERT(stream);
+            const Range gmaStripe = gSession->gammaSelection.slice2range(cluster->rgeGma(), i);
+            const Curve& curve = cluster->dfgrams.yield_at(i,cluster).curve;
+            *stream << "Picture Nr: " << picNum << '\n';
+            if (nSlices > 1)
+                *stream << "Gamma slice Nr: " << i+1 << '\n';
+            data_export::writeCurve(*stream, curve, cluster, gmaStripe, separator);
+        }
+    }
+    delete stream;
+}
+*/

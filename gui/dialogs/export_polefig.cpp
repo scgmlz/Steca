@@ -37,7 +37,16 @@ ExportPolefig::ExportPolefig()
 {
 }
 
+int ExportPolefig::multiplicity()
+{
+    return gSession->peaks.size();
+}
+
 void ExportPolefig::writeCurrent(QTextStream&)
+{
+}
+
+void ExportPolefig::writeJointfile(QTextStream&)
 {
 }
 

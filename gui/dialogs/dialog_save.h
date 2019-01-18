@@ -36,13 +36,13 @@ public:
 protected:
     QProgressBar progressBar;
     QVBoxLayout* layout;
+    DialogfieldPath* pathField;
     QString format() const { return saveFmt; }
     QString path(bool withSuffix, bool withNumber);
     virtual void save() { saveCurrent(); }
     void saveCurrent();
     virtual void writeCurrent(QTextStream&) = 0;
 private:
-    DialogfieldPath* pathField;
     QString saveFmt {"dat"}; //!< setting: default format for data export
     std::function<void(QFile* file, const QString& format, QcrDialog* parent)> onSave;
 };
@@ -59,8 +59,11 @@ public:
                     const QString& _content, const bool _haveMulti);
 private:
     void save() final;
-    void saveAll(const bool multifile);
+    void saveJointfile();
+    void saveMultifile();
     QcrCell<int> currentSaveModeIdx {0};
+    virtual int multiplicity() = 0; //!< number of files in multifile mode
+    virtual void writeJointfile(QTextStream&) = 0;
 };
 
 #endif // DIALOG_SAVE_H

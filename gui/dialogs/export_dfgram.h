@@ -24,6 +24,8 @@ public:
     ExportDfgram();
 private:
     void writeCurrent(QTextStream&) final;
+    int multiplicity() final;
+    void writeJointfile(QTextStream&) final;
 };
 
 #endif // EXPORT_DFGRAM_H
