@@ -31,12 +31,17 @@
 //! @class ExportPolefig
 
 ExportPolefig::ExportPolefig()
-    : DialogMultifile(gGui, "ExportPolefig", "Pole figure export",
-                      data_export::defaultFormats+{"pol"},
+    : DialogMultisave(gGui, "ExportPolefig", "Pole figure export",
+                      data_export::defaultFormats+QStringList{"pol"},
                       "peak", gSession->peaks.size()>1)
 {
 }
 
+void ExportPolefig::writeCurrent(QTextStream&)
+{
+}
+
+/*
 void ExportPolefig::save(QFile*, const QString& format, QcrDialog* parent)
 {
     auto* myParent = static_cast<ExportPolefig*>(parent);
@@ -112,3 +117,4 @@ void ExportPolefig::saveAll(
             saveOneFile(paths[i], separator, { peaks[i] }, progress);
     }
 }
+*/

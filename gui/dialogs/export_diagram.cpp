@@ -25,3 +25,7 @@ ExportDiagram::ExportDiagram()
     : DialogSave(gGui, "ExportDiagram", "Diagram data export", data_export::defaultFormats)
 {
 }
+
+void ExportDiagram::writeCurrent(QTextStream&)
+{
+}
