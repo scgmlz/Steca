@@ -26,15 +26,14 @@
 namespace {
 
 struct FILEContainer {
-    //Container() : value_(new T()) {}
     FILEContainer(FILE* file) : value_(file) {}
     ~FILEContainer() { fclose(value_); }
-    FILE* operator *();
+    FILE* operator* ();
 private:
     FILE* value_;
 };
 
-FILE* FILEContainer::operator *() {
+FILE* FILEContainer::operator* () {
     if (value_ == nullptr)
         THROW("value is nullptr, but should be initialized");
     return value_;

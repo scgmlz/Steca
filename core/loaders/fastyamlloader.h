@@ -169,7 +169,6 @@ public:
 
     inline eNodeType nodeType() const { return nodeType_; }
 
-    friend YamlNode&& parseYamlFast(YamlParserType parser, YamlNode&& node);
     friend YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent);
 
 private:
@@ -186,9 +185,7 @@ private:
     inline const ScalarType& getScalar() const { return scalar_; }
 };
 
-YamlNode&& parseYamlFast(YamlParserType parser, YamlNode&& node);
 YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent);
-
 
 const YamlNode loadYamlFast(const std::string& filePath);
 
