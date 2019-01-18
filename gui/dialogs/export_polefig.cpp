@@ -48,19 +48,19 @@ void ExportPolefig::writeCurrent(QTextStream& stream)
         stream, *gSession->allPeaks.currentInfoSequence(), data_export::separator(format()));
 }
 
-void ExportPolefig::writeJointfile(QTextStream& stream)
-{
-    TakesLongTime progress("save pole figures", multiplicity(), &progressBar);
-    int picNum = 0;
-    for (const auto* peak : gSession->allPeaks.allInfoSequences()) {
-        stream << "Peak Nr: " << ++picNum << '\n';
-        data_export::writeInfoSequence(stream, *peak, data_export::separator(format()));
-        progress.step();
-    }
-}
-
 void ExportPolefig::writeOnefile(QTextStream& stream, const int idx)
 {
     data_export::writeInfoSequence(
         stream, *gSession->allPeaks.currentInfoSequence(), data_export::separator(format()));
+}
+
+void ExportPolefig::writeJointfile(QTextStream& stream)
+{
+    TakesLongTime progress("save pole figures", multiplicity(), &progressBar);
+    int iPeak = 0;
+    for (const auto* peak : gSession->allPeaks.allInfoSequences()) {
+        stream << "Peak Nr: " << ++iPeak << '\n';
+        data_export::writeInfoSequence(stream, *peak, data_export::separator(format()));
+        progress.step();
+    }
 }

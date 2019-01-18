@@ -18,13 +18,11 @@
 #include "core/data/export.h"
 #include "core/session.h"
 #include "gui/mainwin.h"
-//#include "qcr/base/debug.h"
-//#include <qmath.h>
 
 ExportDfgram::ExportDfgram()
     : DialogMultisave(
         gGui, "ExportDfgram", "Diffractogram export", data_export::defaultFormats,
-        "diffractogram", gSession->activeClusters.size() * gSession->gammaSelection.numSlices.val())
+        "diffractogram", gSession->activeClusters.size()>0)
 {
 }
 
@@ -42,10 +40,21 @@ void ExportDfgram::writeCurrent(QTextStream& stream)
         stream, curve, cluster, cluster->rgeGma(), data_export::separator(format()));
 }
 
+void ExportDfgram::writeOnefile(QTextStream& stream, const int idx)
+{
+    const int nSlices = gSession->gammaSelection.numSlices.val();
+    const int iSlice = idx%nSlices;
+    const int iCluster = idx/nSlices;
+
+    const Cluster* cluster = gSession->activeClusters.clusters.yield().at(iCluster);
+    const Range gmaStripe = gSession->gammaSelection.slice2range(cluster->rgeGma(), iSlice);
+    const Curve& curve = cluster->dfgrams.yield_at(iSlice,cluster).curve;
+    data_export::writeCurve(stream, curve, cluster, gmaStripe, data_export::separator(format()));
+}
+
 void ExportDfgram::writeJointfile(QTextStream& stream)
 {
     TakesLongTime progress("save diffractograms", multiplicity(), &progressBar);
-    int fileNum = 0;
     const int nSlice = gSession->gammaSelection.numSlices.val();
     const int nCluster = gSession->activeClusters.size();
     const QString separator = data_export::separator(format());
@@ -62,17 +71,4 @@ void ExportDfgram::writeJointfile(QTextStream& stream)
             progress.step();
         }
     }
-}
-
-void ExportDfgram::writeOnefile(QTextStream& stream, const int idx)
-{
-    const int nSlices = gSession->gammaSelection.numSlices.val();
-
-    const int iCluster = idx/nSlices;
-    const Cluster* cluster = gSession->activeClusters.clusters.yield().at(iCluster);
-
-    const int iSlice = idx%nSlices;
-    const Range gmaStripe = gSession->gammaSelection.slice2range(cluster->rgeGma(), iSlice);
-    const Curve& curve = cluster->dfgrams.yield_at(iSlice,cluster).curve;
-    data_export::writeCurve(stream, curve, cluster, gmaStripe, data_export::separator(format()));
 }

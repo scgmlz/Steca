@@ -26,10 +26,10 @@ class ExportPolefig : public DialogMultisave {
 public:
     ExportPolefig();
 private:
-    void writeCurrent(QTextStream&) final;
     int multiplicity() final;
-    void writeJointfile(QTextStream&) final;
+    void writeCurrent(QTextStream&) final;
     void writeOnefile(QTextStream&, const int) final;
+    void writeJointfile(QTextStream&) final;
 };
 
 #endif // EXPORT_POLEFIG_H

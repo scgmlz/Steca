@@ -48,7 +48,7 @@ private:
 };
 
 
-//! Export dialog for multiple files.
+//! Base class for multiple-file export dialogs, with choice of exportMode.
 
 class DialogMultisave : public DialogSave {
 public:
@@ -62,8 +62,8 @@ private:
     void saveMultifile();
     QcrCell<int> currentSaveModeIdx {0};
     virtual int multiplicity() = 0; //!< number of files in multifile mode
-    virtual void writeJointfile(QTextStream&) = 0;
     virtual void writeOnefile(QTextStream&, const int) = 0;
+    virtual void writeJointfile(QTextStream&) = 0;
     QString numberedPath(const int num, const int maxNum) const;
 };
 
