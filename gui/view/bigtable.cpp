@@ -148,16 +148,6 @@ void BigtableModel::sortData()
     endResetModel();
 }
 
-QStringList BigtableModel::getHeaders() const
-{
-    QStringList ret;
-    const QStringList& headers = PeakInfo::dataTags(true);
-    for (int i=0; i<headers.count(); ++i)
-        if (gSession->params.bigMetaSelection.isSelected(i))
-            ret.append(headers[i]);
-    return ret;
-}
-
 std::vector<std::vector<const QVariant*>> BigtableModel::getData() const
 {
     std::vector<std::vector<const QVariant*>> ret(rowCount());

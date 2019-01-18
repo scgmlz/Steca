@@ -50,6 +50,8 @@ public:
 
     EditableRange   editableRange{EditableRange::NONE};
     QcrCell<bool>   showAvgeDfgram {false};
+
+    QStringList bigMetaHeaders() const;
 };
 
 #endif // PARAMS_H

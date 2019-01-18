@@ -12,6 +12,7 @@
 //
 //  ***********************************************************************************************
 
+#include "core/session.h"
 #include "core/data/export.h"
 #include "gui/dialogs/export_bigtable.h"
 #include "gui/mainwin.h"
@@ -23,7 +24,7 @@ namespace {
 void writeBigtable(QTextStream& stream, const QString& separator)
 {
     // get data
-    QStringList headers {gGui->bigtableModel->getHeaders()};
+    QStringList headers {gSession->params.bigMetaHeaders()};
     std::vector<std::vector<const QVariant*>> data {gGui->bigtableModel->getData()};
 
     // write header
