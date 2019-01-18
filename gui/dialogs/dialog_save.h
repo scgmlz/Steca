@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/dialogs/dialog_save.h
-//! @brief     Defines class DialogSave
+//! @brief     Defines classes DialogSave, DialogMultisave
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,36 +12,41 @@
 //
 //  ***********************************************************************************************
 
-#ifndef SUBDIALOG_FILE_H
-#define SUBDIALOG_FILE_H
+#ifndef DIALOG_SAVE_H
+#define DIALOG_SAVE_H
 
 #include "qcr/widgets/controls.h"
 #include "qcr/widgets/modal_dialogs.h"
 #include <QButtonGroup>
 #include <QGroupBox>
 #include <QProgressBar>
+#include <QTextStream>
 
 class DialogfieldPath;
 
-//! Common part of all export dialogs: choice of file and format.
 
-class DialogSave : public QVBoxLayout {
+//! Base class for all export dialogs, with choice of path and format.
+
+class DialogSave : public QcrDialog {
 public:
     DialogSave() = delete;
     DialogSave(const DialogSave&) = delete;
-    DialogSave(
-        QcrDialog* _parent, QStringList extensions,
-        std::function<void(QFile* file, const QString& format, QcrDialog* parent)> _onSave);
-
-    QString format() const { return saveFmt; }
-    DialogfieldPath* pathField;
+    DialogSave(QWidget* _parent, const QString& _name, const QString& _title,
+               const QStringList& _extensions);
+protected:
     QProgressBar progressBar;
+    QVBoxLayout* layout;
+    QString format() const { return saveFmt; }
     QString path(bool withSuffix, bool withNumber);
+    virtual void save() { saveCurrent(); }
+    void saveCurrent();
+    virtual void writeCurrent(QTextStream&) = 0;
 private:
-    QcrDialog* parent;
+    DialogfieldPath* pathField;
     QString saveFmt {"dat"}; //!< setting: default format for data export
     std::function<void(QFile* file, const QString& format, QcrDialog* parent)> onSave;
 };
+
 
 //! Export dialog for multiple files.
 
@@ -49,19 +54,13 @@ class DialogMultisave : public DialogSave {
 public:
     DialogMultisave() = delete;
     DialogMultisave(const DialogMultisave&) = delete;
-    DialogMultisave(
-        QcrDialog* _parent, QStringList _extensions,
-        std::function<void(QFile* file, const QString& format, QcrDialog* parent)> _onSave,
-        const QString& _content, const bool _haveMulti);
-    enum class ExportMode {
-        CURRENT_PEAK = 0,
-        ALL_PEAKS_MULTIPLE_FILES = 1,
-        ALL_PEAKS_SINGLE_FILE = 2,
-    };
-    ExportMode exportMode() const { return (ExportMode)(currentSaveModeIdx.val()); }
+    DialogMultisave(QWidget* _parent, const QString& _name, const QString& _title,
+                    const QStringList& _extensions,
+                    const QString& _content, const bool _haveMulti);
 private:
+    void save() final;
+    void saveAll(const bool multifile);
     QcrCell<int> currentSaveModeIdx {0};
 };
 
-
-#endif // SUBDIALOG_FILE_H
+#endif // DIALOG_SAVE_H

@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      gui/dialogs/dialog_save.cpp
-//! @brief     Implements classes DialogSave
+//! @brief     Implements classes DialogSave, DialogMultisave
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -69,30 +69,25 @@ QString DialogfieldPath::stem()
     return ret;
 }
 
-QFile* DialogfieldPath::file()
-{
-    const QString tmp = stem();
-    if (tmp.isEmpty())
-        return nullptr;
-    return file_dialog::openFileConfirmOverwrite("file", parentWidget(), tmp);
-}
-
 //  ***********************************************************************************************
 
 DialogSave::DialogSave(
-    QcrDialog* _parent, QStringList extensions,
-    std::function<void(QFile* file, const QString& format, QcrDialog* parent)> _onSave)
-    : parent{_parent}
-    , onSave{_onSave}
+    QWidget* _parent, const QString& _name, const QString& _title, const QStringList& _extensions)
+    : QcrDialog(_parent, _name)
 {
+    // Dialog widget settings
+
+    setModal(true);
+    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
+    setWindowTitle(_title);
     progressBar.hide();
 
-    // Widgets
+    // Subwidgets
 
-    pathField = new DialogfieldPath{parent};
+    pathField = new DialogfieldPath{this};
     auto* fileExtensionGroup = new QButtonGroup;
     auto* ftypeGrid = new QVBoxLayout;
-    for (const QString fmt: extensions) {
+    for (const QString fmt: _extensions) {
         auto* rb = new QcrRadioButton{"fmt."+fmt, "."+fmt};
         rb->programaticallySetValue(saveFmt == fmt);
         connect(rb, &QRadioButton::clicked, [this,fmt]() { saveFmt = fmt; });
@@ -103,12 +98,12 @@ DialogSave::DialogSave(
     auto* actCancel_ = new QcrTrigger{"cancel", "Cancel"};
     auto* actSave_   = new QcrTrigger{"save", "Save"};
 
-    connect(actCancel_, &QAction::triggered, [this]() { parent->close(); });
+    connect(actCancel_, &QAction::triggered, [this]() { close(); });
     connect(actSave_, &QAction::triggered,
             [this]()->void{
                 progressBar.show();
-                onSave(pathField->file(), format(), parent);
-                parent->close(); });
+                save();
+                close(); });
 
     auto updateSaveable = [this,actSave_](const QString) {
                               actSave_->setEnabled(!pathField->stem().isEmpty()); };
@@ -119,7 +114,7 @@ DialogSave::DialogSave(
     // Layout
 
     auto* ftype = new QGroupBox("File type");
-    ftype->setVisible(extensions.size()>1);
+    ftype->setVisible(_extensions.size()>1);
     ftype->setLayout(ftypeGrid);
 
     auto* setup = new QHBoxLayout;
@@ -133,8 +128,20 @@ DialogSave::DialogSave(
     bottom->addWidget(new QcrTextTriggerButton(actCancel_));
     bottom->addWidget(new QcrTextTriggerButton(actSave_));
 
-    addLayout(setup);
-    addLayout(bottom);
+    layout = new QVBoxLayout;
+    layout->addLayout(setup);
+    layout->addLayout(bottom);
+
+    setLayout(layout);
+}
+
+void DialogSave::saveCurrent()
+{
+    const QString name = pathField->stem();
+    ASSERT(!name.isEmpty()); // "save" button should be disabled if name is empty
+    QFile* file = file_dialog::openFileConfirmOverwrite("file", parentWidget(), name);
+    QTextStream stream{file};
+    writeCurrent(stream);
 }
 
 QString DialogSave::path(bool withSuffix, bool withNumber)
@@ -155,17 +162,37 @@ QString DialogSave::path(bool withSuffix, bool withNumber)
 //  ***********************************************************************************************
 
 DialogMultisave::DialogMultisave(
-    QcrDialog* _parent, QStringList _extensions,
-    std::function<void(QFile* file, const QString& format, QcrDialog* parent)> _onSave,
-    const QString& content, const bool _haveMulti)
-    : DialogSave(_parent, _extensions, _onSave)
+    QWidget* _parent, const QString& _name, const QString& _title,
+    const QStringList& _extensions, const QString& _content, const bool _haveMulti)
+    : DialogSave(_parent, _name, _title, _extensions)
 {
     if (!_haveMulti) // only one file available => no multiFileMode menu
         return;
-    const QStringList saveModes { {"Current "+content+" only",
-                                   "All "+content+"s in one file",
-                                   "All "+content+"s to numbered files"} };
+    const QStringList saveModes { {"Current "+_content+" only",
+                                   "All "+_content+"s in one file",
+                                   "All "+_content+"s to numbered files"} };
     auto* saveWhat = new QcrRadioBox{
         "saveMode", "Save What", &currentSaveModeIdx, saveModes, new QVBoxLayout};
-    insertWidget(0, saveWhat);
+    layout->insertWidget(0, saveWhat);
+}
+
+void DialogMultisave::save()
+{
+    switch(currentSaveModeIdx.val()) {
+    case 0:
+        saveCurrent();
+        break;
+    case 1:
+        saveAll(false);
+        break;
+    case 2:
+        saveAll(true);
+        break;
+    default:
+        qFatal("impossible case");
+    }
+}
+
+void DialogMultisave::saveAll(const bool multifile)
+{
 }

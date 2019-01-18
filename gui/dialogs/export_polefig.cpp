@@ -31,19 +31,10 @@
 //! @class ExportPolefig
 
 ExportPolefig::ExportPolefig()
-    : QcrDialog(gGui, "Export Polefigure")
+    : DialogMultifile(gGui, "ExportPolefig", "Pole figure export",
+                      data_export::defaultFormats+{"pol"},
+                      "peak", gSession->peaks.size()>1)
 {
-    fileField_ = new DialogMultisave(
-        this, data_export::defaultFormats, save, "peak", gSession->peaks.size()>1);
-
-    setModal(true);
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-    setWindowTitle("Export pole figure data");
-
-    // layout
-    auto* vbox = new QVBoxLayout();
-    vbox->addLayout(fileField_);
-    setLayout(vbox);
 }
 
 void ExportPolefig::save(QFile*, const QString& format, QcrDialog* parent)

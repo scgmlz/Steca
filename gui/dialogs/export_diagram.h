@@ -15,16 +15,15 @@
 #ifndef EXPORT_DIAGRAM_H
 #define EXPORT_DIAGRAM_H
 
-#include "qcr/widgets/modal_dialogs.h"
+#include "gui/dialogs/dialog_save.h"
 
 //! The modal dialog for the data shown in the diagram
 
-class ExportDiagram : public QcrDialog {
+class ExportDiagram : public DialogSave {
 public:
     ExportDiagram();
 private:
-    void save();
-    class DialogSave* fileField_;
+    void writeCurrent(QTextStream&) final;
 };
 
 #endif // EXPORT_DIAGRAM_H

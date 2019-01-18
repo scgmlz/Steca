@@ -14,31 +14,14 @@
 
 #include "core/data/export.h"
 #include "gui/dialogs/export_bigtable.h"
-#include "gui/dialogs/dialog_save.h"
 #include "gui/mainwin.h"
 #include "gui/view/bigtable.h"
 
-//  ***********************************************************************************************
-//! @class ExportBigtable
+namespace {
 
-ExportBigtable::ExportBigtable()
-    : QcrDialog(gGui, "Export fit results table")
+// TODO move to Core (if we want bigtableModel in core)
+void writeBigtable(QTextStream& stream, const QString& format)
 {
-    fileField_ = new DialogSave(this, data_export::defaultFormats, save);
-
-    setModal(true);
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-    setWindowTitle("Export table");
-
-    setLayout(fileField_);
-}
-
-// TODO move to Core
-void ExportBigtable::save(QFile* file, const QString& format, QcrDialog*)
-{
-    ASSERT(file);
-    QTextStream stream(file);
-
     // get data
     QStringList headers {gGui->bigtableModel->getHeaders()};
     std::vector<std::vector<const QVariant*>> data {gGui->bigtableModel->getData()};
@@ -60,4 +43,20 @@ void ExportBigtable::save(QFile* file, const QString& format, QcrDialog*)
         }
         stream << '\n';
     }
+}
+
+} // namespace
+
+
+//  ***********************************************************************************************
+//! @class ExportBigtable
+
+ExportBigtable::ExportBigtable()
+    : DialogSave(gGui, "ExportBigtable", "Big table export", data_export::defaultFormats)
+{
+}
+
+void ExportBigtable::writeCurrent(QTextStream& stream)
+{
+    writeBigtable(stream, format());
 }

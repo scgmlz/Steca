@@ -15,28 +15,15 @@
 #ifndef EXPORT_DFGRAM_H
 #define EXPORT_DFGRAM_H
 
-#include "qcr/widgets/controls.h"
-#include "qcr/widgets/modal_dialogs.h"
-#include "QButtonGroup"
+#include "gui/dialogs/dialog_save.h"
 
 //! The modal dialog for saving diffractograms.
 
-class ExportDfgram : public QcrDialog {
+class ExportDfgram : public DialogMultisave {
 public:
     ExportDfgram();
-
 private:
-    class DialogSave* fileField_;
-    QcrRadioButton rbCurrent_       {"rbCurrent",       "Current diffractogram"};
-    QcrRadioButton rbAllSequential_ {"rbAllSequential", "All diffractograms to numbered files"};
-    QcrRadioButton rbAll_           {"rbAll",           "All diffractograms to one file"};
-
-    static void save(QFile* file, const QString& format, QcrDialog* parent);
-    static void saveCurrent(QFile* file, const QString& format);
-    static void saveAll(QFile* file, const QString& format, ExportDfgram* parent);
-
-    bool modeCurrent() const { return rbCurrent_.getValue(); }
-    bool modeSequential() const { return !modeCurrent() && rbAllSequential_.getValue(); }
+    void writeCurrent(QTextStream&) final;
 };
 
 #endif // EXPORT_DFGRAM_H

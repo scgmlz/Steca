@@ -13,73 +13,30 @@
 //  ***********************************************************************************************
 
 #include "gui/dialogs/export_dfgram.h"
-#include "core/base/async.h"
+//#include "core/base/async.h"
 #include "core/base/exception.h"
 #include "core/data/export.h"
 #include "core/session.h"
-#include "gui/dialogs/dialog_save.h"
-#include "gui/dialogs/file_dialog.h"
 #include "gui/mainwin.h"
 //#include "qcr/base/debug.h"
-#include <qmath.h>
-#include <QGroupBox>
-
+//#include <qmath.h>
 
 ExportDfgram::ExportDfgram()
-    : QcrDialog(gGui, "Export diffractogram")
+    : DialogMultisave(gGui, "ExportDfgram", "Diffractogram export", data_export::defaultFormats,
+                      "diffractogram", true)
 {
-    rbAll_.programaticallySetValue(true);
-
-    fileField_ = new DialogSave(this, data_export::defaultFormats, save);
-
-    setModal(true);
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-    setWindowTitle("Export diffractogram(s)");
-
-    auto* saveWhatLayout = new QVBoxLayout;
-    saveWhatLayout->addWidget(&rbCurrent_);
-    saveWhatLayout->addWidget(&rbAllSequential_);
-    saveWhatLayout->addWidget(&rbAll_);
-
-    auto* fileExtensionGroup = new QButtonGroup;
-    fileExtensionGroup->addButton(&rbCurrent_);
-    fileExtensionGroup->addButton(&rbAllSequential_);
-    fileExtensionGroup->addButton(&rbAll_);
-
-    auto* saveWhat = new QGroupBox{"Save what"};
-    saveWhat->setLayout(saveWhatLayout);
-
-    auto* vbox = new QVBoxLayout();
-    vbox->addWidget(saveWhat);
-    vbox->addLayout(fileField_);
-    setLayout(vbox);
 }
 
-void ExportDfgram::save(QFile* file, const QString& format, QcrDialog* parent)
+void ExportDfgram::writeCurrent(QTextStream& stream)
 {
-    try {
-        if      ((static_cast<const ExportDfgram*>(parent))->modeCurrent())
-            saveCurrent(file, format);
-        else if (static_cast<const ExportDfgram*>(parent)->modeSequential())
-            saveAll(file, format, static_cast<ExportDfgram*>(parent));
-        else
-            saveAll(nullptr, format, static_cast<ExportDfgram*>(parent));
-    } catch(const Exception& ex) {
-        qWarning() << "Could not save:\n" << ex.msg() << "\n";
-    }
-}
-
-void ExportDfgram::saveCurrent(QFile* file, const QString& format)
-{
-    ASSERT(file);
-    QTextStream stream(file);
     const Cluster* cluster = gSession->currentCluster();
     ASSERT(cluster);
     const Curve& curve = cluster->currentDfgram().curve;
-    const QString separator = data_export::separator(format);
+    const QString separator = data_export::separator(format());
     data_export::writeCurve(stream, curve, cluster, cluster->rgeGma(), separator);
 }
 
+/*
 void ExportDfgram::saveAll(QFile* file, const QString& format, ExportDfgram* parent)
 {
     // In one-file mode, start output stream; in multi-file mode, only do prepations.
@@ -133,3 +90,4 @@ void ExportDfgram::saveAll(QFile* file, const QString& format, ExportDfgram* par
     }
     delete stream;
 }
+*/

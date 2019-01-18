@@ -15,7 +15,6 @@
 #include "gui/dialogs/export_diagram.h"
 #include "core/data/export.h"
 #include "core/session.h"
-#include "gui/dialogs/dialog_save.h"
 #include "gui/mainwin.h"
 //#include "qcr/base/debug.h"
 
@@ -23,14 +22,6 @@
 //! @class ExportDiagram
 
 ExportDiagram::ExportDiagram()
-    : QcrDialog(gGui, "Export diagram")
+    : DialogSave(gGui, "ExportDiagram", "Diagram data export", data_export::defaultFormats)
 {
-    fileField_ = new DialogSave(
-        this, data_export::defaultFormats, data_export::saveDiagram);
-
-    setModal(true);
-    setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-    setWindowTitle("Export diagram data");
-
-    setLayout(fileField_);
 }
