@@ -189,7 +189,7 @@ void DialogMultisave::save()
         saveMultifile();
         break;
     default:
-        qFatal("impossible case");
+        qFatal("impossible case %d in DialogMultisave::save()", currentSaveModeIdx.val());
     }
 }
 

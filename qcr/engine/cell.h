@@ -15,7 +15,7 @@
 #ifndef CELL_H
 #define CELL_H
 
-//#include "qcr/base/debug.h"
+#include "qcr/base/debug.h"
 #include <functional>
 #include <memory>
 
@@ -57,10 +57,14 @@ private:
 template<class T>
 void QcrCell<T>::setVal(const T v)
 {
+    // qDebug() << QString("Cell::setVal new=%1, old=%2").arg(v).arg(value_);
     const T oldvalue = value_;
     pureSetVal(v);
-    if (value_!=oldvalue)
+    // qDebug() << QString("Cell::setVal after pure set val=%1").arg(v);
+    if (value_!=oldvalue) {
         hook_(value_);
+        // qDebug() << QString("Cell::setVal hook val=%1").arg(v);
+    }
 }
 
 //! Sets value of cell, calls callback to set value of controlling widget, but does not calls hook.

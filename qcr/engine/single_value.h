@@ -112,14 +112,15 @@ void QcrControl<T>::onChangedValue(T val)
         s.setValue(name(), val);
     }
 
+    // qDebug()<<name()<<"onChangedValue arg="<<val<<", old="<<cell_->val();
     if (cell_->amCalling || val==cell_->val())
         return;
 
     doLog(name()+" "+strOp::to_s(val));
     cell_->setVal(val);
-    //qDebug()<<name()<<"remakeAll beg";
+    // qDebug()<<name()<<"remakeAll beg val="<<cell_->val();
     gRoot->remakeAll();
-    //qDebug()<<name()<<"remakeAll end";
+    // qDebug()<<name()<<"remakeAll end val="<<cell_->val();
 }
 
 #endif // SINGLE_VALUE_H

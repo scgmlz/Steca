@@ -35,7 +35,8 @@ QString data_export::separator(const QString& format)
 QString data_export::numberedFileName(const QString& templatedName, int num, int maxNum)
 {
     if (!templatedName.contains("%d"))
-        qFatal("path does not contain placeholder %%d");
+        qFatal("templated name '%s' does not contain placeholder '%%d'",
+               templatedName.toLatin1().constData());
     QString ret = templatedName;
     int nDigits = (int)log10((double)maxNum)+1;
     ret.replace("%d", QString("%1").arg(num, nDigits, 10, QLatin1Char('0')));

@@ -181,6 +181,7 @@ private:
     QStringList tags_;
     QButtonGroup group_;
     std::vector<QRadioButton*> buttons_;
+    int size() const { return tags_.size(); }
     void doSetValue(int val) final;
 };
 
