@@ -22,9 +22,7 @@
 
 namespace loadYAML {
 
-/// A helper struct for retrieving an !array2d value from a yaml document.
-///
-/// YamlArray2d contains the width, height and data of the !array2d.
+//! Width, height, and data of an !array2d value, used in our YAML extension.
 struct YamlArray2d {
     size_t width = 0, height = 0;
     std::vector<float> data;
@@ -45,46 +43,46 @@ public:
         SCALAR,
     };
 
+    YamlNode() = delete;
+
     YamlNode(MapType&& map) :
         nodeType_(eNodeType::MAP),
         map_(new MapType(map))
-    { }
+    {}
     YamlNode(const MapType& map) :
         nodeType_(eNodeType::MAP),
         map_(new MapType(map))
-    { }
+    {}
     YamlNode(MapType* map) :
         nodeType_(eNodeType::MAP),
         map_(map)
-    { }
+    {}
 
     YamlNode(SequenceType&& sequence) :
         nodeType_(eNodeType::SEQUENCE),
         sequence_(new SequenceType(sequence))
-    { }
+    {}
     YamlNode(const SequenceType& sequence) :
         nodeType_(eNodeType::SEQUENCE),
         sequence_(new SequenceType(sequence))
-    { }
+    {}
     YamlNode(SequenceType* sequence) :
         nodeType_(eNodeType::SEQUENCE),
         sequence_(sequence)
-    { }
+    {}
 
-    YamlNode( ScalarType&& scalar) :
+    YamlNode(ScalarType&& scalar) :
         nodeType_(eNodeType::SCALAR) ,
         scalar_(scalar)
-    { }
+    {}
     YamlNode(std::shared_ptr<YamlArray2d> array2d) :
         nodeType_(eNodeType::SCALAR) ,
         array2d_(array2d)
-    { }
+    {}
 
-    YamlNode(eNodeType nodeType) : nodeType_(nodeType) { }
+    YamlNode(eNodeType nodeType) : nodeType_(nodeType) {}
 
-    YamlNode(bool _isEnd) : isEnd(_isEnd) { }
-
-    YamlNode() { }
+    YamlNode(bool _isEnd) : isEnd(_isEnd) {}
 
     YamlNode(const YamlNode& other)
         : isEnd(other.isEnd),
@@ -93,9 +91,7 @@ public:
           sequence_(other.sequence_),
           scalar_(other.scalar_),
           array2d_(other.array2d_)
-    { }
-
-    ~YamlNode() { }
+    {}
 
     bool isEnd = false;
 
@@ -195,8 +191,8 @@ YamlNode&& parseYamlFast(YamlParserType parser, YamlNode&& node);
 YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent);
 
 struct FILEContainer {
-    //Container() : value_(new T()) { }
-    FILEContainer(FILE* file) : value_(file) { }
+    //Container() : value_(new T()) {}
+    FILEContainer(FILE* file) : value_(file) {}
     ~FILEContainer() { fclose(value_); }
     FILE* operator *();
 private:
