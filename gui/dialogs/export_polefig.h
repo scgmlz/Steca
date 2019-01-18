@@ -40,12 +40,6 @@ private:
                  const std::vector<const InfoSequence*>& peaks, QcrDialog* parent);
 
     void executeConsoleCommand(const QString&) override {}
-
-    enum class ExportMode {
-        CURRENT_PEAK = 0,
-        ALL_PEAKS_MULTIPLE_FILES = 1,
-        ALL_PEAKS_SINGLE_FILE = 2,
-    };
 };
 
 #endif // EXPORT_POLEFIG_H

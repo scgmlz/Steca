@@ -157,9 +157,11 @@ QString DialogfieldFile::path(bool withSuffix, bool withNumber)
 DialogfieldMultifile::DialogfieldMultifile(
     QcrDialog* _parent, QStringList _extensions,
     std::function<void(QFile* file, const QString& format, QcrDialog* parent)> _onSave,
-    const QString& content)
+    const QString& content, const bool _haveMulti)
     : DialogfieldFile(_parent, _extensions, _onSave)
 {
+    if (!_haveMulti) // only one file available => no multiFileMode menu
+        return;
     const QStringList saveModes { {"Current "+content+" only",
                                    "All "+content+"s in one file",
                                    "All "+content+"s to numbered files"} };

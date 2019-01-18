@@ -50,9 +50,15 @@ public:
     DialogfieldMultifile() = delete;
     DialogfieldMultifile(const DialogfieldMultifile&) = delete;
     DialogfieldMultifile(
-        QcrDialog* _parent, QStringList extensions,
+        QcrDialog* _parent, QStringList _extensions,
         std::function<void(QFile* file, const QString& format, QcrDialog* parent)> _onSave,
-        const QString& content);
+        const QString& _content, const bool _haveMulti);
+    enum class ExportMode {
+        CURRENT_PEAK = 0,
+        ALL_PEAKS_MULTIPLE_FILES = 1,
+        ALL_PEAKS_SINGLE_FILE = 2,
+    };
+    ExportMode exportMode() const { return (ExportMode)(currentSaveModeIdx.val()); }
 private:
     QcrCell<int> currentSaveModeIdx {0};
 };
