@@ -36,6 +36,7 @@ public:
     int columnCount() const final { return numCols_ + 1; }
     int rowCount() const final { return rows_.size(); }
     const std::vector<QVariant>& row(int) const;
+    QStringList getHeaders() const;
     std::vector<std::vector<const QVariant*>> getData() const;
     int highlighted() const final { return 0; } // unused
     void onClicked(const QModelIndex& cell) override { Q_UNUSED(cell); } // unused
