@@ -14,7 +14,7 @@
 
 #include "core/data/export.h"
 #include "gui/dialogs/export_bigtable.h"
-#include "gui/dialogs/subdialog_file.h"
+#include "gui/dialogs/dialog_save.h"
 #include "gui/mainwin.h"
 #include "gui/view/bigtable.h"
 

@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/dialogs/subdialog_file.h
+//! @file      gui/dialogs/dialog_save.h
 //! @brief     Defines class DialogSave
 //!
 //! @homepage  https://github.com/scgmlz/Steca

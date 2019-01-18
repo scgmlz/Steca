@@ -15,7 +15,7 @@
 #include "gui/dialogs/export_diagram.h"
 #include "core/data/export.h"
 #include "core/session.h"
-#include "gui/dialogs/subdialog_file.h"
+#include "gui/dialogs/dialog_save.h"
 #include "gui/mainwin.h"
 //#include "qcr/base/debug.h"
 

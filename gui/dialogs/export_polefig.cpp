@@ -19,7 +19,7 @@
 #include "core/session.h"
 #include "core/base/exception.h"
 #include "core/data/export.h"
-#include "gui/dialogs/subdialog_file.h"
+#include "gui/dialogs/dialog_save.h"
 #include "gui/dialogs/file_dialog.h"
 #include "gui/mainwin.h"
 #include "qcr/base/debug.h"
