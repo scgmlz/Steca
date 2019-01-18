@@ -23,6 +23,34 @@
     #define YAML_DEBUG_OUT(a)
 #endif
 
+namespace {
+
+struct FILEContainer {
+    //Container() : value_(new T()) {}
+    FILEContainer(FILE* file) : value_(file) {}
+    ~FILEContainer() { fclose(value_); }
+    FILE* operator *();
+private:
+    FILE* value_;
+};
+
+FILE* FILEContainer::operator *() {
+    if (value_ == nullptr)
+        THROW("value is nullptr, but should be initialized");
+    return value_;
+}
+
+yaml_event_type_t parser_parse(loadYAML::YamlParserType parser, yaml_event_t& event)
+{
+    if (!yaml_parser_parse(parser.get(), &event))
+       THROW(QString::fromStdString("Parser error " + std::to_string(parser->error)));
+    return event.type;
+}
+
+} // namespace
+
+//  ***********************************************************************************************
+
 namespace loadYAML {
 
 YamlNode::SequenceType::iterator YamlNode::begin()
@@ -51,13 +79,6 @@ YamlNode::SequenceType::const_iterator YamlNode::end() const
     if (nodeType_ != eNodeType::SEQUENCE)
         THROW("unexpected node where we expected sequence cend");
     return sequence_->cend();
-}
-
-yaml_event_type_t parser_parse(YamlParserType parser, yaml_event_t& event)
-{
-    if (!yaml_parser_parse(parser.get(), &event))
-       THROW(QString::fromStdString("Parser error " + std::to_string(parser->error)));
-    return event.type;
 }
 
 YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
@@ -143,7 +164,7 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
             arrayStr >> array2d->height;
             // find start of actual array data:
             while ('[' != arrayStr.get())
-            { }
+                ;
             array2d->data.reserve(array2d->width * array2d->height);
             for (size_t i = 0; i < array2d->width * array2d->height; i++) {
                 int v;
@@ -180,12 +201,6 @@ const YamlNode loadYamlFast(const std::string& filePath) {
     yaml_event_delete(&event);
     yaml_parser_delete(parser.get());
     return result;
-}
-
-FILE* FILEContainer::operator *() {
-    if (value_ == nullptr)
-        THROW("value is nullptr, but should be initialized");
-    return value_;
 }
 
 } // namespace loadYAML

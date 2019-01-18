@@ -186,18 +186,8 @@ private:
     inline const ScalarType& getScalar() const { return scalar_; }
 };
 
-yaml_event_type_t parser_parse(YamlParserType parser, yaml_event_t& event);
 YamlNode&& parseYamlFast(YamlParserType parser, YamlNode&& node);
 YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent);
-
-struct FILEContainer {
-    //Container() : value_(new T()) {}
-    FILEContainer(FILE* file) : value_(file) {}
-    ~FILEContainer() { fclose(value_); }
-    FILE* operator *();
-private:
-    FILE* value_;
-};
 
 
 const YamlNode loadYamlFast(const std::string& filePath);
