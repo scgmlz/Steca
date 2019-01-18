@@ -16,8 +16,8 @@
 #include "core/base/exception.h"
 #include <sstream>
 
-// Allows for a very verbious yaml parser for debugging purposes:
-#ifdef VERBIOUS_YAML_PARSER
+// Allows for a very verbose yaml parser for debugging purposes:
+#ifdef VERBOSE_YAML_PARSER
     #define YAML_DEBUG_OUT(a) qDebug() << a;
 #else
     #define YAML_DEBUG_OUT(a)
