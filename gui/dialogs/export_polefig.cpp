@@ -31,8 +31,9 @@
 //! @class ExportPolefig
 
 ExportPolefig::ExportPolefig()
-    : DialogMultisave(gGui, "ExportPolefig", "Pole figure export",
-                      data_export::defaultFormats+QStringList{"pol"}, "peak")
+    : DialogMultisave(
+        gGui, "ExportPolefig", "Pole figure export",
+        data_export::defaultFormats+QStringList{"pol"}, "peak", gSession->peaks.size()>0)
 {
 }
 

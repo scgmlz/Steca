@@ -26,7 +26,7 @@ QDir dataDir_ {QDir::homePath()};
 const QString dataFormats {"Data files (*.dat *.yaml *.mar*);;All files (*.*)"};
 } // namespace
 
-void loadData::addFiles(QWidget* parent)
+void loadData::addFiles(QObject* parent)
 {
     QStringList fileNames
         = file_dialog::queryImportFileNames(parent, "Add files", dataDir_, dataFormats);
@@ -41,7 +41,7 @@ void loadData::addFiles(QWidget* parent)
     }
 }
 
-void loadData::loadCorrFile(QWidget* parent)
+void loadData::loadCorrFile(QObject* parent)
 {
     // TODO catch THROW's
     if (gSession->corrset.hasFile()) {

@@ -15,11 +15,11 @@
 #ifndef LOAD_DATA_H
 #define LOAD_DATA_H
 
-class QWidget;
+class QObject;
 
 namespace loadData {
-    void addFiles(QWidget*);
-    void loadCorrFile(QWidget*);
+    void addFiles(QObject*);
+    void loadCorrFile(QObject*);
 } // ioSession
 
 #endif // LOAD_DATA_H

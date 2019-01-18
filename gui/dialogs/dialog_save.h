@@ -38,13 +38,13 @@ protected:
     QVBoxLayout* layout;
     DialogfieldPath* pathField;
     QString format() const { return saveFmt; }
-    QString path(bool withSuffix, bool withNumber);
+    QString path() const;
     virtual void save() { saveCurrent(); }
     void saveCurrent();
     virtual void writeCurrent(QTextStream&) = 0;
+    QString name2path(QString name) const;
 private:
     QString saveFmt {"dat"}; //!< setting: default format for data export
-    std::function<void(QFile* file, const QString& format, QcrDialog* parent)> onSave;
 };
 
 
@@ -55,7 +55,7 @@ public:
     DialogMultisave() = delete;
     DialogMultisave(const DialogMultisave&) = delete;
     DialogMultisave(QWidget* _parent, const QString& _name, const QString& _title,
-                    const QStringList& _extensions, const QString& _content);
+                    const QStringList& _extensions, const QString& _content, const bool _haveMulti);
 private:
     void save() final;
     void saveJointfile();
@@ -63,6 +63,8 @@ private:
     QcrCell<int> currentSaveModeIdx {0};
     virtual int multiplicity() = 0; //!< number of files in multifile mode
     virtual void writeJointfile(QTextStream&) = 0;
+    virtual void writeOnefile(QTextStream&, const int) = 0;
+    QString numbered_path(const int num, const int maxNum) const;
 };
 
 #endif // DIALOG_SAVE_H

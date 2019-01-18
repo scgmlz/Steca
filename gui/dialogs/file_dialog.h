@@ -30,12 +30,12 @@ enum class eFileOverwritePolicy {
 
 void setFileOverwritePolicy(eFileOverwritePolicy);
 
-bool confirmOverwrite(const QString& name, QWidget* parent, const QString& path);
-QFile* openFileConfirmOverwrite(const QString&, QWidget*, const QString&);
-QStringList queryImportFileNames(QWidget*, const QString&, QDir&, const QString&, bool plural=true);
-QString queryImportFileName(QWidget*, const QString&, QDir&, const QString&);
-QString queryExportFileName(QWidget*, const QString&, QDir&, const QString&);
-QString queryDirectory(QWidget*, const QString&, const QString&);
+bool confirmOverwrite(const QString& name, QObject* parent, const QString& path);
+QFile* openFileConfirmOverwrite(const QString&, QObject*, const QString&);
+QStringList queryImportFileNames(QObject*, const QString&, QDir&, const QString&, bool plural=true);
+QString queryImportFileName(QObject*, const QString&, QDir&, const QString&);
+QString queryExportFileName(QObject*, const QString&, QDir&, const QString&);
+QString queryDirectory(QObject*, const QString&, const QString&);
 
 } // namespace file_dialog
 

@@ -12,6 +12,8 @@
 //
 //  ***********************************************************************************************
 
+#include "core/base/async.h"
+#include "core/data/export.h"
 #include "gui/dialogs/dialog_save.h"
 #include "gui/dialogs/file_dialog.h"
 //#include "qcr/base/debug.h"
@@ -26,8 +28,7 @@ public:
     DialogfieldPath() = delete;
     DialogfieldPath(QcrDialog* _parent);
     DialogfieldPath(const DialogfieldPath&) = delete;
-    QString stem();
-    QFile* file();
+    QString stem() const;
     QcrLineEdit* dirEdit;
     QcrLineEdit* fileEdit;
 private:
@@ -60,7 +61,7 @@ DialogfieldPath::DialogfieldPath(QcrDialog* _parent)
     setLayout(grid);
 }
 
-QString DialogfieldPath::stem()
+QString DialogfieldPath::stem() const
 {
     const QString dir = dirEdit->text().trimmed();
     const QString ret = fileEdit->text().trimmed();
@@ -144,30 +145,27 @@ void DialogSave::saveCurrent()
     writeCurrent(stream);
 }
 
-QString DialogSave::path(bool withSuffix, bool withNumber)
+QString DialogSave::path() const
 {
-    QString fileName = pathField->stem();
-    if (withNumber && !fileName.contains("%d"))
-        fileName += ".%d";
-    if (withSuffix) {
-        QString suffix = saveFmt;
-        if (QFileInfo(fileName).suffix().toLower()!=saveFmt.toLower())
-            fileName += "."+saveFmt;
-    }
-    qDebug() << "return file name " << fileName;
-
-    return QFileInfo(pathField->dirEdit->text() + '/' + fileName).absoluteFilePath();
+    return name2path(pathField->stem());
 }
+
+QString DialogSave::name2path(QString name) const
+{
+    if (QFileInfo(name).suffix().toLower()!=saveFmt.toLower())
+        name += "."+saveFmt;
+    return QFileInfo(pathField->dirEdit->text() + '/' + name).absoluteFilePath();
+}
+
 
 //  ***********************************************************************************************
 
 DialogMultisave::DialogMultisave(
     QWidget* _parent, const QString& _name, const QString& _title,
-    const QStringList& _extensions, const QString& _content)
+    const QStringList& _extensions, const QString& _content, const bool _haveMulti)
     : DialogSave(_parent, _name, _title, _extensions)
 {
-    ASSERT(multiplicity()>0);
-    if (multiplicity()==1)
+    if (!_haveMulti)
         return; // no multiFileMode menu
     const QStringList saveModes { {"Current "+_content+" only",
                                    "All "+_content+"s in one file",
@@ -179,6 +177,7 @@ DialogMultisave::DialogMultisave(
 
 void DialogMultisave::save()
 {
+    ASSERT(multiplicity()>0);
     switch(currentSaveModeIdx.val()) {
     case 0:
         saveCurrent();
@@ -206,59 +205,33 @@ void DialogMultisave::saveJointfile()
 void DialogMultisave::saveMultifile()
 {
     // check whether any of the numbered files already exists
-    QStringList paths;
-    for (int i=0; i<nClusters; ++i) {
-        QString currPath = data_export::numberedFileName(path, i, nClusters+1);
-            if (QFile(currPath).exists())
-                paths << QFileInfo(currPath).fileName();
-        }
-        if (paths.size() &&
-            !file_dialog::confirmOverwrite(paths.size()>1 ?
-                                           "Files exist" : "File exists",
-                                           parent, paths.join(", ")))
-            return;
+    QStringList existingPaths;
+    int n = multiplicity();
+    for (int i=0; i<n; ++i) {
+        QString tmp = data_export::numberedFileName(path(), i, n+1);
+        if (QFile(tmp).exists())
+                existingPaths << QFileInfo(tmp).fileName();
+    }
+    if (existingPaths.size() &&
+        !file_dialog::confirmOverwrite(existingPaths.size()>1 ?
+                                       "Files exist" : "File exists",
+                                       parent(), existingPaths.join(", ")))
+        return;
+    // save files one by one
+    TakesLongTime progress("save diffractograms", multiplicity(), &progressBar);
+    for (int i=0; i<n; ++i) {
+        QFile file{numbered_path(i, n+1)};
+        QTextStream stream{&file};
+        writeOnefile(stream, i);
+        progress.step();
     }
 }
 
-/*
-void ExportDfgram::saveAll(QFile* file, const QString& format, ExportDfgram* parent)
+QString DialogMultisave::numbered_path(const int num, const int maxNum) const
 {
-    // In one-file mode, start output stream; in multi-file mode, only do prepations.
-    const QString path = parent->fileField_->path(true, !file);
-    if (path.isEmpty())
-        return;
-    QTextStream* stream = nullptr;
-    int nClusters = gSession->activeClusters.size();
-    ASSERT(nClusters>0);
-    if (file) {
-        stream = new QTextStream(file);
-    } else {
-    TakesLongTime progress("save diffractograms", nClusters, &parent->fileField_->progressBar);
-    int picNum = 0;
-    int fileNum = 0;
-    int nSlices = gSession->gammaSelection.numSlices.val();
-    const QString separator = data_export::separator(format);
-    for (const Cluster* cluster : gSession->activeClusters.clusters.yield()) {
-        ++picNum;
-        progress.step();
-        for (int i=0; i<qMax(1,nSlices); ++i) {
-            if (!file) {
-                QFile* file = new QFile(data_export::numberedFileName(
-                                            path, ++fileNum, nClusters+1));
-                if (!file->open(QIODevice::WriteOnly | QIODevice::Text))
-                    THROW("Cannot open file for writing: " + path);
-                delete stream;
-                stream = new QTextStream(file);
-            }
-            ASSERT(stream);
-            const Range gmaStripe = gSession->gammaSelection.slice2range(cluster->rgeGma(), i);
-            const Curve& curve = cluster->dfgrams.yield_at(i,cluster).curve;
-            *stream << "Picture Nr: " << picNum << '\n';
-            if (nSlices > 1)
-                *stream << "Gamma slice Nr: " << i+1 << '\n';
-            data_export::writeCurve(*stream, curve, cluster, gmaStripe, separator);
-        }
-    }
-    delete stream;
+    QString name = pathField->stem();
+    if (!name.contains("%d"))
+        name += ".%d";
+    name = data_export::numberedFileName(name, num, maxNum);
+    return name2path(name);
 }
-*/

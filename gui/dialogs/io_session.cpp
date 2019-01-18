@@ -25,7 +25,7 @@ namespace {
 QDir sessionDir_ {QDir::homePath()};
 } // namespace
 
-void ioSession::load(QWidget* parent)
+void ioSession::load(QObject* parent)
 {
     QString fileName = file_dialog::queryImportFileName(
         parent, "Load session", sessionDir_, "Session files (*.ste)");
@@ -48,7 +48,7 @@ void ioSession::load(QWidget* parent)
     }
 }
 
-void ioSession::save(QWidget* parent)
+void ioSession::save(QObject* parent)
 {
     QString fileName = file_dialog::queryExportFileName(
         parent, "Save session", sessionDir_, "Session files (*.ste)");

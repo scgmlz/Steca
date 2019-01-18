@@ -26,6 +26,7 @@ private:
     void writeCurrent(QTextStream&) final;
     int multiplicity() final;
     void writeJointfile(QTextStream&) final;
+    void writeOnefile(QTextStream&, const int) final;
 };
 
 #endif // EXPORT_DFGRAM_H
