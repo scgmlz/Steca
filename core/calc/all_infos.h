@@ -27,6 +27,7 @@ public:
     const InfoSequence* currentDirect() const;
     const InfoSequence* currentInterpolated() const;
     const InfoSequence* currentInfoSequence() const;
+    const InfoSequence* At(int) const;
     const std::vector<InfoSequence const*> allDirect() const;
     const std::vector<InfoSequence const*> allInterpolated() const;
     const std::vector<InfoSequence const*> allInfoSequences() const;

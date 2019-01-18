@@ -140,6 +140,12 @@ const InfoSequence* AllInfos::currentInfoSequence() const
     return gSession->params.interpolParams.enabled.val() ? currentInterpolated() : currentDirect();
 }
 
+const InfoSequence* AllInfos::At(int jP) const
+{
+    return gSession->params.interpolParams.enabled.val() ?
+        &interpolated.yield_at(jP,this) : &direct.yield_at(jP,this);
+}
+
 const std::vector<InfoSequence const *> AllInfos::allInterpolated() const
 {
     std::vector<InfoSequence const *> ret;
