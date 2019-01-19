@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/loaders/loaders.cpp
-//! @brief     Implements loader functions.
+//! @brief     Implements functions loadRawFile, loadComment in namespace load
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -13,16 +13,12 @@
 //  ***********************************************************************************************
 
 #include "core/base/exception.h"
+#include "core/loaders/load_caress.h" // provides load::loadCaress(..), load::loadCaressComment(..)
+#include "core/loaders/load_mar.h"    // provides load::loadMar(..)
+#include "core/loaders/load_tiff.h"   // provides load::loadTiff(..)
+#include "core/loaders/load_yaml.h"   // provides load::loadYaml(..)
 #include "core/raw/rawfile.h"
 #include <QStringBuilder> // for ".." % ..
-
-namespace load {
-Rawfile loadCaress(const QString& filePath);
-Rawfile loadYaml(const QString& filePath);
-Rawfile loadMar(const QString& filePath);
-Rawfile loadTiffDat(const QString& filePath);
-QString loadCaressComment(const QString& filePath);
-}
 
 namespace {
 
@@ -93,6 +89,11 @@ Rawfile load_low_level(const QString& filePath) {
 } // local methods
 
 namespace load {
+
+//! Loads a raw file of any supported type.
+
+//! The file type (format) will be determined automatically,
+//! and the corresponding loader will be called.
 
 Rawfile loadRawfile(const QString& filePath) {
     Rawfile ret {load_low_level(filePath)};

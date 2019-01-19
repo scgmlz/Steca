@@ -191,9 +191,13 @@ static void loadTiff(
 
 namespace load {
 
-//! Reads a .dat file, which is a digest that contains a list of TIFF files plus a few parameters.
-
-//! The dat file looks like so:
+//! Reads a .dat file, and returns contents as a Rawfile.
+//!
+//! Called from function load_low_level(..) in file loaders.cpp.
+//!
+//! The .dat file is a digest that contains a list of TIFF files plus a few parameters.
+//!
+//! It has the following structure:
 //!
 //! ; comments
 //!

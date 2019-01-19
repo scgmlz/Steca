@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/loaders/loaders.h
-//! @brief     Defines functions loadRawFile, loadComment in namespace load
+//! @file      core/loaders/load_tiff.h
+//! @brief     Declares function load::loadTiff
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,20 +12,11 @@
 //
 //  ***********************************************************************************************
 
-#ifndef LOADERS_H
-#define LOADERS_H
-
-#include "core/raw/rawfile.h"
-
-//! Functions loadRawfile and loadComment, and their dependences.
+class Rawfile;
+class QString;
 
 namespace load {
 
-//! Loads a raw file of any supported type.
-Rawfile loadRawfile(const QString& filePath);
+Rawfile loadTiffDat(const QString& filePath);
 
-QString loadComment(const QFileInfo& info);
-
-} // namespace load
-
-#endif // LOADERS_H
+}

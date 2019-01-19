@@ -13,12 +13,15 @@
 //  ***********************************************************************************************
 
 #include "core/base/exception.h"
+#include "core/loaders/load_mar.h"
 #include "core/raw/rawfile.h"
 #include "3rdparty/Mar/MarReader.h"
 
 namespace load {
 
-// Code taken from the original STeCa, only slightly modified.
+//! Reads a Mar file, and returns contents as a Rawfile.
+//!
+//! Called from function load_low_level(..) in file loaders.cpp.
 
 Rawfile loadMar(const QString& filePath) {
     typedef short WORD;

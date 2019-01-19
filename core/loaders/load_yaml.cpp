@@ -12,7 +12,9 @@
 //
 //  ***********************************************************************************************
 
+#include "core/loaders/load_yaml.h"
 #include "core/loaders/fastyamlloader.h"
+#include "core/raw/rawfile.h"
 #include "core/base/exception.h"
 #include "qcr/base/debug.h"
 #include <functional>
@@ -128,6 +130,10 @@ void readMeasurement(const YamlNode& node, Rawfile& rawfile)
 
 
 namespace load {
+
+//! Reads a YAML file, and returns contents as a Rawfile.
+//!
+//! Called from function load_low_level(..) in file loaders.cpp.
 
 Rawfile loadYaml(const QString& filePath)
 {

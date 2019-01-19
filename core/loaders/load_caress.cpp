@@ -12,6 +12,7 @@
 //
 //  ***********************************************************************************************
 
+#include "core/loaders/load_caress.h"
 #include "core/base/exception.h"
 #include "core/raw/rawfile.h"
 #include <qmath.h>
@@ -21,6 +22,10 @@
 #include "3rdparty/Caress/raw.h" // inclusion order is critical !
 
 namespace load {
+
+//! Reads a Caress file, and returns contents as a Rawfile.
+//!
+//! Called from function load_low_level(..) in file loaders.cpp.
 
 Rawfile loadCaress(const QString& filePath) {
     Rawfile ret(filePath);
@@ -550,6 +555,11 @@ Rawfile loadCaress(const QString& filePath) {
 
     return ret;
 }
+
+//! Reads the [?] comment from a Caress file [?], and returns contents as a QString.
+//!
+//! Called from function load::loadComment in file loaders.cpp.
+//! TODO: Find out whether this is still needed, and why.
 
 QString loadCaressComment(const QString& filePath) {
     QString s_comment;
