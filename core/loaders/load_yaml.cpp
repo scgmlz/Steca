@@ -23,32 +23,6 @@ namespace  {
 
 using loadYAML::YamlNode;
 
-//! Applies the given function to a range and stores the result in a new std::vector.
-//!
-//! @param  begin First element in the range to transform.
-//! @param  end The end itereator.
-//! @param  func The transform function of following signature: `Ret fun(const Type &a);`.
-//! @return A new std::vector<Ret> with the stored results
-template <class InputIt, class Function>
-auto transformToVector(InputIt begin, InputIt end, Function func)
-{
-    std::vector<typename std::result_of<Function(const typename InputIt::value_type&)>::type> ret;
-    std::transform(begin, end, std::back_inserter(ret), func);
-    return std::move(ret);
-}
-
-//! Applies given function to the container elements, and stores the result in a new std::vector.
-//!
-//! @param  cont Container whos elements are to be transformed
-//! @param  func The transform function of following signature: `Ret fun(const Type &a);`.
-//! @return A new std::vector<Ret> with the stored results
-template <class Container, class Function>
-auto transformToVector(Container cont , Function func)
-{
-    return transformToVector(cont.begin(), cont.end(), func);
-}
-
-
 void readSample(const YamlNode& node, Metadata& metadata)
 {
     if (!node.IsDefined())
@@ -114,10 +88,7 @@ void readMeasurement(const YamlNode& node, Rawfile& rawfile)
     if (!node.IsDefined())
         THROW("invalid YAML format: empty 'measurement' section");
 
-    // const auto unique_identifier = node["unique_identifier"].value();
-    // const auto number = node["number"].value(); // Integer maybe?
-
-    auto metadata = Metadata();
+    Metadata metadata;
 
     metadata.date    = node["history"]["started"].value();
     metadata.comment = node["history"]["scan"].value();
