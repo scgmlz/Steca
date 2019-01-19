@@ -23,25 +23,25 @@ namespace  {
 
 using loadYAML::YamlNode;
 
-///  Applies the given function to a range and stores the result in a new std::vector.
-///
-/// @param  begin First element in the range to transform.
-/// @param  end The end itereator.
-/// @param  func The transform function of following signature: `Ret fun(const Type &a);`.
-/// @return A new std::vector<Ret> with the stored results
+//! Applies the given function to a range and stores the result in a new std::vector.
+//!
+//! @param  begin First element in the range to transform.
+//! @param  end The end itereator.
+//! @param  func The transform function of following signature: `Ret fun(const Type &a);`.
+//! @return A new std::vector<Ret> with the stored results
 template <class InputIt, class Function>
-auto transformToVector(InputIt begin, InputIt end , Function func)
+auto transformToVector(InputIt begin, InputIt end, Function func)
 {
     std::vector<typename std::result_of<Function(const typename InputIt::value_type&)>::type> ret;
     std::transform(begin, end, std::back_inserter(ret), func);
     return std::move(ret);
 }
 
-/// Applies given function to the container elements, and stores the result in a new std::vector.
-///
-/// @param  cont Container whos elements are to be transformed
-/// @param  func The transform function of following signature: `Ret fun(const Type &a);`.
-/// @return A new std::vector<Ret> with the stored results
+//! Applies given function to the container elements, and stores the result in a new std::vector.
+//!
+//! @param  cont Container whos elements are to be transformed
+//! @param  func The transform function of following signature: `Ret fun(const Type &a);`.
+//! @return A new std::vector<Ret> with the stored results
 template <class Container, class Function>
 auto transformToVector(Container cont , Function func)
 {
@@ -96,9 +96,8 @@ void readScans(const YamlNode& node, Metadata& metadata, Rawfile& rawfile)
 {
     if (!node.IsDefined())
         return;
-    if (!node.IsSequence()) {
+    if (!node.IsSequence())
         THROW("invalid YAML format: 'scans' should be a list, but isn't.")
-    }
     for (const YamlNode& innerNode: node) {
         Metadata metadataCopy(std::move(metadata));
         // Copy the QStrings back, because std::move removes them from metadata:
@@ -108,10 +107,12 @@ void readScans(const YamlNode& node, Metadata& metadata, Rawfile& rawfile)
     }
 }
 
+//! Processes the "measurement" section of the Yaml tree, and inserts contents into rawfile.
+
 void readMeasurement(const YamlNode& node, Rawfile& rawfile)
 {
     if (!node.IsDefined())
-        return;
+        THROW("invalid YAML format: empty 'measurement' section");
 
     // const auto unique_identifier = node["unique_identifier"].value();
     // const auto number = node["number"].value(); // Integer maybe?
@@ -138,22 +139,20 @@ namespace load {
 Rawfile loadYaml(const QString& filePath)
 {
     try {
-        qDebug() << "DEBUG[load_yaml] before load file";
-        YamlNode yamlFile = loadYAML::loadYamlFast(filePath.toStdString()); // throws
-        qDebug() << "DEBUG[load_yaml] after load file";
+        qDebug() << "DEBUG[load_yaml] now load file";
+        YamlNode yamlTree = loadYAML::loadYamlFast(filePath.toStdString()); // throws
+        qDebug() << "DEBUG[load_yaml] file loaded, now processing tree";
 
-        Rawfile rawfile(filePath);
-        // readInstrument (yamlFile["instrument"] , rawfile);
-        // readFormat     (yamlFile["format"]     , rawfile);
-        // readExperiment (yamlFile["experiment"] , rawfile);
-        readMeasurement(yamlFile["measurement"], rawfile);
+        Rawfile rawfile(filePath); // sets file name, otherwise rawfile is tabula rasa.
+        // for the time being, the "instrument", "format", and "experiment" scetions
+        // of yamlTree are ignored for good; only the "measurement" section is read:
+        readMeasurement(yamlTree["measurement"], rawfile);
+        qDebug() << "DEBUG[load_yaml] tree processed, now returning rawfile";
         return rawfile;
-        qDebug() << "DEBUG[load_yaml] done";
     } catch (const Exception& ex) {
         THROW("Invalid data in file "+filePath+":\n" + ex.msg());
     }
-    // just to avoid compiler warnings:
-    return Rawfile("");
+    qFatal("unreachable"); // some statement needed here to avoid compiler warning
 }
 
 } // namespace load
