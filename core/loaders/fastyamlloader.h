@@ -157,9 +157,9 @@ public:
         return getSequence().at(index);
     }
 
-    size_t size() const {
-        return sequence_->size();
-    }   inline SequenceType::iterator begin();
+    size_t size() const { return sequence_->size(); }
+
+    inline SequenceType::iterator begin();
 
     SequenceType::iterator end();
 
@@ -184,8 +184,6 @@ private:
     inline const SequenceType& getSequence() const { return *sequence_; }
     inline const ScalarType& getScalar() const { return scalar_; }
 };
-
-YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent);
 
 const YamlNode loadYamlFast(const std::string& filePath);
 
