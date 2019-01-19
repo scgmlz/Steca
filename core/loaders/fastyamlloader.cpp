@@ -26,20 +26,6 @@
 
 namespace {
 
-struct FILEContainer {
-    FILEContainer(FILE* file) : value_(file) {}
-    ~FILEContainer() { fclose(value_); }
-    FILE* operator* ();
-private:
-    FILE* value_;
-};
-
-FILE* FILEContainer::operator* () {
-    if (value_ == nullptr)
-        THROW("value is nullptr, but should be initialized");
-    return value_;
-}
-
 yaml_event_type_t parser_parse(loadYAML::YamlParserType parser, yaml_event_t& event)
 {
     if (!yaml_parser_parse(parser.get(), &event))
@@ -183,17 +169,16 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
 }
 
 const YamlNode loadYamlFast(const std::string& filePath) {
-    FILEContainer file(fopen(filePath.c_str(), "r"));
-    YamlParserType parser( new yaml_parser_t());
 
-    // Initialize parse
-    if(!yaml_parser_initialize(&*parser))
-        THROW("Failed to initialize parser!");
-    if(*file == nullptr)
+    FILE* file{fopen(filePath.c_str(), "r")};
+    if(!file)
         THROW("Failed to open file!");
 
-    // Set input file
-    yaml_parser_set_input_file(&*parser, *file);
+    YamlParserType parser( new yaml_parser_t());
+    if(!yaml_parser_initialize(&*parser))
+        THROW("Failed to initialize parser!");
+
+    yaml_parser_set_input_file(&*parser, file);
 
     yaml_event_t event;
     parser_parse(parser, event);
