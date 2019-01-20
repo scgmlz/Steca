@@ -109,7 +109,7 @@ Rawfile loadYaml(const QString& filePath)
         qDebug() << "DEBUG[load_yaml] tree processed, now returning rawfile";
         return rawfile;
     } catch (const Exception& ex) {
-        THROW("Invalid data in file "+filePath+":\n" + ex.msg());
+        THROW("Invalid data in file "+filePath+": " + ex.msg());
     }
     qFatal("unreachable"); // some statement needed here to avoid compiler warning
 }

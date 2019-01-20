@@ -36,35 +36,46 @@ yaml_event_type_t parser_parse(loadYAML::YamlParserType parser, yaml_event_t& ev
             THROW(QString::asprintf("Memory error: Not enough memory for parsing"));
         case YAML_READER_ERROR:
             if (parser->problem_value != -1) {
-                THROW(QString::asprintf("Reader error: %s: #%X at %zd", parser->problem,
-                                        parser->problem_value, parser->problem_offset));
+                THROW(QString("Reader error: %1: #%2 at %3")
+                      .arg(parser->problem)
+                      .arg(parser->problem_value)
+                      .arg(parser->problem_offset));
             } else {
-                THROW(QString::asprintf("Reader error: %s at %zd", parser->problem,
-                                        parser->problem_offset));
+                THROW(QString("Reader error: %1 at %2")
+                      .arg(parser->problem)
+                      .arg(parser->problem_offset));
             }
         case YAML_SCANNER_ERROR:
             if (parser->context) {
-                THROW(QString::asprintf("Scanner error: %s at line %lu, column %lu"
-                        "%s at line %lu, column %lu\n", parser->context,
-                        parser->context_mark.line+1, parser->context_mark.column+1,
-                        parser->problem, parser->problem_mark.line+1,
-                                        parser->problem_mark.column+1));
+                THROW(QString("Scanner error: %1 at line %2, column %3, "
+                              "%4 at line %5, column %6")
+                      .arg(parser->context)
+                      .arg(parser->context_mark.line+1)
+                      .arg(parser->context_mark.column+1)
+                      .arg(parser->problem)
+                      .arg(parser->problem_mark.line+1)
+                      .arg(parser->problem_mark.column+1));
             } else {
-                THROW(QString::asprintf("Scanner error: %s at line %lu, column %lu",
-                        parser->problem, parser->problem_mark.line+1,
-                                        parser->problem_mark.column+1));
+                THROW(QString("Scanner error: %1 at line %2, column %3")
+                      .arg(parser->problem)
+                      .arg(parser->problem_mark.line+1)
+                      .arg(parser->problem_mark.column+1));
             }
         case YAML_PARSER_ERROR:
             if (parser->context) {
-                THROW(QString::asprintf("Parser error: %s at line %lu, column %lu"
-                        "%s at line %lu, column %lu\n", parser->context,
-                        parser->context_mark.line+1, parser->context_mark.column+1,
-                        parser->problem, parser->problem_mark.line+1,
-                                        parser->problem_mark.column+1));
+                THROW(QString::asprintf("Parser error: %1 at line %2, column %3, "
+                              "%4 at line %5, column %6")
+                      .arg(parser->context)
+                      .arg(parser->context_mark.line+1)
+                      .arg(parser->context_mark.column+1)
+                      .arg(parser->problem)
+                      .arg(parser->problem_mark.line+1)
+                      .arg(parser->problem_mark.column+1));
             } else {
-                THROW(QString::asprintf("Parser error: %s at line %lu, column %lu",
-                        parser->problem, parser->problem_mark.line+1,
-                                        parser->problem_mark.column+1));
+                THROW(QString("Parser error: %1 at line %2, column %3")
+                      .arg(parser->problem)
+                      .arg(parser->problem_mark.line+1)
+                      .arg(parser->problem_mark.column+1));
             }
         default:
             break;
