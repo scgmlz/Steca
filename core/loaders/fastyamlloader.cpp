@@ -28,9 +28,48 @@ namespace {
 
 yaml_event_type_t parser_parse(loadYAML::YamlParserType parser, yaml_event_t& event)
 {
-    if (!yaml_parser_parse(parser.get(), &event))
-       THROW(QString::fromStdString("Parser error " + std::to_string(parser->error)));
-    return event.type;
+    if (yaml_parser_parse(parser.get(), &event))
+        return event.type; // regular exit
+    // Throw parser error message:
+    switch (parser->error) {
+        case YAML_MEMORY_ERROR:
+            THROW(QString::asprintf("Memory error: Not enough memory for parsing"));
+        case YAML_READER_ERROR:
+            if (parser->problem_value != -1) {
+                THROW(QString::asprintf("Reader error: %s: #%X at %zd", parser->problem,
+                                        parser->problem_value, parser->problem_offset));
+            } else {
+                THROW(QString::asprintf("Reader error: %s at %zd", parser->problem,
+                                        parser->problem_offset));
+            }
+        case YAML_SCANNER_ERROR:
+            if (parser->context) {
+                THROW(QString::asprintf("Scanner error: %s at line %lu, column %lu"
+                        "%s at line %lu, column %lu\n", parser->context,
+                        parser->context_mark.line+1, parser->context_mark.column+1,
+                        parser->problem, parser->problem_mark.line+1,
+                                        parser->problem_mark.column+1));
+            } else {
+                THROW(QString::asprintf("Scanner error: %s at line %lu, column %lu",
+                        parser->problem, parser->problem_mark.line+1,
+                                        parser->problem_mark.column+1));
+            }
+        case YAML_PARSER_ERROR:
+            if (parser->context) {
+                THROW(QString::asprintf("Parser error: %s at line %lu, column %lu"
+                        "%s at line %lu, column %lu\n", parser->context,
+                        parser->context_mark.line+1, parser->context_mark.column+1,
+                        parser->problem, parser->problem_mark.line+1,
+                                        parser->problem_mark.column+1));
+            } else {
+                THROW(QString::asprintf("Parser error: %s at line %lu, column %lu",
+                        parser->problem, parser->problem_mark.line+1,
+                                        parser->problem_mark.column+1));
+            }
+        default:
+            break;
+    }
+    qFatal("unreachable");
 }
 
 } // namespace
