@@ -129,7 +129,7 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
         break;
     case YAML_SEQUENCE_START_EVENT: {
         YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_SEQUENCE_START_EVENT");
-        YamlNode node = YamlNode(new YamlNode::SequenceType());
+        YamlNode node{new YamlNode::SequenceType()};
         YamlNode::SequenceType& sequence = node.getSequence();
 
         yaml_event_t event;
@@ -147,7 +147,7 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
         break;
     case YAML_MAPPING_START_EVENT: {
         YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_MAPPING_START_EVENT");
-        YamlNode node = YamlNode(new YamlNode::MapType());
+        YamlNode node{new YamlNode::MapType()};
         YamlNode::MapType& map = node.getMap();
 
         yaml_event_t event;
@@ -193,12 +193,12 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
                 arrayStr >> v;
                 array2d->data.push_back(v);
             }
-            return YamlNode(array2d);
+            return YamlNode{array2d};
         } else
             YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_SCALAR_EVENT = "
                            << QString::fromLatin1(
                                reinterpret_cast<char*>(prevEvent.data.scalar.value)));
-        return YamlNode(QString::fromLatin1(reinterpret_cast<char*>(prevEvent.data.scalar.value)));
+        return YamlNode{QString::fromLatin1(reinterpret_cast<char*>(prevEvent.data.scalar.value))};
     default:
         THROW("unexpected node in parseYamlFast");
     }
