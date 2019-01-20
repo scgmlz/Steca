@@ -26,9 +26,9 @@
 
 namespace {
 
-yaml_event_type_t parser_parse(loadYAML::YamlParserType parser, yaml_event_t& event)
+yaml_event_type_t parser_parse(yaml_parser_t* parser, yaml_event_t& event)
 {
-    if (yaml_parser_parse(parser.get(), &event))
+    if (yaml_parser_parse(parser, &event))
         return event.type; // regular exit
     // Throw parser error message:
     switch (parser->error) {
@@ -103,7 +103,7 @@ YamlNode::SequenceType::const_iterator YamlNode::end() const
     return sequence_->cend();
 }
 
-YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
+YamlNode parseYamlFast(yaml_parser_t* parser, const yaml_event_t& prevEvent)
 {
     switch(prevEvent.type) {
     case YAML_NO_EVENT:
@@ -205,17 +205,17 @@ const YamlNode loadYamlFast(const std::string& filePath) {
     if(!file)
         THROW("Failed to open file!");
 
-    YamlParserType parser( new yaml_parser_t());
-    if(!yaml_parser_initialize(&*parser))
+    auto* parser = new yaml_parser_t;
+    if(!yaml_parser_initialize(parser))
         THROW("Failed to initialize parser!");
 
-    yaml_parser_set_input_file(&*parser, file);
+    yaml_parser_set_input_file(parser, file);
 
     yaml_event_t event;
     parser_parse(parser, event);
     auto result = parseYamlFast(parser, event);
     yaml_event_delete(&event);
-    yaml_parser_delete(parser.get());
+    yaml_parser_delete(parser);
     return result;
 }
 

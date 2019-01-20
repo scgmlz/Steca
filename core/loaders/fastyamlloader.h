@@ -28,8 +28,6 @@ struct YamlArray2d {
     std::vector<float> data;
 };
 
-typedef std::shared_ptr<yaml_parser_t> YamlParserType;
-
 class YamlNode {
 public:
     typedef QString KeyType;
@@ -111,8 +109,6 @@ public:
 
     SequenceType::const_iterator begin() const;
     SequenceType::const_iterator end() const;
-
-    friend YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent);
 
 private:
     eNodeType nodeType_;
