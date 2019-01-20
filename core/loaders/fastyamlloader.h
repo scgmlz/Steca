@@ -23,10 +23,13 @@
 namespace loadYAML {
 
 //! Width, height, and data of an !array2d value, used in our YAML extension.
+
 struct YamlArray2d {
     size_t width = 0, height = 0;
     std::vector<float> data;
 };
+
+//! Data tree, to be initialized from YAML file.
 
 class YamlNode {
 public:
@@ -77,19 +80,19 @@ public:
     inline bool isMap() const      { return nodeType_ == eNodeType::MAP; }
     inline bool isScalar() const   { return nodeType_ == eNodeType::SCALAR; }
 
-    inline const ScalarType& value() const { return getScalar(); }
+    inline const ScalarType& value() const { return scalar_; }
 
     inline double doubleValue(double defaultVal = Q_QNAN) const
     {
         bool ok = false;
-        auto result = getScalar().toDouble(&ok);
+        auto result = scalar_.toDouble(&ok);
         return ok ? result : defaultVal;
     }
 
     inline int intValue(int defaultVal = 0, int base = 10) const
     {
         bool ok = false;
-        auto result = getScalar().toInt(&ok, base);
+        auto result = scalar_.toInt(&ok, base);
         return ok ? result : defaultVal;
     }
 
@@ -97,15 +100,15 @@ public:
 
     inline const YamlNode& operator[](const KeyType& key) const
     {
-        return getMap().find(key).value();
+        return map_->find(key).value();
     }
 
     inline const YamlNode& operator[](const size_t& index) const
     {
-        return getSequence().at(index);
+        return sequence_->at(index);
     }
 
-    size_t size() const { return sequence_->size(); }
+    size_t size() const; //!< Returns sequence size
 
     SequenceType::const_iterator begin() const;
     SequenceType::const_iterator end() const;
@@ -116,10 +119,6 @@ private:
     const std::shared_ptr<SequenceType> sequence_;
     ScalarType scalar_;
     const std::shared_ptr<YamlArray2d> array2d_;
-
-    inline const MapType&      getMap()      const { return *map_; }
-    inline const SequenceType& getSequence() const { return *sequence_; }
-    inline const ScalarType&   getScalar()   const { return scalar_; }
 };
 
 const YamlNode loadYamlFast(const std::string& filePath);

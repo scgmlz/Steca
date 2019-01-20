@@ -89,6 +89,13 @@ yaml_event_type_t parser_parse(yaml_parser_t* parser, yaml_event_t& event)
 
 namespace loadYAML {
 
+size_t YamlNode::size() const
+{
+    if (nodeType_ != eNodeType::SEQUENCE)
+        qFatal("invalid call of YamlNode::size()");
+    return sequence_->size();
+}
+
 YamlNode::SequenceType::const_iterator YamlNode::begin() const
 {
     if (nodeType_ != eNodeType::SEQUENCE)
@@ -195,8 +202,9 @@ YamlNode parseYamlFast(yaml_parser_t* parser, const yaml_event_t& prevEvent)
                                reinterpret_cast<char*>(prevEvent.data.scalar.value)));
         return YamlNode{QString::fromLatin1(reinterpret_cast<char*>(prevEvent.data.scalar.value))};
     default:
-        THROW("unexpected node in parseYamlFast");
+        break;
     }
+    qFatal("unreachable");
 }
 
 const YamlNode loadYamlFast(const std::string& filePath) {
@@ -207,7 +215,7 @@ const YamlNode loadYamlFast(const std::string& filePath) {
 
     auto* parser = new yaml_parser_t;
     if(!yaml_parser_initialize(parser))
-        THROW("Failed to initialize parser!");
+        qFatal("Failed to initialize YAML parser");
 
     yaml_parser_set_input_file(parser, file);
 
