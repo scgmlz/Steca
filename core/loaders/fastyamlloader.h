@@ -82,18 +82,13 @@ public:
 
     YamlNode(eNodeType nodeType) : nodeType_(nodeType) {}
 
-    YamlNode(bool _isEnd) : isEnd(_isEnd) {}
-
     YamlNode(const YamlNode& other)
-        : isEnd(other.isEnd),
-          nodeType_(other.nodeType_),
+        : nodeType_(other.nodeType_),
           map_(other.map_),
           sequence_(other.sequence_),
           scalar_(other.scalar_),
           array2d_(other.array2d_)
     {}
-
-    bool isEnd = false;
 
     inline bool IsDefined() const { return true; } // for now...
 
@@ -133,7 +128,6 @@ public:
         *sequence_ = *other.sequence_;
         scalar_ = other.scalar_;
         *array2d_ = *other.array2d_;
-        isEnd = other.isEnd;
         return *this;
     }
 
