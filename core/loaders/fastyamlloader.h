@@ -65,8 +65,6 @@ public:
         array2d_(array2d)
     {}
 
-    inline bool IsDefined() const { return true; } // for now...
-
     inline bool IsSequence() const { return nodeType() == eNodeType::SEQUENCE; }
     inline bool IsMap() const { return nodeType() == eNodeType::MAP; }
     inline bool IsScalar() const { return nodeType() == eNodeType::SCALAR; }
