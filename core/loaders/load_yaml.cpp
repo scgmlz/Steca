@@ -25,8 +25,6 @@ using loadYAML::YamlNode;
 
 void readSample(const YamlNode& node, Metadata& metadata)
 {
-    if (!node.IsDefined())
-        return;
     metadata.motorXT = node["position"]["xt"]["value"].doubleValue(Q_QNAN);
     metadata.motorYT = node["position"]["yt"]["value"].doubleValue(Q_QNAN);
     metadata.motorZT = node["position"]["zt"]["value"].doubleValue(Q_QNAN);
@@ -38,8 +36,6 @@ void readSample(const YamlNode& node, Metadata& metadata)
 
 void readSetup(const YamlNode& node, Metadata& metadata)
 {
-    if (!node.IsDefined())
-        return;
     metadata.motorPST = Q_QNAN; // node["orientation"]["pst"]["value"].doubleValue(Q_QNAN);
     metadata.motorSST = Q_QNAN; // node["orientation"]["sst"]["value"].doubleValue(Q_QNAN);
     metadata.motorOMGM = node["monochromator"]["omgm"]["value"].doubleValue(Q_QNAN);
@@ -54,9 +50,6 @@ void readSetup(const YamlNode& node, Metadata& metadata)
 
 void readSingleScan(const YamlNode& node, Metadata& metadata, Rawfile& rawfile)
 {
-    if (!node.IsDefined())
-        return;
-
     metadata.time         = node["time"].doubleValue(Q_QNAN);
     metadata.monitorCount = node["monitor"].doubleValue(Q_QNAN);
     const auto image      = node["image"].array2dValue();
@@ -68,10 +61,8 @@ void readSingleScan(const YamlNode& node, Metadata& metadata, Rawfile& rawfile)
 
 void readScans(const YamlNode& node, Metadata& metadata, Rawfile& rawfile)
 {
-    if (!node.IsDefined())
-        return;
     if (!node.IsSequence())
-        THROW("invalid YAML format: 'scans' should be a list, but isn't.")
+        THROW("invalid YAML format: 'measurement.scan' section should be a list, but isn't.")
     for (const YamlNode& innerNode: node) {
         Metadata metadataCopy(std::move(metadata));
         // Copy the QStrings back, because std::move removes them from metadata:
@@ -85,9 +76,6 @@ void readScans(const YamlNode& node, Metadata& metadata, Rawfile& rawfile)
 
 void readMeasurement(const YamlNode& node, Rawfile& rawfile)
 {
-    if (!node.IsDefined())
-        THROW("invalid YAML format: empty 'measurement' section");
-
     Metadata metadata;
 
     metadata.date    = node["history"]["started"].value();
