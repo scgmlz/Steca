@@ -45,27 +45,11 @@ public:
 
     YamlNode() = delete;
 
-    YamlNode(MapType&& map) :
-        nodeType_(eNodeType::MAP),
-        map_(new MapType(map))
-    {}
-    YamlNode(const MapType& map) :
-        nodeType_(eNodeType::MAP),
-        map_(new MapType(map))
-    {}
     YamlNode(MapType* map) :
         nodeType_(eNodeType::MAP),
         map_(map)
     {}
 
-    YamlNode(SequenceType&& sequence) :
-        nodeType_(eNodeType::SEQUENCE),
-        sequence_(new SequenceType(sequence))
-    {}
-    YamlNode(const SequenceType& sequence) :
-        nodeType_(eNodeType::SEQUENCE),
-        sequence_(new SequenceType(sequence))
-    {}
     YamlNode(SequenceType* sequence) :
         nodeType_(eNodeType::SEQUENCE),
         sequence_(sequence)
@@ -75,19 +59,10 @@ public:
         nodeType_(eNodeType::SCALAR) ,
         scalar_(scalar)
     {}
+
     YamlNode(std::shared_ptr<YamlArray2d> array2d) :
         nodeType_(eNodeType::SCALAR) ,
         array2d_(array2d)
-    {}
-
-    YamlNode(eNodeType nodeType) : nodeType_(nodeType) {}
-
-    YamlNode(const YamlNode& other)
-        : nodeType_(other.nodeType_),
-          map_(other.map_),
-          sequence_(other.sequence_),
-          scalar_(other.scalar_),
-          array2d_(other.array2d_)
     {}
 
     inline bool IsDefined() const { return true; } // for now...
