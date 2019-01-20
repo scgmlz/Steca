@@ -105,13 +105,6 @@ public:
         return ok ? result : defaultVal;
     }
 
-    inline float floatValue(float defaultVal = float(Q_QNAN)) const
-    {
-        bool ok = false;
-        auto result = getScalar().toFloat(&ok);
-        return ok ? result : defaultVal;
-    }
-
     inline int intValue(int defaultVal = 0, int base = 10) const
     {
         bool ok = false;
