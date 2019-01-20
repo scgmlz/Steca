@@ -131,19 +131,9 @@ public:
         return *this;
     }
 
-    inline YamlNode& operator[](const KeyType& key)
-    {
-        return getMap().find(key).value();
-    }
-
     inline const YamlNode& operator[](const KeyType& key) const
     {
         return getMap().find(key).value();
-    }
-
-    inline YamlNode& operator[](const size_t& index)
-    {
-        return getSequence().at(index);
     }
 
     inline const YamlNode& operator[](const size_t& index) const
