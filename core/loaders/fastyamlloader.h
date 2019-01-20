@@ -65,9 +65,19 @@ public:
         array2d_(array2d)
     {}
 
+    YamlNode& operator= (const YamlNode& other)
+    {
+        nodeType_  = other.nodeType_;
+        *map_      = *other.map_;
+        *sequence_ = *other.sequence_;
+        scalar_    = other.scalar_;
+        *array2d_  = *other.array2d_;
+        return *this;
+    }
+
     inline bool isSequence() const { return nodeType_ == eNodeType::SEQUENCE; }
-    inline bool isMap() const { return nodeType_ == eNodeType::MAP; }
-    inline bool isScalar() const { return nodeType_ == eNodeType::SCALAR; }
+    inline bool isMap() const      { return nodeType_ == eNodeType::MAP; }
+    inline bool isScalar() const   { return nodeType_ == eNodeType::SCALAR; }
 
     inline const ScalarType& value() const { return getScalar(); }
 
@@ -86,16 +96,6 @@ public:
     }
 
     inline std::shared_ptr<YamlArray2d> array2dValue() const { return array2d_; }
-
-    YamlNode& operator= (const YamlNode& other)
-    {
-        nodeType_ = other.nodeType_;
-        *map_ = *other.map_;
-        *sequence_ = *other.sequence_;
-        scalar_ = other.scalar_;
-        *array2d_ = *other.array2d_;
-        return *this;
-    }
 
     inline const YamlNode& operator[](const KeyType& key) const
     {
@@ -121,9 +121,9 @@ private:
     ScalarType scalar_;
     const std::shared_ptr<YamlArray2d> array2d_;
 
-    inline const MapType& getMap() const { return *map_; }
+    inline const MapType&      getMap()      const { return *map_; }
     inline const SequenceType& getSequence() const { return *sequence_; }
-    inline const ScalarType& getScalar() const { return scalar_; }
+    inline const ScalarType&   getScalar()   const { return scalar_; }
 };
 
 const YamlNode loadYamlFast(const std::string& filePath);
