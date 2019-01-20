@@ -61,7 +61,7 @@ void readSingleScan(const YamlNode& node, Metadata& metadata, Rawfile& rawfile)
 
 void readScans(const YamlNode& node, Metadata& metadata, Rawfile& rawfile)
 {
-    if (!node.IsSequence())
+    if (!node.isSequence())
         THROW("invalid YAML format: 'measurement.scan' section should be a list, but isn't.")
     for (const YamlNode& innerNode: node) {
         Metadata metadataCopy(std::move(metadata));

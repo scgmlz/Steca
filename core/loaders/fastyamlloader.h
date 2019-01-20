@@ -65,9 +65,9 @@ public:
         array2d_(array2d)
     {}
 
-    inline bool IsSequence() const { return nodeType() == eNodeType::SEQUENCE; }
-    inline bool IsMap() const { return nodeType() == eNodeType::MAP; }
-    inline bool IsScalar() const { return nodeType() == eNodeType::SCALAR; }
+    inline bool isSequence() const { return nodeType_ == eNodeType::SEQUENCE; }
+    inline bool isMap() const { return nodeType_ == eNodeType::MAP; }
+    inline bool isScalar() const { return nodeType_ == eNodeType::SCALAR; }
 
     inline const ScalarType& value() const { return getScalar(); }
 
@@ -111,8 +111,6 @@ public:
 
     SequenceType::const_iterator begin() const;
     SequenceType::const_iterator end() const;
-
-    inline eNodeType nodeType() const { return nodeType_; }
 
     friend YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent);
 
