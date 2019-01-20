@@ -136,10 +136,6 @@ public:
 
     size_t size() const { return sequence_->size(); }
 
-    inline SequenceType::iterator begin();
-
-    SequenceType::iterator end();
-
     SequenceType::const_iterator begin() const;
 
     SequenceType::const_iterator end() const;

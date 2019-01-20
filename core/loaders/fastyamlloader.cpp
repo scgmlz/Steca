@@ -89,20 +89,6 @@ yaml_event_type_t parser_parse(loadYAML::YamlParserType parser, yaml_event_t& ev
 
 namespace loadYAML {
 
-YamlNode::SequenceType::iterator YamlNode::begin()
-{
-    if (nodeType_ != eNodeType::SEQUENCE)
-        THROW("unexpected node where we expected sequence begin");
-    return sequence_->begin();
-}
-
-YamlNode::SequenceType::iterator YamlNode::end()
-{
-    if (nodeType_ != eNodeType::SEQUENCE)
-        THROW("unexpected node where we expected sequence end");
-    return sequence_->end();
-}
-
 YamlNode::SequenceType::const_iterator YamlNode::begin() const
 {
     if (nodeType_ != eNodeType::SEQUENCE)
