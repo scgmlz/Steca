@@ -129,38 +129,33 @@ YamlNode parseYamlFast(YamlParserType parser, const yaml_event_t& prevEvent)
         break;
     case YAML_SEQUENCE_START_EVENT: {
         YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_SEQUENCE_START_EVENT");
-        YamlNode node{new YamlNode::SequenceType()};
-        YamlNode::SequenceType& sequence = node.getSequence();
-
+        auto* sequence = new YamlNode::SequenceType;
         yaml_event_t event;
         while(YAML_SEQUENCE_END_EVENT != parser_parse(parser, event)) {
-            sequence.push_back(parseYamlFast(parser, event));
+            sequence->push_back(parseYamlFast(parser, event));
             yaml_event_delete(&event);
         };
         YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_SEQUENCE_END_EVENT");
-
         yaml_event_delete(&event);
-        return node;
+        return YamlNode{sequence};
     }
     case YAML_SEQUENCE_END_EVENT:
         THROW("DEBUG[parseYamlFast2] YAML_SEQUENCE_END_EVENT -- BAD");
         break;
     case YAML_MAPPING_START_EVENT: {
         YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_MAPPING_START_EVENT");
-        YamlNode node{new YamlNode::MapType()};
-        YamlNode::MapType& map = node.getMap();
-
+        auto* map = new YamlNode::MapType;
         yaml_event_t event;
         while(YAML_MAPPING_END_EVENT != parser_parse(parser, event)) {
             QString key = QString::fromLatin1(reinterpret_cast<char*>(event.data.scalar.value));
             YAML_DEBUG_OUT("DEBUG[parseYamlFast2] key == " << key);
             yaml_event_delete(&event);
             parser_parse(parser, event);
-            map.insert(key, parseYamlFast(parser, event));
+            map->insert(key, parseYamlFast(parser, event));
             yaml_event_delete(&event);
         }
         yaml_event_delete(&event);
-        return node;
+        return YamlNode{map};
     }
     case YAML_MAPPING_END_EVENT:
         THROW("DEBUG[parseYamlFast2] YAML_MAPPING_END_EVENT");

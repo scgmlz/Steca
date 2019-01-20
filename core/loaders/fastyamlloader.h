@@ -121,9 +121,7 @@ private:
     ScalarType scalar_;
     const std::shared_ptr<YamlArray2d> array2d_;
 
-    inline MapType& getMap() { return *map_; }
     inline const MapType& getMap() const { return *map_; }
-    inline SequenceType& getSequence() { return *sequence_; }
     inline const SequenceType& getSequence() const { return *sequence_; }
     inline const ScalarType& getScalar() const { return scalar_; }
 };
