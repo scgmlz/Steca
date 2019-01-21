@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      gui/dialogs/popup_diagram.h
+//! @file      gui/dialogs/popup_base_dialog.h
 //! @brief     Defines class PopupDiagram
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef POPUP_BSE_DIALOG_H
-#define POPUP_BSE_DIALOG_H
+#ifndef POPUP_BASE_DIALOG_H
+#define POPUP_BASE_DIALOG_H
 
 #include "qcr/engine/mixin.h"
 #include "core/session.h"
@@ -33,4 +33,4 @@ protected:
 
 };
 
-#endif // POPUP_BSE_DIALOG_H
+#endif // POPUP_BASE_DIALOG_H
