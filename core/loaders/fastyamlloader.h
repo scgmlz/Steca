@@ -16,8 +16,8 @@
 #define FASTYAMLLOADER_H
 
 #include <yaml.h>
+#include <map>
 #include <memory>
-#include <QMap>
 #include <QDebug>
 
 namespace loadYAML {
@@ -34,7 +34,7 @@ struct YamlArray2d {
 class YamlNode {
 public:
     typedef QString KeyType;
-    typedef QMap<KeyType, YamlNode> MapType;
+    typedef std::map<KeyType, YamlNode> MapType;
     typedef std::vector<YamlNode> SequenceType;
     typedef QString ScalarType;
 
@@ -100,7 +100,7 @@ public:
 
     inline const YamlNode& operator[](const KeyType& key) const
     {
-        return map_->find(key).value();
+        return map_->at(key);
     }
 
     inline const YamlNode& operator[](const size_t& index) const

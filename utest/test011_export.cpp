@@ -1,7 +1,7 @@
 // test functions from unnamed namespaces in gui/output
 
 #include "gtest/gtest.h"
-#include "core/data/export.h"
+#include "core/calc/export.h"
 
 TEST(AnonymousOutput, NumberedFileName) {
     using namespace data_export;

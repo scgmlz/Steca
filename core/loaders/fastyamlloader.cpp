@@ -33,7 +33,7 @@ yaml_event_type_t parser_parse(yaml_parser_t* parser, yaml_event_t& event)
     // Throw parser error message:
     switch (parser->error) {
         case YAML_MEMORY_ERROR:
-            THROW(QString::asprintf("Memory error: Not enough memory for parsing"));
+            THROW("Memory error: Not enough memory for parsing");
         case YAML_READER_ERROR:
             if (parser->problem_value != -1) {
                 THROW(QString("Reader error: %1: #%2 at %3")
@@ -63,7 +63,7 @@ yaml_event_type_t parser_parse(yaml_parser_t* parser, yaml_event_t& event)
             }
         case YAML_PARSER_ERROR:
             if (parser->context) {
-                THROW(QString::asprintf("Parser error: %1 at line %2, column %3, "
+                THROW(QString("Parser error: %1 at line %2, column %3, "
                               "%4 at line %5, column %6")
                       .arg(parser->context)
                       .arg(parser->context_mark.line+1)
@@ -114,8 +114,7 @@ YamlNode parseYamlFast(yaml_parser_t* parser, const yaml_event_t& prevEvent)
 {
     switch(prevEvent.type) {
     case YAML_NO_EVENT:
-        THROW("DEBUG[parseYamlFast2] YAML_NO_EVENT");
-        break;
+        THROW("unexpected YAML_NO_EVENT");
     case YAML_STREAM_START_EVENT: {
         YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_STREAM_START_EVENT");
         yaml_event_t event;
@@ -123,8 +122,7 @@ YamlNode parseYamlFast(yaml_parser_t* parser, const yaml_event_t& prevEvent)
         return parseYamlFast(parser, event);
     }
     case YAML_STREAM_END_EVENT:
-        THROW("DEBUG[parseYamlFast2] YAML_STREAM_END_EVENT");
-        break;
+        THROW("unexpected YAML_STREAM_END_EVENT");
     case YAML_DOCUMENT_START_EVENT: {
         YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_DOCUMENT_START_EVENT");
         yaml_event_t event;
@@ -132,7 +130,7 @@ YamlNode parseYamlFast(yaml_parser_t* parser, const yaml_event_t& prevEvent)
         return parseYamlFast(parser, event);
     }
     case YAML_DOCUMENT_END_EVENT:
-        THROW("DEBUG[parseYamlFast2] YAML_DOCUMENT_END_EVENT");
+        THROW("unexpected YAML_DOCUMENT_END_EVENT");
         break;
     case YAML_SEQUENCE_START_EVENT: {
         YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_SEQUENCE_START_EVENT");
@@ -147,30 +145,28 @@ YamlNode parseYamlFast(yaml_parser_t* parser, const yaml_event_t& prevEvent)
         return YamlNode{sequence};
     }
     case YAML_SEQUENCE_END_EVENT:
-        THROW("DEBUG[parseYamlFast2] YAML_SEQUENCE_END_EVENT -- BAD");
-        break;
+        THROW("unexpected YAML_SEQUENCE_END_EVENT");
     case YAML_MAPPING_START_EVENT: {
         YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_MAPPING_START_EVENT");
         auto* map = new YamlNode::MapType;
         yaml_event_t event;
         while(YAML_MAPPING_END_EVENT != parser_parse(parser, event)) {
-            QString key = QString::fromLatin1(reinterpret_cast<char*>(event.data.scalar.value));
+            const QString key = QString::fromLatin1(
+                reinterpret_cast<const char*>(event.data.scalar.value));
             YAML_DEBUG_OUT("DEBUG[parseYamlFast2] key == " << key);
             yaml_event_delete(&event);
             parser_parse(parser, event);
-            map->insert(key, parseYamlFast(parser, event));
+            const YamlNode value{parseYamlFast(parser, event)};
+            map->emplace(key, value);
             yaml_event_delete(&event);
         }
         yaml_event_delete(&event);
         return YamlNode{map};
     }
     case YAML_MAPPING_END_EVENT:
-        THROW("DEBUG[parseYamlFast2] YAML_MAPPING_END_EVENT");
-        break;
+        THROW("unexpected YAML_MAPPING_END_EVENT");
     case YAML_ALIAS_EVENT:
-        YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_ALIAS_EVENT");
-        THROW(QString("Got alias (anchor %s)"));
-        break;
+        THROW("unexpected YAML_ALIAS_EVENT");
     case YAML_SCALAR_EVENT:
         YAML_DEBUG_OUT("DEBUG[parseYamlFast2] YAML_SCALAR_EVENT = "
                        << QString::fromLatin1(
