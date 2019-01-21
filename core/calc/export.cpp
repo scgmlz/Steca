@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/data/export.cpp
+//! @file      core/calc/export.cpp
 //! @brief     Implements namespace data_export
 //!
 //! @homepage  https://github.com/scgmlz/Steca
