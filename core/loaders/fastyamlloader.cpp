@@ -157,7 +157,7 @@ YamlNode parseYamlFast(yaml_parser_t* parser, const yaml_event_t& prevEvent)
             yaml_event_delete(&event);
             parser_parse(parser, event);
             const YamlNode value{parseYamlFast(parser, event)};
-            map->emplace(key, value);
+            map->emplace(key, std::move(value));
             yaml_event_delete(&event);
         }
         yaml_event_delete(&event);

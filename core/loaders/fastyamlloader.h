@@ -46,35 +46,28 @@ public:
 
     YamlNode() = delete;
 
-    YamlNode(MapType* map) :
-        nodeType_(eNodeType::MAP),
-        map_(map)
+    YamlNode(MapType* map)
+        : nodeType_(eNodeType::MAP)
+        , map_(map)
     {}
 
-    YamlNode(SequenceType* sequence) :
-        nodeType_(eNodeType::SEQUENCE),
-        sequence_(sequence)
+    YamlNode(SequenceType* sequence)
+        : nodeType_(eNodeType::SEQUENCE)
+        , sequence_(sequence)
     {}
 
-    YamlNode(ScalarType&& scalar) :
-        nodeType_(eNodeType::SCALAR) ,
-        scalar_(scalar)
+    YamlNode(ScalarType&& scalar)
+        : nodeType_(eNodeType::SCALAR)
+        , scalar_(scalar)
     {}
 
-    YamlNode(std::shared_ptr<YamlArray2d> array2d) :
-        nodeType_(eNodeType::SCALAR) ,
-        array2d_(array2d)
+    YamlNode(std::shared_ptr<YamlArray2d> array2d)
+        : nodeType_(eNodeType::SCALAR)
+        , array2d_(array2d)
     {}
 
-    YamlNode& operator= (const YamlNode& other)
-    {
-        nodeType_  = other.nodeType_;
-        *map_      = *other.map_;
-        *sequence_ = *other.sequence_;
-        scalar_    = other.scalar_;
-        *array2d_  = *other.array2d_;
-        return *this;
-    }
+    YamlNode(const YamlNode&) = default; // needed by map_->emplace
+    YamlNode& operator= (const YamlNode&) = delete;
 
     inline bool isSequence() const { return nodeType_ == eNodeType::SEQUENCE; }
     inline bool isMap() const      { return nodeType_ == eNodeType::MAP; }
@@ -114,10 +107,10 @@ public:
     SequenceType::const_iterator end() const;
 
 private:
-    eNodeType nodeType_;
+    const eNodeType nodeType_;
     const std::shared_ptr<MapType> map_;
     const std::shared_ptr<SequenceType> sequence_;
-    ScalarType scalar_;
+    const ScalarType scalar_;
     const std::shared_ptr<YamlArray2d> array2d_;
 };
 
