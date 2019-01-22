@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/base/exception.h
-//! @brief     Defines class Exception. Also defines macro THROW.
+//! @brief     Defines and implements class Exception. Also defines macro THROW.
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -20,19 +20,19 @@
 
 //! The sole exception type to be used in core and gui.
 
-//! Throw this if the exception is to be catched, and the program can recover.
+//! Throw this if the exception is to be catched, and
+//!   the program is to recover and to issue a qWarning().
 //! For fatal bugs do not throw this, but use qFatal().
 
 class Exception : public QException {
 public:
-    Exception(const QString& msg) noexcept;
+    Exception(const QString& msg) noexcept : msg_(msg) {}
     const QString& msg() const noexcept { return msg_; }
 private:
     QString msg_;
 };
 
-// The sole way to throw an Exception.
-// TODO reconsider whether output is needed here, and whether to prefer std::cerr over qDebug
+//! This macro shall be used as the sole way to throw an Exception.
 #define THROW(msg) { throw Exception(msg); }
 
 #endif // EXCEPTION_H

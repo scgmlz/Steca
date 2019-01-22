@@ -602,7 +602,9 @@ QString loadCaressComment(const QString& filePath) {
                 delete[] c_comment;
             }
         }
-    } catch (const Exception&) {}
+    } catch (const Exception& ex) {
+        return "??? -- " + ex.msg();
+    }
 
     return s_comment;
 }

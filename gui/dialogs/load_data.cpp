@@ -43,7 +43,6 @@ void loadData::addFiles(QWidget* parent)
 
 void loadData::loadCorrFile(QWidget* parent)
 {
-    // TODO catch THROW's
     if (gSession->corrset.hasFile()) {
         gSession->corrset.removeFile();
     } else {
