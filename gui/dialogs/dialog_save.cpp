@@ -106,6 +106,7 @@ DialogSave::DialogSave(
     auto* ftypeGrid = new QVBoxLayout;
     for (const QString fmt: _extensions) {
         auto* rb = new QcrRadioButton{"fmt."+fmt, "."+fmt};
+        fmt2button.emplace(fmt, rb);
         rb->programaticallySetValue(saveFmt == fmt);
         connect(rb, &QRadioButton::clicked, [this,fmt]() { saveFmt = fmt; });
         fileExtensionGroup->addButton(rb);

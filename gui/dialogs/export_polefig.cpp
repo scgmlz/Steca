@@ -35,6 +35,7 @@ ExportPolefig::ExportPolefig()
         gGui, "ExportPolefig", "Pole figure export",
         QStringList{"dat", "lst", "csv", "pol"}, "peak", gSession->peaks.size()>0)
 {
+    fmt2button["pol"]->setEnabled(gSession->params.interpolParams.isStandardInterpolation());
 }
 
 int ExportPolefig::multiplicity()

@@ -43,6 +43,7 @@ protected:
     void saveCurrent();
     virtual void writeCurrent(QTextStream&) = 0;
     QString name2path(QString name) const;
+    std::map<QString, QcrRadioButton*> fmt2button;
 private:
     QString saveFmt {"dat"}; //!< setting: default format for data export
 };
