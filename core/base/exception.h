@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/base/exception.h
-//! @brief     Defines class Exception
+//! @brief     Defines class Exception. Also defines macro THROW.
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
