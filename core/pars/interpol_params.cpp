@@ -65,3 +65,13 @@ void InterpolParams::fromJson(const JsonObj& obj)
     avgRadius  .setVal(obj.loadInt("avg radius"));
     threshold  .setVal(obj.loadInt("threshold"));
 }
+
+bool InterpolParams::isStandardInterpolation() const
+{
+    if (!enabled.val())
+        return false;
+    for (double step: {1.0, 2.0, 5.0})
+        if (stepAlpha.val()==step && stepBeta.val()==step)
+            return true;
+    return false;
+}

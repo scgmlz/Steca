@@ -35,6 +35,8 @@ public:
     QcrCell<double> avgAlphaMax {5.};
     QcrCell<double> avgRadius   {5.};
     QcrCell<int>    threshold   {100};
+
+    bool isStandardInterpolation() const; //!< True if grid is compatible with pol format
 };
 
 #endif // INTERPOL_PARAMS_H
