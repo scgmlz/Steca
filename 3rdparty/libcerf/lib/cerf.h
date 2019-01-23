@@ -46,13 +46,25 @@
 
 #ifndef __CERF_H
 #  define __CERF_H
+
+#  ifdef CERF_AS_CPP
+#    include <complex>
+     typedef std::complex<double> _cerf_cmplx;
+#  else
+#    include <complex.h>
+     typedef double _Complex _cerf_cmplx;
+#  endif
+
 #  undef __BEGIN_DECLS
 #  undef __END_DECLS
 #  ifdef CERF_AS_CPP
+#    ifndef __cplusplus
+       impossible_case
+#    endif
 #    define __BEGIN_DECLS
 #    define __END_DECLS
 #  else
-#    ifdef __cplusplus
+#    ifdef __cplusplus // this include file called from C++ while library is compiled as C
 #      define __BEGIN_DECLS extern "C" {
 #      define __END_DECLS }
 #    else
@@ -60,16 +72,6 @@
 #      define __END_DECLS
 #    endif
 #  endif
-
-#ifndef _cerf_cmplx
-#  ifdef CERF_AS_CPP
-#    include <complex>
-#    define _cerf_cmplx std::complex<double>
-#  else
-#    include <complex.h>
-#    define _cerf_cmplx double _Complex
-#  endif
-#endif
 
 __BEGIN_DECLS
 

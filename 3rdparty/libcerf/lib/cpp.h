@@ -3,7 +3,7 @@
  *   along with Dawson, Faddeeva and Voigt functions
  *
  * File defs.h:
- *   Define _cerf_cmplx, CMPLX, NaN, for internal use, for when sources are compiled as C++ code
+ *   Define CMPLX, NaN, for internal use, for when sources are compiled as C++ code
  *
  * Copyright:
  *   (C) 2012 Massachusetts Institute of Technology
@@ -28,10 +28,6 @@
 // use std::numeric_limits, since 1./0. and 0./0. fail with some compilers (MS)
 #define Inf std::numeric_limits<double>::infinity()
 #define NaN std::numeric_limits<double>::quiet_NaN()
-
-#ifndef _cerf_cmplx
-#  define std::complex<double> _cerf_cmplx;
-#endif
 
 // Use C-like complex syntax, since the C syntax is more restrictive
 #define cexp(z) std::exp(z)
