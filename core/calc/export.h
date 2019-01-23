@@ -38,8 +38,7 @@ QString numberedFileName(const QString& templatedName, int num, int maxNum);
 void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
                 const Range& rgeGma, const QString& separator);
 
-void writeInfoSequence(
-    QTextStream& stream, const InfoSequence& peakInfos, const QString& separator);
+void writeInfoSequence(QTextStream& stream, const InfoSequence& peakInfos, const QString& format);
 
 void saveDiagram (QFile* file, const QString& format, QcrDialog*);
 

@@ -23,6 +23,43 @@
 
 // Covered by test011_export.
 
+namespace {
+
+//! Writes pole figure for one Bragg peak as alpha-beta-inten format list
+
+void writeFullInfoSequence(
+    QTextStream& stream, const InfoSequence& peakInfos, const QString& separator)
+{
+    for (auto& info : peakInfos.peaks())
+        stream << info.alpha() << separator
+               << info.beta()  << separator
+               << info.inten() << "\n";
+}
+
+//! Writes intensities for pole figure for one Bragg peak
+//!
+//! Makes sense for interpolated data only; assumes alpha-beta grid to be known.
+
+void writeCompactInfoSequence(QTextStream& stream, const InfoSequence& peakInfos)
+{
+    double alphaOld;
+    bool hasOld = false;
+    for (auto& info : peakInfos.peaks()) {
+        if (hasOld) {
+            if (info.alpha()==alphaOld)
+                stream << " ";
+            else
+                stream << "\n";
+        }
+        stream << info.inten();
+        alphaOld = info.alpha();
+        hasOld = true;
+    }
+    stream << "\n";
+}
+
+} // namespace
+
 const QStringList data_export::defaultFormats = { "dat", "csv" };
 
 QString data_export::separator(const QString& format)
@@ -70,13 +107,14 @@ void data_export::writeCurve(
 //! Writes pole figure for one Bragg peak.
 
 void data_export::writeInfoSequence(
-    QTextStream& stream, const InfoSequence& peakInfos, const QString& separator)
+    QTextStream& stream, const InfoSequence& peakInfos, const QString& format)
 {
-    for (auto& info : peakInfos.peaks())
-        stream << info.alpha() << separator
-               << info.beta()  << separator
-               << info.inten() << "\n";
+    if (format=="pol")
+        writeCompactInfoSequence(stream, peakInfos);
+    else
+        writeFullInfoSequence(stream, peakInfos, data_export::separator(format));
 }
+
 
 void data_export::saveDiagram(QFile* file, const QString& format, QcrDialog*)
 {

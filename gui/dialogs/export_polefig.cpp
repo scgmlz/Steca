@@ -45,14 +45,12 @@ int ExportPolefig::multiplicity()
 
 void ExportPolefig::writeCurrent(QTextStream& stream)
 {
-    data_export::writeInfoSequence(
-        stream, *gSession->allPeaks.currentInfoSequence(), data_export::separator(format()));
+    data_export::writeInfoSequence(stream, *gSession->allPeaks.currentInfoSequence(), format());
 }
 
 void ExportPolefig::writeOnefile(QTextStream& stream, const int idx)
 {
-    data_export::writeInfoSequence(
-        stream, *gSession->allPeaks.currentInfoSequence(), data_export::separator(format()));
+    data_export::writeInfoSequence(stream, *gSession->allPeaks.currentInfoSequence(), format());
 }
 
 void ExportPolefig::writeJointfile(QTextStream& stream)
@@ -61,7 +59,7 @@ void ExportPolefig::writeJointfile(QTextStream& stream)
     int iPeak = 0;
     for (const auto* peak : gSession->allPeaks.allInfoSequences()) {
         stream << "Peak Nr: " << ++iPeak << '\n';
-        data_export::writeInfoSequence(stream, *peak, data_export::separator(format()));
+        data_export::writeInfoSequence(stream, *peak, format());
         progress.step();
     }
 }
