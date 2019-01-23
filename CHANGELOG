@@ -1,3 +1,20 @@
+Steca version 2.1.1, released 2019.01.23
+----------------------------------------
+
+Corrections:
+
+* Export to ".pol" format restored
+* Diagram export added or restored
+* Start header line in diagram and table export with "#"
+* Warnings only shown when catched
+
+Internal improvements:
+
+* New version of libcerf
+* Caching simplified, unused classes removed
+* YAML loader simplified, unused functions removed
+* Cleaner CMake, now requiring v3.6
+
 Steca version 2.1.0, released 2018.11.15
 ----------------------------------------
 
