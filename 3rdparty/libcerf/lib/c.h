@@ -3,7 +3,7 @@
  *   along with Dawson, Faddeeva and Voigt functions
  *
  * File c.h:
- *   Define _cerf_cmplx, CMPLX, NaN, for internal use, for when sources are compiled as C code.
+ *   Define CMPLX, NaN, for internal use, for when sources are compiled as C code.
  *
  * Copyright:
  *   (C) 2012 Massachusetts Institute of Technology
@@ -20,10 +20,6 @@
  * Website:
  *   http://apps.jcns.fz-juelich.de/libcerf
  */
-
-#ifndef _cerf_cmplx
-typedef double _Complex _cerf_cmplx;
-#endif
 
 #define _GNU_SOURCE // enable GNU libc NAN extension if possible
 

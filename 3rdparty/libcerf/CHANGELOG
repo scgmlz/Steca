@@ -3,6 +3,9 @@
 libcerf-1.12
   - Require CMake 3.6, outcomment code that requires 3.13.
   - Relative paths in CMake sources, for use as subproject.
+  - When compiling as CPP, then #include<complex>, not <complex.h>;
+    revise the entire C-vs-CPP machinery.
+  - Remove one Dawson test that yields inf or nan on different systems.
 
 libcerf-1.11, released 28dec18:
   - Cover voigt by test_voigt.

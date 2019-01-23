@@ -19,7 +19,7 @@
 // Minimal example to test and demonstrate usage of Cached.
 TEST(Caches, Simple) {
     static int N = 42; // Auxiliary, to let the remake function depend on something.
-    auto f = []()->int{ return {N++}; }; // The remake function. A complicated computation.
+    auto f = []()->int{ return N++; }; // The remake function. A complicated computation.
     lazy_data::Cached<int> cache{ f };
     EXPECT_EQ(42, cache.yield()); // recompute
     EXPECT_EQ(42, cache.yield()); // do not recompute
@@ -30,7 +30,7 @@ TEST(Caches, Simple) {
 // Test and demonstrate usage of Cached, with remake argument.
 // Payload is double, argument is int.
 TEST(Caches, SimpleWithArg) {
-    auto f = [](int i)->double{ return {sqrt(i)}; }; // The remake function.
+    auto f = [](int i)->double{ return sqrt(i); }; // The remake function.
     lazy_data::Cached<double,int> cache{ f };
     EXPECT_EQ(sqrt(2), cache.yield(2)); // recompute
     EXPECT_EQ(sqrt(2), cache.yield(5)); // do not recompute
@@ -41,8 +41,8 @@ TEST(Caches, SimpleWithArg) {
 // Minimal example to test and demonstrate usage of VectorCache.
 TEST(Caches, Vector) {
     static int N = 10; // Auxiliary, to let the remake function depend on something.
-    auto n = []()->int{ return {3}; };           // The size function.
-    auto f = [](int i)->int{ return {N+i}; }; // The remake function. A complicated computation.
+    auto n = []()->int{ return 3; };           // The size function.
+    auto f = [](int i)->int{ return N+i; }; // The remake function. A complicated computation.
     lazy_data::VectorCache<int> cache{ n, f };
     EXPECT_EQ(3, cache.size());
     EXPECT_EQ(10, cache.yield_at(0)); // recompute
