@@ -21,7 +21,7 @@
 
 //! Holds a single value_, and a hook_ that is executed when the value has changed.
 //!
-//! Intended for use by a control widget that owns the hook.
+//! Intended for use by a control widget that owns the cell.
 //! To interact with that owning widget, there are "set" and "get" callbacks.
 template<class T>
 class QcrCell {
