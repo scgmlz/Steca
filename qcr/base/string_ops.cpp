@@ -72,11 +72,14 @@ QString to_s(double val)
     return QString::number(val);
 }
 
-QString to_s(QString val)
+QString to_s(const QString& val)
 {
     return val;
 }
 
+//! Splits arg0 at first blank.
+//!
+//! Results are put in arg1 and arg2.
 void splitOnce(const QString& in, QString& part0, QString& part1)
 {
     int j = in.indexOf(' ');
@@ -89,6 +92,10 @@ void splitOnce(const QString& in, QString& part0, QString& part1)
     }
 }
 
+//! Sets widget width to estimated width of number display.
+//!
+//! @param ndigits number of digits in number.
+//! @param withDot true if number has a decimal dot.
 void setWidth(QWidget* w, int ndigits, bool withDot)
 {
     int width = ndigits + (withDot?1:0);
