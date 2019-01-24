@@ -1,8 +1,10 @@
 ====== How to make a release ======
 
 Merge release candidate into master,
-tag it as vX.Y.ZrcN,
 push it to origin and to upstream.
+
+Do NOT tag release candidates, unless they are meant to be
+really released, i.e. to be offered for download to test users.
 
 Ensure that CI services (Travis, Appveyor under github; different targets under buildbot)
 all show green light.
