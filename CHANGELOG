@@ -1,4 +1,4 @@
-Steca version 2.1.1, released 2019.01.23
+Steca version 2.1.1, released 2019.01.24
 ----------------------------------------
 
 Corrections:
@@ -14,6 +14,7 @@ Internal improvements:
 * Caching simplified, unused classes removed
 * YAML loader simplified, unused functions removed
 * Cleaner CMake, now requiring v3.6
+* cpack generates Qt installer
 
 Steca version 2.1.0, released 2018.11.15
 ----------------------------------------
