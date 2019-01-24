@@ -52,7 +52,7 @@ public:
     //! Returns true if and only if we are calling a "set" or "get" callback function.
     //! This helps the owning widget to find out whether its value has been changed
     //! programatically by its cell, or through direct user action.
-    bool amCalling() const {return amCalling_};
+    bool amCalling() const {return amCalling_;}
 private:
     T value_;
     bool amCalling_ {false};
@@ -84,10 +84,10 @@ void QcrCell<T>::pureSetVal(const T v)
     value_ = coerce_(v);
     if (!callbackGet_)
         return; // no owning widget => nothing to do
-    amCalling = true;
+    amCalling_ = true;
     callbackSet_(value_); // set value of owning widget
     value_ = (*callbackGet_)();
-    amCalling = false;
+    amCalling_ = false;
 }
 
 #endif // CELL_H
