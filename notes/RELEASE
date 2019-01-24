@@ -1,16 +1,25 @@
 ====== How to make a release ======
 
-export V=
+Merge release candidate into master,
+tag it as vX.Y.ZrcN,
+push it to origin and to upstream.
 
-vi CHANGELOG
-vi VERSION
+Ensure that CI services (Travis, Appveyor under github; different targets under buildbot)
+all show green light.
 
-git commit -a -m "This is release $V"
+rdesktop -a 16 -N scgbuild:3310 &
 
-==== Windows build ====
+On virtual Win10 desktop,
 
-Build by buildbot?
+- find C:\basedir\Steca-master-Win10\build\.build\Steca-Installer.exe
 
-executable is in C:/basedir/Steca-master-Win7/build/release/Steca<…>.exe
+- try installation, try Steca.
 
-scp <…>@scgbuild:/home/buildmaster/win7_shared/Steca-<…>.exe <local>/. ???
+- point browser to https://github.com/scgmlz/Steca/releases,
+    draft new release (tag vX.Y.Z, name idem),
+    and directly upload the installer.
+
+- (alternative: scp C:\basedir\Steca-master-Win10\build\.build\Steca-Installer.exe you@yourbox:)
+
+
+That's all.
