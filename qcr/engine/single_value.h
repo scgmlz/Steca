@@ -113,7 +113,7 @@ void QcrControl<T>::onChangedValue(T val)
     }
 
     // qDebug()<<name()<<"onChangedValue arg="<<val<<", old="<<cell_->val();
-    if (cell_->amCalling || val==cell_->val())
+    if (cell_->amCalling() || val==cell_->val())
         return;
 
     doLog(name()+" "+strOp::to_s(val));

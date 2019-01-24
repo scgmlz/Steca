@@ -19,7 +19,10 @@
 #include <functional>
 #include <memory>
 
-//! Holds a single value, and a hook that is executed when the value has changed.
+//! Holds a single value_, and a hook_ that is executed when the value has changed.
+//!
+//! Intended for use by a control widget that owns the hook.
+//! To interact with that owning widget, there are "set" and "get" callbacks.
 template<class T>
 class QcrCell {
 public:
@@ -28,10 +31,15 @@ public:
     QcrCell(const QcrCell&) = delete;
     QcrCell(QcrCell&&) = default;
 
+    //! Sets value_ of cell, calls "set" callback, and runs hook_ if value has changed.
     void setVal(const T);
+    //! Sets value_ of cell, calls "set" callback, but does not calls hook.
     void pureSetVal(const T);
+    //! Sets a function that transforms an arbitrary input into an allowed value.
     void setCoerce  (std::function<T   (const T)> f) { coerce_ = f; }
+    //! Sets a function that is called whenever function setValue changed the current value_.
     void setHook    (std::function<void(const T)> f) { hook_ = f; }
+    //! Sets callback functions, intended to set and get the owning widget's value.
     void setCallbacks(
         std::function<T   (       )> _get,
         std::function<void(const T)> _set)
@@ -39,11 +47,15 @@ public:
             callbackGet_.reset(new std::function<T()>{_get});
             callbackSet_ = _set;
         }
-
+    //! Returns the current value_.
     T val() const { return value_; }
-    bool amCalling {false};
+    //! Returns true if and only if we are calling a "set" or "get" callback function.
+    //! This helps the owning widget to find out whether its value has been changed
+    //! programatically by its cell, or through direct user action.
+    bool amCalling() const {return amCalling_};
 private:
     T value_;
+    bool amCalling_ {false};
     std::function<T   (const T)> coerce_      = [](const T v){ return v;};
     std::function<void(const T)> hook_        = [](const T)  {;};
     std::unique_ptr<std::function<T()>> callbackGet_;
@@ -53,7 +65,6 @@ private:
 //  ***********************************************************************************************
 //  class QcrCell implementation
 
-//! Sets value of cell, sets value of owning widget, and runs hook if value has changed.
 template<class T>
 void QcrCell<T>::setVal(const T v)
 {
@@ -67,7 +78,6 @@ void QcrCell<T>::setVal(const T v)
     }
 }
 
-//! Sets value of cell, calls callback to set value of controlling widget, but does not calls hook.
 template<class T>
 void QcrCell<T>::pureSetVal(const T v)
 {
