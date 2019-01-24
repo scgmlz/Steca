@@ -32,7 +32,7 @@ if(NOT MSVC)
     target_link_libraries(${lib} m)
 endif()
 
-if (${LIB_INSTALL})
+if (LIB_INSTALL)
     install(
         TARGETS ${lib} LIBRARY
         DESTINATION ${destination}/lib

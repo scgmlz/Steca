@@ -42,11 +42,12 @@ endif()
 
 include(CTest)
 
-set(destination ${CMAKE_INSTALL_PREFIX})
-
-configure_file("libcerf.pc.in" "libcerf.pc" @ONLY)
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libcerf.pc"
-    DESTINATION "${destination}/lib/pkgconfig/")
+if(LIB_INSTALL)
+    set(destination ${CMAKE_INSTALL_PREFIX})
+    configure_file("libcerf.pc.in" "libcerf.pc" @ONLY)
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/libcerf.pc"
+        DESTINATION "${destination}/lib/pkgconfig/")
+endif()
 
 add_subdirectory(lib)
 add_subdirectory(run)
