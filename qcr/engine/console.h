@@ -57,7 +57,7 @@ private:
     mutable QTextStream log_;
 
     class CommandRegistry& registry() const { return *registryStack_.top(); }
-    void readLine();
+    void readCLI();
     Result executeLine(QString);
 };
 

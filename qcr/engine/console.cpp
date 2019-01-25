@@ -111,10 +111,10 @@ Console::Console()
 
 #ifdef Q_OS_WIN
     notifier_ = new QWinEventNotifier();// GetStdHandle(STD_INPUT_HANDLE));
-    QObject::connect(notifier_, &QWinEventNotifier::activated, [this] (HANDLE) {readLine(); });
+    QObject::connect(notifier_, &QWinEventNotifier::activated, [this] (HANDLE) {readCLI(); });
 #else
     notifier_ = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read);
-    QObject::connect(notifier_, &QSocketNotifier::activated, [this](int) { readLine(); });
+    QObject::connect(notifier_, &QSocketNotifier::activated, [this](int) { readCLI(); });
 #endif
 
     // start registry
@@ -268,7 +268,8 @@ bool Console::hasCommandsOnStack() const
     return !commandLifo_.empty();
 }
 
-void Console::readLine()
+//! Reads one line from the command-line interface, and executes it.
+void Console::readCLI()
 {
     QTextStream qtin(stdin);
     QString line = qtin.readLine();
