@@ -36,10 +36,6 @@
 #include <QLoggingCategory>
 #include <QStyleFactory>
 
-const char* version =
-#include "../VERSION"
-    ;
-
 void exit_help()
 {
     std::cout << APPLICATION_CLAIM << "\n\n"
@@ -55,7 +51,7 @@ void exit_help()
 
 void exit_version()
 {
-    std::cout << APPLICATION_NAME << " version " << version << "\n";
+    std::cout << APPLICATION_NAME << " version " << VERSION << "\n";
     exit(0);
 }
 
@@ -91,7 +87,7 @@ int main(int argc, char* argv[]) {
     QApplication app(argc, argv);
 
     app.setApplicationName(APPLICATION_NAME);
-    app.setApplicationVersion(version);
+    app.setApplicationVersion(VERSION);
     app.setOrganizationName(ORGANIZATION_NAME);
     app.setOrganizationDomain(ORGANIZATION_DOMAIN);
 
