@@ -142,13 +142,42 @@ Console::~Console()
     }
 }
 
-void Console::readLine()
+//! Learns widget names (commands will be delegated to widgets which then execute them).
+QString Console::learn(QString name, QcrSettable* widget)
 {
-    QTextStream qtin(stdin);
-    QString line = qtin.readLine();
-    caller_ = Caller::cli;
-    executeLine(line);
-    caller_ = Caller::gui;
+    if (name[0]=='@') {
+        QStringList args = name.split(' ');
+        if (args.size()<2) {
+            QByteArray tmp = name.toLatin1();
+            qFatal("invalid @ construct in learn(%s)", tmp.constData());
+        }
+        if (args[0]!="@push") {
+            QByteArray tmp = name.toLatin1();
+            qFatal("invalid @ command in learn(%s)", tmp.constData());
+        }
+        name = args[1];
+        registryStack_.push(new CommandRegistry(name));
+    }
+    return registry().learn(name, widget);
+}
+
+void Console::forget(const QString& name)
+{
+    registry().forget(name);
+}
+
+void Console::pop()
+{
+    if (registryStack_.empty()) {
+        qterr << "cannot pop: registry stack is empty\n"; qterr.flush();
+        return;
+    }
+    //qterr << "going to pop registry " << registryStack_.top()->name() << "\n";
+    //qterr.flush();
+    delete registryStack_.top();
+    registryStack_.pop();
+    //qterr << "top registry is now " << registryStack_.top()->name() << "\n";
+    //qterr.flush();
 }
 
 void Console::readFile(const QString& fName)
@@ -176,6 +205,15 @@ void Console::readFile(const QString& fName)
     log("# @file " + fName + " executed");
 }
 
+//! Commands issued by the system (and not by the user nor a command file) should pass here
+void Console::call(const QString& line)
+{
+    caller_ = Caller::sys;
+    executeLine(line);
+    caller_ = Caller::gui;
+}
+
+//! needed by modal dialogs
 void Console::commandsFromStack()
 {
     while (!commandLifo_.empty()) {
@@ -194,10 +232,47 @@ void Console::commandsFromStack()
     }
 }
 
-//! Commands issued by the system (and not by the user nor a command file) should pass here
-void Console::call(const QString& line)
+void Console::log(QString line) const
 {
-    caller_ = Caller::sys;
+    static auto lastTime = startTime_;
+    auto currTime = QDateTime::currentDateTime();
+    int tDiff = lastTime.msecsTo(currTime);
+    lastTime = currTime;
+    QString prefix = "[";
+    if (caller_==Caller::gui && line[0]!='#') {
+        prefix += "       "; // direct user action: we don't care how long the user was idle
+    } else {
+        prefix += QString::number(tDiff).rightJustified(5) + "ms";
+        computingTime_ += tDiff;
+    }
+    prefix += " " + registry().name() + "]";
+    if      (caller_==Caller::gui || caller_==Caller::stack)
+        ; // no further embellishment
+    else if (caller_==Caller::cli)
+        line = "#c " + line;
+    else if (caller_==Caller::sys)
+        line = "#s " + line;
+    else
+        qFatal("invalid case");
+    log_ << prefix << line << "\n";
+    log_.flush();
+    if (line.indexOf("##")!=0) {
+        qterr << line << "\n";
+        qterr.flush();
+    }
+}
+
+//! needed by modal dialogs
+bool Console::hasCommandsOnStack() const
+{
+    return !commandLifo_.empty();
+}
+
+void Console::readLine()
+{
+    QTextStream qtin(stdin);
+    QString line = qtin.readLine();
+    caller_ = Caller::cli;
     executeLine(line);
     caller_ = Caller::gui;
 }
@@ -236,71 +311,4 @@ Console::Result Console::executeLine(QString line)
         qterr << "Command '" << line << "' failed:\n" << ex.msg() << "\n"; qterr.flush();
     }
     return Result::err;
-}
-
-QString Console::learn(QString name, QcrSettable* widget)
-{
-    if (name[0]=='@') {
-        QStringList args = name.split(' ');
-        if (args.size()<2) {
-            QByteArray tmp = name.toLatin1();
-            qFatal("invalid @ construct in learn(%s)", tmp.constData());
-        }
-        if (args[0]!="@push") {
-            QByteArray tmp = name.toLatin1();
-            qFatal("invalid @ command in learn(%s)", tmp.constData());
-        }
-        name = args[1];
-        registryStack_.push(new CommandRegistry(name));
-    }
-    return registry().learn(name, widget);
-}
-
-void Console::pop()
-{
-    if (registryStack_.empty()) {
-        qterr << "cannot pop: registry stack is empty\n"; qterr.flush();
-        return;
-    }
-    //qterr << "going to pop registry " << registryStack_.top()->name() << "\n";
-    //qterr.flush();
-    delete registryStack_.top();
-    registryStack_.pop();
-    //qterr << "top registry is now " << registryStack_.top()->name() << "\n";
-    //qterr.flush();
-}
-
-void Console::forget(const QString& name)
-{
-    registry().forget(name);
-}
-
-void Console::log(QString line) const
-{
-    static auto lastTime = startTime_;
-    auto currTime = QDateTime::currentDateTime();
-    int tDiff = lastTime.msecsTo(currTime);
-    lastTime = currTime;
-    QString prefix = "[";
-    if (caller_==Caller::gui && line[0]!='#') {
-        prefix += "       "; // direct user action: we don't care how long the user was idle
-    } else {
-        prefix += QString::number(tDiff).rightJustified(5) + "ms";
-        computingTime_ += tDiff;
-    }
-    prefix += " " + registry().name() + "]";
-    if      (caller_==Caller::gui || caller_==Caller::stack)
-        ; // no further embellishment
-    else if (caller_==Caller::cli)
-        line = "#c " + line;
-    else if (caller_==Caller::sys)
-        line = "#s " + line;
-    else
-        qFatal("invalid case");
-    log_ << prefix << line << "\n";
-    log_.flush();
-    if (line.indexOf("##")!=0) {
-        qterr << line << "\n";
-        qterr.flush();
-    }
 }

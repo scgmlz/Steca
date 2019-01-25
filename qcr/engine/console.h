@@ -32,26 +32,19 @@ public:
     ~Console();
     Console(const Console&) = delete;
 
-    //! Learns widget names (commands will be delegated to widgets which then execute them).
     QString learn(QString name, class QcrSettable*);
     void forget(const QString& name);
     void pop();
     void readFile(const QString& fName);
     void call(const QString&);
-    void commandsFromStack();  //!< needed by modal dialogs
+    void commandsFromStack();
 
     void log(QString) const;
-    bool hasCommandsOnStack() const { return !commandLifo_.empty(); } //!< needed by modal dialogs
+    bool hasCommandsOnStack() const;
 
 private:
     enum class Caller { gui, cli, stack, sys } caller_ { Caller::gui };
     enum class Result : int { ok, err, suspend };
-
-    class CommandRegistry& registry() const { return *registryStack_.top(); }
-
-    void readLine();
-    Result executeLine(QString);
-
     QDateTime startTime_;
 #ifdef Q_OS_WIN
     class QWinEventNotifier *notifier_;
@@ -60,9 +53,12 @@ private:
 #endif
     std::stack<class CommandRegistry*> registryStack_;
     std::deque<QString> commandLifo_;
-
-    mutable int computingTime_ {0};
+    mutable int computingTime_ {0}; //!< Accumulated computing time in ms.
     mutable QTextStream log_;
+
+    class CommandRegistry& registry() const { return *registryStack_.top(); }
+    void readLine();
+    Result executeLine(QString);
 };
 
 #endif // CONSOLE_H
