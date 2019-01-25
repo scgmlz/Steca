@@ -1,6 +1,8 @@
 #ifndef MANIFEST_H
 #define MANIFEST_H
 
+#define VERSION "@Steca_VERSION@"
+
 #define APPLICATION_NAME "Steca"
 #define APPLICATION_CLAIM "The stress and texture calculator"
 

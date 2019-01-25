@@ -1,19 +1,29 @@
 <?php
 
 // Get and echo version string.
-// It cannot be easily done by Steca itself, because ssl on Windows is problematic.
-// Therefore Steca calls http: here and here calls https: to github.
+//
+// This program is to be installed on a web server, at a location given
+// by the variable STECA2_VERSION_URL from manifest.h.
+// 
+// The program queries GitHub, and extracts the latest relase version tag,
+// without leading 'v'. So it just writes something like "2.1.1".
+//
+// This solution was chosen because of some difficulty using ssl under Windows.
+// So Steca calls http: here, and here we call https: to GitHub.
 
 // version from GitHub
 
 $c = curl_init();
-curl_setopt($c, CURLOPT_URL, 'https://raw.githubusercontent.com/scgmlz/steca2/master/VERSION');
+curl_setopt($c, CURLOPT_URL, 'https://github.com/scgmlz/Steca/releases/latest');
 curl_setopt($c, CURLOPT_RETURNTRANSFER, true);
-$ver = curl_exec($c);
+curl_setopt($c, CURLOPT_HEADER, true);
+curl_setopt($c, CURLOPT_NOBODY, true);
+$page = curl_exec($c);
 curl_close($c);
 
-$ver = trim(trim($ver), '"');
-echo $ver;
+//preg_match("/<title>Release v(\d+\.\d+\S*)\s/", $page, $m);
+preg_match("/Location: http.*v(\d+\S*)\s/", $page, $m);
+echo $m[1];
 
 // log this call
 

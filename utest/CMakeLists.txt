@@ -10,7 +10,7 @@ set(inc_dirs
     ${gtest_SOURCE_DIR}
     ../ThirdParty
     ${CMAKE_SOURCE_DIR}
-    ${CMAKE_BINARY_DIR}
+    ${CMAKE_BINARY_DIR} # for testdata.h
     )
 
 # We glob test sources, though this is often considered evil.

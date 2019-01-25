@@ -9,7 +9,7 @@ endif()
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(PreventInSourceBuilds)
 
-project(Steca VERSION 2.1)
+project(Steca VERSION 2.1.1)
 message(STATUS "Building Steca ${Steca_VERSION}")
 
 set(CMAKE_PROJECT_DESCRIPTION # for display in installer
@@ -94,6 +94,8 @@ if(NOT Cerf_FOUND OR BUILD_FALLBACK)
 endif()
 
 message(STATUS "3rdparty libraries all found or configured")
+
+configure_file("manifest.h.in" "${CMAKE_BINARY_DIR}/manifest.h")
 
 add_subdirectory(qcr)
 add_subdirectory(core)
