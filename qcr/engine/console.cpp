@@ -17,6 +17,7 @@
 #include "qcr/base/qcrexception.h"
 #include "qcr/base/string_ops.h"
 #include "qcr/base/debug.h" // ASSERT
+#include <QApplication>
 #include <QFile>
 
 #ifdef Q_OS_WIN
@@ -125,7 +126,8 @@ Console::Console()
         qFatal("cannot open log file");
     log_.setDevice(file);
     startTime_ = QDateTime::currentDateTime();
-    log("#  Steca started at " + startTime_.toString("yyyy-MM-dd HH:mm::ss.zzz"));
+    log("#  Steca " + qApp->applicationVersion() + " started at "
+        + startTime_.toString("yyyy-MM-dd HH:mm::ss.zzz"));
 }
 
 Console::~Console()
