@@ -32,16 +32,17 @@ public:
     ~Console();
     Console(const Console&) = delete;
 
-    QString learn(QString name, class QcrSettable*);
+    QString learn(const QString& name, class QcrSettable*);
     void forget(const QString& name);
     void pop();
     void readFile(const QString& fName);
     void call(const QString&);
     void commandsFromStack();
 
-    void log(QString) const;
+    void log(const QString&) const;
     bool hasCommandsOnStack() const;
 
+    static QString logFileName();
 private:
     enum class Caller { gui, cli, stack, sys } caller_ { Caller::gui };
     enum class Result : int { ok, err, suspend };

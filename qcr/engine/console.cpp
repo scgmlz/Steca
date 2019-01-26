@@ -121,18 +121,18 @@ Console::Console()
     registryStack_.push(new CommandRegistry("main"));
 
     // start log
-    auto* file = new QFile("Steca.log");
+    auto* file = new QFile(logFileName());
     if (!file->open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
         qFatal("cannot open log file");
     log_.setDevice(file);
     startTime_ = QDateTime::currentDateTime();
-    log("#  Steca " + qApp->applicationVersion() + " started at "
+    log("#  " + qApp->applicationName() + " " + qApp->applicationVersion() + " started at "
         + startTime_.toString("yyyy-MM-dd HH:mm::ss.zzz"));
 }
 
 Console::~Console()
 {
-    log("#  Steca session ended");
+    log("#  " + qApp->applicationName() + " session ended");
     log("#  duration: " + QString::number(startTime_.msecsTo(QDateTime::currentDateTime())) + "ms");
     log("#  computing time: " + QString::number(computingTime_) + "ms");
     delete log_.device();
@@ -143,8 +143,9 @@ Console::~Console()
 }
 
 //! Learns widget names (commands will be delegated to widgets which then execute them).
-QString Console::learn(QString name, QcrSettable* widget)
+QString Console::learn(const QString& nameArg, QcrSettable* widget)
 {
+    QString name = nameArg;
     if (name[0]=='@') {
         QStringList args = name.split(' ');
         if (args.size()<2) {
@@ -228,8 +229,9 @@ void Console::commandsFromStack()
     }
 }
 
-void Console::log(QString line) const
+void Console::log(const QString& lineArg) const
 {
+    QString line = lineArg;
     static auto lastTime = startTime_;
     auto currTime = QDateTime::currentDateTime();
     int tDiff = lastTime.msecsTo(currTime);
@@ -262,6 +264,12 @@ void Console::log(QString line) const
 bool Console::hasCommandsOnStack() const
 {
     return !commandLifo_.empty();
+}
+
+//! Returns the name of the log file.
+QString Console::logFileName()
+{
+    return qApp->applicationName() + ".log";
 }
 
 //! Reads one line from the command-line interface, and executes it.
