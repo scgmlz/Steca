@@ -208,9 +208,7 @@ void Console::readFile(const QString& fName)
 //! Commands issued by the system (and not by the user nor a command file) should pass here
 void Console::call(const QString& line)
 {
-    caller_ = Caller::sys;
-    executeLine(line);
-    caller_ = Caller::gui;
+    executeLine(line, Caller::sys);
 }
 
 //! needed by modal dialogs
@@ -221,9 +219,7 @@ void Console::commandsFromStack()
         commandLifo_.pop_front();
         if (line=="@close")
             return;
-        caller_ = Caller::stack;
-        Result ret = executeLine(line);
-        caller_ = Caller::gui;
+        Result ret = executeLine(line, Caller::stack);
         if (ret==Result::err) {
             commandLifo_.clear();
             log("# Emptied command stack upon error");
@@ -273,12 +269,18 @@ void Console::readCLI()
 {
     QTextStream qtin(stdin);
     QString line = qtin.readLine();
-    caller_ = Caller::cli;
-    executeLine(line);
-    caller_ = Caller::gui;
+    executeLine(line, Caller::cli);
 }
 
-Console::Result Console::executeLine(QString line)
+Console::Result Console::executeLine(const QString& line, Caller callerArg)
+{
+    caller_ = callerArg;
+    Result ret = execExecuteLine(line);
+    caller_ = Caller::gui;
+    return ret;
+}
+
+Console::Result Console::execExecuteLine(const QString& line)
 {
     if (line[0]=='#')
         return Result::ok; // comment => nothing to do
