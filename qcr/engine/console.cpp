@@ -209,7 +209,7 @@ void Console::readFile(const QString& fName)
 //! Commands issued by the system (and not by the user nor a command file) should pass here
 void Console::call(const QString& line)
 {
-    executeLine(line, Caller::sys);
+    commandInContext(line, Caller::sys);
 }
 
 //! needed by modal dialogs
@@ -220,7 +220,7 @@ void Console::commandsFromStack()
         commandLifo_.pop_front();
         if (line=="@close")
             return;
-        Result ret = executeLine(line, Caller::stack);
+        Result ret = commandInContext(line, Caller::stack);
         if (ret==Result::err) {
             commandLifo_.clear();
             log("# Emptied command stack upon error");
@@ -277,18 +277,24 @@ void Console::readCLI()
 {
     QTextStream qtin(stdin);
     QString line = qtin.readLine();
-    executeLine(line, Caller::cli);
+    commandInContext(line, Caller::cli);
 }
 
-Console::Result Console::executeLine(const QString& line, Caller callerArg)
+//! Delegates command execution to wrappedCommand, with context set to callerArg.
+Console::Result Console::commandInContext(const QString& line, Caller callerArg)
 {
     caller_ = callerArg;
-    Result ret = execExecuteLine(line);
-    caller_ = Caller::gui;
+    Result ret = wrappedCommand(line);
+    caller_ = Caller::gui; // restores default
     return ret;
 }
 
-Console::Result Console::execExecuteLine(const QString& line)
+//! Executes command. Always called from commandInContext(..).
+//!
+//! Commands are either console commands (starting with '@'), or widget commands.
+//! Widget commands start with the name of widget that has been registered by learn(..);
+//! further execution is delegated to the pertinent widget.
+Console::Result Console::wrappedCommand(const QString& line)
 {
     if (line[0]=='#')
         return Result::ok; // comment => nothing to do
@@ -310,15 +316,15 @@ Console::Result Console::execExecuteLine(const QString& line)
         }
         return Result::ok;
     }
-    QcrSettable* f = registry().find(cmd);
-    if (!f) {
+    QcrSettable* w = registry().find(cmd);
+    if (!w) {
         qterr << "Command '" << cmd << "' not found\n"; qterr.flush();
         return Result::err;
     }
     try {
-        f->executeConsoleCommand(arg); // execute command
+        w->executeConsoleCommand(arg); // execute command
         return Result::ok;
-    } catch (const QcrException &ex) {
+    } catch (const QcrException&ex) {
         qterr << "Command '" << line << "' failed:\n" << ex.msg() << "\n"; qterr.flush();
     }
     return Result::err;

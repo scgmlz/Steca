@@ -59,8 +59,8 @@ private:
 
     class CommandRegistry& registry() const { return *registryStack_.top(); }
     void readCLI();
-    Result executeLine(const QString&, Caller);
-    Result execExecuteLine(const QString&);
+    Result commandInContext(const QString&, Caller);
+    Result wrappedCommand(const QString&);
 };
 
 #endif // CONSOLE_H
