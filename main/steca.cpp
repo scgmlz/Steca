@@ -36,6 +36,8 @@
 #include <QLoggingCategory>
 #include <QStyleFactory>
 
+namespace {
+
 void exit_help()
 {
     std::cout << APPLICATION_CLAIM << "\n\n"
@@ -43,7 +45,7 @@ void exit_help()
               << "Options:\n"
               << "  -h  Print this message.\n"
               << "  -v  Print " << APPLICATION_NAME << " version.\n"
-              << "  -c  Read commands from console instead of starting the GUI.\n"
+//              << "  -c  Read commands from console instead of starting the GUI.\n"
               << "  -p  Sets the file overwrite policy to 'panic'. Default is 'ask'.\n"
               << "  -s  Sets the file overwrite policy to 'silent overwrite'. Default is 'ask'.\n";
     exit(0);
@@ -55,6 +57,9 @@ void exit_version()
     exit(0);
 }
 
+} // namespace
+
+
 int main(int argc, char* argv[]) {
     struct optparse options;
     optparse_init(&options, argv);
@@ -63,7 +68,7 @@ int main(int argc, char* argv[]) {
         exit_help();
     if (argc>1 && QString(argv[1])=="--version")
         exit_version();
-    while ((opt = optparse(&options, "hvcps")) != -1) {
+    while ((opt = optparse(&options, "hvps")) != -1) {
         switch (opt) {
         case 'h':
             exit_help();
