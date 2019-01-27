@@ -82,6 +82,12 @@ int main(int argc, char* argv[]) {
         case 's':
             setFileOverwritePolicy(file_dialog::eFileOverwritePolicy::SILENT_OVERWRITE);
             break;
+        case '?':
+            std::cerr << "Unsupported option. Use '" APPLICATION_NAME " -h' for list of options\n";
+            exit(-1);
+        default:
+            std::cerr << "Bug: impossible option\n";
+            exit(-1);
         }
     }
 
