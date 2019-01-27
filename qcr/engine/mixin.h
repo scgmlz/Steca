@@ -31,6 +31,7 @@ protected:
     QcrMixin(QObject* object, const QString& name);
 public:
     QcrMixin(const QcrMixin&) = delete;
+    QcrMixin operator=(const QcrMixin&) = delete;
     const QString name() const { return object()->objectName(); }
     virtual void remake();
     void setRemake(std::function<void()> _remake) { remake_ = _remake; }

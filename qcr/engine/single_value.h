@@ -27,7 +27,7 @@ template<class T>
 class QcrSingleValue : public QcrSettable {
 public:
     QcrSingleValue(QObject* object, const QString& name, QcrCell<T>* cell);
-    QcrSingleValue(QObject* object, const QString& name, const T val); // TODO get rid of this variant?
+    QcrSingleValue(QObject* object, const QString& name, const T val);
     ~QcrSingleValue();
     void programaticallySetValue(T val);
     T getValue() const { ASSERT(doGetValue()==cell_->val()); return cell_->val(); }
@@ -56,13 +56,15 @@ QcrSingleValue<T>::QcrSingleValue(QObject* object, const QString& name, QcrCell<
         QSettings s;
         s.beginGroup("Controls");
         if (!Qcr::replay) {
+            // Retrieve initial value from the config file controlled by QSettings
             QVariant v = s.value(QcrSettable::name());
             if (v != QVariant{}) {
                 const T val = v.value<T>();
                 programaticallySetValue(val);
-                doLog(QcrSettable::name()+" "+strOp::to_s(val));
+                doLog(QcrSettable::name()+" "+strOp::to_s(val)+" # from local settings");
             }
         }
+        // Value may have changed, therefore write back to the config file controlled by QSettings
         s.setValue(QcrSettable::name(), cell_->val());
     }
     cell_->setCallbacks([this](){return doGetValue();}, [this](const T val){doSetValue(val);});
