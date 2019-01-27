@@ -46,8 +46,10 @@ void exit_help()
               << "  -h  Print this message.\n"
               << "  -v  Print " << APPLICATION_NAME << " version.\n"
 //              << "  -c  Read commands from console instead of starting the GUI.\n"
-              << "  -p  Sets the file overwrite policy to 'panic'. Default is 'ask'.\n"
-              << "  -s  Sets the file overwrite policy to 'silent overwrite'. Default is 'ask'.\n";
+              << "  -p  Sets the file overwrite policy to 'panic'.\n"
+              << "  -s  Sets the file overwrite policy to 'silent overwrite'.\n\n"
+              << "Default behavior:\n"
+              << "  File overwrite policy is 'ask for confirmation', unless -p or -s is chosen.\n";
     exit(0);
 }
 

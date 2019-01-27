@@ -9,7 +9,7 @@ endif()
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 include(PreventInSourceBuilds)
 
-project(Steca VERSION 2.1.1)
+project(Steca VERSION 2.1.2)
 message(STATUS "Building Steca ${Steca_VERSION}")
 
 set(CMAKE_PROJECT_DESCRIPTION # for display in installer
