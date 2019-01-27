@@ -62,7 +62,7 @@ public:
 };
 
 //! Toggle, for use in buttons or menu entries, that can also be switched by console command.
-class QcrToggle : public QcrAction, public QcrControl<bool> {
+class QcrToggle : public QcrAction, public QcrSingleValue<bool> {
 public:
     QcrToggle(const QString& name, const QString& text, bool on,
               const QString& iconFile="", const QKeySequence& shortcut = {});
@@ -89,7 +89,7 @@ public:
 };
 
 //! Named integer-valued spin box that can be set by console command.
-class QcrSpinBox : public QSpinBox, public QcrControl<int> {
+class QcrSpinBox : public QSpinBox, public QcrSingleValue<int> {
 public:
     QcrSpinBox(const QString& name, QcrCell<int>* cell, int ndigits, bool withDot = false,
                int min = INT_MIN, int max = INT_MAX, const QString& tooltip="");
@@ -104,7 +104,7 @@ private:
 };
 
 //! Named double-valued spin box that can be set by console command.
-class QcrDoubleSpinBox : public QDoubleSpinBox, public QcrControl<double> {
+class QcrDoubleSpinBox : public QDoubleSpinBox, public QcrSingleValue<double> {
 public:
     QcrDoubleSpinBox(const QString& name, QcrCell<double>* cell, int nDigits, int nDecimals,
                      double min = LLONG_MIN, double max = LLONG_MAX, const QString& tooltip="");
@@ -120,7 +120,7 @@ private:
 };
 
 //! Named check box that can be set by console command.
-class QcrCheckBox : public QCheckBox, public QcrControl<bool> {
+class QcrCheckBox : public QCheckBox, public QcrSingleValue<bool> {
 public:
     QcrCheckBox(const QString& name, const QString& text, QcrCell<bool>* cell);
     bool doGetValue() const final { return isChecked(); }
@@ -131,7 +131,7 @@ private:
 };
 
 //! Named radio button that can be set by console command.
-class QcrRadioButton : public QRadioButton, public QcrControl<bool> {
+class QcrRadioButton : public QRadioButton, public QcrSingleValue<bool> {
 public:
     QcrRadioButton(const QString& name, const QString& text, bool val=false);
     QcrRadioButton(const QString& name, const QString& text, QcrCell<bool>* cell);
@@ -143,7 +143,7 @@ private:
 };
 
 //! Named non-editable combo box that can be set by console command.
-class QcrComboBox : public QComboBox, public QcrControl<int> {
+class QcrComboBox : public QComboBox, public QcrSingleValue<int> {
 public:
     //! Constructor for fixed tag list case.
     QcrComboBox(const QString& name, QcrCell<int>* cell, const QStringList& tags);
@@ -171,7 +171,7 @@ private:
 };
 
 //! Group of radio buttons, of which exactly one is activated.
-class QcrRadioBox : public QGroupBox, public QcrControl<int> {
+class QcrRadioBox : public QGroupBox, public QcrSingleValue<int> {
 public:
     //! Constructor; takes ownership of layout, which is typically provided as "new QVLayout".
     QcrRadioBox(const QString& name, const QString& headline, QcrCell<int>* cell,
@@ -186,7 +186,7 @@ private:
 };
 
 //! Named line edit that can be set by console command.
-class QcrLineEdit : public QLineEdit, public QcrControl<QString> {
+class QcrLineEdit : public QLineEdit, public QcrSingleValue<QString> {
 public:
     QcrLineEdit(const QString& name, const QString& val = "");
     QString doGetValue() const final { return text(); }
@@ -197,7 +197,7 @@ private:
 };
 
 //! Named tab widget that can be set by console command.
-class QcrTabWidget : public QTabWidget, public QcrControl<int> {
+class QcrTabWidget : public QTabWidget, public QcrSingleValue<int> {
 public:
     QcrTabWidget(const QString& name);
     int doGetValue() const final { return currentIndex(); }

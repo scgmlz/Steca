@@ -3,7 +3,7 @@
 //  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/engine/single_value.h
-//! @brief     Defines and implements templated classes QcrControl
+//! @brief     Defines and implements templated classes QcrSingleValue
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -24,11 +24,11 @@
 
 //! Base class for all Qcr widgets that hold a single value.
 template<class T>
-class QcrControl : public QcrSettable {
+class QcrSingleValue : public QcrSettable {
 public:
-    QcrControl(QObject* object, const QString& name, QcrCell<T>* cell);
-    QcrControl(QObject* object, const QString& name, const T val); // TODO get rid of this variant?
-    ~QcrControl();
+    QcrSingleValue(QObject* object, const QString& name, QcrCell<T>* cell);
+    QcrSingleValue(QObject* object, const QString& name, const T val); // TODO get rid of this variant?
+    ~QcrSingleValue();
     void programaticallySetValue(T val);
     T getValue() const { ASSERT(doGetValue()==cell_->val()); return cell_->val(); }
     virtual T doGetValue() const = 0; //!< to be overriden by the widget-specific get function
@@ -44,11 +44,11 @@ private:
 };
 
 //  ***********************************************************************************************
-//  implementation of QcrControl<T>
+//  implementation of QcrSingleValue<T>
 
-//! Constructor that associates this QcrControl with an external QcrCell.
+//! Constructor that associates this QcrSingleValue with an external QcrCell.
 template<class T>
-QcrControl<T>::QcrControl(QObject* object, const QString& name, QcrCell<T>* cell)
+QcrSingleValue<T>::QcrSingleValue(QObject* object, const QString& name, QcrCell<T>* cell)
     : QcrSettable {object, name}
     , cell_ {cell}
 {
@@ -68,9 +68,9 @@ QcrControl<T>::QcrControl(QObject* object, const QString& name, QcrCell<T>* cell
     cell_->setCallbacks([this](){return doGetValue();}, [this](const T val){doSetValue(val);});
 }
 
-//! Constructs a QcrControl that owns a QcrCell.
+//! Constructs a QcrSingleValue that owns a QcrCell.
 template<class T>
-QcrControl<T>::QcrControl(QObject* object, const QString& name, const T val)
+QcrSingleValue<T>::QcrSingleValue(QObject* object, const QString& name, const T val)
     : QcrSettable {object, name}
     , ownsItsCell_ {true}
 {
@@ -79,7 +79,7 @@ QcrControl<T>::QcrControl(QObject* object, const QString& name, const T val)
 }
 
 template<class T>
-QcrControl<T>::~QcrControl()
+QcrSingleValue<T>::~QcrSingleValue()
 {
     if (ownsItsCell_)
         delete cell_;
@@ -88,13 +88,13 @@ QcrControl<T>::~QcrControl()
 //!
 
 template<class T>
-void QcrControl<T>::programaticallySetValue(T val)
+void QcrSingleValue<T>::programaticallySetValue(T val)
 {
     cell_->setVal(val);
 }
 
 template<class T>
-void QcrControl<T>::executeConsoleCommand(const QString& arg)
+void QcrSingleValue<T>::executeConsoleCommand(const QString& arg)
 {
     doSetValue(strOp::from_s<T>(arg)); // unguarded
 }
@@ -104,7 +104,7 @@ void QcrControl<T>::executeConsoleCommand(const QString& arg)
 //! Used by control widgets, typically through Qt signals that are emitted upon user actions.
 
 template<class T>
-void QcrControl<T>::onChangedValue(T val)
+void QcrSingleValue<T>::onChangedValue(T val)
 {
     if (!adhoc()) {
         QSettings s;

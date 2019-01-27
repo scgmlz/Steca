@@ -104,7 +104,7 @@ QcrIconTriggerButton::QcrIconTriggerButton(QcrTrigger* action)
 QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on,
                      const QString& iconFile, const QKeySequence& shortcut)
     : QcrAction {text}
-    , QcrControl<bool> {this, rawname, on}
+    , QcrSingleValue<bool> {this, rawname, on}
 {
     initToggle(iconFile, shortcut);
 }
@@ -112,7 +112,7 @@ QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on,
 QcrToggle::QcrToggle(const QString& rawname, QcrCell<bool>* cell, const QString& text,
                      const QString& iconFile, const QKeySequence& shortcut)
     : QcrAction {text}
-    , QcrControl<bool> {this, rawname, cell}
+    , QcrSingleValue<bool> {this, rawname, cell}
 
 {
     initToggle(iconFile, shortcut);
@@ -178,7 +178,7 @@ QcrIconToggleButton::QcrIconToggleButton(QcrToggle* action)
 
 QcrSpinBox::QcrSpinBox(const QString& _name, QcrCell<int>* cell, int ndigits,
                        bool withDot, int min, int max, const QString& tooltip)
-    : QcrControl<int> {this, _name, cell}
+    : QcrSingleValue<int> {this, _name, cell}
 {
     initSpinBox(ndigits, withDot, min, max, tooltip);
 }
@@ -218,7 +218,7 @@ void QcrSpinBox::executeConsoleCommand(const QString& arg)
 QcrDoubleSpinBox::QcrDoubleSpinBox(
     const QString& _name, QcrCell<double>* cell, int nDigits, int nDecimals,
     double min, double max, const QString& tooltip)
-    : QcrControl<double> {this, _name, cell}
+    : QcrSingleValue<double> {this, _name, cell}
 {
     initDoubleSpinBox(nDigits, nDecimals, min, max, tooltip);
 }
@@ -259,7 +259,7 @@ void QcrDoubleSpinBox::executeConsoleCommand(const QString& arg)
 
 QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, QcrCell<bool>* cell)
     : QCheckBox {text}
-    , QcrControl<bool> {this, _name, cell}
+    , QcrSingleValue<bool> {this, _name, cell}
 {
     doSetValue(cell_->val());
     connect(this, _SLOT_(QCheckBox,stateChanged,int), [this](int val)->void {
@@ -271,7 +271,7 @@ QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, QcrCell<bool
 
 QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, bool val)
     : QRadioButton {text}
-    , QcrControl<bool> {this, _name, val}
+    , QcrSingleValue<bool> {this, _name, val}
 {
     doSetValue(cell_->val());
     setAutoExclusive(false); // TODO provide int-valued Qcr wrapper for exclusive radio buttons
@@ -281,7 +281,7 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, bool v
 
 QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, QcrCell<bool>* cell)
     : QRadioButton {text}
-    , QcrControl<bool> {this, _name, cell}
+    , QcrSingleValue<bool> {this, _name, cell}
 {
     doSetValue(cell_->val());
     setAutoExclusive(false);
@@ -296,7 +296,7 @@ QcrComboBox::QcrComboBox(
     const QString& _name, QcrCell<int>* _cell,
     const bool _haveRemakeTagsFunction, const QStringList& _tags,
     const std::function<QStringList()> _makeTags)
-    : QcrControl<int>{this, _name, _cell}
+    : QcrSingleValue<int>{this, _name, _cell}
     , haveRemakeTagsFunction_{_haveRemakeTagsFunction}
     , tags_{_tags}
     , makeTags_{_makeTags}
@@ -343,7 +343,7 @@ void QcrComboBox::remake()
 QcrRadioBox::QcrRadioBox(
     const QString& _name, const QString& _headline, QcrCell<int>* _cell,
     const QStringList& _tags, QLayout* _layout)
-    : QcrControl<int>{this, _name, _cell}
+    : QcrSingleValue<int>{this, _name, _cell}
     , tags_{_tags}
 {
     ASSERT(size()>0);
@@ -375,7 +375,7 @@ void QcrRadioBox::doSetValue(int val)
 //! @class QcrLineEdit
 
 QcrLineEdit::QcrLineEdit(const QString& _name, const QString& val)
-    : QcrControl<QString> {this, _name, val}
+    : QcrSingleValue<QString> {this, _name, val}
 {
     doSetValue(cell_->val());
     // For unknown reason, hasFocus() is not always false when setText is called programmatically;
@@ -402,7 +402,7 @@ void QcrLineEdit::doSetValue(QString val)
 //! @class QcrTabWidget
 
 QcrTabWidget::QcrTabWidget(const QString& _name)
-    : QcrControl<int> {this, _name, 0}
+    : QcrSingleValue<int> {this, _name, 0}
 {
     doSetValue(cell_->val());
     connect(this, &QTabWidget::currentChanged, [this](int val) {
