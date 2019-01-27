@@ -1,6 +1,18 @@
 #include "gtest/gtest.h"
-#include "qcr/base/string_ops.h"
+#define LOCAL_CODE_ONLY
+#include "qcr/engine/console.cpp"
 
-TEST(StrOp, toAscii) {
-    QString test {"test"};
+void testPCL(const QString& input, const QString& expectedCommand, const QString& expectedContext)
+{
+    QString command, context;
+    bool ret = parseCommandLine(input, command, context);
+    EXPECT_EQ(ret, true);
+    EXPECT_EQ(command, expectedCommand);
+    EXPECT_EQ(context, expectedContext);
+}
+
+TEST(Console, parseCommandLine) {
+    testPCL("quit", "quit", "");
+    testPCL("[    0ms main]#  Steca 2.1.2", "", "main");
+    testPCL("[   69ms main]dfgram add 48.2 51", "dfgram add 48.2 51", "main");
 }

@@ -17,6 +17,8 @@
 #include "qcr/base/qcrexception.h"
 #include "qcr/base/string_ops.h"
 #include "qcr/base/debug.h" // ASSERT
+#include <regex>
+#include <iostream>
 #include <QApplication>
 #include <QFile>
 
@@ -28,6 +30,36 @@
 #endif
 
 Console* gConsole; //!< global
+
+namespace {
+
+//! Parses a command line, sets the command and the context, and returns true if successful.
+//!
+//! The input line may be either a plain command or a log entry.
+//! A log entry starts with a '[..]' comment containing execution time (optional) and context.
+//! It may end with a '#..' comment.
+//!
+//! Covered by utest/test005_strop
+
+bool parseCommandLine(const QString& line, QString& command, QString& context)
+{
+    const std::regex my_regex("^(\\[\\s*((\\d+)ms)?\\s*(\\w+)\\])?([^#]*)(#.*)?$");
+    std::smatch my_match;
+    const std::string tmpLine { line.toLatin1().constData() };
+    if (!std::regex_match(tmpLine, my_match, my_regex))
+        return false;
+    if (my_match.size()!=7) {
+        std::cerr << "BUG: invalid match size\n";
+        exit(-1);
+    }
+    context = my_match[4].str().c_str();
+    command = my_match[5].str().c_str();
+    return true;
+}
+
+} // namespace
+
+#ifndef LOCAL_CODE_ONLY
 
 QTextStream qterr(stderr);
 
@@ -292,10 +324,15 @@ Console::Result Console::wrappedCommand(const QString& line)
 {
     if (line[0]=='#')
         return Result::ok; // comment => nothing to do
+    QString command, context;
+    if (!parseCommandLine(line, command, context)) {
+        qterr << "command line '" << line << "' could not be parsed\n"; qterr.flush();
+        return Result::err;
+    }
     QString cmd, arg;
-    strOp::splitOnce(line, cmd, arg);
+    strOp::splitOnce(command, cmd, arg);
     if (cmd[0]=='@') {
-        log(line);
+        log(command);
         if (cmd=="@ls") {
             qterr << "registry " << registryStack_.top()->name() << " has commands:\n";
             qterr.flush();
@@ -319,7 +356,9 @@ Console::Result Console::wrappedCommand(const QString& line)
         w->executeConsoleCommand(arg); // execute command
         return Result::ok;
     } catch (const QcrException&ex) {
-        qterr << "Command '" << line << "' failed:\n" << ex.msg() << "\n"; qterr.flush();
+        qterr << "Command '" << command << "' failed:\n" << ex.msg() << "\n"; qterr.flush();
     }
     return Result::err;
 }
+
+#endif // LOCAL_CODE_ONLY
