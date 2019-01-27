@@ -77,7 +77,7 @@ void QcrSettable::doLog(const QString& msg)
 //! Returns true if the value of *this is not to be stored as part of the QSettings.
 bool QcrSettable::adhoc() const
 {
-    return name().left(6)!="adhoc_";
+    return name().left(6)=="adhoc_";
 }
 
 
