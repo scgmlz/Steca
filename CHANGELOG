@@ -1,3 +1,17 @@
+Steca version 2.1.2, released 2019.
+----------------------------------------
+
+New or improved functionality:
+
+* Log file written to file specified by option -l, to <startup_script>.log, or to Steca.log
+* Disallow log file that overwrites startup file
+
+Internal improvements:
+
+* VERSION handled by CMake
+* Service program version.php under version control
+* Added and improved lots of Doxygen comments
+
 Steca version 2.1.1, released 2019.01.24
 ----------------------------------------
 
@@ -25,7 +39,7 @@ New features:
 * Table, diagram and polefigure are now tabs in the main frame
 * Improved control tabs for detector, peaks, interpolation
 * Diffractograms can be saved into multiple, numbered files
-* Copy&paste from rectangular selections in data tables (re?)enabled.
+* Copy&paste from rectangular selections in data tables (re?)enabled
 * All user actions are logged
 
 Internal improvements:
@@ -35,10 +49,10 @@ Internal improvements:
   are cached. In this way, unnecessary computations are avoided. This
   results in a huge speed gain.
 * For testing purposes, widgets can be driven from the command line
-* Decoupled "highlighting" (one measurement group) from "selecting" (most or all measurements).
-* Logic moved from table models to datasets.
-* Unified exception handling.
-* Doxygen comments for all files, namespaces, and classes.
+* Decoupled "highlighting" (one measurement group) from "selecting" (most or all measurements)
+* Logic moved from table models to datasets
+* Unified exception handling
+* Doxygen comments for all files, namespaces, and classes
 
 Steca version 2.0.6, released 2018.01.19
 ----------------------------------------
