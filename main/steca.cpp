@@ -99,11 +99,9 @@ int main(int argc, char* argv[]) {
     app.setStyle(QStyleFactory::create("Fusion"));
 #endif
 
-    const QString logFileName = qApp->applicationName() + ".log";
-    if (logFileName==startupScript) {
-        std::cerr << "Default log file not allowed as startup script\n";
-        exit(-1);
-    }
+    const QString logFileName = startupScript==""
+        ? qApp->applicationName() + ".log"
+        : startupScript + ".log";
     new Console(logFileName);
     QLoggingCategory::setFilterRules("*.debug=true\nqt.*.debug=false");
     qInstallMessageHandler(messageHandler);
