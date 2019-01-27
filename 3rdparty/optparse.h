@@ -1,3 +1,9 @@
+/* Steca/3rdparty/optparse.h
+ *
+ * From https://github.com/skeeto/optparse
+ *
+ */
+
 /* Optparse --- portable, reentrant, embeddable, getopt-like option parser
  *
  * This is free and unencumbered software released into the public domain.

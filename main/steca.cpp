@@ -41,14 +41,16 @@ namespace {
 void exit_help()
 {
     std::cout << APPLICATION_CLAIM << "\n\n"
-              << "Usage: " << APPLICATION_NAME << " [options]\n\n"
+              << "Usage: " << APPLICATION_NAME << " [options] [startup_script]\n\n"
               << "Options:\n"
-              << "  -h  Print this message.\n"
-              << "  -v  Print " << APPLICATION_NAME << " version.\n"
-//              << "  -c  Read commands from console instead of starting the GUI.\n"
-              << "  -p  Sets the file overwrite policy to 'panic'.\n"
-              << "  -s  Sets the file overwrite policy to 'silent overwrite'.\n\n"
+              << "  -h        Print this message.\n"
+              << "  -v        Print " << APPLICATION_NAME << " version.\n"
+              << "  -l <file> Write log to <file>.\n"
+//            << "  -c        Read commands from console instead of starting the GUI.\n"
+              << "  -p        Sets the file overwrite policy to 'panic'.\n"
+              << "  -s        Sets the file overwrite policy to 'silent overwrite'.\n\n"
               << "Default behavior:\n"
+              << "  Log file name is <startup_script>.log or " << APPLICATION_NAME << ".log\n"
               << "  File overwrite policy is 'ask for confirmation', unless -p or -s is chosen.\n";
     exit(0);
 }
@@ -63,6 +65,9 @@ void exit_version()
 
 
 int main(int argc, char* argv[]) {
+    QString logFileName;
+    QString startupScript;
+
     struct optparse options;
     optparse_init(&options, argv);
     int opt;
@@ -70,12 +75,15 @@ int main(int argc, char* argv[]) {
         exit_help();
     if (argc>1 && QString(argv[1])=="--version")
         exit_version();
-    while ((opt = optparse(&options, "hvps")) != -1) {
+    while ((opt = optparse(&options, "hvl:ps")) != -1) {
         switch (opt) {
         case 'h':
             exit_help();
         case 'v':
             exit_version();
+        case 'l':
+            logFileName = options.optarg;
+            break;
         case 'p':
             setFileOverwritePolicy(file_dialog::eFileOverwritePolicy::PANIC);
             break;
@@ -83,7 +91,8 @@ int main(int argc, char* argv[]) {
             setFileOverwritePolicy(file_dialog::eFileOverwritePolicy::SILENT_OVERWRITE);
             break;
         case '?':
-            std::cerr << "Unsupported option. Use '" APPLICATION_NAME " -h' for list of options\n";
+            std::cerr << "Unsupported option or missing option argument."
+                      << " Use '" APPLICATION_NAME " -h' for list of options\n";
             exit(-1);
         default:
             std::cerr << "Bug: impossible option\n";
@@ -91,7 +100,6 @@ int main(int argc, char* argv[]) {
         }
     }
 
-    QString startupScript = "";
     if ((startupScript = optparse_arg(&options))!="" && optparse_arg(&options)) {
         std::cerr << "More than one command-line argument given\n";
         exit(-1);
@@ -112,9 +120,17 @@ int main(int argc, char* argv[]) {
     app.setStyle(QStyleFactory::create("Fusion"));
 #endif
 
-    const QString logFileName = startupScript==""
-        ? qApp->applicationName() + ".log"
-        : startupScript + ".log";
+    if (logFileName=="") {
+        logFileName = startupScript==""
+            ? qApp->applicationName() + ".log"
+            : startupScript + ".log";
+    } else {
+        if (logFileName==startupScript) {
+            std::cerr << "Log file name coincides with startup script name\n";
+            exit(-1);
+        }
+    }
+    std::cout << "Log file will be written to " << logFileName.toLatin1().constData() << "\n";
     new Console(logFileName);
     QLoggingCategory::setFilterRules("*.debug=true\nqt.*.debug=false");
     qInstallMessageHandler(messageHandler);
