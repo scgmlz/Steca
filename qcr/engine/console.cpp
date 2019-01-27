@@ -105,7 +105,7 @@ void CommandRegistry::dump(QTextStream& stream)
 //  ***********************************************************************************************
 //! @class Console
 
-Console::Console()
+Console::Console(const QString& logFileName)
 {
     gConsole = this;
 
@@ -121,7 +121,7 @@ Console::Console()
     registryStack_.push(new CommandRegistry("main"));
 
     // start log
-    auto* file = new QFile(logFileName());
+    auto* file = new QFile(logFileName);
     if (!file->open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
         qFatal("cannot open log file");
     log_.setDevice(file);
@@ -264,12 +264,6 @@ void Console::log(const QString& lineArg) const
 bool Console::hasCommandsOnStack() const
 {
     return !commandLifo_.empty();
-}
-
-//! Returns the name of the log file.
-QString Console::logFileName()
-{
-    return qApp->applicationName() + ".log";
 }
 
 //! Reads one line from the command-line interface, and executes it.

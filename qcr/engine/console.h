@@ -28,7 +28,8 @@ extern class Console* gConsole; //!< global handle that points to _the_ Console.
 class Console
 {
 public:
-    Console();
+    Console() = delete;
+    Console(const QString& logFileName);
     ~Console();
     Console(const Console&) = delete;
 
@@ -41,8 +42,6 @@ public:
 
     void log(const QString&) const;
     bool hasCommandsOnStack() const;
-
-    static QString logFileName();
 private:
     enum class Caller { gui, cli, stack, sys } caller_ { Caller::gui };
     enum class Result : int { ok, err, suspend };
