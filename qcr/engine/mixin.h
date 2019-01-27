@@ -58,6 +58,7 @@ public:
     virtual void executeConsoleCommand(const QString&) = 0;
 protected:
     void doLog(const QString& msg);
+    bool adhoc() const;
 };
 
 

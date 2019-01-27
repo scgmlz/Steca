@@ -52,13 +52,13 @@ QcrControl<T>::QcrControl(QObject* object, const QString& name, QcrCell<T>* cell
     : QcrSettable {object, name}
     , cell_ {cell}
 {
-    if (QcrSettable::name().left(1)!="_") {
+    if (!adhoc()) {
         QSettings s;
         s.beginGroup("Controls");
         if (!Qcr::replay) {
             QVariant v = s.value(QcrSettable::name());
             if (v != QVariant{}) {
-                T val = v.value<T>();
+                const T val = v.value<T>();
                 programaticallySetValue(val);
                 doLog(QcrSettable::name()+" "+strOp::to_s(val));
             }
@@ -106,7 +106,7 @@ void QcrControl<T>::executeConsoleCommand(const QString& arg)
 template<class T>
 void QcrControl<T>::onChangedValue(T val)
 {
-    if (name().left(1)!="_") {
+    if (!adhoc()) {
         QSettings s;
         s.beginGroup("Controls");
         s.setValue(name(), val);
