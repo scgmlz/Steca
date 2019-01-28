@@ -42,6 +42,6 @@ SubframeSetup::SubframeSetup()
             setTabEnabled(1, gSession->dataset.countFiles());
             setTabEnabled(2, gSession->dataset.countFiles());
             if (!currentWidget()->isEnabled())
-                programaticallySetValue(0);
+                setCellValue(0);
         });
 }

@@ -47,6 +47,6 @@ Mainframe::Mainframe()
             setTabEnabled(4, active&&peakish);
             //setEnabled(anyEnabled());
             //if (!currentWidget()->isEnabled())
-            //    programaticallySetValue(0);
+            //    setCellValue(0);
             show(); });
 }

@@ -135,12 +135,12 @@ void MainWin::resetViews()
 {
     restoreState(initialState_);
 #ifndef Q_OS_OSX
-    toggles->fullScreen.programaticallySetValue(false);
+    toggles->fullScreen.setCellValue(false);
 #endif
-    toggles->viewStatusbar.programaticallySetValue(true);
-    toggles->viewClusters.programaticallySetValue(true);
-    toggles->viewFiles.programaticallySetValue(true);
-    toggles->viewMetadata.programaticallySetValue(true);
+    toggles->viewStatusbar.setCellValue(true);
+    toggles->viewClusters.setCellValue(true);
+    toggles->viewFiles.setCellValue(true);
+    toggles->viewMetadata.setCellValue(true);
 }
 
 //! Stores native defaults as initialState_, then reads from config file.

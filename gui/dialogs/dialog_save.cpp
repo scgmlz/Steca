@@ -63,7 +63,7 @@ DialogfieldPath::DialogfieldPath(QcrModalDialog* _parent)
 
     auto* actBrowse_ = new QcrTrigger{"selectDir", "Browse..."};
     connect(actBrowse_, &QAction::triggered, [this]() {
-            dirEdit->programaticallySetValue(
+            dirEdit->setCellValue(
                 file_dialog::queryDirectory(
                     parent, "Select folder", dirEdit->text())); });
 
@@ -107,7 +107,7 @@ DialogSave::DialogSave(
     for (const QString fmt: _extensions) {
         auto* rb = new QcrRadioButton{"fmt."+fmt, "."+fmt};
         fmt2button.emplace(fmt, rb);
-        rb->programaticallySetValue(saveFmt == fmt);
+        rb->setCellValue(saveFmt == fmt);
         connect(rb, &QRadioButton::clicked, [this,fmt]() { saveFmt = fmt; });
         fileExtensionGroup->addButton(rb);
         ftypeGrid->addWidget(rb);

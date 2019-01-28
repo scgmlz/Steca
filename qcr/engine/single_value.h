@@ -29,7 +29,7 @@ public:
     QcrSingleValue(QObject* object, const QString& name, QcrCell<T>* cell);
     QcrSingleValue(QObject* object, const QString& name, const T val);
     ~QcrSingleValue();
-    void programaticallySetValue(T val);
+    void setCellValue(T val);
     T getValue() const { ASSERT(doGetValue()==cell_->val()); return cell_->val(); }
     virtual T doGetValue() const = 0; //!< to be overriden by the widget-specific get function
     virtual void executeConsoleCommand(const QString& arg);
@@ -59,7 +59,7 @@ QcrSingleValue<T>::QcrSingleValue(QObject* object, const QString& name, QcrCell<
         QVariant v = s.value(QcrRegisteredMixin::name());
         if (v != QVariant{}) {
             const T val = v.value<T>();
-            programaticallySetValue(val);
+            setCellValue(val);
             doLog(QcrRegisteredMixin::name()+" "+strOp::to_s(val));
         }
         // Value may have changed, therefore write back to the config file controlled by QSettings
@@ -88,7 +88,7 @@ QcrSingleValue<T>::~QcrSingleValue()
 //!
 
 template<class T>
-void QcrSingleValue<T>::programaticallySetValue(T val)
+void QcrSingleValue<T>::setCellValue(T val)
 {
     cell_->setVal(val);
 }

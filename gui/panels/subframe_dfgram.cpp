@@ -54,7 +54,7 @@ DfPanel::DfPanel()
     , intenScale_ {"intenScale", &gSession->params.intenScale, 5, 1, 0.001}
 {
     plot_ = new PlotDfgram();
-    intenAvg_.programaticallySetValue(true);
+    intenAvg_.setCellValue(true);
 
     actZoom_.setHook([this](bool on) {
         plot_->setInteraction(QCP::iRangeDrag, on);
@@ -92,17 +92,17 @@ DfPanel::DfPanel()
 
 void DfPanel::onNormChanged()
 {
-    intenScale_.programaticallySetValue(gSession->params.intenScale.val()); // TODO own signal
+    intenScale_.setCellValue(gSession->params.intenScale.val()); // TODO own signal
     if (gSession->params.intenScaledAvg.val())
-        intenAvg_.programaticallySetValue(true);
+        intenAvg_.setCellValue(true);
     else
-        intenSum_.programaticallySetValue(true);
+        intenSum_.setCellValue(true);
     plot_->renderAll();
 }
 
 void DfPanel::onHighlight() // TODO currently unused
 {
-    actZoom_.programaticallySetValue(false);
+    actZoom_.setCellValue(false);
     plot_->renderAll();
 }
 
