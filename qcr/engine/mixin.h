@@ -64,7 +64,7 @@ private:
 };
 
 
-//! Root of class hierarchy, for inheritance by QcrMainWindow.
+//! Mixin for QMainWindow, inherited by QcrMainWindow, home of remakeAll().
 class QcrRootMixin : public QcrBaseMixin {
 public:
     QcrRootMixin(QObject* object);
