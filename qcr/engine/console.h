@@ -39,13 +39,16 @@ public:
     void readFile(const QString& fName);
     void call(const QString&);
     void commandsFromStack();
+    void startingGui();
 
     void log(const QString&) const;
     bool hasCommandsOnStack() const;
 private:
-    enum class Caller { gui,   //!< default: commands come from user action in GUI
-                        cli,   //!< command comes from command-line interface
-                        fil,   //!< command comes from stack, hence from file
+    enum class Caller { log,   //!< log entries come from console
+                        gui,   //!< commands come from user action in GUI
+                        ini,   //!< commands come from MainWin initialization
+                        cli,   //!< commands come from command-line interface
+                        fil,   //!< commands come from stack, hence from file
                         sys    //!< system call, currently only from startup script
     } caller_ { Caller::gui };
     enum class Result : int { ok, err, suspend };

@@ -160,12 +160,15 @@ Console::Console(const QString& logFileName)
         qFatal("cannot open log file");
     log_.setDevice(file);
     startTime_ = QDateTime::currentDateTime();
+    caller_ = Caller::log;
     log("#  " + qApp->applicationName() + " " + qApp->applicationVersion() + " started at "
         + startTime_.toString("yyyy-MM-dd HH:mm::ss.zzz"));
+    caller_ = Caller::ini;
 }
 
 Console::~Console()
 {
+    caller_ = Caller::log;
     log("#  " + qApp->applicationName() + " session ended");
     log("#  duration: " + QString::number(startTime_.msecsTo(QDateTime::currentDateTime())) + "ms");
     log("#  computing time: " + QString::number(computingTime_) + "ms");
@@ -196,6 +199,7 @@ QString Console::learn(const QString& nameArg, QcrSettable* widget)
     return registry().learn(name, widget);
 }
 
+//! Unlearns a widget name.
 void Console::forget(const QString& name)
 {
     registry().forget(name);
@@ -215,6 +219,7 @@ void Console::pop()
     //qterr.flush();
 }
 
+//! Reads and executes a command script.
 void Console::readFile(const QString& fName)
 {
     QFile file(fName);
@@ -246,7 +251,7 @@ void Console::call(const QString& line)
     commandInContext(line, Caller::sys);
 }
 
-//! needed by modal dialogs
+//! Executes commands on stack. Called by readFile and by QcrDialog/QcrFileDialog::exec.
 void Console::commandsFromStack()
 {
     while (!commandLifo_.empty()) {
@@ -263,6 +268,12 @@ void Console::commandsFromStack()
     }
 }
 
+void Console::startingGui()
+{
+    caller_ = Caller::gui;
+}
+
+//! Writes line to log file, decorated with information on context and timing.
 void Console::log(const QString& lineArg) const
 {
     QString line = lineArg;
@@ -297,8 +308,12 @@ bool Console::hasCommandsOnStack() const
 //! Returns three-letter code that indicates which kind of call caused the command to be logged.
 QString Console::callerCode() const
 {
-    if      (caller_==Caller::gui)
+    if      (caller_==Caller::log)
+        return "log";
+    else if (caller_==Caller::gui)
         return "gui";
+    else if (caller_==Caller::ini)
+        return "ini";
     else if (caller_==Caller::fil)
         return "fil";
     else if (caller_==Caller::cli)
@@ -333,17 +348,16 @@ Console::Result Console::commandInContext(const QString& line, Caller callerArg)
 //! further execution is delegated to the pertinent widget.
 Console::Result Console::wrappedCommand(const QString& line)
 {
-    if (line[0]=='#')
-        return Result::ok; // comment => nothing to do
     QString command, context;
     if (!parseCommandLine(line, command, context)) {
         qterr << "command line '" << line << "' could not be parsed\n"; qterr.flush();
         return Result::err;
     }
+    if (line=="")
+        return Result::ok; // nothing to do
     QString cmd, arg;
     strOp::splitOnce(command, cmd, arg);
     if (cmd[0]=='@') {
-        log(command);
         if (cmd=="@ls") {
             qterr << "registry " << registryStack_.top()->name() << " has commands:\n";
             qterr.flush();
@@ -351,6 +365,7 @@ Console::Result Console::wrappedCommand(const QString& line)
         } else if (cmd=="@file") {
             readFile(arg);
         } else if (cmd=="@close") {
+            log(command);
             return Result::suspend;
         } else {
             qterr << "@ command " << cmd << " not known\n"; qterr.flush();

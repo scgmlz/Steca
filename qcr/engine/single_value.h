@@ -55,14 +55,12 @@ QcrSingleValue<T>::QcrSingleValue(QObject* object, const QString& name, QcrCell<
     if (!adhoc()) {
         QSettings s;
         s.beginGroup("Controls");
-        if (!Qcr::replay) {
-            // Retrieve initial value from the config file controlled by QSettings
-            QVariant v = s.value(QcrSettable::name());
-            if (v != QVariant{}) {
-                const T val = v.value<T>();
-                programaticallySetValue(val);
-                doLog(QcrSettable::name()+" "+strOp::to_s(val)+" # from local settings");
-            }
+        // Retrieve initial value from the config file controlled by QSettings
+        QVariant v = s.value(QcrSettable::name());
+        if (v != QVariant{}) {
+            const T val = v.value<T>();
+            programaticallySetValue(val);
+            doLog(QcrSettable::name()+" "+strOp::to_s(val)+" # from local settings");
         }
         // Value may have changed, therefore write back to the config file controlled by QSettings
         s.setValue(QcrSettable::name(), cell_->val());
