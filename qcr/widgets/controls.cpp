@@ -305,7 +305,7 @@ QcrComboBox::QcrComboBox(
     doSetValue(cell_->val());
     connect(this, _SLOT_(QComboBox,currentIndexChanged,int), [this](int val)->void {
             if (!spuriousCall_)
-                onChangedValue(val); });
+                onChangedValue(val, itemText(val)); });
 }
 
 QcrComboBox::QcrComboBox(
