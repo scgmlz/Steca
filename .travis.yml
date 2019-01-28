@@ -25,16 +25,9 @@ before_install:
 - docker ps
 - chmod +x .travis/*/*.sh
 
-# install:
+install:
+- SH "apt-get install qtbase5-dev cmake clang g++"
 
 script:
 - .travis/${TRAVIS_OS_NAME}/build.sh
 - .travis/${TRAVIS_OS_NAME}/test.sh
-
-addons:
-  apt:
-    sources:
-    - sourceline: ppa:beineri/opt-qt-5.10.1-trusty
-    packages:
-    - qt510base
-    - xvfb
