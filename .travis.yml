@@ -18,7 +18,7 @@ compiler:
 
 env:
 # - BUILD_TYPE=Debug
-- BUILD_TYPE=Release, SH="docker exec -t dd bash -c"
+- BUILD_TYPE=Release
 
 before_install:
 - docker run -d --name dd -v $(pwd):/travis -w /travis ubuntu:bionic tail -f /dev/null
@@ -26,7 +26,7 @@ before_install:
 - chmod +x .travis/*/*.sh
 
 install:
-- SH "apt-get install qtbase5-dev cmake clang g++"
+- docker exec -t dd bash -c "apt-get install qtbase5-dev cmake clang g++"
 
 script:
 - .travis/${TRAVIS_OS_NAME}/build.sh
