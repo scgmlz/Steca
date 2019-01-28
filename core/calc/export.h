@@ -21,7 +21,6 @@ class Curve;
 class InfoSequence;
 class Range;
 class TakesLongTime;
-class QcrModalDialog; // TODO get rid
 
 namespace data_export {
 
@@ -44,7 +43,5 @@ void writeCurrentDfgram(QTextStream& stream, const QString& format);
 void writeAllDfgrams(QTextStream& stream, TakesLongTime& progress, const QString& format);
 
 void writeInfoSequence(QTextStream& stream, const InfoSequence& peakInfos, const QString& format);
-
-void saveDiagram (QFile* file, const QString& format, QcrModalDialog*);
 
 } // namespace data_export

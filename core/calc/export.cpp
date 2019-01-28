@@ -156,27 +156,3 @@ void data_export::writeInfoSequence(
     else
         writeFullInfoSequence(stream, peakInfos, data_export::separator(format));
 }
-
-
-void data_export::saveDiagram(QFile* file, const QString& format, QcrModalDialog*)
-{
-    ASSERT(file);
-    QTextStream stream(file);
-
-    // get data
-    const int idxX = int(gSession->params.diagramX.val());
-    const int idxY = int(gSession->params.diagramY.val());
-    std::vector<double> xs, ys, ysLow, ysHig;
-    const InfoSequence* peakInfos = gSession->allPeaks.currentInfoSequence();
-    ASSERT(peakInfos);
-    peakInfos->get4(idxX, idxY, xs, ys, ysLow, ysHig);
-    ASSERT(xs.size());
-    // write data table
-    const QString separator = data_export::separator(format);
-    for (int i=0; i<xs.size(); ++i) {
-        stream << xs[i] << separator << ys[i];
-        if (ysLow.size())
-            stream << separator << ysLow[i] << separator << ysHig[i];
-        stream << '\n';
-    }
-}
