@@ -29,6 +29,7 @@ public:
     //! even if TakesLongTime(taskName, totalSteps) is called from Core. This mechanism
     //! allows us to keep Core independent of Gui.
     static void registerProgressBar(class QProgressBar* bar) { staticBar_ = bar; };
+    int total() const { return total_; } //!< Expected number of steps, might be used for checks.
 private:
     const QString taskName_;
     int total_, i_;

@@ -42,33 +42,11 @@ void ExportDfgram::writeCurrent(QTextStream& stream)
 
 void ExportDfgram::writeOnefile(QTextStream& stream, const int idx)
 {
-    const int nSlices = gSession->gammaSelection.numSlices.val();
-    const int iSlice = idx%nSlices;
-    const int iCluster = idx/nSlices;
-
-    const Cluster* cluster = gSession->activeClusters.clusters.yield().at(iCluster);
-    const Range gmaStripe = gSession->gammaSelection.slice2range(cluster->rgeGma(), iSlice);
-    const Curve& curve = cluster->dfgrams.yield_at(iSlice,cluster).curve;
-    data_export::writeCurve(stream, curve, cluster, gmaStripe, data_export::separator(format()));
+    data_export::writeDfgram(stream, idx, format());
 }
 
 void ExportDfgram::writeJointfile(QTextStream& stream)
 {
     TakesLongTime progress("save diffractograms", multiplicity(), &progressBar);
-    const int nSlice = gSession->gammaSelection.numSlices.val();
-    const int nCluster = gSession->activeClusters.size();
-    const QString separator = data_export::separator(format());
-    for (int iCluster=0; iCluster<nCluster; ++iCluster) {
-        const Cluster* cluster = gSession->activeClusters.clusters.yield().at(iCluster);
-        for (int iSlice=0; iSlice<qMax(1,nSlice); ++iSlice) {
-            const Range gmaStripe = gSession->gammaSelection.slice2range(
-                cluster->rgeGma(), iSlice);
-            const Curve& curve = cluster->dfgrams.yield_at(iSlice,cluster).curve;
-            stream << "Picture Nr: " << iCluster+1 << '\n';
-            if (nSlice > 1)
-                stream << "Gamma slice Nr: " << iSlice+1 << '\n';
-            data_export::writeCurve(stream, curve, cluster, gmaStripe, separator);
-            progress.step();
-        }
-    }
+    data_export::writeAllDfgrams(stream, progress, format());
 }

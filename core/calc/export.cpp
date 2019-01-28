@@ -14,6 +14,7 @@
 
 #include "export.h"
 #include "qcr/base/debug.h"
+#include "core/base/async.h"
 #include "core/calc/info_sequence.h"
 #include "core/data/cluster.h"
 #include "core/typ/curve.h"
@@ -102,6 +103,40 @@ void data_export::writeCurve(
         stream << curve.x(i) << separator << curve.y(i) << '\n';
 
     stream.flush(); // not sure whether we need this
+}
+
+void data_export::writeDfgram(QTextStream& stream, const int idx, const QString& format)
+{
+    const int nSlices = gSession->gammaSelection.numSlices.val();
+    const int iSlice = idx%nSlices;
+    const int iCluster = idx/nSlices;
+
+    const Cluster* cluster = gSession->activeClusters.clusters.yield().at(iCluster);
+    const Range gmaStripe = gSession->gammaSelection.slice2range(cluster->rgeGma(), iSlice);
+    const Curve& curve = cluster->dfgrams.yield_at(iSlice,cluster).curve;
+    data_export::writeCurve(stream, curve, cluster, gmaStripe, data_export::separator(format));
+}
+
+void data_export::writeAllDfgrams(
+    QTextStream& stream, TakesLongTime& progress, const QString& format)
+{
+    const int nSlice = qMax(1, gSession->gammaSelection.numSlices.val());
+    const int nCluster = gSession->activeClusters.size();
+    const QString separator = data_export::separator(format);
+    ASSERT(progress.total()==nCluster*nSlice);
+    for (int iCluster=0; iCluster<nCluster; ++iCluster) {
+        const Cluster* cluster = gSession->activeClusters.clusters.yield().at(iCluster);
+        for (int iSlice=0; iSlice<nSlice; ++iSlice) {
+            const Range gmaStripe = gSession->gammaSelection.slice2range(
+                cluster->rgeGma(), iSlice);
+            const Curve& curve = cluster->dfgrams.yield_at(iSlice,cluster).curve;
+            stream << "Picture Nr: " << iCluster+1 << '\n';
+            if (nSlice > 1)
+                stream << "Gamma slice Nr: " << iSlice+1 << '\n';
+            data_export::writeCurve(stream, curve, cluster, gmaStripe, separator);
+            progress.step();
+        }
+    }
 }
 
 //! Writes pole figure for one Bragg peak.
