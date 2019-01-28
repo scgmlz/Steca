@@ -161,7 +161,7 @@ Console::Console(const QString& logFileName)
     log_.setDevice(file);
     startTime_ = QDateTime::currentDateTime();
     caller_ = Caller::log;
-    log("#  " + qApp->applicationName() + " " + qApp->applicationVersion() + " started at "
+    log("# " + qApp->applicationName() + " " + qApp->applicationVersion() + " started at "
         + startTime_.toString("yyyy-MM-dd HH:mm::ss.zzz"));
     caller_ = Caller::ini;
 }
@@ -169,9 +169,9 @@ Console::Console(const QString& logFileName)
 Console::~Console()
 {
     caller_ = Caller::log;
-    log("#  " + qApp->applicationName() + " session ended");
-    log("#  duration: " + QString::number(startTime_.msecsTo(QDateTime::currentDateTime())) + "ms");
-    log("#  computing time: " + QString::number(computingTime_) + "ms");
+    log("# " + qApp->applicationName() + " session ended");
+    log("# duration: " + QString::number(startTime_.msecsTo(QDateTime::currentDateTime())) + "ms");
+    log("# computing time: " + QString::number(computingTime_) + "ms");
     delete log_.device();
     while (!registryStack_.empty()) {
         delete registryStack_.top();

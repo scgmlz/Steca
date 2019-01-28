@@ -107,6 +107,7 @@ MainWin::~MainWin()
     // whereas all the following only reduces the number of perfectly inconsequential leaks:
     delete menus_;
     gGui = nullptr;
+    delete gConsole;
 }
 
 void MainWin::refresh()
