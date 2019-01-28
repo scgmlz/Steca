@@ -26,7 +26,7 @@ before_install:
 - chmod +x .travis/*/*.sh
 
 install:
-- docker exec -t dd bash -c "apt-get install qtbase5-dev cmake clang g++"
+- docker exec dd bash -c "apt-get install qtbase5-dev cmake clang"
 
 script:
 - .travis/${TRAVIS_OS_NAME}/build.sh

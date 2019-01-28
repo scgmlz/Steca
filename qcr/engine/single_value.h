@@ -29,9 +29,10 @@ public:
     QcrSingleValue(QObject* object, const QString& name, QcrCell<T>* cell);
     QcrSingleValue(QObject* object, const QString& name, const T val);
     ~QcrSingleValue();
+    //! Sets the value of the associated Cell, and in consequence also the value of this widget.
     void setCellValue(T val);
+    //! Gets the current value of this widget, which agrees with the value of the associated cell.
     T getValue() const { ASSERT(doGetValue()==cell_->val()); return cell_->val(); }
-    virtual T doGetValue() const = 0; //!< to be overriden by the widget-specific get function
     virtual void executeConsoleCommand(const QString& arg);
     QcrCell<T>* cell() { return cell_; }
     void setHook(std::function<void(const T)> f) { cell()->setHook(f); }
@@ -39,7 +40,8 @@ protected:
     void onChangedValue(T val);
     QcrCell<T>* cell_ {nullptr};
 private:
-    virtual void doSetValue(T) = 0; //!< to be overriden by the widget-specific set function
+    virtual T doGetValue() const = 0; //!< to be overridden by the widget-specific get function
+    virtual void doSetValue(T) = 0;   //!< to be overridden by the widget-specific set function
     bool ownsItsCell_ {false};
 };
 
@@ -85,7 +87,9 @@ QcrSingleValue<T>::~QcrSingleValue()
         delete cell_;
 }
 
-//!
+//! Sets the value of the associated Cell, and in consequence also the value of this widget.
+
+//! This is the proper way of changing the widget's value programatically.
 
 template<class T>
 void QcrSingleValue<T>::setCellValue(T val)
