@@ -42,7 +42,6 @@ MainWin* gGui; //!< global pointer to _the_ main window
 MainWin::MainWin(const QString& startupScript)
 {
     gGui = this;
-    Qcr::replay = (startupScript!="");
 
     triggers = new Triggers;
     toggles = new Toggles;
@@ -77,7 +76,6 @@ MainWin::MainWin(const QString& startupScript)
     statusBar()->addWidget(progressBar);
     TakesLongTime::registerProgressBar(progressBar);
 
-    // connect toggles
     toggles->viewStatusbar.setHook([this](bool on){statusBar()  ->setVisible(on);});
     toggles->viewFiles    .setHook([this](bool on){dockFiles_   ->setVisible(on);});
     toggles->viewClusters .setHook([this](bool on){dockClusters_->setVisible(on);});
@@ -87,15 +85,16 @@ MainWin::MainWin(const QString& startupScript)
             if (on) showFullScreen(); else showNormal();});
 #endif
 
-    // initialize state
     readSettings();
 
     setRemake( [=]() { refresh(); } );
     show(); // must be called before initial remakeAll because remakeAll depends on visibility
     remakeAll();
+    gConsole->startingGui();
+
     if (startupScript!="")
-        QTimer::singleShot(25, qApp, [=](){ gConsole->call("@file " + startupScript); });
-    Qcr::replay = false;
+        // delay execution until hopefully this MainWin is shown
+        QTimer::singleShot(25, qApp, [=](){ gConsole->runScript(startupScript); });
 }
 
 MainWin::~MainWin()
@@ -108,6 +107,7 @@ MainWin::~MainWin()
     // whereas all the following only reduces the number of perfectly inconsequential leaks:
     delete menus_;
     gGui = nullptr;
+    delete gConsole;
 }
 
 void MainWin::refresh()
@@ -135,12 +135,12 @@ void MainWin::resetViews()
 {
     restoreState(initialState_);
 #ifndef Q_OS_OSX
-    toggles->fullScreen.programaticallySetValue(false);
+    toggles->fullScreen.setCellValue(false);
 #endif
-    toggles->viewStatusbar.programaticallySetValue(true);
-    toggles->viewClusters.programaticallySetValue(true);
-    toggles->viewFiles.programaticallySetValue(true);
-    toggles->viewMetadata.programaticallySetValue(true);
+    toggles->viewStatusbar.setCellValue(true);
+    toggles->viewClusters.setCellValue(true);
+    toggles->viewFiles.setCellValue(true);
+    toggles->viewMetadata.setCellValue(true);
 }
 
 //! Stores native defaults as initialState_, then reads from config file.

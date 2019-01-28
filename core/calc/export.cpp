@@ -116,7 +116,7 @@ void data_export::writeInfoSequence(
 }
 
 
-void data_export::saveDiagram(QFile* file, const QString& format, QcrDialog*)
+void data_export::saveDiagram(QFile* file, const QString& format, QcrModalDialog*)
 {
     ASSERT(file);
     QTextStream stream(file);

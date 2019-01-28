@@ -6,6 +6,7 @@ endif()
 
 target_include_directories(Steca
     PRIVATE
+    ${CMAKE_BINARY_DIR} # for manifest.h
     ${CMAKE_HOME_DIRECTORY}
     ${CMAKE_HOME_DIRECTORY}/3rdparty)
 

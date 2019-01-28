@@ -39,12 +39,12 @@ QColor scatter {255, 0, 0};
 
 //! Equips PlotOverlay with domain-specific colors and setter functions.
 
-class PlotDfgramOverlay : public PlotOverlay, public QcrSettable {
+class PlotDfgramOverlay : public PlotOverlay, public QcrRegisteredMixin {
 public:
     PlotDfgramOverlay(class PlotDfgram& parent)
-        : PlotOverlay{parent, RangeControl::STEP}, QcrSettable{this,"dfgram"} {}
+        : PlotOverlay{parent, RangeControl::STEP}, QcrRegisteredMixin{this,"dfgram"} {}
 private:
-    void executeConsoleCommand(const QString&) final;
+    void setFromCommand(const QString&) final;
     void addRange(const Range&) final;
     void selectRange(double x) final;
     const QColor* mousedColor() const final;
@@ -99,7 +99,7 @@ void PlotDfgramOverlay::selectRange(double x)
         gRoot->remakeAll();
 }
 
-void PlotDfgramOverlay::executeConsoleCommand(const QString& arg)
+void PlotDfgramOverlay::setFromCommand(const QString& arg)
 {
     QStringList args = arg.split(' ');
     if (args[0]=="add") {

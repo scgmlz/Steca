@@ -20,7 +20,7 @@
 #include <memory>
 
 //! Holds a single value_, and a hook_ that is executed when the value has changed.
-//!
+
 //! Intended for use by a control widget that owns the cell.
 //! To interact with that owning widget, there are "set" and "get" callbacks.
 template<class T>
@@ -50,9 +50,7 @@ public:
     //! Returns the current value_.
     T val() const { return value_; }
     //! Returns true if and only if we are calling a "set" or "get" callback function.
-    //! This helps the owning widget to find out whether its value has been changed
-    //! programatically by its cell, or through direct user action.
-    bool amCalling() const {return amCalling_;}
+    bool amCalling() const;
 private:
     T value_;
     bool amCalling_ {false};
@@ -88,6 +86,16 @@ void QcrCell<T>::pureSetVal(const T v)
     callbackSet_(value_); // set value of owning widget
     value_ = (*callbackGet_)();
     amCalling_ = false;
+}
+
+//! Returns true if and only if we are calling a "set" or "get" callback function.
+
+//! This helps the owning widget to find out whether its value has been changed
+//! programatically by its cell, or through direct user action.
+template<class T>
+bool QcrCell<T>::amCalling() const
+{
+    return amCalling_;
 }
 
 #endif // CELL_H

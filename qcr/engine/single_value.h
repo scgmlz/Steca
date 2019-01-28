@@ -3,7 +3,7 @@
 //  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/engine/single_value.h
-//! @brief     Defines and implements templated classes QcrControl
+//! @brief     Defines and implements templated classes QcrSingleValue
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -22,56 +22,62 @@
 #include <QSettings>
 #include <iostream>
 
-//! Base class for all Qcr widgets that hold a single value.
+//! Mixin for all QWidgets that hold a single value, base class for all QcrWidgets.
 template<class T>
-class QcrControl : public QcrSettable {
+class QcrSingleValue : public QcrRegisteredMixin {
 public:
-    QcrControl(QObject* object, const QString& name, QcrCell<T>* cell);
-    QcrControl(QObject* object, const QString& name, const T val); // TODO get rid of this variant?
-    ~QcrControl();
-    void programaticallySetValue(T val);
+    QcrSingleValue(QObject* object, const QString& name, QcrCell<T>* cell);
+    QcrSingleValue(QObject* object, const QString& name, const T val);
+    ~QcrSingleValue();
+    //! Sets the value of the associated Cell, and in consequence also the value of this widget.
+    void setCellValue(T val);
+    //! Sets the widget value according to string argument. Called Console::wrappedCommand.
+    virtual void setFromCommand(const QString& arg);
+    //! Gets the current value of this widget, which agrees with the value of the associated cell.
     T getValue() const { ASSERT(doGetValue()==cell_->val()); return cell_->val(); }
-    virtual T doGetValue() const = 0; //!< to be overriden by the widget-specific get function
-    virtual void executeConsoleCommand(const QString& arg);
+    //! Returns pointer to associated Cell.
     QcrCell<T>* cell() { return cell_; }
+    //! Sets the hook of the associated Cell.
     void setHook(std::function<void(const T)> f) { cell()->setHook(f); }
 protected:
+    //! Transmits new widget value to the Cell, to the QSettings. Logs. Finally remakes all views.
     void onChangedValue(T val);
     QcrCell<T>* cell_ {nullptr};
 private:
-    virtual void doSetValue(T) = 0; //!< to be overriden by the widget-specific set function
+    virtual T doGetValue() const = 0; //!< to be overridden by the widget-specific get function
+    virtual void doSetValue(T) = 0;   //!< to be overridden by the widget-specific set function
     bool ownsItsCell_ {false};
 };
 
 //  ***********************************************************************************************
-//  implementation of QcrControl<T>
+//  implementation of QcrSingleValue<T>
 
-//! Constructor that associates this QcrControl with an external QcrCell.
+//! Constructor that associates this QcrSingleValue with an external QcrCell.
 template<class T>
-QcrControl<T>::QcrControl(QObject* object, const QString& name, QcrCell<T>* cell)
-    : QcrSettable {object, name}
+QcrSingleValue<T>::QcrSingleValue(QObject* object, const QString& name, QcrCell<T>* cell)
+    : QcrRegisteredMixin {object, name}
     , cell_ {cell}
 {
-    if (QcrSettable::name().left(1)!="_") {
+    if (!adhoc()) {
         QSettings s;
         s.beginGroup("Controls");
-        if (!Qcr::replay) {
-            QVariant v = s.value(QcrSettable::name());
-            if (v != QVariant{}) {
-                T val = v.value<T>();
-                programaticallySetValue(val);
-                doLog(QcrSettable::name()+" "+strOp::to_s(val));
-            }
+        // Retrieve initial value from the config file controlled by QSettings
+        QVariant v = s.value(QcrRegisteredMixin::name());
+        if (v != QVariant{}) {
+            const T val = v.value<T>();
+            setCellValue(val);
+            doLog(QcrRegisteredMixin::name()+" "+strOp::to_s(val));
         }
-        s.setValue(QcrSettable::name(), cell_->val());
+        // Value may have changed, therefore write back to the config file controlled by QSettings
+        s.setValue(QcrRegisteredMixin::name(), cell_->val());
     }
     cell_->setCallbacks([this](){return doGetValue();}, [this](const T val){doSetValue(val);});
 }
 
-//! Constructs a QcrControl that owns a QcrCell.
+//! Constructs a QcrSingleValue that owns a QcrCell.
 template<class T>
-QcrControl<T>::QcrControl(QObject* object, const QString& name, const T val)
-    : QcrSettable {object, name}
+QcrSingleValue<T>::QcrSingleValue(QObject* object, const QString& name, const T val)
+    : QcrRegisteredMixin {object, name}
     , ownsItsCell_ {true}
 {
     cell_ = new QcrCell<T>(val); // TODO RECONSIDER smart pointer
@@ -79,48 +85,44 @@ QcrControl<T>::QcrControl(QObject* object, const QString& name, const T val)
 }
 
 template<class T>
-QcrControl<T>::~QcrControl()
+QcrSingleValue<T>::~QcrSingleValue()
 {
     if (ownsItsCell_)
         delete cell_;
 }
 
-//!
+//! Sets the value of the associated Cell, and in consequence also the value of this widget.
 
+//! This is the proper way of changing the widget's value programatically.
 template<class T>
-void QcrControl<T>::programaticallySetValue(T val)
+void QcrSingleValue<T>::setCellValue(T val)
 {
     cell_->setVal(val);
 }
 
+//! Sets the widget value according to string argument. Called Console::wrappedCommand.
 template<class T>
-void QcrControl<T>::executeConsoleCommand(const QString& arg)
+void QcrSingleValue<T>::setFromCommand(const QString& arg)
 {
     doSetValue(strOp::from_s<T>(arg)); // unguarded
 }
 
-//! If value has changed, then logtransmit value to cell, and log.
+//! Transmits new widget value to the Cell, to the QSettings. Logs. Finally remakes all views.
 
 //! Used by control widgets, typically through Qt signals that are emitted upon user actions.
-
 template<class T>
-void QcrControl<T>::onChangedValue(T val)
+void QcrSingleValue<T>::onChangedValue(T val)
 {
-    if (name().left(1)!="_") {
+    if (!adhoc()) {
         QSettings s;
         s.beginGroup("Controls");
         s.setValue(name(), val);
     }
-
-    // qDebug()<<name()<<"onChangedValue arg="<<val<<", old="<<cell_->val();
     if (cell_->amCalling() || val==cell_->val())
         return;
-
     doLog(name()+" "+strOp::to_s(val));
     cell_->setVal(val);
-    // qDebug()<<name()<<"remakeAll beg val="<<cell_->val();
     gRoot->remakeAll();
-    // qDebug()<<name()<<"remakeAll end val="<<cell_->val();
 }
 
 #endif // SINGLE_VALUE_H

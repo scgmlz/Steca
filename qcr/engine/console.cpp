@@ -12,11 +12,46 @@
 //
 //  ***********************************************************************************************
 
+#include <regex>
+#include <iostream>
+#include <QString>
+
+namespace {
+
+//! Parses a command line, sets the command and the context, and returns true if successful.
+
+//! The input line may be either a plain command or a log entry.
+//! A log entry starts with a '[..]' comment containing execution time (optional) and context.
+//! It may end with a '#..' comment.
+//!
+//! Covered by utest/test005_strop
+
+bool parseCommandLine(const QString& line, QString& command, QString& context)
+{
+    const std::regex my_regex("^(\\[\\s*((\\d+)ms)?\\s*(\\w+)\\s\\w{3}\\])?([^#]*)(#.*)?$");
+    std::smatch my_match;
+    const std::string tmpLine { line.toLatin1().constData() };
+    if (!std::regex_match(tmpLine, my_match, my_regex))
+        return false;
+    if (my_match.size()!=7) {
+        std::cerr << "BUG: invalid match size\n";
+        exit(-1);
+    }
+    context = QString{my_match[4].str().c_str()};
+    command = QString{my_match[5].str().c_str()}.trimmed();
+    return true;
+}
+
+} // namespace
+
+#ifndef LOCAL_CODE_ONLY
+
 #include "qcr/engine/console.h"
 #include "qcr/engine/mixin.h"
 #include "qcr/base/qcrexception.h"
 #include "qcr/base/string_ops.h"
 #include "qcr/base/debug.h" // ASSERT
+#include <QApplication>
 #include <QFile>
 
 #ifdef Q_OS_WIN
@@ -39,20 +74,20 @@ public:
     CommandRegistry() = delete;
     CommandRegistry(const CommandRegistry&) = delete;
     CommandRegistry(const QString& _name) : name_(_name) {}
-    QString learn(const QString&, QcrSettable*);
+    QString learn(const QString&, QcrRegisteredMixin*);
     void forget(const QString&);
-    QcrSettable* find(const QString& name);
+    QcrRegisteredMixin* find(const QString& name);
     void dump(QTextStream&);
     QString name() const { return name_; }
 private:
     const QString name_;
-    std::map<const QString, QcrSettable*> widgets_;
+    std::map<const QString, QcrRegisteredMixin*> widgets_;
     std::map<const QString, int> numberedEntries_;
 };
 
-QString CommandRegistry::learn(const QString& name, QcrSettable* widget)
+QString CommandRegistry::learn(const QString& name, QcrRegisteredMixin* widget)
 {
-    ASSERT(name!=""); // empty name only allowed for non-settable QcrMixin
+    ASSERT(name!=""); // empty name only allowed for non-settable QcrBaseMixin
     // qterr << "Registry " << name_ << " learns '" << name << "'\n"; qterr.flush();
     QString ret = name;
     if (ret.contains("#")) {
@@ -85,7 +120,7 @@ void CommandRegistry::forget(const QString& name)
     widgets_.erase(it);
 }
 
-QcrSettable* CommandRegistry::find(const QString& name)
+QcrRegisteredMixin* CommandRegistry::find(const QString& name)
 {
     auto entry = widgets_.find(name);
     if (entry==widgets_.end())
@@ -104,35 +139,39 @@ void CommandRegistry::dump(QTextStream& stream)
 //  ***********************************************************************************************
 //! @class Console
 
-Console::Console()
+Console::Console(const QString& logFileName)
 {
     gConsole = this;
 
 #ifdef Q_OS_WIN
     notifier_ = new QWinEventNotifier();// GetStdHandle(STD_INPUT_HANDLE));
-    QObject::connect(notifier_, &QWinEventNotifier::activated, [this] (HANDLE) {readLine(); });
+    QObject::connect(notifier_, &QWinEventNotifier::activated, [this] (HANDLE) {readCLI(); });
 #else
     notifier_ = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read);
-    QObject::connect(notifier_, &QSocketNotifier::activated, [this](int) { readLine(); });
+    QObject::connect(notifier_, &QSocketNotifier::activated, [this](int) { readCLI(); });
 #endif
 
     // start registry
     registryStack_.push(new CommandRegistry("main"));
 
     // start log
-    auto* file = new QFile("Steca.log");
+    auto* file = new QFile(logFileName);
     if (!file->open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
         qFatal("cannot open log file");
     log_.setDevice(file);
     startTime_ = QDateTime::currentDateTime();
-    log("#  Steca started at " + startTime_.toString("yyyy-MM-dd HH:mm::ss.zzz"));
+    caller_ = Caller::log;
+    log("# " + qApp->applicationName() + " " + qApp->applicationVersion() + " started at "
+        + startTime_.toString("yyyy-MM-dd HH:mm::ss.zzz"));
+    caller_ = Caller::ini;
 }
 
 Console::~Console()
 {
-    log("#  Steca session ended");
-    log("#  duration: " + QString::number(startTime_.msecsTo(QDateTime::currentDateTime())) + "ms");
-    log("#  computing time: " + QString::number(computingTime_) + "ms");
+    caller_ = Caller::log;
+    log("# " + qApp->applicationName() + " session ended");
+    log("# duration: " + QString::number(startTime_.msecsTo(QDateTime::currentDateTime())) + "ms");
+    log("# computing time: " + QString::number(computingTime_) + "ms");
     delete log_.device();
     while (!registryStack_.empty()) {
         delete registryStack_.top();
@@ -140,19 +179,63 @@ Console::~Console()
     }
 }
 
-void Console::readLine()
+//! Learns a widget or push new registry.
+
+//! Widgets are registered in the current registry, for use in wrappedCommand
+//! where commands are delegated to widgets which then execute them.
+//!
+//! In the special case of nameArg="@push <name>", a new registry is pushed to current.
+//! This is used by the QcrModalMixin modal dialogs. On terminating, QcrModalMixin calls
+//! closeModalDialog(), which pops the current registry away, so that the previous
+//! registry is reinstated.
+QString Console::learn(const QString& nameArg, QcrRegisteredMixin* widget)
 {
-    QTextStream qtin(stdin);
-    QString line = qtin.readLine();
-    caller_ = Caller::cli;
-    executeLine(line);
-    caller_ = Caller::gui;
+    QString name = nameArg;
+    if (name[0]=='@') {
+        QStringList args = name.split(' ');
+        if (args[0]!="@push") {
+            QByteArray tmp = name.toLatin1();
+            qFatal("invalid @ command in learn(%s)", tmp.constData());
+        }
+        if (args.size()<2) {
+            QByteArray tmp = name.toLatin1();
+            qFatal("@push has no argument in learn(%s)", tmp.constData());
+        }
+        name = args[1];
+        registryStack_.push(new CommandRegistry(name));
+    }
+    return registry().learn(name, widget);
 }
 
-void Console::readFile(const QString& fName)
+//! Unlearns a widget name.
+void Console::forget(const QString& name)
+{
+    registry().forget(name);
+}
+
+//! Pops the current registry away, so that the previous one is reinstated.
+
+//! Called by ~QcrModalMixin(), i.e. on terminating a modal dialog.
+void Console::closeModalDialog()
+{
+    log("@close");
+    if (registryStack_.empty()) {
+        qterr << "cannot pop: registry stack is empty\n"; qterr.flush();
+        return;
+    }
+    //qterr << "going to pop registry " << registryStack_.top()->name() << "\n";
+    //qterr.flush();
+    delete registryStack_.top();
+    registryStack_.pop();
+    //qterr << "top registry is now " << registryStack_.top()->name() << "\n";
+    //qterr.flush();
+}
+
+//! Reads and executes a command script.
+void Console::runScript(const QString& fName)
 {
     QFile file(fName);
-    log("@file " + fName);
+    log("# running script '" + fName + "'");
     if (!file.open(QIODevice::ReadOnly)) {
         qWarning() << "Cannot open file " << fName;
         return;
@@ -171,9 +254,16 @@ void Console::readFile(const QString& fName)
         commandLifo_.push_back(line);
     }
     commandsFromStack();
-    log("# @file " + fName + " executed");
+    log("# done with script '" + fName + "'");
 }
 
+//! Commands issued by the system (and not by the user nor a command file) should pass here
+void Console::call(const QString& line)
+{
+    commandInContext(line, Caller::sys);
+}
+
+//! Executes commands on stack. Called by runScript and by QcrModalDialog/QcrFileDialog::exec.
 void Console::commandsFromStack()
 {
     while (!commandLifo_.empty()) {
@@ -181,9 +271,7 @@ void Console::commandsFromStack()
         commandLifo_.pop_front();
         if (line=="@close")
             return;
-        caller_ = Caller::stack;
-        Result ret = executeLine(line);
-        caller_ = Caller::gui;
+        Result ret = commandInContext(line, Caller::fil);
         if (ret==Result::err) {
             commandLifo_.clear();
             log("# Emptied command stack upon error");
@@ -192,89 +280,16 @@ void Console::commandsFromStack()
     }
 }
 
-//! Commands issued by the system (and not by the user nor a command file) should pass here
-void Console::call(const QString& line)
+//! Sets calling context to GUI. To be called when initializations are done.
+void Console::startingGui()
 {
-    caller_ = Caller::sys;
-    executeLine(line);
     caller_ = Caller::gui;
 }
 
-Console::Result Console::executeLine(QString line)
+//! Writes line to log file, decorated with information on context and timing.
+void Console::log(const QString& lineArg) const
 {
-    if (line[0]=='#')
-        return Result::ok; // comment => nothing to do
-    QString cmd, arg;
-    strOp::splitOnce(line, cmd, arg);
-    if (cmd[0]=='@') {
-        log(line);
-        if (cmd=="@ls") {
-            qterr << "registry " << registryStack_.top()->name() << " has commands:\n";
-            qterr.flush();
-            registryStack_.top()->dump(qterr);
-        } else if (cmd=="@file") {
-            readFile(arg);
-        } else if (cmd=="@close") {
-            return Result::suspend;
-        } else {
-            qterr << "@ command " << cmd << " not known\n"; qterr.flush();
-            return Result::err;
-        }
-        return Result::ok;
-    }
-    QcrSettable* f = registry().find(cmd);
-    if (!f) {
-        qterr << "Command '" << cmd << "' not found\n"; qterr.flush();
-        return Result::err;
-    }
-    try {
-        f->executeConsoleCommand(arg); // execute command
-        return Result::ok;
-    } catch (const QcrException &ex) {
-        qterr << "Command '" << line << "' failed:\n" << ex.msg() << "\n"; qterr.flush();
-    }
-    return Result::err;
-}
-
-QString Console::learn(QString name, QcrSettable* widget)
-{
-    if (name[0]=='@') {
-        QStringList args = name.split(' ');
-        if (args.size()<2) {
-            QByteArray tmp = name.toLatin1();
-            qFatal("invalid @ construct in learn(%s)", tmp.constData());
-        }
-        if (args[0]!="@push") {
-            QByteArray tmp = name.toLatin1();
-            qFatal("invalid @ command in learn(%s)", tmp.constData());
-        }
-        name = args[1];
-        registryStack_.push(new CommandRegistry(name));
-    }
-    return registry().learn(name, widget);
-}
-
-void Console::pop()
-{
-    if (registryStack_.empty()) {
-        qterr << "cannot pop: registry stack is empty\n"; qterr.flush();
-        return;
-    }
-    //qterr << "going to pop registry " << registryStack_.top()->name() << "\n";
-    //qterr.flush();
-    delete registryStack_.top();
-    registryStack_.pop();
-    //qterr << "top registry is now " << registryStack_.top()->name() << "\n";
-    //qterr.flush();
-}
-
-void Console::forget(const QString& name)
-{
-    registry().forget(name);
-}
-
-void Console::log(QString line) const
-{
+    QString line = lineArg;
     static auto lastTime = startTime_;
     auto currTime = QDateTime::currentDateTime();
     int tDiff = lastTime.msecsTo(currTime);
@@ -286,15 +301,9 @@ void Console::log(QString line) const
         prefix += QString::number(tDiff).rightJustified(5) + "ms";
         computingTime_ += tDiff;
     }
-    prefix += " " + registry().name() + "]";
-    if      (caller_==Caller::gui || caller_==Caller::stack)
-        ; // no further embellishment
-    else if (caller_==Caller::cli)
-        line = "#c " + line;
-    else if (caller_==Caller::sys)
-        line = "#s " + line;
-    else
-        qFatal("invalid case");
+    prefix += " " + registry().name() + " " + callerCode() + "] ";
+    if (caller_==Caller::sys)
+        line = "# " + line;
     log_ << prefix << line << "\n";
     log_.flush();
     if (line.indexOf("##")!=0) {
@@ -302,3 +311,91 @@ void Console::log(QString line) const
         qterr.flush();
     }
 }
+
+//! Returns true if there are commands on stack. Needed by modal dialogs.
+bool Console::hasCommandsOnStack() const
+{
+    return !commandLifo_.empty();
+}
+
+//! Returns three-letter code that indicates which kind of call caused the command to be logged.
+QString Console::callerCode() const
+{
+    if      (caller_==Caller::log)
+        return "log";
+    else if (caller_==Caller::gui)
+        return "gui";
+    else if (caller_==Caller::ini)
+        return "ini";
+    else if (caller_==Caller::fil)
+        return "fil";
+    else if (caller_==Caller::cli)
+        return "cli";
+    else if (caller_==Caller::sys)
+        return "sys";
+    else
+        qFatal("BUG in Console::callerCode: invalid case");
+}
+
+//! Reads one line from the command-line interface, and executes it.
+void Console::readCLI()
+{
+    QTextStream qtin(stdin);
+    QString line = qtin.readLine();
+    commandInContext(line, Caller::cli);
+}
+
+//! Delegates command execution to wrappedCommand, with context set to callerArg.
+Console::Result Console::commandInContext(const QString& line, Caller callerArg)
+{
+    caller_ = callerArg;
+    Result ret = wrappedCommand(line);
+    caller_ = Caller::gui; // restores default
+    return ret;
+}
+
+//! Executes command. Always called from commandInContext(..).
+
+//! Commands are either console commands (starting with '@'), or widget commands.
+//! Widget commands start with the name of widget that has been registered by learn(..);
+//! further execution is delegated to the pertinent widget.
+Console::Result Console::wrappedCommand(const QString& line)
+{
+    QString command, context;
+    if (!parseCommandLine(line, command, context)) {
+        qterr << "command line '" << line << "' could not be parsed\n"; qterr.flush();
+        return Result::err;
+    }
+    if (command=="")
+        return Result::ok; // nothing to do
+    QString cmd, arg;
+    strOp::splitOnce(command, cmd, arg);
+    if (cmd[0]=='@') {
+        if (cmd=="@ls") {
+            qterr << "registry " << registryStack_.top()->name() << " has commands:\n";
+            qterr.flush();
+            registryStack_.top()->dump(qterr);
+        } else if (cmd=="@close") {
+            log(command);
+            return Result::suspend;
+        } else {
+            qterr << "@ command " << cmd << " not known\n"; qterr.flush();
+            return Result::err;
+        }
+        return Result::ok;
+    }
+    QcrRegisteredMixin* w = registry().find(cmd);
+    if (!w) {
+        qterr << "Command '" << cmd << "' not found\n"; qterr.flush();
+        return Result::err;
+    }
+    try {
+        w->setFromCommand(arg); // execute command
+        return Result::ok;
+    } catch (const QcrException&ex) {
+        qterr << "Command '" << command << "' failed:\n" << ex.msg() << "\n"; qterr.flush();
+    }
+    return Result::err;
+}
+
+#endif // LOCAL_CODE_ONLY

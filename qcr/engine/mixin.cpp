@@ -3,7 +3,7 @@
 //  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/engine/mixin.cpp
-//! @brief     Implements classes QcrMixin, QcrRoot, QcrSettable, QcrModal, QcrModelessDialog
+//! @brief     Implements classes QcrBaseMixin, QcrRootMixin, QcrRegisteredMixin, QcrModalMixin, QcrModelessDialog
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -17,19 +17,24 @@
 #include "qcr/engine/console.h"
 #include <QAction>
 
-QcrRoot* gRoot {nullptr};
-bool Qcr::replay = false;
+QcrRootMixin* gRoot {nullptr};
 
 //  ***********************************************************************************************
-//! @class QcrMixin
+//! @class QcrBaseMixin
 
-QcrMixin::QcrMixin(QObject* object, const QString& name)
+QcrBaseMixin::QcrBaseMixin(QObject* object, const QString& name)
     : object_ {object}
 {
     object_->setObjectName(name);
 }
 
-void QcrMixin::remake()
+//! Calls the hook remake_, provided the associated QObject is a visible QWidget, or a QAction.
+
+//! Use is mostly from QcrRootMixin::remakeAll().
+//!
+//! Children may provide additional remake functionality; they override this, and include
+//! a call to QcrBaseMixin::remake(). This is currently done in QcrComboBox::remake().
+void QcrBaseMixin::remake()
 {
     const QWidget* w = dynamic_cast<const QWidget*>(object());
     if ((w && w->isVisible()) || dynamic_cast<const QAction*>(object()))
@@ -38,40 +43,46 @@ void QcrMixin::remake()
 
 
 //  ***********************************************************************************************
-//! @class QcrRoot
+//! @class QcrRootMixin
 
-QcrRoot::QcrRoot(QObject* object)
-    : QcrMixin {object, "root"}
+QcrRootMixin::QcrRootMixin(QObject* object)
+    : QcrBaseMixin {object, "root"}
 {
     gRoot = this;
 }
 
 static int remakeLoops {0};
 
-void QcrRoot::remakeAll()
+void QcrRootMixin::remakeAll()
 {
     ++remakeLoops;
     if (remakeLoops>1)
-        qFatal("circular remakeAll, it seems");
+        qFatal("BUG: circular remakeAll");
     remake();
     for (QWidget* w: object()->findChildren<QWidget*>())
-        if (QcrMixin* m = dynamic_cast<QcrMixin*>(w))
+        if (QcrBaseMixin* m = dynamic_cast<QcrBaseMixin*>(w))
             m->remake();
     --remakeLoops;
 }
 
 
 //  ***********************************************************************************************
-//! @class QcrSettable
+//! @class QcrRegisteredMixin
 
-QcrSettable::QcrSettable(QObject* object, const QString& name, bool _modal)
-    : QcrMixin {object, gConsole->learn(name, this)} // console may change name (expand macros)
+QcrRegisteredMixin::QcrRegisteredMixin(QObject* object, const QString& name, bool _modal)
+    : QcrBaseMixin {object, gConsole->learn(name, this)} // console may change name (expand macros)
 {}
 
-void QcrSettable::doLog(const QString& msg)
+void QcrRegisteredMixin::doLog(const QString& msg)
 // Trivial, but not inlined to isolate dependence on console.h.
 {
     gConsole->log(msg);
+}
+
+//! Returns true if the value of *this is not to be stored as part of the QSettings.
+bool QcrRegisteredMixin::adhoc() const
+{
+    return name().left(6)=="adhoc_";
 }
 
 
@@ -80,7 +91,7 @@ void QcrSettable::doLog(const QString& msg)
 
 QcrModelessDialog::QcrModelessDialog(QWidget* parent, const QString& name)
     : QDialog {parent}
-    , QcrSettable {this, name}
+    , QcrRegisteredMixin {this, name}
 {
     setModal(false);
 }
@@ -90,7 +101,7 @@ void QcrModelessDialog::closeEvent(QCloseEvent* event)
     deleteLater();
 }
 
-void QcrModelessDialog::executeConsoleCommand(const QString& arg)
+void QcrModelessDialog::setFromCommand(const QString& arg)
 {
     if (arg!="close")
         throw QcrException("Unexpected command in ModelessDialog "+name());

@@ -5,6 +5,7 @@ add_library(${lib} ${files})
 
 target_include_directories(${lib}
     PRIVATE
+    ${CMAKE_BINARY_DIR} # for manifest.h
     ${CMAKE_HOME_DIRECTORY}
     ${CMAKE_HOME_DIRECTORY}/3rdparty
     )
