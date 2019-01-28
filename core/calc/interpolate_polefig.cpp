@@ -131,7 +131,7 @@ void searchPoints(deg alpha, deg beta, deg radius, const InfoSequence& infos,
 //! Searches closest InfoSequence to given alpha and beta in quadrants.
 void searchInQuadrants(
     const Quadrants& quadrants, deg alpha, deg beta, deg searchRadius, const InfoSequence& infos,
-    std::vector<PeakInfo const*>& foundInfos, std::vector<double>& distances)
+    std::vector<const PeakInfo*>& foundInfos, std::vector<double>& distances)
 {
     ASSERT(quadrants.size() <= NUM_QUADRANTS);
     // Take only peak infos with beta within +/- BETA_LIMIT degrees into
@@ -166,7 +166,7 @@ void searchInQuadrants(
 }
 
 itf_t inverseDistanceWeighing(
-    const std::vector<double>& distances, const std::vector<PeakInfo const*>& infos)
+    const std::vector<double>& distances, const std::vector<const PeakInfo*>& infos)
 {
     int N = NUM_QUADRANTS;
     // Generally, only distances.count() == values.count() > 0 is needed for this
@@ -204,7 +204,7 @@ itf_t inverseDistanceWeighing(
 //! Interpolates peak infos to a single point using idw.
 itf_t interpolateValues(deg searchRadius, const InfoSequence& infos, deg alpha, deg beta)
 {
-    std::vector<PeakInfo const*> interpolationInfos;
+    std::vector<const PeakInfo*> interpolationInfos;
     std::vector<double> distances;
     searchInQuadrants(
         allQuadrants(), alpha, beta, searchRadius, infos, interpolationInfos, distances);
@@ -222,7 +222,7 @@ itf_t interpolateValues(deg searchRadius, const InfoSequence& infos, deg alpha, 
             ? 180 - alpha
             : -alpha;
         double newBeta = beta < 180 ? beta + 180 : beta - 180;
-        std::vector<PeakInfo const*> renewedSearch;
+        std::vector<const PeakInfo*> renewedSearch;
         std::vector<double> newDistance;
         searchInQuadrants(
             { newQ }, newAlpha, newBeta, searchRadius, infos, renewedSearch, newDistance);

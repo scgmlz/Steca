@@ -146,24 +146,24 @@ const InfoSequence* AllInfos::At(int jP) const
         &interpolated.yield_at(jP,this) : &direct.yield_at(jP,this);
 }
 
-const std::vector<InfoSequence const *> AllInfos::allInterpolated() const
+const std::vector<const InfoSequence*> AllInfos::allInterpolated() const
 {
-    std::vector<InfoSequence const *> ret;
+    std::vector<const InfoSequence*> ret;
     for (const auto & v : interpolated.vecRef())
         ret.push_back(&v.yield(this));
     return ret;
 }
 
-const std::vector<InfoSequence const *> AllInfos::allDirect() const
+const std::vector<const InfoSequence*> AllInfos::allDirect() const
 {
-    std::vector<InfoSequence const *> ret;
+    std::vector<const InfoSequence*> ret;
     for (const auto & v : direct.vecRef())
         ret.push_back(&v.yield(this));
     return ret;
 
 }
 
-const std::vector<InfoSequence const *> AllInfos::allInfoSequences() const
+const std::vector<const InfoSequence*> AllInfos::allInfoSequences() const
 {
     return gSession->params.interpolParams.enabled.val() ?
                 allInterpolated() : allDirect();

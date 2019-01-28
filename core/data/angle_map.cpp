@@ -130,7 +130,7 @@ AngleMap::AngleMap(const deg tth)
 }
 
 void AngleMap::getGmaIndexes(
-    const Range& rgeGma, std::vector<int> const*& indexes, int& minIndex, int& maxIndex) const
+    const Range& rgeGma, const std::vector<int>*& indexes, int& minIndex, int& maxIndex) const
 {
     indexes = &gmaIndexes_;
     minIndex = lowerBound(gmas_, rgeGma.min, 0, gmas_.size());
