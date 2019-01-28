@@ -220,10 +220,10 @@ void Console::pop()
 }
 
 //! Reads and executes a command script.
-void Console::readFile(const QString& fName)
+void Console::runScript(const QString& fName)
 {
     QFile file(fName);
-    log("@file " + fName);
+    log("# running script '" + fName + "'");
     if (!file.open(QIODevice::ReadOnly)) {
         qWarning() << "Cannot open file " << fName;
         return;
@@ -242,7 +242,7 @@ void Console::readFile(const QString& fName)
         commandLifo_.push_back(line);
     }
     commandsFromStack();
-    log("# @file " + fName + " executed");
+    log("# done with script '" + fName + "'");
 }
 
 //! Commands issued by the system (and not by the user nor a command file) should pass here
@@ -251,7 +251,7 @@ void Console::call(const QString& line)
     commandInContext(line, Caller::sys);
 }
 
-//! Executes commands on stack. Called by readFile and by QcrDialog/QcrFileDialog::exec.
+//! Executes commands on stack. Called by runScript and by QcrDialog/QcrFileDialog::exec.
 void Console::commandsFromStack()
 {
     while (!commandLifo_.empty()) {
@@ -362,8 +362,6 @@ Console::Result Console::wrappedCommand(const QString& line)
             qterr << "registry " << registryStack_.top()->name() << " has commands:\n";
             qterr.flush();
             registryStack_.top()->dump(qterr);
-        } else if (cmd=="@file") {
-            readFile(arg);
         } else if (cmd=="@close") {
             log(command);
             return Result::suspend;

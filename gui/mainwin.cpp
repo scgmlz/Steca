@@ -94,7 +94,7 @@ MainWin::MainWin(const QString& startupScript)
 
     if (startupScript!="")
         // delay execution until hopefully this MainWin is shown
-        QTimer::singleShot(25, qApp, [=](){ gConsole->readFile(startupScript); });
+        QTimer::singleShot(25, qApp, [=](){ gConsole->runScript(startupScript); });
 }
 
 MainWin::~MainWin()

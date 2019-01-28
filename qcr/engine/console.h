@@ -36,7 +36,7 @@ public:
     QString learn(const QString& name, class QcrSettable*);
     void forget(const QString& name);
     void pop();
-    void readFile(const QString& fName);
+    void runScript(const QString& fName);
     void call(const QString&);
     void commandsFromStack();
     void startingGui();
