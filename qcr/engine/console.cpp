@@ -252,7 +252,7 @@ void Console::commandsFromStack()
         commandLifo_.pop_front();
         if (line=="@close")
             return;
-        Result ret = commandInContext(line, Caller::stack);
+        Result ret = commandInContext(line, Caller::fil);
         if (ret==Result::err) {
             commandLifo_.clear();
             log("# Emptied command stack upon error");
@@ -275,15 +275,9 @@ void Console::log(const QString& lineArg) const
         prefix += QString::number(tDiff).rightJustified(5) + "ms";
         computingTime_ += tDiff;
     }
-    prefix += " " + registry().name() + "]";
-    if      (caller_==Caller::gui || caller_==Caller::stack)
-        ; // no further embellishment
-    else if (caller_==Caller::cli)
-        line = "#c " + line;
-    else if (caller_==Caller::sys)
-        line = "#s " + line;
-    else
-        qFatal("invalid case");
+    prefix += " " + registry().name() + " " + callerCode() + "] ";
+    if (caller_==Caller::sys)
+        line = "# " + line;
     log_ << prefix << line << "\n";
     log_.flush();
     if (line.indexOf("##")!=0) {
@@ -296,6 +290,21 @@ void Console::log(const QString& lineArg) const
 bool Console::hasCommandsOnStack() const
 {
     return !commandLifo_.empty();
+}
+
+//! Returns three-letter code that indicates which kind of call caused the command to be logged.
+QString Console::callerCode() const
+{
+    if      (caller_==Caller::gui)
+        return "gui";
+    else if (caller_==Caller::fil)
+        return "fil";
+    else if (caller_==Caller::cli)
+        return "cli";
+    else if (caller_==Caller::sys)
+        return "sys";
+    else
+        qFatal("BUG in Console::callerCode: invalid case");
 }
 
 //! Reads one line from the command-line interface, and executes it.

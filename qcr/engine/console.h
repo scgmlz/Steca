@@ -43,7 +43,11 @@ public:
     void log(const QString&) const;
     bool hasCommandsOnStack() const;
 private:
-    enum class Caller { gui, cli, stack, sys } caller_ { Caller::gui };
+    enum class Caller { gui,   //!< default: commands come from user action in GUI
+                        cli,   //!< command comes from command-line interface
+                        fil,   //!< command comes from stack, hence from file
+                        sys    //!< system call, currently only from startup script
+    } caller_ { Caller::gui };
     enum class Result : int { ok, err, suspend };
     QDateTime startTime_;
 #ifdef Q_OS_WIN
@@ -56,6 +60,7 @@ private:
     mutable int computingTime_ {0}; //!< Accumulated computing time in ms.
     mutable QTextStream log_;
 
+    QString callerCode() const;
     class CommandRegistry& registry() const { return *registryStack_.top(); }
     void readCLI();
     Result commandInContext(const QString&, Caller);
