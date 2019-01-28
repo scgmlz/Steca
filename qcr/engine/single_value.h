@@ -60,7 +60,7 @@ QcrSingleValue<T>::QcrSingleValue(QObject* object, const QString& name, QcrCell<
         if (v != QVariant{}) {
             const T val = v.value<T>();
             programaticallySetValue(val);
-            doLog(QcrSettable::name()+" "+strOp::to_s(val)+" # from local settings");
+            doLog(QcrSettable::name()+" "+strOp::to_s(val));
         }
         // Value may have changed, therefore write back to the config file controlled by QSettings
         s.setValue(QcrSettable::name(), cell_->val());
