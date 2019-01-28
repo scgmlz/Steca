@@ -3,8 +3,12 @@ Steca version 2.1.2, released 2019.
 
 New or improved functionality:
 
-* Log file written to file specified by option -l, to <startup_script>.log, or to Steca.log
-* Disallow log file that overwrites startup file
+* Log & replay:
+  * Log file written to file specified by option -l, to <startup_script>.log, or to Steca.log
+  * Disallow log file that overwrites startup file
+  * Command-line interface now able to parse log lines
+  * Caller (log, ini, gui, ...) now written to inital bracket in log lines
+  * QSettings are also used in replay mode; they are then overwritten by replayed commands
 
 Internal improvements:
 
