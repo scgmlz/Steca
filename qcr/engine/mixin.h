@@ -49,8 +49,9 @@ public:
     QcrBaseMixin() = delete;
     QcrBaseMixin(const QcrBaseMixin&) = delete;
     QcrBaseMixin operator=(const QcrBaseMixin&) = delete;
+    //! Returns name of the associated QObject.
     const QString name() const { return object()->objectName(); }
-    //! Calls the hook remake_, provided this is either a visible QWidget, or a QAction.
+    //! Calls the hook remake_, provided the associated QObject is a visible QWidget, or a QAction.
     virtual void remake();
     //! Sets the hook remake_ that is called from the function remake()
     void setRemake(std::function<void()> _remake) { remake_ = _remake; }

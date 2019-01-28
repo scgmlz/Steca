@@ -28,7 +28,7 @@ QcrBaseMixin::QcrBaseMixin(QObject* object, const QString& name)
     object_->setObjectName(name);
 }
 
-//! Calls the hook remake_, provided *this is either a visible QWidget, or a QAction.
+//! Calls the hook remake_, provided the associated QObject is a visible QWidget, or a QAction.
 
 //! Use is mostly from QcrRootMixin::remakeAll().
 //!
