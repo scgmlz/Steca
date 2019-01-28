@@ -10,7 +10,7 @@ foreach(test_src ${test_sources})
     # remove directory path and suffix, to retain just the name of the test
     string(REGEX REPLACE ".*/" "" test_name "${test_src}")
     string(REGEX REPLACE "\\.cpp$" "" test_name "${test_name}")
-    string(PREPEND test_name "qcr")
+    set(test_name "qcr${test_name}")
     my_cxx_test(${test_name} ${test_src} "")
     target_include_directories(${test_name} PRIVATE ${inc_dirs})
     target_link_libraries(${test_name} PRIVATE gtest_main Qt5::Core)
