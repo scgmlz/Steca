@@ -19,8 +19,11 @@ compiler:
 env:
 # - BUILD_TYPE=Debug
 - BUILD_TYPE=Release
+- SH="docker exec -t ubuntu-test bash -c"
 
 before_install:
+  - docker run -d --name ubuntu-test -v $(pwd):/travis -w /travis ubuntu:latest tail -f /dev/null
+  - docker ps
 - chmod +x .travis/*/*.sh
 
 install:
