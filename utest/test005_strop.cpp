@@ -13,6 +13,7 @@ void testPCL(const QString& input, const QString& expectedCommand, const QString
 
 TEST(Console, parseCommandLine) {
     testPCL("quit", "quit", "");
-    testPCL("[    0ms main]#  Steca 2.1.2", "", "main");
-    testPCL("[   69ms main]dfgram add 48.2 51", "dfgram add 48.2 51", "main");
+    testPCL("  quit  ", "quit", "");
+    testPCL("[    0ms main gui] #  Steca 2.1.2", "", "main");
+    testPCL("[   69ms main cli] dfgram add 48.2 51", "dfgram add 48.2 51", "main");
 }

@@ -43,7 +43,7 @@ namespace {
 
 bool parseCommandLine(const QString& line, QString& command, QString& context)
 {
-    const std::regex my_regex("^(\\[\\s*((\\d+)ms)?\\s*(\\w+)\\])?([^#]*)(#.*)?$");
+    const std::regex my_regex("^(\\[\\s*((\\d+)ms)?\\s*(\\w+)\\s\\w{3}\\])?([^#]*)(#.*)?$");
     std::smatch my_match;
     const std::string tmpLine { line.toLatin1().constData() };
     if (!std::regex_match(tmpLine, my_match, my_regex))
@@ -52,8 +52,8 @@ bool parseCommandLine(const QString& line, QString& command, QString& context)
         std::cerr << "BUG: invalid match size\n";
         exit(-1);
     }
-    context = my_match[4].str().c_str();
-    command = my_match[5].str().c_str();
+    context = QString{my_match[4].str().c_str()};
+    command = QString{my_match[5].str().c_str()}.trimmed();
     return true;
 }
 
