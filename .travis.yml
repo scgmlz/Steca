@@ -22,12 +22,11 @@ env:
 - SH="docker exec -t ubuntu-test bash -c"
 
 before_install:
-  - docker run -d --name ubuntu-test -v $(pwd):/travis -w /travis ubuntu:latest tail -f /dev/null
-  - docker ps
+- docker run -d --name ubuntu-test -v $(pwd):/travis -w /travis ubuntu:latest tail -f /dev/null
+- docker ps
 - chmod +x .travis/*/*.sh
 
-install:
-- .travis/${TRAVIS_OS_NAME}/install.sh
+# install:
 
 script:
 - .travis/${TRAVIS_OS_NAME}/build.sh
