@@ -1,28 +1,24 @@
 language: cpp
 sudo: required
-dist: trusty
+
+services:
+- docker
 
 os:
 - linux
-# - osx (temporari)
 
 compiler:
-# - clang
+- clang
 - gcc
 
-branches:
-  only:
-  - master
-  - develop
+#branches:
+#  only:
+#  - master
+#  - develop
 
 env:
-- BUILD_TYPE=Debug
+# - BUILD_TYPE=Debug
 - BUILD_TYPE=Release
-
-matrix:
- exclude:
- - os: osx
-   compiler: gcc
 
 before_install:
 - chmod +x .travis/*/*.sh
@@ -31,8 +27,8 @@ install:
 - .travis/${TRAVIS_OS_NAME}/install.sh
 
 script:
-- .travis/${TRAVIS_OS_NAME}/build_${BUILD_TYPE}.sh
-- .travis/${TRAVIS_OS_NAME}/test_${BUILD_TYPE}.sh
+- .travis/${TRAVIS_OS_NAME}/build.sh
+- .travis/${TRAVIS_OS_NAME}/test.sh
 
 addons:
   apt:
