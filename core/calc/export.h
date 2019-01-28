@@ -42,6 +42,8 @@ void writeDfgram(QTextStream& stream, const int idx, const QString& format);
 void writeCurrentDfgram(QTextStream& stream, const QString& format);
 void writeAllDfgrams(QTextStream& stream, TakesLongTime& progress, const QString& format);
 
+void writeDiagram(QTextStream& stream, const QString& separator);
+
 void writeInfoSequence(QTextStream& stream, const InfoSequence& peakInfos, const QString& format);
 
 } // namespace data_export

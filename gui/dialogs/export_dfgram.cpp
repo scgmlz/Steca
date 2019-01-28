@@ -14,7 +14,6 @@
 
 #include "gui/dialogs/export_dfgram.h"
 #include "core/base/async.h"
-#include "core/base/exception.h"
 #include "core/calc/export.h"
 #include "core/session.h"
 #include "gui/mainwin.h"

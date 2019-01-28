@@ -156,3 +156,29 @@ void data_export::writeInfoSequence(
     else
         writeFullInfoSequence(stream, peakInfos, data_export::separator(format));
 }
+
+//! Writes x-y data from current diagram.
+
+void data_export::writeDiagram(QTextStream& stream, const QString& separator)
+{
+    // get data
+    const int idxX = int(gSession->params.diagramX.val());
+    const int idxY = int(gSession->params.diagramY.val());
+    std::vector<double> xs, ys, ysSigma;
+    gSession->allPeaks.currentInfoSequence()->getValuesAndSigma(idxX, idxY, xs, ys, ysSigma);
+
+    // write header
+    QStringList tags = PeakInfo::dataTags(true);
+    stream << "# " << tags[idxX] << separator << tags[idxY];
+    if (ysSigma.size() > 0)
+        stream << separator << "sigma_"  << tags[idxY];
+    stream << '\n';
+
+    // write data
+    for (size_t i = 0; i < xs.size(); ++i) {
+        stream << xs[i] << separator << ys[i];
+        if (ysSigma.size() > 0)
+            stream << separator << ysSigma[i];
+        stream << '\n';
+    }
+}
