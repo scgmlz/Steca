@@ -408,7 +408,7 @@ QcrTabWidget::QcrTabWidget(const QString& _name)
     connect(this, &QTabWidget::currentChanged, [this](int val) {
             if (spuriousCall_)
                 return;
-            onChangedValue(val); });
+            onChangedValue(val, tabText(val)); });
 }
 
 void QcrTabWidget::addTab(QWidget* page, const QString& label)
