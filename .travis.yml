@@ -23,7 +23,6 @@ env:
 before_install:
 - docker run -d --name dd -v $(pwd):/travis -w /travis ubuntu:bionic tail -f /dev/null
 - docker ps
-# - chmod +x .travis/*/*.sh
 
 install:
 - docker exec -t dd bash -c "apt-get update"
@@ -35,5 +34,3 @@ script:
 - docker exec -t dd bash -c "cd build && make -j9"
 - docker exec -t dd bash -c "cd build; make check" && exit 0
 - docker exec -t dd bash -c "cat build/Testing/Temporary/*.log" && exit 1
-#- .travis/${TRAVIS_OS_NAME}/build.sh
-#- .travis/${TRAVIS_OS_NAME}/test.sh
