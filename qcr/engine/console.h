@@ -50,7 +50,7 @@ private:
                         cli,   //!< commands come from command-line interface
                         fil,   //!< commands come from stack, hence from file
                         sys    //!< system call, currently only from startup script
-    } caller_ { Caller::gui };
+    } caller_;
     enum class Result : int { ok, err, suspend };
     QDateTime startTime_;
 #ifdef Q_OS_WIN

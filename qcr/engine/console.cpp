@@ -280,6 +280,7 @@ void Console::commandsFromStack()
     }
 }
 
+//! Sets calling context to GUI. To be called when initializations are done.
 void Console::startingGui()
 {
     caller_ = Caller::gui;
@@ -311,7 +312,7 @@ void Console::log(const QString& lineArg) const
     }
 }
 
-//! needed by modal dialogs
+//! Returns true if there are commands on stack. Needed by modal dialogs.
 bool Console::hasCommandsOnStack() const
 {
     return !commandLifo_.empty();
