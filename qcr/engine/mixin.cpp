@@ -28,6 +28,12 @@ QcrBaseMixin::QcrBaseMixin(QObject* object, const QString& name)
     object_->setObjectName(name);
 }
 
+//! Calls the hook remake_, provided *this is either a visible QWidget, or a QAction.
+
+//! Use is mostly from QcrRootMixin::remakeAll().
+//!
+//! Children may provide additional remake functionality; they override this, and include
+//! a call to QcrBaseMixin::remake(). This is currently done in QcrComboBox::remake().
 void QcrBaseMixin::remake()
 {
     const QWidget* w = dynamic_cast<const QWidget*>(object());
@@ -51,7 +57,7 @@ void QcrRootMixin::remakeAll()
 {
     ++remakeLoops;
     if (remakeLoops>1)
-        qFatal("circular remakeAll, it seems");
+        qFatal("BUG: circular remakeAll");
     remake();
     for (QWidget* w: object()->findChildren<QWidget*>())
         if (QcrBaseMixin* m = dynamic_cast<QcrBaseMixin*>(w))
