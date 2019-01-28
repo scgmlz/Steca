@@ -74,7 +74,7 @@ public:
             if (const TPayload* d = data_.at(i).current())
                 f(*d);
     }
-    const std::vector<Cached<TPayload,TRemakeArgs...>> &vecRef() const { return data_; }
+    const std::vector<Cached<TPayload,TRemakeArgs...>>& vecRef() const { return data_; }
 private:
     void check_size(TRemakeArgs... args) const {
         int n = sizeFunction_();
