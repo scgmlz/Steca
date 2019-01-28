@@ -19,7 +19,7 @@
 namespace {
 
 //! Parses a command line, sets the command and the context, and returns true if successful.
-//!
+
 //! The input line may be either a plain command or a log entry.
 //! A log entry starts with a '[..]' comment containing execution time (optional) and context.
 //! It may end with a '#..' comment.
@@ -180,7 +180,7 @@ Console::~Console()
 }
 
 //! Learns a widget or push new registry.
-//!
+
 //! Widgets are registered in the current registry, for use in wrappedCommand
 //! where commands are delegated to widgets which then execute them.
 //!
@@ -214,7 +214,7 @@ void Console::forget(const QString& name)
 }
 
 //! Pops the current registry away, so that the previous one is reinstated.
-//!
+
 //! Called by ~QcrModalMixin(), i.e. on terminating a modal dialog.
 void Console::closeModalDialog()
 {
@@ -355,7 +355,7 @@ Console::Result Console::commandInContext(const QString& line, Caller callerArg)
 }
 
 //! Executes command. Always called from commandInContext(..).
-//!
+
 //! Commands are either console commands (starting with '@'), or widget commands.
 //! Widget commands start with the name of widget that has been registered by learn(..);
 //! further execution is delegated to the pertinent widget.
