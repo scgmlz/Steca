@@ -40,6 +40,7 @@ void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
                 const Range& rgeGma, const QString& separator);
 
 void writeDfgram(QTextStream& stream, const int idx, const QString& format);
+void writeCurrentDfgram(QTextStream& stream, const QString& format);
 void writeAllDfgrams(QTextStream& stream, TakesLongTime& progress, const QString& format);
 
 void writeInfoSequence(QTextStream& stream, const InfoSequence& peakInfos, const QString& format);

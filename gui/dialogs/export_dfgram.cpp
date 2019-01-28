@@ -33,11 +33,7 @@ int ExportDfgram::multiplicity()
 
 void ExportDfgram::writeCurrent(QTextStream& stream)
 {
-    const Cluster* cluster = gSession->currentCluster();
-    ASSERT(cluster);
-    const Curve& curve = cluster->currentDfgram().curve;
-    data_export::writeCurve(
-        stream, curve, cluster, cluster->rgeGma(), data_export::separator(format()));
+    data_export::writeCurrentDfgram(stream, format());
 }
 
 void ExportDfgram::writeOnefile(QTextStream& stream, const int idx)

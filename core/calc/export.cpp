@@ -110,11 +110,18 @@ void data_export::writeDfgram(QTextStream& stream, const int idx, const QString&
     const int nSlices = gSession->gammaSelection.numSlices.val();
     const int iSlice = idx%nSlices;
     const int iCluster = idx/nSlices;
-
     const Cluster* cluster = gSession->activeClusters.clusters.yield().at(iCluster);
     const Range gmaStripe = gSession->gammaSelection.slice2range(cluster->rgeGma(), iSlice);
     const Curve& curve = cluster->dfgrams.yield_at(iSlice,cluster).curve;
-    data_export::writeCurve(stream, curve, cluster, gmaStripe, data_export::separator(format));
+    data_export::writeCurve(stream, curve, cluster, gmaStripe, separator(format));
+}
+
+void data_export::writeCurrentDfgram(QTextStream& stream, const QString& format)
+{
+    const Cluster* cluster = gSession->currentCluster();
+    ASSERT(cluster);
+    const Curve& curve = cluster->currentDfgram().curve;
+    data_export::writeCurve(stream, curve, cluster, cluster->rgeGma(), separator(format));
 }
 
 void data_export::writeAllDfgrams(
@@ -133,7 +140,7 @@ void data_export::writeAllDfgrams(
             stream << "Picture Nr: " << iCluster+1 << '\n';
             if (nSlice > 1)
                 stream << "Gamma slice Nr: " << iSlice+1 << '\n';
-            data_export::writeCurve(stream, curve, cluster, gmaStripe, separator);
+            writeCurve(stream, curve, cluster, gmaStripe, separator);
             progress.step();
         }
     }
