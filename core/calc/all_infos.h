@@ -28,13 +28,13 @@ public:
     const InfoSequence* currentInterpolated() const;
     const InfoSequence* currentInfoSequence() const;
     const InfoSequence* At(int) const;
-    const std::vector<const InfoSequence*> allDirect() const;
-    const std::vector<const InfoSequence*> allInterpolated() const;
     const std::vector<const InfoSequence*> allInfoSequences() const;
     void invalidateAll() const;
     void invalidateInterpolated() const;
     void invalidateAt(int) const;
 private:
+    const std::vector<const InfoSequence*> allDirect() const;
+    const std::vector<const InfoSequence*> allInterpolated() const;
     mutable lazy_data::VectorCache<InfoSequence,const AllInfos*> direct;
     mutable lazy_data::VectorCache<InfoSequence,const AllInfos*> interpolated;
 };
