@@ -27,7 +27,7 @@ class DialogfieldPath;
 
 //! Base class for all export dialogs, with choice of path and format.
 
-class DialogSave : public QcrDialog {
+class DialogSave : public QcrModalDialog {
 public:
     DialogSave() = delete;
     DialogSave(const DialogSave&) = delete;

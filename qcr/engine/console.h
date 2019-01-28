@@ -28,29 +28,30 @@ extern class Console* gConsole; //!< global handle that points to _the_ Console.
 class Console
 {
 public:
-    Console();
+    Console() = delete;
+    Console(const QString& logFileName);
     ~Console();
     Console(const Console&) = delete;
 
-    QString learn(QString name, class QcrSettable*); //!< learns _not_ commands, but widget names!
+    QString learn(const QString& name, class QcrRegisteredMixin*);
     void forget(const QString& name);
-    void pop();
-    void readFile(const QString& fName);
+    void closeModalDialog();
+    void runScript(const QString& fName);
     void call(const QString&);
-    void commandsFromStack();  //!< needed by modal dialogs
+    void commandsFromStack();
+    void startingGui();
 
-    void log(QString) const;
-    bool hasCommandsOnStack() const { return !commandLifo_.empty(); } //!< needed by modal dialogs
-
+    void log(const QString&) const;
+    bool hasCommandsOnStack() const;
 private:
-    enum class Caller { gui, cli, stack, sys } caller_ { Caller::gui };
+    enum class Caller { log,   //!< log entries come from console
+                        gui,   //!< commands come from user action in GUI
+                        ini,   //!< commands come from MainWin initialization
+                        cli,   //!< commands come from command-line interface
+                        fil,   //!< commands come from stack, hence from file
+                        sys    //!< system call, currently only from startup script
+    } caller_;
     enum class Result : int { ok, err, suspend };
-
-    class CommandRegistry& registry() const { return *registryStack_.top(); }
-
-    void readLine();
-    Result executeLine(QString);
-
     QDateTime startTime_;
 #ifdef Q_OS_WIN
     class QWinEventNotifier *notifier_;
@@ -59,9 +60,14 @@ private:
 #endif
     std::stack<class CommandRegistry*> registryStack_;
     std::deque<QString> commandLifo_;
-
-    mutable int computingTime_ {0};
+    mutable int computingTime_ {0}; //!< Accumulated computing time in ms.
     mutable QTextStream log_;
+
+    QString callerCode() const;
+    class CommandRegistry& registry() const { return *registryStack_.top(); }
+    void readCLI();
+    Result commandInContext(const QString&, Caller);
+    Result wrappedCommand(const QString&);
 };
 
 #endif // CONSOLE_H

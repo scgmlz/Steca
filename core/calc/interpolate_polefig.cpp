@@ -42,7 +42,7 @@ void itf_t::operator+=(const itf_t& that)
     fwhm += that.fwhm;
 }
 
-// Calculates the difference of two angles. Parameters should be in [0, 360].
+//! Calculates the difference of two angles. Parameters should be in [0, 360].
 deg calculateDeltaBeta(deg beta1, deg beta2)
 {
     // Due to cyclicity of angles (360 is equivalent to 0), some magic is needed.
@@ -57,7 +57,7 @@ deg calculateDeltaBeta(deg beta1, deg beta2)
     return deg(deltaBeta);
 }
 
-// Calculates the angle between two points on a unit sphere.
+//! Calculates the angle between two points on a unit sphere.
 deg angle(deg alpha1, deg alpha2, deg deltaBeta)
 {
     // Absolute value of deltaBeta is not needed because cos is an even function.
@@ -96,7 +96,7 @@ bool inQuadrant(eQuadrant quadrant, deg deltaAlpha, deg deltaBeta)
     qFatal("impossible case");
 }
 
-// Search quadrant remapping in case no point was found.
+//! Search quadrant remapping in case no point was found.
 eQuadrant remapQuadrant(eQuadrant q)
 {
     switch (q) {
@@ -108,15 +108,14 @@ eQuadrant remapQuadrant(eQuadrant q)
     qFatal("impossible case");
 }
 
-// Checks if (alpha,beta) is inside radius from (centerAlpha,centerBeta).
+//! Checks if (alpha,beta) is inside radius from (centerAlpha,centerBeta).
 bool inRadius(deg alpha, deg beta, deg centerAlpha, deg centerBeta, deg radius)
 {
     double a = angle(alpha, centerAlpha, calculateDeltaBeta(beta, centerBeta));
     return qAbs(a) < radius;
 }
 
-// Adds data from peak infos within radius from alpha and beta
-// to the peak parameter lists.
+//! Adds data from peak infos within radius from alpha and beta to the peak parameter lists.
 void searchPoints(deg alpha, deg beta, deg radius, const InfoSequence& infos,
                   std::vector<itf_t>& itfs)
 {
@@ -129,7 +128,7 @@ void searchPoints(deg alpha, deg beta, deg radius, const InfoSequence& infos,
     }
 }
 
-// Searches closest InfoSequence to given alpha and beta in quadrants.
+//! Searches closest InfoSequence to given alpha and beta in quadrants.
 void searchInQuadrants(
     const Quadrants& quadrants, deg alpha, deg beta, deg searchRadius, const InfoSequence& infos,
     std::vector<PeakInfo const*>& foundInfos, std::vector<double>& distances)
@@ -202,7 +201,7 @@ itf_t inverseDistanceWeighing(
             double(fwhm/inverseDistanceSum) };
 }
 
-// Interpolates peak infos to a single point using idw.
+//! Interpolates peak infos to a single point using idw.
 itf_t interpolateValues(deg searchRadius, const InfoSequence& infos, deg alpha, deg beta)
 {
     std::vector<PeakInfo const*> interpolationInfos;

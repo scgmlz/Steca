@@ -93,7 +93,7 @@ void CheckTableModel::activateAndLog(int row, bool on)
 #pragma GCC diagnostic ignored "-Woverloaded-virtual" // TODO try without
 
 TableView::TableView(TableModel* model)
-    : QcrSettable {this, model->name()}
+    : QcrRegisteredMixin {this, model->name()}
     , model_(model)
 {
     model->setName(name());
@@ -113,7 +113,7 @@ TableView::TableView(TableModel* model)
     setRemake([this]() {onData();});
 }
 
-void TableView::executeConsoleCommand(const QString& arg)
+void TableView::setFromCommand(const QString& arg)
 {
     QString cmd, cmdarg;
     strOp::splitOnce(arg, cmd, cmdarg);
@@ -191,7 +191,7 @@ void TableView::onData()
 //  ***********************************************************************************************
 //! @class CheckTableView
 
-void CheckTableView::executeConsoleCommand(const QString& arg)
+void CheckTableView::setFromCommand(const QString& arg)
 {
     QStringList args = arg.split(' ');
     if        (args[0]=="activate") {
@@ -203,5 +203,5 @@ void CheckTableView::executeConsoleCommand(const QString& arg)
             throw QcrException("Missing argument to command 'deactivate'");
         model()->activateAndLog(strOp::to_i(args[1]), false);
     } else
-        TableView::executeConsoleCommand(arg);
+        TableView::setFromCommand(arg);
 }

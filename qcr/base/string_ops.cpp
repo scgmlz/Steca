@@ -93,7 +93,7 @@ void splitOnce(const QString& in, QString& part0, QString& part1)
 }
 
 //! Sets widget width to estimated width of number display.
-//!
+
 //! @param ndigits number of digits in number.
 //! @param withDot true if number has a decimal dot.
 void setWidth(QWidget* w, int ndigits, bool withDot)

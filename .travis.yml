@@ -1,43 +1,36 @@
 language: cpp
 sudo: required
-dist: trusty
+
+services:
+- docker
 
 os:
 - linux
-# - osx (temporari)
 
 compiler:
-# - clang
+- clang
 - gcc
 
-branches:
-  only:
-  - master
-  - develop
+#branches:
+#  only:
+#  - master
+#  - develop
 
 env:
-- BUILD_TYPE=Debug
+# - BUILD_TYPE=Debug
 - BUILD_TYPE=Release
 
-matrix:
- exclude:
- - os: osx
-   compiler: gcc
-
 before_install:
-- chmod +x .travis/*/*.sh
+- docker run -d --name dd -v $(pwd):/travis -w /travis ubuntu:bionic tail -f /dev/null
+- docker ps
 
 install:
-- .travis/${TRAVIS_OS_NAME}/install.sh
+- docker exec -t dd bash -c "apt-get update"
+- docker exec -t dd bash -c "apt-get install -y qtbase5-dev cmake clang"
 
 script:
-- .travis/${TRAVIS_OS_NAME}/build_${BUILD_TYPE}.sh
-- .travis/${TRAVIS_OS_NAME}/test_${BUILD_TYPE}.sh
-
-addons:
-  apt:
-    sources:
-    - sourceline: ppa:beineri/opt-qt-5.10.1-trusty
-    packages:
-    - qt510base
-    - xvfb
+- docker exec -t dd bash -c "mkdir build"
+- docker exec -t dd bash -c "cd build && cmake -D CMAKE_BUILD_TYPE=$BUILD_TYPE .."
+- docker exec -t dd bash -c "cd build && make -j9"
+- docker exec -t dd bash -c "cd build; make check" && exit 0
+- docker exec -t dd bash -c "cat build/Testing/Temporary/*.log" && exit 1
