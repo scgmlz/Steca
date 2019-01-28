@@ -22,7 +22,7 @@
 #include <QSettings>
 #include <iostream>
 
-//! Base class for all Qcr widgets that hold a single value.
+//! Mixin for all QWidgets that hold a single value, base class for all QcrWidgets.
 template<class T>
 class QcrSingleValue : public QcrRegisteredMixin {
 public:
