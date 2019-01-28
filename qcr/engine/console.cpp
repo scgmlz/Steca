@@ -353,7 +353,7 @@ Console::Result Console::wrappedCommand(const QString& line)
         qterr << "command line '" << line << "' could not be parsed\n"; qterr.flush();
         return Result::err;
     }
-    if (line=="")
+    if (command=="")
         return Result::ok; // nothing to do
     QString cmd, arg;
     strOp::splitOnce(command, cmd, arg);
