@@ -12,24 +12,9 @@
 //
 //  ***********************************************************************************************
 
-#include "qcr/engine/console.h"
-#include "qcr/engine/mixin.h"
-#include "qcr/base/qcrexception.h"
-#include "qcr/base/string_ops.h"
-#include "qcr/base/debug.h" // ASSERT
 #include <regex>
 #include <iostream>
-#include <QApplication>
-#include <QFile>
-
-#ifdef Q_OS_WIN
-#include <QWinEventNotifier>
-#include <windows.h>
-#else
-#include <QSocketNotifier>
-#endif
-
-Console* gConsole; //!< global
+#include <QString>
 
 namespace {
 
@@ -60,6 +45,23 @@ bool parseCommandLine(const QString& line, QString& command, QString& context)
 } // namespace
 
 #ifndef LOCAL_CODE_ONLY
+
+#include "qcr/engine/console.h"
+#include "qcr/engine/mixin.h"
+#include "qcr/base/qcrexception.h"
+#include "qcr/base/string_ops.h"
+#include "qcr/base/debug.h" // ASSERT
+#include <QApplication>
+#include <QFile>
+
+#ifdef Q_OS_WIN
+#include <QWinEventNotifier>
+#include <windows.h>
+#else
+#include <QSocketNotifier>
+#endif
+
+Console* gConsole; //!< global
 
 QTextStream qterr(stderr);
 

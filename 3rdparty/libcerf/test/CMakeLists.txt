@@ -1,5 +1,5 @@
 set(tests
-    test1
+    cerftest
     )
 
 foreach(test ${tests})

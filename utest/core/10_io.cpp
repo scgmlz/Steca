@@ -14,4 +14,5 @@ TEST(IO, Caress) {
         std::cerr << "io::load throws exception of unexpected type\n";
         EXPECT_TRUE(false);
     }
+    EXPECT_TRUE(true);
 }
