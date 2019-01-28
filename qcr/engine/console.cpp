@@ -179,19 +179,27 @@ Console::~Console()
     }
 }
 
-//! Learns widget names (commands will be delegated to widgets which then execute them).
+//! Learns a widget or push new registry.
+//!
+//! Widgets are registered in the current registry, for use in wrappedCommand
+//! where commands are delegated to widgets which then execute them.
+//!
+//! In the special case of nameArg="@push <name>", a new registry is pushed to current.
+//! This is used by the QcrModal modal dialogs. On terminating, QcrModal calls
+//! closeModalDialog(), which pops the current registry away, so that the previous
+//! registry is reinstated.
 QString Console::learn(const QString& nameArg, QcrSettable* widget)
 {
     QString name = nameArg;
     if (name[0]=='@') {
         QStringList args = name.split(' ');
-        if (args.size()<2) {
-            QByteArray tmp = name.toLatin1();
-            qFatal("invalid @ construct in learn(%s)", tmp.constData());
-        }
         if (args[0]!="@push") {
             QByteArray tmp = name.toLatin1();
             qFatal("invalid @ command in learn(%s)", tmp.constData());
+        }
+        if (args.size()<2) {
+            QByteArray tmp = name.toLatin1();
+            qFatal("@push has no argument in learn(%s)", tmp.constData());
         }
         name = args[1];
         registryStack_.push(new CommandRegistry(name));
@@ -205,8 +213,12 @@ void Console::forget(const QString& name)
     registry().forget(name);
 }
 
-void Console::pop()
+//! Pops the current registry away, so that the previous one is reinstated.
+//!
+//! Called by ~QcrModal(), i.e. on terminating a modal dialog.
+void Console::closeModalDialog()
 {
+    log("@close");
     if (registryStack_.empty()) {
         qterr << "cannot pop: registry stack is empty\n"; qterr.flush();
         return;

@@ -35,7 +35,7 @@ public:
 
     QString learn(const QString& name, class QcrSettable*);
     void forget(const QString& name);
-    void pop();
+    void closeModalDialog();
     void runScript(const QString& fName);
     void call(const QString&);
     void commandsFromStack();

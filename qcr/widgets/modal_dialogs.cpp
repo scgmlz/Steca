@@ -28,8 +28,7 @@ QcrModal::QcrModal(QObject* object, const QString& name)
 
 QcrModal::~QcrModal()
 {
-    gConsole->log("@close");
-    gConsole->pop();
+    gConsole->closeModalDialog();
 }
 
 
