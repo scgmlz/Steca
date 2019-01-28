@@ -3,7 +3,7 @@
 //  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/widgets/modal_dialogs.cpp
-//! @brief     Implements classes QcrModal, QcrDialog, QcrFileDialog
+//! @brief     Implements classes QcrModalMixin, QcrModalDialog, QcrFileDialog
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -20,29 +20,29 @@
 
 
 //  ***********************************************************************************************
-//! @class QcrModal
+//! @class QcrModalMixin
 
-QcrModal::QcrModal(QObject* object, const QString& name)
-    : QcrSettable {object, "@push " + name, true}
+QcrModalMixin::QcrModalMixin(QObject* object, const QString& name)
+    : QcrRegisteredMixin {object, "@push " + name, true}
 {}
 
-QcrModal::~QcrModal()
+QcrModalMixin::~QcrModalMixin()
 {
     gConsole->closeModalDialog();
 }
 
 
 //  ***********************************************************************************************
-//! @class QcrDialog
+//! @class QcrModalDialog
 
-QcrDialog::QcrDialog(QWidget* parent, const QString& caption)
+QcrModalDialog::QcrModalDialog(QWidget* parent, const QString& caption)
     : QDialog {parent}
-    , QcrModal {this, "dlog"}
+    , QcrModalMixin {this, "dlog"}
 {
     setWindowTitle(caption);
 }
 
-int QcrDialog::exec()
+int QcrModalDialog::exec()
 {
     if (gConsole->hasCommandsOnStack()) {
         open();
@@ -53,7 +53,7 @@ int QcrDialog::exec()
         return QDialog::exec();
 }
 
-void QcrDialog::executeConsoleCommand(const QString& arg)
+void QcrModalDialog::executeConsoleCommand(const QString& arg)
 {
     if (arg=="")
         throw QcrException("Empty argument in Dialog command");
@@ -70,7 +70,7 @@ void QcrDialog::executeConsoleCommand(const QString& arg)
 QcrFileDialog::QcrFileDialog(
     QWidget* parent, const QString& caption, const QString& directory, const QString& filter)
     : QFileDialog {parent, caption, directory, filter}
-    , QcrModal {this, "fdia"}
+    , QcrModalMixin {this, "fdia"}
 {}
 
 QcrFileDialog::~QcrFileDialog()

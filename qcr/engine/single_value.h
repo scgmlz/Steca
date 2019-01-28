@@ -24,7 +24,7 @@
 
 //! Base class for all Qcr widgets that hold a single value.
 template<class T>
-class QcrSingleValue : public QcrSettable {
+class QcrSingleValue : public QcrRegisteredMixin {
 public:
     QcrSingleValue(QObject* object, const QString& name, QcrCell<T>* cell);
     QcrSingleValue(QObject* object, const QString& name, const T val);
@@ -49,21 +49,21 @@ private:
 //! Constructor that associates this QcrSingleValue with an external QcrCell.
 template<class T>
 QcrSingleValue<T>::QcrSingleValue(QObject* object, const QString& name, QcrCell<T>* cell)
-    : QcrSettable {object, name}
+    : QcrRegisteredMixin {object, name}
     , cell_ {cell}
 {
     if (!adhoc()) {
         QSettings s;
         s.beginGroup("Controls");
         // Retrieve initial value from the config file controlled by QSettings
-        QVariant v = s.value(QcrSettable::name());
+        QVariant v = s.value(QcrRegisteredMixin::name());
         if (v != QVariant{}) {
             const T val = v.value<T>();
             programaticallySetValue(val);
-            doLog(QcrSettable::name()+" "+strOp::to_s(val));
+            doLog(QcrRegisteredMixin::name()+" "+strOp::to_s(val));
         }
         // Value may have changed, therefore write back to the config file controlled by QSettings
-        s.setValue(QcrSettable::name(), cell_->val());
+        s.setValue(QcrRegisteredMixin::name(), cell_->val());
     }
     cell_->setCallbacks([this](){return doGetValue();}, [this](const T val){doSetValue(val);});
 }
@@ -71,7 +71,7 @@ QcrSingleValue<T>::QcrSingleValue(QObject* object, const QString& name, QcrCell<
 //! Constructs a QcrSingleValue that owns a QcrCell.
 template<class T>
 QcrSingleValue<T>::QcrSingleValue(QObject* object, const QString& name, const T val)
-    : QcrSettable {object, name}
+    : QcrRegisteredMixin {object, name}
     , ownsItsCell_ {true}
 {
     cell_ = new QcrCell<T>(val); // TODO RECONSIDER smart pointer

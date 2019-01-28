@@ -74,20 +74,20 @@ public:
     CommandRegistry() = delete;
     CommandRegistry(const CommandRegistry&) = delete;
     CommandRegistry(const QString& _name) : name_(_name) {}
-    QString learn(const QString&, QcrSettable*);
+    QString learn(const QString&, QcrRegisteredMixin*);
     void forget(const QString&);
-    QcrSettable* find(const QString& name);
+    QcrRegisteredMixin* find(const QString& name);
     void dump(QTextStream&);
     QString name() const { return name_; }
 private:
     const QString name_;
-    std::map<const QString, QcrSettable*> widgets_;
+    std::map<const QString, QcrRegisteredMixin*> widgets_;
     std::map<const QString, int> numberedEntries_;
 };
 
-QString CommandRegistry::learn(const QString& name, QcrSettable* widget)
+QString CommandRegistry::learn(const QString& name, QcrRegisteredMixin* widget)
 {
-    ASSERT(name!=""); // empty name only allowed for non-settable QcrMixin
+    ASSERT(name!=""); // empty name only allowed for non-settable QcrBaseMixin
     // qterr << "Registry " << name_ << " learns '" << name << "'\n"; qterr.flush();
     QString ret = name;
     if (ret.contains("#")) {
@@ -120,7 +120,7 @@ void CommandRegistry::forget(const QString& name)
     widgets_.erase(it);
 }
 
-QcrSettable* CommandRegistry::find(const QString& name)
+QcrRegisteredMixin* CommandRegistry::find(const QString& name)
 {
     auto entry = widgets_.find(name);
     if (entry==widgets_.end())
@@ -185,10 +185,10 @@ Console::~Console()
 //! where commands are delegated to widgets which then execute them.
 //!
 //! In the special case of nameArg="@push <name>", a new registry is pushed to current.
-//! This is used by the QcrModal modal dialogs. On terminating, QcrModal calls
+//! This is used by the QcrModalMixin modal dialogs. On terminating, QcrModalMixin calls
 //! closeModalDialog(), which pops the current registry away, so that the previous
 //! registry is reinstated.
-QString Console::learn(const QString& nameArg, QcrSettable* widget)
+QString Console::learn(const QString& nameArg, QcrRegisteredMixin* widget)
 {
     QString name = nameArg;
     if (name[0]=='@') {
@@ -215,7 +215,7 @@ void Console::forget(const QString& name)
 
 //! Pops the current registry away, so that the previous one is reinstated.
 //!
-//! Called by ~QcrModal(), i.e. on terminating a modal dialog.
+//! Called by ~QcrModalMixin(), i.e. on terminating a modal dialog.
 void Console::closeModalDialog()
 {
     log("@close");
@@ -263,7 +263,7 @@ void Console::call(const QString& line)
     commandInContext(line, Caller::sys);
 }
 
-//! Executes commands on stack. Called by runScript and by QcrDialog/QcrFileDialog::exec.
+//! Executes commands on stack. Called by runScript and by QcrModalDialog/QcrFileDialog::exec.
 void Console::commandsFromStack()
 {
     while (!commandLifo_.empty()) {
@@ -383,7 +383,7 @@ Console::Result Console::wrappedCommand(const QString& line)
         }
         return Result::ok;
     }
-    QcrSettable* w = registry().find(cmd);
+    QcrRegisteredMixin* w = registry().find(cmd);
     if (!w) {
         qterr << "Command '" << cmd << "' not found\n"; qterr.flush();
         return Result::err;

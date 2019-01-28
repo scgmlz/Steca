@@ -42,16 +42,16 @@ QString abbreviateList(const QStringList& in, const int maxOut, const int cutAft
 class DialogfieldPath : public QGroupBox {
 public:
     DialogfieldPath() = delete;
-    DialogfieldPath(QcrDialog* _parent);
+    DialogfieldPath(QcrModalDialog* _parent);
     DialogfieldPath(const DialogfieldPath&) = delete;
     QString stem() const;
     QcrLineEdit* dirEdit;
     QcrLineEdit* fileEdit;
 private:
-    QcrDialog* parent;
+    QcrModalDialog* parent;
 };
 
-DialogfieldPath::DialogfieldPath(QcrDialog* _parent)
+DialogfieldPath::DialogfieldPath(QcrModalDialog* _parent)
     : QGroupBox{"ExportPath"}
     , parent{_parent}
 {
@@ -90,7 +90,7 @@ QString DialogfieldPath::stem() const
 
 DialogSave::DialogSave(
     QWidget* _parent, const QString& _name, const QString& _title, const QStringList& _extensions)
-    : QcrDialog{_parent, _name}
+    : QcrModalDialog{_parent, _name}
 {
     // Dialog widget settings
 

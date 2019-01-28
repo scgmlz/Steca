@@ -33,7 +33,7 @@ public:
     ~Console();
     Console(const Console&) = delete;
 
-    QString learn(const QString& name, class QcrSettable*);
+    QString learn(const QString& name, class QcrRegisteredMixin*);
     void forget(const QString& name);
     void closeModalDialog();
     void runScript(const QString& fName);

@@ -63,7 +63,7 @@ public:
 //! Based on QTreeView, with hidden 1st column.
 //! QTreeView inherits from QAbstractItemView.
 
-class TableView : public QTreeView, public QcrSettable {
+class TableView : public QTreeView, public QcrRegisteredMixin {
 public:
     TableView() = delete;
     TableView(TableModel*);

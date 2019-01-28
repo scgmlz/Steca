@@ -3,7 +3,7 @@
 //  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/engine/mixin.h
-//! @brief     Defines classes QcrMixin, QcrRoot, QcrSettable, QcrModal, QcrModelessDialog
+//! @brief     Defines classes QcrBaseMixin, QcrRootMixin, QcrRegisteredMixin, QcrModalMixin, QcrModelessDialog
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -23,15 +23,15 @@ namespace Qcr {
 extern bool replay;
 }
 
-extern class QcrRoot* gRoot;
+extern class QcrRootMixin* gRoot;
 
 //! Mix-in for QObject, enforcing a name, and providing recompute functionality.
-class QcrMixin {
+class QcrBaseMixin {
 protected:
-    QcrMixin(QObject* object, const QString& name);
+    QcrBaseMixin(QObject* object, const QString& name);
 public:
-    QcrMixin(const QcrMixin&) = delete;
-    QcrMixin operator=(const QcrMixin&) = delete;
+    QcrBaseMixin(const QcrBaseMixin&) = delete;
+    QcrBaseMixin operator=(const QcrBaseMixin&) = delete;
     const QString name() const { return object()->objectName(); }
     virtual void remake();
     void setRemake(std::function<void()> _remake) { remake_ = _remake; }
@@ -44,17 +44,17 @@ private:
 
 
 //! Root of class hierarchy, for inheritance by QcrMainWindow.
-class QcrRoot : public QcrMixin {
+class QcrRootMixin : public QcrBaseMixin {
 public:
-    QcrRoot(QObject* object);
+    QcrRootMixin(QObject* object);
     void remakeAll();
 };
 
 
 //! Mix-in for QObject, enforcing a unique name, providing Console connection.
-class QcrSettable : public QcrMixin {
+class QcrRegisteredMixin : public QcrBaseMixin {
 protected:
-    QcrSettable(QObject* object, const QString& name, bool _modal=false);
+    QcrRegisteredMixin(QObject* object, const QString& name, bool _modal=false);
 public:
     virtual void executeConsoleCommand(const QString&) = 0;
 protected:
@@ -64,7 +64,7 @@ protected:
 
 
 //! A modeless (= persistent spawned popup) dialog with support for capture&replay.
-class QcrModelessDialog : protected QDialog, protected QcrSettable {
+class QcrModelessDialog : protected QDialog, protected QcrRegisteredMixin {
 protected:
     QcrModelessDialog(QWidget* parent, const QString& name);
 public:

@@ -45,7 +45,7 @@ bool QcrAction::hasFocus()
 
 QcrTrigger::QcrTrigger(const QString& rawname, const QString& text, const QString& iconFile)
     : QcrAction {text}
-    , QcrSettable {this, rawname}
+    , QcrRegisteredMixin {this, rawname}
 {
     //QAction::setObjectName(name());
     if (iconFile!="")
@@ -83,7 +83,7 @@ void QcrTrigger::executeConsoleCommand(const QString& arg)
 //! trigger button classes
 
 QcrTextTriggerButton::QcrTextTriggerButton(QcrTrigger* action)
-    : QcrMixin(this, action->name()+"Btn")
+    : QcrBaseMixin(this, action->name()+"Btn")
 {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonTextOnly);
@@ -91,7 +91,7 @@ QcrTextTriggerButton::QcrTextTriggerButton(QcrTrigger* action)
 }
 
 QcrIconTriggerButton::QcrIconTriggerButton(QcrTrigger* action)
-    : QcrMixin(this, action->name()+"Btn")
+    : QcrBaseMixin(this, action->name()+"Btn")
 {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonIconOnly);
@@ -122,7 +122,7 @@ void QcrToggle::initToggle(const QString& iconFile, const QKeySequence& shortcut
 {
     setShortcut(shortcut);
     setCheckable(true);
-    //QAction::setObjectName(QcrSettable::name());
+    //QAction::setObjectName(QcrRegisteredMixin::name());
     if (iconFile!="")
         setIcon(QIcon(iconFile));
     doSetValue(cell_->val());
@@ -147,7 +147,7 @@ void QcrToggle::initToggle(const QString& iconFile, const QKeySequence& shortcut
 //! toggle button classes
 
 QcrTextToggleButton::QcrTextToggleButton(QcrToggle* action)
-    : QcrMixin(this, action->name()+"Btn")
+    : QcrBaseMixin(this, action->name()+"Btn")
 {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonTextOnly);
@@ -155,7 +155,7 @@ QcrTextToggleButton::QcrTextToggleButton(QcrToggle* action)
 }
 
 QcrIconToggleButton::QcrIconToggleButton(QcrToggle* action)
-    : QcrMixin(this, action->name()+"Btn")
+    : QcrBaseMixin(this, action->name()+"Btn")
 {
     setDefaultAction(action);
     setToolButtonStyle(Qt::ToolButtonIconOnly);
@@ -334,7 +334,7 @@ void QcrComboBox::remake()
             tags_ = newTags;
         }
     }
-    QcrMixin::remake();
+    QcrBaseMixin::remake();
 }
 
 //  ***********************************************************************************************

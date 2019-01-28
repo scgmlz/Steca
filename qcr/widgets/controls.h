@@ -38,7 +38,7 @@ protected:
 };
 
 //! Trigger, for use in buttons or menu entries, that can also be activated by console command.
-class QcrTrigger : public QcrAction, public QcrSettable {
+class QcrTrigger : public QcrAction, public QcrRegisteredMixin {
 public:
     QcrTrigger(const QString& name, const QString& text, const QString& iconFile="");
     QcrTrigger(const QString& name, const QString& text, const QString& iconFile,
@@ -50,13 +50,13 @@ private:
 };
 
 //! Trigger button with text display and associated action.
-class QcrTextTriggerButton : public QToolButton, public QcrMixin {
+class QcrTextTriggerButton : public QToolButton, public QcrBaseMixin {
 public:
     QcrTextTriggerButton(QcrTrigger*);
 };
 
 //! Trigger button with icon and associated action.
-class QcrIconTriggerButton : public QToolButton, public QcrMixin {
+class QcrIconTriggerButton : public QToolButton, public QcrBaseMixin {
 public:
     QcrIconTriggerButton(QcrTrigger*);
 };
@@ -77,13 +77,13 @@ private:
 };
 
 //! Toggle button with text display and associated action.
-class QcrTextToggleButton : public QToolButton, public QcrMixin {
+class QcrTextToggleButton : public QToolButton, public QcrBaseMixin {
 public:
     QcrTextToggleButton(QcrToggle*);
 };
 
 //! Toggle button with icon and associated action.
-class QcrIconToggleButton : public QToolButton, public QcrMixin {
+class QcrIconToggleButton : public QToolButton, public QcrBaseMixin {
 public:
     QcrIconToggleButton(QcrToggle*);
 };
