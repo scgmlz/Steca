@@ -53,7 +53,7 @@ int QcrModalDialog::exec()
         return QDialog::exec();
 }
 
-void QcrModalDialog::executeConsoleCommand(const QString& arg)
+void QcrModalDialog::setFromCommand(const QString& arg)
 {
     if (arg=="")
         throw QcrException("Empty argument in Dialog command");
@@ -89,7 +89,7 @@ int QcrFileDialog::exec()
         return QDialog::exec();
 }
 
-void QcrFileDialog::executeConsoleCommand(const QString& arg)
+void QcrFileDialog::setFromCommand(const QString& arg)
 {
     if (arg=="")
         throw QcrException("Empty argument in FileDialog command");

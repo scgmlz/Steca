@@ -68,7 +68,7 @@ QcrTrigger::QcrTrigger(
     setShortcut(shortcut);
 }
 
-void QcrTrigger::executeConsoleCommand(const QString& arg)
+void QcrTrigger::setFromCommand(const QString& arg)
 {
     if (arg!="")
         throw QcrException("Found unexpected argument to trigger command");
@@ -206,7 +206,7 @@ void QcrSpinBox::mouseReleaseEvent(QMouseEvent* event)
     onChangedValue(value());
 }
 
-void QcrSpinBox::executeConsoleCommand(const QString& arg)
+void QcrSpinBox::setFromCommand(const QString& arg)
 {
     int val = strOp::to_i(arg);
     doSetValue(val);
@@ -248,7 +248,7 @@ void QcrDoubleSpinBox::mouseReleaseEvent(QMouseEvent* event)
     onChangedValue(value());
 }
 
-void QcrDoubleSpinBox::executeConsoleCommand(const QString& arg)
+void QcrDoubleSpinBox::setFromCommand(const QString& arg)
 {
     double val = strOp::to_d(arg);
     doSetValue(val);

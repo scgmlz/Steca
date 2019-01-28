@@ -390,7 +390,7 @@ Console::Result Console::wrappedCommand(const QString& line)
         return Result::err;
     }
     try {
-        w->executeConsoleCommand(arg); // execute command
+        w->setFromCommand(arg); // execute command
         return Result::ok;
     } catch (const QcrException&ex) {
         qterr << "Command '" << command << "' failed:\n" << ex.msg() << "\n"; qterr.flush();

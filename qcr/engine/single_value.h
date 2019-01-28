@@ -33,7 +33,7 @@ public:
     void setCellValue(T val);
     //! Gets the current value of this widget, which agrees with the value of the associated cell.
     T getValue() const { ASSERT(doGetValue()==cell_->val()); return cell_->val(); }
-    virtual void executeConsoleCommand(const QString& arg);
+    virtual void setFromCommand(const QString& arg);
     QcrCell<T>* cell() { return cell_; }
     void setHook(std::function<void(const T)> f) { cell()->setHook(f); }
 protected:
@@ -98,7 +98,7 @@ void QcrSingleValue<T>::setCellValue(T val)
 }
 
 template<class T>
-void QcrSingleValue<T>::executeConsoleCommand(const QString& arg)
+void QcrSingleValue<T>::setFromCommand(const QString& arg)
 {
     doSetValue(strOp::from_s<T>(arg)); // unguarded
 }

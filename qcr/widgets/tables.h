@@ -68,7 +68,7 @@ public:
     TableView() = delete;
     TableView(TableModel*);
 
-    void executeConsoleCommand(const QString&) override;
+    void setFromCommand(const QString&) override;
     virtual void onData();
 protected:
     int dWidth() const;
@@ -86,7 +86,7 @@ protected:
 class CheckTableView : public TableView {
 public:
     CheckTableView(TableModel* model) : TableView(model) {}
-    void executeConsoleCommand(const QString&) override;
+    void setFromCommand(const QString&) override;
 private:
     CheckTableModel* model() { return static_cast<CheckTableModel*>(model_); }
 };

@@ -101,7 +101,7 @@ void QcrModelessDialog::closeEvent(QCloseEvent* event)
     deleteLater();
 }
 
-void QcrModelessDialog::executeConsoleCommand(const QString& arg)
+void QcrModelessDialog::setFromCommand(const QString& arg)
 {
     if (arg!="close")
         throw QcrException("Unexpected command in ModelessDialog "+name());

@@ -30,7 +30,7 @@ class QcrModalDialog : public QDialog, protected QcrModalMixin {
 public:
     QcrModalDialog(QWidget* parent, const QString& caption);
     int exec() override;
-    void executeConsoleCommand(const QString&) override;
+    void setFromCommand(const QString&) override;
 };
 
 //! File dialog, for modal use, with console commands to select files and to close the dialog.
@@ -40,7 +40,7 @@ public:
         QWidget* parent, const QString& caption, const QString& directory, const QString& filter);
     ~QcrFileDialog();
     int exec() override;
-    void executeConsoleCommand(const QString&) override;
+    void setFromCommand(const QString&) override;
 };
 
 #endif // MODAL_DIALOGS_H

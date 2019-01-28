@@ -77,7 +77,7 @@ class QcrRegisteredMixin : public QcrBaseMixin {
 protected:
     QcrRegisteredMixin(QObject* object, const QString& name, bool _modal=false);
 public:
-    virtual void executeConsoleCommand(const QString&) = 0;
+    virtual void setFromCommand(const QString&) = 0;
 protected:
     void doLog(const QString& msg);
     bool adhoc() const;
@@ -89,7 +89,7 @@ class QcrModelessDialog : protected QDialog, protected QcrRegisteredMixin {
 protected:
     QcrModelessDialog(QWidget* parent, const QString& name);
 public:
-    void executeConsoleCommand(const QString&) final;
+    void setFromCommand(const QString&) final;
 private:
     void closeEvent(QCloseEvent*);
 };

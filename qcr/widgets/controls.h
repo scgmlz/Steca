@@ -43,7 +43,7 @@ public:
     QcrTrigger(const QString& name, const QString& text, const QString& iconFile="");
     QcrTrigger(const QString& name, const QString& text, const QString& iconFile,
                const QKeySequence& shortcut);
-    void executeConsoleCommand(const QString&) override;
+    void setFromCommand(const QString&) override;
     void setTriggerHook(std::function<void()> triggerHook) { triggerHook_ = triggerHook; }
 private:
     std::function<void()> triggerHook_ = [](){;};
@@ -93,7 +93,7 @@ class QcrSpinBox : public QSpinBox, public QcrSingleValue<int> {
 public:
     QcrSpinBox(const QString& name, QcrCell<int>* cell, int ndigits, bool withDot = false,
                int min = INT_MIN, int max = INT_MAX, const QString& tooltip="");
-    void executeConsoleCommand(const QString&) override;
+    void setFromCommand(const QString&) override;
     int doGetValue() const final { return value(); }
 private:
     void initSpinBox(int ndigits, bool withDot, int min, int max, const QString& tooltip);
@@ -108,7 +108,7 @@ class QcrDoubleSpinBox : public QDoubleSpinBox, public QcrSingleValue<double> {
 public:
     QcrDoubleSpinBox(const QString& name, QcrCell<double>* cell, int nDigits, int nDecimals,
                      double min = LLONG_MIN, double max = LLONG_MAX, const QString& tooltip="");
-    void executeConsoleCommand(const QString&) override;
+    void setFromCommand(const QString&) override;
     double doGetValue() const final { return value(); }
 private:
     void initDoubleSpinBox(
