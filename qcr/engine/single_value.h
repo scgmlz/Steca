@@ -31,10 +31,13 @@ public:
     ~QcrSingleValue();
     //! Sets the value of the associated Cell, and in consequence also the value of this widget.
     void setCellValue(T val);
+    //! Sets the widget value according to string argument. Called Console::wrappedCommand.
+    virtual void setFromCommand(const QString& arg);
     //! Gets the current value of this widget, which agrees with the value of the associated cell.
     T getValue() const { ASSERT(doGetValue()==cell_->val()); return cell_->val(); }
-    virtual void setFromCommand(const QString& arg);
+    //! Returns pointer to associated Cell.
     QcrCell<T>* cell() { return cell_; }
+    //! Sets the hook of the associated Cell.
     void setHook(std::function<void(const T)> f) { cell()->setHook(f); }
 protected:
     void onChangedValue(T val);
@@ -90,23 +93,22 @@ QcrSingleValue<T>::~QcrSingleValue()
 //! Sets the value of the associated Cell, and in consequence also the value of this widget.
 
 //! This is the proper way of changing the widget's value programatically.
-
 template<class T>
 void QcrSingleValue<T>::setCellValue(T val)
 {
     cell_->setVal(val);
 }
 
+//! Sets the widget value according to string argument. Called Console::wrappedCommand.
 template<class T>
 void QcrSingleValue<T>::setFromCommand(const QString& arg)
 {
     doSetValue(strOp::from_s<T>(arg)); // unguarded
 }
 
-//! If value has changed, then logtransmit value to cell, and log.
+//! Transmits new widget value to the Cell, to the QSettings. Logs. Finally remakes all views.
 
 //! Used by control widgets, typically through Qt signals that are emitted upon user actions.
-
 template<class T>
 void QcrSingleValue<T>::onChangedValue(T val)
 {

@@ -23,11 +23,17 @@ env:
 before_install:
 - docker run -d --name dd -v $(pwd):/travis -w /travis ubuntu:bionic tail -f /dev/null
 - docker ps
-- chmod +x .travis/*/*.sh
+# - chmod +x .travis/*/*.sh
 
 install:
-- docker exec dd bash -c "apt-get install qtbase5-dev cmake clang"
+- docker run -d --name dd bash -c "apt-get update"
+- docker run -d --name dd bash -c "apt-get install -y qtbase5-dev cmake clang"
 
 script:
-- .travis/${TRAVIS_OS_NAME}/build.sh
-- .travis/${TRAVIS_OS_NAME}/test.sh
+- docker exec dd bash -c "mkdir build"
+- docker exec dd bash -c "cd build && cmake -D CMAKE_BUILD_TYPE=$BUILD_TYPE .."
+- docker exec dd bash -c "cd build && make -j9"
+- docker exec dd bash -c "cd build; make check" && exit 0
+- docker exec dd bash -c "cat build/Testing/Temporary/*.log" && exit 1
+#- .travis/${TRAVIS_OS_NAME}/build.sh
+#- .travis/${TRAVIS_OS_NAME}/test.sh
