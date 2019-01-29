@@ -12,11 +12,9 @@
 //
 //  ***********************************************************************************************
 
-#include "core/data/angle_map.h"
-#include "core/session.h"
+#include "core/base/angles.h"
 #include "qcr/base/debug.h" // ASSERT
-#include <qmath.h>
-#include <iostream> // for debugging
+#include <vector>
 
 namespace {
 
@@ -45,6 +43,13 @@ static int upperBound(const std::vector<deg>& vec, deg x, int i1, int i2)
 }
 
 } // local methods
+
+#ifndef LOCAL_CODE_ONLY
+
+#include "core/data/angle_map.h"
+#include "core/session.h"
+#include <qmath.h>
+#include <iostream> // for debugging
 
 AngleMap::AngleMap(const deg tth)
 {
@@ -136,3 +141,5 @@ void AngleMap::getGmaIndexes(
     minIndex = lowerBound(gmas_, rgeGma.min, 0, gmas_.size());
     maxIndex = upperBound(gmas_, rgeGma.max, 0, gmas_.size());
 }
+
+#endif // LOCAL_CODE_ONLY
