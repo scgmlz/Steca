@@ -15,32 +15,7 @@
 #ifndef PEAK_H
 #define PEAK_H
 
-#include "core/typ/range.h"
-
-//! Global settings (range, function type) for one Bragg peak.
-
-class PeakFitpar {
-public:
-    PeakFitpar(const Range& range, const QString& functionName);
-
-    void setPeakFunction(const QString&);
-    void setRange(const Range&);
-    void setOne(double val, bool namelyMax); //!< sets either min or max
-
-    const Range& range() const { return range_; }
-
-    QString functionName() const { return functionName_; }
-    bool isRaw() const { return functionName_=="Raw"; }
-    JsonObj toJson() const;
-
-    static PeakFitpar fromJson(const JsonObj&);
-    static const QStringList keys;
-
-private:
-    Range range_;
-    QString functionName_;
-};
-
+#include "core/pars/peak_fitpar.h"
 
 //! All user defined peaks, of which one is selected to be acted on by default.
 

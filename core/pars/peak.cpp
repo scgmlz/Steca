@@ -17,51 +17,6 @@
 #include "core/base/exception.h"
 #include "qcr/base/debug.h"
 
-const QStringList PeakFitpar::keys = { "Raw", "Gaussian", "Lorentzian", "Voigt" };
-
-PeakFitpar::PeakFitpar(const Range& r, const QString& functionName)
-    : range_(r)
-    , functionName_(functionName)
-{}
-
-void PeakFitpar::setRange(const Range& r)
-{
-    range_ = r;
-    gSession->onPeaks(); // TODO restrict to PeakAt(index())
-}
-
-void PeakFitpar::setOne(double val, bool namelyMax)
-{
-    range_.setOne(val, namelyMax);
-    gSession->onPeaks(); // TODO restrict to PeakAt(index())
-}
-
-void PeakFitpar::setPeakFunction(const QString& name)
-{
-    functionName_ = name;
-    gSession->onPeaks(); // TODO restrict to PeakAt(index())
-}
-
-JsonObj PeakFitpar::toJson() const
-{
-    QJsonObject ret;
-    ret.insert("range", range_.toJson() );
-    ret.insert("type", functionName());
-    return ret;
-}
-
-PeakFitpar PeakFitpar::fromJson(const JsonObj& obj)
-{
-    QString type = obj.loadString("type");
-    if (!keys.contains(type)) // validate peak fit function, so we dont get any surprises later.
-        THROW(QString("'") + type + "' is not a valid fit function!");
-    return {obj.loadRange("range"), type};
-}
-
-
-//  ***********************************************************************************************
-//! @class Peaks
-
 void Peaks::clear()
 {
     peaks_.clear();
