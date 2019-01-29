@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/pars/peak.cpp
+//! @file      core/pars/peaks.cpp
 //! @brief     Implements classes Peak and Peaks
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/pars/peak.h"
+#include "core/pars/peaks.h"
 #include "core/session.h"
 #include "core/base/exception.h"
 #include "qcr/base/debug.h"

@@ -23,7 +23,7 @@
 #include "core/data/theta_selection.h"
 #include "core/pars/baseline.h"
 #include "core/pars/params.h"
-#include "core/pars/peak.h"
+#include "core/pars/peaks.h"
 #include "core/data/angle_map.h"
 #include "core/typ/lazy_data.h"
 
