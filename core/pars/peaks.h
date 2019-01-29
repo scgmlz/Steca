@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/pars/peaks.h
-//! @brief     Defines classes Peak and Peaks
+//! @brief     Defines class Peaks
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef PEAK_H
-#define PEAK_H
+#ifndef PEAKS_H
+#define PEAKS_H
 
 #include "core/pars/peak_fitpar.h"
 
@@ -44,4 +44,4 @@ private:
     std::vector<PeakFitpar> peaks_;
 };
 
-#endif // PEAK_H
+#endif // PEAKS_H
