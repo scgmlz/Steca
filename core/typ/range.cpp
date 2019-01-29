@@ -39,11 +39,6 @@ Range::Range(const std::vector<double>& vec)
         extendBy(val);
 }
 
-Range Range::infinite()
-{
-    return Range(-Q_INFINITY, +Q_INFINITY);
-}
-
 void Range::invalidate()
 {
     set(Q_QNAN, Q_QNAN);

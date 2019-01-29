@@ -27,7 +27,6 @@ public:
     Range(double min, double max);
     Range(const std::vector<double>&);
 
-    static Range infinite(); //!< factory: -inf .. +inf
     static Range safeFrom(double, double); //!< safe factory
 
     void fromJson(const JsonObj&);

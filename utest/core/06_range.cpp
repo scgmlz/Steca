@@ -19,11 +19,6 @@ TEST(Range, Trivia) {
     Range r4(6, 7);
     EXPECT_EQ(6, r4.min);
     EXPECT_EQ(7, r4.max);
-    auto r5 = Range::infinite();
-    EXPECT_TRUE(qIsInf(r5.min));
-    EXPECT_LE(r5.min, 0);
-    EXPECT_TRUE(qIsInf(r5.max));
-    EXPECT_GE(r5.max, 0);
 }
 
 TEST(Range, Validity) {
@@ -41,7 +36,6 @@ TEST(Range, Validity) {
 
 TEST(Range, IsEmpty) {
     EXPECT_TRUE(Range().isEmpty());
-    EXPECT_TRUE(!Range::infinite().isEmpty());
 
     Range r(0,0);
     EXPECT_TRUE(r.isEmpty());
@@ -57,7 +51,6 @@ TEST(Range, Width) {
     EXPECT_TRUE(qIsNaN(Range().width()));
     EXPECT_EQ(0, Range(0,0).width());
     EXPECT_TRUE(qIsInf(Range(0, Q_INFINITY).width()));
-    EXPECT_TRUE(qIsInf(Range::infinite().width()));
 
     Range r(0,0);
     EXPECT_TRUE(r.isEmpty());
@@ -74,7 +67,6 @@ TEST(Range, Center) {
     EXPECT_EQ(0, Range(0,0).center());
     EXPECT_TRUE(qIsNaN(Range(0, Q_QNAN).center()));
     EXPECT_TRUE(qIsInf(Range(0, Q_INFINITY).center()));
-    EXPECT_TRUE(qIsNaN(Range::infinite().center()));
 }
 
 TEST(Range, Safe) {
@@ -86,8 +78,6 @@ TEST(Range, Safe) {
     RANGE_EQ(r, Range(3, 4));
     r = Range::safeFrom(4, 3);
     RANGE_EQ(r, Range(3, 4));
-    r = Range::safeFrom(+Q_INFINITY, -Q_INFINITY);
-    RANGE_EQ(r, Range::infinite());
 }
 
 TEST(Range, Extend) {
@@ -103,14 +93,8 @@ TEST(Range, Contains) {
 
     EXPECT_TRUE(!Range().contains(r));
     EXPECT_TRUE(!Range().contains(Range()));
-    EXPECT_TRUE(!Range().contains(Range::infinite()));
-
-    EXPECT_TRUE(Range::infinite().contains(r));
-    EXPECT_TRUE(Range::infinite().contains(Range::infinite()));
-    EXPECT_TRUE(!Range::infinite().contains(Range()));
 
     EXPECT_TRUE(!r.contains(Range()));
-    EXPECT_TRUE(!r.contains(Range::infinite()));
     EXPECT_TRUE(!r.contains(Q_QNAN));
     EXPECT_TRUE(!r.contains(Q_INFINITY));
 
@@ -128,15 +112,8 @@ TEST(Range, Intersects) {
 
     EXPECT_TRUE(!Range().intersects(r));
     EXPECT_TRUE(!Range().intersects(Range()));
-    EXPECT_TRUE(!Range().intersects(Range::infinite()));
-
-    EXPECT_TRUE(Range::infinite().intersects(r));
-    EXPECT_TRUE(Range::infinite().intersects(Range::infinite()));
-    EXPECT_TRUE(!Range::infinite().intersects(Range()));
 
     EXPECT_TRUE(!r.intersects(Range()));
-    EXPECT_TRUE(r.intersects(Range::infinite()));
-
     EXPECT_TRUE(r.intersects(r));
 
     EXPECT_TRUE(r.intersects(Range(0, 10)));
@@ -148,9 +125,6 @@ TEST(Range, Intersect) {
 
     EXPECT_TRUE(!Range().intersect(r).isValid());
     EXPECT_TRUE(!r.intersect(Range()).isValid());
-    EXPECT_TRUE(!Range().intersect(Range::infinite()).isValid());
-
-    EXPECT_TRUE(!Range::infinite().intersect(Range()).isValid());
 
     EXPECT_TRUE(!r.intersect(Range()).isValid());
 
@@ -179,10 +153,6 @@ TEST(Ranges, Json) {
     rs.add(Range());
     rs.add(Range(9,9));
     rs.add(Range(-3, -2));
-    rs1.fromJson(rs.toJson());
-    EXPECT_TRUE(RANGES_EQ(rs, rs1));
-
-    rs.add(Range::infinite());
     rs1.fromJson(rs.toJson());
     EXPECT_TRUE(RANGES_EQ(rs, rs1));
 }
