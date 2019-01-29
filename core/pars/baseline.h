@@ -15,7 +15,7 @@
 #ifndef BASELINE_H
 #define BASELINE_H
 
-#include "core/typ/range.h"
+#include "core/typ/ranges.h"
 #include "qcr/engine/cell.h"
 
 //! Parametrizes the baseline fits.
