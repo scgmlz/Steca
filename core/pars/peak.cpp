@@ -17,32 +17,32 @@
 #include "core/base/exception.h"
 #include "qcr/base/debug.h"
 
-const QStringList Peak::keys = { "Raw", "Gaussian", "Lorentzian", "Voigt" };
+const QStringList PeakFitpar::keys = { "Raw", "Gaussian", "Lorentzian", "Voigt" };
 
-Peak::Peak(const Range& r, const QString& functionName)
+PeakFitpar::PeakFitpar(const Range& r, const QString& functionName)
     : range_(r)
     , functionName_(functionName)
 {}
 
-void Peak::setRange(const Range& r)
+void PeakFitpar::setRange(const Range& r)
 {
     range_ = r;
     gSession->onPeaks(); // TODO restrict to PeakAt(index())
 }
 
-void Peak::setOne(double val, bool namelyMax)
+void PeakFitpar::setOne(double val, bool namelyMax)
 {
     range_.setOne(val, namelyMax);
     gSession->onPeaks(); // TODO restrict to PeakAt(index())
 }
 
-void Peak::setPeakFunction(const QString& name)
+void PeakFitpar::setPeakFunction(const QString& name)
 {
     functionName_ = name;
     gSession->onPeaks(); // TODO restrict to PeakAt(index())
 }
 
-JsonObj Peak::toJson() const
+JsonObj PeakFitpar::toJson() const
 {
     QJsonObject ret;
     ret.insert("range", range_.toJson() );
@@ -50,7 +50,7 @@ JsonObj Peak::toJson() const
     return ret;
 }
 
-Peak Peak::fromJson(const JsonObj& obj)
+PeakFitpar PeakFitpar::fromJson(const JsonObj& obj)
 {
     QString type = obj.loadString("type");
     if (!keys.contains(type)) // validate peak fit function, so we dont get any surprises later.
@@ -70,9 +70,9 @@ void Peaks::clear()
 
 void Peaks::add(const Range& range)
 {
-    peaks_.erase(std::remove_if(peaks_.begin(), peaks_.end(), [=](const Peak& p) {
+    peaks_.erase(std::remove_if(peaks_.begin(), peaks_.end(), [=](const PeakFitpar& p) {
                 return p.range().intersects(range); }), peaks_.end());
-    doAdd({range, Peak::keys.at(gSession->params.defaultPeakFunction.val())});
+    doAdd({range, PeakFitpar::keys.at(gSession->params.defaultPeakFunction.val())});
     // not elegant: find the newly added range
     for (int i=0; i<size(); ++i) {
         if (at(i).range().intersects(range)) {
@@ -83,7 +83,7 @@ void Peaks::add(const Range& range)
     gSession->onPeaks();
 }
 
-void Peaks::doAdd(Peak&& peak)
+void Peaks::doAdd(PeakFitpar&& peak)
 {
     peaks_.push_back(std::move(peak));
     sort();
@@ -123,12 +123,12 @@ QJsonArray Peaks::toJson() const
 void Peaks::fromJson(const QJsonArray& arr)
 {
     for (const auto& ele: arr)
-        doAdd(Peak::fromJson(ele.toObject()));
+        doAdd(PeakFitpar::fromJson(ele.toObject()));
     gSession->onPeaks();
 }
 
 void Peaks::sort()
 {
-    std::sort(peaks_.begin(), peaks_.end(), [](const Peak& p1, const Peak& p2) {
+    std::sort(peaks_.begin(), peaks_.end(), [](const PeakFitpar& p1, const PeakFitpar& p2) {
             return p1.range().min < p2.range().min; } );
 }

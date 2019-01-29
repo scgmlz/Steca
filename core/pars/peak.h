@@ -19,9 +19,9 @@
 
 //! Global settings (range, function type) for one Bragg peak.
 
-class Peak {
+class PeakFitpar {
 public:
-    Peak(const Range& range, const QString& functionName);
+    PeakFitpar(const Range& range, const QString& functionName);
 
     void setPeakFunction(const QString&);
     void setRange(const Range&);
@@ -33,7 +33,7 @@ public:
     bool isRaw() const { return functionName_=="Raw"; }
     JsonObj toJson() const;
 
-    static Peak fromJson(const JsonObj&);
+    static PeakFitpar fromJson(const JsonObj&);
     static const QStringList keys;
 
 private:
@@ -53,20 +53,20 @@ public:
     void select(int i) { selected_ = i; }
     bool selectByValue(double x);
 
-    Peak* selectedPeak() {
+    PeakFitpar* selectedPeak() {
         return 0<=selected_ && selected_<size() ? &peaks_[selected_] : nullptr; }
 
     int size() const { return peaks_.size(); }
-    const Peak& at(int i) const { return peaks_.at(i); }
-    Peak& at(int i) { return peaks_.at(i); }
+    const PeakFitpar& at(int i) const { return peaks_.at(i); }
+    PeakFitpar& at(int i) { return peaks_.at(i); }
     int selectedIndex() { return selected_; }
     QJsonArray toJson() const;
 
 private:
     void sort();
-    void doAdd(Peak&& peak);
+    void doAdd(PeakFitpar&& peak);
     int selected_ {-1};
-    std::vector<Peak> peaks_;
+    std::vector<PeakFitpar> peaks_;
 };
 
 #endif // PEAK_H
