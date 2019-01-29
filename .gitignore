@@ -3,6 +3,7 @@
 html/
 *~
 *.tmp
+*.log
 
 build
 qbuild
