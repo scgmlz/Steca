@@ -6,8 +6,8 @@ add_library(${lib} ${files})
 target_include_directories(${lib}
     PRIVATE
     ${yaml_INCLUDE_DIR}
-    ${CMAKE_HOME_DIRECTORY}/3rdparty
-    ${CMAKE_HOME_DIRECTORY}
+    ${CMAKE_SOURCE_DIR}/3rdparty
+    ${CMAKE_SOURCE_DIR}
     )
 
 message(STATUS "core to be linked with libcerf: ${Cerf_LIBRARIES}")
