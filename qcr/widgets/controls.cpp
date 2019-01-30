@@ -59,7 +59,7 @@ QcrTrigger::QcrTrigger(const QString& rawname, const QString& text, const QStrin
             if (!isEnabled())
                 txt += "\nThis trigger is currently inoperative.";
             setToolTip(txt); });
-};
+}
 
 QcrTrigger::QcrTrigger(
     const QString& name, const QString& text, const QString& iconFile, const QKeySequence& shortcut)
@@ -141,7 +141,7 @@ void QcrToggle::initToggle(const QString& iconFile, const QKeySequence& shortcut
             else
                 txt += "\nThis toggle is currently unchecked. Click to check.";
             setToolTip(txt); });
-};
+}
 
 //  ***********************************************************************************************
 //! toggle button classes

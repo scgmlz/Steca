@@ -42,7 +42,7 @@ if(MSVC)
     set(CTEST_CONFIGURATION_TYPE "${JOB_BUILD_CONFIGURATION}")
 else()
     # -fsanitize=address -fsanitize=undefined
-    set(DEB_FLAGS "-Wall -Wno-sign-compare -fno-omit-frame-pointer")
+    set(DEB_FLAGS "-Wall -Wpedantic -Wno-sign-compare -fno-omit-frame-pointer")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} ${DEB_FLAGS} -O0 -g")
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O3 -w")
     set(BUILD_SHARED_LIBS ON)
