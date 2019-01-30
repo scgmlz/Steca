@@ -20,7 +20,7 @@ class Cluster;
 class Curve;
 class InfoSequence;
 class Range;
-class QcrModalDialog; // TODO get rid
+class TakesLongTime;
 
 namespace data_export {
 
@@ -38,8 +38,14 @@ QString numberedFileName(const QString& templatedName, int num, int maxNum);
 void writeCurve(QTextStream& stream, const Curve& curve, const Cluster* cluster,
                 const Range& rgeGma, const QString& separator);
 
-void writeInfoSequence(QTextStream& stream, const InfoSequence& peakInfos, const QString& format);
+void writeDfgram(QTextStream& stream, const int idx, const QString& format);
+void writeCurrentDfgram(QTextStream& stream, const QString& format);
+void writeAllDfgrams(QTextStream& stream, TakesLongTime& progress, const QString& format);
 
-void saveDiagram (QFile* file, const QString& format, QcrModalDialog*);
+void writeDiagram(QTextStream& stream, const QString& separator);
+
+void writeCurrentInfoSequence(QTextStream& stream, const QString& format);
+void writeOneInfoSequence(QTextStream& stream, int idx, const QString& format);
+void writeAllInfoSequence(QTextStream& stream, TakesLongTime& progress, const QString& format);
 
 } // namespace data_export

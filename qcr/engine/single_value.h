@@ -41,7 +41,7 @@ public:
     void setHook(std::function<void(const T)> f) { cell()->setHook(f); }
 protected:
     //! Transmits new widget value to the Cell, to the QSettings. Logs. Finally remakes all views.
-    void onChangedValue(T val);
+    void onChangedValue(T val, const QString& comment="");
     QcrCell<T>* cell_ {nullptr};
 private:
     virtual T doGetValue() const = 0; //!< to be overridden by the widget-specific get function
@@ -110,8 +110,9 @@ void QcrSingleValue<T>::setFromCommand(const QString& arg)
 //! Transmits new widget value to the Cell, to the QSettings. Logs. Finally remakes all views.
 
 //! Used by control widgets, typically through Qt signals that are emitted upon user actions.
+//! Optionally, a comment is appended to the log entry.
 template<class T>
-void QcrSingleValue<T>::onChangedValue(T val)
+void QcrSingleValue<T>::onChangedValue(T val, const QString& comment)
 {
     if (!adhoc()) {
         QSettings s;
@@ -120,7 +121,10 @@ void QcrSingleValue<T>::onChangedValue(T val)
     }
     if (cell_->amCalling() || val==cell_->val())
         return;
-    doLog(name()+" "+strOp::to_s(val));
+    QString line = name()+" "+strOp::to_s(val);
+    if (comment!="")
+        line += " # " + comment;
+    doLog(line);
     cell_->setVal(val);
     gRoot->remakeAll();
 }

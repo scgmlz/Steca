@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/typ/range.h
-//! @brief     Defines classes Range and Ranges
+//! @brief     Defines class Range
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -27,7 +27,6 @@ public:
     Range(double min, double max);
     Range(const std::vector<double>&);
 
-    static Range infinite(); //!< factory: -inf .. +inf
     static Range safeFrom(double, double); //!< safe factory
 
     void fromJson(const JsonObj&);
@@ -50,30 +49,6 @@ public:
     QString to_s(const QString& unit="", int precision=5, int digitsAfter=2) const;
 
     double min, max; // this is the range
-};
-
-//! A *sorted* list of *non-overlapping* ranges, of which one is always selected.
-class Ranges {
-public:
-    void fromJson(const QJsonArray&);
-    void clear();
-    void add(const Range&);
-    void removeSelected();
-    void select(int i);
-    bool selectByValue(double x);
-
-    Range* selectedRange() { return isEmpty() ? nullptr : &ranges_.at(selected_); }
-
-    QJsonArray toJson() const;
-    bool isEmpty() const { return ranges_.empty(); }
-    int size() const { return ranges_.size(); }
-    const Range& at(int i) const { return ranges_[i]; }
-    int selectedIndex() const { return selected_; }
-
-private:
-    void sort();
-    std::vector<Range> ranges_;
-    int selected_ = 0;
 };
 
 #endif // RANGE_H

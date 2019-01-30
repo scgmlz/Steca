@@ -14,6 +14,7 @@
 
 #include "export.h"
 #include "qcr/base/debug.h"
+#include "core/base/async.h"
 #include "core/calc/info_sequence.h"
 #include "core/data/cluster.h"
 #include "core/typ/curve.h"
@@ -25,7 +26,7 @@
 
 namespace {
 
-//! Writes pole figure for one Bragg peak as alpha-beta-inten format list
+//! Writes pole figure for one Bragg peak as alpha-beta-inten format list.
 
 void writeFullInfoSequence(
     QTextStream& stream, const InfoSequence& peakInfos, const QString& separator)
@@ -36,7 +37,7 @@ void writeFullInfoSequence(
                << info.inten() << "\n";
 }
 
-//! Writes intensities for pole figure for one Bragg peak
+//! Writes intensities (only!) for pole figure for one Bragg peak.
 //!
 //! Makes sense for interpolated data only; assumes alpha-beta grid to be known.
 
@@ -56,6 +57,16 @@ void writeCompactInfoSequence(QTextStream& stream, const InfoSequence& peakInfos
         hasOld = true;
     }
     stream << "\n";
+}
+
+//! Writes pole figure for one Bragg peak.
+
+void writeInfoSequence(QTextStream& stream, const InfoSequence& peakInfos, const QString& format)
+{
+    if (format=="pol")
+        writeCompactInfoSequence(stream, peakInfos);
+    else
+        writeFullInfoSequence(stream, peakInfos, data_export::separator(format));
 }
 
 } // namespace
@@ -79,6 +90,8 @@ QString data_export::numberedFileName(const QString& templatedName, int num, int
     ret.replace("%d", QString("%1").arg(num, nDigits, 10, QLatin1Char('0')));
     return ret;
 }
+
+//! Writes one diffractogram.
 
 void data_export::writeCurve(
     QTextStream& stream, const Curve& curve, const Cluster* cluster,
@@ -104,37 +117,106 @@ void data_export::writeCurve(
     stream.flush(); // not sure whether we need this
 }
 
-//! Writes pole figure for one Bragg peak.
+//! Writes diffractogram at given index.
 
-void data_export::writeInfoSequence(
-    QTextStream& stream, const InfoSequence& peakInfos, const QString& format)
+void data_export::writeDfgram(QTextStream& stream, const int idx, const QString& format)
 {
-    if (format=="pol")
-        writeCompactInfoSequence(stream, peakInfos);
-    else
-        writeFullInfoSequence(stream, peakInfos, data_export::separator(format));
+    const int nSlices = gSession->gammaSelection.numSlices.val();
+    const int iSlice = idx%nSlices;
+    const int iCluster = idx/nSlices;
+    const Cluster* cluster = gSession->activeClusters.clusters.yield().at(iCluster);
+    const Range gmaStripe = gSession->gammaSelection.slice2range(cluster->rgeGma(), iSlice);
+    const Curve& curve = cluster->dfgrams.yield_at(iSlice,cluster).curve;
+    data_export::writeCurve(stream, curve, cluster, gmaStripe, separator(format));
 }
 
+//! Writes current diffractogram.
 
-void data_export::saveDiagram(QFile* file, const QString& format, QcrModalDialog*)
+void data_export::writeCurrentDfgram(QTextStream& stream, const QString& format)
 {
-    ASSERT(file);
-    QTextStream stream(file);
+    const Cluster* cluster = gSession->currentCluster();
+    ASSERT(cluster);
+    const Curve& curve = cluster->currentDfgram().curve;
+    data_export::writeCurve(stream, curve, cluster, cluster->rgeGma(), separator(format));
+}
 
+//! Writes all diffractograms, with appropriate subheaders.
+
+void data_export::writeAllDfgrams(
+    QTextStream& stream, TakesLongTime& progress, const QString& format)
+{
+    const int nSlice = qMax(1, gSession->gammaSelection.numSlices.val());
+    const int nCluster = gSession->activeClusters.size();
+    const QString separator = data_export::separator(format);
+    ASSERT(progress.total()==nCluster*nSlice);
+    for (int iCluster=0; iCluster<nCluster; ++iCluster) {
+        const Cluster* cluster = gSession->activeClusters.clusters.yield().at(iCluster);
+        for (int iSlice=0; iSlice<nSlice; ++iSlice) {
+            const Range gmaStripe = gSession->gammaSelection.slice2range(
+                cluster->rgeGma(), iSlice);
+            const Curve& curve = cluster->dfgrams.yield_at(iSlice,cluster).curve;
+            stream << "Picture Nr: " << iCluster+1 << '\n';
+            if (nSlice > 1)
+                stream << "Gamma slice Nr: " << iSlice+1 << '\n';
+            writeCurve(stream, curve, cluster, gmaStripe, separator);
+            progress.step();
+        }
+    }
+}
+
+//! Writes x-y data from current diagram.
+
+void data_export::writeDiagram(QTextStream& stream, const QString& separator)
+{
     // get data
     const int idxX = int(gSession->params.diagramX.val());
     const int idxY = int(gSession->params.diagramY.val());
-    std::vector<double> xs, ys, ysLow, ysHig;
-    const InfoSequence* peakInfos = gSession->allPeaks.currentInfoSequence();
-    ASSERT(peakInfos);
-    peakInfos->get4(idxX, idxY, xs, ys, ysLow, ysHig);
-    ASSERT(xs.size());
-    // write data table
-    const QString separator = data_export::separator(format);
-    for (int i=0; i<xs.size(); ++i) {
+    std::vector<double> xs, ys, ysSigma;
+    gSession->allPeaks.currentInfoSequence()->getValuesAndSigma(idxX, idxY, xs, ys, ysSigma);
+
+    // write header
+    QStringList tags = PeakInfo::dataTags(true);
+    stream << "# " << tags[idxX] << separator << tags[idxY];
+    if (ysSigma.size() > 0)
+        stream << separator << "sigma_"  << tags[idxY];
+    stream << '\n';
+
+    // write data
+    for (size_t i = 0; i < xs.size(); ++i) {
         stream << xs[i] << separator << ys[i];
-        if (ysLow.size())
-            stream << separator << ysLow[i] << separator << ysHig[i];
+        if (ysSigma.size() > 0)
+            stream << separator << ysSigma[i];
         stream << '\n';
+    }
+}
+
+//! Writes pole figure for current Bragg peak.
+
+void data_export::writeCurrentInfoSequence(QTextStream& stream, const QString& format)
+{
+    const auto* infos = gSession->allPeaks.currentInfoSequence();
+    ASSERT(infos);
+    writeInfoSequence(stream, *infos, format);
+}
+
+//! Writes pole figure for Bragg peak at given index.
+
+void data_export::writeOneInfoSequence(QTextStream& stream, int idx, const QString& format)
+{
+    const auto* infos = gSession->allPeaks.allInfoSequences().at(idx);
+    ASSERT(infos);
+    writeInfoSequence(stream, *infos, format);
+}
+
+//! Writes pole figures for all Bragg peaks, with appropriate subheaders.
+
+void data_export::writeAllInfoSequence(
+    QTextStream& stream, TakesLongTime& progress, const QString& format)
+{
+    int iPeak = 0;
+    for (const auto* peak : gSession->allPeaks.allInfoSequences()) {
+        stream << "Peak Nr: " << ++iPeak << '\n';
+        writeInfoSequence(stream, *peak, format);
+        progress.step();
     }
 }

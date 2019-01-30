@@ -44,7 +44,7 @@ public:
     Range rgeGma() const { return rgeGma_; }
     Range rgeGmaFull() const { return rgeGmaFull_; }
 
-    void getGmaIndexes(const Range&, std::vector<int> const*&, int&, int&) const;
+    void getGmaIndexes(const Range&, const std::vector<int>*&, int&, int&) const;
 
 private:
     size2d size_;

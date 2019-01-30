@@ -305,7 +305,7 @@ QcrComboBox::QcrComboBox(
     doSetValue(cell_->val());
     connect(this, _SLOT_(QComboBox,currentIndexChanged,int), [this](int val)->void {
             if (!spuriousCall_)
-                onChangedValue(val); });
+                onChangedValue(val, itemText(val)); });
 }
 
 QcrComboBox::QcrComboBox(
@@ -408,7 +408,7 @@ QcrTabWidget::QcrTabWidget(const QString& _name)
     connect(this, &QTabWidget::currentChanged, [this](int val) {
             if (spuriousCall_)
                 return;
-            onChangedValue(val); });
+            onChangedValue(val, tabText(val)); });
 }
 
 void QcrTabWidget::addTab(QWidget* page, const QString& label)

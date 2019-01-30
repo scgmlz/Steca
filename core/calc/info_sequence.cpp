@@ -77,7 +77,7 @@ void InfoSequence::get4(const int idxX, const int idxY,
 
     using eReflAttr = PeakInfo::eReflAttr;
     eReflAttr ye = (eReflAttr) idxY;
-    const Peak* peak = gSession->peaks.selectedPeak();
+    const PeakFitpar* peak = gSession->peaks.selectedPeak();
     if (peak
         && !peak->isRaw()
         && (ye==eReflAttr::INTEN || ye==eReflAttr::TTH || ye==eReflAttr::FWHM)) {
@@ -118,7 +118,7 @@ void InfoSequence::getValuesAndSigma(const size_t idxX, const size_t idxY,
 
     using eReflAttr = PeakInfo::eReflAttr;
     eReflAttr ye = (eReflAttr) idxY;
-    const Peak* peak = gSession->peaks.selectedPeak();
+    const PeakFitpar* peak = gSession->peaks.selectedPeak();
     if (peak
         && !peak->isRaw()
         && (ye==eReflAttr::INTEN || ye==eReflAttr::TTH || ye==eReflAttr::FWHM)) {

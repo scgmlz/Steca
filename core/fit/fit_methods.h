@@ -32,7 +32,7 @@ private:
     const FitFunction* f_;
     const std::vector<double>* X_ {nullptr};
 
-    void callFit(double*, double const*, double const*, double*, int, double const*, int);
+    void callFit(double*, const double*, const double*, double*, int, const double*, int);
 
     void callbackY(double*, double*, int, int, void*);
     void callbackJacobianLM(double*, double*, int, int, void*);
