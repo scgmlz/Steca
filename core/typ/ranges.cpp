@@ -10,8 +10,6 @@
 //! @copyright Forschungszentrum Jülich GmbH 2016-2018
 //! @authors   Scientific Computing Group at MLZ (see CITATION, MAINTAINER)
 //
-//  Unit tests in test006_range (good coverage since this is somewhat involved)
-//
 //  ***********************************************************************************************
 
 #include "core/typ/ranges.h"
