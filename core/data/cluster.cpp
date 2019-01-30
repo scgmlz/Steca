@@ -13,7 +13,6 @@
 //  ***********************************************************************************************
 
 #include "core/data/cluster.h"
-#include "core/data/from_map.h"
 #include "core/session.h"
 #include "core/data/collect_intensities.h"
 #include "qcr/base/debug.h" // warning
@@ -29,21 +28,21 @@ Sequence::Sequence(const std::vector<const Measurement*>& measurements)
 Range Sequence::rgeGma() const {
     Range ret;
     for (const Measurement* m : members_)
-        ret.extendBy(fromMap::rgeGma(m));
+        ret.extendBy(gSession->angleMap.get(m->midTth()).rgeGma());
     return ret;
 }
 
 Range Sequence::rgeGmaFull() const {
     Range ret;
     for (const Measurement* m : members_)
-        ret.extendBy(fromMap::rgeGmaFull(m));
+        ret.extendBy(gSession->angleMap.get(m->midTth()).rgeGmaFull());
     return ret;
 }
 
 Range Sequence::rgeTth() const {
     Range ret;
     for (const Measurement* m : members_)
-        ret.extendBy(fromMap::rgeTth(m));
+        ret.extendBy(gSession->angleMap.get(m->midTth()).rgeTth());
     return ret;
 }
 
