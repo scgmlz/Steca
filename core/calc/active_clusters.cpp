@@ -32,14 +32,14 @@ Curve computeAvgCurve(const ActiveClusters*const ac)
             group.push_back(one);
     const Sequence seq(group);
     // then compute the dfgram
-    return algo::projectCluster(seq, seq.rgeGma());
+    return algo::projectCluster(seq, seq.rangeGma());
 }
 
 Range computeRgeGma(const ActiveClusters*const ac)
 {
     Range ret;
     for (const Cluster* cluster : ac->clusters.yield())
-        ret.extendBy(cluster->rgeGma());
+        ret.extendBy(cluster->rangeGma());
     return ret;
 }
 

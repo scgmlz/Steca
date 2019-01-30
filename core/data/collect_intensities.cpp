@@ -87,7 +87,7 @@ Curve algo::projectCluster(const Sequence& cluster, const Range& rgeGma)
 {
     const std::vector<const Measurement*>& members = cluster.members();
     double normFactor = cluster.normFactor();
-    const Range& rgeTth = cluster.rgeTth();
+    const Range& rgeTth = cluster.rangeTth();
 
     int numBins = numTthBins(members, rgeTth);
     std::vector<float> intens(numBins, 0);

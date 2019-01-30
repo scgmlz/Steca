@@ -38,7 +38,7 @@ void ThetaSelection::onData()
         numSlices_ = 0;
         return;
     }
-    fullRange_ = cluster->rgeTth();
+    fullRange_ = cluster->rangeTth();
     numSlices_ = algo::numTthBins(cluster->members(), fullRange_);
     recomputeCache();
 }

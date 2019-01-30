@@ -125,7 +125,7 @@ void data_export::writeDfgram(QTextStream& stream, const int idx, const QString&
     const int iSlice = idx%nSlices;
     const int iCluster = idx/nSlices;
     const Cluster* cluster = gSession->activeClusters.clusters.yield().at(iCluster);
-    const Range gmaStripe = gSession->gammaSelection.slice2range(cluster->rgeGma(), iSlice);
+    const Range gmaStripe = gSession->gammaSelection.slice2range(cluster->rangeGma(), iSlice);
     const Curve& curve = cluster->dfgrams.yield_at(iSlice,cluster).curve;
     data_export::writeCurve(stream, curve, cluster, gmaStripe, separator(format));
 }
@@ -137,7 +137,7 @@ void data_export::writeCurrentDfgram(QTextStream& stream, const QString& format)
     const Cluster* cluster = gSession->currentCluster();
     ASSERT(cluster);
     const Curve& curve = cluster->currentDfgram().curve;
-    data_export::writeCurve(stream, curve, cluster, cluster->rgeGma(), separator(format));
+    data_export::writeCurve(stream, curve, cluster, cluster->rangeGma(), separator(format));
 }
 
 //! Writes all diffractograms, with appropriate subheaders.
@@ -153,7 +153,7 @@ void data_export::writeAllDfgrams(
         const Cluster* cluster = gSession->activeClusters.clusters.yield().at(iCluster);
         for (int iSlice=0; iSlice<nSlice; ++iSlice) {
             const Range gmaStripe = gSession->gammaSelection.slice2range(
-                cluster->rgeGma(), iSlice);
+                cluster->rangeGma(), iSlice);
             const Curve& curve = cluster->dfgrams.yield_at(iSlice,cluster).curve;
             stream << "Picture Nr: " << iCluster+1 << '\n';
             if (nSlice > 1)

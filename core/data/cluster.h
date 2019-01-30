@@ -40,10 +40,10 @@ public:
     deg phi() const;
     deg chi() const;
 
-    Range rgeGma() const;
-    Range rgeGmaFull() const;
-    Range rgeTth() const;
-    Range rgeInten() const;
+    Range rangeGma() const;
+    Range rangeGmaFull() const;
+    Range rangeTth() const;
+    Range rangeInten() const;
     double normFactor() const;
 
     const Metadata& avgMetadata() const { return metadata_; }

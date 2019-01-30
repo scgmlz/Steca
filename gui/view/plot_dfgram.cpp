@@ -259,7 +259,7 @@ void PlotDfgram::renderAll()
     const Range& tthRange = dfgram->curve.rgeX();
     Range intenRange;
     if (gGui->toggles->fixedIntenDfgram.getValue()) {
-        intenRange = gSession->currentCluster()->rgeInten();
+        intenRange = gSession->currentCluster()->rangeInten();
     } else {
         intenRange = curveMinusBg.rgeY();
         intenRange.extendBy(dfgram->curve.rgeY());

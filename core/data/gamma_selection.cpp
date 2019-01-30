@@ -37,7 +37,7 @@ const Range GammaSelection::currentRange() const
     if (!cluster)
         return {};
 
-    const Range fullRange_ = cluster->rgeGma();
+    const Range fullRange_ = cluster->rangeGma();
 
     if (!fullRange_.isValid())
         return {};
