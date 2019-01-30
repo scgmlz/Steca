@@ -15,6 +15,7 @@ Internal improvements:
 * VERSION handled by CMake
 * Service program version.php under version control
 * Added and improved lots of Doxygen comments
+* Not all unit linked to tested library (local vs linked)
 
 Steca version 2.1.1, released 2019.01.24
 ----------------------------------------
