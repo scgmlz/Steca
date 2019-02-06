@@ -1,7 +1,7 @@
-get_filename_component(lib ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+set(lib gui)
 
-file(GLOB_RECURSE FILES *.cpp)
-add_library(${lib} ${files})
+file(GLOB_RECURSE sources *.cpp)
+add_library(${lib} ${sources})
 
 target_include_directories(${lib}
     PRIVATE

@@ -112,11 +112,13 @@ namespace file_dialog {
 
 static eFileOverwritePolicy fileOverwritePolicy = eFileOverwritePolicy::PROMPT;
 
+//! Sets overwrite policy, which determines what to do when a chosen export file already exists.
 void setFileOverwritePolicy(eFileOverwritePolicy val)
 {
     fileOverwritePolicy = val;
 }
 
+//! Reacts to choice of export file that already exists, depending on current overwrite policy.
 bool confirmOverwrite(const QString& name, QWidget* parent, const QString& path)
 {
     switch (fileOverwritePolicy) {
