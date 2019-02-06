@@ -40,7 +40,6 @@ if(MSVC)
     set(CTEST_CONFIGURATION_TYPE "${JOB_BUILD_CONFIGURATION}")
     set(DEFAULT_BUILD_SHARED_LIBS OFF)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin/$<CONFIG>)
-    link_directories(BEFORE ${PROJECT_BINARY_DIR}/bin/$<CONFIG>)
 else()
     # -fsanitize=address -fsanitize=undefined
     set(DEB_FLAGS "-Wall -Wpedantic -Wno-sign-compare -fno-omit-frame-pointer")
