@@ -6,12 +6,19 @@ endif()
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(PreventInSourceBuilds)
 
-message(STATUS "configuring libcerf, with CERF_CPP=${CERF_CPP}")
-option(CERF_CPP "Build libcerf as native C++" OFF)
-message(STATUS "now option is CERF_CPP=${CERF_CPP}")
 option(LIB_MAN "Build libcerf man pages" ON)
 option(LIB_INSTALL "Install libcerf" ON)
 option(PEDANTIC "Compile with pedantic warnings" ON)
+
+if(MSVC)
+    set(CERF_CPP ON)
+else()
+    option(CERF_CPP "Build libcerf as native C++" OFF)
+    add_compile_options(-O2)
+    if(PEDANTIC)
+        add_compile_options(-pedantic -Wall)
+    endif()
+endif()
 
 if(CERF_CPP)
     message(STATUS "will compile project libcerf as C++ code")
@@ -32,13 +39,6 @@ endif()
 set(CERF_SOVERSION                 1) # API version
 set(CERF_VERSION ${CERF_SOVERSION}.11) # minor version
 
-if(MSVC)
-else()
-    add_compile_options(-O2)
-    if(PEDANTIC)
-        add_compile_options(-pedantic -Wall)
-    endif()
-endif()
 
 include(CTest)
 
