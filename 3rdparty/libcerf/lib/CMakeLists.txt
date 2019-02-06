@@ -13,11 +13,7 @@ if (${CERF_CPP})
     set_property(SOURCE ${src_files} PROPERTY LANGUAGE CXX)
 endif()
 
-if(MSVC)
-    add_library(${lib} ${src_files})
-else()
-    add_library(${lib} SHARED ${src_files})
-endif()
+add_library(${lib} ${src_files})
 
 set_target_properties(
     ${lib} PROPERTIES

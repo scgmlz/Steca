@@ -6,12 +6,18 @@ endif()
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(PreventInSourceBuilds)
 
+# requires CMake >= 3.13 option(BUILD_SHARED_LIBS "Build as shared library" ON)
 option(LIB_MAN "Build libcerf man pages" ON)
 option(LIB_INSTALL "Install libcerf" ON)
 option(PEDANTIC "Compile with pedantic warnings" ON)
 
+message("Build libcerf with BUILD_SHARED_LIBS=${BUILD_SHARED_LIBS}")
+
 if(MSVC)
     set(CERF_CPP ON)
+    if(BUILD_SHARED_LIBS)
+        set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
+    endif()
 else()
     option(CERF_CPP "Build libcerf as native C++" OFF)
     add_compile_options(-O2)
