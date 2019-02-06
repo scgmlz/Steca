@@ -2,7 +2,8 @@ set(lib cerf)
 if (${CERF_CPP})
     set(lib cerfcpp)
 endif()
-message(STATUS "libcerf/lib: build library ${lib}, CERF_CPP=${CERF_CPP}")
+message(STATUS
+    "libcerf/lib: build library ${lib}, CERF_CPP=${CERF_CPP}, shared=${BUILD_SHARED_LIBS}")
 
 set(cerf_LIBRARY ${lib} PARENT_SCOPE)
 

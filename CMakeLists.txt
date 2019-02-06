@@ -84,6 +84,7 @@ endif()
 if(NOT Cerf_FOUND OR BUILD_FALLBACK)
     message(STATUS "going to build 3rdparty/libcerf, with CERF_CPP=${CERF_CPP}")
     set(BUILD_SHARED_LIBS ON)
+    set(LIB_RUN OFF)
     add_subdirectory(3rdparty/libcerf) # will respect option CERF_CPP
     set(Cerf_INCLUDE_DIR ${CMAKE_CMAKE_DIR}/3rdparty/libcerf/lib)
     if(CERF_CPP)
