@@ -39,6 +39,8 @@ if(MSVC)
     set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} ${MS_NOWARN} ${MS_D}")
     set(CTEST_CONFIGURATION_TYPE "${JOB_BUILD_CONFIGURATION}")
     set(DEFAULT_BUILD_SHARED_LIBS OFF)
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin/$<CONFIG>)
+    link_directories(BEFORE ${PROJECT_BINARY_DIR}/bin/$<CONFIG>)
 else()
     # -fsanitize=address -fsanitize=undefined
     set(DEB_FLAGS "-Wall -Wpedantic -Wno-sign-compare -fno-omit-frame-pointer")
@@ -53,9 +55,9 @@ foreach(comp Qt5Core Qt5Gui Qt5Widgets Qt5Network)
     message(STATUS "found ${comp}: version=${${comp}_VERSION_STRING} dir=${${comp}_DIR} lib=${${comp}_LIBRARIES}")
 endforeach()
 
-find_package(YAML      MODULE)
+find_package(YAML MODULE)
 # waiting for activation find_package(LMFit 8.1 MODULE)
-find_package(Cerf  1.8 MODULE)
+find_package(Cerf 1.8 MODULE)
 
 message(STATUS
     "libyaml: FOUND=${yaml_FOUND}, VERSION=${yaml_VERSION}, LIB=${yaml_LIBRARIES}")
