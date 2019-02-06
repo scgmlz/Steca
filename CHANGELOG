@@ -3,6 +3,9 @@ Steca version 2.1.2, released 2019.
 
 New or improved functionality:
 
+* Plotting:
+  * show axis even if there is a single data value
+  * leave white space around the data
 * Log & replay:
   * Log file written to file specified by option -l, to <startup_script>.log, or to Steca.log
   * Disallow log file that overwrites startup file

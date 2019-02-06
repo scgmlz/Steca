@@ -1,12 +1,11 @@
-get_filename_component(lib ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+set(lib qcr)
 
-file(GLOB_RECURSE files *.h *.cpp)
-add_library(${lib} ${files})
+file(GLOB_RECURSE sources *.cpp)
+add_library(${lib} ${sources})
 
 target_include_directories(${lib}
     PRIVATE
-    ${CMAKE_HOME_DIRECTORY}
-    ${CMAKE_HOME_DIRECTORY}/3rdparty
+    ${CMAKE_SOURCE_DIR}
     )
 
 target_link_libraries(${lib}

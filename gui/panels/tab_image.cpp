@@ -173,10 +173,10 @@ DataImageTab::DataImageTab()
             idxSlice->setMaximum(nGamma);
             idxSlice->setEnabled(nGamma>1);
 
-            gammaRangeTotal->setText(cluster ? cluster->rgeGmaFull().to_s("deg") : "");
+            gammaRangeTotal->setText(cluster ? cluster->rangeGmaFull().to_s("deg") : "");
             gammaRangeSlice->setText(gSession->gammaSelection.currentRange().to_s("deg"));
 
-            thetaRangeTotal->setText(cluster ? cluster->rgeTth().to_s("deg") : "");
+            thetaRangeTotal->setText(cluster ? cluster->rangeTth().to_s("deg") : "");
             thetaRangeBin->setText(gSession->thetaSelection.range().to_s("deg"));
 
             render(); });

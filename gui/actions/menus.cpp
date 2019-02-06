@@ -106,7 +106,7 @@ QAction* Menus::separator() const
     QAction* ret = new QAction(mbar_);
     ret->setSeparator(true);
     return ret;
-};
+}
 
 QMenu* Menus::actionsToMenu(const char* menuName, QList<QAction*> actions)
 {
@@ -117,4 +117,4 @@ QMenu* Menus::actionsToMenu(const char* menuName, QList<QAction*> actions)
     for (auto action : actions)
         action->setToolTip(prefix + action->toolTip());
     return menu;
-};
+}

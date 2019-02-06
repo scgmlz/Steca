@@ -13,7 +13,6 @@
 //  ***********************************************************************************************
 
 #include "core/data/cluster.h"
-#include "core/data/from_map.h"
 #include "core/session.h"
 #include "core/data/collect_intensities.h"
 #include "qcr/base/debug.h" // warning
@@ -26,28 +25,28 @@ Sequence::Sequence(const std::vector<const Measurement*>& measurements)
     , metadata_(computeAvgMetadata())
 {}
 
-Range Sequence::rgeGma() const {
+Range Sequence::rangeGma() const {
     Range ret;
     for (const Measurement* m : members_)
-        ret.extendBy(fromMap::rgeGma(m));
+        ret.extendBy(gSession->angleMap.get(m->midTth()).rgeGma());
     return ret;
 }
 
-Range Sequence::rgeGmaFull() const {
+Range Sequence::rangeGmaFull() const {
     Range ret;
     for (const Measurement* m : members_)
-        ret.extendBy(fromMap::rgeGmaFull(m));
+        ret.extendBy(gSession->angleMap.get(m->midTth()).rgeGmaFull());
     return ret;
 }
 
-Range Sequence::rgeTth() const {
+Range Sequence::rangeTth() const {
     Range ret;
     for (const Measurement* m : members_)
-        ret.extendBy(fromMap::rgeTth(m));
+        ret.extendBy(gSession->angleMap.get(m->midTth()).rgeTth());
     return ret;
 }
 
-Range Sequence::rgeInten() const {
+Range Sequence::rangeInten() const {
     Range ret;
     for (const Measurement* m : members_)
         ret.intersect(m->rgeInten());
@@ -132,7 +131,7 @@ namespace {
 Dfgram computeSectorDfgram(const int jS, const Cluster* const parent)
 {
     int nS = gSession->gammaSelection.numSlices.val();
-    return Dfgram(algo::projectCluster(*parent, parent->rgeGma().slice(jS,nS)));
+    return Dfgram(algo::projectCluster(*parent, parent->rangeGma().slice(jS,nS)));
 }
 } //namespace
 

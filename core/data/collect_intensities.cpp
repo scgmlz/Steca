@@ -14,7 +14,6 @@
 
 #include "core/data/collect_intensities.h"
 #include "core/session.h"
-#include "core/data/from_map.h"
 #include "qcr/base/debug.h"
 #include <qmath.h>
 
@@ -76,7 +75,8 @@ int algo::numTthBins(const std::vector<const Measurement*>& _members, const Rang
     const ImageCut& cut = gSession->params.imageCut;
     int ret = gSession->imageSize().w - cut.horiz(); // number of horizontal pixels
     if (_members.size()>1) // for combined cluster, increase ret
-        ret = ret * _rgeTth.width() / fromMap::rgeTth(_members.front()).width();
+        ret = ret * _rgeTth.width() /
+            gSession->angleMap.get(_members.front()->midTth()).rgeTth().width();
     ASSERT(ret);
     return ret;
 }
@@ -87,7 +87,7 @@ Curve algo::projectCluster(const Sequence& cluster, const Range& rgeGma)
 {
     const std::vector<const Measurement*>& members = cluster.members();
     double normFactor = cluster.normFactor();
-    const Range& rgeTth = cluster.rgeTth();
+    const Range& rgeTth = cluster.rangeTth();
 
     int numBins = numTthBins(members, rgeTth);
     std::vector<float> intens(numBins, 0);

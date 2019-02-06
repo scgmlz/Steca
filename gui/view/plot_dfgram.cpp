@@ -68,7 +68,8 @@ void PlotDfgramOverlay::addRange(const Range& range)
     case EditableRange::PEAKS: {
         // make sure enough datapoints are selected for fitting the peak:
         // raw Peaks can live with any number of datapoints.
-        const PeakFitpar peak(range, PeakFitpar::keys.at(gSession->params.defaultPeakFunction.val()));
+        const PeakFitpar peak(range, PeakFitpar::keys.at(
+                                  gSession->params.defaultPeakFunction.val()));
         const Curve rawCurve = gSession->currentOrAvgeDfgram()->getCurveMinusBg().intersect(range);
         const Fitted fitted = PeakFunction::fromFit(peak.functionName(), rawCurve,
                                                     RawOutcome(rawCurve));
@@ -258,7 +259,7 @@ void PlotDfgram::renderAll()
     const Range& tthRange = dfgram->curve.rgeX();
     Range intenRange;
     if (gGui->toggles->fixedIntenDfgram.getValue()) {
-        intenRange = gSession->currentCluster()->rgeInten();
+        intenRange = gSession->currentCluster()->rangeInten();
     } else {
         intenRange = curveMinusBg.rgeY();
         intenRange.extendBy(dfgram->curve.rgeY());

@@ -7,8 +7,8 @@ endif()
 target_include_directories(Steca
     PRIVATE
     ${CMAKE_BINARY_DIR} # for manifest.h
-    ${CMAKE_HOME_DIRECTORY}
-    ${CMAKE_HOME_DIRECTORY}/3rdparty)
+    ${CMAKE_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/3rdparty)
 
 target_link_libraries(Steca PRIVATE gui)
 

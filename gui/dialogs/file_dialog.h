@@ -29,7 +29,6 @@ enum class eFileOverwritePolicy {
 };
 
 void setFileOverwritePolicy(eFileOverwritePolicy);
-
 bool confirmOverwrite(const QString& name, QWidget* parent, const QString& path);
 QFile* openFileConfirmOverwrite(const QString&, QWidget*, const QString&);
 QStringList queryImportFileNames(QWidget*, const QString&, QDir&, const QString&, bool plural=true);

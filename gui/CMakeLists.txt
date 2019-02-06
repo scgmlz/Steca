@@ -1,13 +1,13 @@
-get_filename_component(lib ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+set(lib gui)
 
-file(GLOB_RECURSE files *.h *.cpp)
-add_library(${lib} ${files})
+file(GLOB_RECURSE sources *.cpp)
+add_library(${lib} ${sources})
 
 target_include_directories(${lib}
     PRIVATE
     ${CMAKE_BINARY_DIR} # for manifest.h
-    ${CMAKE_HOME_DIRECTORY}
-    ${CMAKE_HOME_DIRECTORY}/3rdparty
+    ${CMAKE_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/3rdparty
     )
 
 target_link_libraries(${lib}

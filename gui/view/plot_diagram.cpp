@@ -1,3 +1,4 @@
+
 //  ***********************************************************************************************
 //
 //  Steca: stress and texture calculator
@@ -19,8 +20,44 @@
 #include <algorithm>
 //#include "qcr/base/debug.h"
 
-//  ***********************************************************************************************
-//! @class PlotDiagram
+namespace {
+
+//! Sets axis according to data range, leaving some white space below and above.
+
+void setRange(QCPAxis* axis, const std::vector<double>& datArg)
+{
+    std::vector<double> dat = datArg;
+    std::sort(dat.begin(), dat.end());
+    auto last = std::unique(dat.begin(), dat.end());
+    dat.erase(last, dat.end());
+    const int N = dat.size();
+    double dmin = *std::min_element(dat.begin(), dat.end());
+    double dmax = *std::max_element(dat.begin(), dat.end());
+    if      (N<1)
+        qFatal("plot_diagram{} setRange: impossible case");
+    else if (N==1 || dmin==dmax) {
+        ASSERT(dmin==dmax);
+        double v = dmin;
+        if      (v==0)
+            axis->setRange(-1, 1);
+        else if (v<0)
+            axis->setRange(-2*v,0);
+        else
+            axis->setRange(0, 2*v);
+    } else {
+        ASSERT(dmin<dmax);
+        double width = dmax - dmin;
+        // white space on either side
+        double border = (N==2 ? .2 : N==3 ? .15 : .12) * width;
+        // axis will range from vmin to vmax
+        double amin = dmin-border;
+        double amax = dmax+border;
+        axis->setRange(amin, amax);
+    }
+}
+
+} // namespace
+
 
 PlotDiagram::PlotDiagram()
 {
@@ -49,7 +86,7 @@ void PlotDiagram::refresh()
     if (!gSession->activeClusters.size() || !gSession->peaks.size())
         return;
 
-    graph_  ->clearData();
+    graph_->clearData();
 
     const int idxX = int(gSession->params.diagramX.val());
     const int idxY = int(gSession->params.diagramY.val());
@@ -85,13 +122,8 @@ void PlotDiagram::refresh()
     if (!xsSafe.size())
         return erase();
 
-    Range rgeX(xsSafe);
-    Range rgeY(ysSafe);
-    if (rgeX.isEmpty() || rgeY.isEmpty())
-        return erase();
-
-    xAxis->setRange(rgeX.min, rgeX.max);
-    yAxis->setRange(rgeY.min, rgeY.max);
+    setRange(xAxis, xsSafe);
+    setRange(yAxis, ysSafe);
     xAxis->setVisible(true);
     yAxis->setVisible(true);
 
