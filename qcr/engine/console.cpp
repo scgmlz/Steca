@@ -24,7 +24,7 @@ namespace {
 //! A log entry starts with a '[..]' comment containing execution time (optional) and context.
 //! It may end with a '#..' comment.
 //!
-//! Covered by utest/test005_strop
+//! Covered by utest/qcr/local/10_console
 
 bool parseCommandLine(const QString& line, QString& command, QString& context)
 {
