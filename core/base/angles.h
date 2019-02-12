@@ -40,9 +40,6 @@ public:
     rad(double val = 0) : val_(val) {}
     explicit rad(deg);
 
-    rad& operator+=(const rad&);
-    rad& operator*=(double);
-
     operator double() const { return val_; }
     deg toDeg() const;
 

@@ -57,15 +57,3 @@ deg rad::toDeg() const
 {
     return deg(val_ * (180 / M_PI));
 }
-
-rad& rad::operator+=(const rad& that)
-{
-    val_ += that.val_;
-    return *this;
-}
-
-rad& rad::operator*=(double fac)
-{
-    val_ *= fac;
-    return *this;
-}
