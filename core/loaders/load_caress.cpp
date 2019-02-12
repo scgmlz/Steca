@@ -15,11 +15,9 @@
 #include "core/loaders/load_caress.h"
 #include "core/base/exception.h"
 #include "core/raw/rawfile.h"
+#include "3rdparty/Caress/raw.h" // inclusion order is critical !
 #include <qmath.h>
 #include <sstream>
-
-; // preserve inclusion order
-#include "3rdparty/Caress/raw.h" // inclusion order is critical !
 
 namespace load {
 
