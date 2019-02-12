@@ -118,41 +118,7 @@ const std::vector<VariantComparator*>& Metadata::attributeCmps()
 
 QString Metadata::attributeStrValue(int i) const
 {
-    double value = 0;
-
-    switch (eAttr(i)) {
-    case eAttr::MOTOR_XT: value = motorXT; break;
-    case eAttr::MOTOR_YT: value = motorYT; break;
-    case eAttr::MOTOR_ZT: value = motorZT; break;
-    case eAttr::MOTOR_OMG: value = motorOmg; break;
-    case eAttr::MOTOR_TTH: value = motorTth; break;
-    case eAttr::MOTOR_PHI: value = motorPhi; break;
-    case eAttr::MOTOR_CHI: value = motorChi; break;
-    case eAttr::MOTOR_PST: value = motorPST; break;
-    case eAttr::MOTOR_SST: value = motorSST; break;
-    case eAttr::MOTOR_OMGM: value = motorOMGM; break;
-
-    case eAttr::T: value = nmT; break;
-    case eAttr::TELOAD: value = nmTeload; break;
-    case eAttr::TEPOS: value = nmTepos; break;
-    case eAttr::TEEXT: value = nmTeext; break;
-    case eAttr::XE: value = nmXe; break;
-    case eAttr::YE: value = nmYe; break;
-    case eAttr::ZE: value = nmZe; break;
-
-    case eAttr::MONITOR_COUNT: value = monitorCount; break;
-    case eAttr::DELTA_MONITOR_COUNT: value = deltaMonitorCount; break;
-
-    case eAttr::TIME: value = time; break;
-    case eAttr::DELTA_TIME: value = deltaTime; break;
-
-    case eAttr::DATE: return date;
-    case eAttr::COMMENT: return comment;
-
-    default: qFatal("impossible case");
-    }
-
-    return QString::number(value);
+    return attributeValue(i).toString();
 }
 
 QVariant Metadata::attributeValue(int i) const
