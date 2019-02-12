@@ -19,7 +19,7 @@
 #include "core/typ/lazy_data.h"
 #include <vector>
 
-//! Selection of meta parameters
+//! Holds a vector of bool-valued QcrCells. Used for metadata selection.
 
 class BoolVector {
 public:
