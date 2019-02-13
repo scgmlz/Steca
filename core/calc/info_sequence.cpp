@@ -76,12 +76,8 @@ void InfoSequence::get4(const int indexX, const int indexY,
     std::vector<int> is;
     sortColumns(xs, ys, is);
 
-    using eReflAttr = PeakInfo::eReflAttr;
-    eReflAttr ye = (eReflAttr) indexY;
     const PeakFitpar* peak = gSession->peaks.selectedPeak();
-    if (peak
-        && !peak->isRaw()
-        && (ye==eReflAttr::INTEN || ye==eReflAttr::TTH || ye==eReflAttr::FWHM)) {
+    if (peak && !peak->isRaw() && PeakInfo::hasSigma(indexY)) {
         ysLow.resize(n);
         ysHig.resize(n);
         for (int i=0; i<n; ++i) {
@@ -118,12 +114,8 @@ void InfoSequence::getValuesAndSigma(const size_t indexX, const size_t indexY,
     std::vector<int> is;
     sortColumns(xs, ys, is);
 
-    using eReflAttr = PeakInfo::eReflAttr;
-    eReflAttr ye = (eReflAttr) indexY;
     const PeakFitpar* peak = gSession->peaks.selectedPeak();
-    if (peak
-        && !peak->isRaw()
-        && (ye==eReflAttr::INTEN || ye==eReflAttr::TTH || ye==eReflAttr::FWHM)) {
+    if (peak && !peak->isRaw() && PeakInfo::hasSigma(indexY)) {
 
         ysSigma.resize(n);
         for (auto i : is) {

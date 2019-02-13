@@ -15,8 +15,7 @@
 #include "core/raw/metadata.h"
 //#include "qcr/base/debug.h"
 
-// metadata attributes
-
+namespace {
 enum class eAttr {
     MOTOR_XT,
     MOTOR_YT,
@@ -48,6 +47,8 @@ enum class eAttr {
 
     NUM_ALL_ATTRIBUTES
 };
+} // namespace
+
 
 Metadata::Metadata()
     : date()

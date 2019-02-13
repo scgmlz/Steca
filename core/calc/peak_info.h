@@ -33,22 +33,6 @@ public:
     PeakInfo(const PeakInfo&) = delete;
     PeakInfo(PeakInfo&&) = default;
 
-    enum class eReflAttr {
-        ALPHA,
-        BETA,
-        GAMMA1,
-        GAMMA2,
-        INTEN,
-        SIGMA_INTEN,
-        TTH,
-        SIGMA_TTH,
-        FWHM,
-        SIGMA_FWHM,
-        GAMMA_OVER_SIGMA,
-        SIGMA_GAMMA_OVER_SIGMA,
-        NUM_REFL_ATTR,
-    };
-
     static QStringList dataTags(bool out);
     static QStringList metaTags();
     static std::vector<VariantComparator*> dataCmps();
@@ -65,6 +49,8 @@ public:
     double gammOverSigma() const { return gammOverSigma_; }
     double gammOverSigmaError() const { return gammOverSigmaError_; }
     std::vector<QVariant> data() const;
+
+    static bool hasSigma(int index);
 
 private:
     const Metadata* md_;
