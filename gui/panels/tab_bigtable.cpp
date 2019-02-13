@@ -35,7 +35,6 @@ private:
     std::vector<QcrCheckBox*> showCols_;
     void setOne(int pos, bool on);
     void setAll(bool on);
-    using eReflAttr = PeakInfo::eReflAttr;
 };
 
 ColumnSelector::ColumnSelector()
