@@ -56,9 +56,9 @@ void InfoSequence::appendPeak(PeakInfo&& info)
     peaks_.push_back(std::move(info));
 }
 
-//! Returns entries idxX and idxY, as sorted vectors X and Ylow,Y,Yhig, for use in diagrams.
+//! Returns entries indexX and indexY, as sorted vectors X and Ylow,Y,Yhig, for use in diagrams.
 
-void InfoSequence::get4(const int idxX, const int idxY,
+void InfoSequence::get4(const int indexX, const int indexY,
                      std::vector<double>& xs, std::vector<double>& ys,
                      std::vector<double>& ysLow, std::vector<double>& ysHig) const
 {
@@ -68,15 +68,15 @@ void InfoSequence::get4(const int idxX, const int idxY,
 
     for (int i=0; i<n; ++i) {
         const std::vector<QVariant> row = peaks_.at(i).data();
-        xs[i] = row.at(idxX).toDouble();
-        ys[i] = row.at(idxY).toDouble();
+        xs[i] = row.at(indexX).toDouble();
+        ys[i] = row.at(indexY).toDouble();
     }
 
     std::vector<int> is;
     sortColumns(xs, ys, is);
 
     using eReflAttr = PeakInfo::eReflAttr;
-    eReflAttr ye = (eReflAttr) idxY;
+    eReflAttr ye = (eReflAttr) indexY;
     const PeakFitpar* peak = gSession->peaks.selectedPeak();
     if (peak
         && !peak->isRaw()
@@ -85,7 +85,7 @@ void InfoSequence::get4(const int idxX, const int idxY,
         ysHig.resize(n);
         for (int i=0; i<n; ++i) {
             const std::vector<QVariant> row = peaks_.at(is.at(i)).data();
-            double sigma = row.at(idxY+1).toDouble(); // SIGMA_X has tag position of X plus 1
+            double sigma = row.at(indexY+1).toDouble(); // SIGMA_X has tag position of X plus 1
             double y = ys.at(i);
             ysLow[i] = y - sigma;
             ysHig[i] = y + sigma;
@@ -96,10 +96,9 @@ void InfoSequence::get4(const int idxX, const int idxY,
     }
 }
 
+//! Returns entries indexX and indexY, as sorted vectors X and Ylow,Y,Yhig, for use in diagrams.
 
-//! Returns entries idxX and idxY, as sorted vectors X and Ylow,Y,Yhig, for use in diagrams.
-
-void InfoSequence::getValuesAndSigma(const size_t idxX, const size_t idxY,
+void InfoSequence::getValuesAndSigma(const size_t indexX, const size_t indexY,
                                      std::vector<double>& xs, std::vector<double>& ys,
                                      std::vector<double>& ysSigma) const
 {
@@ -109,15 +108,15 @@ void InfoSequence::getValuesAndSigma(const size_t idxX, const size_t idxY,
 
     for (size_t i=0; i<n; ++i) {
         const std::vector<QVariant> row = peaks_.at(i).data();
-        xs[i] = row.at(idxX).toDouble();
-        ys[i] = row.at(idxY).toDouble();
+        xs[i] = row.at(indexX).toDouble();
+        ys[i] = row.at(indexY).toDouble();
     }
 
     std::vector<int> is;
     sortColumns(xs, ys, is);
 
     using eReflAttr = PeakInfo::eReflAttr;
-    eReflAttr ye = (eReflAttr) idxY;
+    eReflAttr ye = (eReflAttr) indexY;
     const PeakFitpar* peak = gSession->peaks.selectedPeak();
     if (peak
         && !peak->isRaw()
@@ -126,7 +125,7 @@ void InfoSequence::getValuesAndSigma(const size_t idxX, const size_t idxY,
         ysSigma.resize(n);
         for (auto i : is) {
             const std::vector<QVariant> row = peaks_.at(is.at(i)).data();
-            ysSigma[i] = row.at(idxY+1).toDouble(); // SIGMA_X has tag position of X plus 1
+            ysSigma[i] = row.at(indexY+1).toDouble(); // SIGMA_X has tag position of X plus 1
         }
     } else {
         ysSigma.resize(0);
