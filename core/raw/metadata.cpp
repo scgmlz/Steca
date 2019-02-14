@@ -100,21 +100,11 @@ namespace {
         "ze",  "mon",    "delta_mon", "t",      "delta_t",   "date",  "comment",
     };
 
-    static std::vector<VariantComparator*> const cmps = {
-        cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
-        cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
-        cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_date, cmp_str,
-    };
 }
 
 const QStringList& Metadata::attributeTags(bool out)
 {
     return out ? outTags : tags;
-}
-
-const std::vector<VariantComparator*>& Metadata::attributeCmps()
-{
-    return cmps;
 }
 
 QString Metadata::attributeStrValue(int i) const

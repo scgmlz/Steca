@@ -115,20 +115,6 @@ QStringList PeakInfo::metaTags() // TODO simplify
     return ret;
 }
 
-//! For use in Bigtable.
-
-std::vector<VariantComparator*> PeakInfo::dataCmps()
-{
-    static std::vector<VariantComparator*> ret;
-    if (ret.empty()) {
-        ret = std::vector<VariantComparator*>{ cmp_real, cmp_real, cmp_real, cmp_real, cmp_real,
-                        cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real, cmp_real };
-        for (auto* cmp: Metadata::attributeCmps())
-            ret.push_back(cmp);
-    }
-    return ret;
-}
-
 std::vector<QVariant> PeakInfo::peakData() const
 {
     std::vector<QVariant> ret{

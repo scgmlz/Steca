@@ -15,8 +15,8 @@
 #ifndef METADATA_H
 #define METADATA_H
 
+#include <QVariant>
 #include "core/base/angles.h"
-#include "core/base/variant.h"
 
 //! The meta data associated with one Measurement.
 
@@ -29,7 +29,6 @@ public:
     static int numAttributes(bool onlyNum);
     static const QString& attributeTag(int, bool out);
     static const QStringList& attributeTags(bool out);
-    static const std::vector<VariantComparator*>& attributeCmps();
     static std::vector<QVariant> attributeNaNs();
     static int size() { return attributeNaNs().size(); }
     static Metadata computeAverage(const std::vector<const Metadata*>& vec);

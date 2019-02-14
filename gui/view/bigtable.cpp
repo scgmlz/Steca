@@ -31,9 +31,7 @@ BigtableModel::BigtableModel()
 {
     gGui->bigtableModel = this; // for use in export dialog
     headers_ = PeakInfo::dataTags(false);
-    comparators_ = PeakInfo::dataCmps();
     numCols_ = headers_.count();
-    ASSERT((int)comparators_.size() == numCols_);
     colIndexMap_.resize(numCols_);
     for (int i=0; i<numCols_; ++i)
         colIndexMap_[i] = i;
@@ -64,7 +62,7 @@ QVariant BigtableModel::data(const QModelIndex& index, int role) const
         if (0 == indexCol)
             return rows_.at(indexRow).n;
         const QVariant var = rows_.at(indexRow).row.at(indexCol-1);
-        if (isNumeric(var) && qIsNaN(var.toDouble()))
+        if (var.canConvert<double>() && qIsNaN(var.toDouble()))
             return {}; // show blank field instead of NAN
         return var;
     }
@@ -72,7 +70,7 @@ QVariant BigtableModel::data(const QModelIndex& index, int role) const
         if (0 == indexCol)
             return Qt::AlignRight;
         const QVariant& var = rows_.at(indexRow).row.at(indexCol-1);
-        if (isNumeric(var))
+        if (var.canConvert<double>())
             return Qt::AlignRight;
         return Qt::AlignLeft;
     }
@@ -113,7 +111,11 @@ void BigtableModel::sortData()
     auto _cmpRows = [this](int col,
                            const std::vector<QVariant>& r1, const std::vector<QVariant>& r2) {
         col = colIndexMap_.at(col);
-        return comparators_.at(col)(r1.at(col), r2.at(col));
+        if (r1.at(col) < r2.at(col))
+            return -1;
+        if (r1.at(col) > r2.at(col))
+            return +1;
+        return 0;
     };
 
     // sort by sortColumn first, then left-to-right

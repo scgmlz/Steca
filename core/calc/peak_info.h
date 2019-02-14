@@ -35,7 +35,6 @@ public:
 
     static QStringList dataTags(bool out);
     static QStringList metaTags();
-    static std::vector<VariantComparator*> dataCmps();
 
     deg alpha() const { return alpha_; }
     deg beta() const { return beta_; }

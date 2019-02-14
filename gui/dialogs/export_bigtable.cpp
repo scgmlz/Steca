@@ -34,7 +34,7 @@ void writeBigtable(QTextStream& stream, const QString& separator)
     // write data table
     for (const std::vector<const QVariant*>& row: data) {
         for (const QVariant* var: row) {
-            if (isNumeric(*var))
+            if (var->canConvert<double>())
                 stream << var->toDouble();
             else
                 stream << var->toString();

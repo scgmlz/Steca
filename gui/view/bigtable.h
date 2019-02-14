@@ -15,7 +15,6 @@
 #ifndef BIGTABLE_H
 #define BIGTABLE_H
 
-#include "core/base/variant.h"
 #include "qcr/widgets/tables.h"
 
 //! Model for the BigtableView view.
@@ -44,7 +43,6 @@ public:
 private:
     QStringList headers_;
     std::vector<int> colIndexMap_;
-    std::vector<VariantComparator*> comparators_;
 
     // TODO: Treat the row number column as any other column, so that it can also be exported.
     // Then replace XRow by std::vector<QVariant>.
