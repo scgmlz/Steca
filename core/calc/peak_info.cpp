@@ -32,6 +32,27 @@ enum class eReflAttr {
     SIGMA_GAMMA_OVER_SIGMA,
     NUM_REFL_ATTR,
 };
+
+QString const reflStringTag(int attr, bool out)
+{
+    switch (eReflAttr(attr)) {
+    case eReflAttr::ALPHA: return out ? "alpha" : "α";
+    case eReflAttr::BETA: return out ? "beta" : "β";
+    case eReflAttr::GAMMA1: return out ? "gamma1" : "γ1";
+    case eReflAttr::GAMMA2: return out ? "gamma2" : "γ2";
+    case eReflAttr::INTEN: return "inten";
+    case eReflAttr::SIGMA_INTEN: return out ? "sinten" : "σinten";
+    case eReflAttr::TTH: return out ? "2theta" : "2θ";
+    case eReflAttr::SIGMA_TTH: return out ? "s2theta" : "σ2θ";
+    case eReflAttr::FWHM: return "fwhm";
+    case eReflAttr::SIGMA_FWHM: return out ? "sfwhm" : "σfwhm";
+    case eReflAttr::GAMMA_OVER_SIGMA: return out ? "gamma/sigma" : "γ/σ";
+    case eReflAttr::SIGMA_GAMMA_OVER_SIGMA: return out ? "s(gamma/sigma)" : "σ(γ/σ)";
+    default: ;
+    }
+    qFatal("impossible case");
+}
+
 } // namespace
 
 //  ***********************************************************************************************
@@ -111,36 +132,22 @@ std::vector<VariantComparator*> PeakInfo::dataCmps()
 std::vector<QVariant> PeakInfo::peakData() const
 {
     std::vector<QVariant> ret{
-        QVariant(alpha()),      QVariant(beta()),
-        QVariant(rgeGma().min), QVariant(rgeGma().max),
-        QVariant(inten()),      QVariant(intenError()),
-        QVariant(tth()),        QVariant(tthError()),
-        QVariant(fwhm()),       QVariant(fwhmError()),
-        QVariant(gammOverSigma()), QVariant(gammOverSigmaError())
+        QVariant(alpha()),
+        QVariant(beta()),
+        QVariant(rgeGma().min),
+        QVariant(rgeGma().max),
+        QVariant(inten()),
+        QVariant(intenError()),
+        QVariant(tth()),
+        QVariant(tthError()),
+        QVariant(fwhm()),
+        QVariant(fwhmError()),
+        QVariant(gammOverSigma()),
+        QVariant(gammOverSigmaError())
     };
     auto values_to_append = md_ ? md_->attributeValues() : Metadata::attributeNaNs();
     ret.insert(ret.end(), values_to_append.begin(), values_to_append.end());
     return ret;
-}
-
-QString const PeakInfo::reflStringTag(int attr, bool out)
-{
-    switch (eReflAttr(attr)) {
-    case eReflAttr::ALPHA: return out ? "alpha" : "α";
-    case eReflAttr::BETA: return out ? "beta" : "β";
-    case eReflAttr::GAMMA1: return out ? "gamma1" : "γ1";
-    case eReflAttr::GAMMA2: return out ? "gamma2" : "γ2";
-    case eReflAttr::INTEN: return "inten";
-    case eReflAttr::SIGMA_INTEN: return out ? "sinten" : "σinten";
-    case eReflAttr::TTH: return out ? "2theta" : "2θ";
-    case eReflAttr::SIGMA_TTH: return out ? "s2theta" : "σ2θ";
-    case eReflAttr::FWHM: return "fwhm";
-    case eReflAttr::SIGMA_FWHM: return out ? "sfwhm" : "σfwhm";
-    case eReflAttr::GAMMA_OVER_SIGMA: return out ? "gamma/sigma" : "γ/σ";
-    case eReflAttr::SIGMA_GAMMA_OVER_SIGMA: return out ? "s(gamma/sigma)" : "σ(γ/σ)";
-    default: ;
-    }
-    qFatal("impossible case");
 }
 
 bool PeakInfo::hasSigma(int index)

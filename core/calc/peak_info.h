@@ -60,8 +60,6 @@ private:
     deg tth_, tthError_;
     double fwhm_, fwhmError_;
     double gammOverSigma_, gammOverSigmaError_;
-
-    static QString const reflStringTag(int attr, bool out);
 };
 
 #endif // PEAK_INFO_H
