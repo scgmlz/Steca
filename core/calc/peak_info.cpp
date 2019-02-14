@@ -108,7 +108,7 @@ std::vector<VariantComparator*> PeakInfo::dataCmps()
     return ret;
 }
 
-std::vector<QVariant> PeakInfo::data() const
+std::vector<QVariant> PeakInfo::peakData() const
 {
     std::vector<QVariant> ret{
         QVariant(alpha()),      QVariant(beta()),

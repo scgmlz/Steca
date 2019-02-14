@@ -68,7 +68,7 @@ void InfoSequence::get4(const int indexX, const int indexY,
 
     for (int i=0; i<n; ++i) {
         const PeakInfo& peakInfo = peaks_.at(i);
-        const std::vector<QVariant> row = peakInfo.data();
+        const std::vector<QVariant> row = peakInfo.peakData();
         xs[i] = row.at(indexX).toDouble();
         ys[i] = row.at(indexY).toDouble();
     }
@@ -82,7 +82,7 @@ void InfoSequence::get4(const int indexX, const int indexY,
         ysHig.resize(n);
         for (int i=0; i<n; ++i) {
             const PeakInfo& peakInfo = peaks_.at(is.at(i));
-            const std::vector<QVariant> row = peakInfo.data();
+            const std::vector<QVariant> row = peakInfo.peakData();
             double sigma = row.at(indexY+1).toDouble(); // SIGMA_X has tag position of X plus 1
             double y = ys.at(i);
             ysLow[i] = y - sigma;
@@ -106,7 +106,7 @@ void InfoSequence::getValuesAndSigma(const size_t indexX, const size_t indexY,
 
     for (size_t i=0; i<n; ++i) {
         const PeakInfo& peakInfo = peaks_.at(i);
-        const std::vector<QVariant> row = peakInfo.data();
+        const std::vector<QVariant> row = peakInfo.peakData();
         xs[i] = row.at(indexX).toDouble();
         ys[i] = row.at(indexY).toDouble();
     }
@@ -120,7 +120,7 @@ void InfoSequence::getValuesAndSigma(const size_t indexX, const size_t indexY,
         ysSigma.resize(n);
         for (auto i : is) {
             const PeakInfo& peakInfo = peaks_.at(is.at(i));
-            const std::vector<QVariant> row = peakInfo.data();
+            const std::vector<QVariant> row = peakInfo.peakData();
             ysSigma[i] = row.at(indexY+1).toDouble(); // SIGMA_X has tag position of X plus 1
         }
     } else {

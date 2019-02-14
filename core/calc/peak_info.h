@@ -48,7 +48,7 @@ public:
     double fwhmError() const { return fwhmError_; }
     double gammOverSigma() const { return gammOverSigma_; }
     double gammOverSigmaError() const { return gammOverSigmaError_; }
-    std::vector<QVariant> data() const;
+    std::vector<QVariant> peakData() const;
 
     static bool hasSigma(int index);
 
