@@ -26,7 +26,7 @@ namespace {
 QString safeRealText(double val, int prec=4) {
     return qIsFinite(val) ? QString::number(val, 'g', prec) : "NaN"; }
 QString par2text(const DoubleWithError& par) {
-    return safeRealText(par.value,4) + "+-" + safeRealText(par.roundedError(4),4); }
+    return safeRealText(par.value(),4) + "+-" + safeRealText(par.roundedError(4),4); }
 
 } // namespace
 

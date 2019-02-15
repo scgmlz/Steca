@@ -63,13 +63,13 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
             gammOverSigma.reset(new DoubleWithError(*out.gammOverSigma));
     }
 
-    if (!fitrange.contains(center->value)) // TODO/math generalize to fitIsCredible
+    if (!fitrange.contains(center->value())) // TODO/math generalize to fitIsCredible
         return {metadata, alpha, beta, gRange};
 
     // TODO pass PeakOutcome instead of 6 components
-    return {metadata, alpha, beta, gRange, intensity->value, intensity->error,
-            deg(center->value), deg(center->error), fwhm->value, fwhm->error,
-            gammOverSigma->value, gammOverSigma->error};
+    return {metadata, alpha, beta, gRange, intensity->value(), intensity->error(),
+            deg(center->value()), deg(center->error()), fwhm->value(), fwhm->error(),
+            gammOverSigma->value(), gammOverSigma->error()};
 }
 
 InfoSequence computeDirectInfoSequence(int jP)

@@ -204,7 +204,7 @@ void Voigt::setDY(const double* P, const int nXY, const double* X, double* Jacob
 
 PeakOutcome Voigt::outcome(const Fitted& F) const
 {
-    double fwhm = FindFwhm::fromFitted(F).value;
+    double fwhm = FindFwhm::fromFitted(F).value();
     return {
         {F.parVal.at(0), F.parErr.at(0)},
         DoubleWithError{fwhm, fwhm / F.parVal.at(1) * F.parErr.at(1)},
