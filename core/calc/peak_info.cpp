@@ -79,23 +79,20 @@ PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma, double
     , gammOverSigmaError_(sogError)
 {}
 
-PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma, double inten,
-                   double intenError, deg tth, deg tthError, double fwhm, double fwhmError)
-    : PeakInfo(md, alpha, beta, rgeGma, inten, intenError, tth, tthError, fwhm, fwhmError,
-               Q_QNAN, Q_QNAN)
-{}
-
 PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma)
-    : PeakInfo(md, alpha, beta, rgeGma, Q_QNAN, Q_QNAN, deg(Q_QNAN), deg(Q_QNAN), Q_QNAN, Q_QNAN)
+    : PeakInfo(md, alpha, beta, rgeGma,
+               Q_QNAN, Q_QNAN, deg(Q_QNAN), deg(Q_QNAN), Q_QNAN, Q_QNAN, Q_QNAN, Q_QNAN)
 {}
 
 PeakInfo::PeakInfo(deg alpha, deg beta, Range rgeGma, double inten, double intenError, deg tth,
                    deg tthError, double fwhm, double fwhmError)
-    : PeakInfo(nullptr, alpha, beta, rgeGma, inten, intenError, tth, tthError, fwhm, fwhmError)
+    : PeakInfo(nullptr, alpha, beta, rgeGma,
+               inten, intenError, tth, tthError, fwhm, fwhmError, Q_QNAN, Q_QNAN)
 {}
 
 PeakInfo::PeakInfo(deg alpha, deg beta)
-    : PeakInfo(alpha, beta, Range(), Q_QNAN, Q_QNAN, deg(Q_QNAN), deg(Q_QNAN), Q_QNAN, Q_QNAN)
+    : PeakInfo(nullptr, alpha, beta, Range(),
+               Q_QNAN, Q_QNAN, deg(Q_QNAN), deg(Q_QNAN), Q_QNAN, Q_QNAN, Q_QNAN, Q_QNAN)
 {}
 
 QStringList PeakInfo::dataTags(bool out)
