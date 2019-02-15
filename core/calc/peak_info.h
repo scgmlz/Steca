@@ -40,13 +40,9 @@ public:
     deg beta() const { return beta_; }
     Range rgeGma() const { return rgeGma_; }
     double inten() const { return inten_; }
-    double intenError() const { return intenError_; }
     deg tth() const { return tth_; }
-    deg tthError() const { return tthError_; }
     double fwhm() const { return fwhm_; }
-    double fwhmError() const { return fwhmError_; }
     double gammOverSigma() const { return gammOverSigma_; }
-    double gammOverSigmaError() const { return gammOverSigmaError_; }
     std::vector<QVariant> peakData() const;
 
     static bool hasSigma(int index);

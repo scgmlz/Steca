@@ -118,18 +118,18 @@ QStringList PeakInfo::metaTags() // TODO simplify
 std::vector<QVariant> PeakInfo::peakData() const
 {
     std::vector<QVariant> ret{
-        QVariant(alpha()),
-        QVariant(beta()),
-        QVariant(rgeGma().min),
-        QVariant(rgeGma().max),
-        QVariant(inten()),
-        QVariant(intenError()),
-        QVariant(tth()),
-        QVariant(tthError()),
-        QVariant(fwhm()),
-        QVariant(fwhmError()),
-        QVariant(gammOverSigma()),
-        QVariant(gammOverSigmaError())
+        QVariant(alpha_),
+        QVariant(beta_),
+        QVariant(rgeGma_.min),
+        QVariant(rgeGma_.max),
+        QVariant(inten_),
+        QVariant(intenError_),
+        QVariant(tth_),
+        QVariant(tthError_),
+        QVariant(fwhm_),
+        QVariant(fwhmError_),
+        QVariant(gammOverSigma_),
+        QVariant(gammOverSigmaError_)
     };
     auto values_to_append = md_ ? md_->attributeValues() : Metadata::attributeNaNs();
     ret.insert(ret.end(), values_to_append.begin(), values_to_append.end());
