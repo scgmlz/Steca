@@ -24,9 +24,10 @@ class PeakInfo final {
 public:
     PeakInfo(const Metadata*, deg alpha, deg beta, Range, double, double /*error*/,
              deg, deg /*error*/, double, double /*error*/, double, double /*error*/);
-    PeakInfo(const Metadata*, deg alpha, deg beta, Range);
+    // used all_infos.cpp 70
     PeakInfo(deg alpha, deg beta, Range, double, double /*error*/, deg, deg /*error*/,
-             double, double /*error*/);
+             double, double /*error*/); // used interpolate_polefig.cpp 314, 329
+    PeakInfo(const Metadata*, deg alpha, deg beta, Range);
     PeakInfo(deg alpha, deg beta);
     PeakInfo(const PeakInfo&) = delete;
     PeakInfo(PeakInfo&&) = default;
