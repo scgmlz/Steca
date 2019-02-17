@@ -53,7 +53,7 @@ Curve computeCurveMinusBg(const Dfgram* parent)
 RawOutcome computeRawOutcome(int jP, const Dfgram* parent)
 {
     PeakFitpar& peak = gSession->peaks.at(jP);
-    const Curve& peakCurve = parent->getCurveMinusBg().intersect(peak.range());
+    const Curve peakCurve = parent->getCurveMinusBg().intersect(peak.range());
     return RawOutcome(peakCurve);
 }
 
