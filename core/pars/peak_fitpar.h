@@ -17,7 +17,7 @@
 
 #include "core/typ/range.h"
 
-//! Fit parameters (range, function type) for one Bragg peak.
+//! Settings (range, function type) for analysing one Bragg peak.
 
 //! These are the same for all diffractograms.
 
