@@ -52,14 +52,14 @@ Curve computeCurveMinusBg(const Dfgram* parent)
 
 RawOutcome computeRawOutcome(int jP, const Dfgram* parent)
 {
-    PeakFitpar& peak = gSession->peaks.at(jP);
+    OnePeakSettings& peak = gSession->peaks.at(jP);
     const Curve peakCurve = parent->getCurveMinusBg().intersect(peak.range());
     return RawOutcome(peakCurve);
 }
 
 Fitted computePeakFit(int jP, const Dfgram* parent)
 {
-    PeakFitpar& peak = gSession->peaks.at(jP);
+    OnePeakSettings& peak = gSession->peaks.at(jP);
     return PeakFunction::fromFit(
         peak.functionName(), parent->getCurveMinusBg().intersect(peak.range()),
         parent->getRawOutcome(jP));
@@ -67,7 +67,7 @@ Fitted computePeakFit(int jP, const Dfgram* parent)
 
 Curve computePeakAsCurve(int jP, const Dfgram* parent)
 {
-    PeakFitpar& peak = gSession->peaks.at(jP);
+    OnePeakSettings& peak = gSession->peaks.at(jP);
     const Curve& curveMinusBg = parent->getCurveMinusBg();
     const Fitted& fun = parent->getPeakFit(jP);
     if (!fun.success)

@@ -23,7 +23,7 @@
 #include "core/data/theta_selection.h"
 #include "core/pars/baseline.h"
 #include "core/pars/params.h"
-#include "core/pars/peaks.h"
+#include "core/pars/allpeaks_settings.h"
 #include "core/data/angle_map.h"
 #include "core/typ/lazy_data.h"
 
@@ -72,7 +72,7 @@ public:
     GammaSelection gammaSelection; // TODO reconsider
     ThetaSelection thetaSelection; // TODO reconsider
     Baseline baseline;                  //!< ranges and other parameters for baseline fitting
-    Peaks peaks;                        //!< ranges and other parameters for Bragg peak fitting
+    AllPeaksSettings peaks;                        //!< ranges and other parameters for Bragg peak fitting
     ActiveClusters activeClusters;      //!< list of all clusters except the unselected ones
     lazy_data::KeyedCache<AngleMap, deg> angleMap; //!< to accelerate the projection image->dfgram
 

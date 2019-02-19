@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/pars/peaks.h
+//! @file      core/pars/allpeaks_settings.h
 //! @brief     Defines class Peaks
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -15,11 +15,11 @@
 #ifndef PEAKS_H
 #define PEAKS_H
 
-#include "core/pars/peak_fitpar.h"
+#include "core/pars/onepeak_settings.h"
 
 //! All user defined peaks, of which one is selected to be acted on by default.
 
-class Peaks {
+class AllPeaksSettings {
 public:
     void clear();
     void fromJson(const QJsonArray& arr);
@@ -28,20 +28,20 @@ public:
     void select(int i) { selected_ = i; }
     bool selectByValue(double x);
 
-    PeakFitpar* selectedPeak() {
-        return 0<=selected_ && selected_<size() ? &peaks_[selected_] : nullptr; }
+    OnePeakSettings* selectedPeak() {
+        return 0<=selected_ && selected_<size() ? &peaksSettings_[selected_] : nullptr; }
 
-    int size() const { return peaks_.size(); }
-    const PeakFitpar& at(int i) const { return peaks_.at(i); }
-    PeakFitpar& at(int i) { return peaks_.at(i); }
+    int size() const { return peaksSettings_.size(); }
+    const OnePeakSettings& at(int i) const { return peaksSettings_.at(i); }
+    OnePeakSettings& at(int i) { return peaksSettings_.at(i); }
     int selectedIndex() { return selected_; }
     QJsonArray toJson() const;
 
 private:
     void sort();
-    void doAdd(PeakFitpar&& peak);
+    void doAdd(OnePeakSettings&& peak);
     int selected_ {-1};
-    std::vector<PeakFitpar> peaks_;
+    std::vector<OnePeakSettings> peaksSettings_;
 };
 
 #endif // PEAKS_H

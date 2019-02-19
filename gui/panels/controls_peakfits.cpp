@@ -54,7 +54,7 @@ QVariant PeaksModel::data(const QModelIndex& index, int role) const
     int row = index.row();
     if (row < 0 || rowCount() <= row)
         return {};
-    const PeakFitpar& peak = gSession->peaks.at(row);
+    const OnePeakSettings& peak = gSession->peaks.at(row);
     switch (role) {
     case Qt::DisplayRole: {
         int col = index.column();
@@ -145,7 +145,7 @@ PeakfitOutcomeView::PeakfitOutcomeView()
 
 void PeakfitOutcomeView::refresh()
 {
-    const PeakFitpar* peak = gSession->peaks.selectedPeak();
+    const OnePeakSettings* peak = gSession->peaks.selectedPeak();
     if (!peak)
         return enable(false, false, false);
 
@@ -208,17 +208,17 @@ ControlsPeakfits::ControlsPeakfits()
     : QcrWidget("ControlsPeakfits")
 {
     auto* comboPeakFct = new QcrComboBox{
-        "reflTyp", &gSession->params.defaultPeakFunction, PeakFitpar::keys};
+        "reflTyp", &gSession->params.defaultPeakFunction, OnePeakSettings::keys};
     comboPeakFct->setHook([](int i){
-            const QString& name = PeakFitpar::keys[i];
-            if (PeakFitpar* p = gSession->peaks.selectedPeak())
+            const QString& name = OnePeakSettings::keys[i];
+            if (OnePeakSettings* p = gSession->peaks.selectedPeak())
                 p->setPeakFunction(name);
             gSession->onPeaks(); });
 
     comboPeakFct->setRemake([&](){ // updates the combobox, when a diffeent peak gets selected:
-        if (const PeakFitpar *peak = gSession->peaks.selectedPeak()) {
+        if (const OnePeakSettings *peak = gSession->peaks.selectedPeak()) {
             QString key = peak->functionName();
-            int peakFunctIndex = PeakFitpar::keys.indexOf(key);
+            int peakFunctIndex = OnePeakSettings::keys.indexOf(key);
             gSession->params.defaultPeakFunction.pureSetVal(peakFunctIndex);
         }
     });
@@ -236,10 +236,10 @@ ControlsPeakfits::ControlsPeakfits()
     box->addWidget(comboPeakFct);
     box->addWidget(new RangeControl("peak",
                                     []()->const Range* {
-                                        const PeakFitpar* p = gSession->peaks.selectedPeak();
+                                        const OnePeakSettings* p = gSession->peaks.selectedPeak();
                                         return p ? &p->range() : nullptr; },
                                     [](double val, bool namelyMax){
-                                        PeakFitpar* p = gSession->peaks.selectedPeak();
+                                        OnePeakSettings* p = gSession->peaks.selectedPeak();
                                         ASSERT(p);
                                         p->setOne(val, namelyMax);
                                         gSession->onPeaks(); }

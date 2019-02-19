@@ -25,7 +25,7 @@ namespace {
 //! Fits peak to the given gamma gRange and constructs a PeakInfo.
 PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
 {
-    const PeakFitpar& peak = gSession->peaks.at(jP);
+    const OnePeakSettings& peak = gSession->peaks.at(jP);
     const Range& fitrange = peak.range();
     const Metadata* metadata = &cluster.avgMetadata();
     const Range gRange = gSession->gammaSelection.slice2range(cluster.rangeGma(), iGamma);

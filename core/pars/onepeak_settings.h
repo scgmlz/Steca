@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/pars/peak_fitpar.h
+//! @file      core/pars/onepeak_settings.h
 //! @brief     Defines class PeakFitpar
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -21,9 +21,9 @@
 
 //! These are the same for all diffractograms.
 
-class PeakFitpar {
+class OnePeakSettings {
 public:
-    PeakFitpar(const Range& range, const QString& functionName);
+    OnePeakSettings(const Range& range, const QString& functionName);
 
     void setPeakFunction(const QString&);
     void setRange(const Range&);
@@ -34,7 +34,7 @@ public:
     bool isRaw() const { return functionName_=="Raw"; }
     JsonObj toJson() const;
 
-    static PeakFitpar fromJson(const JsonObj&);
+    static OnePeakSettings fromJson(const JsonObj&);
     static const QStringList keys;
 
 private:
