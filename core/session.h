@@ -16,7 +16,7 @@
 #define SESSION_H
 
 #include "core/calc/active_clusters.h"
-#include "core/calc/all_infos.h"
+#include "core/calc/allpeaks_allinfos.h"
 #include "core/data/corrset.h"
 #include "core/data/dataset.h"
 #include "core/data/gamma_selection.h"
@@ -64,7 +64,7 @@ public:
     const Cluster* currentCluster() const { return dataset.highlight().cluster(); }
     const Dfgram* currentOrAvgeDfgram() const;
 
-    AllInfos allPeaks;                  //!< all the outcome of peak raw analysis or fitting
+    AllPeaksAllInfos allPeaks;                  //!< all the outcome of peak raw analysis or fitting
     /* order matters: allPeaks must be destroyed after Dfgrams */
     Dataset dataset;                    //!< raw data files with sample detector images
     Corrset corrset;                    //!< raw data files with standard sample image

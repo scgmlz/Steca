@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/calc/info_sequence.h
+//! @file      core/calc/onepeak_allinfos.h
 //! @brief     Defines class InfoSequence
 //!
 //! @homepage  https://github.com/scgmlz/Steca

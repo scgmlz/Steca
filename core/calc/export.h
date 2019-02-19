@@ -18,7 +18,7 @@
 
 class Cluster;
 class Curve;
-class InfoSequence;
+class OnePeakAllInfos;
 class Range;
 class TakesLongTime;
 

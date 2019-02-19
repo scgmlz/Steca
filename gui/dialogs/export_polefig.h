@@ -18,7 +18,7 @@
 #include "gui/dialogs/dialog_save.h"
 #include <QButtonGroup>
 
-class InfoSequence;
+class OnePeakAllInfos;
 
 //! The modal dialog for saving the main polefig (fit results and metadata).
 

@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/calc/info_sequence.cpp
+//! @file      core/calc/onepeak_allinfos.cpp
 //! @brief     Implements class InfoSequence
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/calc/info_sequence.h"
+#include "core/calc/onepeak_allinfos.h"
 #include "core/session.h"
 #include "qcr/base/debug.h" // ASSERT
 
@@ -51,23 +51,23 @@ static void sortColumns(std::vector<double>& xs, std::vector<double>& ys, std::v
 } // namespace
 
 
-void InfoSequence::appendPeak(PeakInfo&& info)
+void OnePeakAllInfos::appendPeak(PeakInfo&& info)
 {
-    peaks_.push_back(std::move(info));
+    peakInfos_.push_back(std::move(info));
 }
 
 //! Returns entries indexX and indexY, as sorted vectors X and Ylow,Y,Yhig, for use in diagrams.
 
-void InfoSequence::get4(const int indexX, const int indexY,
+void OnePeakAllInfos::get4(const int indexX, const int indexY,
                      std::vector<double>& xs, std::vector<double>& ys,
                      std::vector<double>& ysLow, std::vector<double>& ysHig) const
 {
-    int n = peaks_.size();
+    int n = peakInfos_.size();
     xs.resize(n);
     ys.resize(n);
 
     for (int i=0; i<n; ++i) {
-        const PeakInfo& peakInfo = peaks_.at(i);
+        const PeakInfo& peakInfo = peakInfos_.at(i);
         const std::vector<QVariant> row = peakInfo.peakData();
         xs[i] = row.at(indexX).toDouble();
         ys[i] = row.at(indexY).toDouble();
@@ -81,7 +81,7 @@ void InfoSequence::get4(const int indexX, const int indexY,
         ysLow.resize(n);
         ysHig.resize(n);
         for (int i=0; i<n; ++i) {
-            const PeakInfo& peakInfo = peaks_.at(is.at(i));
+            const PeakInfo& peakInfo = peakInfos_.at(is.at(i));
             const std::vector<QVariant> row = peakInfo.peakData();
             double sigma = row.at(indexY+1).toDouble(); // SIGMA_X has tag position of X plus 1
             double y = ys.at(i);
@@ -96,16 +96,16 @@ void InfoSequence::get4(const int indexX, const int indexY,
 
 //! Returns entries indexX and indexY, as sorted vectors X and Ylow,Y,Yhig, for use in diagrams.
 
-void InfoSequence::getValuesAndSigma(const size_t indexX, const size_t indexY,
+void OnePeakAllInfos::getValuesAndSigma(const size_t indexX, const size_t indexY,
                                      std::vector<double>& xs, std::vector<double>& ys,
                                      std::vector<double>& ysSigma) const
 {
-    size_t n = peaks_.size();
+    size_t n = peakInfos_.size();
     xs.resize(n);
     ys.resize(n);
 
     for (size_t i=0; i<n; ++i) {
-        const PeakInfo& peakInfo = peaks_.at(i);
+        const PeakInfo& peakInfo = peakInfos_.at(i);
         const std::vector<QVariant> row = peakInfo.peakData();
         xs[i] = row.at(indexX).toDouble();
         ys[i] = row.at(indexY).toDouble();
@@ -119,7 +119,7 @@ void InfoSequence::getValuesAndSigma(const size_t indexX, const size_t indexY,
 
         ysSigma.resize(n);
         for (auto i : is) {
-            const PeakInfo& peakInfo = peaks_.at(is.at(i));
+            const PeakInfo& peakInfo = peakInfos_.at(is.at(i));
             const std::vector<QVariant> row = peakInfo.peakData();
             ysSigma[i] = row.at(indexY+1).toDouble(); // SIGMA_X has tag position of X plus 1
         }
@@ -130,15 +130,15 @@ void InfoSequence::getValuesAndSigma(const size_t indexX, const size_t indexY,
 
 //! For debugging only.
 
-void InfoSequence::inspect(const QString& header) const
+void OnePeakAllInfos::inspect(const QString& header) const
 {
-    qDebug() << header << "#peaks=" << peaks_.size();
-    if (!peaks_.size())
+    qDebug() << header << "#peaks=" << peakInfos_.size();
+    if (!peakInfos_.size())
         return;
-    const PeakInfo& p = peaks_.front();
+    const PeakInfo& p = peakInfos_.front();
     qDebug() << " .. first entry: alpha=" << p.alpha() << "beta=" << p.beta()
              << "inten=" << p.inten();
-    const PeakInfo& q = peaks_.back();
+    const PeakInfo& q = peakInfos_.back();
     qDebug() << " ..  last entry: alpha=" << q.alpha() << "beta=" << q.beta()
              << "inten=" << q.inten();
 }
