@@ -27,7 +27,8 @@ public:
 
     void setPeakFunction(const QString&);
     void setRange(const Range&);
-    void setOne(double val, bool namelyMax); //!< sets either min or max
+    void setMin(double val);
+    void setMax(double val);
 
     const Range& range() const { return range_; }
     QString functionName() const { return functionName_; }

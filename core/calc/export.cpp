@@ -31,7 +31,7 @@ namespace {
 void writeFullInfoSequence(
     QTextStream& stream, const OnePeakAllInfos& peakInfos, const QString& separator)
 {
-    for (auto& info : peakInfos.peaks())
+    for (auto& info : peakInfos.peakInfos())
         stream << info.alpha() << separator
                << info.beta()  << separator
                << info.inten() << "\n";
@@ -45,7 +45,7 @@ void writeCompactInfoSequence(QTextStream& stream, const OnePeakAllInfos& peakIn
 {
     double alphaOld;
     bool hasOld = false;
-    for (auto& info : peakInfos.peaks()) {
+    for (auto& info : peakInfos.peakInfos()) {
         if (hasOld) {
             if (info.alpha()==alphaOld)
                 stream << " ";

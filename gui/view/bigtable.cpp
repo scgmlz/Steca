@@ -44,7 +44,7 @@ void BigtableModel::refresh()
     beginResetModel();
     rows_.clear();
     if (const OnePeakAllInfos* peakInfos = gSession->allPeaks.currentInfoSequence())
-        for (const PeakInfo& r : peakInfos->peaks())
+        for (const PeakInfo& r : peakInfos->peakInfos())
             rows_.push_back(XRow(rows_.size()+1, r.peakData()));
     sortData();
     endResetModel();

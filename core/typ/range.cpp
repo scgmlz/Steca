@@ -81,12 +81,15 @@ void Range::set(double _min, double _max)
     ASSERT(!isValid() || min <= max);
 }
 
-void Range::setOne(double val, bool namelyMax) // sets either min or max
+void Range::setMin(double val)
 {
-    if (namelyMax)
-        max = val;
-    else
-        min = val;
+    min = val;
+    ASSERT(!isValid() || min <= max);
+}
+
+void Range::setMax(double val)
+{
+    max = val;
     ASSERT(!isValid() || min <= max);
 }
 

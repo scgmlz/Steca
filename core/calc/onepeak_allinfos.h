@@ -19,15 +19,15 @@
 
 //! A list of PeakInfo's, associated with _one_ Bragg peak and different orientations alpha,beta.
 
-class InfoSequence {
+class OnePeakAllInfos {
 public:
-    InfoSequence() {}
-    InfoSequence(const InfoSequence&) = delete;
-    InfoSequence(InfoSequence&&) = default;
+    OnePeakAllInfos() {}
+    OnePeakAllInfos(const OnePeakAllInfos&) = delete;
+    OnePeakAllInfos(OnePeakAllInfos&&) = default;
 
     void appendPeak(PeakInfo&&);
 
-    const std::vector<PeakInfo>& peaks() const { return peaks_; }
+    const std::vector<PeakInfo>& peakInfos() const { return peakInfos_; }
     void get4(const int idxX, const int idxY,
               std::vector<double>& xs, std::vector<double>& ys,
               std::vector<double>& ysLow, std::vector<double>& ysHig) const;
@@ -37,7 +37,7 @@ public:
     void inspect(const QString& header) const;
 
 private:
-    std::vector<PeakInfo> peaks_;
+    std::vector<PeakInfo> peakInfos_;
 };
 
 #endif // INFO_SEQUENCE_H

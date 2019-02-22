@@ -34,7 +34,8 @@ public:
     void extendBy(double); //!< extend to include the number
     void extendBy(const Range&); //!< extend to include the range
     void set(double min, double max); //!< must be: min <= max
-    void setOne(double val, bool namelyMax); //!< sets either min or max
+    void setMin(double val);
+    void setMax(double val);
 
     QJsonObject toJson() const;
     bool isValid() const; //!< is not NaN

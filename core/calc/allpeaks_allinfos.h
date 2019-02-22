@@ -20,10 +20,10 @@
 
 //! Direct and interpolated InfoSequence for all Bragg peaks.
 
-class AllInfos {
+class AllPeaksAllInfos {
 public:
-    AllInfos();
-    AllInfos(const AllInfos&) = delete;
+    AllPeaksAllInfos();
+    AllPeaksAllInfos(const AllPeaksAllInfos&) = delete;
     const OnePeakAllInfos* currentDirect() const;
     const OnePeakAllInfos* currentInterpolated() const;
     const OnePeakAllInfos* currentInfoSequence() const;
@@ -35,8 +35,8 @@ public:
 private:
     const std::vector<const OnePeakAllInfos*> allDirect() const;
     const std::vector<const OnePeakAllInfos*> allInterpolated() const;
-    mutable lazy_data::VectorCache<OnePeakAllInfos,const AllInfos*> direct;
-    mutable lazy_data::VectorCache<OnePeakAllInfos,const AllInfos*> interpolated;
+    mutable lazy_data::VectorCache<OnePeakAllInfos,const AllPeaksAllInfos*> direct;
+    mutable lazy_data::VectorCache<OnePeakAllInfos,const AllPeaksAllInfos*> interpolated;
 };
 
 #endif // ALL_INFOS_H

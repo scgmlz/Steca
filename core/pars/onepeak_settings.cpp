@@ -30,9 +30,15 @@ void OnePeakSettings::setRange(const Range& r)
     gSession->onPeaks(); // TODO restrict to PeakAt(index())
 }
 
-void OnePeakSettings::setOne(double val, bool namelyMax)
+void OnePeakSettings::setMin(double val)
 {
-    range_.setOne(val, namelyMax);
+    range_.setMin(val);
+    gSession->onPeaks(); // TODO restrict to PeakAt(index())
+}
+
+void OnePeakSettings::setMax(double val)
+{
+    range_.setMax(val);
     gSession->onPeaks(); // TODO restrict to PeakAt(index())
 }
 

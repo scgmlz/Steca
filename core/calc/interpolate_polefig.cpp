@@ -121,7 +121,7 @@ void searchPoints(deg alpha, deg beta, deg radius, const OnePeakAllInfos& infos,
 {
     // TODO REVIEW Use value trees to improve performance.
     // qDebug() << "DEB searchPts " << alpha << beta;
-    for (const PeakInfo& info : infos.peaks()) {
+    for (const PeakInfo& info : infos.peakInfos()) {
         // qDebug() << "  candidate " << info.alpha() << info.beta();
         if (inRadius(info.alpha(), info.beta(), alpha, beta, radius))
             itfs.push_back(itf_t(info.inten(), info.tth(), info.fwhm()));
@@ -145,7 +145,7 @@ void searchInQuadrants(
     std::fill(foundInfos.begin(), foundInfos.end(), nullptr);
 
     // Find infos closest to given alpha and beta in each quadrant.
-    for (const PeakInfo& info : infos.peaks()) {
+    for (const PeakInfo& info : infos.peakInfos()) {
         // TODO REVIEW We could do better with value trees than looping over all infos.
         deg deltaBeta = calculateDeltaBeta(info.beta(), beta);
         if (fabs(deltaBeta) > BETA_LIMIT)
@@ -285,7 +285,7 @@ OnePeakAllInfos algo::interpolateInfos(const OnePeakAllInfos& direct)
 
             progress.step();
 
-            if (direct.peaks().empty()) {
+            if (direct.peakInfos().empty()) {
                 ret.appendPeak(PeakInfo(alpha, beta));
                 continue;
             }
@@ -311,7 +311,7 @@ OnePeakAllInfos algo::interpolateInfos(const OnePeakAllInfos& direct)
                     for (int i=iBegin; i<iEnd; ++i)
                         avg += itfs.at(i);
 
-                    ret.appendPeak(PeakInfo(alpha, beta, direct.peaks().front().rgeGma(),
+                    ret.appendPeak(PeakInfo(alpha, beta, direct.peakInfos().front().rgeGma(),
                                             avg.inten / n, Q_QNAN,
                         avg.tth / n, deg(Q_QNAN), avg.fwhm / n, Q_QNAN));
                     continue;
@@ -326,7 +326,7 @@ OnePeakAllInfos algo::interpolateInfos(const OnePeakAllInfos& direct)
 
             // Use idw, if alpha > avgAlphaMax OR averaging failed (too small avgRadius?).
             itf_t itf = interpolateValues(idwRadius, direct, alpha, beta);
-            ret.appendPeak(PeakInfo(alpha, beta, direct.peaks().front().rgeGma(), itf.inten,
+            ret.appendPeak(PeakInfo(alpha, beta, direct.peakInfos().front().rgeGma(), itf.inten,
                                     Q_QNAN, itf.tth, deg(Q_QNAN), itf.fwhm, Q_QNAN));
         }
     }
