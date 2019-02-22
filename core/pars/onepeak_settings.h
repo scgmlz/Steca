@@ -23,6 +23,8 @@
 
 class OnePeakSettings {
 public:
+    OnePeakSettings() = delete;
+    OnePeakSettings(const OnePeakSettings&) = default; // needed by sort
     OnePeakSettings(const Range& range, const QString& functionName);
 
     void setPeakFunction(const QString&);

@@ -84,6 +84,7 @@ void AllPeaksSettings::fromJson(const QJsonArray& arr)
 
 void AllPeaksSettings::sort()
 {
-    std::sort(peaksSettings_.begin(), peaksSettings_.end(), [](const OnePeakSettings& p1, const OnePeakSettings& p2) {
-            return p1.range().min < p2.range().min; } );
+    std::sort(peaksSettings_.begin(), peaksSettings_.end(),
+              [](const OnePeakSettings& p1, const OnePeakSettings& p2) {
+                  return p1.range().min < p2.range().min; } );
 }
