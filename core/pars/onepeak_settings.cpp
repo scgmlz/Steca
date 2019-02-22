@@ -45,6 +45,12 @@ void OnePeakSettings::setMax(double val)
 void OnePeakSettings::setPeakFunction(const QString& name)
 {
     functionName_ = name;
+    fitParAsciiNames_ = QStringList{ "intensity", "center", "fwhm" };
+    fitParNiceNames_ = QStringList{ "intensity", "2θ", "fwhm" };
+    if (functionName_=="Voigt") {
+        fitParAsciiNames_ << "Gamma/Sigma";
+        fitParNiceNames_  << "Γ/Σ";
+    }
     gSession->onPeaks(); // TODO restrict to PeakAt(index())
 }
 

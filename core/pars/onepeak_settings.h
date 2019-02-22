@@ -16,6 +16,7 @@
 #define PEAK_FITPAR_H
 
 #include "core/typ/range.h"
+#include <QStringList>
 
 //! Settings (range, function type) for analysing one Bragg peak.
 
@@ -34,6 +35,8 @@ public:
 
     const Range& range() const { return range_; }
     const QString& functionName() const { return functionName_; }
+    const QStringList& fitParAsciiNames() const { return fitParAsciiNames_; }
+    const QStringList& fitParNiceNames() const { return fitParNiceNames_; }
     bool isRaw() const { return functionName_=="Raw"; }
     JsonObj toJson() const;
 
@@ -43,6 +46,8 @@ public:
 private:
     Range range_;
     QString functionName_;
+    QStringList fitParAsciiNames_;
+    QStringList fitParNiceNames_;
 };
 
 #endif // PEAK_FITPAR_H
