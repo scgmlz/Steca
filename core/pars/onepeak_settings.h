@@ -33,7 +33,7 @@ public:
     void setMax(double val);
 
     const Range& range() const { return range_; }
-    QString functionName() const { return functionName_; }
+    const QString& functionName() const { return functionName_; }
     bool isRaw() const { return functionName_=="Raw"; }
     JsonObj toJson() const;
 
