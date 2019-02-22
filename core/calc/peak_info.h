@@ -32,7 +32,7 @@ public:
     PeakInfo(const PeakInfo&) = delete;
     PeakInfo(PeakInfo&&) = default;
 
-    static QStringList dataTags(bool out);
+    static QStringList dataTags(bool nice);
     static QStringList metaTags();
 
     deg alpha() const { return alpha_; }

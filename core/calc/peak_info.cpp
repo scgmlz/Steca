@@ -95,12 +95,12 @@ PeakInfo::PeakInfo(deg alpha, deg beta)
                Q_QNAN, Q_QNAN, deg(Q_QNAN), deg(Q_QNAN), Q_QNAN, Q_QNAN, Q_QNAN, Q_QNAN)
 {}
 
-QStringList PeakInfo::dataTags(bool out)
+QStringList PeakInfo::dataTags(bool nice)
 {
     QStringList ret;
     for (int i=0; i<int(eReflAttr::NUM_REFL_ATTR); ++i)
-        ret.append(reflStringTag(i, out));
-    ret.append(Metadata::attributeTags(out));
+        ret.append(reflStringTag(i, nice));
+    ret.append(Metadata::attributeTags(nice));
     return ret;
 }
 
