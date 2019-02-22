@@ -17,7 +17,7 @@
 #include "core/base/exception.h"
 #include "qcr/base/debug.h"
 
-const QStringList OnePeakSettings::keys = { "Raw", "Gaussian", "Lorentzian", "Voigt" };
+const QStringList OnePeakSettings::functionNames = { "Raw", "Gaussian", "Lorentzian", "Voigt" };
 
 OnePeakSettings::OnePeakSettings(const Range& r, const QString& functionName)
     : range_(r)
@@ -53,7 +53,7 @@ JsonObj OnePeakSettings::toJson() const
 OnePeakSettings OnePeakSettings::fromJson(const JsonObj& obj)
 {
     QString type = obj.loadString("type");
-    if (!keys.contains(type)) // validate peak fit function, so we dont get any surprises later.
+    if (!functionNames.contains(type)) // validate peak fit function, so we dont get any surprises later.
         THROW(QString("'") + type + "' is not a valid fit function!");
     return {obj.loadRange("range"), type};
 }

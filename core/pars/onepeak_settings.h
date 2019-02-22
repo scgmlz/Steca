@@ -35,7 +35,7 @@ public:
     JsonObj toJson() const;
 
     static OnePeakSettings fromJson(const JsonObj&);
-    static const QStringList keys;
+    static const QStringList functionNames;
 
 private:
     Range range_;

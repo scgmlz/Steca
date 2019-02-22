@@ -208,9 +208,9 @@ ControlsPeakfits::ControlsPeakfits()
     : QcrWidget("ControlsPeakfits")
 {
     auto* comboPeakFct = new QcrComboBox{
-        "reflTyp", &gSession->params.defaultPeakFunction, OnePeakSettings::keys};
+        "reflTyp", &gSession->params.defaultPeakFunction, OnePeakSettings::functionNames};
     comboPeakFct->setHook([](int i){
-            const QString& name = OnePeakSettings::keys[i];
+            const QString& name = OnePeakSettings::functionNames[i];
             if (OnePeakSettings* p = gSession->peaks.selectedPeak())
                 p->setPeakFunction(name);
             gSession->onPeaks(); });
@@ -218,7 +218,7 @@ ControlsPeakfits::ControlsPeakfits()
     comboPeakFct->setRemake([&](){ // updates the combobox, when a diffeent peak gets selected:
         if (const OnePeakSettings *peak = gSession->peaks.selectedPeak()) {
             QString key = peak->functionName();
-            int peakFunctIndex = OnePeakSettings::keys.indexOf(key);
+            int peakFunctIndex = OnePeakSettings::functionNames.indexOf(key);
             gSession->params.defaultPeakFunction.pureSetVal(peakFunctIndex);
         }
     });

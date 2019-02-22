@@ -27,7 +27,7 @@ void AllPeaksSettings::add(const Range& range)
 {
     peaksSettings_.erase(std::remove_if(peaksSettings_.begin(), peaksSettings_.end(), [=](const OnePeakSettings& p) {
                 return p.range().intersects(range); }), peaksSettings_.end());
-    doAdd({range, OnePeakSettings::keys.at(gSession->params.defaultPeakFunction.val())});
+    doAdd({range, OnePeakSettings::functionNames.at(gSession->params.defaultPeakFunction.val())});
     // not elegant: find the newly added range
     for (int i=0; i<size(); ++i) {
         if (at(i).range().intersects(range)) {
