@@ -158,7 +158,7 @@ void BigtableModel::sortData()
 
 QStringList BigtableModel::getHeaders() const
 {
-    return gSession->params.bigMetaHeaders();
+    return gSession->params.bigMetaSelection.selectedKeys();
 }
 
 //! Returns currently selected data, for use in data export.

@@ -57,13 +57,14 @@ ColumnSelector::ColumnSelector()
     box->addLayout(hb);
     box->addSpacing(8);
 
-    const QStringList& headers = PeakInfo::dataTags(false);
-    for (int i=0; i<headers.count(); ++i)
-        gSession->params.bigMetaSelection.vec.push_back({true});
+    QStringList headers = PeakInfo::dataTags(false);
+    gSession->params.bigMetaSelection.replaceKeys(headers);
     showCols_.resize(headers.count());
     for (int i=0; i<showCols_.size(); ++i) {
-        showCols_[i] = new QcrCheckBox(
-            "cb"+QString::number(i), headers[i], &gSession->params.bigMetaSelection.vec[i]);
+        const QString& name = headers[i];
+        gSession->params.bigMetaSelection.set(name, true);
+        QcrCell<bool>* cell = gSession->params.bigMetaSelection.cellAt(name);
+        showCols_[i] = new QcrCheckBox("cb"+QString::number(i), name, cell);
         box->addWidget(showCols_[i]);
     }
     setLayout(box);
@@ -71,13 +72,12 @@ ColumnSelector::ColumnSelector()
 
 void ColumnSelector::setOne(int pos, bool on)
 {
-    gSession->params.bigMetaSelection.vec.at(pos).pureSetVal(on);
+    gSession->params.bigMetaSelection.set(pos,on);
 }
 
 void ColumnSelector::setAll(bool on)
 {
-    for (auto& col : gSession->params.bigMetaSelection.vec)
-        col.pureSetVal(on);
+    gSession->params.bigMetaSelection.setAll(on);
 }
 
 //  ***********************************************************************************************

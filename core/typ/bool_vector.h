@@ -40,4 +40,31 @@ private:
     lazy_data::Cached<std::vector<int>,const BoolVector*> list;
 };
 
+//! Holds a map of bool-valued QcrCells. Used for metadata selection.
+
+class BoolMap {
+public:
+    BoolMap() {}
+    BoolMap(const BoolMap&) = delete;
+    BoolMap(BoolMap&&) = default;
+
+    void replaceKeys(const QStringList&);
+    void set(const QString&, bool);
+    void set(int i, bool on) { set(availableKeys_[i], on); }
+    void setAll(bool);
+    QcrCell<bool>* cellAt(const QString&);
+//    QcrCell<bool>* cellAt(int i) { return cellAt(availableKeys_[i]); }
+
+    bool isSelected(const QString& name) const { return data.at(name).val(); }
+    bool isSelected(int i) const { return data.at(availableKeys_[i]).val(); }
+    const QStringList& availableKeys() const { return availableKeys_; }
+    QStringList selectedKeys() const;
+//    int numSelected() const { return list.yield(this).size(); }
+//    int selectedOf(int i) const { return list.yield(this).at(i); }
+
+private:
+    QStringList availableKeys_;
+    std::map<QString,QcrCell<bool>> data; //!< true if to be displayed
+};
+
 #endif // BOOL_VECTOR_H

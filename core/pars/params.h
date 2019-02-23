@@ -41,7 +41,7 @@ public:
     QcrCell<int>    howtoNormalize {(int)eNorm::NONE};
 
     BoolVector      smallMetaSelection;  //!< for 'clusters' and 'metadata' subframes:
-    BoolVector      bigMetaSelection;    //! for use in 'bigtable' (tabbed view and export):
+    BoolMap         bigMetaSelection;    //! for use in 'bigtable' (tabbed view and export):
     QcrCell<int>    diagramX {0};        //!< for use as x axis in diagram
     QcrCell<int>    diagramY {0};        //!< for use as y axis in diagram
 
@@ -50,8 +50,6 @@ public:
 
     EditableRange   editableRange{EditableRange::NONE};
     QcrCell<bool>   showAvgeDfgram {false};
-
-    QStringList bigMetaHeaders() const;
 };
 
 #endif // PARAMS_H

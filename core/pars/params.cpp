@@ -21,13 +21,3 @@ Params::Params()
     intenScale.setHook([](double){ gSession->onNormalization(); });;
     howtoNormalize.setHook([](int){ gSession->onNormalization(); });
 }
-
-QStringList Params::bigMetaHeaders() const
-{
-    QStringList ret;
-    const QStringList& headers = PeakInfo::dataTags(true);
-    for (int i=0; i<headers.count(); ++i)
-        if (bigMetaSelection.isSelected(i))
-            ret.append(headers[i]);
-    return ret;
-}
