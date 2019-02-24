@@ -89,11 +89,10 @@ void ColumnsControl::setAll(bool on)
 BigtableTab::BigtableTab()
     : QcrWidget("BigtableTab")
 {
-    auto bigtableView = new BigtableView;
+    bigtableView = new BigtableView;
 
-    auto* colSelBox = new QcrScrollArea("colSelBox");
+    colSelBox = new QcrScrollArea("colSelBox");
     colSelBox->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    colSelBox->setWidget(new ColumnsControl());
 
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);
@@ -111,5 +110,10 @@ BigtableTab::BigtableTab()
     layout->setStretch(0,1000);
     setLayout(layout);
 
-    setRemake([=](){ bigtableView->refresh(); });
+    setRemake([this](){
+                  if (cc) delete cc;
+                  cc = new ColumnsControl();
+                  colSelBox->setWidget(cc);
+                  bigtableView->refresh();
+              });
 }

@@ -17,11 +17,19 @@
 
 #include "qcr/widgets/views.h"
 
+class BigtableView;
+class ColumnsControl;
+class QcrScrollArea;
+
 //! Tabular display of fit results and metadata, with associated controls.
 
 class BigtableTab : public QcrWidget {
 public:
     BigtableTab();
+private:
+    BigtableView* bigtableView;
+    ColumnsControl* cc;
+    QcrScrollArea* colSelBox;
 };
 
 #endif // TAB_BIGTABLE_H
