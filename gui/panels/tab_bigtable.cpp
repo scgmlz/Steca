@@ -21,16 +21,16 @@
 //#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
-//! @class ColumnSelector (local scope)
+//! @class ColumnsControl (local scope)
 
 //! A row of controls for choosing which data columns are to be displayed in a TabTable.
 
 //! User actions become effective through the general remake hook,
 //! which invokes BigtableView::refresh and BigtableView::updateShownColumns().
 
-class ColumnSelector : public QcrWidget {
+class ColumnsControl : public QcrWidget {
 public:
-    ColumnSelector();
+    ColumnsControl();
     void refresh();
 private:
     std::vector<QcrCheckBox*> showCols_;
@@ -38,8 +38,8 @@ private:
     void setAll(bool on);
 };
 
-ColumnSelector::ColumnSelector()
-    : QcrWidget("ColumnSelector")
+ColumnsControl::ColumnsControl()
+    : QcrWidget("ColumnsControl")
 {
     auto* trigAll   = new QcrTrigger {"bigtabAll", "select all columns", ":/icon/All"};
     auto* trigClear = new QcrTrigger {"bigtabClear", "unselect all columns", ":/icon/clear"};
@@ -69,19 +69,20 @@ ColumnSelector::ColumnSelector()
         box->addWidget(showCols_[i]);
     }
     setLayout(box);
+    setRemake([=](){ refresh(); });
 }
 
-void ColumnSelector::refresh()
+void ColumnsControl::refresh()
 {
     qDebug() << "COL SEL REFRESH";
 }
 
-void ColumnSelector::setOne(int pos, bool on)
+void ColumnsControl::setOne(int pos, bool on)
 {
     gSession->params.bigMetaSelection.set(pos,on);
 }
 
-void ColumnSelector::setAll(bool on)
+void ColumnsControl::setAll(bool on)
 {
     gSession->params.bigMetaSelection.setAll(on);
 }
@@ -96,8 +97,7 @@ BigtableTab::BigtableTab()
 
     auto* colSelBox = new QcrScrollArea("colSelBox");
     colSelBox->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    auto* columnSelector = new ColumnSelector();
-    colSelBox->setWidget(columnSelector);
+    colSelBox->setWidget(new ColumnsControl());
 
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);
@@ -115,8 +115,5 @@ BigtableTab::BigtableTab()
     layout->setStretch(0,1000);
     setLayout(layout);
 
-    setRemake([=](){
-                  columnSelector->refresh();
-                  bigtableView->refresh();
-              });
+    setRemake([=](){ bigtableView->refresh(); });
 }
