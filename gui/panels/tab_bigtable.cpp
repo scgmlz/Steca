@@ -31,6 +31,7 @@
 class ColumnSelector : public QcrWidget {
 public:
     ColumnSelector();
+    void refresh();
 private:
     std::vector<QcrCheckBox*> showCols_;
     void setOne(int pos, bool on);
@@ -70,6 +71,11 @@ ColumnSelector::ColumnSelector()
     setLayout(box);
 }
 
+void ColumnSelector::refresh()
+{
+    qDebug() << "COL SEL REFRESH";
+}
+
 void ColumnSelector::setOne(int pos, bool on)
 {
     gSession->params.bigMetaSelection.set(pos,on);
@@ -90,7 +96,8 @@ BigtableTab::BigtableTab()
 
     auto* colSelBox = new QcrScrollArea("colSelBox");
     colSelBox->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    colSelBox->setWidget(new ColumnSelector());
+    auto* columnSelector = new ColumnSelector();
+    colSelBox->setWidget(columnSelector);
 
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);
@@ -108,5 +115,8 @@ BigtableTab::BigtableTab()
     layout->setStretch(0,1000);
     setLayout(layout);
 
-    setRemake([=](){bigtableView->refresh();});
+    setRemake([=](){
+                  columnSelector->refresh();
+                  bigtableView->refresh();
+              });
 }
