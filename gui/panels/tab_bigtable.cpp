@@ -33,7 +33,6 @@ public:
     ColumnsControl();
     void refresh();
 private:
-    std::vector<QcrCheckBox*> showCols_;
     void setOne(int pos, bool on);
     void setAll(bool on);
 };
@@ -60,13 +59,10 @@ ColumnsControl::ColumnsControl()
 
     QStringList headers = PeakInfo::dataTags(false);
     gSession->params.bigMetaSelection.replaceKeys(headers);
-    showCols_.resize(headers.count());
-    for (int i=0; i<showCols_.size(); ++i) {
-        const QString& name = headers[i];
+    for (const QString& name: headers) {
         gSession->params.bigMetaSelection.set(name, true);
         QcrCell<bool>* cell = gSession->params.bigMetaSelection.cellAt(name);
-        showCols_[i] = new QcrCheckBox("cb"+QString::number(i), name, cell);
-        box->addWidget(showCols_[i]);
+        box->addWidget(new QcrCheckBox("bigtable_"+name, name, cell));
     }
     setLayout(box);
     setRemake([=](){ refresh(); });
