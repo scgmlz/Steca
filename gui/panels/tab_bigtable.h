@@ -19,6 +19,7 @@
 
 class BigtableView;
 class ColumnsControl;
+class ColConButtons;
 class QcrScrollArea;
 
 //! Tabular display of fit results and metadata, with associated controls.
@@ -30,6 +31,7 @@ private:
     BigtableView* bigtableView;
     ColumnsControl* cc {nullptr};
     QcrScrollArea* colSelBox;
+    ColConButtons* colConButtons;
 };
 
 #endif // TAB_BIGTABLE_H
