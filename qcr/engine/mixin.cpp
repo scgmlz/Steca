@@ -74,11 +74,6 @@ QcrRegisteredMixin::QcrRegisteredMixin(QObject* object, const QString& name, boo
     : QcrBaseMixin {object, gConsole->learn(name, this)} // console may change name (expand macros)
 {}
 
-QcrRegisteredMixin::~QcrRegisteredMixin()
-{
-    gConsole->forget(name());
-}
-
 void QcrRegisteredMixin::doLog(const QString& msg)
 // Trivial, but not inlined to isolate dependence on console.h.
 {

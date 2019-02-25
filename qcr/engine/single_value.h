@@ -18,6 +18,7 @@
 #include "qcr/base/string_ops.h"
 #include "qcr/engine/mixin.h"
 #include "qcr/engine/cell.h"
+#include "qcr/engine/console.h"
 #include "qcr/base/debug.h" // ASSERT
 #include <QSettings>
 #include <iostream>
@@ -89,6 +90,7 @@ QcrSingleValue<T>::~QcrSingleValue()
 {
     if (ownsItsCell_)
         delete cell_;
+    gConsole->forget(name());
 }
 
 //! Sets the value of the associated Cell, and in consequence also the value of this widget.
