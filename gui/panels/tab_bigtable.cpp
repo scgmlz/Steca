@@ -31,7 +31,6 @@
 class ColumnsControl : public QcrWidget {
 public:
     ColumnsControl();
-    void refresh();
 private:
     void setOne(int pos, bool on);
     void setAll(bool on);
@@ -65,12 +64,6 @@ ColumnsControl::ColumnsControl()
         box->addWidget(new QcrCheckBox("bigtable_"+name, name, cell));
     }
     setLayout(box);
-    setRemake([=](){ refresh(); });
-}
-
-void ColumnsControl::refresh()
-{
-    qDebug() << "COL SEL REFRESH";
 }
 
 void ColumnsControl::setOne(int pos, bool on)
@@ -111,15 +104,15 @@ BigtableTab::BigtableTab()
     setLayout(layout);
 
     setRemake([this](){
-                  qDebug() << "DEBUG remake BT\n";
+                  qDebug() << "DEBUG remake BT";
                   if (cc) {
-                      qDebug() << "DEBUG going to delete cc\n";
+                      qDebug() << "DEBUG going to delete cc";
                       delete cc;
-                      qDebug() << "DEBUG survived deletion of cc\n";
+                      qDebug() << "DEBUG survived deletion of cc";
                   } else
-                      qDebug() << "DEBUG there was no cc\n";
+                      qDebug() << "DEBUG there was no cc";
                   cc = new ColumnsControl();
-                  qDebug() << "DEBUG and created new cc\n";
+                  qDebug() << "DEBUG and created new cc";
                   colSelBox->setWidget(cc);
                   bigtableView->refresh();
               });

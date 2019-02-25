@@ -28,7 +28,7 @@ public:
     BigtableTab();
 private:
     BigtableView* bigtableView;
-    ColumnsControl* cc;
+    ColumnsControl* cc {nullptr};
     QcrScrollArea* colSelBox;
 };
 
