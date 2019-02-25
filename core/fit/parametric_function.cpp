@@ -24,11 +24,20 @@
 
 //! Covered by test002_rounding.
 
+DoubleWithError::DoubleWithError(double value)
+    : DoubleWithError(value, Q_QNAN)
+{}
+
+DoubleWithError::DoubleWithError(double value, double error)
+    : value_(value)
+    , error_(error)
+{}
+
 double DoubleWithError::roundedError(int prec) const
 {
-    int n = 1+lrintf(floor(log10(std::max(std::abs(value),std::abs(error)))));
+    int n = 1+lrintf(floor(log10(std::max(std::abs(value_),std::abs(error_)))));
     double fac = pow(10.,prec-n);
-    return round(error*fac)/fac;
+    return round(error_*fac)/fac;
 }
 
 //  ***********************************************************************************************

@@ -26,6 +26,7 @@ class Curve;
 
 class RawOutcome {
 public:
+    // Can only be constructed by computing it from a Curve.
     RawOutcome() = delete;
     RawOutcome(const Curve&);
     RawOutcome(const RawOutcome&) = delete;

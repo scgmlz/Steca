@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/pars/peak_fitpar.cpp
+//! @file      core/pars/onepeak_settings.cpp
 //! @brief     Implements class PeakFitpar
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,37 +12,49 @@
 //
 //  ***********************************************************************************************
 
-#include "core/pars/peak_fitpar.h"
+#include "core/pars/onepeak_settings.h"
 #include "core/session.h"
 #include "core/base/exception.h"
 #include "qcr/base/debug.h"
 
-const QStringList PeakFitpar::keys = { "Raw", "Gaussian", "Lorentzian", "Voigt" };
+const QStringList OnePeakSettings::functionNames = { "Raw", "Gaussian", "Lorentzian", "Voigt" };
 
-PeakFitpar::PeakFitpar(const Range& r, const QString& functionName)
+OnePeakSettings::OnePeakSettings(const Range& r, const QString& functionName)
     : range_(r)
     , functionName_(functionName)
 {}
 
-void PeakFitpar::setRange(const Range& r)
+void OnePeakSettings::setRange(const Range& r)
 {
     range_ = r;
     gSession->onPeaks(); // TODO restrict to PeakAt(index())
 }
 
-void PeakFitpar::setOne(double val, bool namelyMax)
+void OnePeakSettings::setMin(double val)
 {
-    range_.setOne(val, namelyMax);
+    range_.setMin(val);
     gSession->onPeaks(); // TODO restrict to PeakAt(index())
 }
 
-void PeakFitpar::setPeakFunction(const QString& name)
+void OnePeakSettings::setMax(double val)
+{
+    range_.setMax(val);
+    gSession->onPeaks(); // TODO restrict to PeakAt(index())
+}
+
+void OnePeakSettings::setPeakFunction(const QString& name)
 {
     functionName_ = name;
+    fitParAsciiNames_ = QStringList{ "intensity", "center", "fwhm" };
+    fitParNiceNames_ = QStringList{ "intensity", "2θ", "fwhm" };
+    if (functionName_=="Voigt") {
+        fitParAsciiNames_ << "Gamma/Sigma";
+        fitParNiceNames_  << "Γ/Σ";
+    }
     gSession->onPeaks(); // TODO restrict to PeakAt(index())
 }
 
-JsonObj PeakFitpar::toJson() const
+JsonObj OnePeakSettings::toJson() const
 {
     QJsonObject ret;
     ret.insert("range", range_.toJson() );
@@ -50,10 +62,10 @@ JsonObj PeakFitpar::toJson() const
     return ret;
 }
 
-PeakFitpar PeakFitpar::fromJson(const JsonObj& obj)
+OnePeakSettings OnePeakSettings::fromJson(const JsonObj& obj)
 {
     QString type = obj.loadString("type");
-    if (!keys.contains(type)) // validate peak fit function, so we dont get any surprises later.
+    if (!functionNames.contains(type)) // validate peak fit function, so we dont get any surprises later.
         THROW(QString("'") + type + "' is not a valid fit function!");
     return {obj.loadRange("range"), type};
 }

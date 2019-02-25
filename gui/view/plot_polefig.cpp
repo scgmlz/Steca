@@ -22,20 +22,20 @@ namespace {
 
 std::vector<PolefigPoint> computePoints(const bool flat, const bool withHighlight)
 {
-    const InfoSequence* allPeaks = gSession->allPeaks.currentInfoSequence();
+    const OnePeakAllInfos* allPeaks = gSession->allPeaks.currentInfoSequence();
     if (!allPeaks)
         return {};
 
     std::vector<PolefigPoint> ret;
     if (flat) {
-        for (const PeakInfo& r : allPeaks->peaks())
+        for (const PeakInfo& r : allPeaks->peakInfos())
             ret.push_back({r.alpha(), r.beta(), .2, false});
 
     } else {
         double rgeMax = 0;
-        for (const PeakInfo& r : allPeaks->peaks())
+        for (const PeakInfo& r : allPeaks->peakInfos())
             rgeMax = std::max(rgeMax, r.inten());
-        for (const PeakInfo& r : allPeaks->peaks()) {
+        for (const PeakInfo& r : allPeaks->peakInfos()) {
             bool highlight = false;
             if (withHighlight)
                 highlight = false; // TODO find out whether this comes from highlighted cluster

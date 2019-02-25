@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/calc/all_infos.h
+//! @file      core/calc/allpeaks_allinfos.h
 //! @brief     Defines class AllInfos
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -15,28 +15,28 @@
 #ifndef ALL_INFOS_H
 #define ALL_INFOS_H
 
-#include "core/calc/info_sequence.h"
+#include "core/calc/onepeak_allinfos.h"
 #include "core/typ/lazy_data.h"
 
 //! Direct and interpolated InfoSequence for all Bragg peaks.
 
-class AllInfos {
+class AllPeaksAllInfos {
 public:
-    AllInfos();
-    AllInfos(const AllInfos&) = delete;
-    const InfoSequence* currentDirect() const;
-    const InfoSequence* currentInterpolated() const;
-    const InfoSequence* currentInfoSequence() const;
-    const InfoSequence* At(int) const;
-    const std::vector<const InfoSequence*> allInfoSequences() const;
+    AllPeaksAllInfos();
+    AllPeaksAllInfos(const AllPeaksAllInfos&) = delete;
+    const OnePeakAllInfos* currentDirect() const;
+    const OnePeakAllInfos* currentInterpolated() const;
+    const OnePeakAllInfos* currentInfoSequence() const;
+    const OnePeakAllInfos* At(int) const;
+    const std::vector<const OnePeakAllInfos*> allInfoSequences() const;
     void invalidateAll() const;
     void invalidateInterpolated() const;
     void invalidateAt(int) const;
 private:
-    const std::vector<const InfoSequence*> allDirect() const;
-    const std::vector<const InfoSequence*> allInterpolated() const;
-    mutable lazy_data::VectorCache<InfoSequence,const AllInfos*> direct;
-    mutable lazy_data::VectorCache<InfoSequence,const AllInfos*> interpolated;
+    const std::vector<const OnePeakAllInfos*> allDirect() const;
+    const std::vector<const OnePeakAllInfos*> allInterpolated() const;
+    mutable lazy_data::VectorCache<OnePeakAllInfos,const AllPeaksAllInfos*> direct;
+    mutable lazy_data::VectorCache<OnePeakAllInfos,const AllPeaksAllInfos*> interpolated;
 };
 
 #endif // ALL_INFOS_H

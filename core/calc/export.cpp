@@ -15,7 +15,7 @@
 #include "export.h"
 #include "qcr/base/debug.h"
 #include "core/base/async.h"
-#include "core/calc/info_sequence.h"
+#include "core/calc/onepeak_allinfos.h"
 #include "core/data/cluster.h"
 #include "core/typ/curve.h"
 #include "core/typ/range.h"
@@ -29,9 +29,9 @@ namespace {
 //! Writes pole figure for one Bragg peak as alpha-beta-inten format list.
 
 void writeFullInfoSequence(
-    QTextStream& stream, const InfoSequence& peakInfos, const QString& separator)
+    QTextStream& stream, const OnePeakAllInfos& peakInfos, const QString& separator)
 {
-    for (auto& info : peakInfos.peaks())
+    for (auto& info : peakInfos.peakInfos())
         stream << info.alpha() << separator
                << info.beta()  << separator
                << info.inten() << "\n";
@@ -41,11 +41,11 @@ void writeFullInfoSequence(
 //!
 //! Makes sense for interpolated data only; assumes alpha-beta grid to be known.
 
-void writeCompactInfoSequence(QTextStream& stream, const InfoSequence& peakInfos)
+void writeCompactInfoSequence(QTextStream& stream, const OnePeakAllInfos& peakInfos)
 {
     double alphaOld;
     bool hasOld = false;
-    for (auto& info : peakInfos.peaks()) {
+    for (auto& info : peakInfos.peakInfos()) {
         if (hasOld) {
             if (info.alpha()==alphaOld)
                 stream << " ";
@@ -61,7 +61,7 @@ void writeCompactInfoSequence(QTextStream& stream, const InfoSequence& peakInfos
 
 //! Writes pole figure for one Bragg peak.
 
-void writeInfoSequence(QTextStream& stream, const InfoSequence& peakInfos, const QString& format)
+void writeInfoSequence(QTextStream& stream, const OnePeakAllInfos& peakInfos, const QString& format)
 {
     if (format=="pol")
         writeCompactInfoSequence(stream, peakInfos);

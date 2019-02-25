@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/typ/bool_vector.h"
-//#include "qcr/base/debug.h"
+#include "qcr/base/debug.h"
 
 namespace {
 
@@ -36,4 +36,40 @@ void BoolVector::set(int idx, bool on)
 {
     vec[idx].setVal(on);
     list.invalidate();
+}
+
+
+void BoolMap::replaceKeys(const QStringList& keys)
+{
+    availableKeys_ = keys;
+}
+
+void BoolMap::set(const QString& key, bool on)
+{
+    ASSERT(availableKeys_.contains(key));
+    auto d = data.find(key);
+    if (d!=data.end())
+        d->second.pureSetVal(on);
+    else
+        data.emplace(key, on);
+}
+
+void BoolMap::setAll(bool on)
+{
+    for(auto& d: data)
+        d.second.pureSetVal(on);
+}
+
+QcrCell<bool>* BoolMap::cellAt(const QString& key)
+{
+    return &data.at(key);
+}
+
+QStringList BoolMap::selectedKeys() const
+{
+    QStringList ret;
+    for (const QString& key: availableKeys_)
+        if (data.at(key).val())
+            ret.append(key);
+    return ret;
 }

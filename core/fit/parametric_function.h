@@ -22,10 +22,19 @@
 
 class DoubleWithError {
 public:
+    DoubleWithError() = delete;
+    DoubleWithError(double value);
+    DoubleWithError(double value, double error);
+    DoubleWithError(const DoubleWithError&) = default; // TODO delete;
+    DoubleWithError(DoubleWithError&&) = default;
+
+    double value() const { return value_; }
+    double error() const { return error_; }
     double roundedError(int) const;
 
-    const double value;
-    const double error;
+private:
+    const double value_;
+    const double error_;
 };
 
 

@@ -21,24 +21,24 @@
 //#include "qcr/base/debug.h"
 
 //  ***********************************************************************************************
-//! @class ColumnSelector (local scope)
+//! @class ColumnsControl (local scope)
 
 //! A row of controls for choosing which data columns are to be displayed in a TabTable.
 
 //! User actions become effective through the general remake hook,
 //! which invokes BigtableView::refresh and BigtableView::updateShownColumns().
 
-class ColumnSelector : public QcrWidget {
+class ColumnsControl : public QcrWidget {
 public:
-    ColumnSelector();
+    ColumnsControl();
+    void refresh();
 private:
-    std::vector<QcrCheckBox*> showCols_;
     void setOne(int pos, bool on);
     void setAll(bool on);
 };
 
-ColumnSelector::ColumnSelector()
-    : QcrWidget("ColumnSelector")
+ColumnsControl::ColumnsControl()
+    : QcrWidget("ColumnsControl")
 {
     auto* trigAll   = new QcrTrigger {"bigtabAll", "select all columns", ":/icon/All"};
     auto* trigClear = new QcrTrigger {"bigtabClear", "unselect all columns", ":/icon/clear"};
@@ -57,27 +57,30 @@ ColumnSelector::ColumnSelector()
     box->addLayout(hb);
     box->addSpacing(8);
 
-    const QStringList& headers = PeakInfo::dataTags(false);
-    for (int i=0; i<headers.count(); ++i)
-        gSession->params.bigMetaSelection.vec.push_back({true});
-    showCols_.resize(headers.count());
-    for (int i=0; i<showCols_.size(); ++i) {
-        showCols_[i] = new QcrCheckBox(
-            "cb"+QString::number(i), headers[i], &gSession->params.bigMetaSelection.vec[i]);
-        box->addWidget(showCols_[i]);
+    QStringList headers = PeakInfo::dataTags(false);
+    gSession->params.bigMetaSelection.replaceKeys(headers);
+    for (const QString& name: headers) {
+        gSession->params.bigMetaSelection.set(name, true);
+        QcrCell<bool>* cell = gSession->params.bigMetaSelection.cellAt(name);
+        box->addWidget(new QcrCheckBox("bigtable_"+name, name, cell));
     }
     setLayout(box);
+    setRemake([=](){ refresh(); });
 }
 
-void ColumnSelector::setOne(int pos, bool on)
+void ColumnsControl::refresh()
 {
-    gSession->params.bigMetaSelection.vec.at(pos).pureSetVal(on);
+    qDebug() << "COL SEL REFRESH";
 }
 
-void ColumnSelector::setAll(bool on)
+void ColumnsControl::setOne(int pos, bool on)
 {
-    for (auto& col : gSession->params.bigMetaSelection.vec)
-        col.pureSetVal(on);
+    gSession->params.bigMetaSelection.set(pos,on);
+}
+
+void ColumnsControl::setAll(bool on)
+{
+    gSession->params.bigMetaSelection.setAll(on);
 }
 
 //  ***********************************************************************************************
@@ -90,7 +93,7 @@ BigtableTab::BigtableTab()
 
     auto* colSelBox = new QcrScrollArea("colSelBox");
     colSelBox->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    colSelBox->setWidget(new ColumnSelector());
+    colSelBox->setWidget(new ColumnsControl());
 
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);
@@ -108,5 +111,5 @@ BigtableTab::BigtableTab()
     layout->setStretch(0,1000);
     setLayout(layout);
 
-    setRemake([=](){bigtableView->refresh();});
+    setRemake([=](){ bigtableView->refresh(); });
 }

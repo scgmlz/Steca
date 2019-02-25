@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/calc/all_infos.cpp
+//! @file      core/calc/allpeaks_allinfos.cpp
 //! @brief     Implements class AllInfos
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/calc/all_infos.h"
+#include "core/calc/allpeaks_allinfos.h"
 #include "core/base/async.h"
 #include "core/calc/coord_trafos.h"
 #include "core/calc/interpolate_polefig.h"
@@ -25,7 +25,7 @@ namespace {
 //! Fits peak to the given gamma gRange and constructs a PeakInfo.
 PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
 {
-    const PeakFitpar& peak = gSession->peaks.at(jP);
+    const OnePeakSettings& peak = gSession->peaks.at(jP);
     const Range& fitrange = peak.range();
     const Metadata* metadata = &cluster.avgMetadata();
     const Range gRange = gSession->gammaSelection.slice2range(cluster.rangeGma(), iGamma);
@@ -63,19 +63,19 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
             gammOverSigma.reset(new DoubleWithError(*out.gammOverSigma));
     }
 
-    if (!fitrange.contains(center->value)) // TODO/math generalize to fitIsCredible
+    if (!fitrange.contains(center->value())) // TODO/math generalize to fitIsCredible
         return {metadata, alpha, beta, gRange};
 
     // TODO pass PeakOutcome instead of 6 components
-    return {metadata, alpha, beta, gRange, intensity->value, intensity->error,
-            deg(center->value), deg(center->error), fwhm->value, fwhm->error,
-            gammOverSigma->value, gammOverSigma->error};
+    return {metadata, alpha, beta, gRange, intensity->value(), intensity->error(),
+            deg(center->value()), deg(center->error()), fwhm->value(), fwhm->error(),
+            gammOverSigma->value(), gammOverSigma->error()};
 }
 
-InfoSequence computeDirectInfoSequence(int jP)
+OnePeakAllInfos computeDirectInfoSequence(int jP)
 {
     TakesLongTime progress("peak fitting", gSession->activeClusters.size());
-    InfoSequence ret;
+    OnePeakAllInfos ret;
     int nGamma = qMax(1, gSession->gammaSelection.numSlices.val());
     for (const Cluster* cluster : gSession->activeClusters.clusters.yield()) {
         progress.step();
@@ -91,33 +91,33 @@ InfoSequence computeDirectInfoSequence(int jP)
 } // namespace
 
 
-AllInfos::AllInfos()
+AllPeaksAllInfos::AllPeaksAllInfos()
     : direct {[]()->int{return gSession->peaks.size();},
-        [](int jP, const AllInfos*)->InfoSequence{
+        [](int jP, const AllPeaksAllInfos*)->OnePeakAllInfos{
             return computeDirectInfoSequence(jP); }}
     , interpolated {[]()->int{return gSession->peaks.size();},
-        [](int jP, const AllInfos* parent)->InfoSequence{
+        [](int jP, const AllPeaksAllInfos* parent)->OnePeakAllInfos{
             return algo::interpolateInfos(parent->direct.yield_at(jP,parent)); }}
 {}
 
-void AllInfos::invalidateAll() const
+void AllPeaksAllInfos::invalidateAll() const
 {
     direct      .clear_vector();
     invalidateInterpolated();
 }
 
-void AllInfos::invalidateInterpolated() const
+void AllPeaksAllInfos::invalidateInterpolated() const
 {
     interpolated.clear_vector();
 }
 
-void AllInfos::invalidateAt(int jP) const
+void AllPeaksAllInfos::invalidateAt(int jP) const
 {
     direct      .invalidate_at(jP);
     interpolated.invalidate_at(jP);
 }
 
-const InfoSequence* AllInfos::currentDirect() const
+const OnePeakAllInfos* AllPeaksAllInfos::currentDirect() const
 {
     if (!gSession->peaks.size())
         return nullptr;
@@ -126,7 +126,7 @@ const InfoSequence* AllInfos::currentDirect() const
     return &direct.yield_at(jP,this);
 }
 
-const InfoSequence* AllInfos::currentInterpolated() const
+const OnePeakAllInfos* AllPeaksAllInfos::currentInterpolated() const
 {
     if (!gSession->peaks.size())
         return nullptr;
@@ -135,35 +135,35 @@ const InfoSequence* AllInfos::currentInterpolated() const
     return &interpolated.yield_at(jP,this);
 }
 
-const InfoSequence* AllInfos::currentInfoSequence() const
+const OnePeakAllInfos* AllPeaksAllInfos::currentInfoSequence() const
 {
     return gSession->params.interpolParams.enabled.val() ? currentInterpolated() : currentDirect();
 }
 
-const InfoSequence* AllInfos::At(int jP) const
+const OnePeakAllInfos* AllPeaksAllInfos::At(int jP) const
 {
     return gSession->params.interpolParams.enabled.val() ?
         &interpolated.yield_at(jP,this) : &direct.yield_at(jP,this);
 }
 
-const std::vector<const InfoSequence*> AllInfos::allInterpolated() const
+const std::vector<const OnePeakAllInfos*> AllPeaksAllInfos::allInterpolated() const
 {
-    std::vector<const InfoSequence*> ret;
+    std::vector<const OnePeakAllInfos*> ret;
     for (const auto & v : interpolated.vecRef())
         ret.push_back(&v.yield(this));
     return ret;
 }
 
-const std::vector<const InfoSequence*> AllInfos::allDirect() const
+const std::vector<const OnePeakAllInfos*> AllPeaksAllInfos::allDirect() const
 {
-    std::vector<const InfoSequence*> ret;
+    std::vector<const OnePeakAllInfos*> ret;
     for (const auto & v : direct.vecRef())
         ret.push_back(&v.yield(this));
     return ret;
 
 }
 
-const std::vector<const InfoSequence*> AllInfos::allInfoSequences() const
+const std::vector<const OnePeakAllInfos*> AllPeaksAllInfos::allInfoSequences() const
 {
     return gSession->params.interpolParams.enabled.val() ?
                 allInterpolated() : allDirect();

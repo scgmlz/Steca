@@ -16,14 +16,14 @@
 #define SESSION_H
 
 #include "core/calc/active_clusters.h"
-#include "core/calc/all_infos.h"
+#include "core/calc/allpeaks_allinfos.h"
 #include "core/data/corrset.h"
 #include "core/data/dataset.h"
 #include "core/data/gamma_selection.h"
 #include "core/data/theta_selection.h"
 #include "core/pars/baseline.h"
 #include "core/pars/params.h"
-#include "core/pars/peaks.h"
+#include "core/pars/allpeaks_settings.h"
 #include "core/data/angle_map.h"
 #include "core/typ/lazy_data.h"
 
@@ -64,7 +64,7 @@ public:
     const Cluster* currentCluster() const { return dataset.highlight().cluster(); }
     const Dfgram* currentOrAvgeDfgram() const;
 
-    AllInfos allPeaks;                  //!< all the outcome of peak raw analysis or fitting
+    AllPeaksAllInfos allPeaks;                  //!< all the outcome of peak raw analysis or fitting
     /* order matters: allPeaks must be destroyed after Dfgrams */
     Dataset dataset;                    //!< raw data files with sample detector images
     Corrset corrset;                    //!< raw data files with standard sample image
@@ -72,7 +72,7 @@ public:
     GammaSelection gammaSelection; // TODO reconsider
     ThetaSelection thetaSelection; // TODO reconsider
     Baseline baseline;                  //!< ranges and other parameters for baseline fitting
-    Peaks peaks;                        //!< ranges and other parameters for Bragg peak fitting
+    AllPeaksSettings peaks;                        //!< ranges and other parameters for Bragg peak fitting
     ActiveClusters activeClusters;      //!< list of all clusters except the unselected ones
     lazy_data::KeyedCache<AngleMap, deg> angleMap; //!< to accelerate the projection image->dfgram
 

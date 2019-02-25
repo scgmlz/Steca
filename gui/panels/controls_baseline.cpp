@@ -112,7 +112,10 @@ ControlsBaseline::ControlsBaseline()
             [](double val, bool namelyMax)->void{
                 Range* r = gSession->baseline.ranges.selectedRange();
                 ASSERT(r);
-                r->setOne(val, namelyMax);
+                if (namelyMax)
+                    r->setMax(val);
+                else
+                    r->setMin(val);
                 gSession->onBaseline();
             }));
     box->addStretch(1);
