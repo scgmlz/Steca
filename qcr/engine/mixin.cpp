@@ -14,6 +14,7 @@
 //  ***********************************************************************************************
 
 #include "qcr/engine/mixin.h"
+#include "qcr/base/debug.h"
 #include "qcr/base/qcrexception.h"
 #include "qcr/engine/console.h"
 #include <QAction>
@@ -38,8 +39,10 @@ QcrBaseMixin::QcrBaseMixin(QObject* object, const QString& name)
 void QcrBaseMixin::remake()
 {
     const QWidget* w = dynamic_cast<const QWidget*>(object());
-    if ((w && w->isVisible()) || dynamic_cast<const QAction*>(object()))
+    if ((w && w->isVisible()) || dynamic_cast<const QAction*>(object())) {
+        qDebug() << "DEBUG REMAKE " << name();
         remake_();
+    }
 }
 
 

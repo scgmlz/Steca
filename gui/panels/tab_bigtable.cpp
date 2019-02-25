@@ -111,8 +111,15 @@ BigtableTab::BigtableTab()
     setLayout(layout);
 
     setRemake([this](){
-                  if (cc) delete cc;
+                  qDebug() << "DEBUG remake BT\n";
+                  if (cc) {
+                      qDebug() << "DEBUG going to delete cc\n";
+                      delete cc;
+                      qDebug() << "DEBUG survived deletion of cc\n";
+                  } else
+                      qDebug() << "DEBUG there was no cc\n";
                   cc = new ColumnsControl();
+                  qDebug() << "DEBUG and created new cc\n";
                   colSelBox->setWidget(cc);
                   bigtableView->refresh();
               });
