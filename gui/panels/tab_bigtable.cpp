@@ -20,37 +20,6 @@
 #include <QButtonGroup>
 //#include "qcr/base/debug.h"
 
-//  ***********************************************************************************************
-//! @class ColConButtons (local scope)
-
-class ColConButtons {
-public:
-    ColConButtons();
-    QcrTrigger* trigAll;
-    QcrTrigger* trigClear;
-private:
-    void setOne(int pos, bool on);
-    void setAll(bool on);
-};
-
-ColConButtons::ColConButtons()
-{
-    trigAll   = new QcrTrigger {"bigtabAll", "select all columns", ":/icon/All"};
-    trigClear = new QcrTrigger {"bigtabClear", "unselect all columns", ":/icon/clear"};
-
-    trigAll  ->setTriggerHook([this](){ setAll(true);  });
-    trigClear->setTriggerHook([this](){ setAll(false); });
-}
-
-void ColConButtons::setOne(int pos, bool on)
-{
-    gSession->params.bigMetaSelection.set(pos,on);
-}
-
-void ColConButtons::setAll(bool on)
-{
-    gSession->params.bigMetaSelection.setAll(on);
-}
 
 //  ***********************************************************************************************
 //! @class ColumnsControl (local scope)
@@ -69,17 +38,7 @@ public:
 ColumnsControl::ColumnsControl(ColConButtons* colConButtons)
     : QcrWidget("ColumnsControl")
 {
-    auto* hb = new QHBoxLayout;
-    hb->addSpacing(4);
-    hb->addStretch(1);
-    hb->addWidget(new QcrIconTriggerButton(colConButtons->trigAll));
-    hb->addWidget(new QcrIconTriggerButton(colConButtons->trigClear));
-    hb->addSpacing(4);
-
     auto* box = new QVBoxLayout;
-    box->addLayout(hb);
-    box->addSpacing(8);
-
     QStringList headers = PeakInfo::dataTags(false);
     gSession->params.bigMetaSelection.replaceKeys(headers);
     for (const QString& name: headers) {
@@ -97,12 +56,19 @@ BigtableTab::BigtableTab()
     : QcrWidget("BigtableTab")
 {
     bigtableView = new BigtableView;
-    colConButtons = new ColConButtons;
 
     colSelBox = new QcrScrollArea("colSelBox");
     colSelBox->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+    auto* trigAll   = new QcrTrigger {"bigtabAll", "select all columns", ":/icon/All"};
+    auto* trigClear = new QcrTrigger {"bigtabClear", "unselect all columns", ":/icon/clear"};
+
+    trigAll  ->setTriggerHook([this](){ gSession->params.bigMetaSelection.setAll(true);  });
+    trigClear->setTriggerHook([this](){ gSession->params.bigMetaSelection.setAll(false); });
+
     auto* buttonBox = new QHBoxLayout;
+    buttonBox->addWidget(new QcrIconTriggerButton(trigAll));
+    buttonBox->addWidget(new QcrIconTriggerButton(trigClear));
     buttonBox->addStretch(1);
     buttonBox->addWidget(new QcrIconTriggerButton {&gGui->triggers->spawnTable});
     buttonBox->addWidget(new QcrIconTriggerButton {&gGui->triggers->exportBigtable});
