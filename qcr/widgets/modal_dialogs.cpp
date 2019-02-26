@@ -26,11 +26,6 @@ QcrModalMixin::QcrModalMixin(QObject* object, const QString& name)
     : QcrRegisteredMixin {object, "@push " + name, true}
 {}
 
-QcrModalMixin::~QcrModalMixin()
-{
-    qDebug() << "DEBUG ~QcrModalMixin";
-}
-
 
 //  ***********************************************************************************************
 //! @class QcrModalDialog
@@ -40,12 +35,6 @@ QcrModalDialog::QcrModalDialog(QWidget* parent, const QString& caption)
     , QcrModalMixin {this, "dlog"}
 {
     setWindowTitle(caption);
-}
-
-QcrModalDialog::~QcrModalDialog()
-{
-    qDebug() << "DEBUG ~QcrModalDialog";
-    gConsole->closeModalDialog();
 }
 
 int QcrModalDialog::exec()
@@ -81,8 +70,8 @@ QcrFileDialog::QcrFileDialog(
 
 QcrFileDialog::~QcrFileDialog()
 {
-    qDebug() << "DEBUG ~QcrFileDialog";
     gConsole->log("fdia select "+selectedFiles().join(';'));
+    gConsole->closeModalDialog();
 }
 
 int QcrFileDialog::exec()

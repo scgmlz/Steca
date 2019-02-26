@@ -77,8 +77,9 @@ public:
     QString learn(const QString&, QcrRegisteredMixin*);
     void forget(const QString&);
     QcrRegisteredMixin* find(const QString& name);
-    void dump(QTextStream&);
+    void dump(QTextStream&) const;
     QString name() const { return name_; }
+    int size() const { return widgets_.size(); }
 private:
     const QString name_;
     std::map<const QString, QcrRegisteredMixin*> widgets_;
@@ -129,12 +130,11 @@ QcrRegisteredMixin* CommandRegistry::find(const QString& name)
     return entry->second;
 }
 
-void CommandRegistry::dump(QTextStream& stream)
+void CommandRegistry::dump(QTextStream& stream) const
 {
-    stream << "commands:\n";
     for (auto it: widgets_)
-        stream << " " << it.first << "\n";
-    stream.flush();
+        stream << " " << it.first;
+    stream << "\n";
 }
 
 //  ***********************************************************************************************
@@ -374,9 +374,11 @@ Console::Result Console::wrappedCommand(const QString& line)
     strOp::splitOnce(command, cmd, arg);
     if (cmd[0]=='@') {
         if (cmd=="@ls") {
-            qterr << "registry " << registryStack_.top()->name() << " has commands:\n";
+            const CommandRegistry* reg = registryStack_.top();
+            qterr << "registry " << reg->name() << " has "
+                  << reg->size() << " commands:\n";
+            reg->dump(qterr);
             qterr.flush();
-            registryStack_.top()->dump(qterr);
         } else if (cmd=="@close") {
             log(command);
             return Result::suspend;

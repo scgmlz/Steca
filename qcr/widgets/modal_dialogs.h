@@ -22,14 +22,12 @@
 class QcrModalMixin : public QcrRegisteredMixin {
 protected:
     QcrModalMixin(QObject* object, const QString& name);
-    virtual ~QcrModalMixin();
 };
 
 //! Dialog, for modal use.
 class QcrModalDialog : public QDialog, protected QcrModalMixin {
 public:
     QcrModalDialog(QWidget* parent, const QString& caption);
-    ~QcrModalDialog();
     int exec() override;
     void setFromCommand(const QString&) override;
 };
