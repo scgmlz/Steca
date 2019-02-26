@@ -109,7 +109,8 @@ QString CommandRegistry::learn(const QString& name, QcrRegisteredMixin* widget)
 
 void CommandRegistry::forget(const QString& name)
 {
-    // qterr << "Registry " << name_ << " forgets '" << name << "'\n"; qterr.flush();
+    qterr << "Registry " << name_ << "(" << widgets_.size() << ") forgets '"
+          << name << "'\n"; qterr.flush();
     auto it = widgets_.find(name);
     if (it==widgets_.end()) {
         QByteArray tmp1 = name.toLatin1();

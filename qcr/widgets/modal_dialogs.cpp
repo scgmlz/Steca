@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "qcr/widgets/modal_dialogs.h"
-//#include "qcr/base/debug.h"
+#include "qcr/base/debug.h"
 #include "qcr/base/qcrexception.h"
 #include "qcr/base/string_ops.h"
 #include "qcr/engine/console.h"
@@ -28,7 +28,7 @@ QcrModalMixin::QcrModalMixin(QObject* object, const QString& name)
 
 QcrModalMixin::~QcrModalMixin()
 {
-    gConsole->closeModalDialog();
+    qDebug() << "DEBUG ~QcrModalMixin";
 }
 
 
@@ -40,6 +40,12 @@ QcrModalDialog::QcrModalDialog(QWidget* parent, const QString& caption)
     , QcrModalMixin {this, "dlog"}
 {
     setWindowTitle(caption);
+}
+
+QcrModalDialog::~QcrModalDialog()
+{
+    qDebug() << "DEBUG ~QcrModalDialog";
+    gConsole->closeModalDialog();
 }
 
 int QcrModalDialog::exec()
@@ -75,6 +81,7 @@ QcrFileDialog::QcrFileDialog(
 
 QcrFileDialog::~QcrFileDialog()
 {
+    qDebug() << "DEBUG ~QcrFileDialog";
     gConsole->log("fdia select "+selectedFiles().join(';'));
 }
 
