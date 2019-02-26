@@ -210,7 +210,7 @@ QString Console::learn(const QString& nameArg, QcrRegisteredMixin* widget)
 //! Unlearns a widget name.
 void Console::forget(const QString& name)
 {
-    qterr << "DEBUG: forget " << name << "\n";
+    // qterr << "DEBUG: forget " << name << "\n";
     registry().forget(name);
 }
 

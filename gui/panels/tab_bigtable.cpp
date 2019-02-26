@@ -69,7 +69,6 @@ public:
 ColumnsControl::ColumnsControl(ColConButtons* colConButtons)
     : QcrWidget("ColumnsControl")
 {
-    qDebug() << "DEBUG CC 1";
     auto* hb = new QHBoxLayout;
     hb->addSpacing(4);
     hb->addStretch(1);
@@ -77,22 +76,17 @@ ColumnsControl::ColumnsControl(ColConButtons* colConButtons)
     hb->addWidget(new QcrIconTriggerButton(colConButtons->trigClear));
     hb->addSpacing(4);
 
-    qDebug() << "DEBUG CC 2";
     auto* box = new QVBoxLayout;
     box->addLayout(hb);
     box->addSpacing(8);
 
-    qDebug() << "DEBUG CC 3";
     QStringList headers = PeakInfo::dataTags(false);
     gSession->params.bigMetaSelection.replaceKeys(headers);
-    qDebug() << "DEBUG CC 4";
     for (const QString& name: headers) {
-        qDebug() << "DEBUG CC 41 " << name;
         gSession->params.bigMetaSelection.set(name, true);
         QcrCell<bool>* cell = gSession->params.bigMetaSelection.cellAt(name);
         box->addWidget(new QcrCheckBox("bigtable_"+name, name, cell));
     }
-    qDebug() << "DEBUG CC 5";
     setLayout(box);
 }
 
@@ -125,11 +119,9 @@ BigtableTab::BigtableTab()
     setLayout(layout);
 
     setRemake([this](){
-                  qDebug() << "DEBUG remake BT";
                   cc = new ColumnsControl(colConButtons);
                   gRoot->pushDeletable(cc);
                   colSelBox->setWidget(cc);
-                  qDebug() << "DEBUG created new cc";
                   bigtableView->refresh();
               });
 }

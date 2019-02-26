@@ -40,7 +40,6 @@ void QcrBaseMixin::remake()
 {
     const QWidget* w = dynamic_cast<const QWidget*>(object());
     if ((w && w->isVisible()) || dynamic_cast<const QAction*>(object())) {
-        qDebug() << "DEBUG REMAKE " << name();
         remake_();
     }
 }
@@ -68,9 +67,7 @@ void QcrRootMixin::remakeAll()
     remake();
     for (QWidget* w: object()->findChildren<QWidget*>()) {
         if (w) {
-            qDebug() << "DEBUG remakeAll child " << w->objectName();
             if (QcrBaseMixin* m = dynamic_cast<QcrBaseMixin*>(w)) {
-                qDebug() << "DEBUG sucessfully casted";
                 m->remake();
             }
         }

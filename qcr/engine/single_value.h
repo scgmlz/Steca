@@ -88,7 +88,6 @@ QcrSingleValue<T>::QcrSingleValue(QObject* object, const QString& name, const T 
 template<class T>
 QcrSingleValue<T>::~QcrSingleValue()
 {
-    qDebug() << "DEBUG ~QcrSV " << name() << ": owning=" << ownsItsCell_;
     if (ownsItsCell_)
         delete cell_;
     else
