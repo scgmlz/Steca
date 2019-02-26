@@ -21,20 +21,6 @@
 #include <QButtonGroup>
 //#include "qcr/base/debug.h"
 
-
-//    auto* box = new QVBoxLayout;
-//    QStringList headers = PeakInfo::dataTags(false);
-//    gSession->params.bigMetaSelection.replaceKeys(headers);
-//    for (const QString& name: headers) {
-//        gSession->params.bigMetaSelection.set(name, true);
-//        QcrCell<bool>* cell = gSession->params.bigMetaSelection.cellAt(name);
-//        box->addWidget(new QcrCheckBox("bigtable_"+name, name, cell));
-//    }
-//    setLayout(box);
-//
-
-
-
 //  ***********************************************************************************************
 //! @class ColumnSelectorModel (local scope)
 
@@ -64,8 +50,6 @@ QVariant ColumnSelectorModel::data(const QModelIndex& index, int role) const
 {
     int row = index.row();
     int col = index.column();
-    qDebug() << "DEBUG CSM " << row << ":" << col << " role=" << role << ", size="
-             << rowCount() << "x" << columnCount();
     if (row < 0 || rowCount() <= row)
         return {};
     switch (role) {
@@ -82,7 +66,6 @@ QVariant ColumnSelectorModel::data(const QModelIndex& index, int role) const
     }
     return {};
 }
-
 
 //  ***********************************************************************************************
 //! @class ColumnSelectorView (local scope)
@@ -105,7 +88,6 @@ ColumnSelectorView::ColumnSelectorView()
     setColumnWidth(3, 7.5*mWidth());
     setRemake([this](){
                   gSession->params.bigMetaSelection.replaceKeys(PeakInfo::dataTags(false), false);
-                  qDebug() << "DEBUG bMS.size=" << gSession->params.bigMetaSelection.size();
                   onData();
               });
 }
