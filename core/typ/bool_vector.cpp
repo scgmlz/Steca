@@ -48,10 +48,13 @@ void BoolMap::set(const QString& key, bool on)
 {
     ASSERT(availableKeys_.contains(key));
     auto d = data.find(key);
-    if (d!=data.end())
+    if (d!=data.end()) {
+        qDebug() << "DEBUG change value of " << key << " to " << on;
         d->second.pureSetVal(on);
-    else
+    } else {
         data.emplace(key, on);
+        qDebug() << "DEBUG insert value " << key << " of " << on;
+    }
 }
 
 void BoolMap::setAll(bool on)
