@@ -126,15 +126,10 @@ BigtableTab::BigtableTab()
 
     setRemake([this](){
                   qDebug() << "DEBUG remake BT";
-                  if (cc) {
-                      qDebug() << "DEBUG going to delete cc";
-                      delete cc;
-                      qDebug() << "DEBUG survived deletion of cc";
-                  } else
-                      qDebug() << "DEBUG there was no cc";
                   cc = new ColumnsControl(colConButtons);
-                  qDebug() << "DEBUG and created new cc";
+                  gRoot->pushDeletable(cc);
                   colSelBox->setWidget(cc);
+                  qDebug() << "DEBUG created new cc";
                   bigtableView->refresh();
               });
 }

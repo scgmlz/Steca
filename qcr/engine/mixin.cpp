@@ -59,6 +59,9 @@ static int remakeLoops {0};
 
 void QcrRootMixin::remakeAll()
 {
+    for (QObject* o: deletables_)
+        delete o;
+    deletables_.clear();
     ++remakeLoops;
     if (remakeLoops>1)
         qFatal("BUG: circular remakeAll");

@@ -68,7 +68,10 @@ private:
 class QcrRootMixin : public QcrBaseMixin {
 public:
     QcrRootMixin(QObject* object);
+    void pushDeletable(QObject* o) { deletables_.push_back(o); }
     void remakeAll();
+private:
+    std::vector<QObject*> deletables_;
 };
 
 
