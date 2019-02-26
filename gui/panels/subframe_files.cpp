@@ -13,11 +13,12 @@
 //  ***********************************************************************************************
 
 #include "gui/panels/subframe_files.h"
+#include "qcr/widgets/controls.h"
+#include "qcr/widgets/tables.h"
 #include "core/session.h"
 #include "gui/view/toggles.h"
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"
-#include "qcr/widgets/tables.h"
 
 
 //  ***********************************************************************************************

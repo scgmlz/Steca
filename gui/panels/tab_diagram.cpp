@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "gui/panels/tab_diagram.h"
+#include "qcr/widgets/controls.h"
 #include "core/session.h"
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"

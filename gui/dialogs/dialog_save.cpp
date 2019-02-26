@@ -17,6 +17,7 @@
 #include "gui/dialogs/dialog_save.h"
 #include "gui/dialogs/file_dialog.h"
 //#include "qcr/base/debug.h"
+#include "qcr/widgets/actions.h"
 #include <QGroupBox>
 
 namespace {

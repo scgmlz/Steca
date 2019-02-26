@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "gui/panels/controls_detector.h"
+#include "qcr/widgets/controls.h"
 #include "core/session.h"
 #include "gui/actions/image_trafo_actions.h"
 #include "gui/view/toggles.h"

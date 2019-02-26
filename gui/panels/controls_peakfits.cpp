@@ -16,6 +16,7 @@
 #include "core/session.h"
 #include "core/fit/peak_function.h"
 #include "qcr/widgets/tables.h"
+#include "qcr/widgets/controls.h"
 #include "gui/mainwin.h"
 #include "gui/actions/triggers.h"
 #include "gui/view/range_control.h"

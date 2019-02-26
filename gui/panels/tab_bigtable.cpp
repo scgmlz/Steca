@@ -18,6 +18,8 @@
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"
 #include "gui/view/bigtable.h"
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QButtonGroup>
 //#include "qcr/base/debug.h"
 
