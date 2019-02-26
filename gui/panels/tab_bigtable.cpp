@@ -89,9 +89,7 @@ ColumnsControl::ColumnsControl(ColConButtons* colConButtons)
     for (const QString& name: headers) {
         qDebug() << "DEBUG CC 41 " << name;
         gSession->params.bigMetaSelection.set(name, true);
-        qDebug() << "DEBUG CC 42 " << name;
         QcrCell<bool>* cell = gSession->params.bigMetaSelection.cellAt(name);
-        qDebug() << "DEBUG CC 43 " << name;
         box->addWidget(new QcrCheckBox("bigtable_"+name, name, cell));
     }
     qDebug() << "DEBUG CC 5";

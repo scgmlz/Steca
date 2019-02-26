@@ -63,9 +63,15 @@ void QcrRootMixin::remakeAll()
     if (remakeLoops>1)
         qFatal("BUG: circular remakeAll");
     remake();
-    for (QWidget* w: object()->findChildren<QWidget*>())
-        if (QcrBaseMixin* m = dynamic_cast<QcrBaseMixin*>(w))
-            m->remake();
+    for (QWidget* w: object()->findChildren<QWidget*>()) {
+        if (w) {
+            qDebug() << "DEBUG remakeAll child " << w->objectName();
+            if (QcrBaseMixin* m = dynamic_cast<QcrBaseMixin*>(w)) {
+                qDebug() << "DEBUG sucessfully casted";
+                m->remake();
+            }
+        }
+    }
     --remakeLoops;
 }
 
