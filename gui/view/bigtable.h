@@ -53,7 +53,7 @@ private:
         std::vector<QVariant> row;
     };
 
-    int numCols_;
+    int numCols_ {0};
     int sortColumn_ {-1};
     std::vector<XRow> rows_;
 };

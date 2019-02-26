@@ -30,17 +30,19 @@ BigtableModel::BigtableModel()
     : TableModel("data#")
 {
     gGui->bigtableModel = this; // for use in export dialog
-    headers_ = PeakInfo::dataTags(false);
-    numCols_ = headers_.count();
-    colIndexMap_.resize(numCols_);
-    for (int i=0; i<numCols_; ++i)
-        colIndexMap_[i] = i;
 }
 
 void BigtableModel::refresh()
 {
     if (!gSession->activeClusters.size() || !gSession->peaks.size())
         return;
+    headers_ = gSession->params.bigMetaSelection.availableKeys();
+    if (headers_.count() != numCols_) {
+        numCols_ = headers_.count();
+        colIndexMap_.resize(numCols_);
+        for (int i=0; i<numCols_; ++i)
+            colIndexMap_[i] = i;
+    }
     beginResetModel();
     rows_.clear();
     if (const OnePeakAllInfos* peakInfos = gSession->allPeaks.currentInfoSequence())

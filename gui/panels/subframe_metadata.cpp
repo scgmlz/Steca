@@ -45,9 +45,9 @@ private:
 QVariant MetatableModel::data(const QModelIndex& index, int role) const
 {
     int row = index.row();
+    int col = index.column();
     if (row < 0 || rowCount() <= row)
         return {};
-    int col = index.column();
     switch (role) {
     case Qt::CheckStateRole:
         if (col==COL_CHECK)
@@ -84,7 +84,7 @@ private:
 };
 
 MetatableView::MetatableView()
-    : CheckTableView(new MetatableModel())
+    : CheckTableView(new MetatableModel)
 {
     setColumnWidth(0, 0);
     setColumnWidth(1,  .5*mWidth());
@@ -102,6 +102,6 @@ SubframeMetadata::SubframeMetadata()
         gSession->params.smallMetaSelection.vec.push_back({false});
     setFeatures(DockWidgetMovable);
     setWindowTitle("Metadata");
-    setWidget(new MetatableView());
+    setWidget(new MetatableView);
     setRemake([this](){setEnabled(gSession->hasData());});
 }
