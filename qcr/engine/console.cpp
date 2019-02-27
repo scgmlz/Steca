@@ -264,12 +264,6 @@ void Console::runScript(const QString& fName)
     log("# done with script '" + fName + "'");
 }
 
-//! Commands issued by the system (and not by the user nor a command file) should pass here
-void Console::call(const QString& line)
-{
-    commandInContext(line, Caller::sys);
-}
-
 //! Executes commands on stack. Called by runScript and by QcrModalDialog/QcrFileDialog::exec.
 void Console::commandsFromStack()
 {

@@ -37,7 +37,6 @@ public:
     void forget(const QString& name);
     void closeModalDialog();
     void runScript(const QString& fName);
-    void call(const QString&);
     void commandsFromStack();
     void startingGui();
 
