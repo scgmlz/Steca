@@ -78,7 +78,7 @@ private:
 //! Mix-in for QObject, enforcing a unique name, providing Console connection.
 class QcrRegisteredMixin : public QcrBaseMixin {
 protected:
-    QcrRegisteredMixin(QObject* object, const QString& name, bool _modal=false);
+    QcrRegisteredMixin(QObject* object, const QString& name);
     ~QcrRegisteredMixin();
 public:
     virtual void setFromCommand(const QString&) = 0;

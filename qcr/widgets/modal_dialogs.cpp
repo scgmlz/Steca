@@ -23,7 +23,7 @@
 //! @class QcrModalMixin
 
 QcrModalMixin::QcrModalMixin(QObject* object, const QString& name)
-    : QcrRegisteredMixin {object, "@push " + name, true}
+    : QcrRegisteredMixin {object, "@push " + name}
 {}
 
 

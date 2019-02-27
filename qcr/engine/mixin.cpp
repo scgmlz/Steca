@@ -79,7 +79,7 @@ void QcrRootMixin::remakeAll()
 //  ***********************************************************************************************
 //! @class QcrRegisteredMixin
 
-QcrRegisteredMixin::QcrRegisteredMixin(QObject* object, const QString& name, bool _modal)
+QcrRegisteredMixin::QcrRegisteredMixin(QObject* object, const QString& name)
     : QcrBaseMixin {object, gConsole->learn(name, this)} // console may change name (expand macros)
 {}
 
