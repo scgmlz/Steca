@@ -303,8 +303,6 @@ void Console::log(const QString& lineArg) const
         computingTime_ += tDiff;
     }
     prefix += " " + registry().name() + " " + callerCode() + "] ";
-    if (caller_==Caller::sys)
-        line = "# " + line;
     log_ << prefix << line << "\n";
     log_.flush();
     if (line.indexOf("##")!=0) {
@@ -332,8 +330,6 @@ QString Console::callerCode() const
         return "fil";
     else if (caller_==Caller::cli)
         return "cli";
-    else if (caller_==Caller::sys)
-        return "sys";
     else
         qFatal("BUG in Console::callerCode: invalid case");
 }
