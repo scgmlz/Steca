@@ -114,18 +114,16 @@ DialogSave::DialogSave(
         ftypeGrid->addWidget(rb);
     }
 
-    auto* actCancel_ = new QcrTrigger{"cancel", "Cancel"};
-    auto* actSave_   = new QcrTrigger{"save", "Save"};
+    auto* cancelBtn = new QcrTextTriggerButton("cancel", "Cancel");
+    auto* saveBtn   = new QcrTextTriggerButton("save", "Save");
+    cancelBtn->trigger()->setTriggerHook([this](){ close(); });
+    saveBtn  ->trigger()->setTriggerHook([this](){
+                                             progressBar.show();
+                                             save();
+                                             close(); });
 
-    connect(actCancel_, &QAction::triggered, [this]() { close(); });
-    connect(actSave_, &QAction::triggered,
-            [this]()->void{
-                progressBar.show();
-                save();
-                close(); });
-
-    auto updateSaveable = [this,actSave_](const QString) {
-                              actSave_->setEnabled(!pathField->stem().isEmpty()); };
+    auto updateSaveable = [this,actSave=saveBtn->trigger()](const QString) {
+                              actSave->setEnabled(!pathField->stem().isEmpty()); };
     updateSaveable("");
     pathField->dirEdit ->setHook(updateSaveable);
     pathField->fileEdit->setHook(updateSaveable);
@@ -144,8 +142,8 @@ DialogSave::DialogSave(
     bottom->addWidget(&progressBar);
     bottom->setStretchFactor(&progressBar, 333);
     bottom->addStretch(1);
-    bottom->addWidget(new QcrTextTriggerButton(actCancel_));
-    bottom->addWidget(new QcrTextTriggerButton(actSave_));
+    bottom->addWidget(cancelBtn);
+    bottom->addWidget(saveBtn);
 
     layout = new QVBoxLayout;
     layout->addLayout(setup);

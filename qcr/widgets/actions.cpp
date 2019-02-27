@@ -78,22 +78,42 @@ void QcrTrigger::setFromCommand(const QString& arg)
 }
 
 //  ***********************************************************************************************
-//! trigger button classes
+//! @class QcrTextTriggerButton
 
-QcrTextTriggerButton::QcrTextTriggerButton(QcrTrigger* action)
-    : QcrBaseMixin(this, action->name()+"Btn")
+QcrTextTriggerButton::QcrTextTriggerButton(QcrTrigger* trigger, bool ownsTrigger)
+    : QcrBaseMixin(this, trigger->name()+"Btn")
+    , trigger_(trigger)
+    , ownsTrigger_(ownsTrigger)
 {
-    setDefaultAction(action);
+    setDefaultAction(trigger);
     setToolButtonStyle(Qt::ToolButtonTextOnly);
-    setRemake([=](){action->remake();});
+    setRemake([=](){trigger->remake();});
 }
 
-QcrIconTriggerButton::QcrIconTriggerButton(QcrTrigger* action)
-    : QcrBaseMixin(this, action->name()+"Btn")
+QcrTextTriggerButton::QcrTextTriggerButton(QcrTrigger* trigger)
+    : QcrTextTriggerButton(trigger, false)
+{}
+
+QcrTextTriggerButton::QcrTextTriggerButton(const QString& name, const QString& text)
+    : QcrTextTriggerButton(new QcrTrigger(name, text), true)
+{}
+
+//! Destructs this QcrTextTriggerButton. Also destructs the trigger, if it owns one.
+QcrTextTriggerButton::~QcrTextTriggerButton()
 {
-    setDefaultAction(action);
+    if (ownsTrigger_)
+        delete trigger_;
+}
+
+//  ***********************************************************************************************
+//! @class QcrIconTriggerButton
+
+QcrIconTriggerButton::QcrIconTriggerButton(QcrTrigger* trigger)
+    : QcrBaseMixin(this, trigger->name()+"Btn")
+{
+    setDefaultAction(trigger);
     setToolButtonStyle(Qt::ToolButtonIconOnly);
-    setRemake([=](){action->remake();});
+    setRemake([=](){trigger->remake();});
 }
 
 //  ***********************************************************************************************
@@ -142,15 +162,40 @@ void QcrToggle::initToggle(const QString& iconFile, const QKeySequence& shortcut
 }
 
 //  ***********************************************************************************************
-//! toggle button classes
+//! @class QcrTextToggleButton
 
-QcrTextToggleButton::QcrTextToggleButton(QcrToggle* action)
-    : QcrBaseMixin(this, action->name()+"Btn")
+//! Generic private constructor that is called by the public constructors.
+QcrTextToggleButton::QcrTextToggleButton(QcrToggle* toggle, bool ownsToggle)
+    : QcrBaseMixin(this, toggle->name()+"Btn")
+    , toggle_(toggle)
+    , ownsToggle_(ownsToggle)
 {
-    setDefaultAction(action);
+    setDefaultAction(toggle);
     setToolButtonStyle(Qt::ToolButtonTextOnly);
-    setRemake([=](){action->remake();});
+    setRemake([=](){toggle->remake();});
 }
+
+//! Constructs QcrTextToggleButton that is connected with external QcrToggle.
+QcrTextToggleButton::QcrTextToggleButton(QcrToggle* toggle)
+    : QcrTextToggleButton(toggle, false)
+{}
+
+//! Constructs QcrTextToggleButton and a QcrToggle owned by the former.
+QcrTextToggleButton::QcrTextToggleButton(
+    const QString& name, const QString& text, bool on)
+    : QcrTextToggleButton(new QcrToggle(name, text, on), true)
+{}
+
+//! Destructs this QcrTextToggleButton. Also destructs the toggle, if it owns one.
+QcrTextToggleButton::~QcrTextToggleButton()
+{
+    if (ownsToggle_)
+        delete toggle_;
+}
+
+
+//  ***********************************************************************************************
+//! @class QcrIconToggleButton
 
 QcrIconToggleButton::QcrIconToggleButton(QcrToggle* action)
     : QcrBaseMixin(this, action->name()+"Btn")

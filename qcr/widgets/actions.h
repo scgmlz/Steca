@@ -44,6 +44,13 @@ private:
 class QcrTextTriggerButton : public QToolButton, public QcrBaseMixin {
 public:
     QcrTextTriggerButton(QcrTrigger*);
+    QcrTextTriggerButton(const QString& name, const QString& text);
+    ~QcrTextTriggerButton();
+    QcrTrigger* trigger() const { return trigger_; }
+private:
+    QcrTextTriggerButton(QcrTrigger*, bool ownsTrigger);
+    QcrTrigger*const trigger_;
+    const bool ownsTrigger_;
 };
 
 //! Trigger button with icon and associated action.
@@ -71,6 +78,13 @@ private:
 class QcrTextToggleButton : public QToolButton, public QcrBaseMixin {
 public:
     QcrTextToggleButton(QcrToggle*);
+    QcrTextToggleButton(const QString& name, const QString& text, bool on);
+    ~QcrTextToggleButton();
+    QcrToggle* toggle() const { return toggle_; }
+private:
+    QcrTextToggleButton(QcrToggle*, bool ownsToggle);
+    QcrToggle*const toggle_;
+    const bool ownsToggle_;
 };
 
 //! Toggle button with icon and associated action.
