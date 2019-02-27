@@ -88,6 +88,9 @@ QcrSingleValue<T>::QcrSingleValue(QObject* object, const QString& name, const T 
 template<class T>
 QcrSingleValue<T>::~QcrSingleValue()
 {
+    QTextStream qterr(stderr);
+    qterr << "DEBUG ~QSV " << name() << ", gConsole=" << ((long)gConsole) << "\n";
+    qterr.flush();
     if (ownsItsCell_)
         delete cell_;
     else

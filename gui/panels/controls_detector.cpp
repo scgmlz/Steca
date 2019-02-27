@@ -128,7 +128,7 @@ public:
 ActiveClustersControls::ActiveClustersControls()
     : QcrWidget("ActiveClustersControls")
 {
-    auto* dropIncompleteAction = new QcrToggle{
+    auto* dropIncompleteBtn = new QcrIconToggleButton{
         "dropIncomplete", &gSession->dataset.dropIncomplete,
         "Drop measurement groups that do not have the full number of members",
         ":/icon/dropIncomplete"};
@@ -139,11 +139,11 @@ ActiveClustersControls::ActiveClustersControls()
                       {"combineMeasurements", &gSession->dataset.binning, 3, false, 1, 999,
                               "Combine this number of measurements into one group"});
     layout->addWidget(new QLabel("measurements"));
-    layout->addWidget(new QcrIconToggleButton{dropIncompleteAction});
+    layout->addWidget(dropIncompleteBtn);
     layout->addStretch(1);
     setLayout(layout);
 
-    setRemake([=](){dropIncompleteAction->setEnabled(gSession->dataset.hasIncomplete());});
+    setRemake([=](){dropIncompleteBtn->setEnabled(gSession->dataset.hasIncomplete());});
 }
 
 //  ***********************************************************************************************

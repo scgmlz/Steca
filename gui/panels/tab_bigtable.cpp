@@ -102,15 +102,19 @@ BigtableTab::BigtableTab()
 {
     auto* bigtableView = new BigtableView;
 
-    auto* trigAll   = new QcrTrigger {"bigtabAll", "select all columns", ":/icon/All"};
-    auto* trigClear = new QcrTrigger {"bigtabClear", "unselect all columns", ":/icon/clear"};
+    auto* trigAll   = new QcrIconTriggerButton
+        {"bigtabAll", "select all columns", ":/icon/All"};
+    auto* trigClear = new QcrIconTriggerButton
+        {"bigtabClear", "unselect all columns", ":/icon/clear"};
 
-    trigAll  ->setTriggerHook([this](){ gSession->params.bigMetaSelection.setAll(true);  });
-    trigClear->setTriggerHook([this](){ gSession->params.bigMetaSelection.setAll(false); });
+    trigAll  ->trigger()->setTriggerHook(
+        [this](){ gSession->params.bigMetaSelection.setAll(true);  });
+    trigClear->trigger()->setTriggerHook(
+        [this](){ gSession->params.bigMetaSelection.setAll(false); });
 
     auto* buttonBox = new QHBoxLayout;
-    buttonBox->addWidget(new QcrIconTriggerButton(trigAll));
-    buttonBox->addWidget(new QcrIconTriggerButton(trigClear));
+    buttonBox->addWidget(trigAll);
+    buttonBox->addWidget(trigClear);
     buttonBox->addStretch(1);
     buttonBox->addWidget(new QcrIconTriggerButton {&gGui->triggers->spawnTable});
     buttonBox->addWidget(new QcrIconTriggerButton {&gGui->triggers->exportBigtable});

@@ -113,12 +113,30 @@ QcrTextTriggerButton::~QcrTextTriggerButton()
 //  ***********************************************************************************************
 //! @class QcrIconTriggerButton
 
-QcrIconTriggerButton::QcrIconTriggerButton(QcrTrigger* trigger)
+QcrIconTriggerButton::QcrIconTriggerButton(QcrTrigger* trigger, bool ownsTrigger)
     : QcrBaseMixin(this, trigger->name()+"Btn")
+    , trigger_(trigger)
+    , ownsTrigger_(ownsTrigger)
 {
     setDefaultAction(trigger);
     setToolButtonStyle(Qt::ToolButtonIconOnly);
     setRemake([=](){trigger->remake();});
+}
+
+QcrIconTriggerButton::QcrIconTriggerButton(QcrTrigger* trigger)
+    : QcrIconTriggerButton(trigger, false)
+{}
+
+QcrIconTriggerButton::QcrIconTriggerButton(
+    const QString& name, const QString& text, const QString& iconFile)
+    : QcrIconTriggerButton(new QcrTrigger(name, text, iconFile), true)
+{}
+
+//! Destructs this QcrIconTriggerButton. Also destructs the trigger, if it owns one.
+QcrIconTriggerButton::~QcrIconTriggerButton()
+{
+    if (ownsTrigger_)
+        delete trigger_;
 }
 
 //  ***********************************************************************************************
@@ -202,10 +220,35 @@ QcrTextToggleButton::~QcrTextToggleButton()
 //  ***********************************************************************************************
 //! @class QcrIconToggleButton
 
-QcrIconToggleButton::QcrIconToggleButton(QcrToggle* action)
-    : QcrBaseMixin(this, action->name()+"Btn")
+QcrIconToggleButton::QcrIconToggleButton(QcrToggle* toggle, bool ownsToggle)
+    : QcrBaseMixin(this, toggle->name()+"Btn")
+    , toggle_(toggle)
+    , ownsToggle_(ownsToggle)
 {
-    setDefaultAction(action);
+    setDefaultAction(toggle);
     setToolButtonStyle(Qt::ToolButtonIconOnly);
-    setRemake([=](){action->remake();});
+    setRemake([=](){toggle->remake();});
+}
+
+QcrIconToggleButton::QcrIconToggleButton(QcrToggle* toggle)
+    : QcrIconToggleButton(toggle, false)
+{}
+
+QcrIconToggleButton::QcrIconToggleButton(
+    const QString& name, const QString& text, bool on,
+    const QString& iconFile, const QKeySequence& shortcut)
+    : QcrIconToggleButton(new QcrToggle(name, text, on, iconFile, shortcut), true)
+{}
+
+QcrIconToggleButton::QcrIconToggleButton(
+    const QString& name, QcrCell<bool>* cell, const QString& text,
+    const QString& iconFile, const QKeySequence& shortcut)
+    : QcrIconToggleButton(new QcrToggle(name, cell, text, iconFile, shortcut), true)
+{}
+
+
+QcrIconToggleButton::~QcrIconToggleButton()
+{
+    if (ownsToggle_)
+        delete toggle_;
 }

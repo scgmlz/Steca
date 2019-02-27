@@ -58,6 +58,13 @@ private:
 class QcrIconTriggerButton : public QToolButton, public QcrBaseMixin {
 public:
     QcrIconTriggerButton(QcrTrigger*);
+    QcrIconTriggerButton(const QString& name, const QString& text, const QString& iconFile);
+    ~QcrIconTriggerButton();
+    QcrTrigger* trigger() const { return trigger_; }
+private:
+    QcrIconTriggerButton(QcrTrigger*, bool ownsTrigger);
+    QcrTrigger*const trigger_;
+    const bool ownsTrigger_;
 };
 
 //! Toggle, for use in buttons or menu entries, that can also be switched by console command.
@@ -92,6 +99,15 @@ private:
 class QcrIconToggleButton : public QToolButton, public QcrBaseMixin {
 public:
     QcrIconToggleButton(QcrToggle*);
+    QcrIconToggleButton(const QString& name, const QString& text, bool on,
+                        const QString& iconFile, const QKeySequence& shortcut = {});
+    QcrIconToggleButton(const QString& name, QcrCell<bool>* cell, const QString& text,
+                        const QString& iconFile="", const QKeySequence& shortcut = {});
+    ~QcrIconToggleButton();
+private:
+    QcrIconToggleButton(QcrToggle*, bool ownsToggle);
+    QcrToggle*const toggle_;
+    const bool ownsToggle_;
 };
 
 #endif // ACTIONS_H
