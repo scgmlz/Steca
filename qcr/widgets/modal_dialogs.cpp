@@ -37,6 +37,11 @@ QcrModalDialog::QcrModalDialog(QWidget* parent, const QString& caption)
     setWindowTitle(caption);
 }
 
+QcrModalDialog::~QcrModalDialog()
+{
+    gConsole->forget(name());
+}
+
 int QcrModalDialog::exec()
 {
     if (gConsole->hasCommandsOnStack()) {
@@ -72,6 +77,7 @@ QcrFileDialog::~QcrFileDialog()
 {
     gConsole->log("fdia select "+selectedFiles().join(';'));
     gConsole->closeModalDialog();
+    //gConsole->forget(name());
 }
 
 int QcrFileDialog::exec()

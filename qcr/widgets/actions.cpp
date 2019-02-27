@@ -66,6 +66,11 @@ QcrTrigger::QcrTrigger(
     setShortcut(shortcut);
 }
 
+QcrTrigger::~QcrTrigger()
+{
+    gConsole->forget(name());
+}
+
 void QcrTrigger::setFromCommand(const QString& arg)
 {
     if (arg!="")

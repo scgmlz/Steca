@@ -28,6 +28,7 @@ protected:
 class QcrModalDialog : public QDialog, protected QcrModalMixin {
 public:
     QcrModalDialog(QWidget* parent, const QString& caption);
+    ~QcrModalDialog();
     int exec() override;
     void setFromCommand(const QString&) override;
 };

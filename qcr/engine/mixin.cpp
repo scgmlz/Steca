@@ -83,11 +83,6 @@ QcrRegisteredMixin::QcrRegisteredMixin(QObject* object, const QString& name)
     : QcrBaseMixin {object, gConsole->learn(name, this)} // console may change name (expand macros)
 {}
 
-QcrRegisteredMixin::~QcrRegisteredMixin()
-{
-    gConsole->forget(name());
-}
-
 //! Returns true if the value of *this is not to be stored as part of the QSettings.
 bool QcrRegisteredMixin::adhoc() const
 {

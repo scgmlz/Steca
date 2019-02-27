@@ -34,6 +34,7 @@ public:
     QcrTrigger(const QString& name, const QString& text, const QString& iconFile="");
     QcrTrigger(const QString& name, const QString& text, const QString& iconFile,
                const QKeySequence& shortcut);
+    ~QcrTrigger();
     void setFromCommand(const QString&) override;
     void setTriggerHook(std::function<void()> triggerHook) { triggerHook_ = triggerHook; }
 private:

@@ -92,6 +92,7 @@ QcrSingleValue<T>::~QcrSingleValue()
         delete cell_;
     else
         cell_->releaseCallbacks();
+    gConsole->forget(name());
 }
 
 //! Sets the value of the associated Cell, and in consequence also the value of this widget.
