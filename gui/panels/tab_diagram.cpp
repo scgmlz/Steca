@@ -29,9 +29,11 @@ DiagramTab::DiagramTab()
 
     // TODO cache tag list
     auto* comboX =
-        new QcrComboBox{"diagramCoordX", &gSession->params.diagramX, &PeakInfo::metaTags};
+        new QcrComboBox{"diagramCoordX", &gSession->params.diagramX,
+                        [=](){return gSession->numericNiceKeys();}};
     auto* comboY =
-        new QcrComboBox{"diagramCoordY", &gSession->params.diagramY, &PeakInfo::metaTags};
+        new QcrComboBox{"diagramCoordY", &gSession->params.diagramY,
+                        [=](){return gSession->numericNiceKeys();}};
 
     auto* selectorBox = new QGridLayout;
     selectorBox->addWidget(new QLabel("y"), 0, 0);

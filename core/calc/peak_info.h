@@ -32,9 +32,6 @@ public:
     PeakInfo(const PeakInfo&) = delete;
     PeakInfo(PeakInfo&&) = default;
 
-    static QStringList dataTags(bool nice);
-    static QStringList metaTags();
-
     deg alpha() const { return alpha_; }
     deg beta() const { return beta_; }
     Range rgeGma() const { return rgeGma_; }

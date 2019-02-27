@@ -89,7 +89,8 @@ ColumnSelectorView::ColumnSelectorView()
     setColumnWidth(2, 6. *mWidth());
     setColumnWidth(3, 7.5*mWidth());
     setRemake([this](){
-                  gSession->params.bigMetaSelection.replaceKeys(PeakInfo::dataTags(false), false);
+                  gSession->params.bigMetaSelection.replaceKeys(
+                      gSession->allNiceKeys(), false);
                   onData();
               });
 }

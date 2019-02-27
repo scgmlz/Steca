@@ -175,7 +175,7 @@ void data_export::writeDiagram(QTextStream& stream, const QString& separator)
     gSession->peaksOutcome.currentInfoSequence()->getValuesAndSigma(idxX, idxY, xs, ys, ysSigma);
 
     // write header
-    QStringList tags = PeakInfo::dataTags(true);
+    QStringList tags = gSession->numericAsciiKeys();
     stream << "# " << tags[idxX] << separator << tags[idxY];
     if (ysSigma.size() > 0)
         stream << separator << "sigma_"  << tags[idxY];
