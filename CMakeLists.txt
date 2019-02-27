@@ -18,6 +18,7 @@ set(CMAKE_PROJECT_DESCRIPTION # for display in installer
 option(WITH_TESTS "Build with all tests" ON)
 option(BUILD_FALLBACK "Build and use the fallback 3rdparty libraries" OFF)
 option(CERF_CPP "If building libcerf, then do so with C++ linkage" ON)
+option(COVERAGE "Support code coverage report" OFF)
 
 set(LIB_MAN     OFF CACHE INTERNAL "" FORCE)
 set(LIB_INSTALL OFF CACHE INTERNAL "" FORCE)
@@ -48,6 +49,12 @@ else()
     set(DEFAULT_BUILD_SHARED_LIBS ON)
 endif()
 set(BUILD_SHARED_LIBS ${DEFAULT_BUILD_SHARED_LIBS})
+
+if(COVERAGE)
+    include(CheckCoverage)
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -coverage")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -coverage")
+endif()
 
 foreach(comp Qt5Core Qt5Gui Qt5Widgets Qt5Network)
     find_package(${comp} REQUIRED)
@@ -121,4 +128,12 @@ if(WITH_TESTS)
     add_subdirectory(utest)
 else()
     message(STATUS "Skipping tests")
+endif()
+
+# code coverage report
+if(COVERAGE)
+    list(APPEND ignore_dirs "'/usr/include/*'")
+    list(APPEND ignore_dirs "'/usr/lib/*'")
+    list(APPEND ignore_dirs "'${CMAKE_BINARY_DIR}/*'")
+    add_coverage_target(coverage "${ignore_dirs}")
 endif()
