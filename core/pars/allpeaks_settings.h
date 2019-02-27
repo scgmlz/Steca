@@ -34,7 +34,7 @@ public:
     int size() const { return peaksSettings_.size(); }
     const OnePeakSettings& at(int i) const { return peaksSettings_.at(i); }
     OnePeakSettings& at(int i) { return peaksSettings_.at(i); }
-    int selectedIndex() { return selected_; }
+    int selectedIndex() const { return selected_; }
     QJsonArray toJson() const;
 
 private:
