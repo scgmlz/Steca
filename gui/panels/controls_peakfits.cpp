@@ -41,9 +41,9 @@ public:
     PeaksModel() : TableModel("peaks") {}
 
     int columnCount() const final { return NUM_COLUMNS; }
-    int rowCount() const final { return gSession->peaks.size(); }
-    int highlighted() const final { return gSession->peaks.selectedIndex(); }
-    void onHighlight(int row) final { gSession->peaks.select(row); }
+    int rowCount() const final { return gSession->peaksSettings.size(); }
+    int highlighted() const final { return gSession->peaksSettings.selectedIndex(); }
+    void onHighlight(int row) final { gSession->peaksSettings.select(row); }
 
     QVariant data(const QModelIndex&, int) const;
 
@@ -55,7 +55,7 @@ QVariant PeaksModel::data(const QModelIndex& index, int role) const
     int row = index.row();
     if (row < 0 || rowCount() <= row)
         return {};
-    const OnePeakSettings& peak = gSession->peaks.at(row);
+    const OnePeakSettings& peak = gSession->peaksSettings.at(row);
     switch (role) {
     case Qt::DisplayRole: {
         int col = index.column();
@@ -146,14 +146,14 @@ PeakfitOutcomeView::PeakfitOutcomeView()
 
 void PeakfitOutcomeView::refresh()
 {
-    const OnePeakSettings* peak = gSession->peaks.selectedPeak();
+    const OnePeakSettings* peak = gSession->peaksSettings.selectedPeak();
     if (!peak)
         return enable(false, false, false);
 
     const Dfgram* dfgram = gSession->currentOrAvgeDfgram();
     ASSERT(dfgram); // the entire tab should be disabled if there is no active cluster
 
-    int jP = gSession->peaks.selectedIndex();
+    int jP = gSession->peaksSettings.selectedIndex();
     const RawOutcome& outcome = dfgram->getRawOutcome(jP);
     showRawOutcomeX_.setText(safeRealText(outcome.getCenter()));
     showRawOutcomeD_.setText(safeRealText(outcome.getFwhm()));
@@ -212,12 +212,12 @@ ControlsPeakfits::ControlsPeakfits()
         "reflTyp", &gSession->params.defaultPeakFunction, OnePeakSettings::functionNames};
     comboPeakFct->setHook([](int i){
             const QString& name = OnePeakSettings::functionNames[i];
-            if (OnePeakSettings* p = gSession->peaks.selectedPeak())
+            if (OnePeakSettings* p = gSession->peaksSettings.selectedPeak())
                 p->setPeakFunction(name);
             gSession->onPeaks(); });
 
     comboPeakFct->setRemake([&](){ // updates the combobox, when a diffeent peak gets selected:
-        if (const OnePeakSettings *peak = gSession->peaks.selectedPeak()) {
+        if (const OnePeakSettings *peak = gSession->peaksSettings.selectedPeak()) {
             QString key = peak->functionName();
             int peakFunctIndex = OnePeakSettings::functionNames.indexOf(key);
             gSession->params.defaultPeakFunction.pureSetVal(peakFunctIndex);
@@ -237,10 +237,10 @@ ControlsPeakfits::ControlsPeakfits()
     box->addWidget(comboPeakFct);
     box->addWidget(new RangeControl("peak",
                                     []()->const Range* {
-                                        const OnePeakSettings* p = gSession->peaks.selectedPeak();
+                                        const OnePeakSettings* p = gSession->peaksSettings.selectedPeak();
                                         return p ? &p->range() : nullptr; },
                                     [](double val, bool namelyMax){
-                                        OnePeakSettings* p = gSession->peaks.selectedPeak();
+                                        OnePeakSettings* p = gSession->peaksSettings.selectedPeak();
                                         ASSERT(p);
                                         if (namelyMax)
                                             p->setMax(val);

@@ -83,7 +83,7 @@ PlotDiagram::PlotDiagram(int w, int h)
 
 void PlotDiagram::refresh()
 {
-    if (!gSession->activeClusters.size() || !gSession->peaks.size())
+    if (!gSession->activeClusters.size() || !gSession->peaksSettings.size())
         return;
 
     graph_->clearData();
@@ -92,7 +92,7 @@ void PlotDiagram::refresh()
     const int idxY = int(gSession->params.diagramY.val());
 
     std::vector<double> xs, ys, ysSigma;
-    gSession->allPeaks.currentInfoSequence()->getValuesAndSigma(idxX, idxY, xs, ys, ysSigma);
+    gSession->peaksOutcome.currentInfoSequence()->getValuesAndSigma(idxX, idxY, xs, ys, ysSigma);
 
     std::vector<double> xsSafe, ysSafe, ysSigmaSafe;
     if (ysSigma.size() > 0) {// has valueError

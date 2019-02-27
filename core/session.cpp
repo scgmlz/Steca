@@ -68,7 +68,7 @@ void Session::onPeakAt(int jP) const
 
 void Session::onInterpol() const
 {
-    allPeaks.invalidateInterpolated();
+    peaksOutcome.invalidateInterpolated();
 }
 
 void Session::onNormalization() const
@@ -84,7 +84,7 @@ void Session::clear()
     corrset.clear();
     // params.clear(); TODO
     baseline.clear();
-    peaks.clear();
+    peaksSettings.clear();
 }
 
 void Session::sessionFromJson(const QByteArray& json)
@@ -101,7 +101,7 @@ void Session::sessionFromJson(const QByteArray& json)
 
     dataset.fromJson(top.loadObj("dataset"));
     corrset.fromJson(top.loadObj("corrset"));
-    peaks.fromJson(top.loadArr("peaks"));
+    peaksSettings.fromJson(top.loadArr("peaks"));
     baseline.fromJson(top.loadObj("baseline"));
 
     params.intenScaledAvg.setVal(top.loadBool("average intensity?", true));
@@ -121,7 +121,7 @@ QByteArray Session::serializeSession() const
 
     top.insert("dataset", dataset.toJson());
     top.insert("corrset", corrset.toJson());
-    top.insert("peaks", peaks.toJson());
+    top.insert("peaks", peaksSettings.toJson());
     top.insert("baseline", baseline.toJson());
 
     // TODO serialize metaSelection_

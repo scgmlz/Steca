@@ -34,7 +34,7 @@ BigtableModel::BigtableModel()
 
 void BigtableModel::refresh()
 {
-    if (!gSession->activeClusters.size() || !gSession->peaks.size())
+    if (!gSession->activeClusters.size() || !gSession->peaksSettings.size())
         return;
     headers_ = gSession->params.bigMetaSelection.availableKeys();
     if (headers_.count() != numCols_) {
@@ -45,7 +45,7 @@ void BigtableModel::refresh()
     }
     beginResetModel();
     rows_.clear();
-    if (const OnePeakAllInfos* peakInfos = gSession->allPeaks.currentInfoSequence())
+    if (const OnePeakAllInfos* peakInfos = gSession->peaksOutcome.currentInfoSequence())
         for (const PeakInfo& r : peakInfos->peakInfos())
             rows_.push_back(XRow(rows_.size()+1, r.peakData()));
     sortData();

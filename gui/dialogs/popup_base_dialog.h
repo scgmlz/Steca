@@ -25,7 +25,7 @@ protected:
     PopupBaseDialog(QWidget* parent, const QString& name, const QString& title)
         : QcrModelessDialog(parent, name)
     {
-        int jP = gSession->peaks.selectedIndex();
+        int jP = gSession->peaksSettings.selectedIndex();
         bool isInterpolated = gSession->params.interpolParams.enabled.val();
         setWindowTitle(title + " for peak " + QString::number(jP + 1)
                        + (isInterpolated ? " (interpolated)" : ""));

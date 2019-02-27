@@ -25,7 +25,7 @@ namespace {
 //! Fits peak to the given gamma gRange and constructs a PeakInfo.
 PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
 {
-    const OnePeakSettings& peak = gSession->peaks.at(jP);
+    const OnePeakSettings& peak = gSession->peaksSettings.at(jP);
     const Range& fitrange = peak.range();
     const Metadata* metadata = &cluster.avgMetadata();
     const Range gRange = gSession->gammaSelection.slice2range(cluster.rangeGma(), iGamma);
@@ -92,10 +92,10 @@ OnePeakAllInfos computeDirectInfoSequence(int jP)
 
 
 AllPeaksAllInfos::AllPeaksAllInfos()
-    : direct {[]()->int{return gSession->peaks.size();},
+    : direct {[]()->int{return gSession->peaksSettings.size();},
         [](int jP, const AllPeaksAllInfos*)->OnePeakAllInfos{
             return computeDirectInfoSequence(jP); }}
-    , interpolated {[]()->int{return gSession->peaks.size();},
+    , interpolated {[]()->int{return gSession->peaksSettings.size();},
         [](int jP, const AllPeaksAllInfos* parent)->OnePeakAllInfos{
             return algo::interpolateInfos(parent->direct.yield_at(jP,parent)); }}
 {}
@@ -119,19 +119,19 @@ void AllPeaksAllInfos::invalidateAt(int jP) const
 
 const OnePeakAllInfos* AllPeaksAllInfos::currentDirect() const
 {
-    if (!gSession->peaks.size())
+    if (!gSession->peaksSettings.size())
         return nullptr;
-    ASSERT(direct.size(this)==gSession->peaks.size());
-    int jP = gSession->peaks.selectedIndex();
+    ASSERT(direct.size(this)==gSession->peaksSettings.size());
+    int jP = gSession->peaksSettings.selectedIndex();
     return &direct.yield_at(jP,this);
 }
 
 const OnePeakAllInfos* AllPeaksAllInfos::currentInterpolated() const
 {
-    if (!gSession->peaks.size())
+    if (!gSession->peaksSettings.size())
         return nullptr;
-    ASSERT(interpolated.size(this)==gSession->peaks.size());
-    int jP = gSession->peaks.selectedIndex();
+    ASSERT(interpolated.size(this)==gSession->peaksSettings.size());
+    int jP = gSession->peaksSettings.selectedIndex();
     return &interpolated.yield_at(jP,this);
 }
 

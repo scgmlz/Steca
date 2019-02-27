@@ -115,7 +115,7 @@ MainWin::~MainWin()
 void MainWin::refresh()
 {
     bool hasData = gSession->hasData();
-    bool hasPeak = gSession->peaks.size();
+    bool hasPeak = gSession->peaksSettings.size();
     bool hasBase = gSession->baseline.ranges.size();
     toggles->enableCorr.setEnabled(gSession->hasCorrFile());
     triggers->exportDfgram.setEnabled(hasData);

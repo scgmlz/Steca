@@ -172,7 +172,7 @@ void data_export::writeDiagram(QTextStream& stream, const QString& separator)
     const int idxX = int(gSession->params.diagramX.val());
     const int idxY = int(gSession->params.diagramY.val());
     std::vector<double> xs, ys, ysSigma;
-    gSession->allPeaks.currentInfoSequence()->getValuesAndSigma(idxX, idxY, xs, ys, ysSigma);
+    gSession->peaksOutcome.currentInfoSequence()->getValuesAndSigma(idxX, idxY, xs, ys, ysSigma);
 
     // write header
     QStringList tags = PeakInfo::dataTags(true);
@@ -194,7 +194,7 @@ void data_export::writeDiagram(QTextStream& stream, const QString& separator)
 
 void data_export::writeCurrentInfoSequence(QTextStream& stream, const QString& format)
 {
-    const auto* infos = gSession->allPeaks.currentInfoSequence();
+    const auto* infos = gSession->peaksOutcome.currentInfoSequence();
     ASSERT(infos);
     writeInfoSequence(stream, *infos, format);
 }
@@ -203,7 +203,7 @@ void data_export::writeCurrentInfoSequence(QTextStream& stream, const QString& f
 
 void data_export::writeOneInfoSequence(QTextStream& stream, int idx, const QString& format)
 {
-    const auto* infos = gSession->allPeaks.allInfoSequences().at(idx);
+    const auto* infos = gSession->peaksOutcome.allInfoSequences().at(idx);
     ASSERT(infos);
     writeInfoSequence(stream, *infos, format);
 }
@@ -214,7 +214,7 @@ void data_export::writeAllInfoSequence(
     QTextStream& stream, TakesLongTime& progress, const QString& format)
 {
     int iPeak = 0;
-    for (const auto* peak : gSession->allPeaks.allInfoSequences()) {
+    for (const auto* peak : gSession->peaksOutcome.allInfoSequences()) {
         stream << "Peak Nr: " << ++iPeak << '\n';
         writeInfoSequence(stream, *peak, format);
         progress.step();
