@@ -67,6 +67,7 @@ class TableView : public QTreeView, public QcrRegisteredMixin {
 public:
     TableView() = delete;
     TableView(TableModel*);
+    ~TableView();
 
     void setFromCommand(const QString&) override;
     virtual void onData();

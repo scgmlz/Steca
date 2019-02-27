@@ -113,6 +113,12 @@ TableView::TableView(TableModel* model)
     setRemake([this]() {onData();});
 }
 
+TableView::~TableView()
+{
+    gConsole->forget(model_->name());
+    delete model_;
+}
+
 void TableView::setFromCommand(const QString& arg)
 {
     QString cmd, cmdarg;
