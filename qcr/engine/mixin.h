@@ -94,6 +94,7 @@ protected:
 class QcrModelessDialog : protected QDialog, protected QcrRegisteredMixin {
 protected:
     QcrModelessDialog(QWidget* parent, const QString& name);
+    ~QcrModelessDialog();
 public:
     void setFromCommand(const QString&) final;
 private:

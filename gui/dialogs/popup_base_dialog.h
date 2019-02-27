@@ -30,7 +30,6 @@ protected:
         setWindowTitle(title + " for peak " + QString::number(peakIndex + 1)
                        + (isInterpolated ? " (interpolated)" : ""));
     }
-
 };
 
 #endif // POPUP_BASE_DIALOG_H

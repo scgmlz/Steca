@@ -100,6 +100,11 @@ QcrModelessDialog::QcrModelessDialog(QWidget* parent, const QString& name)
     setModal(false);
 }
 
+QcrModelessDialog::~QcrModelessDialog()
+{
+    gConsole->forget(name());
+}
+
 void QcrModelessDialog::closeEvent(QCloseEvent* event)
 {
     deleteLater();
