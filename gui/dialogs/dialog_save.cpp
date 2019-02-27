@@ -62,18 +62,19 @@ DialogfieldPath::DialogfieldPath(QcrModalDialog* _parent)
 
     fileEdit = new QcrLineEdit{"file"};
 
-    auto* actBrowse_ = new QcrTrigger{"selectDir", "Browse..."};
-    connect(actBrowse_, &QAction::triggered, [this]() {
+    auto* browseBtn = new QcrTextTriggerButton{"selectDir", "Browse..."};
+    browseBtn->trigger()->setTriggerHook(
+        [this]() {
             dirEdit->setCellValue(
                 file_dialog::queryDirectory(
                     parent, "Select folder", dirEdit->text())); });
 
     auto* grid = new QGridLayout;
-    grid->addWidget(new QLabel("Save to folder:"),       0, 0, Qt::AlignRight);
-    grid->addWidget(dirEdit,                             0, 1);
-    grid->addWidget(new QcrTextTriggerButton(actBrowse_),0, 2);
-    grid->addWidget(new QLabel("File name:"),            1, 0, Qt::AlignRight);
-    grid->addWidget(fileEdit,                            1, 1);
+    grid->addWidget(new QLabel("Save to folder:"), 0, 0, Qt::AlignRight);
+    grid->addWidget(dirEdit,                       0, 1);
+    grid->addWidget(browseBtn,                     0, 2);
+    grid->addWidget(new QLabel("File name:"),      1, 0, Qt::AlignRight);
+    grid->addWidget(fileEdit,                      1, 1);
 
     setLayout(grid);
 }
