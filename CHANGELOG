@@ -15,10 +15,12 @@ New or improved functionality:
 
 Internal improvements:
 
+* All registry entries are properly forgotten when the application quits
 * VERSION handled by CMake
 * Service program version.php under version control
 * Added and improved lots of Doxygen comments
-* Not all unit linked to tested library (local vs linked)
+* Some "local" unit tests can do without being linked to the library under test
+* CMake supports code coverage analysis
 
 Steca version 2.1.1, released 2019.01.24
 ----------------------------------------
