@@ -166,3 +166,37 @@ const Dfgram* Session::currentOrAvgeDfgram() const
     ASSERT(cluster);
     return &cluster->currentDfgram();
 }
+
+QStringList Session::allAsciiKeys() const
+{
+    QStringList ret { "alpha", "beta", "gamma_min", "gamma_max" };
+    ret += peaksSettings.selectedPeak()->fitParAsciiNames();
+    ret += Metadata::attributeTags(false);
+    return ret;
+}
+
+QStringList Session::allNiceKeys() const
+{
+    QStringList ret { "α", "β", "γ_min", "γ_max" };
+    ret += peaksSettings.selectedPeak()->fitParAsciiNames();
+    ret += Metadata::attributeTags(true);
+    return ret;
+}
+
+QStringList Session::numericAsciiKeys() const
+{
+    QStringList ret = allAsciiKeys();
+    // TODO remove non-numeric keys from the onset
+    for (int i=0; i< (Metadata::numAttributes(false) - Metadata::numAttributes(true)); ++i)
+        ret.removeLast(); // remove all tags that are not numbers
+    return ret;
+}
+
+QStringList Session::numericNiceKeys() const
+{
+    QStringList ret = allNiceKeys();
+    // TODO remove non-numeric keys from the onset
+    for (int i=0; i< (Metadata::numAttributes(false) - Metadata::numAttributes(true)); ++i)
+        ret.removeLast(); // remove all tags that are not numbers
+    return ret;
+}

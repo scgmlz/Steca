@@ -58,6 +58,11 @@ public:
     QByteArray serializeSession() const; // TODO rename toJson
     size2d imageSize() const;
 
+    QStringList allAsciiKeys() const;
+    QStringList allNiceKeys() const;
+    QStringList numericAsciiKeys() const;
+    QStringList numericNiceKeys() const;
+
     // const abbreviations to member member calls
     bool hasData() const { return dataset.countFiles(); }
     bool hasCorrFile() const { return corrset.hasFile(); }
