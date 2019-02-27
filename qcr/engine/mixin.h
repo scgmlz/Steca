@@ -79,10 +79,10 @@ private:
 class QcrRegisteredMixin : public QcrBaseMixin {
 protected:
     QcrRegisteredMixin(QObject* object, const QString& name, bool _modal=false);
+    ~QcrRegisteredMixin();
 public:
     virtual void setFromCommand(const QString&) = 0;
 protected:
-    void doLog(const QString& msg);
     bool adhoc() const;
 };
 

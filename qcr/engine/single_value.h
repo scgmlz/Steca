@@ -67,7 +67,7 @@ QcrSingleValue<T>::QcrSingleValue(QObject* object, const QString& name, QcrCell<
         if (v != QVariant{}) {
             const T val = v.value<T>();
             setCellValue(val);
-            doLog(QcrRegisteredMixin::name()+" "+strOp::to_s(val));
+            gConsole->log(QcrRegisteredMixin::name()+" "+strOp::to_s(val));
         }
         // Value may have changed, therefore write back to the config file controlled by QSettings
         s.setValue(QcrRegisteredMixin::name(), cell_->val());
@@ -92,7 +92,6 @@ QcrSingleValue<T>::~QcrSingleValue()
         delete cell_;
     else
         cell_->releaseCallbacks();
-    gConsole->forget(name());
 }
 
 //! Sets the value of the associated Cell, and in consequence also the value of this widget.
@@ -128,7 +127,7 @@ void QcrSingleValue<T>::onChangedValue(T val, const QString& comment)
     QString line = name()+" "+strOp::to_s(val);
     if (comment!="")
         line += " # " + comment;
-    doLog(line);
+    gConsole->log(line);
     cell_->setVal(val);
     gRoot->remakeAll();
 }

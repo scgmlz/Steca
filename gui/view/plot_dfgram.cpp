@@ -13,13 +13,14 @@
 //  ***********************************************************************************************
 
 #include "core/fit/peak_function.h"
+#include "qcr/base/qcrexception.h"
+#include "qcr/engine/console.h"
 #include "gui/view/plot_dfgram.h"
 #include "core/session.h"
 #include "gui/view/toggles.h"
 #include "gui/mainwin.h"
 #include "gui/view/plot_overlay.h"
 #include "gui/view/range_control.h"
-#include "qcr/base/qcrexception.h"
 
 namespace colors {
 QColor baseEmph{0x00, 0xff, 0x00, 0x50}; // green
@@ -53,7 +54,7 @@ private:
 
 void PlotDfgramOverlay::addRange(const Range& range)
 {
-    doLog(QString("dfgram add %1 %2").arg(range.min).arg(range.max));
+    gConsole->log(QString("dfgram add %1 %2").arg(range.min).arg(range.max));
 
     // is it a valid range?
     const auto datapointCount = gSession->currentOrAvgeDfgram()->curve.intersect(range).size();
@@ -88,7 +89,7 @@ void PlotDfgramOverlay::addRange(const Range& range)
 
 void PlotDfgramOverlay::selectRange(double x)
 {
-    doLog(QString("dfgram sel %1").arg(x));
+    gConsole->log(QString("dfgram sel %1").arg(x));
     bool selectionChanged = false;
     // prioritize baseline sel. when editing baselines
     if (gSession->params.editableRange == EditableRange::BASELINE)
