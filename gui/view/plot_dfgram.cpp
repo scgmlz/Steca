@@ -186,6 +186,12 @@ PlotDfgram::PlotDfgram()
     fits_->setPen(QPen(Qt::red));
 }
 
+PlotDfgram::~PlotDfgram()
+{
+    gConsole->forget(overlay_->name());
+    delete overlay_;
+}
+
 void PlotDfgram::clearReflLayer()
 {
     for (QCPGraph* g : reflGraph_)
