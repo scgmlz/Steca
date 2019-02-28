@@ -17,9 +17,9 @@
 #include "core/fit/fit_methods.h"
 #include "core/fit/raw_outcome.h"
 #include "qcr/base/debug.h" // ASSERT
-#include "libcerf/lib/cerf.h"
 #include "LevMar/LM/levmar.h"
 // waiting for activation #include "lmfit/lib/lmmin.h"
+#include <cerf.h>
 #include <qmath.h>
 #include <iostream>
 
