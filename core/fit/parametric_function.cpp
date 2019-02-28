@@ -24,10 +24,6 @@
 
 //! Covered by test002_rounding.
 
-DoubleWithError::DoubleWithError(double value)
-    : DoubleWithError(value, Q_QNAN)
-{}
-
 DoubleWithError::DoubleWithError(double value, double error)
     : value_(value)
     , error_(error)
