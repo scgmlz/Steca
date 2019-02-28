@@ -170,7 +170,9 @@ const Dfgram* Session::currentOrAvgeDfgram() const
 QStringList Session::allAsciiKeys() const
 {
     QStringList ret { "alpha", "beta", "gamma_min", "gamma_max" };
-    ret += peaksSettings.selectedPeak()->fitParAsciiNames();
+    const OnePeakSettings* peak = peaksSettings.selectedPeak();
+    if (peak)
+        ret += peak->fitParAsciiNames();
     ret += Metadata::attributeTags(false);
     return ret;
 }
@@ -178,7 +180,9 @@ QStringList Session::allAsciiKeys() const
 QStringList Session::allNiceKeys() const
 {
     QStringList ret { "α", "β", "γ_min", "γ_max" };
-    ret += peaksSettings.selectedPeak()->fitParAsciiNames();
+    const OnePeakSettings* peak = peaksSettings.selectedPeak();
+    if (peak)
+        ret += peak->fitParAsciiNames();
     ret += Metadata::attributeTags(true);
     return ret;
 }
