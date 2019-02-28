@@ -89,8 +89,8 @@ void CheckTableModel::activateAndLog(int row, bool on)
 //  ***********************************************************************************************
 //! @class TableView
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Woverloaded-virtual" // TODO try without
+//#pragma GCC diagnostic push
+//#pragma GCC diagnostic ignored "-Woverloaded-virtual" // TODO try without
 
 TableView::TableView(TableModel* model)
     : QcrRegistered {model->name()}
@@ -129,7 +129,7 @@ void TableView::setFromCommand(const QString& arg)
     model_->onHighlight(strOp::to_i(cmdarg));
 }
 
-#pragma GCC diagnostic pop
+//#pragma GCC diagnostic pop
 
 //! Width of a digit
 int TableView::dWidth() const

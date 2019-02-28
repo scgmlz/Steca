@@ -63,9 +63,9 @@ public:
 //! Based on QTreeView, with hidden 1st column.
 //! QTreeView inherits from QAbstractItemView.
 
-class TableView : virtual public QcrRegistered, virtual public QTreeView {
+class TableView : public QcrRegistered, public QTreeView {
 public:
-    virtual TableView(TableModel*);
+    TableView(TableModel*);
     ~TableView();
 
     void setFromCommand(const QString&) override;
