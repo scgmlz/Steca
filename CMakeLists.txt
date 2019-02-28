@@ -17,7 +17,6 @@ set(CMAKE_PROJECT_DESCRIPTION # for display in installer
 
 option(WITH_TESTS "Build with all tests" ON)
 option(BUILD_FALLBACK "Build and use the fallback 3rdparty libraries" OFF)
-option(CERF_CPP "If building libcerf, then do so with C++ linkage" ON)
 option(COVERAGE "Support code coverage report" OFF)
 
 set(LIB_MAN     OFF CACHE INTERNAL "" FORCE)
@@ -62,9 +61,9 @@ foreach(comp Qt5Core Qt5Gui Qt5Widgets Qt5Network)
     message(STATUS "found ${comp}: version=${${comp}_VERSION_STRING} dir=${${comp}_DIR} lib=${${comp}_LIBRARIES}")
 endforeach()
 
-find_package(YAML MODULE)
+find_package(YAML MODULE REQUIRED)
 # waiting for activation find_package(LMFit 8.1 MODULE)
-find_package(Cerf 1.8 MODULE)
+find_package(Cerf 1.11 MODULE REQUIRED)
 
 message(STATUS
     "libyaml: FOUND=${yaml_FOUND}, VERSION=${yaml_VERSION}, LIB=${yaml_LIBRARIES}")
@@ -81,29 +80,6 @@ add_subdirectory(3rdparty/LevMar)
 add_subdirectory(3rdparty/QCustomPlot)
 add_subdirectory(3rdparty/Caress)
 add_subdirectory(3rdparty/Mar)
-
-if(NOT yaml_FOUND OR BUILD_FALLBACK)
-    message(STATUS "going to build 3rdparty/libyaml")
-    add_subdirectory(3rdparty/libyaml)
-endif()
-#if(NOT LMFit_FOUND OR BUILD_FALLBACK)
-#    message(STATUS "going to build 3rdparty/lmfit")
-#    add_subdirectory(3rdparty/lmfit)
-#endif()
-if(NOT Cerf_FOUND OR BUILD_FALLBACK)
-    message(STATUS "going to build 3rdparty/libcerf, with CERF_CPP=${CERF_CPP}")
-    set(BUILD_SHARED_LIBS ON)
-    set(LIB_RUN OFF)
-    add_subdirectory(3rdparty/libcerf) # will respect option CERF_CPP
-    set(Cerf_INCLUDE_DIR ${CMAKE_CMAKE_DIR}/3rdparty/libcerf/lib)
-    if(CERF_CPP)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCERF_AS_CPP")
-        set(Cerf_LIBRARIES ${lib} cerfcpp)
-    else()
-        set(Cerf_LIBRARIES ${lib} cerf)
-    endif()
-    set(BUILD_SHARED_LIBS ${DEFAULT_BUILD_SHARED_LIBS})
-endif()
 
 message(STATUS "3rdparty libraries all found or configured")
 
