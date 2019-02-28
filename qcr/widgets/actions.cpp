@@ -30,14 +30,6 @@ QcrAction::QcrAction(const QString& text)
     , tooltip_(text)
 {}
 
-bool QcrAction::hasFocus()
-{
-    for (const QWidget* w: associatedWidgets())
-        if (w->hasFocus())
-            return true;
-    return false;
-}
-
 //  ***********************************************************************************************
 //! @class QcrTrigger
 
