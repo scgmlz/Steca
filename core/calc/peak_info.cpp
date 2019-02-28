@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/calc/peak_info.h"
+#include "core/pars/onepeak_settings.h"
 #include "core/session.h"
 //#include "qcr/base/debug.h"
 
@@ -23,7 +24,8 @@
 //! debug::ensure -1 as unknown value; thus, NaN parameter values should be output
 //! as -1 when output is written for these programs (polefigure!).
 
-PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma, double inten,
+PeakInfo::PeakInfo(const Metadata* md,
+                   deg alpha, deg beta, Range rgeGma, double inten,
                    double intenError, deg tth, deg tthError, double fwhm, double fwhmError,
                    double sog, double sogError)
     : md_(md)
@@ -40,7 +42,8 @@ PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma, double
     , gammOverSigmaError_(sogError)
 {}
 
-PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma)
+PeakInfo::PeakInfo(const Metadata* md,
+                    deg alpha, deg beta, Range rgeGma)
     : PeakInfo(md, alpha, beta, rgeGma,
                Q_QNAN, Q_QNAN, deg(Q_QNAN), deg(Q_QNAN), Q_QNAN, Q_QNAN, Q_QNAN, Q_QNAN)
 {}

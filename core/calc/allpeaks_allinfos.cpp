@@ -25,8 +25,8 @@ namespace {
 //! Fits peak to the given gamma gRange and constructs a PeakInfo.
 PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
 {
-    const OnePeakSettings& peak = gSession->peaksSettings.at(jP);
-    const Range& fitrange = peak.range();
+    const OnePeakSettings& settings = gSession->peaksSettings.at(jP);
+    const Range& fitrange = settings.range();
     const Metadata* metadata = &cluster.avgMetadata();
     const Range gRange = gSession->gammaSelection.slice2range(cluster.rangeGma(), iGamma);
     deg alpha, beta;
@@ -34,7 +34,7 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
     algo::calculateAlphaBeta(alpha, beta, fitrange.center(), gRange.center(),
                              cluster.chi(), cluster.omg(), cluster.phi());
     if (fitrange.isEmpty())
-        return {metadata, alpha, beta, gRange};
+        return PeakInfo{metadata, alpha, beta, gRange};
 
     const Dfgram& dfgram = cluster.dfgrams.yield_at(iGamma, &cluster);
 
@@ -43,7 +43,7 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
     std::unique_ptr<DoubleWithError> fwhm;
     std::unique_ptr<DoubleWithError> intensity;
     std::unique_ptr<DoubleWithError> gammOverSigma{new DoubleWithError{Q_QNAN, Q_QNAN}};
-    if (peak.isRaw()) {
+    if (settings.isRaw()) {
         const RawOutcome& out = dfgram.getRawOutcome(jP);
         center    .reset(new DoubleWithError{out.getCenter(),0});
         fwhm      .reset(new DoubleWithError{out.getFwhm(),0});
@@ -64,10 +64,10 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
     }
 
     if (!fitrange.contains(center->value())) // TODO/math generalize to fitIsCredible
-        return {metadata, alpha, beta, gRange};
+        return PeakInfo{metadata, alpha, beta, gRange};
 
     // TODO pass PeakOutcome instead of 6 components
-    return {metadata, alpha, beta, gRange, intensity->value(), intensity->error(),
+    return PeakInfo{metadata, alpha, beta, gRange, intensity->value(), intensity->error(),
             deg(center->value()), deg(center->error()), fwhm->value(), fwhm->error(),
             gammOverSigma->value(), gammOverSigma->error()};
 }

@@ -286,7 +286,7 @@ OnePeakAllInfos algo::interpolateInfos(const OnePeakAllInfos& direct)
             progress.step();
 
             if (direct.peakInfos().empty()) {
-                ret.appendPeak(PeakInfo(alpha, beta));
+                ret.appendPeak(PeakInfo{alpha, beta});
                 continue;
             }
 
@@ -311,9 +311,9 @@ OnePeakAllInfos algo::interpolateInfos(const OnePeakAllInfos& direct)
                     for (int i=iBegin; i<iEnd; ++i)
                         avg += itfs.at(i);
 
-                    ret.appendPeak(PeakInfo(alpha, beta, direct.peakInfos().front().rgeGma(),
+                    ret.appendPeak(PeakInfo{alpha, beta, direct.peakInfos().front().rgeGma(),
                                             avg.inten / n, Q_QNAN,
-                        avg.tth / n, deg(Q_QNAN), avg.fwhm / n, Q_QNAN));
+                                            avg.tth / n, deg(Q_QNAN), avg.fwhm / n, Q_QNAN});
                     continue;
                 }
 
@@ -326,8 +326,8 @@ OnePeakAllInfos algo::interpolateInfos(const OnePeakAllInfos& direct)
 
             // Use idw, if alpha > avgAlphaMax OR averaging failed (too small avgRadius?).
             itf_t itf = interpolateValues(idwRadius, direct, alpha, beta);
-            ret.appendPeak(PeakInfo(alpha, beta, direct.peakInfos().front().rgeGma(), itf.inten,
-                                    Q_QNAN, itf.tth, deg(Q_QNAN), itf.fwhm, Q_QNAN));
+            ret.appendPeak(PeakInfo{alpha, beta, direct.peakInfos().front().rgeGma(), itf.inten,
+                                    Q_QNAN, itf.tth, deg(Q_QNAN), itf.fwhm, Q_QNAN});
         }
     }
     //qDebug() << "interpolation ended";
