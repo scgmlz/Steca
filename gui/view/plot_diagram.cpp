@@ -71,8 +71,8 @@ PlotDiagram::PlotDiagram()
     graph_->setScatterStyle(ss);
 
     graph_->setLineStyle(QCPGraph::LineStyle::lsNone);
-    graph_->setPen(QPen(Qt::blue));
-    graph_->setErrorPen(QPen(Qt::black));
+    graph_->setPen(QPen{Qt::blue});
+    graph_->setErrorPen(QPen{Qt::black});
 }
 
 PlotDiagram::PlotDiagram(int w, int h)
@@ -105,9 +105,9 @@ void PlotDiagram::refresh()
             ysSigmaSafe.push_back(ysSigma.at(i));
         }
         graph_->setErrorType(QCPGraph::ErrorType::etValue);
-        graph_->setDataValueError(
-            QVector<double>::fromStdVector(xsSafe), QVector<double>::fromStdVector(ysSafe),
-            QVector<double>::fromStdVector(ysSigmaSafe));
+        graph_->setDataValueError(QVector<double>::fromStdVector(xsSafe),
+                                  QVector<double>::fromStdVector(ysSafe),
+                                  QVector<double>::fromStdVector(ysSigmaSafe));
     } else {
         for (size_t i = 0; i < xs.size(); ++i) {
             if (   qIsNaN(xs.at(i)) || qIsInf(xs.at(i))
@@ -117,8 +117,8 @@ void PlotDiagram::refresh()
             ysSafe.push_back(ys.at(i));
         }
         graph_->setErrorType(QCPGraph::ErrorType::etNone);
-        graph_->setData(
-            QVector<double>::fromStdVector(xsSafe), QVector<double>::fromStdVector(ysSafe));
+        graph_->setData(QVector<double>::fromStdVector(xsSafe),
+                        QVector<double>::fromStdVector(ysSafe));
     }
 
     if (!xsSafe.size())
