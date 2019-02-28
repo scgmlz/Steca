@@ -182,7 +182,7 @@ QStringList Session::allNiceKeys() const
     QStringList ret { "α", "β", "γ_min", "γ_max" };
     const OnePeakSettings* peak = peaksSettings.selectedPeak();
     if (peak)
-        ret += peak->fitParAsciiNames();
+        ret += peak->fitParNiceNames();
     ret += Metadata::attributeTags(true);
     return ret;
 }

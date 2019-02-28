@@ -34,7 +34,7 @@ private:
     void setActivated(int row, bool on) { gSession->params.smallMetaSelection.set(row, on); }
 
     int columnCount() const final { return NUM_COLUMNS; }
-    int rowCount() const final { return Metadata::numAttributes(false); }
+    int rowCount() const final { return Metadata::numAttributes(true); }
 
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const { return {}; }
@@ -56,7 +56,7 @@ QVariant MetatableModel::data(const QModelIndex& index, int role) const
     case Qt::DisplayRole:
         switch (col) {
         case COL_TAG:
-            return Metadata::attributeTag(row, false);
+            return Metadata::attributeTag(row, true);
         case COL_VALUE:
             const Cluster* highlight = gSession->currentCluster();
             if (!highlight)

@@ -89,12 +89,11 @@ ColumnSelectorView::ColumnSelectorView()
     setColumnWidth(1,  .5*mWidth());
     setColumnWidth(2, 6. *mWidth());
     setColumnWidth(3, 7.5*mWidth());
-    setRemake([this](){ qDebug() << "DEBUG CSV remake"; });
+    setRemake([this](){ onData(); });
 }
 
 void ColumnSelectorView::onData()
 {
-    qDebug() << "DEBUG CSV onData";
     gSession->params.bigMetaSelection.replaceKeys(gSession->allNiceKeys(), false);
     model_->refreshModel();
     emit model_->layoutChanged(); // TODO merge into base class ?

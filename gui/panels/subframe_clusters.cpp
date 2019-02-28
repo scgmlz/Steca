@@ -123,7 +123,7 @@ QVariant ActiveClustersModel::headerData(int col, Qt::Orientation ori, int role)
     else if (col>=COL_ATTRS &&
              col < COL_ATTRS+gSession->params.smallMetaSelection.numSelected())
         return Metadata::attributeTag(
-            gSession->params.smallMetaSelection.selectedOf(col-COL_ATTRS), false);
+            gSession->params.smallMetaSelection.selectedOf(col-COL_ATTRS), true);
     return {};
 }
 

@@ -44,6 +44,7 @@ public:
     static const QStringList functionNames;
 
 private:
+    void onFunction();
     Range range_;
     QString functionName_;
     QStringList fitParAsciiNames_;

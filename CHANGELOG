@@ -6,6 +6,8 @@ New or improved functionality:
 * Plotting:
   * show axis even if there is a single data value
   * leave white space around the data
+* GUI controls:
+  * Voigt parameters only shown when Voigt function is fitted
 * Log & replay:
   * Log file written to file specified by option -l, to <startup_script>.log, or to Steca.log
   * Disallow log file that overwrites startup file

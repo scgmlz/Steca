@@ -81,20 +81,20 @@ int Metadata::numAttributes(bool onlyNum)
     return int(onlyNum ? eAttr::NUM_NUMERICAL_ATTRIBUTES : eAttr::NUM_ALL_ATTRIBUTES);
 }
 
-const QString& Metadata::attributeTag(int i, bool out)
+const QString& Metadata::attributeTag(int i, bool nice)
 {
-    return attributeTags(out).at(i);
+    return attributeTags(nice).at(i);
 }
 
 namespace {
 
-    const QStringList tags = {
+    const QStringList niceTags = {
         "X",   "Y",   "Z",    "ω",      "mid 2θ", "φ",     "χ",       "PST",
         "SST", "ΩM",  "T",    "teload", "tepos",  "teext", "xe",      "ye",
         "ze",  "mon", "Δmon", "t",      "Δt",     "date",  "comment",
     };
 
-    const QStringList outTags = {
+    const QStringList asciiTags = {
         "X",   "Y",      "Z",         "omega",  "mid2theta", "phi",   "chi",     "PST",
         "SST", "OmegaM", "T",         "teload", "tepos",     "teext", "xe",      "ye",
         "ze",  "mon",    "delta_mon", "t",      "delta_t",   "date",  "comment",
@@ -102,9 +102,9 @@ namespace {
 
 }
 
-const QStringList& Metadata::attributeTags(bool out)
+const QStringList& Metadata::attributeTags(bool nice)
 {
-    return out ? outTags : tags;
+    return nice ? niceTags : asciiTags;
 }
 
 QString Metadata::attributeStrValue(int i) const
