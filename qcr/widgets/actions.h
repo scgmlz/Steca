@@ -28,12 +28,11 @@ protected:
 };
 
 //! Trigger, for use in buttons or menu entries, that can also be activated by console command.
-class QcrTrigger : public QcrAction, public QcrRegisteredMixin {
+class QcrTrigger : virtual public QcrRegistered, virtual public QcrAction {
 public:
     QcrTrigger(const QString& name, const QString& text, const QString& iconFile="");
     QcrTrigger(const QString& name, const QString& text, const QString& iconFile,
                const QKeySequence& shortcut);
-    ~QcrTrigger();
     void setFromCommand(const QString&) override;
     void setTriggerHook(std::function<void()> triggerHook) { triggerHook_ = triggerHook; }
 private:
@@ -41,7 +40,7 @@ private:
 };
 
 //! Trigger button with text display and associated action.
-class QcrTextTriggerButton : public QToolButton, public QcrBaseMixin {
+class QcrTextTriggerButton : virtual public QcrBase, virtual public QToolButton {
 public:
     QcrTextTriggerButton(QcrTrigger*);
     QcrTextTriggerButton(const QString& name, const QString& text);
@@ -54,7 +53,7 @@ private:
 };
 
 //! Trigger button with icon and associated action.
-class QcrIconTriggerButton : public QToolButton, public QcrBaseMixin {
+class QcrIconTriggerButton : virtual public QcrBase, virtual public QToolButton {
 public:
     QcrIconTriggerButton(QcrTrigger*);
     QcrIconTriggerButton(const QString& name, const QString& text, const QString& iconFile);
@@ -67,7 +66,7 @@ private:
 };
 
 //! Toggle, for use in buttons or menu entries, that can also be switched by console command.
-class QcrToggle : public QcrAction, public QcrSingleValue<bool> {
+class QcrToggle : virtual public QcrSingleValue<bool>, virtual public QcrAction {
 public:
     QcrToggle(const QString& name, const QString& text, bool on,
               const QString& iconFile="", const QKeySequence& shortcut = {});
@@ -82,7 +81,7 @@ private:
 };
 
 //! Toggle button with text display and associated action.
-class QcrTextToggleButton : public QToolButton, public QcrBaseMixin {
+class QcrTextToggleButton : virtual public QcrBase, virtual public QToolButton {
 public:
     QcrTextToggleButton(QcrToggle*);
     QcrTextToggleButton(const QString& name, const QString& text, bool on);
@@ -95,7 +94,7 @@ private:
 };
 
 //! Toggle button with icon and associated action.
-class QcrIconToggleButton : public QToolButton, public QcrBaseMixin {
+class QcrIconToggleButton : virtual public QcrBase, virtual public QToolButton {
 public:
     QcrIconToggleButton(QcrToggle*);
     QcrIconToggleButton(const QString& name, const QString& text, bool on,

@@ -115,8 +115,8 @@ DialogSave::DialogSave(
         ftypeGrid->addWidget(rb);
     }
 
-    auto* cancelBtn = new QcrTextTriggerButton("cancel", "Cancel");
-    auto* saveBtn   = new QcrTextTriggerButton("save", "Save");
+    auto* cancelBtn = new QcrTextTriggerButton{"cancel", "Cancel"};
+    auto* saveBtn   = new QcrTextTriggerButton{"save", "Save"};
     cancelBtn->trigger()->setTriggerHook([this](){ close(); });
     saveBtn  ->trigger()->setTriggerHook([this](){
                                              progressBar.show();
@@ -131,7 +131,7 @@ DialogSave::DialogSave(
 
     // Layout
 
-    auto* ftype = new QGroupBox("File type");
+    auto* ftype = new QGroupBox{"File type"};
     ftype->setVisible(_extensions.size()>1);
     ftype->setLayout(ftypeGrid);
 
@@ -139,7 +139,7 @@ DialogSave::DialogSave(
     setup->addWidget(pathField);
     setup->addWidget(ftype);
 
-    auto* bottom = new QHBoxLayout();
+    auto* bottom = new QHBoxLayout;
     bottom->addWidget(&progressBar);
     bottom->setStretchFactor(&progressBar, 333);
     bottom->addStretch(1);
@@ -151,6 +151,11 @@ DialogSave::DialogSave(
     layout->addLayout(bottom);
 
     setLayout(layout);
+}
+
+DialogSave::~DialogSave()
+{
+    qDebug() << "DEBUG ~DialogSave";
 }
 
 void DialogSave::saveCurrent()

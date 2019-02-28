@@ -3,7 +3,7 @@
 //  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/widgets/modal_dialogs.cpp
-//! @brief     Implements classes QcrModalMixin, QcrModalDialog, QcrFileDialog
+//! @brief     Implements classes QcrModal, QcrModalDialog, QcrFileDialog
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -20,26 +20,26 @@
 
 
 //  ***********************************************************************************************
-//! @class QcrModalMixin
+//! @class QcrModal
 
-QcrModalMixin::QcrModalMixin(QObject* object, const QString& name)
-    : QcrRegisteredMixin {object, "@push " + name}
+QcrModal::QcrModal(const QString& name)
+    : QcrRegistered {"@push " + name}
 {}
+
+QcrModal::~QcrModal()
+{
+    gConsole->closeModalDialog();
+}
 
 
 //  ***********************************************************************************************
 //! @class QcrModalDialog
 
 QcrModalDialog::QcrModalDialog(QWidget* parent, const QString& caption)
-    : QDialog {parent}
-    , QcrModalMixin {this, "dlog"}
+    : QcrModal {"modal"}
+    , QDialog {parent}
 {
     setWindowTitle(caption);
-}
-
-QcrModalDialog::~QcrModalDialog()
-{
-    gConsole->forget(name());
 }
 
 int QcrModalDialog::exec()
@@ -69,15 +69,13 @@ void QcrModalDialog::setFromCommand(const QString& arg)
 
 QcrFileDialog::QcrFileDialog(
     QWidget* parent, const QString& caption, const QString& directory, const QString& filter)
-    : QFileDialog {parent, caption, directory, filter}
-    , QcrModalMixin {this, "fdia"}
+    : QcrModal {"fdia"}
+    , QFileDialog {parent, caption, directory, filter}
 {}
 
 QcrFileDialog::~QcrFileDialog()
 {
     gConsole->log("fdia select "+selectedFiles().join(';'));
-    gConsole->closeModalDialog();
-    //gConsole->forget(name());
 }
 
 int QcrFileDialog::exec()

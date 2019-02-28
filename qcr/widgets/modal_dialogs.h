@@ -3,7 +3,7 @@
 //  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/widgets/modal_dialogs.h
-//! @brief     Defines classes QcrModalMixin, QcrModalDialog, QcrFileDialog
+//! @brief     Defines classes QcrModal, QcrModalDialog, QcrFileDialog
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -19,22 +19,22 @@
 #include <QFileDialog>
 
 //! Mix-in for modal (blocking) dialogs.
-class QcrModalMixin : public QcrRegisteredMixin {
+class QcrModal : public QcrRegistered {
 protected:
-    QcrModalMixin(QObject* object, const QString& name);
+    QcrModal(const QString& name);
+    ~QcrModal();
 };
 
 //! Dialog, for modal use.
-class QcrModalDialog : public QDialog, protected QcrModalMixin {
+class QcrModalDialog : virtual protected QcrModal, virtual public QDialog {
 public:
     QcrModalDialog(QWidget* parent, const QString& caption);
-    ~QcrModalDialog();
     int exec() override;
     void setFromCommand(const QString&) override;
 };
 
 //! File dialog, for modal use, with console commands to select files and to close the dialog.
-class QcrFileDialog : public QFileDialog, protected QcrModalMixin {
+class QcrFileDialog : virtual protected QcrModal, virtual public QFileDialog {
 public:
     QcrFileDialog(
         QWidget* parent, const QString& caption, const QString& directory, const QString& filter);

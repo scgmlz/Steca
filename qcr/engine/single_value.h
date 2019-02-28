@@ -23,12 +23,12 @@
 #include <QSettings>
 #include <iostream>
 
-//! Mixin for all QWidgets that hold a single value, base class for all QcrWidgets.
+//!  for all QWidgets that hold a single value, base class for all QcrWidgets.
 template<class T>
-class QcrSingleValue : public QcrRegisteredMixin {
+class QcrSingleValue : public QcrRegistered {
 public:
-    QcrSingleValue(QObject* object, const QString& name, QcrCell<T>* cell);
-    QcrSingleValue(QObject* object, const QString& name, const T val);
+    QcrSingleValue(const QString& name, QcrCell<T>* cell);
+    QcrSingleValue(const QString& name, const T val);
     ~QcrSingleValue();
     //! Sets the value of the associated Cell, and in consequence also the value of this widget.
     void setCellValue(T val);
@@ -55,30 +55,30 @@ private:
 
 //! Constructor that associates this QcrSingleValue with an external QcrCell.
 template<class T>
-QcrSingleValue<T>::QcrSingleValue(QObject* object, const QString& name, QcrCell<T>* cell)
-    : QcrRegisteredMixin {object, name}
+QcrSingleValue<T>::QcrSingleValue(const QString& name, QcrCell<T>* cell)
+    : QcrRegistered {name}
     , cell_ {cell}
 {
     if (!adhoc()) {
         QSettings s;
         s.beginGroup("Controls");
         // Retrieve initial value from the config file controlled by QSettings
-        QVariant v = s.value(QcrRegisteredMixin::name());
+        QVariant v = s.value(QcrRegistered::name());
         if (v != QVariant{}) {
             const T val = v.value<T>();
             setCellValue(val);
-            gConsole->log(QcrRegisteredMixin::name()+" "+strOp::to_s(val));
+            gConsole->log(QcrRegistered::name()+" "+strOp::to_s(val));
         }
         // Value may have changed, therefore write back to the config file controlled by QSettings
-        s.setValue(QcrRegisteredMixin::name(), cell_->val());
+        s.setValue(QcrRegistered::name(), cell_->val());
     }
     cell_->setCallbacks([this](){return doGetValue();}, [this](const T val){doSetValue(val);});
 }
 
 //! Constructs a QcrSingleValue that owns a QcrCell.
 template<class T>
-QcrSingleValue<T>::QcrSingleValue(QObject* object, const QString& name, const T val)
-    : QcrRegisteredMixin {object, name}
+QcrSingleValue<T>::QcrSingleValue(const QString& name, const T val)
+    : QcrRegistered {name}
     , ownsItsCell_ {true}
 {
     cell_ = new QcrCell<T>(val); // TODO RECONSIDER smart pointer
@@ -93,7 +93,6 @@ QcrSingleValue<T>::~QcrSingleValue()
         delete cell_;
     else
         cell_->releaseCallbacks();
-    gConsole->forget(name());
 }
 
 //! Sets the value of the associated Cell, and in consequence also the value of this widget.

@@ -34,21 +34,23 @@ QcrAction::QcrAction(const QString& text)
 //! @class QcrTrigger
 
 QcrTrigger::QcrTrigger(const QString& rawname, const QString& text, const QString& iconFile)
-    : QcrAction {text}
-    , QcrRegisteredMixin {this, rawname}
+    : QcrRegistered {rawname}
+    , QcrAction {text}
 {
     //QAction::setObjectName(name());
     if (iconFile!="")
         setIcon(QIcon(iconFile));
-    connect(this, &QAction::triggered, [this]()->void {
-            gConsole->log(name());
-            triggerHook_();
-            gRoot->remakeAll(); });
-    connect(this, &QAction::changed, [this]()->void {
-            QString txt = tooltip_;
-            if (!isEnabled())
-                txt += "\nThis trigger is currently inoperative.";
-            setToolTip(txt); });
+    QAction::connect(this, &QAction::triggered,
+                     [this]()->void {
+                         gConsole->log(name());
+                         triggerHook_();
+                         gRoot->remakeAll(); });
+    QAction::connect(this, &QAction::changed,
+                     [this]()->void {
+                         QString txt = tooltip_;
+                         if (!isEnabled())
+                             txt += "\nThis trigger is currently inoperative.";
+                         setToolTip(txt); });
 }
 
 QcrTrigger::QcrTrigger(
@@ -56,11 +58,6 @@ QcrTrigger::QcrTrigger(
     : QcrTrigger {name, text, iconFile}
 {
     setShortcut(shortcut);
-}
-
-QcrTrigger::~QcrTrigger()
-{
-    gConsole->forget(name());
 }
 
 void QcrTrigger::setFromCommand(const QString& arg)
@@ -78,7 +75,7 @@ void QcrTrigger::setFromCommand(const QString& arg)
 //! @class QcrTextTriggerButton
 
 QcrTextTriggerButton::QcrTextTriggerButton(QcrTrigger* trigger, bool ownsTrigger)
-    : QcrBaseMixin(this, trigger->name()+"Btn")
+    : QcrBase(trigger->name()+"Btn")
     , trigger_(trigger)
     , ownsTrigger_(ownsTrigger)
 {
@@ -106,7 +103,7 @@ QcrTextTriggerButton::~QcrTextTriggerButton()
 //! @class QcrIconTriggerButton
 
 QcrIconTriggerButton::QcrIconTriggerButton(QcrTrigger* trigger, bool ownsTrigger)
-    : QcrBaseMixin(this, trigger->name()+"Btn")
+    : QcrBase(trigger->name()+"Btn")
     , trigger_(trigger)
     , ownsTrigger_(ownsTrigger)
 {
@@ -136,17 +133,16 @@ QcrIconTriggerButton::~QcrIconTriggerButton()
 
 QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on,
                      const QString& iconFile, const QKeySequence& shortcut)
-    : QcrAction {text}
-    , QcrSingleValue<bool> {this, rawname, on}
+    : QcrSingleValue<bool> {rawname, on}
+    , QcrAction {text}
 {
     initToggle(iconFile, shortcut);
 }
 
 QcrToggle::QcrToggle(const QString& rawname, QcrCell<bool>* cell, const QString& text,
                      const QString& iconFile, const QKeySequence& shortcut)
-    : QcrAction {text}
-    , QcrSingleValue<bool> {this, rawname, cell}
-
+    : QcrSingleValue<bool> {rawname, cell}
+    , QcrAction {text}
 {
     initToggle(iconFile, shortcut);
 }
@@ -155,14 +151,14 @@ void QcrToggle::initToggle(const QString& iconFile, const QKeySequence& shortcut
 {
     setShortcut(shortcut);
     setCheckable(true);
-    //QAction::setObjectName(QcrRegisteredMixin::name());
+    //QAction::setObjectName(QcrRegistered::name());
     if (iconFile!="")
         setIcon(QIcon(iconFile));
     doSetValue(cell_->val());
-    connect(this, &QAction::toggled, this, [this](bool val){
+    QAction::connect(this, &QAction::toggled, [this](bool val){
             //qDebug()<<"TOGGLE "<<name()<<"toggled";
             onChangedValue(val);});
-    connect(this, &QAction::changed, [this]()->void {
+    QAction::connect(this, &QAction::changed, [this]()->void {
             // Called upon any property change.
             // Also called when this is toggled (https://bugreports.qt.io/browse/QTBUG-68213)
             //qDebug()<<"TOGGLE "<<name()<<"changed";
@@ -181,7 +177,7 @@ void QcrToggle::initToggle(const QString& iconFile, const QKeySequence& shortcut
 
 //! Generic private constructor that is called by the public constructors.
 QcrTextToggleButton::QcrTextToggleButton(QcrToggle* toggle, bool ownsToggle)
-    : QcrBaseMixin(this, toggle->name()+"Btn")
+    : QcrBase(toggle->name()+"Btn")
     , toggle_(toggle)
     , ownsToggle_(ownsToggle)
 {
@@ -213,7 +209,7 @@ QcrTextToggleButton::~QcrTextToggleButton()
 //! @class QcrIconToggleButton
 
 QcrIconToggleButton::QcrIconToggleButton(QcrToggle* toggle, bool ownsToggle)
-    : QcrBaseMixin(this, toggle->name()+"Btn")
+    : QcrBase(toggle->name()+"Btn")
     , toggle_(toggle)
     , ownsToggle_(ownsToggle)
 {
@@ -237,7 +233,6 @@ QcrIconToggleButton::QcrIconToggleButton(
     const QString& iconFile, const QKeySequence& shortcut)
     : QcrIconToggleButton(new QcrToggle(name, cell, text, iconFile, shortcut), true)
 {}
-
 
 QcrIconToggleButton::~QcrIconToggleButton()
 {
