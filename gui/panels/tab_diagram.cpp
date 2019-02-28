@@ -23,22 +23,20 @@
 //! @class DiagramTab
 
 DiagramTab::DiagramTab()
-    : QcrWidget("DiagramTab")
+    : QcrWidget{"DiagramTab"}
 {
     auto* plot = new PlotDiagram; // the main subframe
 
     // TODO cache tag list
-    auto* comboX =
-        new QcrComboBox{"diagramCoordX", &gSession->params.diagramX,
-                        [=](){return gSession->numericNiceKeys();}};
-    auto* comboY =
-        new QcrComboBox{"diagramCoordY", &gSession->params.diagramY,
-                        [=](){return gSession->numericNiceKeys();}};
+    auto* comboX = new QcrComboBox{"diagramCoordX", &gSession->params.diagramX,
+                                   [=](){return gSession->numericNiceKeys();}};
+    auto* comboY = new QcrComboBox{"diagramCoordY", &gSession->params.diagramY,
+                                   [=](){return gSession->numericNiceKeys();}};
 
     auto* selectorBox = new QGridLayout;
-    selectorBox->addWidget(new QLabel("y"), 0, 0);
+    selectorBox->addWidget(new QLabel{"y"}, 0, 0);
     selectorBox->addWidget(comboY,          0, 1);
-    selectorBox->addWidget(new QLabel("x"), 1, 0);
+    selectorBox->addWidget(new QLabel{"x"}, 1, 0);
     selectorBox->addWidget(comboX,          1, 1);
 
     auto* buttonBox = new QHBoxLayout;

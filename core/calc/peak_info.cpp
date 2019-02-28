@@ -16,25 +16,6 @@
 #include "core/session.h"
 //#include "qcr/base/debug.h"
 
-namespace {
-enum class eReflAttr {
-    ALPHA,
-    BETA,
-    GAMMA1,
-    GAMMA2,
-    INTEN,
-    SIGMA_INTEN,
-    TTH,
-    SIGMA_TTH,
-    FWHM,
-    SIGMA_FWHM,
-    GAMMA_OVER_SIGMA,
-    SIGMA_GAMMA_OVER_SIGMA,
-    NUM_REFL_ATTR,
-};
-
-} // namespace
-
 //  ***********************************************************************************************
 //! @class PeakInfo
 //!
@@ -94,10 +75,4 @@ std::vector<QVariant> PeakInfo::peakData() const
     auto values_to_append = md_ ? md_->attributeValues() : Metadata::attributeNaNs();
     ret.insert(ret.end(), values_to_append.begin(), values_to_append.end());
     return ret;
-}
-
-bool PeakInfo::hasSigma(int index)
-{
-    eReflAttr e = (eReflAttr) index;
-    return e==eReflAttr::INTEN || e==eReflAttr::TTH || e==eReflAttr::FWHM;
 }

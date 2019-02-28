@@ -204,3 +204,11 @@ QStringList Session::numericNiceKeys() const
         ret.removeLast(); // remove all tags that are not numbers
     return ret;
 }
+
+bool Session::hasSigma(int index) const
+{
+    QStringList keys = allAsciiKeys();
+    return index<keys.size()-1
+                 && !keys[index].startsWith("sigma_")
+                 && keys[index+1].startsWith("sigma_");
+}

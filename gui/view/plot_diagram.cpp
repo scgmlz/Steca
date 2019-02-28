@@ -62,9 +62,9 @@ void setRange(QCPAxis* axis, const std::vector<double>& datArg)
 PlotDiagram::PlotDiagram()
 {
     graph_ = addGraph();
-    graph_->setErrorType(QCPGraph::ErrorType::etValue);
 
-    auto ss = graph_->scatterStyle();
+    // copy, modify, write back the symbol plot style
+    QCPScatterStyle ss = graph_->scatterStyle();
     ss.setBrush(QBrush(Qt::BrushStyle::NoBrush));
     ss.setShape(QCPScatterStyle::ssCircle);
     ss.setSize(5);
@@ -88,8 +88,8 @@ void PlotDiagram::refresh()
 
     graph_->clearData();
 
-    const int idxX = int(gSession->params.diagramX.val());
-    const int idxY = int(gSession->params.diagramY.val());
+    const int idxX = gSession->params.diagramX.val();
+    const int idxY = gSession->params.diagramY.val();
 
     std::vector<double> xs, ys, ysSigma;
     gSession->peaksOutcome.currentInfoSequence()->getValuesAndSigma(idxX, idxY, xs, ys, ysSigma);
@@ -104,6 +104,7 @@ void PlotDiagram::refresh()
             ysSafe.push_back(ys.at(i));
             ysSigmaSafe.push_back(ysSigma.at(i));
         }
+        graph_->setErrorType(QCPGraph::ErrorType::etValue);
         graph_->setDataValueError(
             QVector<double>::fromStdVector(xsSafe), QVector<double>::fromStdVector(ysSafe),
             QVector<double>::fromStdVector(ysSigmaSafe));
@@ -115,6 +116,7 @@ void PlotDiagram::refresh()
             xsSafe.push_back(xs.at(i));
             ysSafe.push_back(ys.at(i));
         }
+        graph_->setErrorType(QCPGraph::ErrorType::etNone);
         graph_->setData(
             QVector<double>::fromStdVector(xsSafe), QVector<double>::fromStdVector(ysSafe));
     }

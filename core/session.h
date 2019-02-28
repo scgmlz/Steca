@@ -62,6 +62,7 @@ public:
     QStringList allNiceKeys() const;
     QStringList numericAsciiKeys() const;
     QStringList numericNiceKeys() const;
+    bool hasSigma(int index) const;
 
     // const abbreviations to member member calls
     bool hasData() const { return dataset.countFiles(); }

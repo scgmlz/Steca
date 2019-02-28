@@ -41,8 +41,6 @@ public:
     double gammOverSigma() const { return gammOverSigma_; }
     std::vector<QVariant> peakData() const;
 
-    static bool hasSigma(int index);
-
 private:
     const Metadata* md_;
     deg alpha_, beta_;

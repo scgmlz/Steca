@@ -18,6 +18,7 @@ New or improved functionality:
 Internal improvements:
 
 * All registry entries are properly forgotten when the application quits
+* Big refactorings to prepare for variable metadata list
 * VERSION handled by CMake
 * Service program version.php under version control
 * Added and improved lots of Doxygen comments
