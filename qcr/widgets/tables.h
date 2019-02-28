@@ -65,7 +65,7 @@ public:
 
 class TableView : virtual public QcrRegistered, virtual public QTreeView {
 public:
-    TableView(TableModel*);
+    virtual TableView(TableModel*);
     ~TableView();
 
     void setFromCommand(const QString&) override;
