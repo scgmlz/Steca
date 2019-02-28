@@ -110,9 +110,8 @@ QString CommandRegistry::learn(const QString& name, QcrRegisteredMixin* widget)
 
 void CommandRegistry::forget(const QString& name)
 {
-    qterr << "Registry " << name_ << "(" << widgets_.size() << ") forgets '"
-          << name << "'\n";
-    qterr.flush();
+    //qterr << "Registry " << name_ << "(" << widgets_.size() << ") forgets '"  << name << "'\n";
+    //qterr.flush();
     auto it = widgets_.find(name);
     if (it==widgets_.end()) {
         QByteArray tmp1 = name.toLatin1();
@@ -121,9 +120,6 @@ void CommandRegistry::forget(const QString& name)
                tmp1.constData(), tmp2.constData());
     }
     widgets_.erase(it);
-    qterr << "  remaining";
-    dump(qterr);
-    qterr.flush();
 }
 
 QcrRegisteredMixin* CommandRegistry::find(const QString& name)
