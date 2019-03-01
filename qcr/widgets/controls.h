@@ -116,6 +116,7 @@ public:
     QcrRadioBox(const QString& name, const QString& headline, QcrCell<int>* cell,
                 const QStringList& tags, QLayout* layout);
     int doGetValue() const final { return group_.checkedId(); }
+    // QRadioButton* buttonAt(int i) { return buttons_.at(i); }
 private:
     QStringList tags_;
     QButtonGroup group_;
