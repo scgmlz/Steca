@@ -34,8 +34,6 @@ public:
     void getValuesAndSigma(const size_t idxX, const size_t idxY,
               std::vector<double>& xs, std::vector<double>& ys,
               std::vector<double>& ysSigma) const;
-    void inspect(const QString& header) const;
-
 private:
     std::vector<PeakInfo> peakInfos_;
 };

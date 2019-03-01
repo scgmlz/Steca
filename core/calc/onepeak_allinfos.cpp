@@ -127,18 +127,3 @@ void OnePeakAllInfos::getValuesAndSigma(const size_t indexX, const size_t indexY
         ysSigma.resize(0);
     }
 }
-
-//! For debugging only.
-
-void OnePeakAllInfos::inspect(const QString& header) const
-{
-    qDebug() << header << "#peaks=" << peakInfos_.size();
-    if (!peakInfos_.size())
-        return;
-    const PeakInfo& p = peakInfos_.front();
-    qDebug() << " .. first entry: alpha=" << p.alpha() << "beta=" << p.beta()
-             << "inten=" << p.inten();
-    const PeakInfo& q = peakInfos_.back();
-    qDebug() << " ..  last entry: alpha=" << q.alpha() << "beta=" << q.beta()
-             << "inten=" << q.inten();
-}
