@@ -47,7 +47,8 @@ public:
 
 class QcrDockWidget : public QcrBase, public QDockWidget {
 public:
-    QcrDockWidget(const QString& name) : QcrBase{name} {}
+    QcrDockWidget(const QString& name) : QcrBase{name}, QDockWidget{name} {
+        setObjectName(name); }
 };
 
 //! QLabel displaying an icon, with no associated action.
