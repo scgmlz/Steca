@@ -189,7 +189,6 @@ PlotDfgram::PlotDfgram()
 
 PlotDfgram::~PlotDfgram()
 {
-    gConsole->forget(overlay_->name());
     delete overlay_;
 }
 

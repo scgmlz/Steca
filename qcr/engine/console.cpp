@@ -74,19 +74,19 @@ public:
     CommandRegistry() = delete;
     CommandRegistry(const CommandRegistry&) = delete;
     CommandRegistry(const QString& _name) : name_(_name) {}
-    QString learn(const QString&, QcrRegistered*);
+    QString learn(const QString&, QcrCommandable*);
     void forget(const QString&);
-    QcrRegistered* find(const QString& name);
+    QcrCommandable* find(const QString& name);
     void dump(QTextStream&) const;
     QString name() const { return name_; }
     int size() const { return widgets_.size(); }
 private:
     const QString name_;
-    std::map<const QString, QcrRegistered*> widgets_;
+    std::map<const QString, QcrCommandable*> widgets_;
     std::map<const QString, int> numberedEntries_;
 };
 
-QString CommandRegistry::learn(const QString& name, QcrRegistered* widget)
+QString CommandRegistry::learn(const QString& name, QcrCommandable* widget)
 {
     ASSERT(name!=""); // empty name only allowed for non-settable QcrBase
     qterr << "Registry " << name_ << " learns '" << name << "'\n"; qterr.flush();
@@ -122,7 +122,7 @@ void CommandRegistry::forget(const QString& name)
     widgets_.erase(it);
 }
 
-QcrRegistered* CommandRegistry::find(const QString& name)
+QcrCommandable* CommandRegistry::find(const QString& name)
 {
     auto entry = widgets_.find(name);
     if (entry==widgets_.end())
@@ -190,7 +190,7 @@ Console::~Console()
 //! This is used by the QcrModal modal dialogs. On terminating, QcrModal calls
 //! closeModalDialog(), which pops the current registry away, so that the previous
 //! registry is reinstated.
-QString Console::learn(const QString& nameArg, QcrRegistered* widget)
+QString Console::learn(const QString& nameArg, QcrCommandable* widget)
 {
     QString name = nameArg;
     if (name[0]=='@') {
@@ -381,7 +381,7 @@ Console::Result Console::wrappedCommand(const QString& line)
         }
         return Result::ok;
     }
-    QcrRegistered* w = registry().find(cmd);
+    QcrCommandable* w = registry().find(cmd);
     if (!w) {
         qterr << "Command '" << cmd << "' not found\n"; qterr.flush();
         return Result::err;

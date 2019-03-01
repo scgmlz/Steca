@@ -65,16 +65,9 @@ public:
     void remakeAll();
 };
 
-
-//! Mix-in for QObject, enforcing a unique name, providing Console connection.
-//!
-//! Note on console learning and forgetting: In the c'tor, the console learns
-//! the object name. Forgetting, however, must be implemented in a child class
-//! destructor; otherwise it would happen too early.
-class QcrRegistered : public QcrBase {
+class QcrCommandable : public QcrBase {
 protected:
-    QcrRegistered(const QString& name);
-    ~QcrRegistered();
+    QcrCommandable(const QString& name);
 public:
     virtual void setFromCommand(const QString&) = 0;
 protected:
@@ -82,10 +75,23 @@ protected:
 };
 
 
+//! Mix-in for QObject, enforcing a unique name, providing Console connection.
+//!
+//! Note on console learning and forgetting: In the c'tor, the console learns
+//! the object name. Forgetting, however, must be implemented in a child class
+//! destructor; otherwise it would happen too early.
+class QcrRegistered : public QcrCommandable {
+protected:
+    QcrRegistered(const QString& name);
+    ~QcrRegistered();
+};
+
+
 //! A modeless (= persistent spawned popup) dialog with support for capture&replay.
 class QcrModelessDialog : protected QcrRegistered, protected QDialog {
 protected:
     QcrModelessDialog(QWidget* parent, const QString& name);
+    ~QcrModelessDialog();
 public:
     void setFromCommand(const QString&) final;
 private:

@@ -74,17 +74,25 @@ void QcrRoot::remakeAll()
 
 
 //  ***********************************************************************************************
-//! @class QcrRegistered
+//! @class QcrCommandable
 
-QcrRegistered::QcrRegistered(const QString& name)
-    : QcrBase {gConsole->learn(name, this)} // console may change name (expand macros)
+QcrCommandable::QcrCommandable(const QString& name)
+    : QcrBase {name}
 {}
 
 //! Returns true if the value of *this is not to be stored as part of the QSettings.
-bool QcrRegistered::adhoc() const
+bool QcrCommandable::adhoc() const
 {
     return name().left(6)=="adhoc_";
 }
+
+
+//  ***********************************************************************************************
+//! @class QcrRegistered
+
+QcrRegistered::QcrRegistered(const QString& name)
+    : QcrCommandable {gConsole->learn(name, this)} // console may change name (expand macros)
+{}
 
 QcrRegistered::~QcrRegistered()
 {
@@ -100,6 +108,10 @@ QcrModelessDialog::QcrModelessDialog(QWidget* parent, const QString& name)
     , QDialog {parent}
 {
     setModal(false);
+}
+
+QcrModelessDialog::~QcrModelessDialog()
+{
 }
 
 void QcrModelessDialog::closeEvent(QCloseEvent* event)

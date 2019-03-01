@@ -23,11 +23,12 @@
 //! @class QcrModal
 
 QcrModal::QcrModal(const QString& name)
-    : QcrRegistered {"@push " + name}
+    : QcrCommandable {gConsole->learn("@push " + name,this)}
 {}
 
 QcrModal::~QcrModal()
 {
+    gConsole->forget(name());
     gConsole->closeModalDialog();
 }
 
