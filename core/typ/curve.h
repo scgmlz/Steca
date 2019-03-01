@@ -40,7 +40,7 @@ public:
 
     Curve intersect(const Range&) const;
     Curve intersect(const Ranges&) const;
-    Curve subtract(const std::function<double(double)>& func) const;
+    Curve subtract(const std::function<double(double)>& func) const; // TODO unused!
 
     int idxMax() const; //!< the index of the maximum y value
 
