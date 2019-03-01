@@ -153,11 +153,6 @@ DialogSave::DialogSave(
     setLayout(layout);
 }
 
-DialogSave::~DialogSave()
-{
-    qDebug() << "DEBUG ~DialogSave";
-}
-
 void DialogSave::saveCurrent()
 {
     const QString name = path();

@@ -33,7 +33,6 @@ public:
     DialogSave(const DialogSave&) = delete;
     DialogSave(QWidget* _parent, const QString& _name, const QString& _title,
                const QStringList& _extensions);
-    ~DialogSave();
 
 protected:
     QProgressBar progressBar;
