@@ -63,10 +63,10 @@ public:
 //! Based on QTreeView, with hidden 1st column.
 //! QTreeView inherits from QAbstractItemView.
 
-class TableView : public QTreeView, public QcrRegisteredMixin {
+class TableView : public QcrRegistered, public QTreeView {
 public:
-    TableView() = delete;
     TableView(TableModel*);
+    ~TableView();
 
     void setFromCommand(const QString&) override;
     virtual void onData();
@@ -85,7 +85,7 @@ protected:
 
 class CheckTableView : public TableView {
 public:
-    CheckTableView(TableModel* model) : TableView(model) {}
+    CheckTableView(TableModel* model);
     void setFromCommand(const QString&) override;
 private:
     CheckTableModel* model() { return static_cast<CheckTableModel*>(model_); }

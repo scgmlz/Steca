@@ -100,20 +100,17 @@ MainWin::MainWin(const QString& startupScript)
 MainWin::~MainWin()
 {
     saveSettings();
-    // the following deletions are obligatory to prevent a crash upon closing this MainWin:
     delete imageTrafoActions;
     delete triggers;
     delete toggles;
-    // whereas all the following only reduces the number of perfectly inconsequential leaks:
     delete menus_;
     gGui = nullptr;
-    delete gConsole;
 }
 
 void MainWin::refresh()
 {
     bool hasData = gSession->hasData();
-    bool hasPeak = gSession->peaks.size();
+    bool hasPeak = gSession->peaksSettings.size();
     bool hasBase = gSession->baseline.ranges.size();
     toggles->enableCorr.setEnabled(gSession->hasCorrFile());
     triggers->exportDfgram.setEnabled(hasData);

@@ -23,7 +23,7 @@
 //! @class TableModel
 
 TableModel::TableModel(const QString& name)
-    : name_(name)
+    : name_ {name}
 {}
 
 void TableModel::refreshModel()
@@ -89,21 +89,21 @@ void CheckTableModel::activateAndLog(int row, bool on)
 //  ***********************************************************************************************
 //! @class TableView
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Woverloaded-virtual" // TODO try without
+//#pragma GCC diagnostic push
+//#pragma GCC diagnostic ignored "-Woverloaded-virtual" // TODO try without
 
 TableView::TableView(TableModel* model)
-    : QcrRegisteredMixin {this, model->name()}
-    , model_(model)
+    : QcrRegistered {model->name()}
+    , model_ {model}
 {
     model->setName(name());
     // set model
     QTreeView::setModel(model);
     hideColumn(0); // this should look like a list; 0th column is tree-like
-    connect(model, &QAbstractItemModel::modelReset, [this, model]() {
+    QTreeView::connect(model, &QAbstractItemModel::modelReset, [this, model]() {
             for (int i=0; i<model->columnCount(); ++i)
                 resizeColumnToContents(i); });
-    connect(this, &TableView::clicked, model_, &TableModel::onClicked);
+    QTreeView::connect(this, &TableView::clicked, model_, &TableModel::onClicked);
 
     // other settings
     setHeaderHidden(true);
@@ -113,18 +113,23 @@ TableView::TableView(TableModel* model)
     setRemake([this]() {onData();});
 }
 
+TableView::~TableView()
+{
+    delete model_;
+}
+
 void TableView::setFromCommand(const QString& arg)
 {
     QString cmd, cmdarg;
     strOp::splitOnce(arg, cmd, cmdarg);
     if (cmd!="highlight")
-        throw QcrException("Unexpected command '"+cmd+"' in TableModel "+name());
+        throw QcrException{"Unexpected command '"+cmd+"' in TableModel "+name()};
     if (cmdarg=="")
-        throw QcrException("Missing argument to command 'highlight'");
+        throw QcrException{"Missing argument to command 'highlight'"};
     model_->onHighlight(strOp::to_i(cmdarg));
 }
 
-#pragma GCC diagnostic pop
+//#pragma GCC diagnostic pop
 
 //! Width of a digit
 int TableView::dWidth() const
@@ -190,6 +195,10 @@ void TableView::onData()
 
 //  ***********************************************************************************************
 //! @class CheckTableView
+
+CheckTableView::CheckTableView(TableModel* model)
+    : TableView {model}
+{}
 
 void CheckTableView::setFromCommand(const QString& arg)
 {

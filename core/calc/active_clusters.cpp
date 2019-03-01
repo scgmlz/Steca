@@ -97,7 +97,7 @@ void ActiveClusters::invalidate() const
     grandAvgTime.invalidate();
     grandAvgDeltaTime.invalidate();
     invalidateAvg();
-    gSession->allPeaks.invalidateAll();
+    gSession->peaksOutcome.invalidateAll();
 }
 
 void ActiveClusters::invalidateAvg() const

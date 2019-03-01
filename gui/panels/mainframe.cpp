@@ -36,7 +36,7 @@ Mainframe::Mainframe()
 
     setRemake([this](){
             bool active = gSession->activeClusters.size();
-            bool peakish = gSession->peaks.size();
+            bool peakish = gSession->peaksSettings.size();
             // Work against unwanted heuristics of QTabBar::setTabEnabled.
             // See https://bugreports.qt.io/browse/QTBUG-69930.
             //int oldCurrent = currentIndex();

@@ -17,13 +17,13 @@
 #include "qcr/widgets/tables.h"
 
 //  ***********************************************************************************************
-//! @class MetabigtableModel (local scope)
+//! @class MetatableModel (local scope)
 
 //! The model for MetadatView.
 
-class MetabigtableModel : public CheckTableModel {
+class MetatableModel : public CheckTableModel {
 public:
-    MetabigtableModel() : CheckTableModel("meta") {}
+    MetatableModel() : CheckTableModel("meta") {}
 
     enum { COL_CHECK = 1, COL_TAG, COL_VALUE, NUM_COLUMNS };
 
@@ -34,7 +34,7 @@ private:
     void setActivated(int row, bool on) { gSession->params.smallMetaSelection.set(row, on); }
 
     int columnCount() const final { return NUM_COLUMNS; }
-    int rowCount() const final { return Metadata::numAttributes(false); }
+    int rowCount() const final { return Metadata::numAttributes(true); }
 
     QVariant data(const QModelIndex&, int) const;
     QVariant headerData(int, Qt::Orientation, int) const { return {}; }
@@ -42,12 +42,12 @@ private:
     int highlighted_ {0};
 };
 
-QVariant MetabigtableModel::data(const QModelIndex& index, int role) const
+QVariant MetatableModel::data(const QModelIndex& index, int role) const
 {
     int row = index.row();
+    int col = index.column();
     if (row < 0 || rowCount() <= row)
         return {};
-    int col = index.column();
     switch (role) {
     case Qt::CheckStateRole:
         if (col==COL_CHECK)
@@ -56,7 +56,7 @@ QVariant MetabigtableModel::data(const QModelIndex& index, int role) const
     case Qt::DisplayRole:
         switch (col) {
         case COL_TAG:
-            return Metadata::attributeTag(row, false);
+            return Metadata::attributeTag(row, true);
         case COL_VALUE:
             const Cluster* highlight = gSession->currentCluster();
             if (!highlight)
@@ -72,19 +72,19 @@ QVariant MetabigtableModel::data(const QModelIndex& index, int role) const
 
 
 //  ***********************************************************************************************
-//! @class MetabigtableView (local scope)
+//! @class MetatableView (local scope)
 
 //! Main item in SubframeMetadata: View and control the list of Metadata.
 
-class MetabigtableView : public CheckTableView {
+class MetatableView : public CheckTableView {
 public:
-    MetabigtableView();
+    MetatableView();
 private:
-    MetabigtableModel* model() { return static_cast<MetabigtableModel*>(model_); }
+    MetatableModel* model() { return static_cast<MetatableModel*>(model_); }
 };
 
-MetabigtableView::MetabigtableView()
-    : CheckTableView(new MetabigtableModel())
+MetatableView::MetatableView()
+    : CheckTableView(new MetatableModel)
 {
     setColumnWidth(0, 0);
     setColumnWidth(1,  .5*mWidth());
@@ -102,6 +102,6 @@ SubframeMetadata::SubframeMetadata()
         gSession->params.smallMetaSelection.vec.push_back({false});
     setFeatures(DockWidgetMovable);
     setWindowTitle("Metadata");
-    setWidget(new MetabigtableView());
+    setWidget(new MetatableView);
     setRemake([this](){setEnabled(gSession->hasData());});
 }

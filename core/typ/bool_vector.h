@@ -48,15 +48,17 @@ public:
     BoolMap(const BoolMap&) = delete;
     BoolMap(BoolMap&&) = default;
 
-    void replaceKeys(const QStringList&);
+    void replaceKeys(const QStringList&, bool on);
     void set(const QString&, bool);
-    void set(int i, bool on) { set(availableKeys_[i], on); }
+    void set(int i, bool on) { set(availableKeys_.at(i), on); }
     void setAll(bool);
     QcrCell<bool>* cellAt(const QString&);
 //    QcrCell<bool>* cellAt(int i) { return cellAt(availableKeys_[i]); }
 
     bool isSelected(const QString& name) const { return data.at(name).val(); }
-    bool isSelected(int i) const { return data.at(availableKeys_[i]).val(); }
+    bool isSelected(int i) const { return data.at(availableKeys_.at(i)).val(); }
+    int size() const { return availableKeys_.size(); }
+    const QString& keyAt(int i) const  { return availableKeys_.at(i); }
     const QStringList& availableKeys() const { return availableKeys_; }
     QStringList selectedKeys() const;
 //    int numSelected() const { return list.yield(this).size(); }

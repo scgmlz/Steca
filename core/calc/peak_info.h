@@ -15,14 +15,18 @@
 #ifndef PEAK_INFO_H
 #define PEAK_INFO_H
 
-#include "core/raw/metadata.h"
+#include "core/base/angles.h"
 #include "core/typ/range.h"
+
+class Metadata;
+class OnePeakSettings;
 
 //! Metadata, peak fit results, and pole figure angles.
 
 class PeakInfo final {
 public:
-    PeakInfo(const Metadata*, deg alpha, deg beta, Range, double, double /*error*/,
+    PeakInfo(const Metadata*,
+             deg alpha, deg beta, Range, double, double /*error*/,
              deg, deg /*error*/, double, double /*error*/, double, double /*error*/);
     // used all_infos.cpp 70
     PeakInfo(deg alpha, deg beta, Range, double, double /*error*/, deg, deg /*error*/,
@@ -31,9 +35,6 @@ public:
     PeakInfo(deg alpha, deg beta);
     PeakInfo(const PeakInfo&) = delete;
     PeakInfo(PeakInfo&&) = default;
-
-    static QStringList dataTags(bool nice);
-    static QStringList metaTags();
 
     deg alpha() const { return alpha_; }
     deg beta() const { return beta_; }
@@ -44,10 +45,8 @@ public:
     double gammOverSigma() const { return gammOverSigma_; }
     std::vector<QVariant> peakData() const;
 
-    static bool hasSigma(int index);
-
 private:
-    const Metadata* md_;
+    const Metadata*const md_;
     deg alpha_, beta_;
     Range rgeGma_;
     double inten_, intenError_;

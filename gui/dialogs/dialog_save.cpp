@@ -17,6 +17,7 @@
 #include "gui/dialogs/dialog_save.h"
 #include "gui/dialogs/file_dialog.h"
 //#include "qcr/base/debug.h"
+#include "qcr/widgets/actions.h"
 #include <QGroupBox>
 
 namespace {
@@ -61,18 +62,19 @@ DialogfieldPath::DialogfieldPath(QcrModalDialog* _parent)
 
     fileEdit = new QcrLineEdit{"file"};
 
-    auto* actBrowse_ = new QcrTrigger{"selectDir", "Browse..."};
-    connect(actBrowse_, &QAction::triggered, [this]() {
+    auto* browseBtn = new QcrTextTriggerButton{"selectDir", "Browse..."};
+    browseBtn->trigger()->setTriggerHook(
+        [this]() {
             dirEdit->setCellValue(
                 file_dialog::queryDirectory(
                     parent, "Select folder", dirEdit->text())); });
 
     auto* grid = new QGridLayout;
-    grid->addWidget(new QLabel("Save to folder:"),       0, 0, Qt::AlignRight);
-    grid->addWidget(dirEdit,                             0, 1);
-    grid->addWidget(new QcrTextTriggerButton(actBrowse_),0, 2);
-    grid->addWidget(new QLabel("File name:"),            1, 0, Qt::AlignRight);
-    grid->addWidget(fileEdit,                            1, 1);
+    grid->addWidget(new QLabel("Save to folder:"), 0, 0, Qt::AlignRight);
+    grid->addWidget(dirEdit,                       0, 1);
+    grid->addWidget(browseBtn,                     0, 2);
+    grid->addWidget(new QLabel("File name:"),      1, 0, Qt::AlignRight);
+    grid->addWidget(fileEdit,                      1, 1);
 
     setLayout(grid);
 }
@@ -108,30 +110,28 @@ DialogSave::DialogSave(
         auto* rb = new QcrRadioButton{"fmt."+fmt, "."+fmt};
         fmt2button.emplace(fmt, rb);
         rb->setCellValue(saveFmt == fmt);
-        connect(rb, &QRadioButton::clicked, [this,fmt]() { saveFmt = fmt; });
+        QRadioButton::connect(rb, &QRadioButton::clicked, [this,fmt]() { saveFmt = fmt; });
         fileExtensionGroup->addButton(rb);
         ftypeGrid->addWidget(rb);
     }
 
-    auto* actCancel_ = new QcrTrigger{"cancel", "Cancel"};
-    auto* actSave_   = new QcrTrigger{"save", "Save"};
+    auto* cancelBtn = new QcrTextTriggerButton{"cancel", "Cancel"};
+    auto* saveBtn   = new QcrTextTriggerButton{"save", "Save"};
+    cancelBtn->trigger()->setTriggerHook([this](){ close(); });
+    saveBtn  ->trigger()->setTriggerHook([this](){
+                                             progressBar.show();
+                                             save();
+                                             close(); });
 
-    connect(actCancel_, &QAction::triggered, [this]() { close(); });
-    connect(actSave_, &QAction::triggered,
-            [this]()->void{
-                progressBar.show();
-                save();
-                close(); });
-
-    auto updateSaveable = [this,actSave_](const QString) {
-                              actSave_->setEnabled(!pathField->stem().isEmpty()); };
+    auto updateSaveable = [this,actSave=saveBtn->trigger()](const QString) {
+                              actSave->setEnabled(!pathField->stem().isEmpty()); };
     updateSaveable("");
     pathField->dirEdit ->setHook(updateSaveable);
     pathField->fileEdit->setHook(updateSaveable);
 
     // Layout
 
-    auto* ftype = new QGroupBox("File type");
+    auto* ftype = new QGroupBox{"File type"};
     ftype->setVisible(_extensions.size()>1);
     ftype->setLayout(ftypeGrid);
 
@@ -139,18 +139,23 @@ DialogSave::DialogSave(
     setup->addWidget(pathField);
     setup->addWidget(ftype);
 
-    auto* bottom = new QHBoxLayout();
+    auto* bottom = new QHBoxLayout;
     bottom->addWidget(&progressBar);
     bottom->setStretchFactor(&progressBar, 333);
     bottom->addStretch(1);
-    bottom->addWidget(new QcrTextTriggerButton(actCancel_));
-    bottom->addWidget(new QcrTextTriggerButton(actSave_));
+    bottom->addWidget(cancelBtn);
+    bottom->addWidget(saveBtn);
 
     layout = new QVBoxLayout;
     layout->addLayout(setup);
     layout->addLayout(bottom);
 
     setLayout(layout);
+}
+
+DialogSave::~DialogSave()
+{
+    qDebug() << "DEBUG ~DialogSave";
 }
 
 void DialogSave::saveCurrent()
@@ -232,7 +237,7 @@ void DialogMultisave::saveMultifile()
     if (existingPaths.size()) {
         if (!file_dialog::confirmOverwrite(
                 existingPaths.size()>1 ? "Files exist" : "File exists",
-                static_cast<QWidget*>(parent()), abbreviateList(existingPaths,7,5)))
+                static_cast<QWidget*>(QWidget::parent()), abbreviateList(existingPaths,7,5)))
             return;
     }
     // save files one by one

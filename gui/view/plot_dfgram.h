@@ -24,6 +24,7 @@ class PlotDfgram : public QCustomPlot {
 public:
     PlotDfgram();
     PlotDfgram(const PlotDfgram&) = delete;
+    ~PlotDfgram();
 
     void plotEmpty();
     void renderAll();

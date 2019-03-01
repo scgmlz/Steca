@@ -13,12 +13,13 @@
 //  ***********************************************************************************************
 
 #include "gui/panels/controls_baseline.h"
+#include "qcr/base/debug.h" // ASSERT
+#include "qcr/widgets/controls.h"
+#include "qcr/widgets/tables.h"
 #include "core/session.h"
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"
 #include "gui/view/range_control.h"
-#include "qcr/widgets/tables.h"
-#include "qcr/base/debug.h" // ASSERT
 
 //  ***********************************************************************************************
 //! @class BaseRangesModel, used in BaseRangesView (local scope)

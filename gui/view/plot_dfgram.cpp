@@ -13,13 +13,14 @@
 //  ***********************************************************************************************
 
 #include "core/fit/peak_function.h"
+#include "qcr/base/qcrexception.h"
+#include "qcr/engine/console.h"
 #include "gui/view/plot_dfgram.h"
 #include "core/session.h"
 #include "gui/view/toggles.h"
 #include "gui/mainwin.h"
 #include "gui/view/plot_overlay.h"
 #include "gui/view/range_control.h"
-#include "qcr/base/qcrexception.h"
 
 namespace colors {
 QColor baseEmph{0x00, 0xff, 0x00, 0x50}; // green
@@ -39,10 +40,11 @@ QColor scatter {255, 0, 0};
 
 //! Equips PlotOverlay with domain-specific colors and setter functions.
 
-class PlotDfgramOverlay : public PlotOverlay, public QcrRegisteredMixin {
+class PlotDfgramOverlay : public QcrRegistered,public PlotOverlay  {
 public:
     PlotDfgramOverlay(class PlotDfgram& parent)
-        : PlotOverlay{parent, RangeControl::STEP}, QcrRegisteredMixin{this,"dfgram"} {}
+        : QcrRegistered {"dfgram"}
+        , PlotOverlay {parent, RangeControl::STEP} {}
 private:
     void setFromCommand(const QString&) final;
     void addRange(const Range&) final;
@@ -53,7 +55,7 @@ private:
 
 void PlotDfgramOverlay::addRange(const Range& range)
 {
-    doLog(QString("dfgram add %1 %2").arg(range.min).arg(range.max));
+    gConsole->log(QString("dfgram add %1 %2").arg(range.min).arg(range.max));
 
     // is it a valid range?
     const auto datapointCount = gSession->currentOrAvgeDfgram()->curve.intersect(range).size();
@@ -74,7 +76,7 @@ void PlotDfgramOverlay::addRange(const Range& range)
         const Fitted fitted = PeakFunction::fromFit(peak.functionName(), rawCurve,
                                                     RawOutcome(rawCurve));
         if (peak.isRaw() || (fitted.success && fitted.f->nPar() <= datapointCount)) {
-            gSession->peaks.add(range);
+            gSession->peaksSettings.add(range);
             gSession->onPeaks();
         }
     } break;
@@ -88,13 +90,13 @@ void PlotDfgramOverlay::addRange(const Range& range)
 
 void PlotDfgramOverlay::selectRange(double x)
 {
-    doLog(QString("dfgram sel %1").arg(x));
+    gConsole->log(QString("dfgram sel %1").arg(x));
     bool selectionChanged = false;
     // prioritize baseline sel. when editing baselines
     if (gSession->params.editableRange == EditableRange::BASELINE)
         selectionChanged = gSession->baseline.ranges.selectByValue(x);
     if (!selectionChanged) // no baseline found:
-        selectionChanged = gSession->peaks.selectByValue(x);
+        selectionChanged = gSession->peaksSettings.selectByValue(x);
     //if a peak or a baseline.range has been selected, redraw all:
     if (selectionChanged)
         gRoot->remakeAll();
@@ -185,6 +187,11 @@ PlotDfgram::PlotDfgram()
     fits_->setPen(QPen(Qt::red));
 }
 
+PlotDfgram::~PlotDfgram()
+{
+    delete overlay_;
+}
+
 void PlotDfgram::clearReflLayer()
 {
     for (QCPGraph* g : reflGraph_)
@@ -234,9 +241,9 @@ void PlotDfgram::renderAll()
         addBgItem(ranges.at(jR),
                   showBaselineHighlight && jR==gSession->baseline.ranges.selectedIndex() ?
                   colors::baseEmph : colors::baseStd);
-    for (int jP=0; jP<gSession->peaks.size(); ++jP)
-        addBgItem(gSession->peaks.at(jP).range(),
-                  showPeakHighlight && jP==gSession->peaks.selectedIndex() ?
+    for (int jP=0; jP<gSession->peaksSettings.size(); ++jP)
+        addBgItem(gSession->peaksSettings.at(jP).range(),
+                  showPeakHighlight && jP==gSession->peaksSettings.selectedIndex() ?
                   colors::peakEdit : colors::peakStd);
 
     if (!gSession->hasData() || !gSession->currentCluster()) {
@@ -253,7 +260,7 @@ void PlotDfgram::renderAll()
 
     // calculate peaks
     std::vector<Curve> fitCurves;
-    for (int jP=0; jP<gSession->peaks.size(); ++jP)
+    for (int jP=0; jP<gSession->peaksSettings.size(); ++jP)
         fitCurves.push_back(dfgram->getPeakAsCurve(jP));
 
     const Range& tthRange = dfgram->curve.rgeX();

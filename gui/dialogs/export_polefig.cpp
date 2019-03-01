@@ -33,14 +33,14 @@
 ExportPolefig::ExportPolefig()
     : DialogMultisave(
         gGui, "ExportPolefig", "Pole figure export",
-        QStringList{"dat", "lst", "csv", "pol"}, "peak", gSession->peaks.size()>0)
+        QStringList{"dat", "lst", "csv", "pol"}, "peak", gSession->peaksSettings.size()>0)
 {
     fmt2button["pol"]->setEnabled(gSession->params.interpolParams.isStandardInterpolation());
 }
 
 int ExportPolefig::multiplicity()
 {
-    return gSession->peaks.size();
+    return gSession->peaksSettings.size();
 }
 
 void ExportPolefig::writeCurrent(QTextStream& stream)

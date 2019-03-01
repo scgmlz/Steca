@@ -40,13 +40,15 @@ public:
     //! Sets a function that is called whenever function setValue changed the current value_.
     void setHook    (std::function<void(const T)> f) { hook_ = f; }
     //! Sets callback functions, intended to set and get the owning widget's value.
-    void setCallbacks(
-        std::function<T   (       )> _get,
-        std::function<void(const T)> _set)
-        {
-            callbackGet_.reset(new std::function<T()>{_get});
-            callbackSet_ = _set;
-        }
+    void setCallbacks(std::function<T   (       )> _get, std::function<void(const T)> _set) {
+        callbackGet_.reset(new std::function<T()>{_get});
+        callbackSet_ = _set;
+    }
+    //! Resets callback functions to initial state.
+    void releaseCallbacks() {
+        callbackGet_.release();
+        callbackSet_ = [](const T) {};
+    }
     //! Returns the current value_.
     T val() const { return value_; }
     //! Returns true if and only if we are calling a "set" or "get" callback function.
@@ -55,9 +57,9 @@ private:
     T value_;
     bool amCalling_ {false};
     std::function<T   (const T)> coerce_      = [](const T v){ return v;};
-    std::function<void(const T)> hook_        = [](const T)  {;};
+    std::function<void(const T)> hook_        = [](const T) {};
     std::unique_ptr<std::function<T()>> callbackGet_;
-    std::function<void(const T)> callbackSet_ = [](const T)  {;};
+    std::function<void(const T)> callbackSet_ = [](const T) {};
 };
 
 //  ***********************************************************************************************

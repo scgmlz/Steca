@@ -33,11 +33,10 @@ public:
     ~Console();
     Console(const Console&) = delete;
 
-    QString learn(const QString& name, class QcrRegisteredMixin*);
+    QString learn(const QString& name, class QcrCommandable*);
     void forget(const QString& name);
     void closeModalDialog();
     void runScript(const QString& fName);
-    void call(const QString&);
     void commandsFromStack();
     void startingGui();
 
@@ -48,8 +47,7 @@ private:
                         gui,   //!< commands come from user action in GUI
                         ini,   //!< commands come from MainWin initialization
                         cli,   //!< commands come from command-line interface
-                        fil,   //!< commands come from stack, hence from file
-                        sys    //!< system call, currently only from startup script
+                        fil    //!< commands come from stack, hence from file
     } caller_;
     enum class Result : int { ok, err, suspend };
     QDateTime startTime_;

@@ -62,17 +62,17 @@ void setRange(QCPAxis* axis, const std::vector<double>& datArg)
 PlotDiagram::PlotDiagram()
 {
     graph_ = addGraph();
-    graph_->setErrorType(QCPGraph::ErrorType::etValue);
 
-    auto ss = graph_->scatterStyle();
+    // copy, modify, write back the symbol plot style
+    QCPScatterStyle ss = graph_->scatterStyle();
     ss.setBrush(QBrush(Qt::BrushStyle::NoBrush));
     ss.setShape(QCPScatterStyle::ssCircle);
     ss.setSize(5);
     graph_->setScatterStyle(ss);
 
     graph_->setLineStyle(QCPGraph::LineStyle::lsNone);
-    graph_->setPen(QPen(Qt::blue));
-    graph_->setErrorPen(QPen(Qt::black));
+    graph_->setPen(QPen{Qt::blue});
+    graph_->setErrorPen(QPen{Qt::black});
 }
 
 PlotDiagram::PlotDiagram(int w, int h)
@@ -83,16 +83,16 @@ PlotDiagram::PlotDiagram(int w, int h)
 
 void PlotDiagram::refresh()
 {
-    if (!gSession->activeClusters.size() || !gSession->peaks.size())
+    if (!gSession->activeClusters.size() || !gSession->peaksSettings.size())
         return;
 
     graph_->clearData();
 
-    const int idxX = int(gSession->params.diagramX.val());
-    const int idxY = int(gSession->params.diagramY.val());
+    const int idxX = gSession->params.diagramX.val();
+    const int idxY = gSession->params.diagramY.val();
 
     std::vector<double> xs, ys, ysSigma;
-    gSession->allPeaks.currentInfoSequence()->getValuesAndSigma(idxX, idxY, xs, ys, ysSigma);
+    gSession->peaksOutcome.currentInfoSequence()->getValuesAndSigma(idxX, idxY, xs, ys, ysSigma);
 
     std::vector<double> xsSafe, ysSafe, ysSigmaSafe;
     if (ysSigma.size() > 0) {// has valueError
@@ -104,9 +104,10 @@ void PlotDiagram::refresh()
             ysSafe.push_back(ys.at(i));
             ysSigmaSafe.push_back(ysSigma.at(i));
         }
-        graph_->setDataValueError(
-            QVector<double>::fromStdVector(xsSafe), QVector<double>::fromStdVector(ysSafe),
-            QVector<double>::fromStdVector(ysSigmaSafe));
+        graph_->setErrorType(QCPGraph::ErrorType::etValue);
+        graph_->setDataValueError(QVector<double>::fromStdVector(xsSafe),
+                                  QVector<double>::fromStdVector(ysSafe),
+                                  QVector<double>::fromStdVector(ysSigmaSafe));
     } else {
         for (size_t i = 0; i < xs.size(); ++i) {
             if (   qIsNaN(xs.at(i)) || qIsInf(xs.at(i))
@@ -115,8 +116,9 @@ void PlotDiagram::refresh()
             xsSafe.push_back(xs.at(i));
             ysSafe.push_back(ys.at(i));
         }
-        graph_->setData(
-            QVector<double>::fromStdVector(xsSafe), QVector<double>::fromStdVector(ysSafe));
+        graph_->setErrorType(QCPGraph::ErrorType::etNone);
+        graph_->setData(QVector<double>::fromStdVector(xsSafe),
+                        QVector<double>::fromStdVector(ysSafe));
     }
 
     if (!xsSafe.size())

@@ -76,8 +76,8 @@ void OnePeakAllInfos::get4(const int indexX, const int indexY,
     std::vector<int> is;
     sortColumns(xs, ys, is);
 
-    const OnePeakSettings* peak = gSession->peaks.selectedPeak();
-    if (peak && !peak->isRaw() && PeakInfo::hasSigma(indexY)) {
+    const OnePeakSettings* peak = gSession->peaksSettings.selectedPeak();
+    if (peak && !peak->isRaw() && gSession->hasSigma(indexY)) {
         ysLow.resize(n);
         ysHig.resize(n);
         for (int i=0; i<n; ++i) {
@@ -114,8 +114,8 @@ void OnePeakAllInfos::getValuesAndSigma(const size_t indexX, const size_t indexY
     std::vector<int> is;
     sortColumns(xs, ys, is);
 
-    const OnePeakSettings* peak = gSession->peaks.selectedPeak();
-    if (peak && !peak->isRaw() && PeakInfo::hasSigma(indexY)) {
+    const OnePeakSettings* peak = gSession->peaksSettings.selectedPeak();
+    if (peak && !peak->isRaw() && gSession->hasSigma(indexY)) {
 
         ysSigma.resize(n);
         for (auto i : is) {

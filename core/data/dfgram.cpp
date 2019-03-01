@@ -52,14 +52,14 @@ Curve computeCurveMinusBg(const Dfgram* parent)
 
 RawOutcome computeRawOutcome(int jP, const Dfgram* parent)
 {
-    OnePeakSettings& peak = gSession->peaks.at(jP);
+    OnePeakSettings& peak = gSession->peaksSettings.at(jP);
     const Curve peakCurve = parent->getCurveMinusBg().intersect(peak.range());
     return RawOutcome(peakCurve);
 }
 
 Fitted computePeakFit(int jP, const Dfgram* parent)
 {
-    OnePeakSettings& peak = gSession->peaks.at(jP);
+    OnePeakSettings& peak = gSession->peaksSettings.at(jP);
     return PeakFunction::fromFit(
         peak.functionName(), parent->getCurveMinusBg().intersect(peak.range()),
         parent->getRawOutcome(jP));
@@ -67,7 +67,7 @@ Fitted computePeakFit(int jP, const Dfgram* parent)
 
 Curve computePeakAsCurve(int jP, const Dfgram* parent)
 {
-    OnePeakSettings& peak = gSession->peaks.at(jP);
+    OnePeakSettings& peak = gSession->peaksSettings.at(jP);
     const Curve& curveMinusBg = parent->getCurveMinusBg();
     const Fitted& fun = parent->getPeakFit(jP);
     if (!fun.success)
@@ -89,20 +89,20 @@ Dfgram::Dfgram(Curve&& c)
     , bgFit_        {&computeBgFit}
     , bgAsCurve_    {&computeBgAsCurve}
     , curveMinusBg_ {&computeCurveMinusBg}
-    , rawOutcomes_ {[]()->int {return gSession->peaks.size();},
+    , rawOutcomes_ {[]()->int {return gSession->peaksSettings.size();},
               [](int jP, const Dfgram* parent)->RawOutcome{
                   return computeRawOutcome(jP, parent); } }
-    , peakFits_ {[]()->int {return gSession->peaks.size();},
+    , peakFits_ {[]()->int {return gSession->peaksSettings.size();},
               [](int jP, const Dfgram* parent)->Fitted{
                   return computePeakFit(jP, parent); } }
-    , peaksAsCurve_ {[]()->int {return gSession->peaks.size();},
+    , peaksAsCurve_ {[]()->int {return gSession->peaksSettings.size();},
               [](int jP, const Dfgram* parent)->Curve{
                   return computePeakAsCurve(jP, parent); } }
 {}
 
 Dfgram::~Dfgram()
 {
-    gSession->allPeaks.invalidateAll();
+    gSession->peaksOutcome.invalidateAll();
 }
 
 void Dfgram::invalidateBg() const
@@ -118,11 +118,11 @@ void Dfgram::invalidatePeaks() const
     rawOutcomes_.clear_vector();
     peakFits_.clear_vector();
     peaksAsCurve_.clear_vector();
-    gSession->allPeaks.invalidateAll();
+    gSession->peaksOutcome.invalidateAll();
 }
 
 void Dfgram::invalidatePeakAt(int jP) const // TODO restrict to peak jP
 {
     invalidatePeaks();
-    gSession->allPeaks.invalidateAt(jP);
+    gSession->peaksOutcome.invalidateAt(jP);
 }

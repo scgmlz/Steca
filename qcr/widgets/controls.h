@@ -3,7 +3,7 @@
 //  libqcr: capture and replay Qt widget actions
 //
 //! @file      qcr/widgets/controls.h
-//! @brief     Defines enhanced control widgets like QcrAction, QcrSpinBox, and many others
+//! @brief     Defines enhanced control widgets like QcrSpinBox, QcrRadioButton, and many others
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -16,7 +16,6 @@
 #define CONTROLS_H
 
 #include "qcr/engine/single_value.h"
-#include <QAction>
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QComboBox>
@@ -26,70 +25,10 @@
 #include <QLineEdit>
 #include <QRadioButton>
 #include <QSpinBox>
-#include <QToolButton>
 #include <QtGlobal>
 
-class QcrAction : public QAction {
-public:
-    QcrAction(const QString& text);
-protected:
-    QString tooltip_;
-    bool hasFocus();
-};
-
-//! Trigger, for use in buttons or menu entries, that can also be activated by console command.
-class QcrTrigger : public QcrAction, public QcrRegisteredMixin {
-public:
-    QcrTrigger(const QString& name, const QString& text, const QString& iconFile="");
-    QcrTrigger(const QString& name, const QString& text, const QString& iconFile,
-               const QKeySequence& shortcut);
-    void setFromCommand(const QString&) override;
-    void setTriggerHook(std::function<void()> triggerHook) { triggerHook_ = triggerHook; }
-private:
-    std::function<void()> triggerHook_ = [](){;};
-};
-
-//! Trigger button with text display and associated action.
-class QcrTextTriggerButton : public QToolButton, public QcrBaseMixin {
-public:
-    QcrTextTriggerButton(QcrTrigger*);
-};
-
-//! Trigger button with icon and associated action.
-class QcrIconTriggerButton : public QToolButton, public QcrBaseMixin {
-public:
-    QcrIconTriggerButton(QcrTrigger*);
-};
-
-//! Toggle, for use in buttons or menu entries, that can also be switched by console command.
-class QcrToggle : public QcrAction, public QcrSingleValue<bool> {
-public:
-    QcrToggle(const QString& name, const QString& text, bool on,
-              const QString& iconFile="", const QKeySequence& shortcut = {});
-    QcrToggle(const QString& name, QcrCell<bool>* cell, const QString& text,
-              const QString& iconFile="", const QKeySequence& shortcut = {});
-    bool doGetValue() const final { return isChecked(); }
-private:
-    void initToggle(const QString& iconFile, const QKeySequence& shortcut);
-    void doSetValue(bool val) final { setChecked(val); }
-    // hide some member functions of QAction:
-    void setChecked(bool val) { QAction::setChecked(val); }
-};
-
-//! Toggle button with text display and associated action.
-class QcrTextToggleButton : public QToolButton, public QcrBaseMixin {
-public:
-    QcrTextToggleButton(QcrToggle*);
-};
-
-//! Toggle button with icon and associated action.
-class QcrIconToggleButton : public QToolButton, public QcrBaseMixin {
-public:
-    QcrIconToggleButton(QcrToggle*);
-};
-
 //! Named integer-valued spin box that can be set by console command.
-class QcrSpinBox : public QSpinBox, public QcrSingleValue<int> {
+class QcrSpinBox : public QcrSingleValue<int>, public QSpinBox {
 public:
     QcrSpinBox(const QString& name, QcrCell<int>* cell, int ndigits, bool withDot = false,
                int min = INT_MIN, int max = INT_MAX, const QString& tooltip="");
@@ -104,7 +43,7 @@ private:
 };
 
 //! Named double-valued spin box that can be set by console command.
-class QcrDoubleSpinBox : public QDoubleSpinBox, public QcrSingleValue<double> {
+class QcrDoubleSpinBox : public QcrSingleValue<double>, public QDoubleSpinBox {
 public:
     QcrDoubleSpinBox(const QString& name, QcrCell<double>* cell, int nDigits, int nDecimals,
                      double min = LLONG_MIN, double max = LLONG_MAX, const QString& tooltip="");
@@ -120,7 +59,7 @@ private:
 };
 
 //! Named check box that can be set by console command.
-class QcrCheckBox : public QCheckBox, public QcrSingleValue<bool> {
+class QcrCheckBox : public QcrSingleValue<bool>, public QCheckBox {
 public:
     QcrCheckBox(const QString& name, const QString& text, QcrCell<bool>* cell);
     bool doGetValue() const final { return isChecked(); }
@@ -131,7 +70,7 @@ private:
 };
 
 //! Named radio button that can be set by console command.
-class QcrRadioButton : public QRadioButton, public QcrSingleValue<bool> {
+class QcrRadioButton : public QcrSingleValue<bool>, public QRadioButton {
 public:
     QcrRadioButton(const QString& name, const QString& text, bool val=false);
     QcrRadioButton(const QString& name, const QString& text, QcrCell<bool>* cell);
@@ -143,7 +82,7 @@ private:
 };
 
 //! Named non-editable combo box that can be set by console command.
-class QcrComboBox : public QComboBox, public QcrSingleValue<int> {
+class QcrComboBox : public QcrSingleValue<int>, public QComboBox {
 public:
     //! Constructor for fixed tag list case.
     QcrComboBox(const QString& name, QcrCell<int>* cell, const QStringList& tags);
@@ -171,7 +110,7 @@ private:
 };
 
 //! Group of radio buttons, of which exactly one is activated.
-class QcrRadioBox : public QGroupBox, public QcrSingleValue<int> {
+class QcrRadioBox : public QcrSingleValue<int>, public QGroupBox {
 public:
     //! Constructor; takes ownership of layout, which is typically provided as "new QVLayout".
     QcrRadioBox(const QString& name, const QString& headline, QcrCell<int>* cell,
@@ -186,7 +125,7 @@ private:
 };
 
 //! Named line edit that can be set by console command.
-class QcrLineEdit : public QLineEdit, public QcrSingleValue<QString> {
+class QcrLineEdit : public QcrSingleValue<QString>, public QLineEdit {
 public:
     QcrLineEdit(const QString& name, const QString& val = "");
     QString doGetValue() const final { return text(); }
@@ -197,7 +136,7 @@ private:
 };
 
 //! Named tab widget that can be set by console command.
-class QcrTabWidget : public QTabWidget, public QcrSingleValue<int> {
+class QcrTabWidget : public QcrSingleValue<int>, public QTabWidget {
 public:
     QcrTabWidget(const QString& name);
     int doGetValue() const final { return currentIndex(); }

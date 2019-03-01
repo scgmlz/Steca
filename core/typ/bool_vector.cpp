@@ -39,9 +39,14 @@ void BoolVector::set(int idx, bool on)
 }
 
 
-void BoolMap::replaceKeys(const QStringList& keys)
+void BoolMap::replaceKeys(const QStringList& keys, bool on)
 {
     availableKeys_ = keys;
+    for (const QString& key: availableKeys_) {
+        auto d = data.find(key);
+        if (d==data.end())
+            data.emplace(key, on);
+    }
 }
 
 void BoolMap::set(const QString& key, bool on)

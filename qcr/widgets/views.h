@@ -22,42 +22,43 @@
 #include <QMainWindow>
 #include <QScrollArea>
 
-class QcrMainWindow : public QMainWindow, public QcrRootMixin {
+class QcrMainWindow : public QcrRoot, public QMainWindow {
 public:
-    QcrMainWindow() : QcrRootMixin{this} {}
+    QcrMainWindow() {}
 };
 
-class QcrWidget : public QWidget, public QcrBaseMixin {
+class QcrWidget : public QcrBase, public QWidget {
 public:
     QcrWidget() = delete;
-    QcrWidget(const QString& name) : QcrBaseMixin(this, name) {}
+    QcrWidget(const QString& name) : QcrBase(name) {}
 };
 
-class QcrFrame : public QFrame, public QcrBaseMixin {
+class QcrFrame : public QcrBase, public QFrame {
 public:
     QcrFrame() = delete;
-    QcrFrame(const QString& name) : QcrBaseMixin{this, name} {}
+    QcrFrame(const QString& name) : QcrBase{name} {}
 };
 
-class QcrScrollArea : public QScrollArea, public QcrBaseMixin {
+class QcrScrollArea : public QcrBase, public QScrollArea {
 public:
     QcrScrollArea() = delete;
-    QcrScrollArea(const QString& name) : QcrBaseMixin{this, name} {}
+    QcrScrollArea(const QString& name) : QcrBase{name} {}
 };
 
-class QcrDockWidget : public QDockWidget, public QcrBaseMixin {
+class QcrDockWidget : public QcrBase, public QDockWidget {
 public:
-    QcrDockWidget(const QString& name) : QcrBaseMixin{this, name} {}
+    QcrDockWidget(const QString& name) : QcrBase{name}, QDockWidget{name} {
+        setObjectName(name); }
 };
 
 //! QLabel displaying an icon, with no associated action.
-class QcrIcon : public QLabel, public QcrBaseMixin {
+class QcrIcon : public QLabel, public QcrBase {
 public:
     QcrIcon(const QString& fileName);
 };
 
 //! Read-only QLineEdit for number display.
-class QcrLineDisplay : public QLineEdit, public QcrBaseMixin {
+class QcrLineDisplay : public QcrBase, public QLineEdit {
 public:
     QcrLineDisplay(std::function<QString()> freshText);
     QcrLineDisplay(int ndigits, bool withDot);

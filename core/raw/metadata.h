@@ -27,8 +27,8 @@ public:
     Metadata(Metadata&&) = default;
 
     static int numAttributes(bool onlyNum);
-    static const QString& attributeTag(int, bool out);
-    static const QStringList& attributeTags(bool out);
+    static const QString& attributeTag(int, bool nice);
+    static const QStringList& attributeTags(bool nice);
     static std::vector<QVariant> attributeNaNs();
     static int size() { return attributeNaNs().size(); }
     static Metadata computeAverage(const std::vector<const Metadata*>& vec);

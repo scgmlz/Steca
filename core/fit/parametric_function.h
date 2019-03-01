@@ -23,7 +23,6 @@
 class DoubleWithError {
 public:
     DoubleWithError() = delete;
-    DoubleWithError(double value);
     DoubleWithError(double value, double error);
     DoubleWithError(const DoubleWithError&) = default; // TODO delete;
     DoubleWithError(DoubleWithError&&) = default;

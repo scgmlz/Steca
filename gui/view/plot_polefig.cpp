@@ -22,7 +22,7 @@ namespace {
 
 std::vector<PolefigPoint> computePoints(const bool flat, const bool withHighlight)
 {
-    const OnePeakAllInfos* allPeaks = gSession->allPeaks.currentInfoSequence();
+    const OnePeakAllInfos* allPeaks = gSession->peaksOutcome.currentInfoSequence();
     if (!allPeaks)
         return {};
 

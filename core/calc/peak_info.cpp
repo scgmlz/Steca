@@ -13,47 +13,9 @@
 //  ***********************************************************************************************
 
 #include "core/calc/peak_info.h"
+#include "core/pars/onepeak_settings.h"
 #include "core/session.h"
 //#include "qcr/base/debug.h"
-
-namespace {
-enum class eReflAttr {
-    ALPHA,
-    BETA,
-    GAMMA1,
-    GAMMA2,
-    INTEN,
-    SIGMA_INTEN,
-    TTH,
-    SIGMA_TTH,
-    FWHM,
-    SIGMA_FWHM,
-    GAMMA_OVER_SIGMA,
-    SIGMA_GAMMA_OVER_SIGMA,
-    NUM_REFL_ATTR,
-};
-
-QString const reflStringTag(int attr, bool out)
-{
-    switch (eReflAttr(attr)) {
-    case eReflAttr::ALPHA: return out ? "alpha" : "α";
-    case eReflAttr::BETA: return out ? "beta" : "β";
-    case eReflAttr::GAMMA1: return out ? "gamma1" : "γ1";
-    case eReflAttr::GAMMA2: return out ? "gamma2" : "γ2";
-    case eReflAttr::INTEN: return "inten";
-    case eReflAttr::SIGMA_INTEN: return out ? "sinten" : "σinten";
-    case eReflAttr::TTH: return out ? "2theta" : "2θ";
-    case eReflAttr::SIGMA_TTH: return out ? "s2theta" : "σ2θ";
-    case eReflAttr::FWHM: return "fwhm";
-    case eReflAttr::SIGMA_FWHM: return out ? "sfwhm" : "σfwhm";
-    case eReflAttr::GAMMA_OVER_SIGMA: return out ? "gamma/sigma" : "γ/σ";
-    case eReflAttr::SIGMA_GAMMA_OVER_SIGMA: return out ? "s(gamma/sigma)" : "σ(γ/σ)";
-    default: ;
-    }
-    qFatal("impossible case");
-}
-
-} // namespace
 
 //  ***********************************************************************************************
 //! @class PeakInfo
@@ -62,7 +24,8 @@ QString const reflStringTag(int attr, bool out)
 //! debug::ensure -1 as unknown value; thus, NaN parameter values should be output
 //! as -1 when output is written for these programs (polefigure!).
 
-PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma, double inten,
+PeakInfo::PeakInfo(const Metadata* md,
+                   deg alpha, deg beta, Range rgeGma, double inten,
                    double intenError, deg tth, deg tthError, double fwhm, double fwhmError,
                    double sog, double sogError)
     : md_(md)
@@ -79,7 +42,8 @@ PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma, double
     , gammOverSigmaError_(sogError)
 {}
 
-PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma)
+PeakInfo::PeakInfo(const Metadata* md,
+                    deg alpha, deg beta, Range rgeGma)
     : PeakInfo(md, alpha, beta, rgeGma,
                Q_QNAN, Q_QNAN, deg(Q_QNAN), deg(Q_QNAN), Q_QNAN, Q_QNAN, Q_QNAN, Q_QNAN)
 {}
@@ -94,23 +58,6 @@ PeakInfo::PeakInfo(deg alpha, deg beta)
     : PeakInfo(nullptr, alpha, beta, Range(),
                Q_QNAN, Q_QNAN, deg(Q_QNAN), deg(Q_QNAN), Q_QNAN, Q_QNAN, Q_QNAN, Q_QNAN)
 {}
-
-QStringList PeakInfo::dataTags(bool nice)
-{
-    QStringList ret;
-    for (int i=0; i<int(eReflAttr::NUM_REFL_ATTR); ++i)
-        ret.append(reflStringTag(i, nice));
-    ret.append(Metadata::attributeTags(nice));
-    return ret;
-}
-
-QStringList PeakInfo::metaTags() // TODO simplify
-{
-    QStringList ret = dataTags(false);
-    for (int i=0; i< (Metadata::numAttributes(false) - Metadata::numAttributes(true)); ++i)
-        ret.removeLast(); // remove all tags that are not numbers
-    return ret;
-}
 
 std::vector<QVariant> PeakInfo::peakData() const
 {
@@ -131,10 +78,4 @@ std::vector<QVariant> PeakInfo::peakData() const
     auto values_to_append = md_ ? md_->attributeValues() : Metadata::attributeNaNs();
     ret.insert(ret.end(), values_to_append.begin(), values_to_append.end());
     return ret;
-}
-
-bool PeakInfo::hasSigma(int index)
-{
-    eReflAttr e = (eReflAttr) index;
-    return e==eReflAttr::INTEN || e==eReflAttr::TTH || e==eReflAttr::FWHM;
 }

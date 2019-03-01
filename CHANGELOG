@@ -6,6 +6,8 @@ New or improved functionality:
 * Plotting:
   * show axis even if there is a single data value
   * leave white space around the data
+* GUI controls:
+  * Voigt parameters only shown when Voigt function is fitted
 * Log & replay:
   * Log file written to file specified by option -l, to <startup_script>.log, or to Steca.log
   * Disallow log file that overwrites startup file
@@ -15,10 +17,13 @@ New or improved functionality:
 
 Internal improvements:
 
+* All registry entries are properly forgotten when the application quits
+* Big refactorings to prepare for variable metadata list
 * VERSION handled by CMake
 * Service program version.php under version control
 * Added and improved lots of Doxygen comments
-* Not all unit linked to tested library (local vs linked)
+* Some "local" unit tests can do without being linked to the library under test
+* CMake supports code coverage analysis
 
 Steca version 2.1.1, released 2019.01.24
 ----------------------------------------

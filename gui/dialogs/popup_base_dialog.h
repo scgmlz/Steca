@@ -25,12 +25,11 @@ protected:
     PopupBaseDialog(QWidget* parent, const QString& name, const QString& title)
         : QcrModelessDialog(parent, name)
     {
-        int peakIndex = gSession->peaks.selectedIndex();
+        int jP = gSession->peaksSettings.selectedIndex();
         bool isInterpolated = gSession->params.interpolParams.enabled.val();
-        setWindowTitle(title + " for peak " + QString::number(peakIndex + 1)
+        setWindowTitle(title + " for peak " + QString::number(jP + 1)
                        + (isInterpolated ? " (interpolated)" : ""));
     }
-
 };
 
 #endif // POPUP_BASE_DIALOG_H

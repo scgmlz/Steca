@@ -68,7 +68,7 @@ void Session::onPeakAt(int jP) const
 
 void Session::onInterpol() const
 {
-    allPeaks.invalidateInterpolated();
+    peaksOutcome.invalidateInterpolated();
 }
 
 void Session::onNormalization() const
@@ -84,7 +84,7 @@ void Session::clear()
     corrset.clear();
     // params.clear(); TODO
     baseline.clear();
-    peaks.clear();
+    peaksSettings.clear();
 }
 
 void Session::sessionFromJson(const QByteArray& json)
@@ -101,7 +101,7 @@ void Session::sessionFromJson(const QByteArray& json)
 
     dataset.fromJson(top.loadObj("dataset"));
     corrset.fromJson(top.loadObj("corrset"));
-    peaks.fromJson(top.loadArr("peaks"));
+    peaksSettings.fromJson(top.loadArr("peaks"));
     baseline.fromJson(top.loadObj("baseline"));
 
     params.intenScaledAvg.setVal(top.loadBool("average intensity?", true));
@@ -121,7 +121,7 @@ QByteArray Session::serializeSession() const
 
     top.insert("dataset", dataset.toJson());
     top.insert("corrset", corrset.toJson());
-    top.insert("peaks", peaks.toJson());
+    top.insert("peaks", peaksSettings.toJson());
     top.insert("baseline", baseline.toJson());
 
     // TODO serialize metaSelection_
@@ -165,4 +165,50 @@ const Dfgram* Session::currentOrAvgeDfgram() const
     const Cluster* cluster = gSession->currentCluster();
     ASSERT(cluster);
     return &cluster->currentDfgram();
+}
+
+QStringList Session::allAsciiKeys() const
+{
+    QStringList ret { "alpha", "beta", "gamma_min", "gamma_max" };
+    const OnePeakSettings* peak = peaksSettings.selectedPeak();
+    if (peak)
+        ret += peak->fitParAsciiNames();
+    ret += Metadata::attributeTags(false);
+    return ret;
+}
+
+QStringList Session::allNiceKeys() const
+{
+    QStringList ret { "α", "β", "γ_min", "γ_max" };
+    const OnePeakSettings* peak = peaksSettings.selectedPeak();
+    if (peak)
+        ret += peak->fitParNiceNames();
+    ret += Metadata::attributeTags(true);
+    return ret;
+}
+
+QStringList Session::numericAsciiKeys() const
+{
+    QStringList ret = allAsciiKeys();
+    // TODO remove non-numeric keys from the onset
+    for (int i=0; i< (Metadata::numAttributes(false) - Metadata::numAttributes(true)); ++i)
+        ret.removeLast(); // remove all tags that are not numbers
+    return ret;
+}
+
+QStringList Session::numericNiceKeys() const
+{
+    QStringList ret = allNiceKeys();
+    // TODO remove non-numeric keys from the onset
+    for (int i=0; i< (Metadata::numAttributes(false) - Metadata::numAttributes(true)); ++i)
+        ret.removeLast(); // remove all tags that are not numbers
+    return ret;
+}
+
+bool Session::hasSigma(int index) const
+{
+    QStringList keys = allAsciiKeys();
+    return index<keys.size()-1
+                 && !keys[index].startsWith("sigma_")
+                 && keys[index+1].startsWith("sigma_");
 }
