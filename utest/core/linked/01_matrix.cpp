@@ -1,20 +1,6 @@
 #include "gtest/gtest.h"
 #include "core/calc/matrix.h"
 
-TEST(MatrixTest, VectorTrivialities) {
-    vec3f f(1, 2, 3);
-    vec3r r(1, 2, 3);
-    vec3f fr(r);
-    vec3r rf(f);
-
-    EXPECT_EQ(f, r);
-    EXPECT_EQ(f, fr);
-    EXPECT_EQ(f, rf);
-    EXPECT_EQ(r, fr);
-    EXPECT_EQ(r, rf);
-    EXPECT_EQ(fr, rf);
-}
-
 TEST(MatrixTest, BasicOperations) {
     mat3r m1(0, 1, 2, 3, 4, 5, 6, 7, 8);
     mat3r mt(0, 3, 6, 1, 4, 7, 2, 5, 8);

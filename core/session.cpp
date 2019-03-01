@@ -59,13 +59,6 @@ void Session::onPeaks() const
             [](const Dfgram& d){d.invalidatePeaks();});
 }
 
-void Session::onPeakAt(int jP) const
-{
-    for (auto const& cluster: dataset.allClusters)
-        cluster->dfgrams.forAllValids(
-            [jP](const Dfgram& d){d.invalidatePeakAt(jP);});
-}
-
 void Session::onInterpol() const
 {
     peaksOutcome.invalidateInterpolated();

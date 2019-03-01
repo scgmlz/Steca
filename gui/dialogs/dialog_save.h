@@ -54,8 +54,6 @@ private:
 
 class DialogMultisave : public DialogSave {
 public:
-    DialogMultisave() = delete;
-    DialogMultisave(const DialogMultisave&) = delete;
     DialogMultisave(QWidget* _parent, const QString& _name, const QString& _title,
                     const QStringList& _extensions, const QString& _content, const bool _haveMulti);
 private:

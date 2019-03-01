@@ -18,25 +18,6 @@
 #include <qmath.h>
 
 //  ***********************************************************************************************
-//! @class vec3f
-
-vec3f::vec3f(float _0_, float _1_, float _2_)
-{
-    _0 = _0_;
-    _1 = _1_;
-    _2 = _2_;
-}
-
-vec3f::vec3f(const vec3r& v)
-    : vec3f(float(v._0), float(v._1), float(v._2))
-{}
-
-bool vec3f::operator==(rc that) const
-{
-    return _0 == that._0 && _1 == that._1 && _2 == that._2;
-}
-
-//  ***********************************************************************************************
 //! @class vec3r
 
 vec3r::vec3r(double _0_, double _1_, double _2_)
@@ -45,10 +26,6 @@ vec3r::vec3r(double _0_, double _1_, double _2_)
     _1 = _1_;
     _2 = _2_;
 }
-
-vec3r::vec3r(const vec3f& v)
-    : vec3r(double(v._0), double(v._1), double(v._2))
-{}
 
 bool vec3r::operator==(rc that) const
 {

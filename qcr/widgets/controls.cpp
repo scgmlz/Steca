@@ -201,8 +201,8 @@ void QcrComboBox::remake()
 QcrRadioBox::QcrRadioBox(
     const QString& _name, const QString& _headline, QcrCell<int>* _cell,
     const QStringList& _tags, QLayout* _layout)
-    : QcrSingleValue<int>{_name, _cell}
-    , tags_{_tags}
+    : QcrSingleValue<int> {_name, _cell}
+    , tags_ {_tags}
 {
     ASSERT(size()>0);
     for (int i=0; i<size(); ++i) {

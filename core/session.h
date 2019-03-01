@@ -50,7 +50,6 @@ public:
     void onCut() const;           //!< image cuts have changed
     void onBaseline() const;      //!< settings for baseline fit have changed
     void onPeaks() const;         //!< a peak has been added or removed
-    void onPeakAt(int) const;     //!< settings for one peak fit have changed
     void onInterpol() const;      //!< interpolation control parameters have changed
     void onNormalization() const; //!< normalization parameters have changed
 
