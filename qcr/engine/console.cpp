@@ -89,7 +89,7 @@ private:
 QString CommandRegistry::learn(const QString& name, QcrCommandable* widget)
 {
     ASSERT(name!=""); // empty name only allowed for non-settable QcrBase
-    qterr << "Registry " << name_ << " learns '" << name << "'\n"; qterr.flush();
+    // qterr << "Registry " << name_ << " learns '" << name << "'\n"; qterr.flush();
     QString ret = name;
     if (ret.contains("#")) {
         auto numberedEntry = numberedEntries_.find(name);
@@ -110,8 +110,8 @@ QString CommandRegistry::learn(const QString& name, QcrCommandable* widget)
 
 void CommandRegistry::forget(const QString& name)
 {
-    qterr << "Registry " << name_ << "(" << widgets_.size() << ") forgets '"  << name << "'\n";
-    qterr.flush();
+    // qterr << "Registry " << name_ << "(" << widgets_.size() << ") forgets '"  << name << "'\n";
+    // qterr.flush();
     auto it = widgets_.find(name);
     if (it==widgets_.end()) {
         QByteArray tmp1 = name.toLatin1();
@@ -205,8 +205,8 @@ QString Console::learn(const QString& nameArg, QcrCommandable* widget)
         }
         name = args[1];
         registryStack_.push(new CommandRegistry(name));
-        qterr << "pushed registry " << registryStack_.top()->name() << "\n";
-        qterr.flush();
+        // qterr << "pushed registry " << registryStack_.top()->name() << "\n";
+        // qterr.flush();
     }
     return registry().learn(name, widget);
 }
@@ -228,12 +228,10 @@ void Console::closeModalDialog()
         qterr << "cannot pop: registry stack is empty\n"; qterr.flush();
         return;
     }
-    qterr << "going to pop registry " << registryStack_.top()->name() << "\n";
-    qterr.flush();
+    // qterr << "going to pop registry " << registryStack_.top()->name() << "\n"; qterr.flush();
     delete registryStack_.top();
     registryStack_.pop();
-    qterr << "top registry is now " << registryStack_.top()->name() << "\n";
-    qterr.flush();
+    // qterr << "top registry is now " << registryStack_.top()->name() << "\n"; qterr.flush();
 }
 
 //! Reads and executes a command script.
@@ -368,8 +366,7 @@ Console::Result Console::wrappedCommand(const QString& line)
     if (cmd[0]=='@') {
         if (cmd=="@ls") {
             const CommandRegistry* reg = registryStack_.top();
-            qterr << "registry " << reg->name() << " has "
-                  << reg->size() << " commands:\n";
+            qterr << "registry " << reg->name() << " has " << reg->size() << " commands:\n";
             reg->dump(qterr);
             qterr.flush();
         } else if (cmd=="@close") {
