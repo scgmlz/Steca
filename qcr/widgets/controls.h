@@ -28,7 +28,7 @@
 #include <QtGlobal>
 
 //! Named integer-valued spin box that can be set by console command.
-class QcrSpinBox : virtual public QcrSingleValue<int>, virtual public QSpinBox {
+class QcrSpinBox : public QcrSingleValue<int>, public QSpinBox {
 public:
     QcrSpinBox(const QString& name, QcrCell<int>* cell, int ndigits, bool withDot = false,
                int min = INT_MIN, int max = INT_MAX, const QString& tooltip="");
@@ -43,7 +43,7 @@ private:
 };
 
 //! Named double-valued spin box that can be set by console command.
-class QcrDoubleSpinBox : virtual public QcrSingleValue<double>, virtual public QDoubleSpinBox {
+class QcrDoubleSpinBox : public QcrSingleValue<double>, public QDoubleSpinBox {
 public:
     QcrDoubleSpinBox(const QString& name, QcrCell<double>* cell, int nDigits, int nDecimals,
                      double min = LLONG_MIN, double max = LLONG_MAX, const QString& tooltip="");
@@ -59,7 +59,7 @@ private:
 };
 
 //! Named check box that can be set by console command.
-class QcrCheckBox : virtual public QcrSingleValue<bool>, virtual public QCheckBox {
+class QcrCheckBox : public QcrSingleValue<bool>, public QCheckBox {
 public:
     QcrCheckBox(const QString& name, const QString& text, QcrCell<bool>* cell);
     bool doGetValue() const final { return isChecked(); }
@@ -70,7 +70,7 @@ private:
 };
 
 //! Named radio button that can be set by console command.
-class QcrRadioButton : virtual public QcrSingleValue<bool>, virtual public QRadioButton {
+class QcrRadioButton : public QcrSingleValue<bool>, public QRadioButton {
 public:
     QcrRadioButton(const QString& name, const QString& text, bool val=false);
     QcrRadioButton(const QString& name, const QString& text, QcrCell<bool>* cell);
@@ -82,7 +82,7 @@ private:
 };
 
 //! Named non-editable combo box that can be set by console command.
-class QcrComboBox : virtual public QcrSingleValue<int>, virtual public QComboBox {
+class QcrComboBox : public QcrSingleValue<int>, public QComboBox {
 public:
     //! Constructor for fixed tag list case.
     QcrComboBox(const QString& name, QcrCell<int>* cell, const QStringList& tags);
@@ -110,7 +110,7 @@ private:
 };
 
 //! Group of radio buttons, of which exactly one is activated.
-class QcrRadioBox : virtual public QcrSingleValue<int>, virtual public QGroupBox {
+class QcrRadioBox : public QcrSingleValue<int>, public QGroupBox {
 public:
     //! Constructor; takes ownership of layout, which is typically provided as "new QVLayout".
     QcrRadioBox(const QString& name, const QString& headline, QcrCell<int>* cell,
@@ -125,7 +125,7 @@ private:
 };
 
 //! Named line edit that can be set by console command.
-class QcrLineEdit : virtual public QcrSingleValue<QString>, virtual public QLineEdit {
+class QcrLineEdit : public QcrSingleValue<QString>, public QLineEdit {
 public:
     QcrLineEdit(const QString& name, const QString& val = "");
     QString doGetValue() const final { return text(); }
@@ -136,7 +136,7 @@ private:
 };
 
 //! Named tab widget that can be set by console command.
-class QcrTabWidget : virtual public QcrSingleValue<int>, virtual public QTabWidget {
+class QcrTabWidget : public QcrSingleValue<int>, public QTabWidget {
 public:
     QcrTabWidget(const QString& name);
     int doGetValue() const final { return currentIndex(); }

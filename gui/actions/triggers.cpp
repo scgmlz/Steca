@@ -48,7 +48,7 @@ Triggers::Triggers()
     online         .setTriggerHook([](){ QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
     peakRemove     .setTriggerHook([](){ gSession->peaksSettings.removeSelected(); });
     peaksClear     .setTriggerHook([](){ gSession->peaksSettings.clear();          });
-    quit           .setTriggerHook([](){ gGui->deleteLater(); });
+    quit           .setTriggerHook([](){ gGui->QMainWindow::deleteLater(); });
     removeFile     .setTriggerHook([](){ gSession->dataset.removeFile(); });
     saveSession    .setTriggerHook([](){ ioSession::save(gGui); });
     spawnDiagram   .setTriggerHook([](){ new PopupDiagram(); });

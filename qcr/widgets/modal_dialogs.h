@@ -26,7 +26,7 @@ protected:
 };
 
 //! Dialog, for modal use.
-class QcrModalDialog : virtual protected QcrModal, virtual public QDialog {
+class QcrModalDialog : protected QcrModal, public QDialog {
 public:
     QcrModalDialog(QWidget* parent, const QString& caption);
     int exec() override;
@@ -34,7 +34,7 @@ public:
 };
 
 //! File dialog, for modal use, with console commands to select files and to close the dialog.
-class QcrFileDialog : virtual protected QcrModal, virtual public QFileDialog {
+class QcrFileDialog : protected QcrModal, public QFileDialog {
 public:
     QcrFileDialog(
         QWidget* parent, const QString& caption, const QString& directory, const QString& filter);

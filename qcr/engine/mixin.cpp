@@ -17,6 +17,7 @@
 #include "qcr/base/qcrexception.h"
 #include "qcr/engine/console.h"
 #include <QAction>
+#include <QMainWindow>
 
 QcrRoot* gRoot {nullptr};
 
@@ -24,9 +25,8 @@ QcrRoot* gRoot {nullptr};
 //! @class QcrBase
 
 QcrBase::QcrBase(const QString& name)
-{
-    setObjectName(name);
-}
+    : name_(name)
+{}
 
 //! Calls the hook remake_, provided the associated QObject is a visible QWidget, or a QAction.
 
@@ -60,7 +60,9 @@ void QcrRoot::remakeAll()
     if (remakeLoops>1)
         qFatal("BUG: circular remakeAll");
     remake();
-    for (QWidget* w: findChildren<QWidget*>()) {
+    auto* mw = dynamic_cast<QMainWindow*>(this);
+    ASSERT(mw);
+    for (QWidget* w: mw->findChildren<QWidget*>()) {
         if (w) {
             if (QcrBase* m = dynamic_cast<QcrBase*>(w)) {
                 m->remake();
@@ -102,7 +104,7 @@ QcrModelessDialog::QcrModelessDialog(QWidget* parent, const QString& name)
 
 void QcrModelessDialog::closeEvent(QCloseEvent* event)
 {
-    QcrRegistered::deleteLater();
+    deleteLater();
 }
 
 void QcrModelessDialog::setFromCommand(const QString& arg)

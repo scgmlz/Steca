@@ -110,7 +110,7 @@ DialogSave::DialogSave(
         auto* rb = new QcrRadioButton{"fmt."+fmt, "."+fmt};
         fmt2button.emplace(fmt, rb);
         rb->setCellValue(saveFmt == fmt);
-        connect(rb, &QRadioButton::clicked, [this,fmt]() { saveFmt = fmt; });
+        QRadioButton::connect(rb, &QRadioButton::clicked, [this,fmt]() { saveFmt = fmt; });
         fileExtensionGroup->addButton(rb);
         ftypeGrid->addWidget(rb);
     }
@@ -237,7 +237,7 @@ void DialogMultisave::saveMultifile()
     if (existingPaths.size()) {
         if (!file_dialog::confirmOverwrite(
                 existingPaths.size()>1 ? "Files exist" : "File exists",
-                static_cast<QWidget*>(parent()), abbreviateList(existingPaths,7,5)))
+                static_cast<QWidget*>(QWidget::parent()), abbreviateList(existingPaths,7,5)))
             return;
     }
     // save files one by one

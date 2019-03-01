@@ -41,7 +41,7 @@ extern class QcrRoot* gRoot;
 //! where "this" points to a QComboBox, and is implicitly casted to QObject*.
 //!
 //! This mixin technology is a simpler alternative to diamond inheritance.
-class QcrBase : protected QObject {
+class QcrBase {
 protected:
     QcrBase(const QString& name);
 public:
@@ -51,9 +51,10 @@ public:
     virtual void remake();
     //! Sets the hook remake_ that is called from the function remake()
     void setRemake(std::function<void()> _remake) { remake_ = _remake; }
-    QString name() const { return objectName(); }
+    QString name() const { return name_; }
 private:
     std::function<void()> remake_ {[](){}};
+    const QString name_;
 };
 
 
@@ -82,7 +83,7 @@ protected:
 
 
 //! A modeless (= persistent spawned popup) dialog with support for capture&replay.
-class QcrModelessDialog : virtual protected QcrRegistered, virtual protected QDialog {
+class QcrModelessDialog : protected QcrRegistered, protected QDialog {
 protected:
     QcrModelessDialog(QWidget* parent, const QString& name);
 public:

@@ -40,10 +40,11 @@ QColor scatter {255, 0, 0};
 
 //! Equips PlotOverlay with domain-specific colors and setter functions.
 
-class PlotDfgramOverlay : public PlotOverlay, public QcrRegisteredMixin {
+class PlotDfgramOverlay : public QcrRegistered,public PlotOverlay  {
 public:
     PlotDfgramOverlay(class PlotDfgram& parent)
-        : PlotOverlay{parent, RangeControl::STEP}, QcrRegisteredMixin{this,"dfgram"} {}
+        : QcrRegistered {"dfgram"}
+        , PlotOverlay {parent, RangeControl::STEP} {}
 private:
     void setFromCommand(const QString&) final;
     void addRange(const Range&) final;

@@ -22,30 +22,30 @@
 #include <QMainWindow>
 #include <QScrollArea>
 
-class QcrMainWindow : virtual public QcrRoot, virtual public QMainWindow {
+class QcrMainWindow : public QcrRoot, public QMainWindow {
 public:
     QcrMainWindow() {}
 };
 
-class QcrWidget : virtual public QcrBase, virtual public QWidget {
+class QcrWidget : public QcrBase, public QWidget {
 public:
     QcrWidget() = delete;
     QcrWidget(const QString& name) : QcrBase(name) {}
 };
 
-class QcrFrame : virtual public QcrBase, virtual public QFrame {
+class QcrFrame : public QcrBase, public QFrame {
 public:
     QcrFrame() = delete;
     QcrFrame(const QString& name) : QcrBase{name} {}
 };
 
-class QcrScrollArea : virtual public QcrBase, virtual public QScrollArea {
+class QcrScrollArea : public QcrBase, public QScrollArea {
 public:
     QcrScrollArea() = delete;
     QcrScrollArea(const QString& name) : QcrBase{name} {}
 };
 
-class QcrDockWidget : virtual public QcrBase, virtual public QDockWidget {
+class QcrDockWidget : public QcrBase, public QDockWidget {
 public:
     QcrDockWidget(const QString& name) : QcrBase{name} {}
 };
@@ -57,7 +57,7 @@ public:
 };
 
 //! Read-only QLineEdit for number display.
-class QcrLineDisplay : virtual public QcrBase, virtual public QLineEdit {
+class QcrLineDisplay : public QcrBase, public QLineEdit {
 public:
     QcrLineDisplay(std::function<QString()> freshText);
     QcrLineDisplay(int ndigits, bool withDot);

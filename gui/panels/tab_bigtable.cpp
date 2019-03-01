@@ -115,9 +115,9 @@ BigtableTab::BigtableTab()
         {"bigtabClear", "unselect all columns", ":/icon/clear"};
 
     trigAll  ->trigger()->setTriggerHook(
-        [this](){ gSession->params.bigMetaSelection.setAll(true);  });
+        [](){ gSession->params.bigMetaSelection.setAll(true);  });
     trigClear->trigger()->setTriggerHook(
-        [this](){ gSession->params.bigMetaSelection.setAll(false); });
+        [](){ gSession->params.bigMetaSelection.setAll(false); });
 
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addWidget(trigAll);
