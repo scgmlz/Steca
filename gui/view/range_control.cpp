@@ -24,7 +24,7 @@ RangeControl::RangeControl(
     const QString& _name,
     const std::function<const Range*()>& _getRange,
     const std::function<void(double,bool)>& _setOne)
-    : QcrWidget("RangeControl")
+    : QcrWidget {"RangeControl"}
 {
     auto* cellMin = new QcrCell<double>{0.}; // will not be deleted on shutdown
     auto* cellMax = new QcrCell<double>{0.};
@@ -37,12 +37,12 @@ RangeControl::RangeControl(
     spinMin->setSingleStep(STEP);
     spinMax->setSingleStep(STEP);
 
-    auto hb = new QHBoxLayout();
-    hb->addWidget(new QLabel("range"));
+    auto hb = new QHBoxLayout;
+    hb->addWidget(new QLabel{"range"});
     hb->addWidget(spinMin);
-    hb->addWidget(new QLabel(".."));
+    hb->addWidget(new QLabel{".."});
     hb->addWidget(spinMax);
-    hb->addWidget(new QLabel("deg"));
+    hb->addWidget(new QLabel{"deg"});
     hb->addStretch();
     setLayout(hb);
 

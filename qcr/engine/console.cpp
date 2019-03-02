@@ -73,7 +73,7 @@ class CommandRegistry {
 public:
     CommandRegistry() = delete;
     CommandRegistry(const CommandRegistry&) = delete;
-    CommandRegistry(const QString& _name) : name_(_name) {}
+    CommandRegistry(const QString& _name) : name_{_name} {}
     QString learn(const QString&, QcrCommandable*);
     void forget(const QString&);
     QcrCommandable* find(const QString& name);
@@ -145,18 +145,18 @@ Console::Console(const QString& logFileName)
     gConsole = this;
 
 #ifdef Q_OS_WIN
-    notifier_ = new QWinEventNotifier();// GetStdHandle(STD_INPUT_HANDLE));
+    notifier_ = new QWinEventNotifier;// GetStdHandle(STD_INPUT_HANDLE));
     QObject::connect(notifier_, &QWinEventNotifier::activated, [this] (HANDLE) {readCLI(); });
 #else
-    notifier_ = new QSocketNotifier(fileno(stdin), QSocketNotifier::Read);
+    notifier_ = new QSocketNotifier{fileno(stdin), QSocketNotifier::Read};
     QObject::connect(notifier_, &QSocketNotifier::activated, [this](int) { readCLI(); });
 #endif
 
     // start registry
-    registryStack_.push(new CommandRegistry("main"));
+    registryStack_.push(new CommandRegistry{"main"});
 
     // start log
-    auto* file = new QFile(logFileName);
+    auto* file = new QFile{logFileName};
     if (!file->open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
         qFatal("cannot open log file");
     log_.setDevice(file);
@@ -204,7 +204,7 @@ QString Console::learn(const QString& nameArg, QcrCommandable* widget)
             qFatal("@push has no argument in learn(%s)", tmp.constData());
         }
         name = args[1];
-        registryStack_.push(new CommandRegistry(name));
+        registryStack_.push(new CommandRegistry{name});
         // qterr << "pushed registry " << registryStack_.top()->name() << "\n";
         // qterr.flush();
     }
