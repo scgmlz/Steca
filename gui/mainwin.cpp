@@ -55,20 +55,20 @@ MainWin::MainWin(const QString& startupScript)
     // layout
     setContentsMargins(5,5,5,5);
 
-    addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_    = new SubframeFiles()));
-    addDockWidget(Qt::LeftDockWidgetArea, (dockClusters_ = new SubframeClusters()));
-    addDockWidget(Qt::LeftDockWidgetArea, (dockMetadata_ = new SubframeMetadata()));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockFiles_    = new SubframeFiles));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockClusters_ = new SubframeClusters));
+    addDockWidget(Qt::LeftDockWidgetArea, (dockMetadata_ = new SubframeMetadata));
 
-    auto* splTop = new QSplitter {Qt::Horizontal};
+    auto* splTop = new QSplitter{Qt::Horizontal};
     splTop->setChildrenCollapsible(false);
-    splTop->addWidget(new SubframeSetup());
-    splTop->addWidget(new Mainframe());
+    splTop->addWidget(new SubframeSetup);
+    splTop->addWidget(new Mainframe);
     splTop->setStretchFactor(1, 1);
 
-    auto* splMain = new QSplitter {Qt::Vertical};
+    auto* splMain = new QSplitter{Qt::Vertical};
     splMain->setChildrenCollapsible(false);
     splMain->addWidget(splTop);
-    splMain->addWidget(new SubframeDfgram());
+    splMain->addWidget(new SubframeDfgram);
     splMain->setStretchFactor(1, 1);
     setCentralWidget(splMain);
 

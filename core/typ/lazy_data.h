@@ -32,7 +32,7 @@ template<typename TPayload, typename... TRemakeArgs>
 class Cached {
 public:
     Cached() = delete;
-    Cached(std::function<TPayload(TRemakeArgs...)> f) : remake_(f) {}
+    Cached(std::function<TPayload(TRemakeArgs...)> f) : remake_{f} {}
     Cached(const Cached&) = delete;
     Cached(Cached&&) = default;
     void invalidate() const { cached_.release(); }
@@ -54,8 +54,8 @@ public:
     VectorCache() = delete;
     VectorCache(const std::function<int()> sizeFunction,
                 const std::function<TPayload(int, TRemakeArgs...)> remakeOne)
-        : sizeFunction_(sizeFunction)
-        , remakeOne_(remakeOne)
+        : sizeFunction_ {sizeFunction}
+        , remakeOne_ {remakeOne}
         {}
     VectorCache(const VectorCache&) = delete;
     VectorCache(VectorCache&&) = default;
@@ -98,7 +98,7 @@ public:
     void invalidate() const { cached_.release(); }
     const TPayload& get(const TKey key) const {
         if (!cached_ || key!=key_) {
-            cached_.reset( new TPayload(key) );
+            cached_.reset( new TPayload{key} );
             key_ = key;
         }
         return *cached_;

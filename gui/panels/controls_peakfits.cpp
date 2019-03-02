@@ -38,7 +38,7 @@ QString par2text(const DoubleWithError& par) {
 
 class PeaksModel : public TableModel {
 public:
-    PeaksModel() : TableModel("peaks") {}
+    PeaksModel() : TableModel{"peaks"} {}
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return gSession->peaksSettings.size(); }
@@ -118,24 +118,24 @@ PeakfitOutcomeView::PeakfitOutcomeView()
     : QcrWidget("PeakfitOutcomeView")
 {
     auto* grid = new QGridLayout;
-    grid->addWidget(new QLabel("direct"), 0, 1);
-    grid->addWidget(new QLabel("fitted"), 0, 2);
+    grid->addWidget(new QLabel{"direct"}, 0, 1);
+    grid->addWidget(new QLabel{"fitted"}, 0, 2);
 
-    grid->addWidget(new QLabel("centre"), 1, 0);
+    grid->addWidget(new QLabel{"centre"}, 1, 0);
     grid->addWidget(&showRawOutcomeX_, 1, 1);
     grid->addWidget(&showFittedX_, 1, 2);
-    grid->addWidget(new QLabel("deg"), 1, 3);
+    grid->addWidget(new QLabel{"deg"}, 1, 3);
 
-    grid->addWidget(new QLabel("fwhm"), 2, 0);
+    grid->addWidget(new QLabel{"fwhm"}, 2, 0);
     grid->addWidget(&showRawOutcomeD_, 2, 1);
     grid->addWidget(&showFittedD_, 2, 2);
-    grid->addWidget(new QLabel("deg"), 2, 3);
+    grid->addWidget(new QLabel{"deg"}, 2, 3);
 
-    grid->addWidget(new QLabel("intens"), 3, 0);
+    grid->addWidget(new QLabel{"intens"}, 3, 0);
     grid->addWidget(&showRawOutcomeY_, 3, 1);
     grid->addWidget(&showFittedY_, 3, 2);
 
-    grid->addWidget(new QLabel("γ/σ"), 4, 0);
+    grid->addWidget(new QLabel{"γ/σ"}, 4, 0);
     grid->addWidget(&showFittedSG_, 4, 2);
 
     grid->setColumnStretch(4, 1);

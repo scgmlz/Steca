@@ -25,10 +25,10 @@ SubframeSetup::SubframeSetup()
     setTabPosition(QTabWidget::North);
     setMinimumSize(270,320);
 
-    addTab(new ControlsDetector(),     "Detector"); // 0
-    addTab(new ControlsBaseline(),     "Baseline"); // 1
-    addTab(new ControlsPeakfits(),     "Peakfits"); // 2
-    addTab(new ControlsInterpolation(),"Interpol"); // 3
+    addTab(new ControlsDetector,     "Detector"); // 0
+    addTab(new ControlsBaseline,     "Baseline"); // 1
+    addTab(new ControlsPeakfits,     "Peakfits"); // 2
+    addTab(new ControlsInterpolation,"Interpol"); // 3
 
     setHook([=](const int val){
             ASSERT(val==this->currentIndex());

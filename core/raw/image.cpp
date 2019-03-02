@@ -17,14 +17,14 @@
 #include "qcr/base/debug.h"
 
 Image::Image(const size2d& size, float val)
-    : size_(size)
-    , intens_(size.count(), val)
-    , rangeInten_(val, val)
+    : size_ {size}
+    , intens_ (size.count(), val)
+    , rangeInten_ {val, val}
 {}
 
 Image::Image(const size2d& size, std::vector<float>&& intens)
-    : size_(size)
-    , intens_(std::move(intens))
+    : size_ {size}
+    , intens_ {std::move(intens)}
 {
     ASSERT(intens_.size() == size.count());
     rangeInten_.set(intens_[0], intens_[0]);

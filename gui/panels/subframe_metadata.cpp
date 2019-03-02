@@ -23,7 +23,7 @@
 
 class MetatableModel : public CheckTableModel {
 public:
-    MetatableModel() : CheckTableModel("meta") {}
+    MetatableModel() : CheckTableModel{"meta"} {}
 
     enum { COL_CHECK = 1, COL_TAG, COL_VALUE, NUM_COLUMNS };
 
@@ -84,7 +84,7 @@ private:
 };
 
 MetatableView::MetatableView()
-    : CheckTableView(new MetatableModel)
+    : CheckTableView {new MetatableModel}
 {
     setColumnWidth(0, 0);
     setColumnWidth(1,  .5*mWidth());

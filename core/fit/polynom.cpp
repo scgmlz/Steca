@@ -43,5 +43,5 @@ void Polynom::setDY(const double*, const int nXY, const double* X, double* Jacob
 Fitted Polynom::fromFit(int degree, const Curve& curve, const Ranges& ranges)
 {
     std::vector<double> startParams(degree+1, 0.);
-    return FitWrapper().execFit(new Polynom(degree), curve.intersect(ranges), startParams);
+    return FitWrapper().execFit(new Polynom{degree}, curve.intersect(ranges), startParams);
 }

@@ -19,9 +19,9 @@
 #include "gui/view/plot_polefig.h"
 
 PolefigTab::PolefigTab()
-    : QcrWidget("PolefigTab")
+    : QcrWidget {"PolefigTab"}
 {
-    auto* plot = new PlotPolefig(true);
+    auto* plot = new PlotPolefig{true};
 
     auto* buttonBox = new QHBoxLayout;
     buttonBox->addStretch(1);

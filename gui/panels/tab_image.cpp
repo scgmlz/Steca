@@ -79,7 +79,7 @@ void addOverlay(QImage& img, double midTth)
 //! @class ImageTab
 
 ImageTab::ImageTab()
-    : QcrWidget("ImageTab")
+    : QcrWidget {"ImageTab"}
 {
     box1_ = new QHBoxLayout;
     box1_->addWidget(new QcrIconToggleButton{&gGui->toggles->fixedIntenImage}, Qt::AlignLeft);
@@ -185,21 +185,21 @@ DataImageTab::DataImageTab()
     box1_->addWidget(new QcrIconToggleButton{&gGui->toggles->showBins}, Qt::AlignLeft);
 
     auto* boxIdx = new QGridLayout;
-    boxIdx->addWidget(new QLabel("idx (image)"), 0, 0, Qt::AlignLeft);
+    boxIdx->addWidget(new QLabel{"idx (image)"}, 0, 0, Qt::AlignLeft);
     boxIdx->addWidget(idxMeas, 0, 1, Qt::AlignLeft);
-    boxIdx->addWidget(new QLabel("idx (ϑ)"), 1, 0, Qt::AlignLeft);
+    boxIdx->addWidget(new QLabel{"idx (ϑ)"}, 1, 0, Qt::AlignLeft);
     boxIdx->addWidget(idxTheta, 1, 1, Qt::AlignLeft);
-    boxIdx->addWidget(new QLabel("idx (γ)"), 2, 0, Qt::AlignLeft);
+    boxIdx->addWidget(new QLabel{"idx (γ)"}, 2, 0, Qt::AlignLeft);
     boxIdx->addWidget(idxSlice, 2, 1, Qt::AlignLeft);
     controls_->addStretch(100);
     controls_->addLayout(boxIdx);
 
     controls_->addStretch(1000);
     auto* boxRanges = new QGridLayout;
-    boxRanges->addWidget(new QLabel("γ total:"), 0, 0, Qt::AlignLeft);
-    boxRanges->addWidget(new QLabel("γ slice:"), 1, 0, Qt::AlignLeft);
-    boxRanges->addWidget(new QLabel("ϑ total:" ), 2, 0, Qt::AlignLeft);
-    boxRanges->addWidget(new QLabel("ϑ bin:"   ), 3, 0, Qt::AlignLeft);
+    boxRanges->addWidget(new QLabel{"γ total:"}, 0, 0, Qt::AlignLeft);
+    boxRanges->addWidget(new QLabel{"γ slice:"}, 1, 0, Qt::AlignLeft);
+    boxRanges->addWidget(new QLabel{"ϑ total:"}, 2, 0, Qt::AlignLeft);
+    boxRanges->addWidget(new QLabel{"ϑ bin:"  }, 3, 0, Qt::AlignLeft);
     boxRanges->addWidget(gammaRangeTotal, 0, 1, Qt::AlignLeft);
     boxRanges->addWidget(gammaRangeSlice, 1, 1, Qt::AlignLeft);
     boxRanges->addWidget(thetaRangeTotal, 2, 1, Qt::AlignLeft);

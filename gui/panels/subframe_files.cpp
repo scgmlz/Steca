@@ -28,7 +28,7 @@
 
 class FilesModel : public CheckTableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
-    FilesModel() : CheckTableModel("datafiles") {}
+    FilesModel() : CheckTableModel{"datafiles"} {}
 
 private:
     int highlighted() const final;
@@ -81,7 +81,7 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const
 
 class FilesView : public CheckTableView {
 public:
-    FilesView() : CheckTableView {new FilesModel()} {}
+    FilesView() : CheckTableView {new FilesModel} {}
 private:
     FilesModel* model() { return static_cast<FilesModel*>(model_); }
 };
@@ -100,21 +100,21 @@ SubframeFiles::SubframeFiles()
 
     auto* dataControls = new QHBoxLayout;
     dataControls->addStretch();
-    dataControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->addFiles));
-    dataControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->removeFile));
+    dataControls->addWidget(new QcrIconTriggerButton{&gGui->triggers->addFiles});
+    dataControls->addWidget(new QcrIconTriggerButton{&gGui->triggers->removeFile});
 
     auto* corrFileView = new QcrLineDisplay {[]()->QString {
             return gSession->corrset.fileName(); }};
 
     auto* corrControls = new QHBoxLayout;
     corrControls->addWidget(corrFileView);
-    corrControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->corrFile));
-    corrControls->addWidget(new QcrIconToggleButton(&gGui->toggles->enableCorr));
+    corrControls->addWidget(new QcrIconTriggerButton{&gGui->triggers->corrFile});
+    corrControls->addWidget(new QcrIconToggleButton{&gGui->toggles->enableCorr});
 
     auto* box = new QVBoxLayout;
     box->addLayout(dataControls);
-    box->addWidget(new FilesView());
-    box->addWidget(new QLabel("Correction file"));
+    box->addWidget(new FilesView);
+    box->addWidget(new QLabel{"Correction file"});
     box->addLayout(corrControls);
     box->setContentsMargins(0,0,0,0);
     widget()->setLayout(box);
