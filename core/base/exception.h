@@ -26,13 +26,13 @@
 
 class Exception : public QException {
 public:
-    Exception(const QString& msg) noexcept : msg_(msg) {}
+    Exception(const QString& msg) noexcept : msg_{msg} {}
     const QString& msg() const noexcept { return msg_; }
 private:
     QString msg_;
 };
 
 //! This macro shall be used as the sole way to throw an Exception.
-#define THROW(msg) { throw Exception(msg); }
+#define THROW(msg) { throw Exception{msg}; }
 
 #endif // EXCEPTION_H

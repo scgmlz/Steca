@@ -64,7 +64,7 @@ public:
     void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
     int nPar() const final { return 1; }
 private:
-    FindFwhm(const Fitted& fitted) : fitted_(fitted) { }
+    FindFwhm(const Fitted& fitted) : fitted_{fitted} { }
     double getY(double x, const double *P) const;
     const Fitted& fitted_;
 };

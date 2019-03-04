@@ -30,7 +30,7 @@ public:
 class QcrWidget : public QcrBase, public QWidget {
 public:
     QcrWidget() = delete;
-    QcrWidget(const QString& name) : QcrBase(name) {}
+    QcrWidget(const QString& name) : QcrBase{name} {}
 };
 
 class QcrFrame : public QcrBase, public QFrame {
@@ -47,8 +47,7 @@ public:
 
 class QcrDockWidget : public QcrBase, public QDockWidget {
 public:
-    QcrDockWidget(const QString& name) : QcrBase{name}, QDockWidget{name} {
-        setObjectName(name); }
+    QcrDockWidget(const QString& name) : QcrBase{name}, QDockWidget{name} { setObjectName(name); }
 };
 
 //! QLabel displaying an icon, with no associated action.

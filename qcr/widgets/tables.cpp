@@ -59,7 +59,8 @@ void TableModel::setHighlightedCell(const QModelIndex& cell)
 //  ***********************************************************************************************
 //! @class CheckTableModel
 
-CheckTableModel::CheckTableModel(const QString& _name) : TableModel(_name)
+CheckTableModel::CheckTableModel(const QString& _name)
+    : TableModel {_name}
 {}
 
 //! Refreshes the check box column. TODO currently unused

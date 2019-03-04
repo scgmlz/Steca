@@ -25,7 +25,7 @@
 class Datafile {
 public:
     Datafile() = delete;
-    Datafile(Rawfile&& raw) : raw_(std::move(raw)) {}
+    Datafile(Rawfile&& raw) : raw_{std::move(raw)} {}
     Datafile(const Datafile&) = delete;
     Datafile(Datafile&&) = default;
     Datafile& operator=(Datafile&&) = default;

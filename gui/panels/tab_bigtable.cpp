@@ -30,7 +30,7 @@
 
 class ColumnSelectorModel : public CheckTableModel {
 public:
-    ColumnSelectorModel() : CheckTableModel("colSel") {}
+    ColumnSelectorModel() : CheckTableModel{"colSel"} {}
 
 private:
     int highlighted() const final { return highlighted_; }
@@ -137,5 +137,4 @@ BigtableTab::BigtableTab()
     layout->setStretch(0,1000);
     setLayout(layout);
     setRemake([=](){ bigtableView->refresh(); });
-
 }

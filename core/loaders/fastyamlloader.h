@@ -46,25 +46,14 @@ public:
 
     YamlNode() = delete;
 
-    YamlNode(MapType* map)
-        : nodeType_(eNodeType::MAP)
-        , map_(map)
-    {}
+    YamlNode(MapType* map) : nodeType_{eNodeType::MAP}, map_{map} {}
 
-    YamlNode(SequenceType* sequence)
-        : nodeType_(eNodeType::SEQUENCE)
-        , sequence_(sequence)
-    {}
+    YamlNode(SequenceType* sequence) : nodeType_{eNodeType::SEQUENCE}, sequence_{sequence} {}
 
-    YamlNode(ScalarType&& scalar)
-        : nodeType_(eNodeType::SCALAR)
-        , scalar_(scalar)
-    {}
+    YamlNode(ScalarType&& scalar) : nodeType_{eNodeType::SCALAR}, scalar_{scalar} {}
 
     YamlNode(std::shared_ptr<YamlArray2d> array2d)
-        : nodeType_(eNodeType::SCALAR)
-        , array2d_(array2d)
-    {}
+        : nodeType_{eNodeType::SCALAR} , array2d_{array2d} {}
 
     YamlNode(const YamlNode&) = default; // needed by map_->emplace
     YamlNode& operator= (const YamlNode&) = delete;

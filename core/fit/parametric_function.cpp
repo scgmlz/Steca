@@ -25,8 +25,8 @@
 //! Covered by test002_rounding.
 
 DoubleWithError::DoubleWithError(double value, double error)
-    : value_(value)
-    , error_(error)
+    : value_ {value}
+    , error_ {error}
 {}
 
 double DoubleWithError::roundedError(int prec) const
@@ -41,10 +41,10 @@ double DoubleWithError::roundedError(int prec) const
 
 Fitted::Fitted(const FitFunction* _f,
                const std::vector<double>& _parVal, const std::vector<double>& _parErr)
-        : success{true}
-        , f{_f}
-        , parVal{_parVal}
-        , parErr{_parErr}
+        : success {true}
+        , f {_f}
+        , parVal {_parVal}
+        , parErr {_parErr}
 {
     ASSERT(parErr.size()==parVal.size());
 }
