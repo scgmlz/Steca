@@ -24,7 +24,7 @@
 
 class ActiveClustersModel : public CheckTableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
-    ActiveClustersModel() : CheckTableModel("measurement") {}
+    ActiveClustersModel() : CheckTableModel{"measurement"} {}
     int columnCount() const final {
         return COL_ATTRS + gSession->params.smallMetaSelection.numSelected(); }
 
@@ -142,7 +142,7 @@ private:
 };
 
 ActiveClustersView::ActiveClustersView()
-    : CheckTableView(new ActiveClustersModel())
+    : CheckTableView {new ActiveClustersModel()}
 {
     setSelectionMode(QAbstractItemView::NoSelection);
     onData();
@@ -165,7 +165,7 @@ void ActiveClustersView::onData()
 //! @class SubframeClusters
 
 SubframeClusters::SubframeClusters()
-    : QcrDockWidget("measurements")
+    : QcrDockWidget {"measurements"}
 {
     setFeatures(DockWidgetMovable);
     setWindowTitle("Measurements");

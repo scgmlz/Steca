@@ -91,7 +91,7 @@ private:
 //! @class SubframeFiles
 
 SubframeFiles::SubframeFiles()
-    : QcrDockWidget("files")
+    : QcrDockWidget {"files"}
 {
     setFeatures(DockWidgetMovable);
     setWindowTitle("Files");
@@ -103,7 +103,7 @@ SubframeFiles::SubframeFiles()
     dataControls->addWidget(new QcrIconTriggerButton{&gGui->triggers->addFiles});
     dataControls->addWidget(new QcrIconTriggerButton{&gGui->triggers->removeFile});
 
-    auto* corrFileView = new QcrLineDisplay {[]()->QString {
+    auto* corrFileView = new QcrLineDisplay{[]()->QString {
             return gSession->corrset.fileName(); }};
 
     auto* corrControls = new QHBoxLayout;
