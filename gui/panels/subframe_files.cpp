@@ -33,7 +33,7 @@ public:
 private:
     int highlighted() const final;
     void onHighlight(int i) final { gSession->dataset.highlight().setFile(i); }
-    bool activated(int i) const { return gSession->dataset.fileAt(i).activated() == Qt::Checked; }
+    Qt::CheckState activated(int i) const { return gSession->dataset.fileAt(i).activated(); }
     void setActivated(int i, bool on) { gSession->dataset.setFileActivation(i, on); }
 
     int columnCount() const final { return 3; }

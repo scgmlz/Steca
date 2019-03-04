@@ -33,7 +33,8 @@ public:
 private:
     int highlighted() const final;
     void onHighlight(int row) final { gSession->dataset.highlight().setCluster(row); }
-    bool activated(int row) const { return gSession->dataset.allClusters.at(row)->isActivated(); }
+    Qt::CheckState activated(int row) const { return
+            gSession->dataset.allClusters.at(row)->isActivated() ? Qt::Checked : Qt::Unchecked; }
     void setActivated(int row, bool on) { gSession->dataset.setClusterActivation(row, on); }
 
     int rowCount() const final { return gSession->dataset.allClusters.size(); }
@@ -104,7 +105,7 @@ QVariant ActiveClustersModel::data(const QModelIndex& index, int role) const
     }
     case Qt::CheckStateRole: {
         if (col==COL_CHECK)
-            return activated(row) ? Qt::Checked : Qt::Unchecked;
+            return activated(row);
         return {};
     }
     default:

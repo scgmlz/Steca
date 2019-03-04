@@ -53,7 +53,7 @@ public:
 
     void onActivated();
     void onClicked(const QModelIndex& cell) override;
-    virtual bool activated(int row) const = 0;
+    virtual Qt::CheckState activated(int row) const = 0;
     virtual void setActivated(int row, bool on) = 0;
     void activateAndLog(int row, bool on);
 };

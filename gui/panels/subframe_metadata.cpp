@@ -30,7 +30,8 @@ public:
 private:
     int highlighted() const final { return highlighted_; }
     void onHighlight(int i) final { highlighted_ = i; }
-    bool activated(int row) const { return gSession->params.smallMetaSelection.isSelected(row); }
+    Qt::CheckState activated(int row) const {
+        return gSession->params.smallMetaSelection.isSelected(row) ? Qt::Checked : Qt::Unchecked; }
     void setActivated(int row, bool on) { gSession->params.smallMetaSelection.set(row, on); }
 
     int columnCount() const final { return NUM_COLUMNS; }
@@ -51,7 +52,7 @@ QVariant MetatableModel::data(const QModelIndex& index, int role) const
     switch (role) {
     case Qt::CheckStateRole:
         if (col==COL_CHECK)
-            return activated(row) ? Qt::Checked : Qt::Unchecked;
+            return activated(row);
         break;
     case Qt::DisplayRole:
         switch (col) {
