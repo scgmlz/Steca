@@ -80,6 +80,7 @@ public:
     int totalOffset() const;
     bool isIncomplete() const;
     bool isActivated() const { return activated_; }
+    bool isPreActivated() const { return preActivated_; }
 
     mutable lazy_data::VectorCache<Dfgram,const Cluster*> dfgrams; //! One Dfgram per gamma section
     const Dfgram& currentDfgram() const;
@@ -89,6 +90,7 @@ private:
     const int index_; //!< index in total list of Cluster|s
     const int offset_; //!< index of first Measurement in file_
     bool activated_ {true}; //!< checked in list, selected for use
+    bool preActivated_ {true}; //!< checked in list, selected for use
 };
 
 #endif // CLUSTER_H

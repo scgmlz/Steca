@@ -34,7 +34,7 @@ private:
     int highlighted() const final;
     void onHighlight(int i) final { gSession->dataset.highlight().setFile(i); }
     Qt::CheckState activated(int i) const { return gSession->dataset.fileAt(i).activated(); }
-    void setActivated(int i, bool on) { gSession->dataset.setFileActivation(i, on); }
+    void setActivated(int i, bool) { gSession->dataset.fileAt(i).rotateFileActivation(); }
 
     int columnCount() const final { return 3; }
     int rowCount() const final { return gSession->dataset.countFiles(); }

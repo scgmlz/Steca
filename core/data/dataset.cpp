@@ -21,7 +21,34 @@
 //  ***********************************************************************************************
 //! @class Datafile
 
-Qt::CheckState Datafile::activated() const
+void Datafile::rotateFileActivation()
+{
+    switch (activated_) {
+    case Qt::Unchecked:
+        if (someClustersPreactivated())
+            activated_ = Qt::PartiallyChecked;
+        else
+            activated_ = Qt::Checked;
+        break;
+    case Qt::PartiallyChecked:
+        activated_ = Qt::Checked;
+        break;
+    case Qt::Checked:
+        activated_ = Qt::Unchecked;
+        break;
+    }
+    gSession->activeClusters.invalidate();
+}
+
+bool Datafile::someClustersPreactivated() const
+{
+    for (const Cluster* cluster : clusters_)
+        if (!cluster->isPreActivated())
+            return false;
+    return true;
+}
+
+Qt::CheckState Datafile::clusterState() const
 {
     bool allActivated = true;
     bool noneActivated = true;
@@ -150,14 +177,6 @@ void Dataset::addGivenFiles(const QStringList& filePaths)
 void Dataset::setClusterActivation(int index, bool on)
 {
     allClusters.at(index)->setActivated(on);
-    gSession->activeClusters.invalidate();
-}
-
-void Dataset::setFileActivation(int index, bool on)
-{
-    const Datafile& fil = fileAt(index);
-    for (Cluster* cluster : fil.clusters_)
-        cluster->setActivated(on);
     gSession->activeClusters.invalidate();
 }
 
