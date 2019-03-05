@@ -62,12 +62,11 @@ foreach(comp Qt5Core Qt5Gui Qt5Widgets Qt5Network)
 endforeach()
 
 find_package(YAML MODULE REQUIRED)
-# waiting for activation find_package(LMFit 8.1 MODULE)
-find_package(Cerf 1.11 MODULE REQUIRED)
-
 message(STATUS
     "libyaml: FOUND=${yaml_FOUND}, VERSION=${yaml_VERSION}, LIB=${yaml_LIBRARIES}")
+# waiting for activation find_package(LMFit 8.1 MODULE)
 # message(STATUS "lmfit:   FOUND=${LMFit_FOUND}, VERSION=${LMFit_VERSION}, LIB=${LMFit_LIBRARIES}")
+find_package(Cerf MODULE REQUIRED)
 message(STATUS "libcerf: FOUND=${Cerf_FOUND}, VERSION=${Cerf_VERSION}, LIB=${Cerf_LIBRARIES}, "
     "IS_CPP=${Cerf_IS_CPP}")
 
