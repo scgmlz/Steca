@@ -35,7 +35,8 @@ public:
     int numMeasurements() const { return raw_.numMeasurements(); }
     int index() const { return index_; }
     QString name() const { return raw_.fileName(); }
-    bool someClustersPreactivated() const;
+    bool someClustersPreActivated() const;
+    bool allClustersPreActivated() const;
     Qt::CheckState clusterState() const;
     Qt::CheckState activated() const { return activated_; }
 

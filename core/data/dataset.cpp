@@ -17,6 +17,7 @@
 #include "core/session.h"
 #include "qcr/engine/mixin.h" // remakeAll
 #include "qcr/base/debug.h" // ASSERT
+#include <algorithm>
 
 //  ***********************************************************************************************
 //! @class Datafile
@@ -25,7 +26,7 @@ void Datafile::rotateFileActivation()
 {
     switch (activated_) {
     case Qt::Unchecked:
-        if (someClustersPreactivated())
+        if (someClustersPreActivated() && !allClustersPreActivated())
             activated_ = Qt::PartiallyChecked;
         else
             activated_ = Qt::Checked;
@@ -40,7 +41,15 @@ void Datafile::rotateFileActivation()
     gSession->activeClusters.invalidate();
 }
 
-bool Datafile::someClustersPreactivated() const
+bool Datafile::someClustersPreActivated() const
+{
+    for (const Cluster* cluster : clusters_)
+        if (cluster->isPreActivated())
+            return true;
+    return false;
+}
+
+bool Datafile::allClustersPreActivated() const
 {
     for (const Cluster* cluster : clusters_)
         if (!cluster->isPreActivated())
