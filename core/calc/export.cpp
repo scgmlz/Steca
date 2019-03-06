@@ -101,16 +101,16 @@ void data_export::writeCurve(
         qFatal("curve is empty");
     ASSERT(rgeGma.isValid());
     const Metadata& md = cluster->avgMetadata();
-    stream << "Comment: " << md.comment << '\n';
-    stream << "Date: " << md.date << '\n';
-    stream << "Gamma range min: " << rgeGma.min << '\n';
-    stream << "Gamma range max: " << rgeGma.max << '\n';
+    stream << "#Comment: " << md.comment << '\n';
+    stream << "#Date: " << md.date << '\n';
+    stream << "#Gamma range min: " << rgeGma.min << '\n';
+    stream << "#Gamma range max: " << rgeGma.max << '\n';
 
     for (int i=0; i<Metadata::numAttributes(false); ++i)
-        stream << Metadata::attributeTag(i, false) << ": "
+        stream << "#" << Metadata::attributeTag(i, false) << ": "
                << md.attributeValue(i).toDouble() << '\n';
 
-    stream << "Tth" << separator << "Intensity" << '\n';
+    stream << "#Tth" << separator << "Intensity" << '\n';
     for (int i=0; i<curve.xs().size(); ++i)
         stream << curve.x(i) << separator << curve.y(i) << '\n';
 
