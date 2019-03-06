@@ -83,7 +83,7 @@ private:
 };
 
 ColumnSelectorView::ColumnSelectorView()
-    : CheckTableView(new ColumnSelectorModel())
+    : CheckTableView {new ColumnSelectorModel()}
 {
     setColumnWidth(0, 0);
     setColumnWidth(1,  .5*mWidth());
@@ -105,7 +105,7 @@ void ColumnSelectorView::onData()
 //! @class BigtableTab
 
 BigtableTab::BigtableTab()
-    : QcrWidget("BigtableTab")
+    : QcrWidget {"BigtableTab"}
 {
     auto* bigtableView = new BigtableView;
 
