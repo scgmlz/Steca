@@ -31,13 +31,13 @@ public:
     enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
 
 private:
+    void setActivated(int row, bool on) { gSession->dataset.setClusterSelection(row, on); }
+
     int highlighted() const final;
     void onHighlight(int row) final { gSession->dataset.highlight().setCluster(row); }
-    Qt::CheckState activated(int row) const { return
-            gSession->dataset.allClusters.at(row)->isActive() ? Qt::Checked :
-            gSession->dataset.allClusters.at(row)->isSelected() ? Qt::PartiallyChecked :
-            Qt::Unchecked; }
-    void setActivated(int row, bool on) { gSession->dataset.setClusterActivation(row, on); }
+    bool activated(int row) const { return gSession->dataset.allClusters.at(row)->isSelected(); }
+    Qt::CheckState state(int row) const override {
+        return gSession->dataset.allClusters.at(row)->state(); }
 
     int rowCount() const final { return gSession->dataset.allClusters.size(); }
 
@@ -107,7 +107,7 @@ QVariant ActiveClustersModel::data(const QModelIndex& index, int role) const
     }
     case Qt::CheckStateRole: {
         if (col==COL_CHECK)
-            return activated(row);
+            return state(row);
         return {};
     }
     default:

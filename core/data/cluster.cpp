@@ -167,3 +167,10 @@ bool Cluster::isActive() const
 {
     return file_.activated() && selected_;
 }
+
+Qt::CheckState Cluster::state() const
+{
+    return selected_ ?
+        ( file_.activated() ? Qt::Checked : Qt::PartiallyChecked ) :
+        Qt::Unchecked;
+}

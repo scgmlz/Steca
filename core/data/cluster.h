@@ -81,6 +81,7 @@ public:
     bool isIncomplete() const;
     bool isActive() const;
     bool isSelected() const { return selected_; }
+    Qt::CheckState state() const;
 
     mutable lazy_data::VectorCache<Dfgram,const Cluster*> dfgrams; //! One Dfgram per gamma section
     const Dfgram& currentDfgram() const;

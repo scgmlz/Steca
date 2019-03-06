@@ -85,7 +85,7 @@ public:
     void clear();
     void addGivenFiles(const QStringList& filePaths);
     void removeFile();
-    void setClusterActivation(int index, bool on);
+    void setClusterSelection(int index, bool on);
 
     HighlightedData& highlight() { return highlight_; }
     const HighlightedData& highlight() const { return highlight_; }

@@ -152,7 +152,7 @@ void Dataset::addGivenFiles(const QStringList& filePaths)
     gRoot->remakeAll();
 }
 
-void Dataset::setClusterActivation(int index, bool on)
+void Dataset::setClusterSelection(int index, bool on)
 {
     allClusters.at(index)->setSelected(on);
     gSession->activeClusters.invalidate();

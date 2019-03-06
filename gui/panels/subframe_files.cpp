@@ -31,10 +31,13 @@ public:
     FilesModel() : CheckTableModel{"datafiles"} {}
 
 private:
+    void setActivated(int i, bool on) { gSession->dataset.fileAt(i).setFileActivation(on); }
+
     int highlighted() const final;
     void onHighlight(int i) final { gSession->dataset.highlight().setFile(i); }
-    Qt::CheckState activated(int i) const { return gSession->dataset.fileAt(i).clusterState(); }
-    void setActivated(int i, bool on) { gSession->dataset.fileAt(i).setFileActivation(on); }
+    bool activated(int i) const { return gSession->dataset.fileAt(i).activated(); }
+    Qt::CheckState state(int i) const override {
+        return gSession->dataset.fileAt(i).clusterState(); }
 
     int columnCount() const final { return 3; }
     int rowCount() const final { return gSession->dataset.countFiles(); }
@@ -64,7 +67,7 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const
             .arg(gSession->dataset.offset(file)+1)
             .arg(gSession->dataset.offset(file)+file.numMeasurements());
     else if (role==Qt::CheckStateRole && col==1)
-        return file.activated();
+        return state(row);
     else if (role==Qt::BackgroundRole) {
         if (row==highlighted())
             return QColor(Qt::cyan);

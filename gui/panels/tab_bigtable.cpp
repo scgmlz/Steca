@@ -35,8 +35,7 @@ public:
 private:
     int highlighted() const final { return highlighted_; }
     void onHighlight(int i) final { highlighted_ = i; }
-    Qt::CheckState activated(int row) const {
-        return sel_->isSelected(row) ? Qt::Checked : Qt::Unchecked; }
+    bool activated(int row) const { return sel_->isSelected(row); }
     void setActivated(int row, bool on) { sel_->set(row, on); }
 
     int columnCount() const final { return 3; }
@@ -58,7 +57,7 @@ QVariant ColumnSelectorModel::data(const QModelIndex& index, int role) const
     switch (role) {
     case Qt::CheckStateRole:
         if (col==1)
-            return activated(row);
+            return state(row);
         break;
     case Qt::DisplayRole:
         if (col==2)
