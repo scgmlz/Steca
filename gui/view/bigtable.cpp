@@ -34,9 +34,13 @@ BigtableModel::BigtableModel()
 
 void BigtableModel::refresh()
 {
+    qDebug() << "DEBUG BTM refresh:"
+             << gSession->activeClusters.size() << gSession->peaksSettings.size();
     if (!gSession->activeClusters.size() || !gSession->peaksSettings.size())
         return;
     headers_ = gSession->params.bigMetaSelection.availableKeys();
+    qDebug() << "DEBUG BTM refresh ctd:"
+             << headers_.count() << numCols_;
     if (headers_.count() != numCols_) {
         numCols_ = headers_.count();
         colIndexMap_.resize(numCols_);
@@ -50,6 +54,8 @@ void BigtableModel::refresh()
             rows_.push_back(XRow(rows_.size()+1, r.peakData()));
     sortData();
     endResetModel();
+    qDebug() << "DEBUG BTM refresh end:"
+             << gSession->params.bigMetaSelection.availableKeys().count();
 }
 
 QVariant BigtableModel::data(const QModelIndex& index, int role) const
@@ -57,6 +63,9 @@ QVariant BigtableModel::data(const QModelIndex& index, int role) const
     int row = index.row(), col = index.column();
     if (col < 0 || col >= columnCount() || row < 0 || row >= rowCount())
         return {};
+    if (numCols_ != gSession->params.bigMetaSelection.availableKeys().count())
+        qFatal("inconsistent column size in Bigtable: %d vs %d",
+               numCols_, gSession->params.bigMetaSelection.availableKeys().count());
 
     switch (role) {
     case Qt::DisplayRole: {
@@ -121,13 +130,13 @@ void BigtableModel::sortData()
 
     // sort by sortColumn first, then left-to-right
     auto _cmp = [this, _cmpRows](const XRow& r1, const XRow& r2) {
-        if (0 <= sortColumn_) {
+        if (sortColumn_ >= 0) {
             int c = _cmpRows(sortColumn_, r1.row, r2.row);
             if (c < 0)
                 return true;
             if (c > 0)
                 return false;
-        } else if (-1 == sortColumn_) {
+        } else if (sortColumn_ == -1) {
             if (r1.n < r2.n)
                 return true;
             if (r1.n > r2.n)
@@ -208,9 +217,11 @@ BigtableView::BigtableView()
         h->setSortIndicator(logicalIndex, Qt::AscendingOrder);
         model()->setSortColumn(logicalIndex-1);
         model()->sortData(); });
+
+    setRemake([this](){}); // for the time being, remake is steered by BigtableTab
 }
 
-void BigtableView::refresh()
+void BigtableView::onData()
 {
     model()->refresh();
     updateShownColumns();

@@ -137,7 +137,7 @@ TableView::TableView(TableModel* model)
     setSelectionMode(QAbstractItemView::NoSelection);
     setAlternatingRowColors(true);
 
-    setRemake([this]() {onData();});
+    setRemake([this](){ onData(); });
 }
 
 TableView::~TableView()
