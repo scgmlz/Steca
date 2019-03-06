@@ -28,13 +28,16 @@
 
 class FilesModel : public CheckTableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
-    FilesModel() : CheckTableModel("datafiles") {}
+    FilesModel() : CheckTableModel{"datafiles"} {}
 
 private:
+    void setActivated(int i, bool on) { gSession->dataset.fileAt(i).setFileActivation(on); }
+
     int highlighted() const final;
     void onHighlight(int i) final { gSession->dataset.highlight().setFile(i); }
-    bool activated(int i) const { return gSession->dataset.fileAt(i).activated() == Qt::Checked; }
-    void setActivated(int i, bool on) { gSession->dataset.setFileActivation(i, on); }
+    bool activated(int i) const { return gSession->dataset.fileAt(i).activated(); }
+    Qt::CheckState state(int i) const override {
+        return gSession->dataset.fileAt(i).clusterState(); }
 
     int columnCount() const final { return 3; }
     int rowCount() const final { return gSession->dataset.countFiles(); }
@@ -64,7 +67,7 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const
             .arg(gSession->dataset.offset(file)+1)
             .arg(gSession->dataset.offset(file)+file.numMeasurements());
     else if (role==Qt::CheckStateRole && col==1)
-        return file.activated();
+        return state(row);
     else if (role==Qt::BackgroundRole) {
         if (row==highlighted())
             return QColor(Qt::cyan);
@@ -81,7 +84,7 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const
 
 class FilesView : public CheckTableView {
 public:
-    FilesView() : CheckTableView {new FilesModel()} {}
+    FilesView() : CheckTableView {new FilesModel} {}
 private:
     FilesModel* model() { return static_cast<FilesModel*>(model_); }
 };
@@ -91,7 +94,7 @@ private:
 //! @class SubframeFiles
 
 SubframeFiles::SubframeFiles()
-    : QcrDockWidget("files")
+    : QcrDockWidget {"files"}
 {
     setFeatures(DockWidgetMovable);
     setWindowTitle("Files");
@@ -100,21 +103,21 @@ SubframeFiles::SubframeFiles()
 
     auto* dataControls = new QHBoxLayout;
     dataControls->addStretch();
-    dataControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->addFiles));
-    dataControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->removeFile));
+    dataControls->addWidget(new QcrIconTriggerButton{&gGui->triggers->addFiles});
+    dataControls->addWidget(new QcrIconTriggerButton{&gGui->triggers->removeFile});
 
-    auto* corrFileView = new QcrLineDisplay {[]()->QString {
+    auto* corrFileView = new QcrLineDisplay{[]()->QString {
             return gSession->corrset.fileName(); }};
 
     auto* corrControls = new QHBoxLayout;
     corrControls->addWidget(corrFileView);
-    corrControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->corrFile));
-    corrControls->addWidget(new QcrIconToggleButton(&gGui->toggles->enableCorr));
+    corrControls->addWidget(new QcrIconTriggerButton{&gGui->triggers->corrFile});
+    corrControls->addWidget(new QcrIconToggleButton{&gGui->toggles->enableCorr});
 
     auto* box = new QVBoxLayout;
     box->addLayout(dataControls);
-    box->addWidget(new FilesView());
-    box->addWidget(new QLabel("Correction file"));
+    box->addWidget(new FilesView);
+    box->addWidget(new QLabel{"Correction file"});
     box->addLayout(corrControls);
     box->setContentsMargins(0,0,0,0);
     widget()->setLayout(box);

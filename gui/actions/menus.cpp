@@ -20,7 +20,7 @@
 
 //! Initialize the menu bar.
 Menus::Menus(QMenuBar* mbar)
-    : mbar_(mbar)
+    : mbar_{mbar}
 {
 #ifdef Q_OS_OSX
     mbar->setNativeMenuBar(false);

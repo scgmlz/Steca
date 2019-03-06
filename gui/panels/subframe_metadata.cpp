@@ -23,7 +23,7 @@
 
 class MetatableModel : public CheckTableModel {
 public:
-    MetatableModel() : CheckTableModel("meta") {}
+    MetatableModel() : CheckTableModel{"meta"} {}
 
     enum { COL_CHECK = 1, COL_TAG, COL_VALUE, NUM_COLUMNS };
 
@@ -51,7 +51,7 @@ QVariant MetatableModel::data(const QModelIndex& index, int role) const
     switch (role) {
     case Qt::CheckStateRole:
         if (col==COL_CHECK)
-            return activated(row) ? Qt::Checked : Qt::Unchecked;
+            return state(row);
         break;
     case Qt::DisplayRole:
         switch (col) {
@@ -84,7 +84,7 @@ private:
 };
 
 MetatableView::MetatableView()
-    : CheckTableView(new MetatableModel)
+    : CheckTableView {new MetatableModel}
 {
     setColumnWidth(0, 0);
     setColumnWidth(1,  .5*mWidth());

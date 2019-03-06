@@ -20,8 +20,8 @@
 const QStringList OnePeakSettings::functionNames = { "Raw", "Gaussian", "Lorentzian", "Voigt" };
 
 OnePeakSettings::OnePeakSettings(const Range& r, const QString& functionName)
-    : range_(r)
-    , functionName_(functionName)
+    : range_ {r}
+    , functionName_ {functionName}
 {
     onFunction();
 }
@@ -59,10 +59,11 @@ void OnePeakSettings::onFunction()
     fitParNiceNames_ = QStringList{ "intensity", "σintensity",
                                     "2θ", "σ2θ",
                                     "fwhm", "σfwhm" };
-// TODO URGENT RESTORE    if (functionName_=="Voigt") {
+// TODO URGENT OUTCOMMENT FOR PRODUCTION
+    if (functionName_=="Voigt") {
         fitParAsciiNames_ << "Gamma/Sigma" << "sigma_Gamma/Sigma";
         fitParNiceNames_  << "Γ/Σ" << "σ(Γ/Σ)";
-//    }
+    }
 }
 
 JsonObj OnePeakSettings::toJson() const

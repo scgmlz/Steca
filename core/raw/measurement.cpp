@@ -17,9 +17,9 @@
 
 Measurement::Measurement(
     const int position, Metadata&& md, const size2d& size, std::vector<float>&& intens)
-    : position_(position)
-    , metadata_(std::move(md))
-    , image_(new Image(size, std::move(intens)))
+    : position_ {position}
+    , metadata_ {std::move(md)}
+    , image_ {new Image{size, std::move(intens)}}
 {}
 
 Range Measurement::rgeInten() const { return image_->rgeInten(); }

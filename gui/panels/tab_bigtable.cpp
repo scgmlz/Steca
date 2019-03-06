@@ -30,7 +30,7 @@
 
 class ColumnSelectorModel : public CheckTableModel {
 public:
-    ColumnSelectorModel() : CheckTableModel("colSel") {}
+    ColumnSelectorModel() : CheckTableModel{"colSel"} {}
 
 private:
     int highlighted() const final { return highlighted_; }
@@ -57,7 +57,7 @@ QVariant ColumnSelectorModel::data(const QModelIndex& index, int role) const
     switch (role) {
     case Qt::CheckStateRole:
         if (col==1)
-            return sel_->isSelected(row) ? Qt::Checked : Qt::Unchecked;
+            return state(row);
         break;
     case Qt::DisplayRole:
         if (col==2)
@@ -137,5 +137,4 @@ BigtableTab::BigtableTab()
     layout->setStretch(0,1000);
     setLayout(layout);
     setRemake([=](){ bigtableView->refresh(); });
-
 }

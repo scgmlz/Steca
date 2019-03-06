@@ -25,15 +25,19 @@
 class Datafile {
 public:
     Datafile() = delete;
-    Datafile(Rawfile&& raw) : raw_(std::move(raw)) {}
+    Datafile(Rawfile&& raw) : raw_{std::move(raw)} {}
     Datafile(const Datafile&) = delete;
     Datafile(Datafile&&) = default;
     Datafile& operator=(Datafile&&) = default;
 
+    void setFileActivation(bool on);
+
     int numMeasurements() const { return raw_.numMeasurements(); }
     int index() const { return index_; }
     QString name() const { return raw_.fileName(); }
-    Qt::CheckState activated() const;
+    bool allClustersSelected() const;
+    Qt::CheckState clusterState() const;
+    bool activated() const { return activated_; }
 
     int offset_;  //!< first index in total list of Measurement|s
 
@@ -45,6 +49,7 @@ private:
     int index_; //!< index in files_
     std::vector<Cluster*> clusters_; //!< back links to Cluster|s made from this,
                                      //!< set by Dataset::updateClusters
+    bool activated_ {true};
 };
 
 
@@ -80,15 +85,16 @@ public:
     void clear();
     void addGivenFiles(const QStringList& filePaths);
     void removeFile();
-    void setClusterActivation(int index, bool on);
-    void setFileActivation(int index, bool on);
+    void setClusterSelection(int index, bool on);
 
     HighlightedData& highlight() { return highlight_; }
     const HighlightedData& highlight() const { return highlight_; }
 
+    Datafile& fileAt(int i) { return files_.at(i); }
+    const Datafile& fileAt(int i) const { return files_.at(i); }
+
     QJsonObject toJson() const;
     int countFiles() const { return files_.size(); }
-    const Datafile& fileAt(int i) const { return files_.at(i); }
     int offset(const Datafile& file) const { return file.offset_; }
     bool hasIncomplete() const { return hasIncomplete_; }
     std::vector<const Cluster*> activeClustersList() const;

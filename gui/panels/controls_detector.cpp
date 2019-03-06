@@ -32,16 +32,16 @@ public:
 };
 
 DetectorControls::DetectorControls()
-    : QcrWidget("DetectorControls")
+    : QcrWidget {"DetectorControls"}
 {
     auto* mmGrid = new QGridLayout;
-    mmGrid->addWidget(new QLabel("det. distance"), 0, 0);
+    mmGrid->addWidget(new QLabel{"det. distance"}, 0, 0);
     mmGrid->addWidget(new QcrDoubleSpinBox
                       {"detDistance", &gSession->params.detector.detectorDistance, 6, 1, 1e1, 1e5,
                               "Distance from sample to detector, in mm"},
                       0, 1);
-    mmGrid->addWidget(new QLabel("mm"), 0, 2);
-    mmGrid->addWidget(new QLabel("pixel size"), 1, 0);
+    mmGrid->addWidget(new QLabel{"mm"}, 0, 2);
+    mmGrid->addWidget(new QLabel{"pixel size"}, 1, 0);
     mmGrid->addWidget(new QcrDoubleSpinBox
                       {"detPixelSize", &gSession->params.detector.pixSize, 3, 2, 1e-1, 1e2,
                               "Side length of detector pixel square, in mm"},
@@ -49,25 +49,25 @@ DetectorControls::DetectorControls()
     mmGrid->addWidget(new QLabel("mm"), 1, 2);
 
     auto* trafoLayout = new QHBoxLayout;
-    trafoLayout->addWidget(new QLabel("image rotate"));
-    trafoLayout->addWidget(new QcrIconTriggerButton(&gGui->imageTrafoActions->rotateImage));
-    trafoLayout->addWidget(new QLabel("mirror"));
-    trafoLayout->addWidget(new QcrIconToggleButton(&gGui->imageTrafoActions->mirrorImage));
+    trafoLayout->addWidget(new QLabel{"image rotate"});
+    trafoLayout->addWidget(new QcrIconTriggerButton{&gGui->imageTrafoActions->rotateImage});
+    trafoLayout->addWidget(new QLabel{"mirror"});
+    trafoLayout->addWidget(new QcrIconToggleButton{&gGui->imageTrafoActions->mirrorImage});
     trafoLayout->addStretch(1);
 
     auto* offsetLayout = new QHBoxLayout;
-    offsetLayout->addWidget(new QLabel("offset X"));
+    offsetLayout->addWidget(new QLabel{"offset X"});
     offsetLayout->addWidget(new QcrSpinBox
                             {"beamOffsetI", &gSession->params.detector.pixOffset[0], 3, true,
                                     INT_MIN, INT_MAX,
                                     "Horizontal detector offset, in pixel units"});
-    offsetLayout->addWidget(new QLabel(" Y"));
+    offsetLayout->addWidget(new QLabel{" Y"});
     offsetLayout->addWidget(new QcrSpinBox
                             {"beamOffsetJ", &gSession->params.detector.pixOffset[1], 3, true,
                                     INT_MIN, INT_MAX,
                                     "Vertical detector offset, in pixel units"});
 
-    offsetLayout->addWidget(new QLabel("pix"));
+    offsetLayout->addWidget(new QLabel{"pix"});
     offsetLayout->addStretch(1);
 
     auto* vbox = new QVBoxLayout;
@@ -91,7 +91,7 @@ CutControls::CutControls()
     : QcrFrame("CutControls")
 {
     auto* layout = new QGridLayout;
-    layout->addWidget(new QLabel("cut"), 1, 0);
+    layout->addWidget(new QLabel{"cut"}, 1, 0);
     layout->addWidget(
         new QcrSpinBox{"cutLeft",   &gSession->params.imageCut.left,   3, false, 0, INT_MAX,
                 "Number of pixels to be cut at the left"},
@@ -134,11 +134,11 @@ ActiveClustersControls::ActiveClustersControls()
         ":/icon/dropIncomplete"};
 
     auto* layout = new QHBoxLayout;
-    layout->addWidget(new QLabel("combine"));
+    layout->addWidget(new QLabel{"combine"});
     layout->addWidget(new QcrSpinBox
                       {"combineMeasurements", &gSession->dataset.binning, 3, false, 1, 999,
                               "Combine this number of measurements into one group"});
-    layout->addWidget(new QLabel("measurements"));
+    layout->addWidget(new QLabel{"measurements"});
     layout->addWidget(dropIncompleteBtn);
     layout->addStretch(1);
     setLayout(layout);
@@ -160,7 +160,7 @@ GammaControls::GammaControls()
     : QcrWidget("GammaControls")
 {
     auto layout = new QHBoxLayout;
-    layout->addWidget(new QLabel("number of γ slices"));
+    layout->addWidget(new QLabel{"number of γ slices"});
     layout->addWidget(new QcrSpinBox
                       {"numSlices", &gSession->gammaSelection.numSlices, 2, false, 1, INT_MAX,
                               "Number of γ slices (0: no slicing, take entire image)" });

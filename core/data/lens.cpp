@@ -19,9 +19,9 @@
 //! @class ImageLens
 
 ImageLens::ImageLens(const Image& image, bool trans, bool cut)
-    : trans_(trans)
-    , cut_(cut) // if true then remove borders for good; this would rescale the rendered image
-    , image_(image)
+    : trans_ {trans}
+    , cut_ {cut} // if true then remove borders for good; this would rescale the rendered image
+    , image_ {image}
 {}
 
 size2d ImageLens::imgSize() const

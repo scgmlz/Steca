@@ -17,25 +17,30 @@
 #include "core/session.h"
 #include "qcr/engine/mixin.h" // remakeAll
 #include "qcr/base/debug.h" // ASSERT
+#include <algorithm>
 
 //  ***********************************************************************************************
 //! @class Datafile
 
-Qt::CheckState Datafile::activated() const
+void Datafile::setFileActivation(bool on)
 {
-    bool allActivated = true;
-    bool noneActivated = true;
-    for (const Cluster* cluster : clusters_) {
-        if (cluster->isActivated())
-            noneActivated = false;
-        else
-            allActivated = false;
-    }
-    if (allActivated)
-        return Qt::Checked;
-    else if (noneActivated)
-        return Qt::Unchecked;
-    return Qt::PartiallyChecked;
+    activated_ = on;
+    gSession->activeClusters.invalidate();
+}
+
+bool Datafile::allClustersSelected() const
+{
+    for (const Cluster* cluster : clusters_)
+        if (!cluster->isSelected())
+            return false;
+    return true;
+}
+
+Qt::CheckState Datafile::clusterState() const
+{
+    if (activated_)
+        return allClustersSelected() ? Qt::Checked : Qt::PartiallyChecked;
+    return Qt::Unchecked;
 }
 
 //  ***********************************************************************************************
@@ -147,17 +152,9 @@ void Dataset::addGivenFiles(const QStringList& filePaths)
     gRoot->remakeAll();
 }
 
-void Dataset::setClusterActivation(int index, bool on)
+void Dataset::setClusterSelection(int index, bool on)
 {
-    allClusters.at(index)->setActivated(on);
-    gSession->activeClusters.invalidate();
-}
-
-void Dataset::setFileActivation(int index, bool on)
-{
-    const Datafile& fil = fileAt(index);
-    for (Cluster* cluster : fil.clusters_)
-        cluster->setActivated(on);
+    allClusters.at(index)->setSelected(on);
     gSession->activeClusters.invalidate();
 }
 
@@ -210,7 +207,7 @@ std::vector<const Cluster*> Dataset::activeClustersList() const
 {
     std::vector<const Cluster*> ret;
     for (const auto& pCluster : allClusters)
-        if (pCluster->isActivated())
+        if (pCluster->isActive())
             ret.push_back(pCluster.get());
     return ret;
 }

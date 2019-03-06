@@ -51,9 +51,9 @@ Triggers::Triggers()
     quit           .setTriggerHook([](){ gGui->QMainWindow::deleteLater(); });
     removeFile     .setTriggerHook([](){ gSession->dataset.removeFile(); });
     saveSession    .setTriggerHook([](){ ioSession::save(gGui); });
-    spawnDiagram   .setTriggerHook([](){ new PopupDiagram(); });
-    spawnTable     .setTriggerHook([](){ new PopupBigtable(); });
-    spawnPolefig   .setTriggerHook([](){ new PopupPolefig(); });
+    spawnDiagram   .setTriggerHook([](){ new PopupDiagram; });
+    spawnTable     .setTriggerHook([](){ new PopupBigtable; });
+    spawnPolefig   .setTriggerHook([](){ new PopupPolefig; });
     viewsReset     .setTriggerHook([](){ gGui->resetViews(); });
 
     // Remakes (others are set more conveniently in Mainwindow::refresh):

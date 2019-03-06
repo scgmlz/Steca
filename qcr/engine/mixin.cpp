@@ -25,7 +25,7 @@ QcrRoot* gRoot {nullptr};
 //! @class QcrBase
 
 QcrBase::QcrBase(const QString& name)
-    : name_(name)
+    : name_ {name}
 {}
 
 //! Calls the hook remake_, provided the associated QObject is a visible QWidget, or a QAction.

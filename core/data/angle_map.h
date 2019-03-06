@@ -23,8 +23,8 @@
 //! A pair of angles (gamma, 2theta) that designate a scattering direction.
 class ScatterDirection {
 public:
-    ScatterDirection() : ScatterDirection(0, 0) {}
-    ScatterDirection(deg tth_, deg gma_) : tth(tth_), gma(gma_) {}
+    ScatterDirection() : ScatterDirection{0, 0} {}
+    ScatterDirection(deg tth_, deg gma_) : tth{tth_}, gma{gma_} {}
 
     deg tth;
     deg gma;

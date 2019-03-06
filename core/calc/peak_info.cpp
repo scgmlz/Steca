@@ -28,35 +28,35 @@ PeakInfo::PeakInfo(const Metadata* md,
                    deg alpha, deg beta, Range rgeGma, double inten,
                    double intenError, deg tth, deg tthError, double fwhm, double fwhmError,
                    double sog, double sogError)
-    : md_(md)
-    , alpha_(alpha)
-    , beta_(beta)
-    , rgeGma_(rgeGma)
-    , inten_(inten)
-    , intenError_(intenError)
-    , tth_(tth)
-    , tthError_(tthError)
-    , fwhm_(fwhm)
-    , fwhmError_(fwhmError)
-    , gammOverSigma_(sog)
-    , gammOverSigmaError_(sogError)
+    : md_ {md}
+    , alpha_ {alpha}
+    , beta_ {beta}
+    , rgeGma_ {rgeGma}
+    , inten_ {inten}
+    , intenError_ {intenError}
+    , tth_ {tth}
+    , tthError_ {tthError}
+    , fwhm_ {fwhm}
+    , fwhmError_ {fwhmError}
+    , gammOverSigma_ {sog}
+    , gammOverSigmaError_ {sogError}
 {}
 
 PeakInfo::PeakInfo(const Metadata* md,
                     deg alpha, deg beta, Range rgeGma)
-    : PeakInfo(md, alpha, beta, rgeGma,
-               Q_QNAN, Q_QNAN, deg(Q_QNAN), deg(Q_QNAN), Q_QNAN, Q_QNAN, Q_QNAN, Q_QNAN)
+    : PeakInfo {md, alpha, beta, rgeGma,
+                Q_QNAN, Q_QNAN, deg(Q_QNAN), deg(Q_QNAN), Q_QNAN, Q_QNAN, Q_QNAN, Q_QNAN}
 {}
 
 PeakInfo::PeakInfo(deg alpha, deg beta, Range rgeGma, double inten, double intenError, deg tth,
                    deg tthError, double fwhm, double fwhmError)
-    : PeakInfo(nullptr, alpha, beta, rgeGma,
-               inten, intenError, tth, tthError, fwhm, fwhmError, Q_QNAN, Q_QNAN)
+    : PeakInfo {nullptr, alpha, beta, rgeGma,
+                inten, intenError, tth, tthError, fwhm, fwhmError, Q_QNAN, Q_QNAN}
 {}
 
 PeakInfo::PeakInfo(deg alpha, deg beta)
-    : PeakInfo(nullptr, alpha, beta, Range(),
-               Q_QNAN, Q_QNAN, deg(Q_QNAN), deg(Q_QNAN), Q_QNAN, Q_QNAN, Q_QNAN, Q_QNAN)
+    : PeakInfo {nullptr, alpha, beta, Range(),
+                Q_QNAN, Q_QNAN, deg(Q_QNAN), deg(Q_QNAN), Q_QNAN, Q_QNAN, Q_QNAN, Q_QNAN}
 {}
 
 std::vector<QVariant> PeakInfo::peakData() const

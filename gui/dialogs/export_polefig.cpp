@@ -36,6 +36,7 @@ ExportPolefig::ExportPolefig()
         QStringList{"dat", "lst", "csv", "pol"}, "peak", gSession->peaksSettings.size()>0)
 {
     fmt2button["pol"]->setEnabled(gSession->params.interpolParams.isStandardInterpolation());
+    fmt2button["pol"]->setToolTip("Intensities only, with reference to interpolated standard grid");
 }
 
 int ExportPolefig::multiplicity()

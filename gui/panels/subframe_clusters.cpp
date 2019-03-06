@@ -24,17 +24,20 @@
 
 class ActiveClustersModel : public CheckTableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
-    ActiveClustersModel() : CheckTableModel("measurement") {}
+    ActiveClustersModel() : CheckTableModel{"measurement"} {}
     int columnCount() const final {
         return COL_ATTRS + gSession->params.smallMetaSelection.numSelected(); }
 
     enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
 
 private:
+    void setActivated(int row, bool on) { gSession->dataset.setClusterSelection(row, on); }
+
     int highlighted() const final;
     void onHighlight(int row) final { gSession->dataset.highlight().setCluster(row); }
-    bool activated(int row) const { return gSession->dataset.allClusters.at(row)->isActivated(); }
-    void setActivated(int row, bool on) { gSession->dataset.setClusterActivation(row, on); }
+    bool activated(int row) const { return gSession->dataset.allClusters.at(row)->isSelected(); }
+    Qt::CheckState state(int row) const override {
+        return gSession->dataset.allClusters.at(row)->state(); }
 
     int rowCount() const final { return gSession->dataset.allClusters.size(); }
 
@@ -104,7 +107,7 @@ QVariant ActiveClustersModel::data(const QModelIndex& index, int role) const
     }
     case Qt::CheckStateRole: {
         if (col==COL_CHECK)
-            return activated(row) ? Qt::Checked : Qt::Unchecked;
+            return state(row);
         return {};
     }
     default:
@@ -142,7 +145,7 @@ private:
 };
 
 ActiveClustersView::ActiveClustersView()
-    : CheckTableView(new ActiveClustersModel())
+    : CheckTableView {new ActiveClustersModel()}
 {
     setSelectionMode(QAbstractItemView::NoSelection);
     onData();
@@ -165,7 +168,7 @@ void ActiveClustersView::onData()
 //! @class SubframeClusters
 
 SubframeClusters::SubframeClusters()
-    : QcrDockWidget("measurements")
+    : QcrDockWidget {"measurements"}
 {
     setFeatures(DockWidgetMovable);
     setWindowTitle("Measurements");

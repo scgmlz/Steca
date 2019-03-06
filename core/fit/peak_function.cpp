@@ -64,7 +64,7 @@ public:
     void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
     int nPar() const final { return 1; }
 private:
-    FindFwhm(const Fitted& fitted) : fitted_(fitted) { }
+    FindFwhm(const Fitted& fitted) : fitted_{fitted} { }
     double getY(double x, const double *P) const;
     const Fitted& fitted_;
 };
@@ -87,11 +87,11 @@ Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const RawO
     if        (name=="Raw") {
         return {};
     } else if (name=="Gaussian") {
-        f = new Gaussian();
+        f = new Gaussian;
     } else if (name=="Lorentzian") {
-        f = new Lorentzian();
+        f = new Lorentzian;
     } else if (name=="Voigt") {
-        f = new Voigt();
+        f = new Voigt;
         onlyPositiveParams = true;
     } else
         qFatal("Impossible case");
@@ -238,6 +238,6 @@ DoubleWithError FindFwhm::fromFitted(const Fitted& F) {
     Curve curve;
     curve.append(P[0], ampl/2.0);
 
-    Fitted res = FitWrapper().execFit(new FindFwhm(F), curve, {1});
+    Fitted res = FitWrapper().execFit(new FindFwhm{F}, curve, {1});
     return {fabs(res.parVal[0]), res.parErr[0]+0};
 }

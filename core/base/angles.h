@@ -20,7 +20,7 @@ class rad;
 //! An angle in degrees
 class deg {
 public:
-    deg(double val = 0) : val_(val) {}
+    deg(double val = 0) : val_{val} {}
     explicit deg(rad);
 
     deg& operator+=(const deg&);
@@ -37,7 +37,7 @@ private:
 //! An angle in radians
 class rad {
 public:
-    rad(double val = 0) : val_(val) {}
+    rad(double val = 0) : val_{val} {}
     explicit rad(deg);
 
     operator double() const { return val_; }

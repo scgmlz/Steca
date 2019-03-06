@@ -83,7 +83,7 @@ QVariant BaseRangesModel::data(const QModelIndex& index, int role) const
 
 class BaseRangesView : public TableView {
 public:
-    BaseRangesView() : TableView{new BaseRangesModel()} {}
+    BaseRangesView() : TableView{new BaseRangesModel} {}
 };
 
 //  ***********************************************************************************************
@@ -97,15 +97,15 @@ ControlsBaseline::ControlsBaseline()
     auto* spinDegree = new QcrSpinBox{
         "degree", &gSession->baseline.polynomDegree, 4, false, 0, 4,
         "Degree of the polynomial used to fit the baseline"};
-    hb->addWidget(new QLabel("Pol. degree:"));
+    hb->addWidget(new QLabel{"Pol. degree:"});
     hb->addWidget(spinDegree);
     hb->addStretch(1);
-    hb->addWidget(new QcrIconTriggerButton(&gGui->triggers->baserangeAdd));
-    hb->addWidget(new QcrIconTriggerButton(&gGui->triggers->baserangeRemove));
-    hb->addWidget(new QcrIconTriggerButton(&gGui->triggers->baserangesClear));
+    hb->addWidget(new QcrIconTriggerButton{&gGui->triggers->baserangeAdd});
+    hb->addWidget(new QcrIconTriggerButton{&gGui->triggers->baserangeRemove});
+    hb->addWidget(new QcrIconTriggerButton{&gGui->triggers->baserangesClear});
     box->addLayout(hb);
 
-    box->addWidget(new BaseRangesView());
+    box->addWidget(new BaseRangesView);
     box->addWidget(
         new RangeControl(
             "base",

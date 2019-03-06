@@ -81,7 +81,7 @@ QcrSingleValue<T>::QcrSingleValue(const QString& name, const T val)
     : QcrRegistered {name}
     , ownsItsCell_ {true}
 {
-    cell_ = new QcrCell<T>(val); // TODO RECONSIDER smart pointer
+    cell_ = new QcrCell<T>{val}; // TODO RECONSIDER smart pointer
     cell_->setCallbacks([this](){return doGetValue();}, [this](const T val){doSetValue(val);});
 }
 

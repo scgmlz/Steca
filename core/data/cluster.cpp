@@ -21,8 +21,8 @@
 //! @class Sequence
 
 Sequence::Sequence(const std::vector<const Measurement*>& measurements)
-    : members_(measurements)
-    , metadata_(computeAvgMetadata())
+    : members_ {measurements}
+    , metadata_ {computeAvgMetadata()}
 {}
 
 Range Sequence::rangeGma() const {
@@ -138,14 +138,14 @@ Dfgram computeSectorDfgram(const int jS, const Cluster* const parent)
 Cluster::Cluster(
     const std::vector<const Measurement*>& measurements,
     const class Datafile& file, const int index, const int offset)
-    : Sequence(measurements)
-    , dfgrams([]()->int{return gSession->gammaSelection.numSlices.val();},
-              [](int jS, const Cluster* parent)->Dfgram{
-                  return computeSectorDfgram(jS, parent); })
-    , file_(file)
-    , index_(index)
-    , offset_(offset)
-    , activated_(true)
+    : Sequence {measurements}
+    , dfgrams {[]()->int{return gSession->gammaSelection.numSlices.val();},
+               [](int jS, const Cluster* parent)->Dfgram{
+                   return computeSectorDfgram(jS, parent); }}
+    , file_ {file}
+    , index_ {index}
+    , offset_ {offset}
+    , selected_ {true}
 {}
 
 int Cluster::totalOffset() const
@@ -161,4 +161,16 @@ bool Cluster::isIncomplete() const
 const Dfgram& Cluster::currentDfgram() const
 {
     return dfgrams.yield_at(gSession->gammaSelection.currSlice.val()-1, this);
+}
+
+bool Cluster::isActive() const
+{
+    return file_.activated() && selected_;
+}
+
+Qt::CheckState Cluster::state() const
+{
+    return selected_ ?
+        ( file_.activated() ? Qt::Checked : Qt::PartiallyChecked ) :
+        Qt::Unchecked;
 }
