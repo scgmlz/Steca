@@ -94,12 +94,12 @@ ColumnSelectorView::ColumnSelectorView()
 
 void ColumnSelectorView::onData()
 {
-    qDebug() << "DEBUG CSV /onData" << gSession->params.bigMetaSelection.availableKeys().count();
+    // TODO: replace the following ad-hoc statement by proper lazy evaluation.
+    // Then revert to standard remake mechanism for this class and for BigTableView.
     gSession->params.bigMetaSelection.replaceKeys(gSession->allNiceKeys(), false);
     model_->refreshModel();
     emit model_->layoutChanged(); // TODO merge into base class ?
     updateScroll();
-    qDebug() << "DEBUG CSV onData/" << gSession->params.bigMetaSelection.availableKeys().count();
 }
 
 

@@ -75,9 +75,7 @@ std::vector<QVariant> PeakInfo::peakData() const
     if (gSession->peaksSettings.selectedPeak()->fitParAsciiNames().contains("Gamma/Sigma")) {
         ret.push_back( QVariant(gammOverSigma_) );
         ret.push_back( QVariant(gammOverSigmaError_) );
-        qDebug() << "DEBUG WITH G/S " << ret.size();
-    } else
-        qDebug() << "DEBUG w/o G/S " << ret.size();
+    }
     auto values_to_append = md_ ? md_->attributeValues() : Metadata::attributeNaNs();
     ret.insert(ret.end(), values_to_append.begin(), values_to_append.end());
     return ret;

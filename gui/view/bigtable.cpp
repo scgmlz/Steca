@@ -34,13 +34,9 @@ BigtableModel::BigtableModel()
 
 void BigtableModel::refresh()
 {
-    qDebug() << "DEBUG BTM refresh:"
-             << gSession->activeClusters.size() << gSession->peaksSettings.size();
     if (!gSession->activeClusters.size() || !gSession->peaksSettings.size())
         return;
     headers_ = gSession->params.bigMetaSelection.availableKeys();
-    qDebug() << "DEBUG BTM refresh ctd:"
-             << headers_.count() << numCols_;
     if (headers_.count() != numCols_) {
         numCols_ = headers_.count();
         colIndexMap_.resize(numCols_);
@@ -54,8 +50,6 @@ void BigtableModel::refresh()
             rows_.push_back(XRow(rows_.size()+1, r.peakData()));
     sortData();
     endResetModel();
-    qDebug() << "DEBUG BTM refresh end:"
-             << gSession->params.bigMetaSelection.availableKeys().count();
 }
 
 QVariant BigtableModel::data(const QModelIndex& index, int role) const
