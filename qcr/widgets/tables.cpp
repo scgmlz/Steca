@@ -89,9 +89,9 @@ void CheckTableModel::activateAndLog(int row, bool on)
 QVariant CheckTableModel::data(const QModelIndex& index, int role) const
 {
     int row = index.row();
-    if (row < 0 || row >= rowCount())
-        return {};
     int col = index.column();
+    if (col < 0 || col >= columnCount() || row < 0 || row >= rowCount())
+        return {};
     switch (role) {
     case Qt::DisplayRole:
         return entry(row, col);

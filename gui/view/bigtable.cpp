@@ -55,7 +55,7 @@ void BigtableModel::refresh()
 QVariant BigtableModel::data(const QModelIndex& index, int role) const
 {
     int row = index.row(), col = index.column();
-    if (col < 0 || row < 0)
+    if (col < 0 || col >= columnCount() || row < 0 || row >= rowCount())
         return {};
 
     switch (role) {
