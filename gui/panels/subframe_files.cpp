@@ -31,12 +31,12 @@ public:
     FilesModel() : CheckTableModel{"datafiles"} {}
 
 private:
-    void setActivated(int i, bool on) { gSession->dataset.fileAt(i).setFileActivation(on); }
+    void setActivated(int i, bool on) final { gSession->dataset.fileAt(i).setFileActivation(on); }
 
     int highlighted() const final;
     void onHighlight(int i) final { gSession->dataset.highlight().setFile(i); }
-    bool activated(int i) const { return gSession->dataset.fileAt(i).activated(); }
-    Qt::CheckState state(int i) const override {
+    bool activated(int i) const final { return gSession->dataset.fileAt(i).activated(); }
+    Qt::CheckState state(int i) const final {
         return gSession->dataset.fileAt(i).clusterState(); }
 
     int columnCount() const final { return 3; }
