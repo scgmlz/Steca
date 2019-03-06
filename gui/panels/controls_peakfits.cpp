@@ -15,6 +15,7 @@
 #include "gui/panels/controls_peakfits.h"
 #include "core/session.h"
 #include "core/fit/peak_function.h"
+#include "core/fit/outcome.h"
 #include "qcr/widgets/tables.h"
 #include "qcr/widgets/controls.h"
 #include "gui/mainwin.h"
