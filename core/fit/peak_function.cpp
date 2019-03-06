@@ -13,15 +13,11 @@
 //  ***********************************************************************************************
 
 #include "core/fit/peak_function.h"
-#include "core/typ/curve.h"
 #include "core/fit/fit_methods.h"
 #include "core/fit/fit_models.h"
 #include "core/fit/outcome.h"
 #include "core/fit/raw_outcome.h"
-#include "qcr/base/debug.h" // ASSERT
-#include "LevMar/LM/levmar.h"
-// waiting for activation #include "lmfit/lib/lmmin.h"
-#include <iostream>
+// #include "qcr/base/debug.h"
 
 PeakOutcome PeakFunction::outcome(const Fitted& F) const
 {
