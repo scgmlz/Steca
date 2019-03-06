@@ -319,7 +319,7 @@ OnePeakAllInfos algo::interpolateInfos(const OnePeakAllInfos& direct)
 
                 if (qIsNaN(idwRadius)) {
                     // Don't fall back to idw, just add an unmeasured info.
-                    ret.appendPeak(PeakInfo(alpha, beta));
+                    ret.appendPeak(PeakInfo{alpha, beta});
                     continue;
                 }
             }

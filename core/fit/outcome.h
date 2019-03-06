@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/fit/peak_function.h
+//! @file      core/fit/outcome.h
 //! @brief     Defines class PeakFunction
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,23 +12,20 @@
 //
 //  ***********************************************************************************************
 
-#ifndef PEAK_FUNCTION_H
-#define PEAK_FUNCTION_H
+#ifndef OUTCOME_H
+#define OUTCOME_H
 
 #include "core/fit/parametric_function.h"
-#include <QString>
+#include <memory>
 
-class RawOutcome;
-class PeakOutcome;
+//! Numeric outcome of peak fit.
 
-//! Abstract peak function
-
-class PeakFunction : public FitFunction {
+class PeakOutcome {
 public:
-    virtual PeakOutcome outcome(const Fitted&) const;
-    virtual int nPar() const { return 3; }
-
-    static Fitted fromFit(const QString&, const Curve&, const RawOutcome&);
+    const DoubleWithError center;
+    const DoubleWithError fwhm;
+    const DoubleWithError intensity;
+    const std::shared_ptr<DoubleWithError> gammOverSigma; // an optional value, it might NOT exist
 };
 
-#endif // PEAK_FUNCTION_H
+#endif // OUTCOME_H

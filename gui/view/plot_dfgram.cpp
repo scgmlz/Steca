@@ -70,12 +70,12 @@ void PlotDfgramOverlay::addRange(const Range& range)
     case EditableRange::PEAKS: {
         // make sure enough datapoints are selected for fitting the peak:
         // raw Peaks can live with any number of datapoints.
-        const OnePeakSettings peak(range, OnePeakSettings::functionNames.at(
-                                  gSession->params.defaultPeakFunction.val()));
+        const OnePeakSettings peak {range, OnePeakSettings::functionNames.at(
+                gSession->params.defaultPeakFunction.val())};
         const Curve rawCurve = gSession->currentOrAvgeDfgram()->getCurveMinusBg().intersect(range);
         const Fitted fitted = PeakFunction::fromFit(peak.functionName(), rawCurve,
                                                     RawOutcome(rawCurve));
-        if (peak.isRaw() || (fitted.success && fitted.f->nPar() <= datapointCount)) {
+        if (peak.isRaw() || (fitted.success() && fitted.nPar() <= datapointCount)) {
             gSession->peaksSettings.add(range);
             gSession->onPeaks();
         }

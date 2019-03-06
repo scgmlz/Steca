@@ -52,7 +52,7 @@ public:
 };
 
 class Curve;
-
+class PeakFunction;
 
 //! The outcome of a fit: a function, some fitted parameters, and a success flag.
 
@@ -65,14 +65,18 @@ public:
     Fitted(const Fitted&) = delete;
     Fitted(Fitted&&) = default;
 
+    bool success() const { return success_; }
+    int nPar() const { return f_->nPar(); }
+    double parValAt(int i) const { return parVal_.at(i); }
+    double parErrAt(int i) const { return parErr_.at(i); }
     double y(const double x) const;
-
-    const bool success {false};
-    std::unique_ptr<const FitFunction> f;
-    const std::vector<double> parVal;
-    const std::vector<double> parErr;
+    const PeakFunction* peakFunction() const;
 
 private:
+    const bool success_ {false};
+    std::unique_ptr<const FitFunction> f_;
+    const std::vector<double> parVal_;
+    const std::vector<double> parErr_;
 };
 
 #endif // PARAMETRIC_FUNCTION_H
