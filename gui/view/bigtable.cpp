@@ -54,24 +54,23 @@ void BigtableModel::refresh()
 
 QVariant BigtableModel::data(const QModelIndex& index, int role) const
 {
-    int indexRow = index.row(), indexCol = index.column();
-
-    if (indexCol < 0 || indexRow < 0)
+    int row = index.row(), col = index.column();
+    if (col < 0 || row < 0)
         return {};
 
     switch (role) {
     case Qt::DisplayRole: {
-        if (0 == indexCol)
-            return rows_.at(indexRow).n;
-        const QVariant var = rows_.at(indexRow).row.at(indexCol-1);
+        if (0 == col)
+            return rows_.at(row).n;
+        const QVariant var = rows_.at(row).row.at(col-1);
         if (var.canConvert<double>() && qIsNaN(var.toDouble()))
             return {}; // show blank field instead of NAN
         return var;
     }
     case Qt::TextAlignmentRole: {
-        if (0 == indexCol)
+        if (0 == col)
             return Qt::AlignRight;
-        const QVariant& var = rows_.at(indexRow).row.at(indexCol-1);
+        const QVariant& var = rows_.at(row).row.at(col-1);
         if (var.canConvert<double>())
             return Qt::AlignRight;
         return Qt::AlignLeft;
