@@ -51,7 +51,7 @@ public:
     CheckTableModel(const QString& name);
 
     virtual QVariant data(const QModelIndex& index, int role) const;
-    virtual QVariant datum(int row, int col) const { return {}; }
+    virtual QVariant entry(int row, int col) const { return {}; }
     virtual QString tooltip(int row, int col) const { return ""; }
     virtual QColor foregroundColor(int row, int col) const { return QColor(Qt::black); }
 

@@ -94,7 +94,7 @@ QVariant CheckTableModel::data(const QModelIndex& index, int role) const
     int col = index.column();
     switch (role) {
     case Qt::DisplayRole:
-        return datum(row, col);
+        return entry(row, col);
     case Qt::ToolTipRole:
         return tooltip(row, col);
     case Qt::ForegroundRole:
