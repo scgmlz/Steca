@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/fit/parametric_function.h"
+#include "core/fit/peak_function.h"
 #include "core/typ/curve.h"
 #include "qcr/base/debug.h" // ASSERT
 #include <qmath.h>
@@ -41,20 +42,25 @@ double DoubleWithError::roundedError(int prec) const
 
 Fitted::Fitted(const FitFunction* _f,
                const std::vector<double>& _parVal, const std::vector<double>& _parErr)
-        : success {true}
-        , f {_f}
-        , parVal {_parVal}
-        , parErr {_parErr}
+        : success_ {true}
+        , f_ {_f}
+        , parVal_ {_parVal}
+        , parErr_ {_parErr}
 {
-    ASSERT(parErr.size()==parVal.size());
+    ASSERT(parErr_.size()==parVal_.size());
 }
 
 // TODO replace by vectorial access wherever possible
 
 double Fitted::y(const double x) const
 {
-    ASSERT(success); // computing y makes only sense after a successful fit
+    ASSERT(success_); // computing y makes only sense after a successful fit
     double ret;
-    f->setY(parVal.data(), 1, &x, &ret);
+    f_->setY(parVal_.data(), 1, &x, &ret);
     return ret;
+}
+
+const PeakFunction* Fitted::peakFunction() const
+{
+    return dynamic_cast<const PeakFunction*>(f_.get());
 }

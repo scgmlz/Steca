@@ -162,7 +162,7 @@ void PeakfitOutcomeView::refresh()
     if (peak->isRaw())
         return enable(true, false, false);
     const Fitted& pFct = dfgram->getPeakFit(jP);
-    const auto* peakFit = dynamic_cast<const PeakFunction*>(pFct.f.get());
+    const PeakFunction* peakFit = pFct.peakFunction();
 
     const DoubleWithError nanVal = {Q_QNAN, Q_QNAN};
     // if peakFit exists, use it, otherwise use NaNs:

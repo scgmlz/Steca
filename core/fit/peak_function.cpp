@@ -75,9 +75,9 @@ private:
 PeakOutcome PeakFunction::outcome(const Fitted& F) const
 {
     return {
-        {F.parVal.at(0), F.parErr.at(0)},
-        {F.parVal.at(1), F.parErr.at(1)},
-        {F.parVal.at(2), F.parErr.at(2)} };
+        {F.parValAt(0), F.parErrAt(0)},
+        {F.parValAt(1), F.parErrAt(1)},
+        {F.parValAt(2), F.parErrAt(2)} };
 }
 
 Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const RawOutcome& rawOutcome)
@@ -206,10 +206,10 @@ PeakOutcome Voigt::outcome(const Fitted& F) const
 {
     double fwhm = FindFwhm::fromFitted(F).value();
     return {
-        {F.parVal.at(0), F.parErr.at(0)},
-        DoubleWithError{fwhm, fwhm / F.parVal.at(1) * F.parErr.at(1)},
-        {F.parVal.at(2), F.parErr.at(2)},
-        std::unique_ptr<DoubleWithError>(new DoubleWithError{F.parVal.at(3), F.parErr.at(3)}) };
+        {F.parValAt(0), F.parErrAt(0)},
+        DoubleWithError{fwhm, fwhm / F.parValAt(1) * F.parErrAt(1)},
+        {F.parValAt(2), F.parErrAt(2)},
+        std::unique_ptr<DoubleWithError>(new DoubleWithError{F.parValAt(3), F.parErrAt(3)}) };
 }
 
 //  ***********************************************************************************************
@@ -232,12 +232,12 @@ void FindFwhm::setDY(const double* P, const int nXY, const double* X, double* Ja
 }
 
 DoubleWithError FindFwhm::fromFitted(const Fitted& F) {
-    std::vector<double> P = F.parVal;
-    double ampl = F.y(P[0]);
+    double p0 = F.parValAt(0);
+    double ampl = F.y(p0);
 
     Curve curve;
-    curve.append(P[0], ampl/2.0);
+    curve.append(p0, ampl/2.0);
 
     Fitted res = FitWrapper().execFit(new FindFwhm{F}, curve, {1});
-    return {fabs(res.parVal[0]), res.parErr[0]+0};
+    return {fabs(res.parValAt(0)), res.parErrAt(0)};
 }
