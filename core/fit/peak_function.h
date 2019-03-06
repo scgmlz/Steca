@@ -26,6 +26,7 @@ class PeakOutcome;
 class PeakFunction : public FitFunction {
 public:
     virtual PeakOutcome outcome(const Fitted&) const;
+    virtual int nPar() const { return 3; }
 
     static Fitted fromFit(const QString&, const Curve&, const RawOutcome&);
 };

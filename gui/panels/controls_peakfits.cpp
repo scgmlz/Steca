@@ -173,7 +173,8 @@ void PeakfitOutcomeView::refresh()
     showFittedX_ .setText(par2text(out.center));
     showFittedD_ .setText(par2text(out.fwhm));
     showFittedY_ .setText(par2text(out.intensity));
-    showFittedSG_.setText(par2text(out.gammOverSigma ? *out.gammOverSigma : nanVal));
+    if (!!out.gammOverSigma)
+        showFittedSG_.setText(par2text(*out.gammOverSigma));
 
     enable(true, true, !!out.gammOverSigma);
 }

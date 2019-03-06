@@ -23,7 +23,6 @@ class Gaussian : public PeakFunction {
 public:
     void setY(const double* P, const int nXY, const double* X, double* Y) const final;
     void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
-    int nPar() const final { return 3; }
 };
 
 //! A Lorentzian as a peak fit function.
@@ -32,10 +31,9 @@ class Lorentzian : public PeakFunction {
 public:
     void setY(const double* P, const int nXY, const double* X, double* Y) const final;
     void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
-    int nPar() const final { return 3; }
 };
 
-//! A Lorentzian as a peak fit function.
+//! A Voigt function is the convolution of a Gaussian and a Lorentzian.
 
 class Voigt : public PeakFunction {
 public:
