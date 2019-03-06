@@ -28,7 +28,7 @@ build_script:
 #- git submodule update --init --recursive # there are no submodules
 - mkdir build
 - cd build
-- cmake -G "%CMAKE_GENERATOR%" -DCMAKE_INCLUDE_PATH=C:/opt/local_x64/include -DCMAKE_LIBRARY_PATH=C:/opt/local_x64/lib -DBUILD_SHARED_LIBS=OFF ..
+- cmake -G "%CMAKE_GENERATOR%" -DCMAKE_INCLUDE_PATH=C:/opt/include -DCMAKE_LIBRARY_PATH=C:/opt/lib -DBUILD_SHARED_LIBS=OFF ..
 - cmake --build . --config %BUILD_CONF%
 - ctest -C Release
 
