@@ -22,56 +22,25 @@
 //  ***********************************************************************************************
 //! @class Datafile
 
-void Datafile::rotateFileActivation()
+void Datafile::setFileActivation(bool on)
 {
-    switch (activated_) {
-    case Qt::Unchecked:
-        if (someClustersPreActivated() && !allClustersPreActivated())
-            activated_ = Qt::PartiallyChecked;
-        else
-            activated_ = Qt::Checked;
-        break;
-    case Qt::PartiallyChecked:
-        activated_ = Qt::Checked;
-        break;
-    case Qt::Checked:
-        activated_ = Qt::Unchecked;
-        break;
-    }
+    activated_ = on;
     gSession->activeClusters.invalidate();
 }
 
-bool Datafile::someClustersPreActivated() const
+bool Datafile::allClustersSelected() const
 {
     for (const Cluster* cluster : clusters_)
-        if (cluster->isPreActivated())
-            return true;
-    return false;
-}
-
-bool Datafile::allClustersPreActivated() const
-{
-    for (const Cluster* cluster : clusters_)
-        if (!cluster->isPreActivated())
+        if (!cluster->isSelected())
             return false;
     return true;
 }
 
 Qt::CheckState Datafile::clusterState() const
 {
-    bool allActivated = true;
-    bool noneActivated = true;
-    for (const Cluster* cluster : clusters_) {
-        if (cluster->isActivated())
-            noneActivated = false;
-        else
-            allActivated = false;
-    }
-    if (allActivated)
-        return Qt::Checked;
-    else if (noneActivated)
-        return Qt::Unchecked;
-    return Qt::PartiallyChecked;
+    if (activated_)
+        return allClustersSelected() ? Qt::Checked : Qt::PartiallyChecked;
+    return Qt::Unchecked;
 }
 
 //  ***********************************************************************************************
@@ -185,7 +154,7 @@ void Dataset::addGivenFiles(const QStringList& filePaths)
 
 void Dataset::setClusterActivation(int index, bool on)
 {
-    allClusters.at(index)->setActivated(on);
+    allClusters.at(index)->setSelected(on);
     gSession->activeClusters.invalidate();
 }
 
@@ -238,7 +207,7 @@ std::vector<const Cluster*> Dataset::activeClustersList() const
 {
     std::vector<const Cluster*> ret;
     for (const auto& pCluster : allClusters)
-        if (pCluster->isActivated())
+        if (pCluster->isActive())
             ret.push_back(pCluster.get());
     return ret;
 }

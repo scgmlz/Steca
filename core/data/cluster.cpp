@@ -145,7 +145,7 @@ Cluster::Cluster(
     , file_ {file}
     , index_ {index}
     , offset_ {offset}
-    , activated_ {true}
+    , selected_ {true}
 {}
 
 int Cluster::totalOffset() const
@@ -161,4 +161,9 @@ bool Cluster::isIncomplete() const
 const Dfgram& Cluster::currentDfgram() const
 {
     return dfgrams.yield_at(gSession->gammaSelection.currSlice.val()-1, this);
+}
+
+bool Cluster::isActive() const
+{
+    return file_.activated() && selected_;
 }

@@ -34,7 +34,9 @@ private:
     int highlighted() const final;
     void onHighlight(int row) final { gSession->dataset.highlight().setCluster(row); }
     Qt::CheckState activated(int row) const { return
-            gSession->dataset.allClusters.at(row)->isActivated() ? Qt::Checked : Qt::Unchecked; }
+            gSession->dataset.allClusters.at(row)->isActive() ? Qt::Checked :
+            gSession->dataset.allClusters.at(row)->isSelected() ? Qt::PartiallyChecked :
+            Qt::Unchecked; }
     void setActivated(int row, bool on) { gSession->dataset.setClusterActivation(row, on); }
 
     int rowCount() const final { return gSession->dataset.allClusters.size(); }

@@ -72,15 +72,15 @@ public:
             const class Datafile& file, const int index, const int offset);
     Cluster(const Cluster&) = delete;
 
-    void setActivated(bool on) { activated_ = on; }
+    void setSelected(bool on) { selected_ = on; }
 
     const class Datafile& file() const { return file_; }
     int index() const { return index_; }
     int offset() const { return offset_; }
     int totalOffset() const;
     bool isIncomplete() const;
-    bool isActivated() const { return activated_; }
-    bool isPreActivated() const { return preActivated_; }
+    bool isActive() const;
+    bool isSelected() const { return selected_; }
 
     mutable lazy_data::VectorCache<Dfgram,const Cluster*> dfgrams; //! One Dfgram per gamma section
     const Dfgram& currentDfgram() const;
@@ -89,8 +89,7 @@ private:
     const class Datafile& file_;
     const int index_; //!< index in total list of Cluster|s
     const int offset_; //!< index of first Measurement in file_
-    bool activated_ {true}; //!< checked in list, selected for use
-    bool preActivated_ {true}; //!< checked in list, selected for use
+    bool selected_; //!< selected for use
 };
 
 #endif // CLUSTER_H

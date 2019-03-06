@@ -30,15 +30,14 @@ public:
     Datafile(Datafile&&) = default;
     Datafile& operator=(Datafile&&) = default;
 
-    void rotateFileActivation();
+    void setFileActivation(bool on);
 
     int numMeasurements() const { return raw_.numMeasurements(); }
     int index() const { return index_; }
     QString name() const { return raw_.fileName(); }
-    bool someClustersPreActivated() const;
-    bool allClustersPreActivated() const;
+    bool allClustersSelected() const;
     Qt::CheckState clusterState() const;
-    Qt::CheckState activated() const { return activated_; }
+    bool activated() const { return activated_; }
 
     int offset_;  //!< first index in total list of Measurement|s
 
@@ -50,7 +49,7 @@ private:
     int index_; //!< index in files_
     std::vector<Cluster*> clusters_; //!< back links to Cluster|s made from this,
                                      //!< set by Dataset::updateClusters
-    Qt::CheckState activated_ { Qt::Checked };
+    bool activated_ {true};
 };
 
 
