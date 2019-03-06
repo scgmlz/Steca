@@ -65,7 +65,7 @@ public:
     BigtableView();
     BigtableView(const BigtableView&) = delete;
 
-    void refresh();
+    void onData() final;
 protected:
     void currentChanged(const QModelIndex&, const QModelIndex&) override final {}
 

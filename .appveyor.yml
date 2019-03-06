@@ -21,14 +21,14 @@ build:
 before_build:
 - echo "Steca before_build"
 - echo %PATH%
-- C:\cygwin\bin\wget -q http://apps.jcns.fz-juelich.de/src/WinLibs/yaml.win64.zip -O %temp%\local_x64.zip # provides yaml.h yaml.dll yaml.lib
+- C:\cygwin\bin\wget -q http://apps.jcns.fz-juelich.de/src/WinLibs/libyaml.win64.zip -O %temp%\local_x64.zip # provides yaml.h yaml.dll yaml.lib
 - 7z x %temp%\local_x64.zip -oC:\opt > null
 
 build_script:
 #- git submodule update --init --recursive # there are no submodules
 - mkdir build
 - cd build
-- cmake -G "%CMAKE_GENERATOR%" -DCMAKE_INCLUDE_PATH=C:/opt/local_x64/include -DCMAKE_LIBRARY_PATH=C:/opt/local_x64/lib -DBUILD_SHARED_LIBS=OFF ..
+- cmake -G "%CMAKE_GENERATOR%" -DCMAKE_INCLUDE_PATH=C:/opt/include -DCMAKE_LIBRARY_PATH=C:/opt/lib -DBUILD_SHARED_LIBS=OFF ..
 - cmake --build . --config %BUILD_CONF%
 - ctest -C Release
 

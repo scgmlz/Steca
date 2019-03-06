@@ -31,12 +31,13 @@ public:
     enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
 
 private:
-    void setActivated(int row, bool on) { gSession->dataset.setClusterSelection(row, on); }
+    void setActivated(int row, bool on) final { gSession->dataset.setClusterSelection(row, on); }
 
     int highlighted() const final;
     void onHighlight(int row) final { gSession->dataset.highlight().setCluster(row); }
-    bool activated(int row) const { return gSession->dataset.allClusters.at(row)->isSelected(); }
-    Qt::CheckState state(int row) const override {
+    bool activated(int row) const final {
+        return gSession->dataset.allClusters.at(row)->isSelected(); }
+    Qt::CheckState state(int row) const final {
         return gSession->dataset.allClusters.at(row)->state(); }
 
     int rowCount() const final { return gSession->dataset.allClusters.size(); }

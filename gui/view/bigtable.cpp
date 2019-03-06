@@ -54,24 +54,26 @@ void BigtableModel::refresh()
 
 QVariant BigtableModel::data(const QModelIndex& index, int role) const
 {
-    int indexRow = index.row(), indexCol = index.column();
-
-    if (indexCol < 0 || indexRow < 0)
+    int row = index.row(), col = index.column();
+    if (col < 0 || col >= columnCount() || row < 0 || row >= rowCount())
         return {};
+    if (numCols_ != gSession->params.bigMetaSelection.availableKeys().count())
+        qFatal("inconsistent column size in Bigtable: %d vs %d",
+               numCols_, gSession->params.bigMetaSelection.availableKeys().count());
 
     switch (role) {
     case Qt::DisplayRole: {
-        if (0 == indexCol)
-            return rows_.at(indexRow).n;
-        const QVariant var = rows_.at(indexRow).row.at(indexCol-1);
+        if (0 == col)
+            return rows_.at(row).n;
+        const QVariant var = rows_.at(row).row.at(col-1);
         if (var.canConvert<double>() && qIsNaN(var.toDouble()))
             return {}; // show blank field instead of NAN
         return var;
     }
     case Qt::TextAlignmentRole: {
-        if (0 == indexCol)
+        if (0 == col)
             return Qt::AlignRight;
-        const QVariant& var = rows_.at(indexRow).row.at(indexCol-1);
+        const QVariant& var = rows_.at(row).row.at(col-1);
         if (var.canConvert<double>())
             return Qt::AlignRight;
         return Qt::AlignLeft;
@@ -122,13 +124,13 @@ void BigtableModel::sortData()
 
     // sort by sortColumn first, then left-to-right
     auto _cmp = [this, _cmpRows](const XRow& r1, const XRow& r2) {
-        if (0 <= sortColumn_) {
+        if (sortColumn_ >= 0) {
             int c = _cmpRows(sortColumn_, r1.row, r2.row);
             if (c < 0)
                 return true;
             if (c > 0)
                 return false;
-        } else if (-1 == sortColumn_) {
+        } else if (sortColumn_ == -1) {
             if (r1.n < r2.n)
                 return true;
             if (r1.n > r2.n)
@@ -188,7 +190,7 @@ BigtableView::BigtableView()
     setSelectionMode(QAbstractItemView::ContiguousSelection);
 
     QHeaderView* h = header();
-    h->setSectionResizeMode(0, QHeaderView::Fixed);
+    h->setSectionResizeMode(0, QHeaderView::ResizeToContents);
     h->setSectionsMovable(true);
     h->setSectionsClickable(true);
 
@@ -209,9 +211,11 @@ BigtableView::BigtableView()
         h->setSortIndicator(logicalIndex, Qt::AscendingOrder);
         model()->setSortColumn(logicalIndex-1);
         model()->sortData(); });
+
+    setRemake([this](){}); // for the time being, remake is steered by BigtableTab
 }
 
-void BigtableView::refresh()
+void BigtableView::onData()
 {
     model()->refresh();
     updateShownColumns();
