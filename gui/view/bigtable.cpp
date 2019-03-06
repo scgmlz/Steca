@@ -190,7 +190,7 @@ BigtableView::BigtableView()
     setSelectionMode(QAbstractItemView::ContiguousSelection);
 
     QHeaderView* h = header();
-    h->setSectionResizeMode(0, QHeaderView::Fixed);
+    h->setSectionResizeMode(0, QHeaderView::ResizeToContents);
     h->setSectionsMovable(true);
     h->setSectionsClickable(true);
 
