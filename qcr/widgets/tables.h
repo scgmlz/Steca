@@ -35,7 +35,6 @@ public:
     const QString& name() const { return name_; }
     void setName(const QString &name) { name_ = name; }
 
-    // interaction with data
     virtual int columnCount() const = 0;
     virtual int rowCount() const = 0;
     virtual int highlighted() const = 0;
@@ -50,6 +49,11 @@ private:
 class CheckTableModel : public TableModel {
 public:
     CheckTableModel(const QString& name);
+
+    virtual QVariant data(const QModelIndex& index, int role) const;
+    virtual QVariant datum(int row, int col) const { return {}; }
+    virtual QString tooltip(int row, int col) const { return ""; }
+    virtual QColor foregroundColor(int row, int col) const { return QColor(Qt::black); }
 
     void onActivated();
     void onClicked(const QModelIndex& cell) override;

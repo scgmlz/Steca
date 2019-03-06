@@ -86,6 +86,32 @@ void CheckTableModel::activateAndLog(int row, bool on)
     gConsole->log(name() + ( on ? " activate " : " deactivate ") + QString::number(row));
 }
 
+QVariant CheckTableModel::data(const QModelIndex& index, int role) const
+{
+    int row = index.row();
+    if (row < 0 || row >= rowCount())
+        return {};
+    int col = index.column();
+    switch (role) {
+    case Qt::DisplayRole:
+        return datum(row, col);
+    case Qt::ToolTipRole:
+        return tooltip(row, col);
+    case Qt::ForegroundRole:
+        return foregroundColor(row, col);
+    case Qt::BackgroundRole:
+        if (row==highlighted())
+            return QColor(Qt::cyan);
+        return QColor(Qt::white);
+    case Qt::CheckStateRole:
+        if (col==1)
+            return state(row);
+        return {};
+    default:
+        return {};
+    }
+}
+
 
 //  ***********************************************************************************************
 //! @class TableView
