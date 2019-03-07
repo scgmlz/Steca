@@ -14,7 +14,7 @@
 
 #include "core/peakfit/polynom.h"
 #include "core/typ/curve.h"
-#include "core/fitengine/fit_methods.h"
+#include "core/fitengine/fit_wrapper.h"
 
 void Polynom::setY(const double* P, const int nXY, const double* X, double* Y) const
 {

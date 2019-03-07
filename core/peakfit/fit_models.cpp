@@ -14,7 +14,7 @@
 
 #include "core/peakfit/fit_models.h"
 #include "core/typ/curve.h"
-#include "core/fitengine/fit_methods.h"
+#include "core/fitengine/fit_wrapper.h"
 #include "core/peakfit/outcome.h"
 #include <cerf.h>
 #include <qmath.h>
