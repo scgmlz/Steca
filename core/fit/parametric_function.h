@@ -15,9 +15,6 @@
 #ifndef PARAMETRIC_FUNCTION_H
 #define PARAMETRIC_FUNCTION_H
 
-#include <memory>
-#include <vector>
-
 //! Holds instructions how to compute y(x) and its Jacobian. Base for Polynom and PeakFunction.
 
 class FitFunction {
@@ -30,34 +27,6 @@ public:
     virtual void setDY(const double* P, const int nXY, const double* X,
                        double* Jacobian) const = 0;
     virtual int nPar() const = 0;
-};
-
-class Curve;
-class PeakFunction;
-
-//! The outcome of a fit: a function, some fitted parameters, and a success flag.
-
-class Fitted {
-public:
-    Fitted() {}                                 //!< When fit has failed.
-    Fitted(const FitFunction* _f,
-           const std::vector<double>& _parVal,
-           const std::vector<double>& _parErr); //!< To hold outcome of successful fit
-    Fitted(const Fitted&) = delete;
-    Fitted(Fitted&&) = default;
-
-    bool success() const { return success_; }
-    int nPar() const { return f_->nPar(); }
-    double parValAt(int i) const { return parVal_.at(i); }
-    double parErrAt(int i) const { return parErr_.at(i); }
-    double y(const double x) const;
-    const PeakFunction* peakFunction() const;
-
-private:
-    const bool success_ {false};
-    std::unique_ptr<const FitFunction> f_;
-    const std::vector<double> parVal_;
-    const std::vector<double> parErr_;
 };
 
 #endif // PARAMETRIC_FUNCTION_H

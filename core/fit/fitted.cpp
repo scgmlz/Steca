@@ -13,7 +13,6 @@
 //  ***********************************************************************************************
 
 #include "core/fit/parametric_function.h"
-#include "core/fit/peak_function.h"
 #include "core/typ/curve.h"
 #include "qcr/base/debug.h" // ASSERT
 #include <qmath.h>
@@ -39,9 +38,4 @@ double Fitted::y(const double x) const
     double ret;
     f_->setY(parVal_.data(), 1, &x, &ret);
     return ret;
-}
-
-const PeakFunction* Fitted::peakFunction() const
-{
-    return dynamic_cast<const PeakFunction*>(f_.get());
 }
