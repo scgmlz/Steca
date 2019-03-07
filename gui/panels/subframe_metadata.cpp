@@ -36,40 +36,25 @@ private:
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return Metadata::numAttributes(true); }
 
-    QVariant data(const QModelIndex&, int) const;
+    QVariant entry(int, int) const;
     QVariant headerData(int, Qt::Orientation, int) const { return {}; }
 
     int highlighted_ {0};
 };
 
-QVariant MetatableModel::data(const QModelIndex& index, int role) const
+QVariant MetatableModel::entry(int row, int col) const
 {
-    int row = index.row();
-    int col = index.column();
-    if (row < 0 || rowCount() <= row)
-        return {};
-    switch (role) {
-    case Qt::CheckStateRole:
-        if (col==COL_CHECK)
-            return state(row);
-        break;
-    case Qt::DisplayRole:
-        switch (col) {
-        case COL_TAG:
-            return Metadata::attributeTag(row, true);
-        case COL_VALUE:
-            const Cluster* highlight = gSession->currentCluster();
-            if (!highlight)
-                return "-";
-            return highlight->avgMetadata().attributeStrValue(row);
-        }
-        return "";
-    case Qt::BackgroundRole:
-        return QColor(Qt::white);
+    switch (col) {
+    case COL_TAG:
+        return Metadata::attributeTag(row, true);
+    case COL_VALUE:
+        const Cluster* highlight = gSession->currentCluster();
+        if (!highlight)
+            return "-";
+        return highlight->avgMetadata().attributeStrValue(row);
     }
-    return {};
+    return "";
 }
-
 
 //  ***********************************************************************************************
 //! @class MetatableView (local scope)
