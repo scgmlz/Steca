@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/peakfit/outcome.h
-//! @brief     Defines class PeakFunction
+//! @brief     Defines class PeakOutcome (header-only)
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)

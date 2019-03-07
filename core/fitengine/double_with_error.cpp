@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/fitengine/double_with_error.cpp
-//! @brief     Implements classes DoubleWithError, Fitted
+//! @brief     Implements class DoubleWithError
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)

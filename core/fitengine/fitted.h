@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/fitengine/fitted.h
-//! @brief     Defines classes DoubleWithError, FitFunction, Fitted
+//! @brief     Defines class Fitted
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)

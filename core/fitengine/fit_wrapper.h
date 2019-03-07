@@ -25,6 +25,7 @@
 
 class FitWrapper {
 public:
+    //! Fits a FitFunction to a Curve, and returns the outcome.
     Fitted execFit(
         const FitFunction*, const class Curve&, std::vector<double> parValue,
         bool onlyPositiveParams = false);
