@@ -43,14 +43,14 @@ void writeFullInfoSequence(
 
 void writeCompactInfoSequence(QTextStream& stream, const OnePeakAllInfos& peakInfos)
 {
-    int count = 1;
+    int count = 0;
     for (auto& info : peakInfos.peakInfos()) {
         stream << info.inten();
+        count = (count+1)%10;
         if (count == 0)
             stream << "\n";
         else
             stream << " ";
-        count = (count+1)%10;
     }
     stream << "\n";
 }
