@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/fit/parametric_function.h
+//! @file      core/fit/fitted.h
 //! @brief     Defines classes DoubleWithError, FitFunction, Fitted
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,9 +12,10 @@
 //
 //  ***********************************************************************************************
 
-#ifndef PARAMETRIC_FUNCTION_H
-#define PARAMETRIC_FUNCTION_H
+#ifndef FITTED_H
+#define FITTED_H
 
+#include "core/fit/fit_function.h"
 #include <memory>
 #include <vector>
 
@@ -45,4 +46,4 @@ private:
     const std::vector<double> parErr_;
 };
 
-#endif // PARAMETRIC_FUNCTION_H
+#endif // FITTED_H

@@ -15,7 +15,8 @@
 #ifndef PEAK_FUNCTION_H
 #define PEAK_FUNCTION_H
 
-#include "core/fit/parametric_function.h"
+#include "core/fit/fit_function.h"
+#include "core/fit/fitted.h"
 #include <QString>
 
 class RawOutcome;

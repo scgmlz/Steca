@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/fit/parametric_function.h
+//! @file      core/fit/fit_function.h
 //! @brief     Defines classes DoubleWithError, FitFunction, Fitted
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef PARAMETRIC_FUNCTION_H
-#define PARAMETRIC_FUNCTION_H
+#ifndef FIT_FUNCTION_H
+#define FIT_FUNCTION_H
 
 //! Holds instructions how to compute y(x) and its Jacobian. Base for Polynom and PeakFunction.
 
@@ -29,4 +29,4 @@ public:
     virtual int nPar() const = 0;
 };
 
-#endif // PARAMETRIC_FUNCTION_H
+#endif // FIT_FUNCTION_H

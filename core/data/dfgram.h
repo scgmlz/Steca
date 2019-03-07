@@ -17,7 +17,7 @@
 
 #include "core/typ/curve.h"
 #include "core/fit/raw_outcome.h"
-#include "core/fit/parametric_function.h"
+#include "core/fit/fitted.h"
 #include "core/typ/lazy_data.h"
 
 //! A curve, and associated fit parameters.

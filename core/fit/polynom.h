@@ -15,7 +15,7 @@
 #ifndef POLYNOM_H
 #define POLYNOM_H
 
-#include "core/fit/parametric_function.h"
+#include "core/fit/fitted.h"
 #include "core/typ/ranges.h"
 
 //! A polynomial, for fitting the background of a diffractogram
