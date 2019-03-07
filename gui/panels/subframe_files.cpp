@@ -41,8 +41,8 @@ private:
 
     int columnCount() const final { return 3; }
     int rowCount() const final { return gSession->dataset.countFiles(); }
-    QVariant entry(int, int) const;
-    QString tooltip(int, int) const;
+    QVariant entry(int, int) const final;
+    QString tooltip(int, int) const final;
 };
 
 int FilesModel::highlighted() const

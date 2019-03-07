@@ -41,7 +41,7 @@ private:
     int columnCount() const final { return 3; }
     int rowCount() const final { return sel_->size(); }
 
-    QVariant entry(int, int) const;
+    QVariant entry(int, int) const final;
     QVariant headerData(int, Qt::Orientation, int) const { return {}; }
 
     int highlighted_ {0};

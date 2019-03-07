@@ -42,9 +42,9 @@ private:
 
     int rowCount() const final { return gSession->dataset.allClusters.size(); }
 
-    QVariant entry(int, int) const;
-    QColor foregroundColor(int, int) const;
-    QString tooltip(int, int) const;
+    QVariant entry(int, int) const final;
+    QColor foregroundColor(int, int) const final;
+    QString tooltip(int, int) const final;
     QVariant headerData(int, Qt::Orientation, int) const final;
 };
 
