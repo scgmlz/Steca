@@ -17,9 +17,11 @@
 
 #include "core/fitengine/fitted.h"
 
-//! Wraps Levenberg-Marquardt fit function from 3rd-party library.
+//! Wraps a 3rd-party minimizer. Provides a single function: execFit.
 
-//! Used for fitting polynomial background and peak functions.
+//! Recommended usage: combine class instantiation and function call in one single statement,
+//!
+//!     Fitted outcome = FitWrapper().execFit(....);
 
 class FitWrapper {
 public:

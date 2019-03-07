@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/fitengine/fit_function.h
-//! @brief     Defines classes DoubleWithError, FitFunction, Fitted
+//! @brief     Defines the header-only class FitFunction
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -15,7 +15,8 @@
 #ifndef FIT_FUNCTION_H
 #define FIT_FUNCTION_H
 
-//! Holds instructions how to compute y(x) and its Jacobian. Base for Polynom and PeakFunction.
+//! Abstract base class for all fit functions.
+//! Child classes must provide the function y(x) and its Jacobian.
 
 class FitFunction {
 public:
