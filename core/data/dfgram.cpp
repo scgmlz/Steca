@@ -13,8 +13,8 @@
 //  ***********************************************************************************************
 
 #include "core/data/dfgram.h"
-#include "core/fit/peak_function.h"
-#include "core/fit/polynom.h"
+#include "core/peakfit/peak_function.h"
+#include "core/peakfit/polynom.h"
 #include "core/session.h"
 //#include "qcr/base/debug.h"
 

@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/typ/double_with_error.h
+//! @file      core/fitengine/double_with_error.h
 //! @brief     Defines class DoubleWithError
 //!
 //! @homepage  https://github.com/scgmlz/Steca

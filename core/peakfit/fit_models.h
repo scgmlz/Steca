@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/fit/fit_models.h
+//! @file      core/peakfit/fit_models.h
 //! @brief     Defines fit models
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -15,7 +15,7 @@
 #ifndef FIT_MODELS_H
 #define FIT_MODELS_H
 
-#include "core/fit/peak_function.h"
+#include "core/peakfit/peak_function.h"
 
 //! A Gaussian as a peak fit function.
 

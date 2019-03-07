@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/typ/double_with_error.cpp
+//! @file      core/fitengine/double_with_error.cpp
 //! @brief     Implements classes DoubleWithError, Fitted
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/typ/double_with_error.h"
+#include "core/fitengine/double_with_error.h"
 #include <qmath.h>
 
 //! Rounds error_ to prec digits, including leading zeros as given by the rounding of value_.

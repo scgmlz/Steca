@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/fit/peak_function.cpp
+//! @file      core/peakfit/peak_function.cpp
 //! @brief     Implements class PeakFunction; defines and implements its subclasses
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,11 +12,11 @@
 //
 //  ***********************************************************************************************
 
-#include "core/fit/peak_function.h"
-#include "core/fit/fit_methods.h"
-#include "core/fit/fit_models.h"
-#include "core/fit/outcome.h"
-#include "core/fit/raw_outcome.h"
+#include "core/peakfit/peak_function.h"
+#include "core/fitengine/fit_methods.h"
+#include "core/peakfit/fit_models.h"
+#include "core/peakfit/outcome.h"
+#include "core/peakfit/raw_outcome.h"
 // #include "qcr/base/debug.h"
 
 PeakOutcome PeakFunction::outcome(const Fitted& F) const

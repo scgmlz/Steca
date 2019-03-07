@@ -14,11 +14,11 @@
 
 #include "core/calc/allpeaks_allinfos.h"
 #include "core/base/async.h"
-#include "core/typ/double_with_error.h"
+#include "core/fitengine/double_with_error.h"
 #include "core/calc/coord_trafos.h"
 #include "core/calc/interpolate_polefig.h"
-#include "core/fit/peak_function.h"
-#include "core/fit/outcome.h"
+#include "core/peakfit/peak_function.h"
+#include "core/peakfit/outcome.h"
 #include "core/session.h"
 #include "qcr/base/debug.h" // ASSERT
 

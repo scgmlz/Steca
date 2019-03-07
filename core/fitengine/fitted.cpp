@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/fit/fitted.cpp
+//! @file      core/fitengine/fitted.cpp
 //! @brief     Implements classes DoubleWithError, Fitted
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/fit/fitted.h"
+#include "core/fitengine/fitted.h"
 #include "qcr/base/debug.h" // ASSERT
 #include <qmath.h>
 

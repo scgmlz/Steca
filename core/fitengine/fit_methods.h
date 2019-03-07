@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/fit/fit_methods.h
+//! @file      core/fitengine/fit_methods.h
 //! @brief     Defines class FitWrapper
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -15,7 +15,7 @@
 #ifndef FIT_METHODS_H
 #define FIT_METHODS_H
 
-#include "core/fit/fitted.h"
+#include "core/fitengine/fitted.h"
 
 //! Wraps Levenberg-Marquardt fit function from 3rd-party library.
 

@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/fit/raw_outcome.h
+//! @file      core/peakfit/raw_outcome.h
 //! @brief     Defines class RawOutcome
 //!
 //! @homepage  https://github.com/scgmlz/Steca

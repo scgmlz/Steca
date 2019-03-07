@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/fit/outcome.h
+//! @file      core/peakfit/outcome.h
 //! @brief     Defines class PeakFunction
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -15,7 +15,7 @@
 #ifndef OUTCOME_H
 #define OUTCOME_H
 
-#include "core/typ/double_with_error.h"
+#include "core/fitengine/double_with_error.h"
 #include <memory>
 
 //! Numeric outcome of peak fit.
