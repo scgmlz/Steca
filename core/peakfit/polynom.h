@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/fit/polynom.h
+//! @file      core/peakfit/polynom.h
 //! @brief     Defines class Polynom
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -15,7 +15,7 @@
 #ifndef POLYNOM_H
 #define POLYNOM_H
 
-#include "core/fit/parametric_function.h"
+#include "core/fitengine/fitted.h"
 #include "core/typ/ranges.h"
 
 //! A polynomial, for fitting the background of a diffractogram

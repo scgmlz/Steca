@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/fit/peak_function.h
+//! @file      core/peakfit/peak_function.h
 //! @brief     Defines class PeakFunction
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -15,7 +15,8 @@
 #ifndef PEAK_FUNCTION_H
 #define PEAK_FUNCTION_H
 
-#include "core/fit/parametric_function.h"
+#include "core/fitengine/fit_function.h"
+#include "core/fitengine/fitted.h"
 #include <QString>
 
 class RawOutcome;

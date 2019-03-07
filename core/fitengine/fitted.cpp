@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/fit/parametric_function.cpp
-//! @brief     Implements classes DoubleWithError, Fitted
+//! @file      core/fitengine/fitted.cpp
+//! @brief     Implements class Fitted
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,30 +12,9 @@
 //
 //  ***********************************************************************************************
 
-#include "core/fit/parametric_function.h"
-#include "core/fit/peak_function.h"
-#include "core/typ/curve.h"
+#include "core/fitengine/fitted.h"
 #include "qcr/base/debug.h" // ASSERT
 #include <qmath.h>
-
-//  ***********************************************************************************************
-//! @class DoubleWithError
-
-//! Rounds error_ to prec digits, including leading zeros as given by the rounding of value_.
-
-//! Covered by test002_rounding.
-
-DoubleWithError::DoubleWithError(double value, double error)
-    : value_ {value}
-    , error_ {error}
-{}
-
-double DoubleWithError::roundedError(int prec) const
-{
-    int n = 1+lrintf(floor(log10(std::max(std::abs(value_),std::abs(error_)))));
-    double fac = pow(10.,prec-n);
-    return round(error_*fac)/fac;
-}
 
 //  ***********************************************************************************************
 //! @class Fitted
@@ -58,9 +37,4 @@ double Fitted::y(const double x) const
     double ret;
     f_->setY(parVal_.data(), 1, &x, &ret);
     return ret;
-}
-
-const PeakFunction* Fitted::peakFunction() const
-{
-    return dynamic_cast<const PeakFunction*>(f_.get());
 }

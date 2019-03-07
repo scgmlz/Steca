@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/fit/fit_methods.h
+//! @file      core/fitengine/fit_wrapper.h
 //! @brief     Defines class FitWrapper
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -15,14 +15,17 @@
 #ifndef FIT_METHODS_H
 #define FIT_METHODS_H
 
-#include "core/fit/parametric_function.h"
+#include "core/fitengine/fitted.h"
 
-//! Wraps Levenberg-Marquardt fit function from 3rd-party library.
+//! Wraps a 3rd-party minimizer. Provides a single function: execFit.
 
-//! Used for fitting polynomial background and peak functions.
+//! Recommended usage: combine class instantiation and function call in one single statement,
+//!
+//!     Fitted outcome = FitWrapper().execFit(....);
 
 class FitWrapper {
 public:
+    //! Fits a FitFunction to a Curve, and returns the outcome.
     Fitted execFit(
         const FitFunction*, const class Curve&, std::vector<double> parValue,
         bool onlyPositiveParams = false);

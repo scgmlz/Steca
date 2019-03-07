@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/fit/peak_function.h"
+#include "core/peakfit/peak_function.h"
 #include "qcr/base/qcrexception.h"
 #include "qcr/engine/console.h"
 #include "gui/view/plot_dfgram.h"

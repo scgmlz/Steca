@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/fit/fit_methods.cpp
+//! @file      core/fitengine/fit_wrapper.cpp
 //! @brief     Implements class FitWrapper
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "core/fit/fit_methods.h"
+#include "core/fitengine/fit_wrapper.h"
 #include "LevMar/LM/levmar.h"
 #include "core/typ/curve.h"
 #include "qcr/base/debug.h" // ASSERT

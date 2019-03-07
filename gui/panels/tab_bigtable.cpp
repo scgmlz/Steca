@@ -89,7 +89,7 @@ ColumnSelectorView::ColumnSelectorView()
     setColumnWidth(1,  .5*mWidth());
     setColumnWidth(2, 6. *mWidth());
     setColumnWidth(3, 7.5*mWidth());
-    setRemake([this](){}); // for the time being, remake is steered by BigtableTab
+    setRemake([](){}); // for the time being, remake is steered by BigtableTab
 }
 
 void ColumnSelectorView::onData()
