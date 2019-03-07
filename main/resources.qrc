@@ -8,6 +8,7 @@
         <file alias="clear">icons/clear.svg</file>
         <file alias="crop">icons/crop.svg</file>
         <file alias="dropIncomplete">icons/dropIncomplete.svg</file>
+	<file alias="empty">icons/empty.svg</file>
         <file alias="filesave">icons/filesave.svg</file>
         <file alias="left">icons/left.svg</file>
         <file alias="link">icons/link.svg</file>
