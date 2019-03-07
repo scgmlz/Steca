@@ -18,25 +18,6 @@
 #include <memory>
 #include <vector>
 
-//! One double value with error estimate. Used to hold fitted parameter.
-
-class DoubleWithError {
-public:
-    DoubleWithError() = delete;
-    DoubleWithError(double value, double error);
-    DoubleWithError(const DoubleWithError&) = default; // TODO delete;
-    DoubleWithError(DoubleWithError&&) = default;
-
-    double value() const { return value_; }
-    double error() const { return error_; }
-    double roundedError(int) const;
-
-private:
-    const double value_;
-    const double error_;
-};
-
-
 //! Holds instructions how to compute y(x) and its Jacobian. Base for Polynom and PeakFunction.
 
 class FitFunction {

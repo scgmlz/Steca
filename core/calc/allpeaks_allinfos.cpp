@@ -14,6 +14,7 @@
 
 #include "core/calc/allpeaks_allinfos.h"
 #include "core/base/async.h"
+#include "core/typ/double_with_error.h"
 #include "core/calc/coord_trafos.h"
 #include "core/calc/interpolate_polefig.h"
 #include "core/fit/peak_function.h"

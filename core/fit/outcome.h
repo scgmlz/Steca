@@ -15,7 +15,7 @@
 #ifndef OUTCOME_H
 #define OUTCOME_H
 
-#include "core/fit/parametric_function.h"
+#include "core/typ/double_with_error.h"
 #include <memory>
 
 //! Numeric outcome of peak fit.

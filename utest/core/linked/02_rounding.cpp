@@ -1,6 +1,5 @@
 #include "gtest/gtest.h"
-#include "core/fit/parametric_function.h"
-#include <qmath.h>
+#include "core/typ/double_with_error.h"
 
 TEST(Rounding, FitParError) {
     DoubleWithError A{33., 5127.1234};

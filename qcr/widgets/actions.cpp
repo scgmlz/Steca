@@ -2,7 +2,7 @@
 //
 //  libqcr: capture and replay Qt widget actions
 //
-//! @file      qcr/widgets/controls.cpp
+//! @file      qcr/widgets/actions.cpp
 //! @brief     Implements enhanced control widgets like QcrSpinBox, QcrRadioButton, and many others
 //!
 //! @homepage  https://github.com/scgmlz/Steca

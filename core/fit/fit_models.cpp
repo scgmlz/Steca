@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/fit/fit_models.h
+//! @file      core/fit/fit_models.cpp
 //! @brief     Implements fit models
 //!
 //! @homepage  https://github.com/scgmlz/Steca

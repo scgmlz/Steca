@@ -19,25 +19,6 @@
 #include <qmath.h>
 
 //  ***********************************************************************************************
-//! @class DoubleWithError
-
-//! Rounds error_ to prec digits, including leading zeros as given by the rounding of value_.
-
-//! Covered by test002_rounding.
-
-DoubleWithError::DoubleWithError(double value, double error)
-    : value_ {value}
-    , error_ {error}
-{}
-
-double DoubleWithError::roundedError(int prec) const
-{
-    int n = 1+lrintf(floor(log10(std::max(std::abs(value_),std::abs(error_)))));
-    double fac = pow(10.,prec-n);
-    return round(error_*fac)/fac;
-}
-
-//  ***********************************************************************************************
 //! @class Fitted
 
 Fitted::Fitted(const FitFunction* _f,
