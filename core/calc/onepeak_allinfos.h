@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef INFO_SEQUENCE_H
-#define INFO_SEQUENCE_H
+#ifndef ONEPEAK_ALLINFOS_H
+#define ONEPEAK_ALLINFOS_H
 
 #include "core/calc/peak_info.h"
 
@@ -38,4 +38,4 @@ private:
     std::vector<PeakInfo> peakInfos_;
 };
 
-#endif // INFO_SEQUENCE_H
+#endif // ONEPEAK_ALLINFOS_H

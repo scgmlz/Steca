@@ -29,6 +29,6 @@ PopupBigtable::PopupBigtable()
     // TODO (issue#76) add info about used parameters
     setLayout(layout);
 
-    bigtableView->refresh();
+    bigtableView->onData();
     show();
 }

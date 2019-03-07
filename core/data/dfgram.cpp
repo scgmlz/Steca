@@ -13,8 +13,8 @@
 //  ***********************************************************************************************
 
 #include "core/data/dfgram.h"
-#include "core/fit/peak_function.h"
-#include "core/fit/polynom.h"
+#include "core/peakfit/peak_function.h"
+#include "core/peakfit/polynom.h"
 #include "core/session.h"
 //#include "qcr/base/debug.h"
 
@@ -29,7 +29,7 @@ Fitted computeBgFit(const Dfgram* parent)
 Curve computeBgAsCurve(const Dfgram* parent)
 {
     const Fitted& bgFit = parent->getBgFit();
-    if (!bgFit.success)
+    if (!bgFit.success())
         return {};
     Curve ret;
     for (int i=0; i<parent->curve.size(); ++i) {
@@ -70,7 +70,7 @@ Curve computePeakAsCurve(int jP, const Dfgram* parent)
     OnePeakSettings& peak = gSession->peaksSettings.at(jP);
     const Curve& curveMinusBg = parent->getCurveMinusBg();
     const Fitted& fun = parent->getPeakFit(jP);
-    if (!fun.success)
+    if (!fun.success())
         return {};
     const Range& rge = peak.range();
     Curve ret;

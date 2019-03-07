@@ -2,7 +2,7 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/fit/fit_methods.cpp
+//! @file      core/fitengine/fit_wrapper.cpp
 //! @brief     Implements class FitWrapper
 //!
 //! @homepage  https://github.com/scgmlz/Steca
@@ -12,14 +12,14 @@
 //
 //  ***********************************************************************************************
 
-#include "core/fit/fit_methods.h"
+#include "core/fitengine/fit_wrapper.h"
 #include "LevMar/LM/levmar.h"
 #include "core/typ/curve.h"
-#include "qcr/base/debug.h"
+#include "qcr/base/debug.h" // ASSERT
 #include <qmath.h>
 
 Fitted FitWrapper::execFit(
-    const FitFunction* f,const Curve& curve, std::vector<double> parValue, bool onlyPositiveParams)
+    const FitFunction* f, const Curve& curve, std::vector<double> parValue, bool onlyPositiveParams)
 {
     int nPar = f->nPar();
     ASSERT(parValue.size()==nPar);
@@ -51,13 +51,11 @@ Fitted FitWrapper::execFit(
         dlevmar_bc_der(
             &fitFct, &Jacobian, parValue.data(), const_cast<double*>(curve.ys().data()), nPar,
             curve.size(), minParams.data(), nullptr, // remove_const(parMax.data()),
-            nullptr,
-            maxIterations, opts, info, workSpace.data(), covar.data(), nullptr);
+            nullptr, maxIterations, opts, info, workSpace.data(), covar.data(), nullptr);
     } else {
         dlevmar_der(
             &fitFct, &Jacobian, parValue.data(), const_cast<double*>(curve.ys().data()), nPar,
-            curve.size(),
-            maxIterations, opts, info, workSpace.data(), covar.data(), nullptr);
+            curve.size(), maxIterations, opts, info, workSpace.data(), covar.data(), nullptr);
     }
 
     // pass fit results

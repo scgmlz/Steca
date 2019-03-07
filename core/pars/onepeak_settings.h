@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef PEAK_FITPAR_H
-#define PEAK_FITPAR_H
+#ifndef ONEPEAK_SETTINGS_H
+#define ONEPEAK_SETTINGS_H
 
 #include "core/typ/range.h"
 #include <QStringList>
@@ -51,4 +51,4 @@ private:
     QStringList fitParNiceNames_;
 };
 
-#endif // PEAK_FITPAR_H
+#endif // ONEPEAK_SETTINGS_H

@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef ALL_INFOS_H
-#define ALL_INFOS_H
+#ifndef ALLPEAKS_ALLINFOS_H
+#define ALLPEAKS_ALLINFOS_H
 
 #include "core/calc/onepeak_allinfos.h"
 #include "core/typ/lazy_data.h"
@@ -39,4 +39,4 @@ private:
     mutable lazy_data::VectorCache<OnePeakAllInfos,const AllPeaksAllInfos*> interpolated;
 };
 
-#endif // ALL_INFOS_H
+#endif // ALLPEAKS_ALLINFOS_H

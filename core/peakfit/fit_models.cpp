@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/fit/peak_function.cpp
-//! @brief     Implements class PeakFunction; defines and implements its subclasses
+//! @file      core/peakfit/fit_models.cpp
+//! @brief     Implements fit models
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,48 +12,13 @@
 //
 //  ***********************************************************************************************
 
-#include "core/fit/peak_function.h"
+#include "core/peakfit/fit_models.h"
 #include "core/typ/curve.h"
-#include "core/fit/fit_methods.h"
-#include "core/fit/raw_outcome.h"
-#include "qcr/base/debug.h" // ASSERT
-#include "LevMar/LM/levmar.h"
-// waiting for activation #include "lmfit/lib/lmmin.h"
+#include "core/fitengine/fit_wrapper.h"
+#include "core/peakfit/outcome.h"
 #include <cerf.h>
 #include <qmath.h>
-#include <iostream>
-
 #define SQR(x) ((x)*(x))
-
-//! A Gaussian as a peak fit function.
-
-class Gaussian : public PeakFunction {
-public:
-    void setY(const double* P, const int nXY, const double* X, double* Y) const final;
-    void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
-    int nPar() const final { return 3; }
-private:
-    const double prefac = 1 / sqrt(2*M_PI);
-};
-
-//! A Lorentzian as a peak fit function.
-
-class Lorentzian : public PeakFunction {
-public:
-    void setY(const double* P, const int nXY, const double* X, double* Y) const final;
-    void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
-    int nPar() const final { return 3; }
-};
-
-//! A Lorentzian as a peak fit function.
-
-class Voigt : public PeakFunction {
-public:
-    void setY(const double* P, const int nXY, const double* X, double* Y) const final;
-    void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
-    int nPar() const final { return 4; }
-    PeakOutcome outcome(const Fitted&) const final;
-};
 
 //! A Fwhm finder as a fit function. avoids reimplementing
 
@@ -69,41 +34,13 @@ private:
     const Fitted& fitted_;
 };
 
-//  ***********************************************************************************************
-//! @class PeakFunction
-
-PeakOutcome PeakFunction::outcome(const Fitted& F) const
-{
-    return {
-        {F.parVal.at(0), F.parErr.at(0)},
-        {F.parVal.at(1), F.parErr.at(1)},
-        {F.parVal.at(2), F.parErr.at(2)} };
-}
-
-Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const RawOutcome& rawOutcome)
-{
-    const PeakFunction* f;
-    bool onlyPositiveParams = false;
-    if        (name=="Raw") {
-        return {};
-    } else if (name=="Gaussian") {
-        f = new Gaussian;
-    } else if (name=="Lorentzian") {
-        f = new Lorentzian;
-    } else if (name=="Voigt") {
-        f = new Voigt;
-        onlyPositiveParams = true;
-    } else
-        qFatal("Impossible case");
-    std::vector<double> startParams(f->nPar(), 1.);
-    startParams[0] = rawOutcome.getCenter();
-    startParams[1] = rawOutcome.getFwhm();
-    startParams[2] = rawOutcome.getIntensity();
-    return FitWrapper().execFit(f, curve, startParams, onlyPositiveParams);
-}
 
 //  ***********************************************************************************************
 //! @class Gaussian
+
+namespace {
+const double prefac = 1 / sqrt(2*M_PI);
+}
 
 void Gaussian::setY(const double* P, const int nXY, const double* X, double* Y) const
 {
@@ -206,10 +143,10 @@ PeakOutcome Voigt::outcome(const Fitted& F) const
 {
     double fwhm = FindFwhm::fromFitted(F).value();
     return {
-        {F.parVal.at(0), F.parErr.at(0)},
-        DoubleWithError{fwhm, fwhm / F.parVal.at(1) * F.parErr.at(1)},
-        {F.parVal.at(2), F.parErr.at(2)},
-        std::unique_ptr<DoubleWithError>(new DoubleWithError{F.parVal.at(3), F.parErr.at(3)}) };
+        {F.parValAt(0), F.parErrAt(0)},
+        DoubleWithError{fwhm, fwhm / F.parValAt(1) * F.parErrAt(1)},
+        {F.parValAt(2), F.parErrAt(2)},
+        std::unique_ptr<DoubleWithError>(new DoubleWithError{F.parValAt(3), F.parErrAt(3)}) };
 }
 
 //  ***********************************************************************************************
@@ -232,12 +169,12 @@ void FindFwhm::setDY(const double* P, const int nXY, const double* X, double* Ja
 }
 
 DoubleWithError FindFwhm::fromFitted(const Fitted& F) {
-    std::vector<double> P = F.parVal;
-    double ampl = F.y(P[0]);
+    double p0 = F.parValAt(0);
+    double ampl = F.y(p0);
 
     Curve curve;
-    curve.append(P[0], ampl/2.0);
+    curve.append(p0, ampl/2.0);
 
     Fitted res = FitWrapper().execFit(new FindFwhm{F}, curve, {1});
-    return {fabs(res.parVal[0]), res.parErr[0]+0};
+    return {fabs(res.parValAt(0)), res.parErrAt(0)};
 }

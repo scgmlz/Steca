@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#ifndef PEAKS_H
-#define PEAKS_H
+#ifndef ALLPEAKS_SETTINGS_H
+#define ALLPEAKS_SETTINGS_H
 
 #include "core/pars/onepeak_settings.h"
 
@@ -46,4 +46,4 @@ private:
     std::vector<OnePeakSettings> peaksSettings_;
 };
 
-#endif // PEAKS_H
+#endif // ALLPEAKS_SETTINGS_H

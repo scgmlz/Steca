@@ -14,9 +14,11 @@
 
 #include "core/calc/allpeaks_allinfos.h"
 #include "core/base/async.h"
+#include "core/fitengine/double_with_error.h"
 #include "core/calc/coord_trafos.h"
 #include "core/calc/interpolate_polefig.h"
-#include "core/fit/peak_function.h"
+#include "core/peakfit/peak_function.h"
+#include "core/peakfit/outcome.h"
 #include "core/session.h"
 #include "qcr/base/debug.h" // ASSERT
 
@@ -50,7 +52,7 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
         intensity .reset(new DoubleWithError{out.getIntensity(),0});
     } else {
         const Fitted& pFct = dfgram.getPeakFit(jP);
-        const auto* peakFit = dynamic_cast<const PeakFunction*>(pFct.f.get());
+        const PeakFunction*const peakFit = dynamic_cast<const PeakFunction*>(pFct.fitFunction());
 
         const DoubleWithError nanVal = {Q_QNAN, Q_QNAN};
         // if peakFit exists, use it, otherwise use NaNs:

@@ -63,23 +63,25 @@ QVariant ColumnSelectorModel::entry(int row, int col) const
 class ColumnSelectorView : public CheckTableView {
 public:
     ColumnSelectorView();
+    void onData() override;
 private:
     ColumnSelectorModel* model() { return static_cast<ColumnSelectorModel*>(model_); }
-    void onData() override;
 };
 
 ColumnSelectorView::ColumnSelectorView()
-    : CheckTableView(new ColumnSelectorModel())
+    : CheckTableView {new ColumnSelectorModel()}
 {
     setColumnWidth(0, 0);
     setColumnWidth(1,  .5*mWidth());
     setColumnWidth(2, 6. *mWidth());
     setColumnWidth(3, 7.5*mWidth());
-    setRemake([this](){ onData(); });
+    setRemake([](){}); // for the time being, remake is steered by BigtableTab
 }
 
 void ColumnSelectorView::onData()
 {
+    // TODO: replace the following ad-hoc statement by proper lazy evaluation.
+    // Then revert to standard remake mechanism for this class and for BigTableView.
     gSession->params.bigMetaSelection.replaceKeys(gSession->allNiceKeys(), false);
     model_->refreshModel();
     emit model_->layoutChanged(); // TODO merge into base class ?
@@ -91,9 +93,10 @@ void ColumnSelectorView::onData()
 //! @class BigtableTab
 
 BigtableTab::BigtableTab()
-    : QcrWidget("BigtableTab")
+    : QcrWidget {"BigtableTab"}
 {
     auto* bigtableView = new BigtableView;
+    auto* columnSelectorView = new ColumnSelectorView;
 
     auto* trigAll   = new QcrIconTriggerButton
         {"bigtabAll", "select all columns", ":/icon/All"};
@@ -113,7 +116,7 @@ BigtableTab::BigtableTab()
     buttonBox->addWidget(new QcrIconTriggerButton {&gGui->triggers->exportBigtable});
 
     auto* sideBox = new QVBoxLayout;
-    sideBox->addWidget(new ColumnSelectorView);
+    sideBox->addWidget(columnSelectorView);
     sideBox->addLayout(buttonBox);
     sideBox->setStretch(0,1000);
 
@@ -122,5 +125,6 @@ BigtableTab::BigtableTab()
     layout->addLayout(sideBox);
     layout->setStretch(0,1000);
     setLayout(layout);
-    setRemake([=](){ bigtableView->refresh(); });
+    // does remake order matter ? otherwise we could setRemake in the member classes
+    setRemake([=](){ columnSelectorView->onData(); bigtableView->onData(); });
 }
