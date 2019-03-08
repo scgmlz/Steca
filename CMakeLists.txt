@@ -15,7 +15,6 @@ message(STATUS "Building Steca ${Steca_VERSION}")
 set(CMAKE_PROJECT_DESCRIPTION # for display in installer
     "Steca - the stress and texture calculator.")
 
-option(WITH_TESTS "Build with all tests" ON)
 option(BUILD_FALLBACK "Build and use the fallback 3rdparty libraries" OFF)
 option(COVERAGE "Support code coverage report" OFF)
 
@@ -91,8 +90,8 @@ add_subdirectory(main)
 
 message(STATUS "Steca components all configured")
 
-if(WITH_TESTS)
-    include(CTest) # equivalent to "enable_testing() ???
+include(CTest)
+if(BUILD_TESTING) # option defined by CTest and enabled by default
     add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND}) # => 'make check' is alias for 'ctest'
     set(gtest_force_shared_crt ON
         CACHE bool "Use shared(DLL) run-time lib even when Google Test is built as static lib.")
@@ -102,6 +101,7 @@ if(WITH_TESTS)
     message(STATUS "gtest configured")
     configure_file(testdata/testdata.h.in ${CMAKE_BINARY_DIR}/testdata.h @ONLY)
     add_subdirectory(utest)
+    add_subdirectory(ftest)
 else()
     message(STATUS "Skipping tests")
 endif()
