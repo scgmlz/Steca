@@ -27,9 +27,7 @@
 #include "qcr/engine/console.h"
 //#include "qcr/base/debug.h"
 
-#define OPTPARSE_IMPLEMENTATION
-#define OPTPARSE_API static
-#include "optparse.h"
+#include "clara.hpp"
 
 #include <iostream>
 #include <QApplication>
@@ -68,40 +66,42 @@ int main(int argc, char* argv[]) {
     QString logFileName;
     QString startupScript;
 
-    struct optparse options;
-    optparse_init(&options, argv);
-    int opt;
-    if (argc>1 && QString(argv[1])=="--help")
-        exit_help();
-    if (argc>1 && QString(argv[1])=="--version")
-        exit_version();
-    while ((opt = optparse(&options, "hvl:ps")) != -1) {
-        switch (opt) {
-        case 'h':
-            exit_help();
-        case 'v':
-            exit_version();
-        case 'l':
-            logFileName = options.optarg;
-            break;
-        case 'p':
-            setFileOverwritePolicy(file_dialog::eFileOverwritePolicy::PANIC);
-            break;
-        case 's':
-            setFileOverwritePolicy(file_dialog::eFileOverwritePolicy::SILENT_OVERWRITE);
-            break;
-        case '?':
-            std::cerr << "Unsupported option or missing option argument."
-                      << " Use '" APPLICATION_NAME " -h' for list of options\n";
-            exit(-1);
-        default:
-            std::cerr << "Bug: impossible option\n";
+    auto help = false;
+    auto vers = false;
+    auto theLogFileName = std::string{};
+    auto startupScriptSource = std::string{};
+    auto panic = false;
+    auto silent_overwrite = false;
+    auto parser = clara::detail::Opt(help)["-h"]["--help"]("Show the help message.")|
+                  clara::detail::Opt(vers)["-v"]["--version"]("Print version.")|
+                  clara::detail::Opt(theLogFileName, "file")["-l"]("Write log to <file>.")|
+                  clara::detail::Opt(panic)["-p"]("Sets the file overwrite policy to 'panic'.")|
+                  clara::detail::Opt(silent_overwrite)["-s"]("Sets the file overwrite policy to 'silent overwrite'.")|
+                  clara::detail::Arg(startupScriptSource, "file")("The path of the startup skript.");
+    try
+    {
+        auto result = parser.parse(clara::detail::Args(argc, argv));
+        if(!result)
+        {
+            std::cerr << "Unsuported option or missing option argument.\n"
+                      << "Use '" APPLICATION_NAME " -h' for list of options\n";
             exit(-1);
         }
+        else if(help)
+            exit_help();
+        else if(vers)
+            exit_version();
+        else if(theLogFileName != "")
+            logFileName = QString::fromStdString(theLogFileName);
+        else if(panic)
+            setFileOverwritePolicy(file_dialog::eFileOverwritePolicy::PANIC);
+        else if(silent_overwrite)
+            setFileOverwritePolicy(file_dialog::eFileOverwritePolicy::SILENT_OVERWRITE);
+        startupScript = QString::fromStdString(startupScriptSource);
     }
-
-    if ((startupScript = optparse_arg(&options))!="" && optparse_arg(&options)) {
-        std::cerr << "More than one command-line argument given\n";
+    catch (std::exception const & e)
+    {
+        std::cerr << e.what();
         exit(-1);
     }
 
