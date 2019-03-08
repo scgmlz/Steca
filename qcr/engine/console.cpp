@@ -223,7 +223,7 @@ void Console::forget(const QString& name)
 //! Called by ~QcrModal(), i.e. on terminating a modal dialog.
 void Console::closeModalDialog()
 {
-    log("@close");
+    log("@close # modal dialog");
     if (registryStack_.empty()) {
         qterr << "cannot pop: registry stack is empty\n"; qterr.flush();
         return;
@@ -265,6 +265,7 @@ void Console::commandsFromStack()
 {
     while (!commandLifo_.empty()) {
         const QString line = commandLifo_.front();
+        qterr << "DEBUG: command from stack: " << line << "\n";
         commandLifo_.pop_front();
         if (line=="@close")
             return;
@@ -363,6 +364,7 @@ Console::Result Console::wrappedCommand(const QString& line)
         return Result::ok; // nothing to do
     QString cmd, arg;
     strOp::splitOnce(command, cmd, arg);
+    qterr << "DEBUG: wrapped command: " << command << "\n";
     if (cmd[0]=='@') {
         if (cmd=="@ls") {
             const CommandRegistry* reg = registryStack_.top();
