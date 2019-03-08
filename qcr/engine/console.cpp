@@ -19,7 +19,7 @@
 namespace {
 
 //! Parses a command line, sets the command and the context, and returns true if successful.
-//!
+
 //! The input line may be either a plain command or a log entry.
 //! A log entry starts with a '[..]' comment containing execution time (optional) and context.
 //! It may end with a '#..' comment.
@@ -182,7 +182,7 @@ Console::~Console()
 }
 
 //! Registers a QcrCommandable or pushes a new registry.
-//!
+
 //! The registry will be used in "wrappedCommand" which forwards a command to the
 //! QcrCommandable which then executes it.
 //!
@@ -251,7 +251,7 @@ void Console::runScript(const QString& fName)
 }
 
 //! Pops the current registry away, so that the previous one is reinstated.
-//!
+
 //! Called by ~QcrModal(), i.e. on terminating a modal dialog.
 void Console::closeModalDialog()
 {
@@ -279,6 +279,7 @@ void Console::commandsFromStack()
         if (ret==Result::err) {
             commandLifo_.clear();
             log("# Emptied command stack upon error");
+            return;
         } else if (ret==Result::suspend)
             return;
     }

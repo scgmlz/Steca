@@ -32,7 +32,7 @@ public:
     ~QcrSingleValue();
     //! Sets the value of the associated Cell, and in consequence also the value of this widget.
     void setCellValue(T val);
-    //! Sets the widget value according to string argument. Called Console::wrappedCommand.
+    //! Sets the widget value according to string argument. Called by Console::wrappedCommand.
     virtual void setFromCommand(const QString& arg);
     //! Gets the current value of this widget, which agrees with the value of the associated cell.
     T getValue() const { ASSERT(doGetValue()==cell_->val()); return cell_->val(); }
@@ -104,7 +104,7 @@ void QcrSingleValue<T>::setCellValue(T val)
     cell_->setVal(val);
 }
 
-//! Sets the widget value according to string argument. Called Console::wrappedCommand.
+//! Sets the widget value according to string argument. Called by Console::wrappedCommand.
 template<class T>
 void QcrSingleValue<T>::setFromCommand(const QString& arg)
 {

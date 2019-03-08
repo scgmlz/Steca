@@ -22,7 +22,7 @@
 extern class Console* gConsole; //!< global handle that points to _the_ Console.
 
 //! Global singleton that logs user actions, and executes script and console commands.
-//!
+
 //! This class is to be instantiated exactly once though this is not enforced by an
 //! explicit singleton mechanism. After creation, the single instance can be accessed
 //! through the global handle gConsole.
@@ -56,7 +56,11 @@ private:
                         cli,   //!< commands come from command-line interface
                         fil    //!< commands come from stack, hence from file
     } caller_;
-    enum class Result : int { ok, err, suspend };
+    enum class Result : int //!< Used to inform commandsFromStack how to proceed
+    { ok,                   //!< Proceed with next command from stack
+      err,                  //!< Terminate stack execution
+      suspend               //!< Suspend stack execution
+    };
     QDateTime startTime_;
 #ifdef Q_OS_WIN
     class QWinEventNotifier *notifier_;
