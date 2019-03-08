@@ -21,9 +21,11 @@
 
 extern class Console* gConsole; //!< global handle that points to _the_ Console.
 
-//! Logs user actions, and executes console commands, based on a command registry.
-
-//! To be instantiated exactly once, and to be accessed through the global handle gConsole.
+//! Global singleton that logs user actions, and executes script and console commands.
+//!
+//! This class is to be instantiated exactly once though this is not enforced by an
+//! explicit singleton mechanism. After creation, the single instance can be accessed
+//! through the global handle gConsole.
 
 class Console
 {
