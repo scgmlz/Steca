@@ -211,7 +211,7 @@ BigtableView::BigtableView()
         model()->setSortColumn(logicalIndex-1);
         model()->sortData(); });
 
-    setRemake([this](){}); // for the time being, remake is steered by BigtableTab
+    setRemake([](){}); // for the time being, remake is steered by BigtableTab
 }
 
 void BigtableView::onData()

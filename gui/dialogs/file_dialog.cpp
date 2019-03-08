@@ -125,18 +125,12 @@ bool confirmOverwrite(const QString& name, QWidget* parent, const QString& path)
     case eFileOverwritePolicy::PROMPT:
         return QMessageBox::question(parent, "File exists", "Overwrite " + path + " ?")
                 == QMessageBox::Yes;
-        break;
-    case eFileOverwritePolicy::PANIC: {
-        QByteArray tmp = path.toLatin1();
-        qFatal("attempting to write to existing file '%s'", tmp.constData());
-        break;
-    }
+    case eFileOverwritePolicy::PANIC:
+        qFatal("attempting to write to existing file '%s'", CSTRI(path));
     case eFileOverwritePolicy::SILENT_OVERWRITE:
         return true;
-        break;
     default:
         qFatal("confirmOverwrite: impossible case");
-        break;
     }
 }
 

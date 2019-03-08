@@ -80,7 +80,7 @@ QString data_export::numberedFileName(const QString& templatedName, int num, int
 {
     if (!templatedName.contains("%d"))
         qFatal("templated name '%s' does not contain placeholder '%%d'",
-               templatedName.toLatin1().constData());
+               CSTRI(templatedName));
     QString ret = templatedName;
     int nDigits = (int)log10((double)maxNum)+1;
     ret.replace("%d", QString("%1").arg(num, nDigits, 10, QLatin1Char('0')));

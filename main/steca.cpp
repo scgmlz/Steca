@@ -125,7 +125,7 @@ int main(int argc, char* argv[]) {
             exit(-1);
         }
     }
-    std::cout << "Log file will be written to " << logFileName.toLatin1().constData() << "\n";
+    std::cout << "Log file will be written to " << CSTRI(logFileName) << "\n";
     Console console(logFileName);
     QLoggingCategory::setFilterRules("*.debug=true\nqt.*.debug=false");
     qInstallMessageHandler(messageHandler);
