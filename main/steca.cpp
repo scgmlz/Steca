@@ -78,16 +78,13 @@ int main(int argc, char* argv[]) {
                   clara::detail::Opt(panic)["-p"]("Sets the file overwrite policy to 'panic'.")|
                   clara::detail::Opt(silent_overwrite)["-s"]("Sets the file overwrite policy to 'silent overwrite'.")|
                   clara::detail::Arg(startupScriptSource, "file")("The path of the startup skript.");
-    try
-    {
+    try {
         auto result = parser.parse(clara::detail::Args(argc, argv));
-        if (!result)
-        {
+        if (!result) {
             std::cerr << "Unsuported option or missing option argument.\n"
                       << "Use '" APPLICATION_NAME " -h' for list of options\n";
             exit(-1);
-        }
-        else if (help)
+        } else if (help)
             exit_help();
         else if (vers)
             exit_version();
@@ -98,9 +95,7 @@ int main(int argc, char* argv[]) {
         else if (silent_overwrite)
             setFileOverwritePolicy(file_dialog::eFileOverwritePolicy::SILENT_OVERWRITE);
         startupScript = QString::fromStdString(startupScriptSource);
-    }
-    catch (std::exception const & e)
-    {
+    } catch (std::exception const & e) {
         std::cerr << e.what();
         exit(-1);
     }
