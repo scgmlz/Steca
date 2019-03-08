@@ -50,12 +50,7 @@ public:
     void log(const QString&) const;
     bool hasCommandsOnStack() const;
 private:
-    enum class Caller { log,   //!< log entries come from console
-                        gui,   //!< commands come from user action in GUI
-                        ini,   //!< commands come from MainWin initialization
-                        cli,   //!< commands come from command-line interface
-                        fil    //!< commands come from stack, hence from file
-    } caller_;
+    QString caller_;
     enum class Result : int //!< Used to inform commandsFromStack how to proceed
     { ok,                   //!< Proceed with next command from stack
       err,                  //!< Terminate stack execution
@@ -72,11 +67,10 @@ private:
     mutable int computingTime_ {0}; //!< Accumulated computing time in ms.
     mutable QTextStream log_;
 
-    QString callerCode() const;
     class CommandRegistry& registry() const { return *registryStack_.top(); }
     void readCLI();
-    Result commandInContext(const QString&, Caller);
-    Result wrappedCommand(const QString&);
+    Result commandInContext(const QString& command, const QString& caller);
+    Result wrappedCommand(const QString& command);
 };
 
 #endif // CONSOLE_H

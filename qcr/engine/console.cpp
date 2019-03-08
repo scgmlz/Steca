@@ -161,15 +161,15 @@ Console::Console(const QString& logFileName)
         qFatal("cannot open log file");
     log_.setDevice(file);
     startTime_ = QDateTime::currentDateTime();
-    caller_ = Caller::log;
+    caller_ = "log";
     log("# " + qApp->applicationName() + " " + qApp->applicationVersion() + " started at "
         + startTime_.toString("yyyy-MM-dd HH:mm::ss.zzz"));
-    caller_ = Caller::ini;
+    caller_ = "ini";
 }
 
 Console::~Console()
 {
-    caller_ = Caller::log;
+    caller_ = "log";
     log("# " + qApp->applicationName() + " session ended");
     log("# duration: " + QString::number(startTime_.msecsTo(QDateTime::currentDateTime())) + "ms");
     log("# computing time: " + QString::number(computingTime_) + "ms");
@@ -181,8 +181,11 @@ Console::~Console()
     gConsole = nullptr;
 }
 
-//! Registers a QcrCommandable or pushes a new registry.
+//! Registers a QcrCommandable or pushes a new registry; returns registered name.
 
+//! The registered name will deviated from the name passed as argument if it contains
+//! a "#" (which will be replaced by a unique number).
+//!
 //! The registry will be used in "wrappedCommand" which forwards a command to the
 //! QcrCommandable which then executes it.
 //!
@@ -221,7 +224,7 @@ void Console::forget(const QString& name)
 //! Sets calling context to GUI. To be called when initializations are done.
 void Console::startingGui()
 {
-    caller_ = Caller::gui;
+    caller_ = "gui";
 }
 
 //! Reads and executes a command script.
@@ -275,7 +278,7 @@ void Console::commandsFromStack()
         commandLifo_.pop_front();
         if (line=="@close")
             return;
-        Result ret = commandInContext(line, Caller::fil);
+        Result ret = commandInContext(line, "fil");
         if (ret==Result::err) {
             commandLifo_.clear();
             log("# Emptied command stack upon error");
@@ -290,17 +293,17 @@ void Console::log(const QString& lineArg) const
 {
     QString line = lineArg;
     static auto lastTime = startTime_;
-    auto currTime = QDateTime::currentDateTime();
+    const auto currTime = QDateTime::currentDateTime();
     int tDiff = lastTime.msecsTo(currTime);
     lastTime = currTime;
     QString prefix = "[";
-    if (caller_==Caller::gui && line[0]!='#') {
+    if (caller_=="gui" && line[0]!='#') {
         prefix += "       "; // direct user action: we don't care how long the user was idle
     } else {
         prefix += QString::number(tDiff).rightJustified(5) + "ms";
         computingTime_ += tDiff;
     }
-    prefix += " " + registry().name() + " " + callerCode() + "] ";
+    prefix += " " + registry().name() + " " + caller_ + "] ";
     log_ << prefix << line << "\n";
     log_.flush();
     if (line.indexOf("##")!=0) {
@@ -315,37 +318,20 @@ bool Console::hasCommandsOnStack() const
     return !commandLifo_.empty();
 }
 
-//! Returns three-letter code that indicates which kind of call caused the command to be logged.
-QString Console::callerCode() const
-{
-    if      (caller_==Caller::log)
-        return "log";
-    else if (caller_==Caller::gui)
-        return "gui";
-    else if (caller_==Caller::ini)
-        return "ini";
-    else if (caller_==Caller::fil)
-        return "fil";
-    else if (caller_==Caller::cli)
-        return "cli";
-    else
-        qFatal("BUG in Console::callerCode: invalid case");
-}
-
 //! Reads one line from the command-line interface, and executes it.
 void Console::readCLI()
 {
     QTextStream qtin(stdin);
     QString line = qtin.readLine();
-    commandInContext(line, Caller::cli);
+    commandInContext(line, "cli");
 }
 
-//! Delegates command execution to wrappedCommand, with context set to callerArg.
-Console::Result Console::commandInContext(const QString& line, Caller callerArg)
+//! Delegates command execution to wrappedCommand, with context set to caller argument.
+Console::Result Console::commandInContext(const QString& line, const QString& caller)
 {
-    caller_ = callerArg;
+    caller_ = caller;
     Result ret = wrappedCommand(line);
-    caller_ = Caller::gui; // restores default
+    caller_ = "gui"; // restores default
     return ret;
 }
 
