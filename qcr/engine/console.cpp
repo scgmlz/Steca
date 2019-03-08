@@ -19,7 +19,7 @@
 namespace {
 
 //! Parses a command line, sets the command and the context, and returns true if successful.
-
+//!
 //! The input line may be either a plain command or a log entry.
 //! A log entry starts with a '[..]' comment containing execution time (optional) and context.
 //! It may end with a '#..' comment.
