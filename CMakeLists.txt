@@ -101,7 +101,7 @@ if(BUILD_TESTING) # option defined by CTest and enabled by default
     message(STATUS "gtest configured")
     configure_file(testdata/testdata.h.in ${CMAKE_BINARY_DIR}/testdata.h @ONLY)
     add_subdirectory(utest)
-    add_subdirectory(ftest)
+    #add_subdirectory(ftest)
 else()
     message(STATUS "Skipping tests")
 endif()
