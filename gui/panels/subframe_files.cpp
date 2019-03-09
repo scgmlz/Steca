@@ -75,7 +75,7 @@ QString FilesModel::tooltip(int row, int col) const
 //  ***********************************************************************************************
 //! @class FilesView (local scope)
 
-//! Main item in SubframeFiles: View and control the list of DataFile's
+//! Main item in `SubframeFiles`: View and control the list of `DataFile`s
 
 class FilesView : public CheckTableView {
 public:

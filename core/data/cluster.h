@@ -63,7 +63,7 @@ private:
 };
 
 
-//! A group of one or more Measurement's, with associated information.
+//! A group of one or more `Measurement`s, with associated information.
 
 class Cluster : public Sequence {
 public:
