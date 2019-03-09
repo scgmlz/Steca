@@ -18,7 +18,7 @@
 #include "core/data/cluster.h"
 #include "core/typ/lazy_data.h"
 
-//! The list of activated Cluster|s, their average Dfgram, and a few more cached properties.
+//! The list of activated `Cluster`s, their average Dfgram, and a few more cached properties.
 
 class ActiveClusters {
 public:

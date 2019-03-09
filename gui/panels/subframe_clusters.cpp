@@ -161,6 +161,6 @@ SubframeClusters::SubframeClusters()
 {
     setFeatures(DockWidgetMovable);
     setWindowTitle("Measurements");
-    setWidget(new ActiveClustersView{}); // list of Cluster|s
+    setWidget(new ActiveClustersView{}); // list of `Cluster`s
     setRemake([this](){setEnabled(gSession->hasData());});
 }

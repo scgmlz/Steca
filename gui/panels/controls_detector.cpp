@@ -118,7 +118,7 @@ CutControls::CutControls()
 //  ***********************************************************************************************
 //! @class ActiveClustersControls (local scope)
 
-//! Control widgets that govern the combination of Measurement|s into Cluster|s.
+//! Control widgets that govern the combination of `Measurement`s into `Cluster`s.
 
 class ActiveClustersControls : public QcrWidget {
 public:

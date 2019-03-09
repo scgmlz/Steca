@@ -19,11 +19,11 @@
 #include "core/raw/measurement.h"
 #include "core/typ/lazy_data.h"
 
-//! A group of one or more Measurement|s.
+//! A group of one or more `Measurement`s.
 
 //! Base class of Cluster, and also used to hold _all_ loaded Measurements.
 //!
-//! Measurement|s are always owned by Datafile|s; here they are accessed through const pointers.
+//! `Measurement`s are always owned by `Datafile`s; here they are accessed through const pointers.
 
 class Sequence {
 public:
@@ -88,7 +88,7 @@ public:
 
 private:
     const class Datafile& file_;
-    const int index_; //!< index in total list of Cluster|s
+    const int index_; //!< index in total list of `Cluster`s
     const int offset_; //!< index of first Measurement in file_
     bool selected_; //!< selected for use
 };
