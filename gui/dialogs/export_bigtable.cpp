@@ -51,9 +51,8 @@ void writeBigtable(QTextStream& stream, const QString& separator)
 //! @class ExportBigtable
 
 ExportBigtable::ExportBigtable()
-    : DialogSave(gGui, "ExportBigtable", "Big table export", data_export::defaultFormats)
-{
-}
+    : DialogSave{gGui, "ExportBigtable", "Big table export", data_export::defaultFormats}
+{}
 
 void ExportBigtable::writeCurrent(QTextStream& stream)
 {

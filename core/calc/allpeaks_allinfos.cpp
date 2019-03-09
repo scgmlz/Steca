@@ -58,11 +58,11 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
         // if peakFit exists, use it, otherwise use NaNs:
         const PeakOutcome out = peakFit ? peakFit->outcome(pFct)
                                         : PeakOutcome{nanVal, nanVal, nanVal, nullptr};
-        center        .reset(new DoubleWithError(out.center));
-        fwhm          .reset(new DoubleWithError(out.fwhm));
-        intensity     .reset(new DoubleWithError(out.intensity));
+        center        .reset(new DoubleWithError{out.center});
+        fwhm          .reset(new DoubleWithError{out.fwhm});
+        intensity     .reset(new DoubleWithError{out.intensity});
         if (out.gammOverSigma)
-            gammOverSigma.reset(new DoubleWithError(*out.gammOverSigma));
+            gammOverSigma.reset(new DoubleWithError{*out.gammOverSigma});
     }
 
     if (!fitrange.contains(center->value())) // TODO/math generalize to fitIsCredible

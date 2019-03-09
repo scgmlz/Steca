@@ -32,7 +32,7 @@ public:
 };
 
 DetectorControls::DetectorControls()
-    : QcrWidget {"DetectorControls"}
+    : QcrWidget{"DetectorControls"}
 {
     auto* mmGrid = new QGridLayout;
     mmGrid->addWidget(new QLabel{"det. distance"}, 0, 0);
@@ -46,7 +46,7 @@ DetectorControls::DetectorControls()
                       {"detPixelSize", &gSession->params.detector.pixSize, 3, 2, 1e-1, 1e2,
                               "Side length of detector pixel square, in mm"},
                       1, 1);
-    mmGrid->addWidget(new QLabel("mm"), 1, 2);
+    mmGrid->addWidget(new QLabel{"mm"}, 1, 2);
 
     auto* trafoLayout = new QHBoxLayout;
     trafoLayout->addWidget(new QLabel{"image rotate"});
@@ -88,7 +88,7 @@ public:
 };
 
 CutControls::CutControls()
-    : QcrFrame("CutControls")
+    : QcrFrame{"CutControls"}
 {
     auto* layout = new QGridLayout;
     layout->addWidget(new QLabel{"cut"}, 1, 0);
@@ -126,7 +126,7 @@ public:
 };
 
 ActiveClustersControls::ActiveClustersControls()
-    : QcrWidget("ActiveClustersControls")
+    : QcrWidget{"ActiveClustersControls"}
 {
     auto* dropIncompleteBtn = new QcrIconToggleButton{
         "dropIncomplete", &gSession->dataset.dropIncomplete,
@@ -157,7 +157,7 @@ public:
 };
 
 GammaControls::GammaControls()
-    : QcrWidget("GammaControls")
+    : QcrWidget{"GammaControls"}
 {
     auto layout = new QHBoxLayout;
     layout->addWidget(new QLabel{"number of γ slices"});
@@ -172,7 +172,7 @@ GammaControls::GammaControls()
 //! @class ControlsDetector
 
 ControlsDetector::ControlsDetector()
-    : QcrWidget("ControlsDetector")
+    : QcrWidget{"ControlsDetector"}
 {
     auto* vbox = new QVBoxLayout;
     vbox->addWidget(new DetectorControls);

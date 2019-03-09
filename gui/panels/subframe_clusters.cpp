@@ -134,7 +134,7 @@ private:
 };
 
 ActiveClustersView::ActiveClustersView()
-    : CheckTableView {new ActiveClustersModel()}
+    : CheckTableView{new ActiveClustersModel{}}
 {
     setSelectionMode(QAbstractItemView::NoSelection);
     onData();
@@ -157,10 +157,10 @@ void ActiveClustersView::onData()
 //! @class SubframeClusters
 
 SubframeClusters::SubframeClusters()
-    : QcrDockWidget {"measurements"}
+    : QcrDockWidget{"measurements"}
 {
     setFeatures(DockWidgetMovable);
     setWindowTitle("Measurements");
-    setWidget(new ActiveClustersView()); // list of Cluster|s
+    setWidget(new ActiveClustersView{}); // list of Cluster|s
     setRemake([this](){setEnabled(gSession->hasData());});
 }

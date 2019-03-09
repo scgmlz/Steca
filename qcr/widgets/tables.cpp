@@ -23,7 +23,7 @@
 //! @class TableModel
 
 TableModel::TableModel(const QString& name)
-    : name_ {name}
+    : name_{name}
 {}
 
 void TableModel::refreshModel()
@@ -60,7 +60,7 @@ void TableModel::setHighlightedCell(const QModelIndex& cell)
 //! @class CheckTableModel
 
 CheckTableModel::CheckTableModel(const QString& _name)
-    : TableModel {_name}
+    : TableModel{_name}
 {}
 
 //! Refreshes the check box column. TODO currently unused
@@ -121,7 +121,7 @@ QVariant CheckTableModel::data(const QModelIndex& index, int role) const
 
 TableView::TableView(TableModel* model)
     : QcrRegistered {model->name()}
-    , model_ {model}
+    , model_{model}
 {
     model->setName(name());
     // set model
@@ -224,7 +224,7 @@ void TableView::onData()
 //! @class CheckTableView
 
 CheckTableView::CheckTableView(TableModel* model)
-    : TableView {model}
+    : TableView{model}
 {}
 
 void CheckTableView::setFromCommand(const QString& arg)
@@ -232,11 +232,11 @@ void CheckTableView::setFromCommand(const QString& arg)
     QStringList args = arg.split(' ');
     if        (args[0]=="activate") {
         if (args.size()<2)
-            throw QcrException("Missing argument to command 'activate'");
+            throw QcrException{"Missing argument to command 'activate'"};
         model()->activateAndLog(strOp::to_i(args[1]), true);
     } else if (args[0]=="deactivate") {
         if (args.size()<2)
-            throw QcrException("Missing argument to command 'deactivate'");
+            throw QcrException{"Missing argument to command 'deactivate'"};
         model()->activateAndLog(strOp::to_i(args[1]), false);
     } else
         TableView::setFromCommand(arg);

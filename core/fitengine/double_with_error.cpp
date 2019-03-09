@@ -20,7 +20,7 @@
 //! Covered by test002_rounding.
 
 DoubleWithError::DoubleWithError(double value, double error)
-    : value_ {value}
+    : value_{value}
     , error_ {error}
 {}
 

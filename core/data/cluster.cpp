@@ -21,7 +21,7 @@
 //! @class Sequence
 
 Sequence::Sequence(const std::vector<const Measurement*>& measurements)
-    : members_ {measurements}
+    : members_{measurements}
     , metadata_ {computeAvgMetadata()}
 {}
 
@@ -138,11 +138,11 @@ Dfgram computeSectorDfgram(const int jS, const Cluster* const parent)
 Cluster::Cluster(
     const std::vector<const Measurement*>& measurements,
     const class Datafile& file, const int index, const int offset)
-    : Sequence {measurements}
+    : Sequence{measurements}
     , dfgrams {[]()->int{return gSession->gammaSelection.numSlices.val();},
                [](int jS, const Cluster* parent)->Dfgram{
                    return computeSectorDfgram(jS, parent); }}
-    , file_ {file}
+    , file_{file}
     , index_ {index}
     , offset_ {offset}
     , selected_ {true}

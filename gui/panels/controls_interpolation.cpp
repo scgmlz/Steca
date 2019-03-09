@@ -17,7 +17,7 @@
 #include "qcr/widgets/controls.h"
 
 ControlsInterpolation::ControlsInterpolation()
-    : QcrWidget("ControlsInterpolation")
+    : QcrWidget{"ControlsInterpolation"}
 {
     auto& P = gSession->params;
     auto* doInterpol =
@@ -37,17 +37,17 @@ ControlsInterpolation::ControlsInterpolation()
 
     auto* grid = new QGridLayout;
     grid->addWidget(doInterpol,              0, 1);
-    grid->addWidget(new QLabel("step α"),      1, 0, Qt::AlignRight);
+    grid->addWidget(new QLabel{"step α"},      1, 0, Qt::AlignRight);
     grid->addWidget(stepAlpha,               1, 1);
-    grid->addWidget(new QLabel("avg. α max"),  2, 0, Qt::AlignRight);
+    grid->addWidget(new QLabel{"avg. α max"},  2, 0, Qt::AlignRight);
     grid->addWidget(avgAlphaMax,             2, 1);
-    grid->addWidget(new QLabel("β"),           3, 0, Qt::AlignRight);
+    grid->addWidget(new QLabel{"β"},           3, 0, Qt::AlignRight);
     grid->addWidget(stepBeta,                3, 1);
-    grid->addWidget(new QLabel("radius"),      4, 0, Qt::AlignRight);
+    grid->addWidget(new QLabel{"radius"},      4, 0, Qt::AlignRight);
     grid->addWidget(avgRadius,               4, 1);
-    grid->addWidget(new QLabel("idw radius"),  5, 0, Qt::AlignRight);
+    grid->addWidget(new QLabel{"idw radius"},  5, 0, Qt::AlignRight);
     grid->addWidget(idwRadius,               5, 1);
-    grid->addWidget(new QLabel("inclusion %"), 6, 0, Qt::AlignRight);
+    grid->addWidget(new QLabel{"inclusion %"}, 6, 0, Qt::AlignRight);
     grid->addWidget(threshold,               6, 1);
 
     grid->setColumnStretch(grid->columnCount(), 1000);

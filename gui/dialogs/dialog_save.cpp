@@ -70,10 +70,10 @@ DialogfieldPath::DialogfieldPath(QcrModalDialog* _parent)
                     parent, "Select folder", dirEdit->text())); });
 
     auto* grid = new QGridLayout;
-    grid->addWidget(new QLabel("Save to folder:"), 0, 0, Qt::AlignRight);
+    grid->addWidget(new QLabel{"Save to folder:"}, 0, 0, Qt::AlignRight);
     grid->addWidget(dirEdit,                       0, 1);
     grid->addWidget(browseBtn,                     0, 2);
-    grid->addWidget(new QLabel("File name:"),      1, 0, Qt::AlignRight);
+    grid->addWidget(new QLabel{"File name:"},      1, 0, Qt::AlignRight);
     grid->addWidget(fileEdit,                      1, 1);
 
     setLayout(grid);

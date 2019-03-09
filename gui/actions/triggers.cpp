@@ -40,10 +40,10 @@ Triggers::Triggers()
     checkUpdate    .setTriggerHook([](){ CheckUpdate _(gGui); });
     clearSession   .setTriggerHook([](){ gSession->clear(); });
     corrFile       .setTriggerHook([](){ loadData::loadCorrFile(gGui); });
-    exportDfgram   .setTriggerHook([](){ ExportDfgram().exec(); });
-    exportPolefig  .setTriggerHook([](){ ExportPolefig().exec(); });
-    exportBigtable .setTriggerHook([](){ ExportBigtable().exec(); });
-    exportDiagram  .setTriggerHook([](){ ExportDiagram().exec(); });
+    exportDfgram   .setTriggerHook([](){ ExportDfgram{}.exec(); });
+    exportPolefig  .setTriggerHook([](){ ExportPolefig{}.exec(); });
+    exportBigtable .setTriggerHook([](){ ExportBigtable{}.exec(); });
+    exportDiagram  .setTriggerHook([](){ ExportDiagram{}.exec(); });
     loadSession    .setTriggerHook([](){ ioSession::load(gGui); });
     online         .setTriggerHook([](){ QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
     peakRemove     .setTriggerHook([](){ gSession->peaksSettings.removeSelected(); });

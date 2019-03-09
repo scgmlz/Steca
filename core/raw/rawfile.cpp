@@ -18,7 +18,7 @@
 #include <QStringBuilder> // for ".." % ..
 
 Rawfile::Rawfile(const QString& fileName)
-    : fileInfo_(fileName)
+    : fileInfo_{fileName}
 {}
 
 //! The loaders use this function to push cluster

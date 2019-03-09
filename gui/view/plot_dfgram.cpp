@@ -107,14 +107,14 @@ void PlotDfgramOverlay::setFromCommand(const QString& arg)
     QStringList args = arg.split(' ');
     if (args[0]=="add") {
         if (args.size()<3)
-            throw QcrException("Missing arguments to command 'add'");
+            throw QcrException{"Missing arguments to command 'add'"};
         addRange(Range(strOp::to_d(args[1]), strOp::to_d(args[2])));
     } else if (args[0]=="sel") {
         if (args.size()<2)
-            throw QcrException("Missing argument to command 'sel'");
+            throw QcrException{"Missing argument to command 'sel'"};
         selectRange(strOp::to_d(args[1]));
     } else
-        throw QcrException("Unexpected dfgram command");
+        throw QcrException{"Unexpected dfgram command"};
 }
 
 //! Returns color to be used when the mouse is marking a range.
@@ -135,7 +135,7 @@ const QColor* PlotDfgramOverlay::mousedColor() const
 //! @class PlotDfgram
 
 PlotDfgram::PlotDfgram()
-    : overlay_(new PlotDfgramOverlay(*this))
+    : overlay_{new PlotDfgramOverlay{*this}}
 {
     QCPAxisRect* ar = axisRect();
 
@@ -209,7 +209,7 @@ void PlotDfgram::enterZoom(bool on)
 void PlotDfgram::addBgItem(const Range& range, const QColor& color)
 {
     setCurrentLayer("bg");
-    QCPItemRect* ir = new QCPItemRect(this);
+    QCPItemRect* ir = new QCPItemRect{this};
     ir->setPen(QPen(color));
     ir->setBrush(QBrush(color));
     QCPItemPosition* br = ir->bottomRight;

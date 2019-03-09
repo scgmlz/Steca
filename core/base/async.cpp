@@ -20,7 +20,7 @@
 QProgressBar* TakesLongTime::staticBar_ = nullptr;
 
 TakesLongTime::TakesLongTime(const QString& taskName, int totalSteps, QProgressBar* bar)
-    : taskName_ {taskName}
+    : taskName_{taskName}
     , total_ {totalSteps}
     , i_ {0}
     , bar_ {bar}

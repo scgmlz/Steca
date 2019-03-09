@@ -29,7 +29,7 @@ std::vector<int> computeList(const BoolVector* ms)
 } // namespace
 
 BoolVector::BoolVector()
-    : list {&computeList}
+    : list{&computeList}
 {}
 
 void BoolVector::set(int idx, bool on)

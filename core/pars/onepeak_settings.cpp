@@ -20,7 +20,7 @@
 const QStringList OnePeakSettings::functionNames = { "Raw", "Gaussian", "Lorentzian", "Voigt" };
 
 OnePeakSettings::OnePeakSettings(const Range& r, const QString& functionName)
-    : range_ {r}
+    : range_{r}
     , functionName_ {functionName}
 {
     onFunction();

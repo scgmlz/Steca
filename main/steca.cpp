@@ -131,6 +131,6 @@ int main(int argc, char* argv[]) {
     qInstallMessageHandler(messageHandler);
 
     Session session;
-    new MainWin(startupScript); // must be pointer, because it can be deleted by 'quit' trigger
+    new MainWin{startupScript}; // must be pointer, because it can be deleted by 'quit' trigger
     return app.exec();
 }

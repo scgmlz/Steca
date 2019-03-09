@@ -27,7 +27,7 @@
 //! The first column contains row numbers. The remaining numCols columns contain data.
 
 BigtableModel::BigtableModel()
-    : TableModel {"data#"}
+    : TableModel{"data#"}
 {
     gGui->bigtableModel = this; // for use in export dialog
 }
@@ -182,7 +182,7 @@ std::vector<std::vector<const QVariant*>> BigtableModel::getData() const
 //!
 
 BigtableView::BigtableView()
-    : TableView {new BigtableModel}
+    : TableView{new BigtableModel}
 {
     setHeader(new QHeaderView{Qt::Horizontal});
     setAlternatingRowColors(true);

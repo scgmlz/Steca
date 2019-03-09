@@ -25,7 +25,7 @@ QcrRoot* gRoot {nullptr};
 //! @class QcrBase
 
 QcrBase::QcrBase(const QString& name)
-    : name_ {name}
+    : name_{name}
 {}
 
 //! Calls the hook remake_, provided the associated QObject is a visible QWidget, or a QAction.
@@ -47,7 +47,7 @@ void QcrBase::remake()
 //! @class QcrRoot
 
 QcrRoot::QcrRoot()
-    : QcrBase {"root"}
+    : QcrBase{"root"}
 {
     gRoot = this;
 }
@@ -77,7 +77,7 @@ void QcrRoot::remakeAll()
 //! @class QcrCommandable
 
 QcrCommandable::QcrCommandable(const QString& name)
-    : QcrBase {name}
+    : QcrBase{name}
 {}
 
 //! Returns true if the value of *this is not to be stored as part of the QSettings.
@@ -104,7 +104,7 @@ QcrRegistered::~QcrRegistered()
 //! @class QcrModelessDialog (= persistent spawned popup)
 
 QcrModelessDialog::QcrModelessDialog(QWidget* parent, const QString& name)
-    : QcrRegistered {name}
+    : QcrRegistered{name}
     , QDialog {parent}
 {
     setModal(false);
@@ -122,6 +122,6 @@ void QcrModelessDialog::closeEvent(QCloseEvent* event)
 void QcrModelessDialog::setFromCommand(const QString& arg)
 {
     if (arg!="close")
-        throw QcrException("Unexpected command in ModelessDialog "+name());
+        throw QcrException{"Unexpected command in ModelessDialog "+name()};
     close();
 }

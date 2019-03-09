@@ -69,7 +69,7 @@ private:
 };
 
 MetatableView::MetatableView()
-    : CheckTableView {new MetatableModel}
+    : CheckTableView{new MetatableModel}
 {
     setColumnWidth(0, 0);
     setColumnWidth(1,  .5*mWidth());
@@ -81,7 +81,7 @@ MetatableView::MetatableView()
 //! @class SubframeMetadata
 
 SubframeMetadata::SubframeMetadata()
-    : QcrDockWidget("metadata")
+    : QcrDockWidget{"metadata"}
 {
     for (int i=0; i<Metadata::size(); ++i)
         gSession->params.smallMetaSelection.vec.push_back({false});

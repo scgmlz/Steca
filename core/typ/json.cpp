@@ -36,7 +36,7 @@ QJsonValue double_to_json(const double num)
 //  ***********************************************************************************************
 
 JsonObj::JsonObj(const QJsonObject& obj)
-    : QJsonObject(obj)
+    : QJsonObject{obj}
 {}
 
 JsonObj JsonObj::loadObj(const QString& key, bool defEmpty) const

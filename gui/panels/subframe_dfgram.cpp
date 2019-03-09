@@ -46,14 +46,14 @@ private:
 
 
 DfPanel::DfPanel()
-    : QcrWidget("DfPanel")
+    : QcrWidget{"DfPanel"}
     , comboNormType_ {"normTyp", &gSession->params.howtoNormalize,
         {"none", "monitor", "Δ monitor", "time", "Δ time"}}
     , intenSum_ {"intenSum", "sum"}
     , intenAvg_ {"intenAvg", "avg ×", &gSession->params.intenScaledAvg}
     , intenScale_ {"intenScale", &gSession->params.intenScale, 5, 1, 0.001}
 {
-    plot_ = new PlotDfgram();
+    plot_ = new PlotDfgram{};
     intenAvg_.setCellValue(true);
 
     actZoom_.setHook([this](bool on) {
@@ -62,9 +62,9 @@ DfPanel::DfPanel()
         plot_->enterZoom(on); });
 
     auto* hb = new QHBoxLayout;
-    hb->addWidget(new QLabel("normalize to:"));
+    hb->addWidget(new QLabel{"normalize to:"});
     hb->addWidget(&comboNormType_);
-    hb->addWidget(new QLabel(" intensity from:"));
+    hb->addWidget(new QLabel{" intensity from:"});
     hb->addWidget(&intenSum_);
     normalSrc_.addButton(&intenSum_);
     hb->addWidget(&intenAvg_);
@@ -110,7 +110,7 @@ void DfPanel::onHighlight() // TODO currently unused
 //! @class SubframeDfgram
 
 SubframeDfgram::SubframeDfgram()
-    : QcrTabWidget {"dfgramTabs"}
+    : QcrTabWidget{"dfgramTabs"}
 {
     setTabPosition(QTabWidget::North);
     addTab(new DfPanel, "Diffractogram");

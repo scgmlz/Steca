@@ -143,7 +143,7 @@ bool confirmOverwrite(const QString& name, QWidget* parent, const QString& path)
 //! Opens file for writing; asks for confirmation before overwriting.
 QFile* openFileConfirmOverwrite(const QString& name, QWidget* parent, const QString& path)
 {
-    QFile* ret = new QFile(path);
+    QFile* ret = new QFile{path};
     if (ret->exists() &&
         !confirmOverwrite(name, parent, path)) {
         delete ret;
@@ -185,7 +185,7 @@ QString queryImportFileName(
 QString queryExportFileName(
     QWidget* parent, const QString& caption, QDir& dir, const QString& filter)
 {
-    FileDialog dlg(parent, caption, dir, filter);
+    FileDialog dlg{parent, caption, dir, filter};
     dlg.setFileMode(QFileDialog::AnyFile);
     dlg.setAcceptMode(QFileDialog::AcceptSave);
     if (!dlg.exec())
@@ -198,7 +198,7 @@ QString queryExportFileName(
 QString queryDirectory(QWidget* parent, const QString& caption, const QString& dirname)
 {
     QDir dir(dirname);
-    FileDialog dlg(parent, caption, dir);
+    FileDialog dlg{parent, caption, dir};
     dlg.setFileMode(QFileDialog::Directory);
     dlg.setAcceptMode(QFileDialog::AcceptSave);
     if (!dlg.exec())

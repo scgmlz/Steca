@@ -17,7 +17,7 @@
 #include "gui/mainwin.h"
 
 ExportDiagram::ExportDiagram()
-    : DialogSave(gGui, "ExportDiagram", "Diagram data export", data_export::defaultFormats)
+    : DialogSave{gGui, "ExportDiagram", "Diagram data export", data_export::defaultFormats}
 {
 }
 

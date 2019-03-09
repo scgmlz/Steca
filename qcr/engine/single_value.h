@@ -56,7 +56,7 @@ private:
 //! Constructor that associates this QcrSingleValue with an external QcrCell.
 template<class T>
 QcrSingleValue<T>::QcrSingleValue(const QString& name, QcrCell<T>* cell)
-    : QcrRegistered {name}
+    : QcrRegistered{name}
     , cell_ {cell}
 {
     if (!adhoc()) {
@@ -78,7 +78,7 @@ QcrSingleValue<T>::QcrSingleValue(const QString& name, QcrCell<T>* cell)
 //! Constructs a QcrSingleValue that owns a QcrCell.
 template<class T>
 QcrSingleValue<T>::QcrSingleValue(const QString& name, const T val)
-    : QcrRegistered {name}
+    : QcrRegistered{name}
     , ownsItsCell_ {true}
 {
     cell_ = new QcrCell<T>{val}; // TODO RECONSIDER smart pointer

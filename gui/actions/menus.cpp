@@ -103,7 +103,7 @@ Menus::Menus(QMenuBar* mbar)
 
 QAction* Menus::separator() const
 {
-    QAction* ret = new QAction(mbar_);
+    QAction* ret = new QAction{mbar_};
     ret->setSeparator(true);
     return ret;
 }

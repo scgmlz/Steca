@@ -89,7 +89,7 @@ private:
 //! @class SubframeFiles
 
 SubframeFiles::SubframeFiles()
-    : QcrDockWidget {"files"}
+    : QcrDockWidget{"files"}
 {
     setFeatures(DockWidgetMovable);
     setWindowTitle("Files");

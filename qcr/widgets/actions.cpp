@@ -26,7 +26,7 @@
 //! @class QcrAction
 
 QcrAction::QcrAction(const QString& text)
-    : QAction {text, qApp}
+    : QAction{text, qApp}
     , tooltip_ {text}
 {}
 
@@ -34,7 +34,7 @@ QcrAction::QcrAction(const QString& text)
 //! @class QcrTrigger
 
 QcrTrigger::QcrTrigger(const QString& rawname, const QString& text, const QString& iconFile)
-    : QcrRegistered {rawname}
+    : QcrRegistered{rawname}
     , QcrAction {text}
 {
     //QAction::setObjectName(name());
@@ -55,7 +55,7 @@ QcrTrigger::QcrTrigger(const QString& rawname, const QString& text, const QStrin
 
 QcrTrigger::QcrTrigger(
     const QString& name, const QString& text, const QString& iconFile, const QKeySequence& shortcut)
-    : QcrTrigger {name, text, iconFile}
+    : QcrTrigger{name, text, iconFile}
 {
     setShortcut(shortcut);
 }
@@ -63,7 +63,7 @@ QcrTrigger::QcrTrigger(
 void QcrTrigger::setFromCommand(const QString& arg)
 {
     if (arg!="")
-        throw QcrException("Found unexpected argument to trigger command");
+        throw QcrException{"Found unexpected argument to trigger command"};
     if (!isEnabled()) {
         qDebug() << "Ignoring command" << arg << "because trigger" << name() << "is not enabled.";
         return;
@@ -76,7 +76,7 @@ void QcrTrigger::setFromCommand(const QString& arg)
 
 QcrTextTriggerButton::QcrTextTriggerButton(QcrTrigger* trigger, bool ownsTrigger)
     : QcrBase {trigger->name()+"Btn"}
-    , trigger_ {trigger}
+    , trigger_{trigger}
     , ownsTrigger_ {ownsTrigger}
 {
     setDefaultAction(trigger);
@@ -85,11 +85,11 @@ QcrTextTriggerButton::QcrTextTriggerButton(QcrTrigger* trigger, bool ownsTrigger
 }
 
 QcrTextTriggerButton::QcrTextTriggerButton(QcrTrigger* trigger)
-    : QcrTextTriggerButton {trigger, false}
+    : QcrTextTriggerButton{trigger, false}
 {}
 
 QcrTextTriggerButton::QcrTextTriggerButton(const QString& name, const QString& text)
-    : QcrTextTriggerButton {new QcrTrigger{name, text}, true}
+    : QcrTextTriggerButton{new QcrTrigger{name, text}, true}
 {}
 
 //! Destructs this QcrTextTriggerButton. Also destructs the trigger, if it owns one.
@@ -104,7 +104,7 @@ QcrTextTriggerButton::~QcrTextTriggerButton()
 
 QcrIconTriggerButton::QcrIconTriggerButton(QcrTrigger* trigger, bool ownsTrigger)
     : QcrBase {trigger->name()+"Btn"}
-    , trigger_ {trigger}
+    , trigger_{trigger}
     , ownsTrigger_ {ownsTrigger}
 {
     setDefaultAction(trigger);
@@ -113,12 +113,12 @@ QcrIconTriggerButton::QcrIconTriggerButton(QcrTrigger* trigger, bool ownsTrigger
 }
 
 QcrIconTriggerButton::QcrIconTriggerButton(QcrTrigger* trigger)
-    : QcrIconTriggerButton {trigger, false}
+    : QcrIconTriggerButton{trigger, false}
 {}
 
 QcrIconTriggerButton::QcrIconTriggerButton(
     const QString& name, const QString& text, const QString& iconFile)
-    : QcrIconTriggerButton {new QcrTrigger{name, text, iconFile}, true}
+    : QcrIconTriggerButton{new QcrTrigger{name, text, iconFile}, true}
 {}
 
 //! Destructs this QcrIconTriggerButton. Also destructs the trigger, if it owns one.
@@ -134,7 +134,7 @@ QcrIconTriggerButton::~QcrIconTriggerButton()
 QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on,
                      const QString& iconFile, const QKeySequence& shortcut)
     : QcrSingleValue<bool> {rawname, on}
-    , QcrAction {text}
+    , QcrAction{text}
 {
     initToggle(iconFile, shortcut);
 }
@@ -142,7 +142,7 @@ QcrToggle::QcrToggle(const QString& rawname, const QString& text, bool on,
 QcrToggle::QcrToggle(const QString& rawname, QcrCell<bool>* cell, const QString& text,
                      const QString& iconFile, const QKeySequence& shortcut)
     : QcrSingleValue<bool> {rawname, cell}
-    , QcrAction {text}
+    , QcrAction{text}
 {
     initToggle(iconFile, shortcut);
 }
@@ -178,7 +178,7 @@ void QcrToggle::initToggle(const QString& iconFile, const QKeySequence& shortcut
 //! Generic private constructor that is called by the public constructors.
 QcrTextToggleButton::QcrTextToggleButton(QcrToggle* toggle, bool ownsToggle)
     : QcrBase {toggle->name()+"Btn"}
-    , toggle_ {toggle}
+    , toggle_{toggle}
     , ownsToggle_ {ownsToggle}
 {
     setDefaultAction(toggle);
@@ -188,12 +188,12 @@ QcrTextToggleButton::QcrTextToggleButton(QcrToggle* toggle, bool ownsToggle)
 
 //! Constructs QcrTextToggleButton that is connected with external QcrToggle.
 QcrTextToggleButton::QcrTextToggleButton(QcrToggle* toggle)
-    : QcrTextToggleButton {toggle, false}
+    : QcrTextToggleButton{toggle, false}
 {}
 
 //! Constructs QcrTextToggleButton and a QcrToggle owned by the former.
 QcrTextToggleButton::QcrTextToggleButton(const QString& name, const QString& text, bool on)
-    : QcrTextToggleButton {new QcrToggle{name, text, on}, true}
+    : QcrTextToggleButton{new QcrToggle{name, text, on}, true}
 {}
 
 //! Destructs this QcrTextToggleButton. Also destructs the toggle, if it owns one.
@@ -209,7 +209,7 @@ QcrTextToggleButton::~QcrTextToggleButton()
 
 QcrIconToggleButton::QcrIconToggleButton(QcrToggle* toggle, bool ownsToggle)
     : QcrBase {toggle->name()+"Btn"}
-    , toggle_ {toggle}
+    , toggle_{toggle}
     , ownsToggle_ {ownsToggle}
 {
     setDefaultAction(toggle);
@@ -218,19 +218,19 @@ QcrIconToggleButton::QcrIconToggleButton(QcrToggle* toggle, bool ownsToggle)
 }
 
 QcrIconToggleButton::QcrIconToggleButton(QcrToggle* toggle)
-    : QcrIconToggleButton {toggle, false}
+    : QcrIconToggleButton{toggle, false}
 {}
 
 QcrIconToggleButton::QcrIconToggleButton(
     const QString& name, const QString& text, bool on,
     const QString& iconFile, const QKeySequence& shortcut)
-    : QcrIconToggleButton {new QcrToggle{name, text, on, iconFile, shortcut}, true}
+    : QcrIconToggleButton{new QcrToggle{name, text, on, iconFile, shortcut}, true}
 {}
 
 QcrIconToggleButton::QcrIconToggleButton(
     const QString& name, QcrCell<bool>* cell, const QString& text,
     const QString& iconFile, const QKeySequence& shortcut)
-    : QcrIconToggleButton {new QcrToggle{name, cell, text, iconFile, shortcut}, true}
+    : QcrIconToggleButton{new QcrToggle{name, cell, text, iconFile, shortcut}, true}
 {}
 
 QcrIconToggleButton::~QcrIconToggleButton()
