@@ -38,7 +38,7 @@ void writeFullInfoSequence(
 }
 
 //! Writes intensities (only!) for pole figure for one Bragg peak.
-//!
+
 //! Makes sense for interpolated data only; assumes alpha-beta grid to be known.
 
 void writeCompactInfoSequence(QTextStream& stream, const OnePeakAllInfos& peakInfos)

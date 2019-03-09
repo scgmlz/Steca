@@ -76,7 +76,7 @@ protected:
 
 
 //! Mix-in for QObject, enforcing a unique name, providing Console connection.
-//!
+
 //! Note on console learning and forgetting: In the c'tor, the console learns
 //! the object name. Forgetting, however, must be implemented in a child class
 //! destructor; otherwise it would happen too early.

@@ -19,7 +19,7 @@
 
 //  ***********************************************************************************************
 //! @class PeakInfo
-//!
+
 //! Invalid output parameters are set to NaNs. However, some analysis programs
 //! debug::ensure -1 as unknown value; thus, NaN parameter values should be output
 //! as -1 when output is written for these programs (polefigure!).

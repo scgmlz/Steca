@@ -78,7 +78,7 @@ QString to_s(const QString& val)
 }
 
 //! Splits arg0 at first blank.
-//!
+
 //! Results are put in arg1 and arg2.
 void splitOnce(const QString& in, QString& part0, QString& part1)
 {

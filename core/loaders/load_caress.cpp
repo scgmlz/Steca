@@ -22,7 +22,7 @@
 namespace load {
 
 //! Reads a Caress file, and returns contents as a Rawfile.
-//!
+
 //! Called from function load_low_level(..) in file loaders.cpp.
 
 Rawfile loadCaress(const QString& filePath) {
@@ -555,7 +555,7 @@ Rawfile loadCaress(const QString& filePath) {
 }
 
 //! Reads the [?] comment from a Caress file [?], and returns contents as a QString.
-//!
+
 //! Called from function load::loadComment in file loaders.cpp.
 //! TODO: Find out whether this is still needed, and why.
 

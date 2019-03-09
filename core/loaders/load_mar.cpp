@@ -20,7 +20,7 @@
 namespace load {
 
 //! Reads a Mar file, and returns contents as a Rawfile.
-//!
+
 //! Called from function load_low_level(..) in file loaders.cpp.
 
 Rawfile loadMar(const QString& filePath) {

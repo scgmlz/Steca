@@ -23,7 +23,7 @@
 
 //  ***********************************************************************************************
 //! @class BigtableModel
-//!
+
 //! The first column contains row numbers. The remaining numCols columns contain data.
 
 BigtableModel::BigtableModel()
@@ -179,7 +179,6 @@ std::vector<std::vector<const QVariant*>> BigtableModel::getData() const
 
 //  ***********************************************************************************************
 //!  @class BigtableView
-//!
 
 BigtableView::BigtableView()
     : TableView{new BigtableModel}

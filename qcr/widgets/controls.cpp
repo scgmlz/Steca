@@ -24,7 +24,7 @@
 
 //  ***********************************************************************************************
 //! @class QcrSpinBox
-//!
+
 //! A QSpinBox controls an integer value. Therefore normally we need no extra width for a dot.
 //! However, sometimes we want to make a QSpinBox exactly as wide as a given QDoubleSpinBox,
 //! for nice vertical alignement. Then we use withDot=true.
