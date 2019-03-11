@@ -69,7 +69,6 @@ private:
 
     class CommandRegistry* registry() const { return registryStack_.top(); }
     void readCLI();
-    Result commandInContext(const QString& command, const QString& caller);
     Result wrappedCommand(const QString& command);
 };
 

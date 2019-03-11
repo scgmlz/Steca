@@ -188,7 +188,9 @@ void Console::commandsFromStack()
         commandStack_.pop_front();
         if (line=="@close")
             return;
-        Result ret = commandInContext(line, "fil");
+        caller_ = "scr";
+        Result ret = wrappedCommand(line);
+        caller_ = "gui"; // restores default
         if (ret==Result::err) {
             commandStack_.clear();
             log("# Emptied command stack upon error");
@@ -233,16 +235,9 @@ void Console::readCLI()
 {
     QTextStream qtin(stdin);
     QString line = qtin.readLine();
-    commandInContext(line, "cli");
-}
-
-//! Delegates command execution to wrappedCommand, with context set to caller argument.
-Console::Result Console::commandInContext(const QString& line, const QString& caller)
-{
-    caller_ = caller;
-    Result ret = wrappedCommand(line);
+    caller_ = "cli";
+    wrappedCommand(line);
     caller_ = "gui"; // restores default
-    return ret;
 }
 
 //! Executes command. Always called from commandInContext(..).
