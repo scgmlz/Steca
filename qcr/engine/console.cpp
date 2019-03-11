@@ -130,7 +130,6 @@ void Console::openModalDialog(const QString& name, QcrCommandable* widget)
 void Console::closeModalDialog(const QString& name)
 {
     ASSERT(name == registry()->name());
-    gLogger->log("@close "+name);
     forget(name);
     if (registryStack_.empty())
         qFatal("BUG or invalid @close command: cannot pop, registry stack is empty");
@@ -162,20 +161,20 @@ void Console::runScript(const QString& fName)
 //! Executes commands on stack. Called by runScript and by QcrModalDialog/QcrFileDialog::exec.
 void Console::commandsFromStack()
 {
+    gLogger->setCaller("scr");
     while (!commandStack_.empty()) {
         const QString line = commandStack_.front();
         // qDebug() << "command from stack: " << line;
         commandStack_.pop_front();
-        gLogger->setCaller("scr");
         Result ret = wrappedCommand(line);
-        gLogger->setCaller("gui"); // restores default
         if (ret==Result::err) {
             commandStack_.clear();
             gLogger->log("# Emptied command stack upon error");
-            return;
+            break;
         } else if (ret==Result::suspend)
-            return;
+            break;
     }
+    gLogger->setCaller("gui"); // restores default
 }
 
 //! Returns true if there are commands on stack. Needed by modal dialogs.
@@ -217,8 +216,11 @@ Console::Result Console::wrappedCommand(const QString& line)
             qterr << "registry " << reg->name() << " has " << reg->size() << " commands:\n";
             reg->dump(qterr);
             qterr.flush();
-        } else if (cmd=="@close") {
-            emit closeDialog();
+        } else if (cmd=="@accept") {
+            emit closeDialog(true);
+            return Result::suspend;
+        } else if (cmd=="@reject") {
+            emit closeDialog(false);
             return Result::suspend;
         } else {
             qWarning() << "@ command " << cmd << " not known";

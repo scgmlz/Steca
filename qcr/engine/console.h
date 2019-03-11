@@ -49,7 +49,7 @@ public:
 
     bool hasCommandsOnStack() const;
 signals:
-    void closeDialog() const;
+    void closeDialog(bool ok) const;
 
 private:
     enum class Result : int //!< Used to inform commandsFromStack how to proceed

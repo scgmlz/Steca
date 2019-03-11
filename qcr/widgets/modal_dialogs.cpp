@@ -30,6 +30,7 @@ QcrModal::QcrModal(const QString& name)
 
 QcrModal::~QcrModal()
 {
+    gLogger->log((result() ? "@accept " : "@reject")+name());
     gConsole->closeModalDialog(name());
 }
 
@@ -50,7 +51,7 @@ int QcrModalDialog::exec()
         open();
         gConsole->commandsFromStack(); // returns upon command "@close"
         close();
-        return QDialog::Accepted;
+        return result();
     } else {
         connect(gConsole, &Console::closeDialog, [this](){accept();});
         return QDialog::exec();
@@ -84,23 +85,27 @@ QcrFileDialog::~QcrFileDialog()
 
 int QcrFileDialog::exec()
 {
+    connect(gConsole, &Console::closeDialog,
+            [this](bool ok){ if (ok) accept(); else reject();});
     if (gConsole->hasCommandsOnStack()) {
         open();
         gConsole->commandsFromStack(); // returns upon command "@close"
-        close();
-        return QDialog::Accepted;
     } else {
-        connect(gConsole, &Console::closeDialog, [this](){accept();});
-        return QDialog::exec();
+        QDialog::exec();
     }
+    return result();
 }
 
 void QcrFileDialog::setFromCommand(const QString& arg)
 {
     if (arg=="")
         throw QcrException{"Empty argument in FileDialog command"};
-    if (arg=="close") {
+    if (arg=="accept") {
         accept();
+        return;
+    }
+    if (arg=="reject") {
+        reject();
         return;
     }
     QStringList args = arg.split(' ');
