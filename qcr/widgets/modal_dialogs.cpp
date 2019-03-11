@@ -105,6 +105,5 @@ void QcrFileDialog::setFromCommand(const QString& arg)
     if (args.size()<2)
         throw QcrException{"Missing argument to command 'select'"};
     QStringList list = args[1].split(';');
-    QString tmp = '"' + list.join("\" \"") + '"';
-    selectFile(tmp);
+    selectFile('"' + list.join("\" \"") + '"');
 }
