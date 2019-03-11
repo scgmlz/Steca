@@ -16,6 +16,7 @@
 #include "qcr/base/debug.h"
 #include "qcr/base/qcrexception.h"
 #include "qcr/engine/console.h"
+#include "qcr/engine/logger.h"
 
 
 //  ***********************************************************************************************
@@ -75,7 +76,7 @@ QcrFileDialog::QcrFileDialog(
 
 QcrFileDialog::~QcrFileDialog()
 {
-    gConsole->log("fdia select "+selectedFiles().join(';'));
+    gLogger->log("fdia select "+selectedFiles().join(';'));
 }
 
 int QcrFileDialog::exec()

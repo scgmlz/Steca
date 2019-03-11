@@ -18,7 +18,7 @@
 #include "qcr/base/string_ops.h"
 #include "qcr/engine/mixin.h"
 #include "qcr/engine/cell.h"
-#include "qcr/engine/console.h"
+#include "qcr/engine/logger.h"
 #include "qcr/base/debug.h" // ASSERT
 #include <QSettings>
 #include <iostream>
@@ -67,7 +67,7 @@ QcrSingleValue<T>::QcrSingleValue(const QString& name, QcrCell<T>* cell)
         if (v != QVariant{}) {
             const T val = v.value<T>();
             setCellValue(val);
-            gConsole->log(QcrRegistered::name()+" "+strOp::to_s(val));
+            gLogger->log(QcrRegistered::name()+" "+strOp::to_s(val));
         }
         // Value may have changed, therefore write back to the config file controlled by QSettings
         s.setValue(QcrRegistered::name(), cell_->val());
@@ -128,7 +128,7 @@ void QcrSingleValue<T>::onChangedValue(T val, const QString& comment)
     QString line = name()+" "+strOp::to_s(val);
     if (comment!="")
         line += " # " + comment;
-    gConsole->log(line);
+    gLogger->log(line);
     cell_->setVal(val);
     gRoot->remakeAll();
 }

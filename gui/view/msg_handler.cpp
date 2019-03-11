@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "qcr/engine/console.h"
+#include "qcr/engine/logger.h"
 #include <QApplication>
 #include <QMessageBox>
 #include <QtGlobal> // no auto rm
@@ -28,7 +28,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString
     switch (type) {
     case QtDebugMsg:
         std::cerr << "## " << msg.toStdString() << "\n" << std::flush;
-        gConsole->log("## " + msg);
+        gLogger->log("## " + msg);
         break;
 // unavailable before Qt5.5 (ISSUE #36)
 //    case QtInfoMsg:
@@ -44,7 +44,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString
             return;
         qApp->restoreOverrideCursor();
         QMessageBox::warning(QApplication::activeWindow(), qAppName(), msg);
-        gConsole->log("##WARN: " + msg);
+        gLogger->log("##WARN: " + msg);
         break;
     case QtFatalMsg:
         std::cerr << "BUG! " << msg.toStdString() << context(ctx) << "\n" << std::flush;
@@ -60,7 +60,7 @@ void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString
                               "Context:\n" + ctx.function + "\n"
 #endif
             );
-        gConsole->log("##FATAL: " + msg);
+        gLogger->log("##FATAL: " + msg);
         qApp->quit();
         break;
     }

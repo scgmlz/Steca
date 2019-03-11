@@ -42,7 +42,7 @@ QcrTrigger::QcrTrigger(const QString& rawname, const QString& text, const QStrin
         setIcon(QIcon(iconFile));
     QAction::connect(this, &QAction::triggered,
                      [this]()->void {
-                         gConsole->log(name());
+                         gLogger->log(name());
                          triggerHook_();
                          gRoot->remakeAll(); });
     QAction::connect(this, &QAction::changed,

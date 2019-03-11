@@ -41,6 +41,7 @@ if(MSVC)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin/$<CONFIG>)
 else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fshow-overloads=best")
     # -fsanitize=address -fsanitize=undefined
     set(DEB_FLAGS "-Wall -Wpedantic -Wno-sign-compare -fno-omit-frame-pointer")
     set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} ${DEB_FLAGS} -O0 -g")

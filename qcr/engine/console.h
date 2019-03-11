@@ -15,13 +15,12 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include <QDateTime>
-#include <QTextStream>
+#include <QString>
 #include <stack>
 
 extern class Console* gConsole; //!< global handle that points to _the_ Console.
 
-//! Global singleton that logs user actions, and executes script and console commands.
+//! Global singleton that executes script and console commands.
 
 //! This class is to be instantiated exactly once though this is not enforced by an
 //! explicit singleton mechanism. After creation, the single instance can be accessed
@@ -34,8 +33,7 @@ extern class Console* gConsole; //!< global handle that points to _the_ Console.
 class Console
 {
 public:
-    Console() = delete;
-    Console(const QString& logFileName);
+    Console();
     ~Console();
     Console(const Console&) = delete;
 
@@ -47,20 +45,15 @@ public:
     void closeModalDialog();
     void commandsFromStack();
 
-    void log(const QString&) const;
     bool hasCommandsOnStack() const;
 private:
-    QString caller_;
     enum class Result : int //!< Used to inform commandsFromStack how to proceed
     { ok,                   //!< Proceed with next command from stack
       err,                  //!< Terminate stack execution
       suspend               //!< Suspend stack execution
     };
-    QDateTime startTime_;
     std::stack<class CommandRegistry*> registryStack_;
     std::deque<QString> commandStack_;
-    mutable int computingTime_ {0}; //!< Accumulated computing time in ms.
-    mutable QTextStream log_;
 
     class CommandRegistry* registry() const { return registryStack_.top(); }
     void readCLI();

@@ -55,7 +55,7 @@ private:
 
 void PlotDfgramOverlay::addRange(const Range& range)
 {
-    gConsole->log(QString("dfgram add %1 %2").arg(range.min).arg(range.max));
+    gLogger->log(QString("dfgram add %1 %2").arg(range.min).arg(range.max));
 
     // is it a valid range?
     const auto datapointCount = gSession->currentOrAvgeDfgram()->curve.intersect(range).size();
@@ -90,7 +90,7 @@ void PlotDfgramOverlay::addRange(const Range& range)
 
 void PlotDfgramOverlay::selectRange(double x)
 {
-    gConsole->log(QString("dfgram sel %1").arg(x));
+    gLogger->log(QString("dfgram sel %1").arg(x));
     bool selectionChanged = false;
     // prioritize baseline sel. when editing baselines
     if (gSession->params.editableRange == EditableRange::BASELINE)

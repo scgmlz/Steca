@@ -25,6 +25,7 @@
 #include "gui/dialogs/file_dialog.h"
 #include "gui/mainwin.h"
 #include "qcr/engine/console.h"
+#include "qcr/engine/logger.h"
 //#include "qcr/base/debug.h"
 
 #include "clara.hpp"
@@ -68,8 +69,8 @@ int main(int argc, char* argv[]) {
 
     bool help = false;
     bool vers = false;
-    std::string theLogFileName {};
-    std::string startupScriptSource {};
+    std::string theLogFileName;
+    std::string startupScriptSource;
     bool panic = false;
     bool silent_overwrite = false;
     auto parser = clara::detail::Opt(help)["-h"]["--help"]("Show the help message.")|
@@ -126,7 +127,8 @@ int main(int argc, char* argv[]) {
         }
     }
     std::cout << "Log file will be written to " << CSTRI(logFileName) << "\n";
-    Console console(logFileName);
+    Logger logger{logFileName};
+    Console console;
     QLoggingCategory::setFilterRules("*.debug=true\nqt.*.debug=false");
     qInstallMessageHandler(messageHandler);
 

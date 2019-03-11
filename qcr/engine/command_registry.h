@@ -17,6 +17,7 @@
 
 #include <QString>
 #include <QTextStream>
+#include <map>
 
 class QcrCommandable;
 

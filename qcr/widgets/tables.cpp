@@ -16,7 +16,7 @@
 //#include "qcr/base/debug.h"
 #include "qcr/base/qcrexception.h"
 #include "qcr/base/string_ops.h"
-#include "qcr/engine/console.h"
+#include "qcr/engine/logger.h"
 #include "qcr/engine/cell.h"
 
 //  ***********************************************************************************************
@@ -51,7 +51,7 @@ void TableModel::setHighlightedCell(const QModelIndex& cell)
     if (row < 0 || row >= rowCount())
         return;
     onHighlight(row);
-    gConsole->log(name() + " highlight " + QString::number(row));
+    gLogger->log(name() + " highlight " + QString::number(row));
     gRoot->remakeAll();
 }
 
@@ -83,7 +83,7 @@ void CheckTableModel::onClicked(const QModelIndex& cell)
 void CheckTableModel::activateAndLog(int row, bool on)
 {
     setActivated(row, on);
-    gConsole->log(name() + ( on ? " activate " : " deactivate ") + QString::number(row));
+    gLogger->log(name() + ( on ? " activate " : " deactivate ") + QString::number(row));
 }
 
 QVariant CheckTableModel::data(const QModelIndex& index, int role) const
@@ -201,7 +201,7 @@ void TableView::highlight(int row)
 {
     if (row==model_->highlighted())
         return; // the following would prevent execution of "onClicked"
-    gConsole->log(name()+".highlight="+QString::number(row));
+    gLogger->log(name()+".highlight="+QString::number(row));
     model_->onHighlight(row);
     updateScroll();
 }

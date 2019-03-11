@@ -13,7 +13,6 @@
 //  ***********************************************************************************************
 
 #include <regex>
-#include <iostream>
 #include <QString>
 
 namespace {
@@ -45,6 +44,7 @@ bool parseCommandLine(const QString& line, QString& command, QString& context)
 #ifndef LOCAL_CODE_ONLY
 
 #include "qcr/engine/console.h"
+#include "qcr/engine/logger.h"
 #include "qcr/engine/command_registry.h"
 #include "qcr/engine/mixin.h"
 #include "qcr/base/qcrexception.h"
@@ -52,6 +52,7 @@ bool parseCommandLine(const QString& line, QString& command, QString& context)
 #include "qcr/base/debug.h" // ASSERT
 #include <QApplication>
 #include <QFile>
+#include <QTextStream>
 
 #ifdef Q_OS_WIN
 #include <QWinEventNotifier>
@@ -60,12 +61,14 @@ bool parseCommandLine(const QString& line, QString& command, QString& context)
 #include <QSocketNotifier>
 #endif
 
+namespace {
+QTextStream qterr{stderr};
+} // namespace
+
 Console* gConsole; //!< global
 
-QTextStream qterr(stderr);
 
-
-Console::Console(const QString& logFileName)
+Console::Console()
 {
     gConsole = this;
 
@@ -77,28 +80,11 @@ Console::Console(const QString& logFileName)
     QObject::connect(notifier, &QSocketNotifier::activated, [this](int) { readCLI(); });
 #endif
 
-    // start registry
     registryStack_.push(new CommandRegistry{"main"});
-
-    // start log
-    auto* file = new QFile{logFileName};
-    if (!file->open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
-        qFatal("cannot open log file");
-    log_.setDevice(file);
-    startTime_ = QDateTime::currentDateTime();
-    caller_ = "log";
-    log("# " + qApp->applicationName() + " " + qApp->applicationVersion() + " started at "
-        + startTime_.toString("yyyy-MM-dd HH:mm::ss.zzz"));
-    caller_ = "ini";
 }
 
 Console::~Console()
 {
-    caller_ = "log";
-    log("# " + qApp->applicationName() + " session ended");
-    log("# duration: " + QString::number(startTime_.msecsTo(QDateTime::currentDateTime())) + "ms");
-    log("# computing time: " + QString::number(computingTime_) + "ms");
-    delete log_.device();
     while (!registryStack_.empty()) {
         delete registry();
         registryStack_.pop();
@@ -129,6 +115,7 @@ QString Console::learn(const QString& nameArg, QcrCommandable* widget)
             qFatal("BUG: @push has no argument in learn(%s)", CSTRI(name));
         name = args[1];
         registryStack_.push(new CommandRegistry{name});
+        gLogger->setLevel(name);
         // qDebug() << "pushed registry " << registry()->name();
     }
     return registry()->learn(name, widget);
@@ -144,14 +131,14 @@ void Console::forget(const QString& name)
 //! Sets calling context to GUI. To be called when initializations are done.
 void Console::startingGui()
 {
-    caller_ = "gui";
+    gLogger->setCaller("gui");
 }
 
 //! Reads and executes a command script.
 void Console::runScript(const QString& fName)
 {
     QFile file(fName);
-    log("# running script '" + fName + "'");
+    gLogger->log("# running script '" + fName + "'");
     if (!file.open(QIODevice::ReadOnly)) {
         qWarning() << "Cannot open file " << fName;
         return;
@@ -162,7 +149,7 @@ void Console::runScript(const QString& fName)
         commandStack_.push_back(line);
     }
     commandsFromStack();
-    log("# done with script '" + fName + "'");
+    gLogger->log("# done with script '" + fName + "'");
 }
 
 //! Pops the current registry away, so that the previous one is reinstated.
@@ -170,12 +157,13 @@ void Console::runScript(const QString& fName)
 //! Called by ~QcrModal(), i.e. on terminating a modal dialog.
 void Console::closeModalDialog()
 {
-    log("@close # modal dialog");
+    gLogger->log("@close # modal dialog");
     if (registryStack_.empty())
         qFatal("BUG or invalid @close command: cannot pop, registry stack is empty");
     // qDebug() << "going to pop registry " << registry->name();
     delete registryStack_.top();
     registryStack_.pop();
+    gLogger->setLevel(registry()->name());
     // qDebug() << "top registry is now " << registry()->name();
 }
 
@@ -188,39 +176,15 @@ void Console::commandsFromStack()
         commandStack_.pop_front();
         if (line=="@close")
             return;
-        caller_ = "scr";
+        gLogger->setCaller("scr");
         Result ret = wrappedCommand(line);
-        caller_ = "gui"; // restores default
+        gLogger->setCaller("gui"); // restores default
         if (ret==Result::err) {
             commandStack_.clear();
-            log("# Emptied command stack upon error");
+            gLogger->log("# Emptied command stack upon error");
             return;
         } else if (ret==Result::suspend)
             return;
-    }
-}
-
-//! Writes line to log file, decorated with information on context and timing.
-void Console::log(const QString& lineArg) const
-{
-    QString line = lineArg;
-    static auto lastTime = startTime_;
-    const auto currTime = QDateTime::currentDateTime();
-    int tDiff = lastTime.msecsTo(currTime);
-    lastTime = currTime;
-    QString prefix = "[";
-    if (caller_=="gui" && line[0]!='#') {
-        prefix += "       "; // direct user action: we don't care how long the user was idle
-    } else {
-        prefix += QString::number(tDiff).rightJustified(5) + "ms";
-        computingTime_ += tDiff;
-    }
-    prefix += " " + registry()->name() + " " + caller_ + "] ";
-    log_ << prefix << line << "\n";
-    log_.flush();
-    if (line.indexOf("##")!=0) {
-        qterr << line << "\n";
-        qterr.flush();
     }
 }
 
@@ -235,9 +199,9 @@ void Console::readCLI()
 {
     QTextStream qtin(stdin);
     QString line = qtin.readLine();
-    caller_ = "cli";
+    gLogger->setCaller("cli");
     wrappedCommand(line);
-    caller_ = "gui"; // restores default
+    gLogger->setCaller("gui"); // restores default
 }
 
 //! Executes command. Always called from commandInContext(..).
@@ -264,7 +228,7 @@ Console::Result Console::wrappedCommand(const QString& line)
             reg->dump(qterr);
             qterr.flush();
         } else if (cmd=="@close") {
-            log(command);
+            gLogger->log(command);
             return Result::suspend;
         } else {
             qWarning() << "@ command " << cmd << " not known";
