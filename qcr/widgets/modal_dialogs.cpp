@@ -23,13 +23,15 @@
 //! @class QcrModal
 
 QcrModal::QcrModal(const QString& name)
-    : QcrCommandable {gConsole->learn("@push " + name,this)}
-{}
+    : QcrCommandable{name}
+{
+    gConsole->openModalDialog(name, this);
+}
 
 QcrModal::~QcrModal()
 {
     gConsole->forget(name());
-    gConsole->closeModalDialog();
+    gConsole->closeModalDialog(name());
 }
 
 
@@ -38,7 +40,7 @@ QcrModal::~QcrModal()
 
 QcrModalDialog::QcrModalDialog(QWidget* parent, const QString& caption)
     : QcrModal{"modal"}
-    , QDialog {parent}
+    , QDialog{parent}
 {
     setWindowTitle(caption);
 }

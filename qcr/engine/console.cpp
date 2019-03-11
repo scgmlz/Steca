@@ -104,20 +104,8 @@ Console::~Console()
 //! This is used by the QcrModal modal dialogs. On terminating, QcrModal calls
 //! closeModalDialog(), which pops the current registry away, so that the previous
 //! registry is reinstated.
-QString Console::learn(const QString& nameArg, QcrCommandable* widget)
+QString Console::learn(const QString& name, QcrCommandable* widget)
 {
-    QString name = nameArg;
-    if (name[0]=='@') {
-        QStringList args = name.split(' ');
-        if (args[0]!="@push")
-            qFatal("BUG: invalid @ command in learn(%s)", CSTRI(name));
-        if (args.size()<2)
-            qFatal("BUG: @push has no argument in learn(%s)", CSTRI(name));
-        name = args[1];
-        registryStack_.push(new CommandRegistry{name});
-        gLogger->setLevel(name);
-        // qDebug() << "pushed registry " << registry()->name();
-    }
     return registry()->learn(name, widget);
 }
 
@@ -128,16 +116,25 @@ void Console::forget(const QString& name)
     registry()->forget(name);
 }
 
+void Console::openModalDialog(const QString& name, QcrCommandable* widget)
+{
+    registryStack_.push(new CommandRegistry{name});
+    gLogger->setLevel(name);
+    // qDebug() << "pushed registry " << registry()->name();
+    ASSERT(registry()->learn(name, widget) == name); // no change of name allowed here
+}
+
 //! Pops the current registry away, so that the previous one is reinstated.
 
 //! Called by ~QcrModal(), i.e. on terminating a modal dialog.
-void Console::closeModalDialog()
+void Console::closeModalDialog(const QString& name)
 {
+    ASSERT(name == registry()->name());
     gLogger->log("@close # modal dialog");
     if (registryStack_.empty())
         qFatal("BUG or invalid @close command: cannot pop, registry stack is empty");
     // qDebug() << "going to pop registry " << registry->name();
-    delete registryStack_.top();
+    delete registry();
     registryStack_.pop();
     gLogger->setLevel(registry()->name());
     // qDebug() << "top registry is now " << registry()->name();
