@@ -28,15 +28,13 @@ QcrModal::QcrModal(const QString& name)
     gConsole->openModalDialog(name, this);
 }
 
-//! Called after destruction of a QDialog, this mixin destructor pops the dialogs command registry.
+//! Called after destruction of a QDialog, this destructor pops a dialog from the command registry.
 
-//! The class QcrModal mainly exists for the sake of this destructor.
-//! It calls gLogger and gConsole at the very end of the destruction of a QcrDialog or
-//! QcrFileDialog.
+//! The mixin class QcrModal mainly exists for the sake of this destructor.
+//! It calls gConsole at the very end of the destruction of a QcrDialog or QcrFileDialog.
 //! This tear down order cannot be altered unpunished.
 QcrModal::~QcrModal()
 {
-    gLogger->log((result() ? "@accept " : "@reject")+name());
     gConsole->closeModalDialog(name());
 }
 
@@ -49,6 +47,11 @@ QcrModalDialog::QcrModalDialog(QWidget* parent, const QString& caption)
     , QDialog{parent}
 {
     setWindowTitle(caption);
+}
+
+QcrModalDialog::~QcrModalDialog()
+{
+    gLogger->log((result() ? "@accept " : "@reject")+name());
 }
 
 int QcrModalDialog::exec()
@@ -82,6 +85,7 @@ QcrFileDialog::QcrFileDialog(
 QcrFileDialog::~QcrFileDialog()
 {
     gLogger->log("fdia select "+selectedFiles().join(';'));
+    gLogger->log((result() ? "@accept " : "@reject")+name());
 }
 
 int QcrFileDialog::exec()
