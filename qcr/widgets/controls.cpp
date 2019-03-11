@@ -24,7 +24,7 @@
 
 //  ***********************************************************************************************
 //! @class QcrSpinBox
-//!
+
 //! A QSpinBox controls an integer value. Therefore normally we need no extra width for a dot.
 //! However, sometimes we want to make a QSpinBox exactly as wide as a given QDoubleSpinBox,
 //! for nice vertical alignement. Then we use withDot=true.
@@ -117,7 +117,7 @@ void QcrDoubleSpinBox::setFromCommand(const QString& arg)
 
 QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, QcrCell<bool>* cell)
     : QcrSingleValue<bool> {_name, cell}
-    , QCheckBox {text}
+    , QCheckBox{text}
 {
     doSetValue(cell_->val());
     QCheckBox::connect(this, _SLOT_(QCheckBox,stateChanged,int), [this](int val)->void {
@@ -129,7 +129,7 @@ QcrCheckBox::QcrCheckBox(const QString& _name, const QString& text, QcrCell<bool
 
 QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, bool val)
     : QcrSingleValue<bool> {_name, val}
-    , QRadioButton {text}
+    , QRadioButton{text}
 {
     doSetValue(cell_->val());
     setAutoExclusive(false); // TODO provide int-valued Qcr wrapper for exclusive radio buttons
@@ -139,7 +139,7 @@ QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, bool v
 
 QcrRadioButton::QcrRadioButton(const QString& _name, const QString& text, QcrCell<bool>* cell)
     : QcrSingleValue<bool> {_name, cell}
-    , QRadioButton {text}
+    , QRadioButton{text}
 {
     doSetValue(cell_->val());
     setAutoExclusive(false);
@@ -202,7 +202,7 @@ QcrRadioBox::QcrRadioBox(
     const QString& _name, const QString& _headline, QcrCell<int>* _cell,
     const QStringList& _tags, QLayout* _layout)
     : QcrSingleValue<int> {_name, _cell}
-    , tags_ {_tags}
+    , tags_{_tags}
 {
     ASSERT(size()>0);
     for (int i=0; i<size(); ++i) {

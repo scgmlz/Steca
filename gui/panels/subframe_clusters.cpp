@@ -42,7 +42,9 @@ private:
 
     int rowCount() const final { return gSession->dataset.allClusters.size(); }
 
-    QVariant data(const QModelIndex&, int) const final;
+    QVariant entry(int, int) const final;
+    QColor foregroundColor(int, int) const final;
+    QString tooltip(int, int) const final;
     QVariant headerData(int, Qt::Orientation, int) const final;
 };
 
@@ -52,68 +54,54 @@ int ActiveClustersModel::highlighted() const
     return c ? c->index() : -1;
 }
 
-QVariant ActiveClustersModel::data(const QModelIndex& index, int role) const
+QVariant ActiveClustersModel::entry(int row, int col) const
 {
-    int row = index.row();
-    if (row < 0 || row >= rowCount())
-        return {};
+     const Cluster& cluster = *gSession->dataset.allClusters.at(row);
+     if (col==COL_NUMBER) {
+         QString ret = QString::number(cluster.totalOffset()+1);
+         if (cluster.size()>1)
+             ret += "-" + QString::number(cluster.totalOffset()+cluster.size());
+         return ret;
+     } else if (col>=COL_ATTRS &&
+                col < COL_ATTRS+gSession->params.smallMetaSelection.numSelected()) {
+         return cluster.avgMetadata().attributeStrValue(
+             gSession->params.smallMetaSelection.selectedOf(col-COL_ATTRS));
+     } else
+         return {};
+}
+
+QColor ActiveClustersModel::foregroundColor(int row, int col) const
+{
     const Cluster& cluster = *gSession->dataset.allClusters.at(row);
-    int col = index.column();
-    switch (role) {
-    case Qt::DisplayRole: {
-        if (col==COL_NUMBER) {
-            QString ret = QString::number(cluster.totalOffset()+1);
-            if (cluster.size()>1)
-                ret += "-" + QString::number(cluster.totalOffset()+cluster.size());
-            return ret;
-        } else if (col>=COL_ATTRS &&
-                   col < COL_ATTRS+gSession->params.smallMetaSelection.numSelected()) {
-            return cluster.avgMetadata().attributeStrValue(
-                gSession->params.smallMetaSelection.selectedOf(col-COL_ATTRS));
-        } else
-            return {};
+    if (col==COL_NUMBER && cluster.size()>1 &&
+        (cluster.isIncomplete()))
+        return QColor(Qt::red);
+    return QColor(Qt::black);
+}
+
+QString ActiveClustersModel::tooltip(int row, int col) const
+{
+    const Cluster& cluster = *gSession->dataset.allClusters.at(row);
+    QString ret;
+    if (cluster.size()>1) {
+        ret = QString("Measurements %1..%2 are numbers %3..%4 in file %5")
+            .arg(cluster.totalOffset()+1)
+            .arg(cluster.totalOffset()+cluster.size())
+            .arg(cluster.offset()+1)
+            .arg(cluster.offset()+cluster.size())
+            .arg(cluster.file().name());
+    } else {
+        ret = QString("Measurement %1 is number %2 in file %3")
+            .arg(cluster.totalOffset()+1)
+            .arg(cluster.offset()+1)
+            .arg(cluster.file().name());
     }
-    case Qt::ToolTipRole: {
-        QString ret;
-        if (cluster.size()>1) {
-            ret = QString("Measurements %1..%2 are numbers %3..%4 in file %5")
-                .arg(cluster.totalOffset()+1)
-                .arg(cluster.totalOffset()+cluster.size())
-                .arg(cluster.offset()+1)
-                .arg(cluster.offset()+cluster.size())
-                .arg(cluster.file().name());
-        } else {
-            ret = QString("Measurement %1 is number %2 in file %3")
-                .arg(cluster.totalOffset()+1)
-                .arg(cluster.offset()+1)
-                .arg(cluster.file().name());
-        }
-        ret += ".";
-        if (cluster.isIncomplete())
-            ret += QString("\nThis cluster has only %1 elements, while the binning factor is %2.")
-                .arg(cluster.size())
-                .arg(gSession->dataset.binning.val());
-        return ret;
-    }
-    case Qt::ForegroundRole: {
-        if (col==COL_NUMBER && cluster.size()>1 &&
-            (cluster.isIncomplete()))
-            return QColor(Qt::red);
-        return QColor(Qt::black);
-    }
-    case Qt::BackgroundRole: {
-        if (row==highlighted())
-            return QColor(Qt::cyan);
-        return QColor(Qt::white);
-    }
-    case Qt::CheckStateRole: {
-        if (col==COL_CHECK)
-            return state(row);
-        return {};
-    }
-    default:
-        return {};
-    }
+    ret += ".";
+    if (cluster.isIncomplete())
+        ret += QString("\nThis cluster has only %1 elements, while the binning factor is %2.")
+            .arg(cluster.size())
+            .arg(gSession->dataset.binning.val());
+    return ret;
 }
 
 QVariant ActiveClustersModel::headerData(int col, Qt::Orientation ori, int role) const
@@ -146,7 +134,7 @@ private:
 };
 
 ActiveClustersView::ActiveClustersView()
-    : CheckTableView {new ActiveClustersModel()}
+    : CheckTableView{new ActiveClustersModel{}}
 {
     setSelectionMode(QAbstractItemView::NoSelection);
     onData();
@@ -169,10 +157,10 @@ void ActiveClustersView::onData()
 //! @class SubframeClusters
 
 SubframeClusters::SubframeClusters()
-    : QcrDockWidget {"measurements"}
+    : QcrDockWidget{"measurements"}
 {
     setFeatures(DockWidgetMovable);
     setWindowTitle("Measurements");
-    setWidget(new ActiveClustersView()); // list of Cluster|s
+    setWidget(new ActiveClustersView{}); // list of `Cluster`s
     setRemake([this](){setEnabled(gSession->hasData());});
 }

@@ -17,7 +17,7 @@
 
 #include "core/calc/peak_info.h"
 
-//! A list of PeakInfo's, associated with _one_ Bragg peak and different orientations alpha,beta.
+//! A list of `PeakInfo`s, associated with _one_ Bragg peak and different orientations alpha,beta.
 
 class OnePeakAllInfos {
 public:

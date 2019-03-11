@@ -51,29 +51,29 @@ enum class eAttr {
 
 
 Metadata::Metadata()
-    : date()
-    , comment()
-    , motorXT(0)
-    , motorYT(0)
-    , motorZT(0)
-    , motorOmg(0)
-    , motorTth(0)
-    , motorPhi(0)
-    , motorChi(0)
-    , motorPST(0)
-    , motorSST(0)
-    , motorOMGM(0)
-    , nmT(0)
-    , nmTeload(0)
-    , nmTepos(0)
-    , nmTeext(0)
-    , nmXe(0)
-    , nmYe(0)
-    , nmZe(0)
-    , monitorCount(0)
-    , deltaMonitorCount(0)
-    , time(0)
-    , deltaTime(0)
+    : date{}
+    , comment {}
+    , motorXT {0}
+    , motorYT {0}
+    , motorZT {0}
+    , motorOmg {0}
+    , motorTth {0}
+    , motorPhi {0}
+    , motorChi {0}
+    , motorPST {0}
+    , motorSST {0}
+    , motorOMGM {0}
+    , nmT {0}
+    , nmTeload {0}
+    , nmTepos {0}
+    , nmTeext {0}
+    , nmXe {0}
+    , nmYe {0}
+    , nmZe {0}
+    , monitorCount {0}
+    , deltaMonitorCount {0}
+    , time {0}
+    , deltaTime {0}
 {}
 
 int Metadata::numAttributes(bool onlyNum)

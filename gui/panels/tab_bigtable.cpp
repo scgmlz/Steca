@@ -41,32 +41,18 @@ private:
     int columnCount() const final { return 3; }
     int rowCount() const final { return sel_->size(); }
 
-    QVariant data(const QModelIndex&, int) const;
+    QVariant entry(int, int) const final;
     QVariant headerData(int, Qt::Orientation, int) const { return {}; }
 
     int highlighted_ {0};
     BoolMap*const sel_ { &gSession->params.bigMetaSelection };
 };
 
-QVariant ColumnSelectorModel::data(const QModelIndex& index, int role) const
+QVariant ColumnSelectorModel::entry(int row, int col) const
 {
-    int row = index.row();
-    int col = index.column();
-    if (row < 0 || rowCount() <= row)
-        return {};
-    switch (role) {
-    case Qt::CheckStateRole:
-        if (col==1)
-            return state(row);
-        break;
-    case Qt::DisplayRole:
-        if (col==2)
-            return sel_->keyAt(row);
-        return "";
-    case Qt::BackgroundRole:
-        return QColor(Qt::white);
-    }
-    return {};
+    if (col==2)
+        return sel_->keyAt(row);
+    return "";
 }
 
 //  ***********************************************************************************************
@@ -83,7 +69,7 @@ private:
 };
 
 ColumnSelectorView::ColumnSelectorView()
-    : CheckTableView {new ColumnSelectorModel()}
+    : CheckTableView{new ColumnSelectorModel{}}
 {
     setColumnWidth(0, 0);
     setColumnWidth(1,  .5*mWidth());
@@ -107,7 +93,7 @@ void ColumnSelectorView::onData()
 //! @class BigtableTab
 
 BigtableTab::BigtableTab()
-    : QcrWidget {"BigtableTab"}
+    : QcrWidget{"BigtableTab"}
 {
     auto* bigtableView = new BigtableView;
     auto* columnSelectorView = new ColumnSelectorView;

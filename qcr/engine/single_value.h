@@ -18,7 +18,7 @@
 #include "qcr/base/string_ops.h"
 #include "qcr/engine/mixin.h"
 #include "qcr/engine/cell.h"
-#include "qcr/engine/console.h"
+#include "qcr/engine/logger.h"
 #include "qcr/base/debug.h" // ASSERT
 #include <QSettings>
 #include <iostream>
@@ -32,7 +32,7 @@ public:
     ~QcrSingleValue();
     //! Sets the value of the associated Cell, and in consequence also the value of this widget.
     void setCellValue(T val);
-    //! Sets the widget value according to string argument. Called Console::wrappedCommand.
+    //! Sets the widget value according to string argument. Called by Console::wrappedCommand.
     virtual void setFromCommand(const QString& arg);
     //! Gets the current value of this widget, which agrees with the value of the associated cell.
     T getValue() const { ASSERT(doGetValue()==cell_->val()); return cell_->val(); }
@@ -56,7 +56,7 @@ private:
 //! Constructor that associates this QcrSingleValue with an external QcrCell.
 template<class T>
 QcrSingleValue<T>::QcrSingleValue(const QString& name, QcrCell<T>* cell)
-    : QcrRegistered {name}
+    : QcrRegistered{name}
     , cell_ {cell}
 {
     if (!adhoc()) {
@@ -67,7 +67,7 @@ QcrSingleValue<T>::QcrSingleValue(const QString& name, QcrCell<T>* cell)
         if (v != QVariant{}) {
             const T val = v.value<T>();
             setCellValue(val);
-            gConsole->log(QcrRegistered::name()+" "+strOp::to_s(val));
+            gLogger->log(QcrRegistered::name()+" "+strOp::to_s(val));
         }
         // Value may have changed, therefore write back to the config file controlled by QSettings
         s.setValue(QcrRegistered::name(), cell_->val());
@@ -78,7 +78,7 @@ QcrSingleValue<T>::QcrSingleValue(const QString& name, QcrCell<T>* cell)
 //! Constructs a QcrSingleValue that owns a QcrCell.
 template<class T>
 QcrSingleValue<T>::QcrSingleValue(const QString& name, const T val)
-    : QcrRegistered {name}
+    : QcrRegistered{name}
     , ownsItsCell_ {true}
 {
     cell_ = new QcrCell<T>{val}; // TODO RECONSIDER smart pointer
@@ -104,7 +104,7 @@ void QcrSingleValue<T>::setCellValue(T val)
     cell_->setVal(val);
 }
 
-//! Sets the widget value according to string argument. Called Console::wrappedCommand.
+//! Sets the widget value according to string argument. Called by Console::wrappedCommand.
 template<class T>
 void QcrSingleValue<T>::setFromCommand(const QString& arg)
 {
@@ -128,7 +128,7 @@ void QcrSingleValue<T>::onChangedValue(T val, const QString& comment)
     QString line = name()+" "+strOp::to_s(val);
     if (comment!="")
         line += " # " + comment;
-    gConsole->log(line);
+    gLogger->log(line);
     cell_->setVal(val);
     gRoot->remakeAll();
 }

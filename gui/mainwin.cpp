@@ -26,6 +26,7 @@
 #include "gui/panels/subframe_metadata.h"
 #include "gui/panels/subframe_setup.h"
 #include "qcr/engine/console.h"
+#include "qcr/engine/logger.h"
 //#include "qcr/base/debug.h"
 #include <QApplication>
 #include <QProgressBar>
@@ -90,7 +91,7 @@ MainWin::MainWin(const QString& startupScript)
     setRemake( [=]() { refresh(); } );
     show(); // must be called before initial remakeAll because remakeAll depends on visibility
     remakeAll();
-    gConsole->startingGui();
+    gLogger->setCaller("gui");
 
     if (startupScript!="")
         // delay execution until hopefully this MainWin is shown

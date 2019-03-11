@@ -19,13 +19,13 @@
 //! @class PlotOverlay
 
 PlotOverlay::PlotOverlay(QCustomPlot& _plot, double _step)
-    : QWidget(&_plot)
-    , plot_(_plot)
-    , cursorPos_(0)
-    , mouseDownPos_(0)
-    , hasCursor_(false)
-    , mouseDown_(false)
-    , step_(_step)
+    : QWidget{&_plot}
+    , plot_ {_plot}
+    , cursorPos_ {0}
+    , mouseDownPos_ {0}
+    , hasCursor_ {false}
+    , mouseDown_ {false}
+    , step_ {_step}
 {
     setMouseTracking(true);
     setMargins(0, 0);

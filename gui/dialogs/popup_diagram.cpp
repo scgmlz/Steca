@@ -18,7 +18,7 @@
 #include <QVBoxLayout>
 
 PopupDiagram::PopupDiagram()
-    : PopupBaseDialog {gGui, "diagram#", "Diagram"}
+    : PopupBaseDialog{gGui, "diagram#", "Diagram"}
 {
     // initializations
     auto* plot = new PlotDiagram{300,300}; // TODO store and reuse user setting; freeze aspect ratio

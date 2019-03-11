@@ -24,7 +24,7 @@ RangeControl::RangeControl(
     const QString& _name,
     const std::function<const Range*()>& _getRange,
     const std::function<void(double,bool)>& _setOne)
-    : QcrWidget {"RangeControl"}
+    : QcrWidget{"RangeControl"}
 {
     auto* cellMin = new QcrCell<double>{0.}; // will not be deleted on shutdown
     auto* cellMax = new QcrCell<double>{0.};

@@ -59,7 +59,7 @@ void plotOverlays(QPainter& p, const QRect& rect, const double scale)
 //! @class ImageView
 
 ImageView::ImageView()
-    : QcrWidget("ImageView")
+    : QcrWidget{"ImageView"}
 {
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     gGui->toggles->crosshair.setHook([this](bool) { update(); });

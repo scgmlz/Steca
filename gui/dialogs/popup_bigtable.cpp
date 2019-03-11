@@ -18,7 +18,7 @@
 #include <QVBoxLayout>
 
 PopupBigtable::PopupBigtable()
-    : PopupBaseDialog(gGui, "table#", "Table")
+    : PopupBaseDialog{gGui, "table#", "Table"}
 {
     auto* bigtableView = new BigtableView;
     bigtableView->setMinimumSize(600,600);

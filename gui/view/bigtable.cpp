@@ -23,11 +23,11 @@
 
 //  ***********************************************************************************************
 //! @class BigtableModel
-//!
+
 //! The first column contains row numbers. The remaining numCols columns contain data.
 
 BigtableModel::BigtableModel()
-    : TableModel {"data#"}
+    : TableModel{"data#"}
 {
     gGui->bigtableModel = this; // for use in export dialog
 }
@@ -179,10 +179,9 @@ std::vector<std::vector<const QVariant*>> BigtableModel::getData() const
 
 //  ***********************************************************************************************
 //!  @class BigtableView
-//!
 
 BigtableView::BigtableView()
-    : TableView {new BigtableModel}
+    : TableView{new BigtableModel}
 {
     setHeader(new QHeaderView{Qt::Horizontal});
     setAlternatingRowColors(true);
@@ -212,7 +211,7 @@ BigtableView::BigtableView()
         model()->setSortColumn(logicalIndex-1);
         model()->sortData(); });
 
-    setRemake([this](){}); // for the time being, remake is steered by BigtableTab
+    setRemake([](){}); // for the time being, remake is steered by BigtableTab
 }
 
 void BigtableView::onData()

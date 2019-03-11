@@ -29,7 +29,7 @@ protected:
 class QcrModalDialog : protected QcrModal, public QDialog {
 public:
     QcrModalDialog(QWidget* parent, const QString& caption);
-    int exec() override;
+    int exec() override; // overrides QDialog::exec()
     void setFromCommand(const QString&) override;
 };
 
@@ -39,7 +39,7 @@ public:
     QcrFileDialog(
         QWidget* parent, const QString& caption, const QString& directory, const QString& filter);
     ~QcrFileDialog();
-    int exec() override;
+    int exec() override; // overrides QFileDialog::exec()
     void setFromCommand(const QString&) override;
 };
 

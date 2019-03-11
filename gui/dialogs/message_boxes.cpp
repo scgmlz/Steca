@@ -21,7 +21,7 @@
 #include <QDialogButtonBox>
 
 AboutBox::AboutBox()
-    : QDialog(gGui, Qt::Dialog)
+    : QDialog{gGui, Qt::Dialog}
 {
     auto* vb = new QVBoxLayout;
     auto* hb = new QHBoxLayout;
@@ -83,7 +83,7 @@ AboutBox::AboutBox()
 
 
 AddRangeBox::AddRangeBox(const QString& genre)
-    : QDialog(gGui, Qt::Dialog)
+    : QDialog{gGui, Qt::Dialog}
 {
     auto* vb = new QVBoxLayout;
     auto* hb = new QHBoxLayout;

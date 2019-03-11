@@ -76,7 +76,7 @@ PlotDiagram::PlotDiagram()
 }
 
 PlotDiagram::PlotDiagram(int w, int h)
-    : PlotDiagram()
+    : PlotDiagram{}
 {
     setMinimumSize(w, h);
 }

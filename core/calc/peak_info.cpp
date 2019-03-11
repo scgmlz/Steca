@@ -19,7 +19,7 @@
 
 //  ***********************************************************************************************
 //! @class PeakInfo
-//!
+
 //! Invalid output parameters are set to NaNs. However, some analysis programs
 //! debug::ensure -1 as unknown value; thus, NaN parameter values should be output
 //! as -1 when output is written for these programs (polefigure!).
@@ -28,7 +28,7 @@ PeakInfo::PeakInfo(const Metadata* md,
                    deg alpha, deg beta, Range rgeGma, double inten,
                    double intenError, deg tth, deg tthError, double fwhm, double fwhmError,
                    double sog, double sogError)
-    : md_ {md}
+    : md_{md}
     , alpha_ {alpha}
     , beta_ {beta}
     , rgeGma_ {rgeGma}
@@ -50,7 +50,7 @@ PeakInfo::PeakInfo(const Metadata* md,
 
 PeakInfo::PeakInfo(deg alpha, deg beta, Range rgeGma, double inten, double intenError, deg tth,
                    deg tthError, double fwhm, double fwhmError)
-    : PeakInfo {nullptr, alpha, beta, rgeGma,
+    : PeakInfo{nullptr, alpha, beta, rgeGma,
                 inten, intenError, tth, tthError, fwhm, fwhmError, Q_QNAN, Q_QNAN}
 {}
 

@@ -116,7 +116,7 @@ private:
 };
 
 PeakfitOutcomeView::PeakfitOutcomeView()
-    : QcrWidget("PeakfitOutcomeView")
+    : QcrWidget{"PeakfitOutcomeView"}
 {
     auto* grid = new QGridLayout;
     grid->addWidget(new QLabel{"direct"}, 0, 1);
@@ -208,7 +208,7 @@ void PeakfitOutcomeView::enable(bool haveRaw, bool haveFit, bool haveSoG)
 //! @class ControlsPeakfits
 
 ControlsPeakfits::ControlsPeakfits()
-    : QcrWidget("ControlsPeakfits")
+    : QcrWidget{"ControlsPeakfits"}
 {
     auto* comboPeakFct = new QcrComboBox{
         "reflTyp", &gSession->params.defaultPeakFunction, OnePeakSettings::functionNames};
@@ -230,12 +230,12 @@ ControlsPeakfits::ControlsPeakfits()
 
     auto* topControls = new QHBoxLayout;
     topControls->addStretch();
-    topControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->peakAdd));
-    topControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->peakRemove));
-    topControls->addWidget(new QcrIconTriggerButton(&gGui->triggers->peaksClear));
+    topControls->addWidget(new QcrIconTriggerButton{&gGui->triggers->peakAdd});
+    topControls->addWidget(new QcrIconTriggerButton{&gGui->triggers->peakRemove});
+    topControls->addWidget(new QcrIconTriggerButton{&gGui->triggers->peaksClear});
     box->addLayout(topControls);
 
-    box->addWidget(new TableView(new PeaksModel()));
+    box->addWidget(new TableView(new PeaksModel{}));
     box->addWidget(comboPeakFct);
     box->addWidget(new RangeControl("peak",
                                     []()->const Range* {

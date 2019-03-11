@@ -39,7 +39,7 @@ public:
     Qt::CheckState clusterState() const;
     bool activated() const { return activated_; }
 
-    int offset_;  //!< first index in total list of Measurement|s
+    int offset_;  //!< first index in total list of `Measurement`s
 
 private:
     friend class Dataset;
@@ -47,7 +47,7 @@ private:
 
     Rawfile raw_; //!< owned by this
     int index_; //!< index in files_
-    std::vector<Cluster*> clusters_; //!< back links to Cluster|s made from this,
+    std::vector<Cluster*> clusters_; //!< back links to `Cluster`s made from this,
                                      //!< set by Dataset::updateClusters
     bool activated_ {true};
 };
@@ -74,7 +74,7 @@ private:
 };
 
 
-//! Loaded Datafile|s. Does not include the correction file.
+//! Loaded `Datafile`s. Does not include the correction file.
 
 class Dataset {
 public:
@@ -99,15 +99,15 @@ public:
     bool hasIncomplete() const { return hasIncomplete_; }
     std::vector<const Cluster*> activeClustersList() const;
 
-    QcrCell<int> binning {1};             //!< bin so many Measurement|s into one cluster
+    QcrCell<int> binning {1};             //!< bin so many `Measurement`s into one cluster
     QcrCell<bool> dropIncomplete {false}; //!< drop Clusters with less than 'binning' members.
 
-    //! Owning all Cluster|s. Recomputed in updateClusters.
+    //! Owning all `Cluster`s. Recomputed in updateClusters.
     //! Use of unique_ptr is unavoidable because of deleted default constructors (confirmed dec18).
     std::vector<std::unique_ptr<Cluster>> allClusters;
 
 private:
-    //! Owning the loaded Datafile|s.
+    //! Owning the loaded `Datafile`s.
     std::vector<Datafile> files_;
 
     bool hasIncomplete_ {false}; //!< current binning does result in at least one incomplete cluster

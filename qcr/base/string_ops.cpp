@@ -25,30 +25,30 @@ bool to_b(const QString& s)
     else if (s=="off")
         return false;
     else
-        throw QcrException("Expected 'on' or 'off', found string '" + s + "'");
+        throw QcrException{"Expected 'on' or 'off', found string '" + s + "'"};
 }
 
 int to_i(const QString& s)
 {
     if (s=="")
-        throw QcrException("Expected an integer number, found empty string");
+        throw QcrException{"Expected an integer number, found empty string"};
     int ret;
     bool ok;
     ret = s.toInt(&ok);
     if (!ok)
-        throw QcrException("Expected an integer number, found string '" + s + "'");
+        throw QcrException{"Expected an integer number, found string '" + s + "'"};
     return ret;
 }
 
 double to_d(const QString& s)
 {
     if (s=="")
-        throw QcrException("Expected a floating-point number, found empty string");
+        throw QcrException{"Expected a floating-point number, found empty string"};
     double ret;
     bool ok;
     ret = s.toDouble(&ok);
     if (!ok)
-        throw QcrException("Expected a floating-point number, found string '" + s + "'");
+        throw QcrException{"Expected a floating-point number, found string '" + s + "'"};
     return ret;
 }
 
@@ -78,7 +78,7 @@ QString to_s(const QString& val)
 }
 
 //! Splits arg0 at first blank.
-//!
+
 //! Results are put in arg1 and arg2.
 void splitOnce(const QString& in, QString& part0, QString& part1)
 {

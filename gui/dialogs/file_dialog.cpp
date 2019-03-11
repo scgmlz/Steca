@@ -125,25 +125,19 @@ bool confirmOverwrite(const QString& name, QWidget* parent, const QString& path)
     case eFileOverwritePolicy::PROMPT:
         return QMessageBox::question(parent, "File exists", "Overwrite " + path + " ?")
                 == QMessageBox::Yes;
-        break;
-    case eFileOverwritePolicy::PANIC: {
-        QByteArray tmp = path.toLatin1();
-        qFatal("attempting to write to existing file '%s'", tmp.constData());
-        break;
-    }
+    case eFileOverwritePolicy::PANIC:
+        qFatal("attempting to write to existing file '%s'", CSTRI(path));
     case eFileOverwritePolicy::SILENT_OVERWRITE:
         return true;
-        break;
     default:
         qFatal("confirmOverwrite: impossible case");
-        break;
     }
 }
 
 //! Opens file for writing; asks for confirmation before overwriting.
 QFile* openFileConfirmOverwrite(const QString& name, QWidget* parent, const QString& path)
 {
-    QFile* ret = new QFile(path);
+    QFile* ret = new QFile{path};
     if (ret->exists() &&
         !confirmOverwrite(name, parent, path)) {
         delete ret;
@@ -185,7 +179,7 @@ QString queryImportFileName(
 QString queryExportFileName(
     QWidget* parent, const QString& caption, QDir& dir, const QString& filter)
 {
-    FileDialog dlg(parent, caption, dir, filter);
+    FileDialog dlg{parent, caption, dir, filter};
     dlg.setFileMode(QFileDialog::AnyFile);
     dlg.setAcceptMode(QFileDialog::AcceptSave);
     if (!dlg.exec())
@@ -198,7 +192,7 @@ QString queryExportFileName(
 QString queryDirectory(QWidget* parent, const QString& caption, const QString& dirname)
 {
     QDir dir(dirname);
-    FileDialog dlg(parent, caption, dir);
+    FileDialog dlg{parent, caption, dir};
     dlg.setFileMode(QFileDialog::Directory);
     dlg.setAcceptMode(QFileDialog::AcceptSave);
     if (!dlg.exec())

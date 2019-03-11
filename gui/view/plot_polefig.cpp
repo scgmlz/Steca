@@ -108,7 +108,7 @@ void paintPoints(QPainter& painter, const std::vector<PolefigPoint>& points, con
 
 
 PlotPolefig::PlotPolefig(const bool alive)
-    : QcrWidget("PlotPolefig")
+    : QcrWidget{"PlotPolefig"}
 {
     if (alive) // live display, for use in main window
         setRemake([this](){

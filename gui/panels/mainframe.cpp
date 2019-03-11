@@ -24,7 +24,7 @@
 //! @class Mainframe
 
 Mainframe::Mainframe()
-    : QcrTabWidget {"mainTabs"}
+    : QcrTabWidget{"mainTabs"}
 {
     // layout
     setTabPosition(QTabWidget::North);

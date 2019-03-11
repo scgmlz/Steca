@@ -41,7 +41,8 @@ private:
 
     int columnCount() const final { return 3; }
     int rowCount() const final { return gSession->dataset.countFiles(); }
-    QVariant data(const QModelIndex&, int) const final;
+    QVariant entry(int, int) const final;
+    QString tooltip(int, int) const final;
 };
 
 int FilesModel::highlighted() const
@@ -50,29 +51,23 @@ int FilesModel::highlighted() const
     return c ? c->file().index() : -1;
 }
 
-//! Returns role-specific information about one table cell.
-QVariant FilesModel::data(const QModelIndex& index, int role) const
+QVariant FilesModel::entry(int row, int col) const
 {
-    const int row = index.row();
-    if (row < 0 || row >= rowCount())
-        return {};
     const Datafile& file = gSession->dataset.fileAt(row);
-    int col = index.column();
-    if (role==Qt::DisplayRole && col==2)
+    if(col == 2)
         return file.name();
-    else if (role==Qt::ToolTipRole && col>=2)
+    return {};
+}
+
+QString FilesModel::tooltip(int row, int col) const
+{
+    const Datafile& file = gSession->dataset.fileAt(row);
+    if(col == 2)
         return QString("File %1\ncontains %2 measurements.here numbered %3 to %4")
             .arg(file.name())
             .arg(file.numMeasurements())
             .arg(gSession->dataset.offset(file)+1)
             .arg(gSession->dataset.offset(file)+file.numMeasurements());
-    else if (role==Qt::CheckStateRole && col==1)
-        return state(row);
-    else if (role==Qt::BackgroundRole) {
-        if (row==highlighted())
-            return QColor(Qt::cyan);
-        return QColor(Qt::white);
-    }
     return {};
 }
 
@@ -80,7 +75,7 @@ QVariant FilesModel::data(const QModelIndex& index, int role) const
 //  ***********************************************************************************************
 //! @class FilesView (local scope)
 
-//! Main item in SubframeFiles: View and control the list of DataFile's
+//! Main item in `SubframeFiles`: View and control the list of `DataFile`s
 
 class FilesView : public CheckTableView {
 public:
@@ -94,7 +89,7 @@ private:
 //! @class SubframeFiles
 
 SubframeFiles::SubframeFiles()
-    : QcrDockWidget {"files"}
+    : QcrDockWidget{"files"}
 {
     setFeatures(DockWidgetMovable);
     setWindowTitle("Files");

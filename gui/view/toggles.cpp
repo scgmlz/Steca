@@ -16,7 +16,7 @@
 #include "core/session.h"
 
 Toggles::Toggles()
-    : combinedDfgram {"dfg.all", &gSession->params.showAvgeDfgram,
+    : combinedDfgram{"dfg.all", &gSession->params.showAvgeDfgram,
         "All measurements", ":/icon/all"}
     , enableCorr {"enableCorr", &gSession->corrset.enabled,
         "Enable correction file", ":/icon/useCorrection"}

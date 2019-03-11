@@ -20,7 +20,7 @@
 #include "gui/panels/controls_peakfits.h"
 
 SubframeSetup::SubframeSetup()
-    : QcrTabWidget {"setupTabs"}
+    : QcrTabWidget{"setupTabs"}
 {
     setTabPosition(QTabWidget::North);
     setMinimumSize(270,320);

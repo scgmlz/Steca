@@ -19,7 +19,7 @@
 #include "gui/view/plot_polefig.h"
 
 PolefigTab::PolefigTab()
-    : QcrWidget {"PolefigTab"}
+    : QcrWidget{"PolefigTab"}
 {
     auto* plot = new PlotPolefig{true};
 

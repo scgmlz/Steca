@@ -86,7 +86,7 @@ Curve computePeakAsCurve(int jP, const Dfgram* parent)
 
 Dfgram::Dfgram(Curve&& c)
     : curve         {std::move(c)}
-    , bgFit_        {&computeBgFit}
+    , bgFit_{&computeBgFit}
     , bgAsCurve_    {&computeBgAsCurve}
     , curveMinusBg_ {&computeCurveMinusBg}
     , rawOutcomes_ {[]()->int {return gSession->peaksSettings.size();},

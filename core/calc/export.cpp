@@ -38,23 +38,19 @@ void writeFullInfoSequence(
 }
 
 //! Writes intensities (only!) for pole figure for one Bragg peak.
-//!
+
 //! Makes sense for interpolated data only; assumes alpha-beta grid to be known.
 
 void writeCompactInfoSequence(QTextStream& stream, const OnePeakAllInfos& peakInfos)
 {
-    double alphaOld;
-    bool hasOld = false;
+    int count = 0;
     for (auto& info : peakInfos.peakInfos()) {
-        if (hasOld) {
-            if (info.alpha()==alphaOld)
-                stream << " ";
-            else
-                stream << "\n";
-        }
         stream << info.inten();
-        alphaOld = info.alpha();
-        hasOld = true;
+        count = (count+1)%10;
+        if (count == 0)
+            stream << "\n";
+        else
+            stream << " ";
     }
     stream << "\n";
 }
@@ -84,7 +80,7 @@ QString data_export::numberedFileName(const QString& templatedName, int num, int
 {
     if (!templatedName.contains("%d"))
         qFatal("templated name '%s' does not contain placeholder '%%d'",
-               templatedName.toLatin1().constData());
+               CSTRI(templatedName));
     QString ret = templatedName;
     int nDigits = (int)log10((double)maxNum)+1;
     ret.replace("%d", QString("%1").arg(num, nDigits, 10, QLatin1Char('0')));
