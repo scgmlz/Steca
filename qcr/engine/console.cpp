@@ -30,7 +30,6 @@ bool parseCommandLine(const QString& line, QString& command, QString& context)
 {
     const std::regex my_regex{"^(\\[\\s*((\\d+)ms)?\\s*(\\w+)\\s\\w{3}\\])?([^#]*)(#.*)?$"};
     std::smatch my_match;
-    qDebug() << "Going To Parse '" << line << "'";
     const std::string tmp = CSTRI(line);
     if (!std::regex_match(tmp, my_match, my_regex))
         return false;
@@ -132,6 +131,7 @@ void Console::closeModalDialog(const QString& name)
 {
     ASSERT(name == registry()->name());
     gLogger->log("@close "+name);
+    forget(name);
     if (registryStack_.empty())
         qFatal("BUG or invalid @close command: cannot pop, registry stack is empty");
     // qDebug() << "going to pop registry " << name;
@@ -164,7 +164,7 @@ void Console::commandsFromStack()
 {
     while (!commandStack_.empty()) {
         const QString line = commandStack_.front();
-        qDebug() << "command from stack: " << line;
+        // qDebug() << "command from stack: " << line;
         commandStack_.pop_front();
         gLogger->setCaller("scr");
         Result ret = wrappedCommand(line);

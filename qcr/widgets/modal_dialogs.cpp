@@ -30,7 +30,6 @@ QcrModal::QcrModal(const QString& name)
 
 QcrModal::~QcrModal()
 {
-    gConsole->forget(name());
     gConsole->closeModalDialog(name());
 }
 
