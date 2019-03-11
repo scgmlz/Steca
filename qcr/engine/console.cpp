@@ -45,6 +45,7 @@ bool parseCommandLine(const QString& line, QString& command, QString& context)
 #ifndef LOCAL_CODE_ONLY
 
 #include "qcr/engine/console.h"
+#include "qcr/engine/command_registry.h"
 #include "qcr/engine/mixin.h"
 #include "qcr/base/qcrexception.h"
 #include "qcr/base/string_ops.h"
@@ -63,74 +64,6 @@ Console* gConsole; //!< global
 
 QTextStream qterr(stderr);
 
-//  ***********************************************************************************************
-//! @class CommandRegistry
-
-//! Holds console (= terminal = command-line) commands to be defined and executed by class Console.
-class CommandRegistry {
-public:
-    CommandRegistry() = delete;
-    CommandRegistry(const CommandRegistry&) = delete;
-    CommandRegistry(const QString& _name) : name_{_name} {}
-    QString learn(const QString&, QcrCommandable*);
-    void forget(const QString&);
-    QcrCommandable* find(const QString& name);
-    void dump(QTextStream&) const;
-    QString name() const { return name_; }
-    int size() const { return widgets_.size(); }
-private:
-    const QString name_;
-    std::map<const QString, QcrCommandable*> widgets_;
-    std::map<const QString, int> numberedEntries_;
-};
-
-QString CommandRegistry::learn(const QString& name, QcrCommandable* widget)
-{
-    ASSERT(name!=""); // empty name only allowed for non-settable QcrBase
-    // qDebug() << "Registry " << name_ << " learns '" << name;
-    QString ret = name;
-    if (ret.contains("#")) {
-        auto numberedEntry = numberedEntries_.find(name);
-        int idxEntry = 1;
-        if (numberedEntry==numberedEntries_.end())
-            numberedEntries_[name] = idxEntry;
-        else
-            idxEntry = ++(numberedEntry->second);
-        ret.replace("#", QString::number(idxEntry));
-    }
-    if (widgets_.find(ret)!=widgets_.end())
-        qFatal("Duplicate widget registry entry '%s'", CSTRI(ret));
-    widgets_[ret] = widget;
-    return ret;
-}
-
-void CommandRegistry::forget(const QString& name)
-{
-    // qDebug() << "Registry " << name_ << "(" << widgets_.size() << ") forgets '"  << name;
-    auto it = widgets_.find(name);
-    if (it==widgets_.end())
-        qFatal("Cannot deregister, there is no entry '%s' in the widget registry '%s'",
-               CSTRI(name), CSTRI(name_));
-    widgets_.erase(it);
-}
-
-QcrCommandable* CommandRegistry::find(const QString& name)
-{
-    auto entry = widgets_.find(name);
-    if (entry==widgets_.end())
-        return {};
-    return entry->second;
-}
-
-void CommandRegistry::dump(QTextStream& stream) const
-{
-    for (auto it: widgets_)
-        stream << " " << it.first;
-    stream << "\n";
-}
-
-//  ***********************************************************************************************
-//! @class Console
 
 Console::Console(const QString& logFileName)
 {
