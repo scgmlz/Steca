@@ -63,7 +63,7 @@ private:
     class QSocketNotifier *notifier_;
 #endif
     std::stack<class CommandRegistry*> registryStack_;
-    std::deque<QString> commandLifo_;
+    std::deque<QString> commandStack_;
     mutable int computingTime_ {0}; //!< Accumulated computing time in ms.
     mutable QTextStream log_;
 

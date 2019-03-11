@@ -247,7 +247,7 @@ void Console::runScript(const QString& fName)
             }
             line = line.mid(i+1);
         }
-        commandLifo_.push_back(line);
+        commandStack_.push_back(line);
     }
     commandsFromStack();
     log("# done with script '" + fName + "'");
@@ -272,15 +272,15 @@ void Console::closeModalDialog()
 //! Executes commands on stack. Called by runScript and by QcrModalDialog/QcrFileDialog::exec.
 void Console::commandsFromStack()
 {
-    while (!commandLifo_.empty()) {
-        const QString line = commandLifo_.front();
+    while (!commandStack_.empty()) {
+        const QString line = commandStack_.front();
         qterr << "DEBUG: command from stack: " << line << "\n";
-        commandLifo_.pop_front();
+        commandStack_.pop_front();
         if (line=="@close")
             return;
         Result ret = commandInContext(line, "fil");
         if (ret==Result::err) {
-            commandLifo_.clear();
+            commandStack_.clear();
             log("# Emptied command stack upon error");
             return;
         } else if (ret==Result::suspend)
@@ -315,7 +315,7 @@ void Console::log(const QString& lineArg) const
 //! Returns true if there are commands on stack. Needed by modal dialogs.
 bool Console::hasCommandsOnStack() const
 {
-    return !commandLifo_.empty();
+    return !commandStack_.empty();
 }
 
 //! Reads one line from the command-line interface, and executes it.
