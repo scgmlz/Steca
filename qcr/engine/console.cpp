@@ -70,11 +70,11 @@ Console::Console(const QString& logFileName)
     gConsole = this;
 
 #ifdef Q_OS_WIN
-    notifier_ = new QWinEventNotifier;// GetStdHandle(STD_INPUT_HANDLE));
-    QObject::connect(notifier_, &QWinEventNotifier::activated, [this] (HANDLE) {readCLI(); });
+    auto* notifier = new QWinEventNotifier;// GetStdHandle(STD_INPUT_HANDLE));
+    QObject::connect(notifier, &QWinEventNotifier::activated, [this] (HANDLE) {readCLI(); });
 #else
-    notifier_ = new QSocketNotifier{fileno(stdin), QSocketNotifier::Read};
-    QObject::connect(notifier_, &QSocketNotifier::activated, [this](int) { readCLI(); });
+    auto* notifier = new QSocketNotifier{fileno(stdin), QSocketNotifier::Read};
+    QObject::connect(notifier, &QSocketNotifier::activated, [this](int) { readCLI(); });
 #endif
 
     // start registry

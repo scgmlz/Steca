@@ -57,11 +57,6 @@ private:
       suspend               //!< Suspend stack execution
     };
     QDateTime startTime_;
-#ifdef Q_OS_WIN
-    class QWinEventNotifier *notifier_;
-#else
-    class QSocketNotifier *notifier_;
-#endif
     std::stack<class CommandRegistry*> registryStack_;
     std::deque<QString> commandStack_;
     mutable int computingTime_ {0}; //!< Accumulated computing time in ms.
