@@ -20,4 +20,6 @@
 
 #define ASSERT(cond) if (!(cond)) qFatal("assertion failed: " #cond)
 
+#define CSTRI(qstri) QByteArray(qstri.toLatin1()).constData() // needed for qFatal
+
 #endif // DEBUG_H
