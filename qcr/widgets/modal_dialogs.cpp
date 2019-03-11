@@ -28,6 +28,12 @@ QcrModal::QcrModal(const QString& name)
     gConsole->openModalDialog(name, this);
 }
 
+//! Called after destruction of a QDialog, this mixin destructor pops the dialogs command registry.
+
+//! The class QcrModal mainly exists for the sake of this destructor.
+//! It calls gLogger and gConsole at the very end of the destruction of a QcrDialog or
+//! QcrFileDialog.
+//! This tear down order cannot be altered unpunished.
 QcrModal::~QcrModal()
 {
     gLogger->log((result() ? "@accept " : "@reject")+name());
