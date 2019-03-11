@@ -216,11 +216,12 @@ Console::Result Console::wrappedCommand(const QString& line)
             qterr << "registry " << reg->name() << " has " << reg->size() << " commands:\n";
             reg->dump(qterr);
             qterr.flush();
-        } else if (cmd=="@accept") {
-            emit closeDialog(true);
-            return Result::suspend;
-        } else if (cmd=="@reject") {
-            emit closeDialog(false);
+        } else if (cmd=="@accept" || cmd=="@reject") {
+            if (registry()->name()=="main") {
+                qWarning() << "Command " << cmd << " makes no sense at main level";
+                return Result::err;
+            }
+            emit closeDialog(cmd=="@accept");
             return Result::suspend;
         } else {
             qWarning() << "@ command " << cmd << " not known";
