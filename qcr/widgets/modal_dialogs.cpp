@@ -48,7 +48,7 @@ int QcrModalDialog::exec()
 {
     if (gConsole->hasCommandsOnStack()) {
         open();
-        gConsole->commandsFromStack();
+        gConsole->commandsFromStack(); // returns upon command "@close"
         close();
         return QDialog::Accepted;
     } else
@@ -84,11 +84,13 @@ int QcrFileDialog::exec()
 {
     if (gConsole->hasCommandsOnStack()) {
         open();
-        gConsole->commandsFromStack();
+        gConsole->commandsFromStack(); // returns upon command "@close"
         close();
         return QDialog::Accepted;
-    } else
+    } else {
+        connect(gConsole, &Console::closeDialog, [this](){accept();});
         return QDialog::exec();
+    }
 }
 
 void QcrFileDialog::setFromCommand(const QString& arg)

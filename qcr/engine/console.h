@@ -15,6 +15,7 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
+#include <QObject>
 #include <QString>
 #include <stack>
 
@@ -30,8 +31,8 @@ extern class Console* gConsole; //!< global handle that points to _the_ Console.
 //! inheritance from QcrCommandable, register and unregister themselves using the
 //! commands "learn" and "forget".
 
-class Console
-{
+class Console : public QObject {
+    Q_OBJECT
 public:
     Console();
     ~Console();
@@ -47,6 +48,9 @@ public:
     void commandsFromStack();
 
     bool hasCommandsOnStack() const;
+signals:
+    void closeDialog() const;
+
 private:
     enum class Result : int //!< Used to inform commandsFromStack how to proceed
     { ok,                   //!< Proceed with next command from stack

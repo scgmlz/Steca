@@ -218,6 +218,7 @@ Console::Result Console::wrappedCommand(const QString& line)
             reg->dump(qterr);
             qterr.flush();
         } else if (cmd=="@close") {
+            emit closeDialog();
             return Result::suspend;
         } else {
             qWarning() << "@ command " << cmd << " not known";
