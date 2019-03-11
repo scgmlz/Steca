@@ -89,7 +89,7 @@ int QcrFileDialog::exec()
             [this](bool ok){ if (ok) accept(); else reject();});
     if (gConsole->hasCommandsOnStack()) {
         open();
-        gConsole->commandsFromStack(); // returns upon command "@close"
+        gConsole->commandsFromStack(); // returns upon command "@accept" or "@reject"
     } else {
         QDialog::exec();
     }
@@ -100,14 +100,6 @@ void QcrFileDialog::setFromCommand(const QString& arg)
 {
     if (arg=="")
         throw QcrException{"Empty argument in FileDialog command"};
-    if (arg=="accept") {
-        accept();
-        return;
-    }
-    if (arg=="reject") {
-        reject();
-        return;
-    }
     QStringList args = arg.split(' ');
     if (args[0]!="select")
         throw QcrException{"Unexpected filedialog command"};
