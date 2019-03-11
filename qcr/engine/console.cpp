@@ -12,6 +12,7 @@
 //
 //  ***********************************************************************************************
 
+#include "qcr/base/debug.h"
 #include <regex>
 #include <QString>
 
@@ -27,10 +28,11 @@ namespace {
 
 bool parseCommandLine(const QString& line, QString& command, QString& context)
 {
-    const std::regex my_regex("^(\\[\\s*((\\d+)ms)?\\s*(\\w+)\\s\\w{3}\\])?([^#]*)(#.*)?$");
+    const std::regex my_regex{"^(\\[\\s*((\\d+)ms)?\\s*(\\w+)\\s\\w{3}\\])?([^#]*)(#.*)?$"};
     std::smatch my_match;
-    const std::string tmpLine { line.toLatin1().constData() };
-    if (!std::regex_match(tmpLine, my_match, my_regex))
+    qDebug() << "Going To Parse '" << line << "'";
+    const std::string tmp = CSTRI(line);
+    if (!std::regex_match(tmp, my_match, my_regex))
         return false;
     if (my_match.size()!=7)
         qFatal("BUG in parseCommandLine: invalid match size");
@@ -49,7 +51,6 @@ bool parseCommandLine(const QString& line, QString& command, QString& context)
 #include "qcr/engine/mixin.h"
 #include "qcr/base/qcrexception.h"
 #include "qcr/base/string_ops.h"
-#include "qcr/base/debug.h" // ASSERT
 #include <QApplication>
 #include <QFile>
 #include <QTextStream>
@@ -143,13 +144,13 @@ void Console::closeModalDialog(const QString& name)
 //! Reads and executes a command script.
 void Console::runScript(const QString& fName)
 {
-    QFile file(fName);
+    QFile file{fName};
     gLogger->log("# running script '" + fName + "'");
     if (!file.open(QIODevice::ReadOnly)) {
         qWarning() << "Cannot open file " << fName;
         return;
     }
-    QTextStream in(&file);
+    QTextStream in{&file};
     while (!in.atEnd()) {
         QString line = in.readLine();
         commandStack_.push_back(line);
@@ -188,7 +189,7 @@ bool Console::hasCommandsOnStack() const
 //! Reads one line from the command-line interface, and executes it.
 void Console::readCLI()
 {
-    QTextStream qtin(stdin);
+    QTextStream qtin{stdin};
     QString line = qtin.readLine();
     gLogger->setCaller("cli");
     wrappedCommand(line);
