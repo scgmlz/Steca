@@ -47,25 +47,20 @@ QcrModalDialog::QcrModalDialog(QWidget* parent, const QString& caption)
 
 int QcrModalDialog::exec()
 {
+    connect(gConsole, &Console::closeDialog,
+            [this](bool ok){ if (ok) accept(); else reject();});
     if (gConsole->hasCommandsOnStack()) {
         open();
-        gConsole->commandsFromStack(); // returns upon command "@close"
-        close();
-        return result();
+        gConsole->commandsFromStack(); // returns upon command "@accept" or "@reject"
     } else {
-        connect(gConsole, &Console::closeDialog, [this](){accept();});
-        return QDialog::exec();
+        QDialog::exec();
     }
+    return result();
 }
 
 void QcrModalDialog::setFromCommand(const QString& arg)
 {
-    if (arg=="")
-        throw QcrException{"Empty argument in Dialog command"};
-    if (arg=="close") {
-        accept();
-        return;
-    }
+    throw QcrException{"Unexpected argument '"+arg+"' in Dialog command"};
 }
 
 
