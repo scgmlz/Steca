@@ -239,14 +239,6 @@ void Console::runScript(const QString& fName)
     QTextStream in(&file);
     while (!in.atEnd()) {
         QString line = in.readLine();
-        if (line[0]=='[') {
-            int i = line.indexOf(']');
-            if (i==-1) {
-                qterr << "unbalanced '['\n"; qterr.flush();
-                return;
-            }
-            line = line.mid(i+1);
-        }
         commandStack_.push_back(line);
     }
     commandsFromStack();
