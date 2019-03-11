@@ -33,10 +33,8 @@ bool parseCommandLine(const QString& line, QString& command, QString& context)
     const std::string tmpLine { line.toLatin1().constData() };
     if (!std::regex_match(tmpLine, my_match, my_regex))
         return false;
-    if (my_match.size()!=7) {
-        std::cerr << "BUG: invalid match size\n";
-        exit(-1);
-    }
+    if (my_match.size()!=7)
+        qFatal("BUG in parseCommandLine: invalid match size");
     context = QString{my_match[4].str().c_str()};
     command = QString{my_match[5].str().c_str()}.trimmed();
     return true;
@@ -89,7 +87,7 @@ private:
 QString CommandRegistry::learn(const QString& name, QcrCommandable* widget)
 {
     ASSERT(name!=""); // empty name only allowed for non-settable QcrBase
-    // qterr << "Registry " << name_ << " learns '" << name << "'\n"; qterr.flush();
+    // qDebug() << "Registry " << name_ << " learns '" << name;
     QString ret = name;
     if (ret.contains("#")) {
         auto numberedEntry = numberedEntries_.find(name);
@@ -100,25 +98,19 @@ QString CommandRegistry::learn(const QString& name, QcrCommandable* widget)
             idxEntry = ++(numberedEntry->second);
         ret.replace("#", QString::number(idxEntry));
     }
-    if (widgets_.find(ret)!=widgets_.end()) {
-        QByteArray tmp = ret.toLatin1();
-        qFatal("Duplicate widget registry entry '%s'", tmp.constData());
-    }
+    if (widgets_.find(ret)!=widgets_.end())
+        qFatal("Duplicate widget registry entry '%s'", CSTRI(ret));
     widgets_[ret] = widget;
     return ret;
 }
 
 void CommandRegistry::forget(const QString& name)
 {
-    // qterr << "Registry " << name_ << "(" << widgets_.size() << ") forgets '"  << name << "'\n";
-    // qterr.flush();
+    // qDebug() << "Registry " << name_ << "(" << widgets_.size() << ") forgets '"  << name;
     auto it = widgets_.find(name);
-    if (it==widgets_.end()) {
-        QByteArray tmp1 = name.toLatin1();
-        QByteArray tmp2 = name_.toLatin1();
+    if (it==widgets_.end())
         qFatal("Cannot deregister, there is no entry '%s' in the widget registry '%s'",
-               tmp1.constData(), tmp2.constData());
-    }
+               CSTRI(name), CSTRI(name_));
     widgets_.erase(it);
 }
 
@@ -198,18 +190,13 @@ QString Console::learn(const QString& nameArg, QcrCommandable* widget)
     QString name = nameArg;
     if (name[0]=='@') {
         QStringList args = name.split(' ');
-        if (args[0]!="@push") {
-            QByteArray tmp = name.toLatin1();
-            qFatal("invalid @ command in learn(%s)", tmp.constData());
-        }
-        if (args.size()<2) {
-            QByteArray tmp = name.toLatin1();
-            qFatal("@push has no argument in learn(%s)", tmp.constData());
-        }
+        if (args[0]!="@push")
+            qFatal("BUG: invalid @ command in learn(%s)", CSTRI(name));
+        if (args.size()<2)
+            qFatal("BUG: @push has no argument in learn(%s)", CSTRI(name));
         name = args[1];
         registryStack_.push(new CommandRegistry{name});
-        // qterr << "pushed registry " << registryStack_.top()->name() << "\n";
-        // qterr.flush();
+        // qDebug() << "pushed registry " << registryStack_.top()->name();
     }
     return registry().learn(name, widget);
 }
@@ -217,7 +204,7 @@ QString Console::learn(const QString& nameArg, QcrCommandable* widget)
 //! Unregisters a QcrCommandable.
 void Console::forget(const QString& name)
 {
-    // qterr << "DEBUG: forget " << name << "\n";
+    // qDebug() << "DEBUG: forget " << name;
     registry().forget(name);
 }
 
@@ -251,14 +238,12 @@ void Console::runScript(const QString& fName)
 void Console::closeModalDialog()
 {
     log("@close # modal dialog");
-    if (registryStack_.empty()) {
-        qterr << "cannot pop: registry stack is empty\n"; qterr.flush();
-        return;
-    }
-    // qterr << "going to pop registry " << registryStack_.top()->name() << "\n"; qterr.flush();
+    if (registryStack_.empty())
+        qFatal("BUG or invalid @close command: cannot pop, registry stack is empty");
+    // qDebug() << "going to pop registry " << registryStack_.top()->name();
     delete registryStack_.top();
     registryStack_.pop();
-    // qterr << "top registry is now " << registryStack_.top()->name() << "\n"; qterr.flush();
+    // qDebug() << "top registry is now " << registryStack_.top()->name();
 }
 
 //! Executes commands on stack. Called by runScript and by QcrModalDialog/QcrFileDialog::exec.
@@ -266,7 +251,7 @@ void Console::commandsFromStack()
 {
     while (!commandStack_.empty()) {
         const QString line = commandStack_.front();
-        qterr << "DEBUG: command from stack: " << line << "\n";
+        qDebug() << "command from stack: " << line;
         commandStack_.pop_front();
         if (line=="@close")
             return;
@@ -336,14 +321,14 @@ Console::Result Console::wrappedCommand(const QString& line)
 {
     QString command, context;
     if (!parseCommandLine(line, command, context)) {
-        qterr << "command line '" << line << "' could not be parsed\n"; qterr.flush();
+        qWarning() << "command line '" << line << "' could not be parsed";
         return Result::err;
     }
     if (command=="")
         return Result::ok; // nothing to do
     QString cmd, arg;
     strOp::splitOnce(command, cmd, arg);
-    qterr << "DEBUG: wrapped command: " << command << "\n";
+    qDebug() << "wrapped command: " << command;
     if (cmd[0]=='@') {
         if (cmd=="@ls") {
             const CommandRegistry* reg = registryStack_.top();
@@ -354,21 +339,21 @@ Console::Result Console::wrappedCommand(const QString& line)
             log(command);
             return Result::suspend;
         } else {
-            qterr << "@ command " << cmd << " not known\n"; qterr.flush();
+            qWarning() << "@ command " << cmd << " not known";
             return Result::err;
         }
         return Result::ok;
     }
     QcrCommandable* w = registry().find(cmd);
     if (!w) {
-        qterr << "Command '" << cmd << "' not found\n"; qterr.flush();
+        qWarning() << "Command '" << cmd << "' not found";
         return Result::err;
     }
     try {
         w->setFromCommand(arg); // execute command
         return Result::ok;
     } catch (const QcrException&ex) {
-        qterr << "Command '" << command << "' failed:\n" << ex.msg() << "\n"; qterr.flush();
+        qWarning() << "Command '" << command << "' failed:\n" << ex.msg();
     }
     return Result::err;
 }
