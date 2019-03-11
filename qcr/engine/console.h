@@ -67,7 +67,7 @@ private:
     mutable int computingTime_ {0}; //!< Accumulated computing time in ms.
     mutable QTextStream log_;
 
-    class CommandRegistry& registry() const { return *registryStack_.top(); }
+    class CommandRegistry* registry() const { return registryStack_.top(); }
     void readCLI();
     Result commandInContext(const QString& command, const QString& caller);
     Result wrappedCommand(const QString& command);

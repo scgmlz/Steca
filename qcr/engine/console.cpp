@@ -167,7 +167,7 @@ Console::~Console()
     log("# computing time: " + QString::number(computingTime_) + "ms");
     delete log_.device();
     while (!registryStack_.empty()) {
-        delete registryStack_.top();
+        delete registry();
         registryStack_.pop();
     }
     gConsole = nullptr;
@@ -196,16 +196,16 @@ QString Console::learn(const QString& nameArg, QcrCommandable* widget)
             qFatal("BUG: @push has no argument in learn(%s)", CSTRI(name));
         name = args[1];
         registryStack_.push(new CommandRegistry{name});
-        // qDebug() << "pushed registry " << registryStack_.top()->name();
+        // qDebug() << "pushed registry " << registry()->name();
     }
-    return registry().learn(name, widget);
+    return registry()->learn(name, widget);
 }
 
 //! Unregisters a QcrCommandable.
 void Console::forget(const QString& name)
 {
     // qDebug() << "DEBUG: forget " << name;
-    registry().forget(name);
+    registry()->forget(name);
 }
 
 //! Sets calling context to GUI. To be called when initializations are done.
@@ -240,10 +240,10 @@ void Console::closeModalDialog()
     log("@close # modal dialog");
     if (registryStack_.empty())
         qFatal("BUG or invalid @close command: cannot pop, registry stack is empty");
-    // qDebug() << "going to pop registry " << registryStack_.top()->name();
+    // qDebug() << "going to pop registry " << registry->name();
     delete registryStack_.top();
     registryStack_.pop();
-    // qDebug() << "top registry is now " << registryStack_.top()->name();
+    // qDebug() << "top registry is now " << registry()->name();
 }
 
 //! Executes commands on stack. Called by runScript and by QcrModalDialog/QcrFileDialog::exec.
@@ -280,7 +280,7 @@ void Console::log(const QString& lineArg) const
         prefix += QString::number(tDiff).rightJustified(5) + "ms";
         computingTime_ += tDiff;
     }
-    prefix += " " + registry().name() + " " + caller_ + "] ";
+    prefix += " " + registry()->name() + " " + caller_ + "] ";
     log_ << prefix << line << "\n";
     log_.flush();
     if (line.indexOf("##")!=0) {
@@ -331,7 +331,7 @@ Console::Result Console::wrappedCommand(const QString& line)
     qDebug() << "wrapped command: " << command;
     if (cmd[0]=='@') {
         if (cmd=="@ls") {
-            const CommandRegistry* reg = registryStack_.top();
+            const CommandRegistry* reg = registry();
             qterr << "registry " << reg->name() << " has " << reg->size() << " commands:\n";
             reg->dump(qterr);
             qterr.flush();
@@ -344,7 +344,7 @@ Console::Result Console::wrappedCommand(const QString& line)
         }
         return Result::ok;
     }
-    QcrCommandable* w = registry().find(cmd);
+    QcrCommandable* w = registry()->find(cmd);
     if (!w) {
         qWarning() << "Command '" << cmd << "' not found";
         return Result::err;
