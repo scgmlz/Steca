@@ -21,9 +21,15 @@
 
 extern class Console* gConsole; //!< global handle that points to _the_ Console.
 
-//! Logs user actions, and executes console commands, based on a command registry.
-
-//! To be instantiated exactly once, and to be accessed through the global handle gConsole.
+//! Global singleton that logs user actions, and executes script and console commands.
+//!
+//! This class is to be instantiated exactly once though this is not enforced by an
+//! explicit singleton mechanism. After creation, the single instance can be accessed
+//! through the global handle gConsole.
+//!
+//! Command execution is based on a registry. QWidgets and QActions, enhanced by
+//! inheritance from QcrCommandable, register and unregister themselves using the
+//! commands "learn" and "forget".
 
 class Console
 {
@@ -35,10 +41,11 @@ public:
 
     QString learn(const QString& name, class QcrCommandable*);
     void forget(const QString& name);
-    void closeModalDialog();
-    void runScript(const QString& fName);
-    void commandsFromStack();
+
     void startingGui();
+    void runScript(const QString& fName);
+    void closeModalDialog();
+    void commandsFromStack();
 
     void log(const QString&) const;
     bool hasCommandsOnStack() const;
