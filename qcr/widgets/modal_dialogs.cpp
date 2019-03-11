@@ -51,8 +51,10 @@ int QcrModalDialog::exec()
         gConsole->commandsFromStack(); // returns upon command "@close"
         close();
         return QDialog::Accepted;
-    } else
+    } else {
+        connect(gConsole, &Console::closeDialog, [this](){accept();});
         return QDialog::exec();
+    }
 }
 
 void QcrModalDialog::setFromCommand(const QString& arg)
