@@ -40,9 +40,9 @@ public:
     QString learn(const QString& name, class QcrCommandable*);
     void forget(const QString& name);
 
-    void startingGui();
-    void runScript(const QString& fName);
     void closeModalDialog();
+
+    void runScript(const QString& fName);
     void commandsFromStack();
 
     bool hasCommandsOnStack() const;

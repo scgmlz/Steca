@@ -128,10 +128,19 @@ void Console::forget(const QString& name)
     registry()->forget(name);
 }
 
-//! Sets calling context to GUI. To be called when initializations are done.
-void Console::startingGui()
+//! Pops the current registry away, so that the previous one is reinstated.
+
+//! Called by ~QcrModal(), i.e. on terminating a modal dialog.
+void Console::closeModalDialog()
 {
-    gLogger->setCaller("gui");
+    gLogger->log("@close # modal dialog");
+    if (registryStack_.empty())
+        qFatal("BUG or invalid @close command: cannot pop, registry stack is empty");
+    // qDebug() << "going to pop registry " << registry->name();
+    delete registryStack_.top();
+    registryStack_.pop();
+    gLogger->setLevel(registry()->name());
+    // qDebug() << "top registry is now " << registry()->name();
 }
 
 //! Reads and executes a command script.
@@ -150,21 +159,6 @@ void Console::runScript(const QString& fName)
     }
     commandsFromStack();
     gLogger->log("# done with script '" + fName + "'");
-}
-
-//! Pops the current registry away, so that the previous one is reinstated.
-
-//! Called by ~QcrModal(), i.e. on terminating a modal dialog.
-void Console::closeModalDialog()
-{
-    gLogger->log("@close # modal dialog");
-    if (registryStack_.empty())
-        qFatal("BUG or invalid @close command: cannot pop, registry stack is empty");
-    // qDebug() << "going to pop registry " << registry->name();
-    delete registryStack_.top();
-    registryStack_.pop();
-    gLogger->setLevel(registry()->name());
-    // qDebug() << "top registry is now " << registry()->name();
 }
 
 //! Executes commands on stack. Called by runScript and by QcrModalDialog/QcrFileDialog::exec.
