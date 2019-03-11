@@ -131,10 +131,10 @@ void Console::openModalDialog(const QString& name, QcrCommandable* widget)
 void Console::closeModalDialog(const QString& name)
 {
     ASSERT(name == registry()->name());
-    gLogger->log("@close # modal dialog");
+    gLogger->log("@close "+name);
     if (registryStack_.empty())
         qFatal("BUG or invalid @close command: cannot pop, registry stack is empty");
-    // qDebug() << "going to pop registry " << registry->name();
+    // qDebug() << "going to pop registry " << name;
     delete registry();
     registryStack_.pop();
     gLogger->setLevel(registry()->name());
@@ -166,8 +166,6 @@ void Console::commandsFromStack()
         const QString line = commandStack_.front();
         qDebug() << "command from stack: " << line;
         commandStack_.pop_front();
-        if (line=="@close")
-            return;
         gLogger->setCaller("scr");
         Result ret = wrappedCommand(line);
         gLogger->setCaller("gui"); // restores default
@@ -220,7 +218,6 @@ Console::Result Console::wrappedCommand(const QString& line)
             reg->dump(qterr);
             qterr.flush();
         } else if (cmd=="@close") {
-            gLogger->log(command);
             return Result::suspend;
         } else {
             qWarning() << "@ command " << cmd << " not known";
