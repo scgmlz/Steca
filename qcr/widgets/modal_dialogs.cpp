@@ -51,7 +51,7 @@ QcrModalDialog::QcrModalDialog(QWidget* parent, const QString& caption)
 
 QcrModalDialog::~QcrModalDialog()
 {
-    gLogger->log((result() ? "@accept " : "@reject")+name());
+    gLogger->log((result() ? "@accept " : "@reject ")+name());
 }
 
 int QcrModalDialog::exec()
@@ -60,7 +60,7 @@ int QcrModalDialog::exec()
             [this](bool ok){ if (ok) accept(); else reject();});
     if (gConsole->hasCommandsOnStack()) {
         open();
-        gConsole->commandsFromStack(); // returns upon command "@accept" or "@reject"
+        gConsole->commandsFromStack(); // returns after emitting signal closeDialog
     } else {
         QDialog::exec();
     }
@@ -85,7 +85,7 @@ QcrFileDialog::QcrFileDialog(
 QcrFileDialog::~QcrFileDialog()
 {
     gLogger->log("fdia select "+selectedFiles().join(';'));
-    gLogger->log((result() ? "@accept " : "@reject")+name());
+    gLogger->log((result() ? "@accept " : "@reject ")+name());
 }
 
 int QcrFileDialog::exec()
@@ -94,7 +94,7 @@ int QcrFileDialog::exec()
             [this](bool ok){ if (ok) accept(); else reject();});
     if (gConsole->hasCommandsOnStack()) {
         open();
-        gConsole->commandsFromStack(); // returns upon command "@accept" or "@reject"
+        gConsole->commandsFromStack(); // returns after emitting signal closeDialog
     } else {
         QDialog::exec();
     }
