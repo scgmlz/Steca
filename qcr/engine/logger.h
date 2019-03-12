@@ -36,6 +36,7 @@ public:
     Logger(const Logger&) = delete;
 
     void log(const QString&) const;
+    QString caller() const { return caller_; } // TODO sometimes says "gui" instead of "scr"
     void setLevel (const QString& level ) { level_  = level ; }
     void setCaller(const QString& caller) { caller_ = caller; }
 
