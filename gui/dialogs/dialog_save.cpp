@@ -38,9 +38,6 @@ QString abbreviateList(const QStringList& in, const int maxOut, const int cutAft
 
 //  ***********************************************************************************************
 
-QDir defaultDir = QDir::homePath();
-QString gDir = defaultDir.absolutePath();
-
 //! A box with widgets to set the export directory and file name.
 
 class DialogfieldPath : public QGroupBox {
@@ -51,15 +48,18 @@ public:
     QString stem() const;
     QcrLineEdit* dirEdit;
     QcrLineEdit* fileEdit;
+    static QString exportDir;
 private:
     QcrModalDialog* parent;
 };
+
+QString DialogfieldPath::exportDir = QDir::homePath();
 
 DialogfieldPath::DialogfieldPath(QcrModalDialog* _parent)
     : QGroupBox{"ExportPath"}
     , parent{_parent}
 {
-    dirEdit = new QcrLineEdit{"dir", gDir};
+    dirEdit = new QcrLineEdit{"dir", exportDir};
     dirEdit->setReadOnly(true);
 
     fileEdit = new QcrLineEdit{"file"};
@@ -171,10 +171,10 @@ QString DialogSave::path() const
 
 QString DialogSave::name2path(QString name) const
 {
-    if (QFileInfo(name).suffix().toLower()!=saveFmt.toLower())
+    if (QFileInfo{name}.suffix().toLower()!=saveFmt.toLower())
         name += "."+saveFmt;
-    gDir = pathField->dirEdit->text();
-    return QFileInfo(pathField->dirEdit->text() + '/' + name).absoluteFilePath();
+    DialogfieldPath::exportDir = pathField->dirEdit->text();
+    return QFileInfo{DialogfieldPath::exportDir + '/' + name}.absoluteFilePath();
 }
 
 

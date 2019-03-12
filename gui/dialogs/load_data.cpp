@@ -40,8 +40,8 @@ void loadData::addFiles(QWidget* parent)
     } catch (const Exception& ex) {
         qWarning() << ex.msg();
     }
-    QFileInfo info(fileNames.at(0));
-    dataDir_ = QDir(info.absolutePath());
+    QFileInfo info{fileNames.at(0)};
+    dataDir_ = info.absolutePath();
 }
 
 void loadData::loadCorrFile(QWidget* parent)
