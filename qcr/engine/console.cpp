@@ -30,7 +30,6 @@ bool parseCommandLine(const QString& line, QString& command, QString& context)
 {
     const std::regex my_regex{"^(\\[\\s*((\\d+)ms)?\\s*(\\w+)\\s\\w{3}\\])?([^#]*)(#.*)?$"};
     std::smatch my_match;
-    qDebug() << "Going To Parse '" << line << "'";
     const std::string tmp = CSTRI(line);
     if (!std::regex_match(tmp, my_match, my_regex))
         return false;
@@ -131,10 +130,10 @@ void Console::openModalDialog(const QString& name, QcrCommandable* widget)
 void Console::closeModalDialog(const QString& name)
 {
     ASSERT(name == registry()->name());
-    gLogger->log("@close # modal dialog");
+    forget(name);
     if (registryStack_.empty())
         qFatal("BUG or invalid @close command: cannot pop, registry stack is empty");
-    // qDebug() << "going to pop registry " << registry->name();
+    // qDebug() << "going to pop registry " << name;
     delete registry();
     registryStack_.pop();
     gLogger->setLevel(registry()->name());
@@ -162,22 +161,20 @@ void Console::runScript(const QString& fName)
 //! Executes commands on stack. Called by runScript and by QcrModalDialog/QcrFileDialog::exec.
 void Console::commandsFromStack()
 {
+    gLogger->setCaller("scr");
     while (!commandStack_.empty()) {
         const QString line = commandStack_.front();
-        qDebug() << "command from stack: " << line;
+        // qDebug() << "command from stack: " << line;
         commandStack_.pop_front();
-        if (line=="@close")
-            return;
-        gLogger->setCaller("scr");
         Result ret = wrappedCommand(line);
-        gLogger->setCaller("gui"); // restores default
         if (ret==Result::err) {
             commandStack_.clear();
             gLogger->log("# Emptied command stack upon error");
-            return;
+            break;
         } else if (ret==Result::suspend)
-            return;
+            break;
     }
+    gLogger->setCaller("gui"); // restores default
 }
 
 //! Returns true if there are commands on stack. Needed by modal dialogs.
@@ -212,15 +209,19 @@ Console::Result Console::wrappedCommand(const QString& line)
         return Result::ok; // nothing to do
     QString cmd, arg;
     strOp::splitOnce(command, cmd, arg);
-    qDebug() << "wrapped command: " << command;
+    // qDebug() << "wrapped command: " << command;
     if (cmd[0]=='@') {
         if (cmd=="@ls") {
             const CommandRegistry* reg = registry();
             qterr << "registry " << reg->name() << " has " << reg->size() << " commands:\n";
             reg->dump(qterr);
             qterr.flush();
-        } else if (cmd=="@close") {
-            gLogger->log(command);
+        } else if (cmd=="@accept" || cmd=="@reject") {
+            if (registry()->name()=="main") {
+                qWarning() << "Command " << cmd << " makes no sense at main level";
+                return Result::err;
+            }
+            emit closeDialog(cmd=="@accept");
             return Result::suspend;
         } else {
             qWarning() << "@ command " << cmd << " not known";

@@ -28,9 +28,13 @@ QcrModal::QcrModal(const QString& name)
     gConsole->openModalDialog(name, this);
 }
 
+//! Called after destruction of a QDialog, this destructor pops a dialog from the command registry.
+
+//! The mixin class QcrModal mainly exists for the sake of this destructor.
+//! It calls gConsole at the very end of the destruction of a QcrDialog or QcrFileDialog.
+//! This tear down order cannot be altered unpunished.
 QcrModal::~QcrModal()
 {
-    gConsole->forget(name());
     gConsole->closeModalDialog(name());
 }
 
@@ -45,25 +49,36 @@ QcrModalDialog::QcrModalDialog(QWidget* parent, const QString& caption)
     setWindowTitle(caption);
 }
 
+QcrModalDialog::~QcrModalDialog()
+{
+    gLogger->log((result() ? "@accept " : "@reject ")+name());
+}
+
+void QcrModalDialog::onClose(bool ok)
+{
+    // qDebug() << "dialog " << (long)this << " received close signal, ok=" << ok;
+    if (ok)
+        accept();
+    else
+        reject();
+}
+
 int QcrModalDialog::exec()
 {
+    connect(gConsole, &Console::closeDialog,
+            [this](bool ok){ if (ok) accept(); else reject();});
     if (gConsole->hasCommandsOnStack()) {
         open();
-        gConsole->commandsFromStack();
-        close();
-        return QDialog::Accepted;
-    } else
-        return QDialog::exec();
+        gConsole->commandsFromStack(); // returns after emitting signal closeDialog
+    } else {
+        QDialog::exec();
+    }
+    return result();
 }
 
 void QcrModalDialog::setFromCommand(const QString& arg)
 {
-    if (arg=="")
-        throw QcrException{"Empty argument in Dialog command"};
-    if (arg=="close") {
-        accept();
-        return;
-    }
+    throw QcrException{"Unexpected argument '"+arg+"' in Dialog command"};
 }
 
 
@@ -74,38 +89,48 @@ QcrFileDialog::QcrFileDialog(
     QWidget* parent, const QString& caption, const QString& directory, const QString& filter)
     : QcrModal{"fdia"}
     , QFileDialog{parent, caption, directory, filter}
-{}
+{
+    // qDebug() << "starting dialog " << (long)this;
+}
 
 QcrFileDialog::~QcrFileDialog()
 {
     gLogger->log("fdia select "+selectedFiles().join(';'));
+    gLogger->log((result() ? "@accept " : "@reject ")+name());
+}
+
+void QcrFileDialog::onClose(bool ok)
+{
+    // qDebug() << "dialog " << (long)this << " received close signal, ok=" << ok;
+    if (ok)
+        accept();
+    else
+        reject();
 }
 
 int QcrFileDialog::exec()
 {
+    qDebug() << "exec dialog " << (long)this;
+    connect(gConsole, &Console::closeDialog, this, &QcrFileDialog::onClose);
     if (gConsole->hasCommandsOnStack()) {
         open();
-        gConsole->commandsFromStack();
-        close();
-        return QDialog::Accepted;
-    } else
-        return QDialog::exec();
+        gConsole->commandsFromStack(); // returns after emitting signal closeDialog
+    } else {
+        QDialog::exec();
+    }
+    disconnect(gConsole, &Console::closeDialog, this, &QcrFileDialog::onClose);
+    return result();
 }
 
 void QcrFileDialog::setFromCommand(const QString& arg)
 {
     if (arg=="")
         throw QcrException{"Empty argument in FileDialog command"};
-    if (arg=="close") {
-        accept();
-        return;
-    }
     QStringList args = arg.split(' ');
     if (args[0]!="select")
         throw QcrException{"Unexpected filedialog command"};
     if (args.size()<2)
         throw QcrException{"Missing argument to command 'select'"};
     QStringList list = args[1].split(';');
-    QString tmp = '"' + list.join("\" \"") + '"';
-    selectFile(tmp);
+    selectFile('"' + list.join("\" \"") + '"');
 }

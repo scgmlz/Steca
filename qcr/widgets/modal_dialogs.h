@@ -29,8 +29,11 @@ protected:
 class QcrModalDialog : protected QcrModal, public QDialog {
 public:
     QcrModalDialog(QWidget* parent, const QString& caption);
+    ~QcrModalDialog();
     int exec() override; // overrides QDialog::exec()
     void setFromCommand(const QString&) override;
+private:
+    void onClose(bool ok);
 };
 
 //! File dialog, for modal use, with console commands to select files and to close the dialog.
@@ -41,6 +44,8 @@ public:
     ~QcrFileDialog();
     int exec() override; // overrides QFileDialog::exec()
     void setFromCommand(const QString&) override;
+private:
+    void onClose(bool ok);
 };
 
 #endif // MODAL_DIALOGS_H
