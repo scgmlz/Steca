@@ -80,7 +80,9 @@ QcrFileDialog::QcrFileDialog(
     QWidget* parent, const QString& caption, const QString& directory, const QString& filter)
     : QcrModal{"fdia"}
     , QFileDialog{parent, caption, directory, filter}
-{}
+{
+    qDebug() << "starting dialog " << (long)this;
+}
 
 QcrFileDialog::~QcrFileDialog()
 {
@@ -90,8 +92,12 @@ QcrFileDialog::~QcrFileDialog()
 
 int QcrFileDialog::exec()
 {
+    qDebug() << "exec dialog " << (long)this;
     connect(gConsole, &Console::closeDialog,
-            [this](bool ok){ if (ok) accept(); else reject();});
+            [this](bool ok){
+                qDebug() << "dialog " << (long)this << " received close signal, ok=" << ok;
+                if (ok) accept();
+                else reject();});
     if (gConsole->hasCommandsOnStack()) {
         open();
         gConsole->commandsFromStack(); // returns after emitting signal closeDialog
