@@ -54,6 +54,15 @@ QcrModalDialog::~QcrModalDialog()
     gLogger->log((result() ? "@accept " : "@reject ")+name());
 }
 
+void QcrModalDialog::onClose(bool ok)
+{
+    // qDebug() << "dialog " << (long)this << " received close signal, ok=" << ok;
+    if (ok)
+        accept();
+    else
+        reject();
+}
+
 int QcrModalDialog::exec()
 {
     connect(gConsole, &Console::closeDialog,
@@ -81,7 +90,7 @@ QcrFileDialog::QcrFileDialog(
     : QcrModal{"fdia"}
     , QFileDialog{parent, caption, directory, filter}
 {
-    qDebug() << "starting dialog " << (long)this;
+    // qDebug() << "starting dialog " << (long)this;
 }
 
 QcrFileDialog::~QcrFileDialog()
@@ -90,20 +99,26 @@ QcrFileDialog::~QcrFileDialog()
     gLogger->log((result() ? "@accept " : "@reject ")+name());
 }
 
+void QcrFileDialog::onClose(bool ok)
+{
+    // qDebug() << "dialog " << (long)this << " received close signal, ok=" << ok;
+    if (ok)
+        accept();
+    else
+        reject();
+}
+
 int QcrFileDialog::exec()
 {
     qDebug() << "exec dialog " << (long)this;
-    connect(gConsole, &Console::closeDialog,
-            [this](bool ok){
-                qDebug() << "dialog " << (long)this << " received close signal, ok=" << ok;
-                if (ok) accept();
-                else reject();});
+    connect(gConsole, &Console::closeDialog, this, &QcrFileDialog::onClose);
     if (gConsole->hasCommandsOnStack()) {
         open();
         gConsole->commandsFromStack(); // returns after emitting signal closeDialog
     } else {
         QDialog::exec();
     }
+    disconnect(gConsole, &Console::closeDialog, this, &QcrFileDialog::onClose);
     return result();
 }
 
