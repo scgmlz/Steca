@@ -123,8 +123,11 @@ void searchPoints(deg alpha, deg beta, deg radius, const OnePeakAllInfos& infos,
     // qDebug() << "DEB searchPts " << alpha << beta;
     for (const PeakInfo& info : infos.peakInfos()) {
         // qDebug() << "  candidate " << info.alpha() << info.beta();
-        if (inRadius(info.alpha(), info.beta(), alpha, beta, radius))
-            itfs.push_back(itf_t(info.inten(), info.tth(), info.fwhm()));
+        if (inRadius(info.alpha(), info.beta(), alpha, beta, radius)) {
+            const PeakOutcome& po = info.outcome();
+            if (po.has("intensity"))
+                itfs.push_back(itf_t(po.at("intensity"), po.at("center"), po.at("fwhm")));
+        }
     }
 }
 
@@ -178,8 +181,12 @@ itf_t inverseDistanceWeighing(
     for (int i=0; i<N; ++i) {
         if (distances.at(i) == .0) {
             // Points coincide; no need to interpolate.
-            const PeakInfo* in = infos.at(i);
-            return { in->inten(), in->tth(), in->fwhm() };
+            const PeakInfo* info = infos.at(i);
+            const PeakOutcome& po = info->outcome();
+            if (po.has("intensity"))
+                return itf_t{po.at("intensity"), po.at("center"), po.at("fwhm")};
+            qFatal("inverseDistanceWeighing: no intensity given (#1)");
+            return { Q_QNAN, Q_QNAN, Q_QNAN };
         }
         inverseDistances[i] = 1 / distances.at(i);
         inverseDistanceSum += inverseDistances.at(i);
@@ -189,11 +196,14 @@ itf_t inverseDistanceWeighing(
     double height = 0;
     double fwhm = 0;
     for (int i=0; i<N; ++i) {
-        const PeakInfo* in = infos.at(i);
+        const PeakInfo* info = infos.at(i);
+        const PeakOutcome& po = info->outcome();
+        if (!po.has("intensity"))
+            qFatal("inverseDistanceWeighing: no intensity given (#2)");
         double d = inverseDistances.at(i);
-        offset += in->tth() * d;
-        height += in->inten() * d;
-        fwhm += in->fwhm() * d;
+        offset += po.at("center") * d;
+        height += po.at("intensity") * d;
+        fwhm   += po.at("fwhm") * d;
     }
 
     return { double(height/inverseDistanceSum),
@@ -311,9 +321,12 @@ OnePeakAllInfos algo::interpolateInfos(const OnePeakAllInfos& direct)
                     for (int i=iBegin; i<iEnd; ++i)
                         avg += itfs.at(i);
 
-                    ret.appendPeak(PeakInfo{alpha, beta, direct.peakInfos().front().rgeGma(),
-                                            avg.inten / n, Q_QNAN,
-                                            avg.tth / n, deg(Q_QNAN), avg.fwhm / n, Q_QNAN});
+                    PeakOutcome po;
+                    po["center"]          = avg.tth / n;
+                    po["intensity"]       = avg.inten / n;
+                    po["fwhm"]            = avg.fwhm / n;
+                    ret.appendPeak(PeakInfo{
+                            nullptr, alpha, beta, direct.peakInfos().front().rgeGma(), po});
                     continue;
                 }
 
@@ -326,8 +339,12 @@ OnePeakAllInfos algo::interpolateInfos(const OnePeakAllInfos& direct)
 
             // Use idw, if alpha > avgAlphaMax OR averaging failed (too small avgRadius?).
             itf_t itf = interpolateValues(idwRadius, direct, alpha, beta);
-            ret.appendPeak(PeakInfo{alpha, beta, direct.peakInfos().front().rgeGma(), itf.inten,
-                                    Q_QNAN, itf.tth, deg(Q_QNAN), itf.fwhm, Q_QNAN});
+            PeakOutcome po;
+            po["center"]          = itf.tth;
+            po["intensity"]       = itf.inten;
+            po["fwhm"]            = itf.fwhm;
+            ret.appendPeak(PeakInfo{
+                    nullptr, alpha, beta, direct.peakInfos().front().rgeGma(), po});
         }
     }
     //qDebug() << "interpolation ended";

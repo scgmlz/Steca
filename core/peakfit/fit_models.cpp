@@ -14,6 +14,7 @@
 
 #include "core/peakfit/fit_models.h"
 #include "core/typ/curve.h"
+#include "core/fitengine/double_with_error.h"
 #include "core/fitengine/fit_wrapper.h"
 #include "core/peakfit/outcome.h"
 #include <cerf.h>
@@ -142,11 +143,17 @@ void Voigt::setDY(const double* P, const int nXY, const double* X, double* Jacob
 PeakOutcome Voigt::outcome(const Fitted& F) const
 {
     double fwhm = FindFwhm::fromFitted(F).value();
-    return {
-        {F.parValAt(0), F.parErrAt(0)},
-        DoubleWithError{fwhm, fwhm / F.parValAt(1) * F.parErrAt(1)},
-        {F.parValAt(2), F.parErrAt(2)},
-        std::unique_ptr<DoubleWithError>(new DoubleWithError{F.parValAt(3), F.parErrAt(3)}) };
+
+    PeakOutcome ret;
+    ret["center"]          = F.parValAt(0);
+    ret["sigma_center"]    = F.parErrAt(0);
+    ret["intensity"]       = F.parValAt(1);
+    ret["sigma_intensity"] = F.parErrAt(1);
+    ret["fwhm"]            = fwhm;
+    ret["sigma_fwhm"]      = fwhm / F.parValAt(1) * F.parErrAt(1);
+    ret["gammaOverSigma"]       = F.parValAt(3);
+    ret["sigma_gammaOverSigma"] = F.parErrAt(3);
+    return ret;
 }
 
 //  ***********************************************************************************************

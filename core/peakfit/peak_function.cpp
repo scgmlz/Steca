@@ -21,11 +21,19 @@
 
 PeakOutcome PeakFunction::outcome(const Fitted& F) const
 {
-    return {
-        {F.parValAt(0), F.parErrAt(0)},
-        {F.parValAt(1), F.parErrAt(1)},
-        {F.parValAt(2), F.parErrAt(2)} };
+    if (!F.success())
+        return {};
+    PeakOutcome ret;
+    ret["center"]          = F.parValAt(0);
+    ret["sigma_center"]    = F.parErrAt(0);
+    ret["fwhm"]            = F.parValAt(1);
+    ret["sigma_fwhm"]      = F.parErrAt(1);
+    ret["intensity"]       = F.parValAt(2);
+    ret["sigma_intensity"] = F.parErrAt(2);
+    return ret;
 }
+
+//! Fits given `curve` with model given by `name` and with starting values `rawOutcome`.
 
 Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const RawOutcome& rawOutcome)
 {

@@ -15,17 +15,16 @@
 #ifndef OUTCOME_H
 #define OUTCOME_H
 
-#include "core/fitengine/double_with_error.h"
-#include <memory>
+#include <QString>
+#include <map>
 
 //! Numeric outcome of peak fit.
 
-class PeakOutcome {
+class PeakOutcome : public std::map<QString,double> {
 public:
-    const DoubleWithError center;
-    const DoubleWithError fwhm;
-    const DoubleWithError intensity;
-    const std::shared_ptr<DoubleWithError> gammOverSigma; // an optional value, it might NOT exist
+    PeakOutcome() {}
+    bool has(const QString& key) const { return find(key)!=end(); }
+private:
 };
 
 #endif // OUTCOME_H

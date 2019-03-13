@@ -14,6 +14,7 @@
 
 #include "gui/panels/controls_peakfits.h"
 #include "core/session.h"
+#include "core/fitengine/double_with_error.h"
 #include "core/peakfit/peak_function.h"
 #include "core/peakfit/outcome.h"
 #include "qcr/widgets/tables.h"
@@ -27,8 +28,9 @@ namespace {
 
 QString safeRealText(double val, int prec=4) {
     return qIsFinite(val) ? QString::number(val, 'g', prec) : "NaN"; }
-QString par2text(const DoubleWithError& par) {
-    return safeRealText(par.value(),4) + "+-" + safeRealText(par.roundedError(4),4); }
+QString par2text(double val, double err) {
+    return safeRealText(val,4) + "+-" + safeRealText(
+        DoubleWithError(val,err).roundedError(4),4); }
 
 } // namespace
 
@@ -165,18 +167,17 @@ void PeakfitOutcomeView::refresh()
     const Fitted& pFct = dfgram->getPeakFit(jP);
     const PeakFunction*const peakFit = dynamic_cast<const PeakFunction*>(pFct.fitFunction());
 
-    const DoubleWithError nanVal = {Q_QNAN, Q_QNAN};
     // if peakFit exists, use it, otherwise use NaNs:
-    const PeakOutcome out = peakFit ? peakFit->outcome(pFct)
-                                    : PeakOutcome{nanVal, nanVal, nanVal, nullptr};
+    const PeakOutcome out = peakFit ? peakFit->outcome(pFct) : PeakOutcome{};
 
-    showFittedX_ .setText(par2text(out.center));
-    showFittedD_ .setText(par2text(out.fwhm));
-    showFittedY_ .setText(par2text(out.intensity));
-    if (!!out.gammOverSigma)
-        showFittedSG_.setText(par2text(*out.gammOverSigma));
+    showFittedX_ .setText(par2text(out.at("center"),out.at("sigma_center")));
+    showFittedD_ .setText(par2text(out.at("fwhm"), out.at("sigma_fwhm")));
+    showFittedY_ .setText(par2text(out.at("intensity"), out.at("sigma_intensity")));
+    if (out.has("gammaOverSigma"))
+        showFittedSG_.setText(
+            par2text(out.at("gammaOverSigma"), out.at("sigma_gammaOverSigma")));
 
-    enable(true, true, !!out.gammOverSigma);
+    enable(true, true, out.has("gammaOverSigma"));
 }
 
 void PeakfitOutcomeView::enable(bool haveRaw, bool haveFit, bool haveSoG)
@@ -237,18 +238,19 @@ ControlsPeakfits::ControlsPeakfits()
 
     box->addWidget(new TableView(new PeaksModel{}));
     box->addWidget(comboPeakFct);
-    box->addWidget(new RangeControl("peak",
-                                    []()->const Range* {
-                                        const OnePeakSettings* p = gSession->peaksSettings.selectedPeak();
-                                        return p ? &p->range() : nullptr; },
-                                    [](double val, bool namelyMax){
-                                        OnePeakSettings* p = gSession->peaksSettings.selectedPeak();
-                                        ASSERT(p);
-                                        if (namelyMax)
-                                            p->setMax(val);
-                                        else
-                                            p->setMax(val);
-                                        gSession->onPeaks(); }
+    box->addWidget(new RangeControl(
+                       "peak",
+                       []()->const Range* {
+                           const OnePeakSettings* p = gSession->peaksSettings.selectedPeak();
+                           return p ? &p->range() : nullptr; },
+                       [](double val, bool namelyMax){
+                           OnePeakSettings* p = gSession->peaksSettings.selectedPeak();
+                           ASSERT(p);
+                           if (namelyMax)
+                               p->setMax(val);
+                           else
+                               p->setMax(val);
+                           gSession->onPeaks(); }
                        ));
     box->addWidget(new PeakfitOutcomeView);
     box->addStretch(1000);
