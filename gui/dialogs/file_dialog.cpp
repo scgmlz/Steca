@@ -14,8 +14,9 @@
 
 #include "file_dialog.h"
 #include "core/loaders/loaders.h"
-#include "qcr/base/debug.h" // qWarning
+#include "qcr/base/debug.h"
 #include "qcr/base/string_ops.h"
+#include "qcr/engine/console.h"
 #include "qcr/widgets/modal_dialogs.h"
 #include <QFileSystemModel>
 #include <QMessageBox>
@@ -70,7 +71,7 @@ QVariant OpenFileProxyModel::data(const QModelIndex& idx, int role) const
 
 class FileDialog : public QcrFileDialog {
 public:
-    FileDialog(QWidget*, const QString&, QDir&, const QString& filter = QString());
+    FileDialog(QWidget*, const QString&, QDir&, const QString& filter = "");
     QStringList getFiles();
     QString getFile();
 private:
@@ -78,8 +79,8 @@ private:
 };
 
 FileDialog::FileDialog(QWidget* parent, const QString& caption, QDir& dir, const QString &filter)
-    : QcrFileDialog(parent, caption, dir.absolutePath(), filter)
-    , dir_(dir)
+    : QcrFileDialog{parent, caption, dir.absolutePath(), filter}
+    , dir_{dir}
 {
     setOption(QFileDialog::DontUseNativeDialog);
     setViewMode(QFileDialog::Detail);
@@ -119,8 +120,10 @@ void setFileOverwritePolicy(eFileOverwritePolicy val)
 }
 
 //! Reacts to choice of export file that already exists, depending on current overwrite policy.
-bool confirmOverwrite(const QString& name, QWidget* parent, const QString& path)
+bool confirmOverwrite(QWidget* parent, const QString& path)
 {
+    if (gConsole->hasCommandsOnStack())
+        qFatal("File %s exists; overwriting forbidden while running script", CSTRI(path));
     switch (fileOverwritePolicy) {
     case eFileOverwritePolicy::PROMPT:
         return QMessageBox::question(parent, "File exists", "Overwrite " + path + " ?")
@@ -135,14 +138,13 @@ bool confirmOverwrite(const QString& name, QWidget* parent, const QString& path)
 }
 
 //! Opens file for writing; asks for confirmation before overwriting.
-QFile* openFileConfirmOverwrite(const QString& name, QWidget* parent, const QString& path)
+QFile* openFileConfirmOverwrite(QWidget* parent, const QString& path)
 {
     QFile* ret = new QFile{path};
-    if (ret->exists() &&
-        !confirmOverwrite(name, parent, path)) {
+    if (ret->exists() && !confirmOverwrite(parent, path)) {
         delete ret;
         return nullptr;
-    } // else:
+    }
     if (!ret->open(QIODevice::WriteOnly | QIODevice::Text)) {
         qWarning() << "Cannot open file for writing: " << path;
         delete ret;
@@ -155,7 +157,7 @@ QFile* openFileConfirmOverwrite(const QString& name, QWidget* parent, const QStr
 QStringList queryImportFileNames(
     QWidget* parent, const QString& caption, QDir& dir, const QString& filter, bool plural)
 {
-    FileDialog dlg(parent, caption, dir, filter);
+    FileDialog dlg{parent, caption, dir, filter};
     dlg.setAcceptMode(QFileDialog::AcceptOpen);
     dlg.setReadOnly(true);
     dlg.setProxyModel(new OpenFileProxyModel);
