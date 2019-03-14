@@ -20,9 +20,9 @@
 
 //! Numeric outcome of peak fit.
 
-class PeakOutcome : public std::map<QString,double> {
+class Mapped : public std::map<QString,double> {
 public:
-    PeakOutcome() {}
+    Mapped() {}
     bool has(const QString& key) const { return find(key)!=end(); }
 private:
 };

@@ -157,7 +157,7 @@ void PeakfitOutcomeView::refresh()
     ASSERT(dfgram); // the entire tab should be disabled if there is no active cluster
 
     int jP = gSession->peaksSettings.selectedIndex();
-    const PeakOutcome& outcome = dfgram->getRawOutcome(jP);
+    const Mapped& outcome = dfgram->getRawOutcome(jP);
     showRawOutcomeX_.setText(safeRealText(outcome.at("center")));
     showRawOutcomeD_.setText(safeRealText(outcome.at("fwhm")));
     showRawOutcomeY_.setText(safeRealText(outcome.at("intensity")));
@@ -168,7 +168,7 @@ void PeakfitOutcomeView::refresh()
     const PeakFunction*const peakFit = dynamic_cast<const PeakFunction*>(pFct.fitFunction());
 
     // if peakFit exists, use it, otherwise use NaNs:
-    const PeakOutcome out = peakFit ? peakFit->outcome(pFct) : PeakOutcome{};
+    const Mapped out = peakFit ? peakFit->outcome(pFct) : Mapped{};
 
     showFittedX_ .setText(par2text(out.at("center"),out.at("sigma_center")));
     showFittedD_ .setText(par2text(out.at("fwhm"), out.at("sigma_fwhm")));

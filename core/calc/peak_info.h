@@ -26,7 +26,7 @@ class OnePeakSettings;
 
 class PeakInfo final {
 public:
-    PeakInfo(const Metadata*, deg alpha, deg beta, Range range, const PeakOutcome& outcome={});
+    PeakInfo(const Metadata*, deg alpha, deg beta, Range range, const Mapped& outcome={});
     PeakInfo(deg alpha, deg beta);
     PeakInfo(const PeakInfo&) = delete;
     PeakInfo(PeakInfo&&) = default;
@@ -34,14 +34,14 @@ public:
     deg alpha() const { return alpha_; }
     deg beta() const { return beta_; }
     Range rgeGma() const { return rgeGma_; }
-    const PeakOutcome& outcome() const { return outcome_; }
+    const Mapped& outcome() const { return outcome_; }
     std::vector<QVariant> peakData() const;
 
 private:
     const Metadata*const md_;
     deg alpha_, beta_;
     Range rgeGma_;
-    const PeakOutcome outcome_;
+    const Mapped outcome_;
 };
 
 #endif // PEAK_INFO_H

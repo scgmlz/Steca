@@ -20,6 +20,6 @@
 
 class Curve;
 
-PeakOutcome analyseRawPeak(const Curve&);
+Mapped analyseRawPeak(const Curve&);
 
 #endif // RAW_OUTCOME_H

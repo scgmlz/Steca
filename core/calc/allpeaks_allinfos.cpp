@@ -41,14 +41,14 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
 
     const Dfgram& dfgram = cluster.dfgrams.yield_at(iGamma, &cluster);
 
-    PeakOutcome out;
+    Mapped out;
     if (settings.isRaw()) {
         out = dfgram.getRawOutcome(jP);
     } else {
         const Fitted& pFct = dfgram.getPeakFit(jP);
         const PeakFunction*const peakFit = dynamic_cast<const PeakFunction*>(pFct.fitFunction());
         ASSERT(peakFit);
-        const PeakOutcome& po = peakFit->outcome(pFct);
+        const Mapped& po = peakFit->outcome(pFct);
         if (po.has("center") && fitrange.contains(po.at("center")))
             out = po;
     }

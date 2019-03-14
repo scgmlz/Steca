@@ -19,11 +19,11 @@
 #include "core/peakfit/raw_outcome.h"
 // #include "qcr/base/debug.h"
 
-PeakOutcome PeakFunction::outcome(const Fitted& F) const
+Mapped PeakFunction::outcome(const Fitted& F) const
 {
     if (!F.success())
         return {};
-    PeakOutcome ret;
+    Mapped ret;
     ret["center"]          = F.parValAt(0);
     ret["sigma_center"]    = F.parErrAt(0);
     ret["fwhm"]            = F.parValAt(1);
@@ -35,7 +35,7 @@ PeakOutcome PeakFunction::outcome(const Fitted& F) const
 
 //! Fits given `curve` with model given by `name` and with starting values `rawOutcome`.
 
-Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const PeakOutcome& rawOutcome)
+Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const Mapped& rawOutcome)
 {
     const PeakFunction* f;
     bool onlyPositiveParams = false;

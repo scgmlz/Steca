@@ -140,11 +140,11 @@ void Voigt::setDY(const double* P, const int nXY, const double* X, double* Jacob
     }
 }
 
-PeakOutcome Voigt::outcome(const Fitted& F) const
+Mapped Voigt::outcome(const Fitted& F) const
 {
     double fwhm = FindFwhm::fromFitted(F).value();
 
-    PeakOutcome ret;
+    Mapped ret;
     ret["center"]          = F.parValAt(0);
     ret["sigma_center"]    = F.parErrAt(0);
     ret["intensity"]       = F.parValAt(1);

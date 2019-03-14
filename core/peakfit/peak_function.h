@@ -20,16 +20,16 @@
 #include <QString>
 
 class RawOutcome;
-class PeakOutcome;
+class Mapped;
 
 //! Abstract peak function
 
 class PeakFunction : public FitFunction {
 public:
-    virtual PeakOutcome outcome(const Fitted&) const;
+    virtual Mapped outcome(const Fitted&) const;
     virtual int nPar() const { return 3; }
 
-    static Fitted fromFit(const QString&, const Curve&, const PeakOutcome&);
+    static Fitted fromFit(const QString&, const Curve&, const Mapped&);
 };
 
 #endif // PEAK_FUNCTION_H

@@ -124,7 +124,7 @@ void searchPoints(deg alpha, deg beta, deg radius, const OnePeakAllInfos& infos,
     for (const PeakInfo& info : infos.peakInfos()) {
         // qDebug() << "  candidate " << info.alpha() << info.beta();
         if (inRadius(info.alpha(), info.beta(), alpha, beta, radius)) {
-            const PeakOutcome& po = info.outcome();
+            const Mapped& po = info.outcome();
             if (po.has("intensity"))
                 itfs.push_back(itf_t(po.at("intensity"), po.at("center"), po.at("fwhm")));
         }
@@ -182,7 +182,7 @@ itf_t inverseDistanceWeighing(
         if (distances.at(i) == .0) {
             // Points coincide; no need to interpolate.
             const PeakInfo* info = infos.at(i);
-            const PeakOutcome& po = info->outcome();
+            const Mapped& po = info->outcome();
             if (po.has("intensity"))
                 return itf_t{po.at("intensity"), po.at("center"), po.at("fwhm")};
             qFatal("inverseDistanceWeighing: no intensity given (#1)");
@@ -197,7 +197,7 @@ itf_t inverseDistanceWeighing(
     double fwhm = 0;
     for (int i=0; i<N; ++i) {
         const PeakInfo* info = infos.at(i);
-        const PeakOutcome& po = info->outcome();
+        const Mapped& po = info->outcome();
         if (!po.has("intensity"))
             qFatal("inverseDistanceWeighing: no intensity given (#2)");
         double d = inverseDistances.at(i);
@@ -321,7 +321,7 @@ OnePeakAllInfos algo::interpolateInfos(const OnePeakAllInfos& direct)
                     for (int i=iBegin; i<iEnd; ++i)
                         avg += itfs.at(i);
 
-                    PeakOutcome po;
+                    Mapped po;
                     po["center"]          = avg.tth / n;
                     po["intensity"]       = avg.inten / n;
                     po["fwhm"]            = avg.fwhm / n;
@@ -339,7 +339,7 @@ OnePeakAllInfos algo::interpolateInfos(const OnePeakAllInfos& direct)
 
             // Use idw, if alpha > avgAlphaMax OR averaging failed (too small avgRadius?).
             itf_t itf = interpolateValues(idwRadius, direct, alpha, beta);
-            PeakOutcome po;
+            Mapped po;
             po["center"]          = itf.tth;
             po["intensity"]       = itf.inten;
             po["fwhm"]            = itf.fwhm;

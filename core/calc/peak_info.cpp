@@ -21,7 +21,7 @@
 //! @class PeakInfo
 
 PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma,
-                   const PeakOutcome& outcome)
+                   const Mapped& outcome)
     : md_{md}
     , alpha_{alpha}
     , beta_{beta}

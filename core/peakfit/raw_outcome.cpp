@@ -21,7 +21,7 @@
 
 //! Given curve should be restricted to peak range, and corrected for background fit.
 
-PeakOutcome analyseRawPeak(const Curve& curve)
+Mapped analyseRawPeak(const Curve& curve)
 {
     int n = curve.size();
     if (n <= 0)
@@ -39,7 +39,7 @@ PeakOutcome analyseRawPeak(const Curve& curve)
     center /= intensity;
     stdv = sqrt( stdv/intensity - center*center );
     intensity *= curve.rgeX().width() / curve.size();
-    PeakOutcome ret;
+    Mapped ret;
     ret["center"] = center;
     ret["intensity"] = intensity;
     ret["fwhm"] = sqrt(8*log(2))*stdv;

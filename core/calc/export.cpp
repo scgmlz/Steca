@@ -34,7 +34,7 @@ void writeFullInfoSequence(
     for (auto& info : peakInfos.peakInfos()) {
         stream << info.alpha() << separator
                << info.beta()  << separator;
-        const PeakOutcome& po = info.outcome();
+        const Mapped& po = info.outcome();
         if (po.has("intensity"))
             stream << po.at("intensity");
         else
@@ -51,7 +51,7 @@ void writeCompactInfoSequence(QTextStream& stream, const OnePeakAllInfos& peakIn
 {
     int count = 0;
     for (auto& info : peakInfos.peakInfos()) {
-        const PeakOutcome& po = info.outcome();
+        const Mapped& po = info.outcome();
         if (po.has("intensity"))
             stream << po.at("intensity");
         else
