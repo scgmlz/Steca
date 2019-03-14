@@ -54,7 +54,7 @@ RawOutcome computeRawOutcome(int jP, const Dfgram* parent)
 {
     OnePeakSettings& peak = gSession->peaksSettings.at(jP);
     const Curve peakCurve = parent->getCurveMinusBg().intersect(peak.range());
-    return RawOutcome(peakCurve);
+    return analyseRawPeak(peakCurve);
 }
 
 Fitted computePeakFit(int jP, const Dfgram* parent)

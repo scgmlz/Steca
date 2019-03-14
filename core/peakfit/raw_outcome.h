@@ -27,17 +27,17 @@ class Curve;
 class RawOutcome {
 public:
     // Can only be constructed by computing it from a Curve.
-    RawOutcome() = delete;
-    RawOutcome(const Curve&);
+    RawOutcome() {}
     RawOutcome(const RawOutcome&) = delete;
     RawOutcome(RawOutcome&&) = default;
     double getCenter() const { return center_; }
     double getFwhm() const { return fwhm_; }
     double getIntensity() const { return intensity_; }
-private:
     double center_ = Q_QNAN;
     double fwhm_ = Q_QNAN;
     double intensity_ = Q_QNAN;
 };
+
+RawOutcome analyseRawPeak(const Curve&);
 
 #endif // RAW_OUTCOME_H

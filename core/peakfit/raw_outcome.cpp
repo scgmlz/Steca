@@ -21,23 +21,27 @@
 
 //! Given curve should be restricted to peak range, and corrected for background fit.
 
-RawOutcome::RawOutcome(const Curve& curve)
+RawOutcome analyseRawPeak(const Curve& curve)
 {
     int n = curve.size();
     if (n <= 0)
-        return; // all members are default initialized to Q_QNAN
-    intensity_ = 0;
-    center_ = 0;
+        return {};
+    double intensity = 0;
+    double center = 0;
     double stdv = 0; // TODO compute stdv in one pass
     for (int i=0; i<n; ++i) {
         double x = curve.x(i);
         double y = curve.y(i);
-        intensity_ += y;
-        center_ += x*y;
+        intensity += y;
+        center += x*y;
         stdv += x*x*y;
     }
-    center_ /= intensity_;
-    stdv = sqrt( stdv/intensity_ - center_*center_ );
-    fwhm_ = sqrt(8*log(2))*stdv;
-    intensity_ *= curve.rgeX().width() / curve.size();
+    center /= intensity;
+    stdv = sqrt( stdv/intensity - center*center );
+    intensity *= curve.rgeX().width() / curve.size();
+    RawOutcome ret;
+    ret.center_ = center;
+    ret.intensity_ = intensity;
+    ret.fwhm_ = sqrt(8*log(2))*stdv;
+    return ret;
 }
