@@ -149,6 +149,7 @@ DataImageTab::DataImageTab()
         4, false, 1, INT_MAX, "Index of γ slice to be shown" };
     auto* gammaRangeTotal = new QLabel{"gammaRangeTotal"};
     auto* gammaRangeSlice = new QLabel{"gammaRangeSlice"};
+    auto* gammaSliceWidth = new QLabel{"gammaSliceWidth"};
     auto* thetaRangeTotal = new QLabel{"thetaRangeTotal"};
     auto* thetaRangeBin   = new QLabel{"thetaRangeBin"};
     setRemake( [=]() {
@@ -176,6 +177,9 @@ DataImageTab::DataImageTab()
 
             gammaRangeTotal->setText(cluster ? cluster->rangeGmaFull().to_s("deg") : "");
             gammaRangeSlice->setText(gSession->gammaSelection.currentRange().to_s("deg"));
+            gammaSliceWidth->setText(cluster ? QString{"%1 deg"}
+                                             .arg(gSession->gammaSelection.currentRange().width())
+                                             : "");
 
             thetaRangeTotal->setText(cluster ? cluster->rangeTth().to_s("deg") : "");
             thetaRangeBin->setText(gSession->thetaSelection.range().to_s("deg"));
@@ -198,12 +202,14 @@ DataImageTab::DataImageTab()
     auto* boxRanges = new QGridLayout;
     boxRanges->addWidget(new QLabel{"γ total:"}, 0, 0, Qt::AlignLeft);
     boxRanges->addWidget(new QLabel{"γ slice:"}, 1, 0, Qt::AlignLeft);
-    boxRanges->addWidget(new QLabel{"ϑ total:"}, 2, 0, Qt::AlignLeft);
-    boxRanges->addWidget(new QLabel{"ϑ bin:"  }, 3, 0, Qt::AlignLeft);
+    boxRanges->addWidget(new QLabel{"γ width:"}, 2, 0, Qt::AlignLeft);
+    boxRanges->addWidget(new QLabel{"ϑ total:"}, 3, 0, Qt::AlignLeft);
+    boxRanges->addWidget(new QLabel{"ϑ bin:"  }, 4, 0, Qt::AlignLeft);
     boxRanges->addWidget(gammaRangeTotal, 0, 1, Qt::AlignLeft);
     boxRanges->addWidget(gammaRangeSlice, 1, 1, Qt::AlignLeft);
-    boxRanges->addWidget(thetaRangeTotal, 2, 1, Qt::AlignLeft);
-    boxRanges->addWidget(thetaRangeBin,   3, 1, Qt::AlignLeft);
+    boxRanges->addWidget(gammaSliceWidth, 2, 1, Qt::AlignLeft);
+    boxRanges->addWidget(thetaRangeTotal, 3, 1, Qt::AlignLeft);
+    boxRanges->addWidget(thetaRangeBin,   4, 1, Qt::AlignLeft);
     controls_->addLayout(boxRanges, Qt::AlignLeft|Qt::AlignBottom);
 }
 
