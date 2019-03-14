@@ -43,8 +43,7 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
 
     PeakOutcome out;
     if (settings.isRaw()) {
-        qFatal("raw curve currently disabled");
-        //const RawOutcome& out = dfgram.getRawOutcome(jP);
+        out = dfgram.getRawOutcome(jP);
     } else {
         const Fitted& pFct = dfgram.getPeakFit(jP);
         const PeakFunction*const peakFit = dynamic_cast<const PeakFunction*>(pFct.fitFunction());
