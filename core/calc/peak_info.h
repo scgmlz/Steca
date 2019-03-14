@@ -17,7 +17,7 @@
 
 #include "core/base/angles.h"
 #include "core/typ/range.h"
-#include "core/peakfit/outcome.h"
+#include "core/typ/mapped.h"
 
 class Metadata;
 class OnePeakSettings;

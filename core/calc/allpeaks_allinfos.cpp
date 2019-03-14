@@ -18,7 +18,7 @@
 #include "core/calc/coord_trafos.h"
 #include "core/calc/interpolate_polefig.h"
 #include "core/peakfit/peak_function.h"
-#include "core/peakfit/outcome.h"
+#include "core/typ/mapped.h"
 #include "core/session.h"
 #include "qcr/base/debug.h" // ASSERT
 

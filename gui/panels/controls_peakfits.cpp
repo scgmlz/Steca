@@ -16,7 +16,7 @@
 #include "core/session.h"
 #include "core/fitengine/double_with_error.h"
 #include "core/peakfit/peak_function.h"
-#include "core/peakfit/outcome.h"
+#include "core/typ/mapped.h"
 #include "qcr/widgets/tables.h"
 #include "qcr/widgets/controls.h"
 #include "gui/mainwin.h"

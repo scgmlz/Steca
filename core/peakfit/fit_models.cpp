@@ -16,7 +16,7 @@
 #include "core/typ/curve.h"
 #include "core/fitengine/double_with_error.h"
 #include "core/fitengine/fit_wrapper.h"
-#include "core/peakfit/outcome.h"
+#include "core/typ/mapped.h"
 #include <cerf.h>
 #include <qmath.h>
 #define SQR(x) ((x)*(x))

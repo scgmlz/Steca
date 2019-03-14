@@ -15,7 +15,7 @@
 #include "core/peakfit/peak_function.h"
 #include "core/fitengine/fit_wrapper.h"
 #include "core/peakfit/fit_models.h"
-#include "core/peakfit/outcome.h"
+#include "core/typ/mapped.h"
 #include "core/peakfit/raw_outcome.h"
 // #include "qcr/base/debug.h"
 

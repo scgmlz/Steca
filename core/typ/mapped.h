@@ -2,8 +2,8 @@
 //
 //  Steca: stress and texture calculator
 //
-//! @file      core/peakfit/outcome.h
-//! @brief     Defines class PeakOutcome (header-only)
+//! @file      core/typ/mapped.h
+//! @brief     Defines class Mapped (header-only)
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,19 +12,18 @@
 //
 //  ***********************************************************************************************
 
-#ifndef OUTCOME_H
-#define OUTCOME_H
+#ifndef MAPPED_H
+#define MAPPED_H
 
 #include <QString>
 #include <map>
 
-//! Numeric outcome of peak fit.
+//! A map with keys of type QString.
 
 class Mapped : public std::map<QString,double> {
 public:
     Mapped() {}
     bool has(const QString& key) const { return find(key)!=end(); }
-private:
 };
 
-#endif // OUTCOME_H
+#endif // MAPPED_H

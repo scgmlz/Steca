@@ -15,7 +15,7 @@
 #ifndef RAW_OUTCOME_H
 #define RAW_OUTCOME_H
 
-#include "core/peakfit/outcome.h"
+#include "core/typ/mapped.h"
 #include <QtNumeric>
 
 class Curve;
