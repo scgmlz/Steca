@@ -37,7 +37,7 @@ public:
     const Fitted& getBgFit() const { return bgFit_.yield(this); }
     const Curve& getBgAsCurve() const { return bgAsCurve_.yield(this); }
     const Curve& getCurveMinusBg() const { return curveMinusBg_.yield(this); }
-    const RawOutcome& getRawOutcome(int jP) const { return rawOutcomes_.yield_at(jP,this); }
+    const PeakOutcome& getRawOutcome(int jP) const { return rawOutcomes_.yield_at(jP,this); }
     const Fitted& getPeakFit(int jP) const { return peakFits_.yield_at(jP,this); }
     const Curve& getPeakAsCurve(int jP) const { return peaksAsCurve_.yield_at(jP,this); }
 
@@ -45,7 +45,7 @@ private:
     mutable lazy_data::Cached<Fitted,const Dfgram*> bgFit_;
     mutable lazy_data::Cached<Curve, const Dfgram*> bgAsCurve_;
     mutable lazy_data::Cached<Curve, const Dfgram*> curveMinusBg_;
-    mutable lazy_data::VectorCache<RawOutcome,const Dfgram*> rawOutcomes_;
+    mutable lazy_data::VectorCache<PeakOutcome,const Dfgram*> rawOutcomes_;
     mutable lazy_data::VectorCache<Fitted,const Dfgram*> peakFits_;
     mutable lazy_data::VectorCache<Curve,const Dfgram*> peaksAsCurve_;
 };

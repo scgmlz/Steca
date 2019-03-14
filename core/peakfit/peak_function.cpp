@@ -35,7 +35,7 @@ PeakOutcome PeakFunction::outcome(const Fitted& F) const
 
 //! Fits given `curve` with model given by `name` and with starting values `rawOutcome`.
 
-Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const RawOutcome& rawOutcome)
+Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const PeakOutcome& rawOutcome)
 {
     const PeakFunction* f;
     bool onlyPositiveParams = false;
@@ -51,8 +51,8 @@ Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const RawO
     } else
         qFatal("Impossible case");
     std::vector<double> startParams(f->nPar(), 1.);
-    startParams[0] = rawOutcome.getCenter();
-    startParams[1] = rawOutcome.getFwhm();
-    startParams[2] = rawOutcome.getIntensity();
+    startParams[0] = rawOutcome.at("center");
+    startParams[1] = rawOutcome.at("fwhm");
+    startParams[2] = rawOutcome.at("intensity");
     return FitWrapper().execFit(f, curve, startParams, onlyPositiveParams);
 }

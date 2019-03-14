@@ -157,10 +157,10 @@ void PeakfitOutcomeView::refresh()
     ASSERT(dfgram); // the entire tab should be disabled if there is no active cluster
 
     int jP = gSession->peaksSettings.selectedIndex();
-    const RawOutcome& outcome = dfgram->getRawOutcome(jP);
-    showRawOutcomeX_.setText(safeRealText(outcome.getCenter()));
-    showRawOutcomeD_.setText(safeRealText(outcome.getFwhm()));
-    showRawOutcomeY_.setText(safeRealText(outcome.getIntensity()));
+    const PeakOutcome& outcome = dfgram->getRawOutcome(jP);
+    showRawOutcomeX_.setText(safeRealText(outcome.at("center")));
+    showRawOutcomeD_.setText(safeRealText(outcome.at("fwhm")));
+    showRawOutcomeY_.setText(safeRealText(outcome.at("intensity")));
 
     if (peak->isRaw())
         return enable(true, false, false);

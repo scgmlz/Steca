@@ -29,7 +29,7 @@ public:
     virtual PeakOutcome outcome(const Fitted&) const;
     virtual int nPar() const { return 3; }
 
-    static Fitted fromFit(const QString&, const Curve&, const RawOutcome&);
+    static Fitted fromFit(const QString&, const Curve&, const PeakOutcome&);
 };
 
 #endif // PEAK_FUNCTION_H
