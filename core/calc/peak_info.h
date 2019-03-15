@@ -28,13 +28,15 @@ public:
     PeakInfo(PeakInfo&&) = default;
 
     const Mapped& map() const { return outcome_; }
-    std::vector<QVariant> peakData() const;
     double at(const QString& key) const { return outcome_.at(key); }
     bool has(const QString& key) const { return outcome_.has(key); }
 
-private:
     const Metadata*const md_;
+
+private:
     const Mapped outcome_;
 };
+
+std::vector<QVariant> peakData(const PeakInfo&);
 
 #endif // PEAK_INFO_H
