@@ -54,11 +54,11 @@ std::vector<QVariant> peakData(const PeakInfo& m)
 {
     std::vector<QVariant> ret;
     for (const QString& key: {"alpha", "beta", "gamma_min", "gamma_max"})
-        ret.push_back( QVariant(m.doubleAt(key)) );
+        ret.push_back( QVariant(m.at<double>(key)) );
     for (const QString& key: {"intensity", "center", "fwhm", "gammaOverSigma"}) {
         if (m.has(key)) {
-            ret.push_back( QVariant(m.doubleAt(key)) );
-            ret.push_back( QVariant(m.doubleAt("sigma_"+key)) );
+            ret.push_back( QVariant(m.at<double>(key)) );
+            ret.push_back( QVariant(m.at<double>("sigma_"+key)) );
         }
     }
     auto values_to_append = m.md_ ? m.md_->attributeValues() : Metadata::attributeNaNs();

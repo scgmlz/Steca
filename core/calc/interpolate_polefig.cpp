@@ -123,10 +123,10 @@ void searchPoints(deg alpha, deg beta, deg radius, const OnePeakAllInfos& infos,
     // qDebug() << "DEB searchPts " << alpha << beta;
     for (const PeakInfo& info : infos.peakInfos()) {
         // qDebug() << "  candidate " << info.alpha() << info.beta();
-        if (inRadius(info.doubleAt("alpha"), info.doubleAt("beta"), alpha, beta, radius)) {
+        if (inRadius(info.at<deg>("alpha"), info.at<deg>("beta"), alpha, beta, radius)) {
             const Mapped& m = info.map();
             if (m.has("intensity"))
-                itfs.push_back(itf_t(m.doubleAt("intensity"), m.doubleAt("center"), m.doubleAt("fwhm")));
+                itfs.push_back(itf_t(m.at<double>("intensity"), m.at<double>("center"), m.at<double>("fwhm")));
         }
     }
 }
@@ -150,12 +150,12 @@ void searchInQuadrants(
     // Find infos closest to given alpha and beta in each quadrant.
     for (const PeakInfo& info : infos.peakInfos()) {
         // TODO REVIEW We could do better with value trees than looping over all infos.
-        deg deltaBeta = calculateDeltaBeta(info.doubleAt("beta"), beta);
+        deg deltaBeta = calculateDeltaBeta(info.at<deg>("beta"), beta);
         if (fabs(deltaBeta) > BETA_LIMIT)
             continue;
-        deg deltaAlpha = info.doubleAt("alpha") - alpha;
+        deg deltaAlpha = info.at<deg>("alpha") - alpha;
         // "Distance" between grid point and current info.
-        deg d = angle(alpha, info.doubleAt("alpha"), deltaBeta);
+        deg d = angle(alpha, info.at<deg>("alpha"), deltaBeta);
         for (int i=0; i<quadrants.size(); ++i) {
             if (inQuadrant(quadrants.at(i), deltaAlpha, deltaBeta)) {
                 if (d >= distances.at(i))
@@ -184,7 +184,7 @@ itf_t inverseDistanceWeighing(
             const PeakInfo* info = infos.at(i);
             const Mapped& m = info->map();
             if (m.has("intensity"))
-                return itf_t{m.doubleAt("intensity"), m.doubleAt("center"), m.doubleAt("fwhm")};
+                return itf_t{m.at<double>("intensity"), m.at<double>("center"), m.at<double>("fwhm")};
             qFatal("inverseDistanceWeighing: no intensity given (#1)");
             return { Q_QNAN, Q_QNAN, Q_QNAN };
         }
@@ -201,9 +201,9 @@ itf_t inverseDistanceWeighing(
         if (!m.has("intensity"))
             qFatal("inverseDistanceWeighing: no intensity given (#2)");
         double d = inverseDistances.at(i);
-        offset += m.doubleAt("center") * d;
-        height += m.doubleAt("intensity") * d;
-        fwhm   += m.doubleAt("fwhm") * d;
+        offset += m.at<double>("center") * d;
+        height += m.at<double>("intensity") * d;
+        fwhm   += m.at<double>("fwhm") * d;
     }
 
     return { double(height/inverseDistanceSum),

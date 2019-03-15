@@ -29,7 +29,7 @@ std::vector<PolefigPoint> computePoints(const bool flat, const bool withHighligh
     std::vector<PolefigPoint> ret;
     if (flat) {
         for (const PeakInfo& r : allPeaks->peakInfos())
-            ret.push_back({r.doubleAt("alpha"), r.doubleAt("beta"), .2, false});
+            ret.push_back({r.at<deg>("alpha"), r.at<deg>("beta"), .2, false});
 
     } else {
         double rgeMax = 0;
@@ -37,14 +37,15 @@ std::vector<PolefigPoint> computePoints(const bool flat, const bool withHighligh
             const Mapped& m = r.map();
             if (!m.has("intensity"))
                 qFatal("computeMints: missing intensity");
-            rgeMax = std::max(rgeMax, m.doubleAt("intensity"));
+            rgeMax = std::max(rgeMax, m.at<double>("intensity"));
         }
         for (const PeakInfo& r : allPeaks->peakInfos()) {
             const Mapped& m = r.map();
             bool highlight = false;
             if (withHighlight)
                 highlight = false; // TODO find out whether this comes from highlighted cluster
-            ret.push_back({r.doubleAt("alpha"), r.doubleAt("beta"), m.doubleAt("intensity")/rgeMax, highlight});
+            ret.push_back({r.at<deg>("alpha"), r.at<deg>("beta"),
+                           m.at<double>("intensity")/rgeMax, highlight});
         }
     }
     return ret;

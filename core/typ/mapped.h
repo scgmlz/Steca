@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/typ/mapped.h
-//! @brief     Defines class Mapped
+//! @brief     Defines and implements class Mapped
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -27,9 +27,26 @@ class Mapped : private std::map<QString,QVariant> {
     using super = std::map<QString,QVariant>;
 public:
     Mapped() {}
-    void set(const QString& key, double value);
-    bool has(const QString& key) const;
-    double doubleAt(const QString& key) const;
+    template<typename T>
+    void set(const QString& key, T value);
+    bool has(const QString& key) const { return find(key)!=end(); }
+    template<typename T>
+    T at(const QString& key) const;
 };
+
+template<typename T>
+void Mapped::set(const QString& key, T value)
+{
+    ASSERT(!has(key));
+    super::operator[](key) = QVariant::fromValue<T>(value);
+}
+
+template<typename T>
+T Mapped::at(const QString& key) const
+{
+    const QVariant& entry = super::at(key);
+    ASSERT(entry.canConvert<T>());
+    return entry.value<T>();
+}
 
 #endif // MAPPED_H

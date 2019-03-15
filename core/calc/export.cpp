@@ -33,9 +33,9 @@ void writeFullInfoSequence(
 {
     for (auto& info : peakInfos.peakInfos()) {
         const Mapped& m = info.map();
-        stream << m.doubleAt("alpha") << separator << m.doubleAt("beta")  << separator;
+        stream << m.at<deg>("alpha") << separator << m.at<deg>("beta")  << separator;
         if (m.has("intensity"))
-            stream << m.doubleAt("intensity");
+            stream << m.at<double>("intensity");
         else
             stream << "nan";
         stream << "\n";
@@ -52,7 +52,7 @@ void writeCompactInfoSequence(QTextStream& stream, const OnePeakAllInfos& peakIn
     for (auto& info : peakInfos.peakInfos()) {
         const Mapped& m = info.map();
         if (m.has("intensity"))
-            stream << m.doubleAt("intensity");
+            stream << m.at<double>("intensity");
         else
             stream << "nan";
         count = (count+1)%10;
