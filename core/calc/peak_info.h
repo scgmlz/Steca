@@ -23,7 +23,8 @@ class Metadata;
 
 class PeakInfo final {
 public:
-    PeakInfo(const Metadata*, const Mapped& outcome={});
+    PeakInfo(const Metadata* md, const Mapped& outcome)
+        : md_{md}, outcome_{outcome} {}
     PeakInfo(const PeakInfo&) = delete;
     PeakInfo(PeakInfo&&) = default;
 
@@ -37,6 +38,5 @@ private:
     const Mapped outcome_;
 };
 
-std::vector<QVariant> peakData(const PeakInfo&);
 
 #endif // PEAK_INFO_H

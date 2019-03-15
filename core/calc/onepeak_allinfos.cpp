@@ -50,6 +50,21 @@ static void sortColumns(std::vector<double>& xs, std::vector<double>& ys, std::v
 
 } // namespace
 
+std::vector<QVariant> peakData(const PeakInfo& m)
+{
+    std::vector<QVariant> ret;
+    for (const QString& key: {"alpha", "beta", "gamma_min", "gamma_max"})
+        ret.push_back( QVariant(m.at(key)) );
+    for (const QString& key: {"intensity", "center", "fwhm", "gammaOverSigma"}) {
+        if (m.has(key)) {
+            ret.push_back( QVariant(m.at(key)) );
+            ret.push_back( QVariant(m.at("sigma_"+key)) );
+        }
+    }
+    auto values_to_append = m.md_ ? m.md_->attributeValues() : Metadata::attributeNaNs();
+    ret.insert(ret.end(), values_to_append.begin(), values_to_append.end());
+    return ret;
+}
 
 void OnePeakAllInfos::appendPeak(PeakInfo&& info)
 {
