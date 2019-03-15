@@ -15,12 +15,9 @@
 #ifndef PEAK_INFO_H
 #define PEAK_INFO_H
 
-#include "core/base/angles.h"
-#include "core/typ/range.h"
 #include "core/typ/mapped.h"
 
 class Metadata;
-class OnePeakSettings;
 
 //! Metadata, peak fit results, and pole figure angles.
 
