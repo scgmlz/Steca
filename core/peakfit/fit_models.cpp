@@ -145,14 +145,14 @@ Mapped Voigt::outcome(const Fitted& F) const
     double fwhm = FindFwhm::fromFitted(F).value();
 
     Mapped ret;
-    ret["center"]          = F.parValAt(0);
-    ret["sigma_center"]    = F.parErrAt(0);
-    ret["intensity"]       = F.parValAt(1);
-    ret["sigma_intensity"] = F.parErrAt(1);
-    ret["fwhm"]            = fwhm;
-    ret["sigma_fwhm"]      = fwhm / F.parValAt(1) * F.parErrAt(1);
-    ret["gammaOverSigma"]       = F.parValAt(3);
-    ret["sigma_gammaOverSigma"] = F.parErrAt(3);
+    ret.setDouble("center", F.parValAt(0));
+    ret.setDouble("sigma_center", F.parErrAt(0));
+    ret.setDouble("intensity", F.parValAt(1));
+    ret.setDouble("sigma_intensity", F.parErrAt(1));
+    ret.setDouble("fwhm", fwhm);
+    ret.setDouble("sigma_fwhm", fwhm / F.parValAt(1) * F.parErrAt(1));
+    ret.setDouble("gammaOverSigma", F.parValAt(3));
+    ret.setDouble("sigma_gammaOverSigma", F.parErrAt(3));
     return ret;
 }
 

@@ -24,12 +24,12 @@ Mapped PeakFunction::outcome(const Fitted& F) const
     if (!F.success())
         return {};
     Mapped ret;
-    ret["center"]          = F.parValAt(0);
-    ret["sigma_center"]    = F.parErrAt(0);
-    ret["fwhm"]            = F.parValAt(1);
-    ret["sigma_fwhm"]      = F.parErrAt(1);
-    ret["intensity"]       = F.parValAt(2);
-    ret["sigma_intensity"] = F.parErrAt(2);
+    ret.setDouble("center", F.parValAt(0));
+    ret.setDouble("sigma_center", F.parErrAt(0));
+    ret.setDouble("fwhm", F.parValAt(1));
+    ret.setDouble("sigma_fwhm", F.parErrAt(1));
+    ret.setDouble("intensity", F.parValAt(2));
+    ret.setDouble("sigma_intensity", F.parErrAt(2));
     return ret;
 }
 

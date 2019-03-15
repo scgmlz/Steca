@@ -322,9 +322,9 @@ OnePeakAllInfos algo::interpolateInfos(const OnePeakAllInfos& direct)
                         avg += itfs.at(i);
 
                     Mapped po;
-                    po["center"]          = avg.tth / n;
-                    po["intensity"]       = avg.inten / n;
-                    po["fwhm"]            = avg.fwhm / n;
+                    po.setDouble("center", avg.tth / n);
+                    po.setDouble("intensity", avg.inten / n);
+                    po.setDouble("fwhm", avg.fwhm / n);
                     ret.appendPeak(PeakInfo{
                             nullptr, alpha, beta, direct.peakInfos().front().rgeGma(), po});
                     continue;
@@ -340,9 +340,9 @@ OnePeakAllInfos algo::interpolateInfos(const OnePeakAllInfos& direct)
             // Use idw, if alpha > avgAlphaMax OR averaging failed (too small avgRadius?).
             itf_t itf = interpolateValues(idwRadius, direct, alpha, beta);
             Mapped po;
-            po["center"]          = itf.tth;
-            po["intensity"]       = itf.inten;
-            po["fwhm"]            = itf.fwhm;
+            po.setDouble("center", itf.tth);
+            po.setDouble("intensity", itf.inten);
+            po.setDouble("fwhm", itf.fwhm);
             ret.appendPeak(PeakInfo{
                     nullptr, alpha, beta, direct.peakInfos().front().rgeGma(), po});
         }
