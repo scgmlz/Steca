@@ -15,18 +15,24 @@
 #ifndef MAPPED_H
 #define MAPPED_H
 
-#include <QString>
+#include "qcr/base/debug.h"
+#include <QVariant>
 #include <map>
 
 //! A map with keys of type QString.
 
-class Mapped : private std::map<QString,double> {
-    using super = std::map<QString,double>;
+class Mapped : private std::map<QString,QVariant> {
+    using super = std::map<QString,QVariant>;
 public:
     Mapped() {}
-    void setDouble(const QString& key, double value) { super::at(key) = value; }
+    void setDouble(const QString& key, double value) {
+        ASSERT(!has(key));
+        super::operator[](key) = value; }
     bool has(const QString& key) const { return find(key)!=end(); }
-    double at(const QString& key) const { return super::at(key); }
+    double at(const QString& key) const {
+        const QVariant& entry = super::at(key);
+        ASSERT(entry.canConvert(QMetaType::Double));
+        return entry.value<double>(); }
 };
 
 #endif // MAPPED_H
