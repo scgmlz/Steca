@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      core/typ/mapped.h
-//! @brief     Defines class Mapped
+//! @brief     Implements class Mapped
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -12,24 +12,23 @@
 //
 //  ***********************************************************************************************
 
-#ifndef MAPPED_H
-#define MAPPED_H
-
+#include "core/typ/mapped.h"
 #include "qcr/base/debug.h"
-#include <QVariant>
-#include <map>
 
-//! A map with keys of type QString and values of type Variant.
+Mapped::setDouble(const QString& key, double value)
+{
+    ASSERT(!has(key));
+    super::operator[](key) = value;
+}
 
-//! Used to hold metadata, coordinates, and fit outcomes.
+bool Mapped::has(const QString& key) const
+{
+    return find(key)!=end();
+}
 
-class Mapped : private std::map<QString,QVariant> {
-    using super = std::map<QString,QVariant>;
-public:
-    Mapped() {}
-    void setDouble(const QString& key, double value);
-    bool has(const QString& key) const;
-    double at(const QString& key) const;
-};
-
-#endif // MAPPED_H
+double Mapped::at(const QString& key) const
+{
+    const QVariant& entry = super::at(key);
+    ASSERT(entry.canConvert(QMetaType::Double));
+    return entry.value<double>();
+}
