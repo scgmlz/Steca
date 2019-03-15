@@ -19,7 +19,6 @@
 #include "core/fitengine/fitted.h"
 #include <QString>
 
-class RawOutcome;
 class Mapped;
 
 //! Abstract peak function

@@ -20,26 +20,16 @@
 //  ***********************************************************************************************
 //! @class PeakInfo
 
-PeakInfo::PeakInfo(const Metadata* md, deg alpha, deg beta, Range rgeGma,
-                   const Mapped& outcome)
+PeakInfo::PeakInfo(const Metadata* md, const Mapped& outcome)
     : md_{md}
-    , alpha_{alpha}
-    , beta_{beta}
-    , rgeGma_{rgeGma}
     , outcome_{outcome}
-{}
-
-PeakInfo::PeakInfo(deg alpha, deg beta)
-    : PeakInfo{nullptr, alpha, beta, Range(), {}}
 {}
 
 std::vector<QVariant> PeakInfo::peakData() const
 {
-    std::vector<QVariant> ret{
-        QVariant(alpha_),
-        QVariant(beta_),
-        QVariant(rgeGma_.min),
-        QVariant(rgeGma_.max)};
+    std::vector<QVariant> ret;
+    for (const QString& key: {"alpha", "beta", "gamma_min", "gamma_max"})
+        ret.push_back( QVariant(outcome_.at(key)) );
     for (const QString& key: {"intensity", "center", "fwhm", "gammaOverSigma"}) {
         if (outcome_.has(key)) {
             ret.push_back( QVariant(outcome_.at(key)) );
