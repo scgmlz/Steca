@@ -21,21 +21,13 @@ class Metadata;
 
 //! Metadata, peak fit results, and pole figure angles.
 
-class PeakInfo final {
+class PeakInfo final : public Mapped {
 public:
     PeakInfo(const Metadata* md, const Mapped& outcome)
-        : md_{md}, outcome_{outcome} {}
-    PeakInfo(const PeakInfo&) = delete;
-    PeakInfo(PeakInfo&&) = default;
+        : Mapped{outcome}, md_{md} {}
 
-    const Mapped& map() const { return outcome_; }
-    double at(const QString& key) const { return outcome_.at(key); }
-    bool has(const QString& key) const { return outcome_.has(key); }
-
+    const Mapped& map() const { return *dynamic_cast<const Mapped*>(this); }
     const Metadata*const md_;
-
-private:
-    const Mapped outcome_;
 };
 
 
