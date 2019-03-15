@@ -40,8 +40,8 @@ Mapped analyseRawPeak(const Curve& curve)
     stdv = sqrt( stdv/intensity - center*center );
     intensity *= curve.rgeX().width() / curve.size();
     Mapped ret;
-    ret.setDouble("center", center);
-    ret.setDouble("intensity", intensity);
-    ret.setDouble("fwhm", sqrt(8*log(2))*stdv);
+    ret.set("center", center);
+    ret.set("intensity", intensity);
+    ret.set("fwhm", sqrt(8*log(2))*stdv);
     return ret;
 }

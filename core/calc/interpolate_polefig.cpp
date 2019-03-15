@@ -123,10 +123,10 @@ void searchPoints(deg alpha, deg beta, deg radius, const OnePeakAllInfos& infos,
     // qDebug() << "DEB searchPts " << alpha << beta;
     for (const PeakInfo& info : infos.peakInfos()) {
         // qDebug() << "  candidate " << info.alpha() << info.beta();
-        if (inRadius(info.at("alpha"), info.at("beta"), alpha, beta, radius)) {
+        if (inRadius(info.doubleAt("alpha"), info.doubleAt("beta"), alpha, beta, radius)) {
             const Mapped& m = info.map();
             if (m.has("intensity"))
-                itfs.push_back(itf_t(m.at("intensity"), m.at("center"), m.at("fwhm")));
+                itfs.push_back(itf_t(m.doubleAt("intensity"), m.doubleAt("center"), m.doubleAt("fwhm")));
         }
     }
 }
@@ -150,12 +150,12 @@ void searchInQuadrants(
     // Find infos closest to given alpha and beta in each quadrant.
     for (const PeakInfo& info : infos.peakInfos()) {
         // TODO REVIEW We could do better with value trees than looping over all infos.
-        deg deltaBeta = calculateDeltaBeta(info.at("beta"), beta);
+        deg deltaBeta = calculateDeltaBeta(info.doubleAt("beta"), beta);
         if (fabs(deltaBeta) > BETA_LIMIT)
             continue;
-        deg deltaAlpha = info.at("alpha") - alpha;
+        deg deltaAlpha = info.doubleAt("alpha") - alpha;
         // "Distance" between grid point and current info.
-        deg d = angle(alpha, info.at("alpha"), deltaBeta);
+        deg d = angle(alpha, info.doubleAt("alpha"), deltaBeta);
         for (int i=0; i<quadrants.size(); ++i) {
             if (inQuadrant(quadrants.at(i), deltaAlpha, deltaBeta)) {
                 if (d >= distances.at(i))
@@ -184,7 +184,7 @@ itf_t inverseDistanceWeighing(
             const PeakInfo* info = infos.at(i);
             const Mapped& m = info->map();
             if (m.has("intensity"))
-                return itf_t{m.at("intensity"), m.at("center"), m.at("fwhm")};
+                return itf_t{m.doubleAt("intensity"), m.doubleAt("center"), m.doubleAt("fwhm")};
             qFatal("inverseDistanceWeighing: no intensity given (#1)");
             return { Q_QNAN, Q_QNAN, Q_QNAN };
         }
@@ -201,9 +201,9 @@ itf_t inverseDistanceWeighing(
         if (!m.has("intensity"))
             qFatal("inverseDistanceWeighing: no intensity given (#2)");
         double d = inverseDistances.at(i);
-        offset += m.at("center") * d;
-        height += m.at("intensity") * d;
-        fwhm   += m.at("fwhm") * d;
+        offset += m.doubleAt("center") * d;
+        height += m.doubleAt("intensity") * d;
+        fwhm   += m.doubleAt("fwhm") * d;
     }
 
     return { double(height/inverseDistanceSum),
@@ -297,8 +297,8 @@ OnePeakAllInfos algo::interpolateInfos(const OnePeakAllInfos& direct)
 
             if (direct.peakInfos().empty()) {
                 Mapped m;
-                m.setDouble("alpha", alpha);
-                m.setDouble("beta", beta);
+                m.set("alpha", alpha);
+                m.set("beta", beta);
                 ret.appendPeak(PeakInfo{nullptr, m});
                 continue;
             }
@@ -326,11 +326,11 @@ OnePeakAllInfos algo::interpolateInfos(const OnePeakAllInfos& direct)
 
                     Mapped m = direct.peakInfos().front().map();
                     ASSERT(m.has("gamma_min"));
-                    m.setDouble("alpha", alpha);
-                    m.setDouble("beta", beta);
-                    m.setDouble("center", avg.tth / n);
-                    m.setDouble("intensity", avg.inten / n);
-                    m.setDouble("fwhm", avg.fwhm / n);
+                    m.set("alpha", alpha);
+                    m.set("beta", beta);
+                    m.set("center", avg.tth / n);
+                    m.set("intensity", avg.inten / n);
+                    m.set("fwhm", avg.fwhm / n);
                     ret.appendPeak(PeakInfo{nullptr, m});
                     continue;
                 }
@@ -338,8 +338,8 @@ OnePeakAllInfos algo::interpolateInfos(const OnePeakAllInfos& direct)
                 if (qIsNaN(idwRadius)) {
                     // Don't fall back to idw, just add an unmeasured info.
                     Mapped m;
-                    m.setDouble("alpha", alpha);
-                    m.setDouble("beta", beta);
+                    m.set("alpha", alpha);
+                    m.set("beta", beta);
                     ret.appendPeak(PeakInfo{nullptr, m});
                     continue;
                 }
@@ -349,11 +349,11 @@ OnePeakAllInfos algo::interpolateInfos(const OnePeakAllInfos& direct)
             itf_t itf = interpolateValues(idwRadius, direct, alpha, beta);
             Mapped m = direct.peakInfos().front().map();
             ASSERT(m.has("gamma_min"));
-            m.setDouble("alpha", alpha);
-            m.setDouble("beta", beta);
-            m.setDouble("center", itf.tth);
-            m.setDouble("intensity", itf.inten);
-            m.setDouble("fwhm", itf.fwhm);
+            m.set("alpha", alpha);
+            m.set("beta", beta);
+            m.set("center", itf.tth);
+            m.set("intensity", itf.inten);
+            m.set("fwhm", itf.fwhm);
             ret.appendPeak(PeakInfo{nullptr, m});
         }
     }

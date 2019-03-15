@@ -15,7 +15,7 @@
 #include "core/typ/mapped.h"
 #include "qcr/base/debug.h"
 
-Mapped::setDouble(const QString& key, double value)
+void Mapped::set(const QString& key, double value)
 {
     ASSERT(!has(key));
     super::operator[](key) = value;
@@ -26,7 +26,7 @@ bool Mapped::has(const QString& key) const
     return find(key)!=end();
 }
 
-double Mapped::at(const QString& key) const
+double Mapped::doubleAt(const QString& key) const
 {
     const QVariant& entry = super::at(key);
     ASSERT(entry.canConvert(QMetaType::Double));

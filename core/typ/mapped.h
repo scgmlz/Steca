@@ -27,9 +27,9 @@ class Mapped : private std::map<QString,QVariant> {
     using super = std::map<QString,QVariant>;
 public:
     Mapped() {}
-    void setDouble(const QString& key, double value);
+    void set(const QString& key, double value);
     bool has(const QString& key) const;
-    double at(const QString& key) const;
+    double doubleAt(const QString& key) const;
 };
 
 #endif // MAPPED_H

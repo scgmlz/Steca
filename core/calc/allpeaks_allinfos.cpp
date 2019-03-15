@@ -49,13 +49,13 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
         const PeakFunction*const peakFit = dynamic_cast<const PeakFunction*>(pFct.fitFunction());
         ASSERT(peakFit);
         const Mapped& po = peakFit->outcome(pFct);
-        if (po.has("center") && fitrange.contains(po.at("center")))
+        if (po.has("center") && fitrange.contains(po.doubleAt("center")))
             out = po;
     }
-    out.setDouble("alpha", alpha);
-    out.setDouble("beta", beta);
-    out.setDouble("gamma_min", gRange.min);
-    out.setDouble("gamma_max", gRange.max);
+    out.set("alpha", alpha);
+    out.set("beta", beta);
+    out.set("gamma_min", gRange.min);
+    out.set("gamma_max", gRange.max);
     return PeakInfo{metadata, out};
 }
 
