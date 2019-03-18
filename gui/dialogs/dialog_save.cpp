@@ -48,16 +48,18 @@ public:
     QString stem() const;
     QcrLineEdit* dirEdit;
     QcrLineEdit* fileEdit;
+    static QString exportDir;
 private:
     QcrModalDialog* parent;
 };
+
+QString DialogfieldPath::exportDir = QDir::homePath();
 
 DialogfieldPath::DialogfieldPath(QcrModalDialog* _parent)
     : QGroupBox{"ExportPath"}
     , parent{_parent}
 {
-    static QDir defaultDir = QDir::homePath();
-    dirEdit = new QcrLineEdit{"dir", defaultDir.absolutePath()};
+    dirEdit = new QcrLineEdit{"dir", exportDir};
     dirEdit->setReadOnly(true);
 
     fileEdit = new QcrLineEdit{"file"};
@@ -157,7 +159,7 @@ void DialogSave::saveCurrent()
 {
     const QString name = path();
     ASSERT(!name.isEmpty()); // "save" button should be disabled if name is empty
-    QFile* file = file_dialog::openFileConfirmOverwrite("file", parentWidget(), name);
+    QFile* file = file_dialog::openFileConfirmOverwrite(parentWidget(), name);
     QTextStream stream{file};
     writeCurrent(stream);
 }
@@ -169,9 +171,10 @@ QString DialogSave::path() const
 
 QString DialogSave::name2path(QString name) const
 {
-    if (QFileInfo(name).suffix().toLower()!=saveFmt.toLower())
+    if (QFileInfo{name}.suffix().toLower()!=saveFmt.toLower())
         name += "."+saveFmt;
-    return QFileInfo(pathField->dirEdit->text() + '/' + name).absoluteFilePath();
+    DialogfieldPath::exportDir = pathField->dirEdit->text();
+    return QFileInfo{DialogfieldPath::exportDir + '/' + name}.absoluteFilePath();
 }
 
 
@@ -214,7 +217,7 @@ void DialogMultisave::saveJointfile()
 {
     const QString name = path();
     ASSERT(!name.isEmpty()); // "save" button should be disabled if name is empty
-    QFile* file = file_dialog::openFileConfirmOverwrite("file", parentWidget(), name);
+    QFile* file = file_dialog::openFileConfirmOverwrite(parentWidget(), name);
     QTextStream stream{file};
     writeJointfile(stream);
 }
@@ -230,8 +233,7 @@ void DialogMultisave::saveMultifile()
                 existingPaths << QFileInfo(fname).fileName();
     }
     if (existingPaths.size()) {
-        if (!file_dialog::confirmOverwrite(
-                existingPaths.size()>1 ? "Files exist" : "File exists",
+        if (!file_dialog::confirmOverwrite( // TODO correct question text for multiple files
                 static_cast<QWidget*>(QWidget::parent()), abbreviateList(existingPaths,7,5)))
             return;
     }

@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "qcr/engine/logger.h"
+#include "qcr/engine/console.h"
 #include <QApplication>
 #include <QMessageBox>
 #include <QtGlobal> // no auto rm
@@ -39,7 +40,11 @@ void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString
     default:
         if (msg.left(4)=="QXcb")
             return;
-        std::cerr << "WARN " << msg.toStdString() << "\n" << std::flush;
+        std::cerr << "WARNING: " << msg.toStdString() << "\n" << std::flush;
+        if (gConsole->hasCommandsOnStack()) {
+            std::cerr << "FATAL: in script mode, warning causes termination\n";
+            exit(1);
+        }
         if (!qApp)
             return;
         qApp->restoreOverrideCursor();
@@ -47,9 +52,9 @@ void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString
         gLogger->log("##WARN: " + msg);
         break;
     case QtFatalMsg:
-        std::cerr << "BUG! " << msg.toStdString() << context(ctx) << "\n" << std::flush;
-        if (!qApp)
-            return;
+        std::cerr << "FATAL: " << msg.toStdString() << context(ctx) << "\n" << std::flush;
+        if (gConsole->hasCommandsOnStack() || !qApp)
+            exit(1);
         qApp->restoreOverrideCursor();
         QMessageBox::critical(QApplication::activeWindow(), qAppName(),
                               "Sorry, you encountered a fatal bug.\n"
@@ -62,6 +67,6 @@ void messageHandler(QtMsgType type, const QMessageLogContext& ctx, const QString
             );
         gLogger->log("##FATAL: " + msg);
         qApp->quit();
-        break;
+        exit(1);
     }
 }

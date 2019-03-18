@@ -55,7 +55,7 @@ void ioSession::save(QWidget* parent)
     if (!fileName.endsWith(".ste"))
         fileName += ".ste";
     QFileInfo fileInfo(fileName);
-    QFile* file = file_dialog::openFileConfirmOverwrite("file", parent, fileInfo.filePath());
+    QFile* file = file_dialog::openFileConfirmOverwrite(parent, fileInfo.filePath());
     if (!file)
         return;
     const int result = file->write(gSession->serializeSession());

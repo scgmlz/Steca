@@ -73,12 +73,14 @@ int main(int argc, char* argv[]) {
     std::string startupScriptSource;
     bool panic = false;
     bool silent_overwrite = false;
-    auto parser = clara::detail::Opt(help)["-h"]["--help"]("Show the help message.")|
-                  clara::detail::Opt(vers)["-v"]["--version"]("Print version.")|
-                  clara::detail::Opt(theLogFileName, "file")["-l"]("Write log to <file>.")|
-                  clara::detail::Opt(panic)["-p"]("Sets the file overwrite policy to 'panic'.")|
-                  clara::detail::Opt(silent_overwrite)["-s"]("Sets the file overwrite policy to 'silent overwrite'.")|
-                  clara::detail::Arg(startupScriptSource, "file")("The path of the startup skript.");
+    auto parser =
+        clara::detail::Opt(help)["-h"]["--help"]("Show the help message.")|
+        clara::detail::Opt(vers)["-v"]["--version"]("Print version.")|
+        clara::detail::Opt(theLogFileName, "file")["-l"]("Write log to <file>.")|
+        clara::detail::Opt(panic)["-p"]("Sets the file overwrite policy to 'panic'.")|
+        clara::detail::Opt(silent_overwrite)["-s"](
+            "Sets the file overwrite policy to 'silent overwrite'.")|
+        clara::detail::Arg(startupScriptSource, "file")("The path of the startup skript.");
     try {
         auto result = parser.parse(clara::detail::Args(argc, argv));
         if (!result) {

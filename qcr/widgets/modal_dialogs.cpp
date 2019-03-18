@@ -101,7 +101,6 @@ QcrFileDialog::~QcrFileDialog()
 
 void QcrFileDialog::onClose(bool ok)
 {
-    // qDebug() << "dialog " << (long)this << " received close signal, ok=" << ok;
     if (ok)
         accept();
     else
@@ -110,7 +109,6 @@ void QcrFileDialog::onClose(bool ok)
 
 int QcrFileDialog::exec()
 {
-    qDebug() << "exec dialog " << (long)this;
     connect(gConsole, &Console::closeDialog, this, &QcrFileDialog::onClose);
     if (gConsole->hasCommandsOnStack()) {
         open();

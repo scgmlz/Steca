@@ -12,6 +12,7 @@
 //
 //  ***********************************************************************************************
 
+#include "qcr/base/string_ops.h"
 #include "core/base/exception.h"
 #include "core/raw/rawfile.h"
 #include <QDataStream>
@@ -30,13 +31,16 @@ static void loadTiff(
 
     // see http://www.fileformat.info/format/tiff/egff.htm
 
-    QFile f(filePath);
-    if (!(f.open(QFile::ReadOnly))) THROW("cannot open file");
+    QFile f{filePath};
+    if (!(f.open(QFile::ReadOnly)))
+        THROW("Cannot open file");
 
     QDataStream is(&f);
     is.setFloatingPointPrecision(QDataStream::SinglePrecision);
 
-    auto check = [&is]() { if (!(QDataStream::Ok == is.status())) THROW("could not read data"); };
+    auto check = [&is]() {
+                     if (!(QDataStream::Ok == is.status()))
+                         THROW("Could not read data from file"); };
 
     // magic
     qint16 magic;
@@ -47,12 +51,12 @@ static void loadTiff(
     else if (0x4d4d == magic) // MM - motorola
         is.setByteOrder(QDataStream::BigEndian);
     else
-        THROW("bad magic");
+        THROW("Bad magic bytes - not a TIFF file?");
 
     qint16 version;
     is >> version;
     if (42 != version)
-        THROW("bad version");
+        THROW("Bad version code");
 
     qint32 imageWidth = 0, imageHeight = 0, bitsPerSample = 0, sampleFormat = 0,
             rowsPerStrip = 0xffffffff, stripOffsets = 0, stripByteCounts = 0;
@@ -60,10 +64,11 @@ static void loadTiff(
     qint16 tagId, dataType;
     qint32 dataCount, dataOffset;
 
-    auto seek = [&f](qint64 offset) { if (!(f.seek(offset))) THROW("bad offset"); };
+    auto seek = [&f](qint64 offset) { if (!(f.seek(offset))) THROW("Bad offset"); };
 
     auto asUint = [&]() -> int {
-        if (!(1 == dataCount)) THROW("bad data count");
+        if (dataCount!=1)
+            THROW("Bad data count");
         switch (dataType) {
         case 1: // byte
             return dataOffset & 0x000000ff; // some tif files did have trash there
@@ -71,12 +76,12 @@ static void loadTiff(
             return dataOffset & 0x0000ffff;
         case 4: return dataOffset;
         }
-
-        THROW("not a simple number");
+        THROW("Invalid entry - not a simple number");
     };
 
     auto asStr = [&]()->QString {
-        if (!(2 == dataType)) THROW("bad data type");
+        if (dataType!=2)
+            THROW("Invalid entry - not a string");
         auto lastPos = f.pos();
 
         seek(dataOffset);
@@ -104,17 +109,18 @@ static void loadTiff(
         case 257: imageHeight = asUint(); break;
         case 258: bitsPerSample = asUint(); break;
         case 259: // Compression
-            if (!(1 == asUint())) THROW("compressed data");
+            if (asUint()!=1)
+                THROW("Unsupported flag value (compression=on)");
             break;
         case 273: stripOffsets = asUint(); break;
         case 277: // SamplesPerPixel
-            if (!(1 == asUint())) THROW("more than one sample per pixel");
-            break;
+            if (asUint()!=1)
+                THROW("Unsupported flag value (samplePerPixel!=1");
         case 278: rowsPerStrip = asUint(); break;
         case 279: stripByteCounts = asUint(); break;
         case 284: // PlanarConfiguration
-            if (!(1 == asUint())) THROW("not planar");
-            break;
+            if (asUint()!=1)
+                THROW("Unsupported flag value (planar=off)");
         case 339:
             sampleFormat = asUint(); // 1 unsigned, 2 signed, 3 IEEE
             break;
@@ -143,7 +149,7 @@ static void loadTiff(
     if (imageHeight < rowsPerStrip)
         THROW("cannot read TIFF: imageHeight >= rowsPerStrip");
 
-    if (!(1 == sampleFormat || 2 == sampleFormat || 3 == sampleFormat))
+    if (sampleFormat<1 || sampleFormat>3)
         THROW("cannot read TIFF: unexpected sampleFormat");
     if (bitsPerSample!=32)
         THROW("cannot read TIFF: bitsPerSample!=32");
@@ -216,14 +222,19 @@ namespace load {
 Rawfile loadTiffDat(const QString& filePath) {
     Rawfile ret(filePath);
 
-    QFile f(filePath);
+    if (filePath=="")
+        qFatal("BUG: call of loadTiffDat with empty argument");
+
+    QFile f{filePath};
     if (!(f.open(QFile::ReadOnly)))
-        THROW("cannot open file");
+        THROW("Cannot open file "+filePath);
 
     QDir dir = QFileInfo(filePath).dir();
 
     QByteArray line;
+    int iline = 0;
     while (!(line = f.readLine()).isEmpty()) {
+        ++iline;
         QString s = line;
 
         // cut off comment
@@ -237,31 +248,36 @@ Rawfile loadTiffDat(const QString& filePath) {
 
         const QStringList lst = s.split(' ');
         const int cnt = lst.count();
-        if (!(2 <= cnt && cnt <= 4)) THROW("bad metadata format");
+        if (cnt<2 || cnt>4)
+            THROW("File "+filePath+": bad metadata format");
 
         // file, phi, monitor, expTime
         bool ok;
         QString tiffFileName = lst.at(0);
         deg phi = lst.at(1).toDouble(&ok);
-        if (!(ok)) THROW("bad phi value");
+        if (!(ok))
+            THROW("File "+filePath+": bad phi value");
 
         double monitor = 0;
         if (cnt > 2) {
             monitor = lst.at(2).toDouble(&ok);
-            if (!(ok)) THROW("bad monitor value");
+            if (!(ok))
+                THROW("File "+filePath+": bad monitor value");
         }
 
         double expTime = 0;
         if (cnt > 3) {
             expTime = lst.at(3).toDouble(&ok);
-            if (!(ok)) THROW("bad expTime value");
+            if (!(ok))
+                THROW("File "+filePath+": bad expTime value");
         }
 
         try {
             // load one dataseq
             loadTiff(&ret, dir.filePath(tiffFileName), phi, monitor, expTime);
         } catch (const Exception& ex) {
-            THROW(tiffFileName + ": " + ex.msg());
+            THROW("File "+filePath+": cannot load image number "+strOp::to_s(iline)
+                  +" ("+tiffFileName + "): " + ex.msg());
         }
     }
 

@@ -40,11 +40,11 @@ QColor scatter {255, 0, 0};
 
 //! Equips PlotOverlay with domain-specific colors and setter functions.
 
-class PlotDfgramOverlay : public QcrRegistered,public PlotOverlay  {
+class PlotDfgramOverlay : public QcrRegistered, public PlotOverlay  {
 public:
     PlotDfgramOverlay(class PlotDfgram& parent)
-        : QcrRegistered {"dfgram"}
-        , PlotOverlay {parent, RangeControl::STEP} {}
+        : QcrRegistered{"dfgram"}
+        , PlotOverlay{parent, RangeControl::STEP} {}
 private:
     void setFromCommand(const QString&) final;
     void addRange(const Range&) final;
@@ -55,7 +55,7 @@ private:
 
 void PlotDfgramOverlay::addRange(const Range& range)
 {
-    gLogger->log(QString("dfgram add %1 %2").arg(range.min).arg(range.max));
+    gLogger->log(QString{"dfgram add %1 %2"}.arg(range.min).arg(range.max));
 
     // is it a valid range?
     const auto datapointCount = gSession->currentOrAvgeDfgram()->curve.intersect(range).size();
@@ -70,11 +70,11 @@ void PlotDfgramOverlay::addRange(const Range& range)
     case EditableRange::PEAKS: {
         // make sure enough datapoints are selected for fitting the peak:
         // raw Peaks can live with any number of datapoints.
-        const OnePeakSettings peak {range, OnePeakSettings::functionNames.at(
+        const OnePeakSettings peak{range, OnePeakSettings::functionNames.at(
                 gSession->params.defaultPeakFunction.val())};
         const Curve rawCurve = gSession->currentOrAvgeDfgram()->getCurveMinusBg().intersect(range);
-        const Fitted fitted = PeakFunction::fromFit(peak.functionName(), rawCurve,
-                                                    RawOutcome(rawCurve));
+        const Fitted fitted = PeakFunction::fromFit(
+            peak.functionName(), rawCurve, RawOutcome{rawCurve});
         if (peak.isRaw() || (fitted.success() && fitted.nPar() <= datapointCount)) {
             gSession->peaksSettings.add(range);
             gSession->onPeaks();
@@ -90,7 +90,7 @@ void PlotDfgramOverlay::addRange(const Range& range)
 
 void PlotDfgramOverlay::selectRange(double x)
 {
-    gLogger->log(QString("dfgram sel %1").arg(x));
+    gLogger->log(QString{"dfgram sel %1"}.arg(x));
     bool selectionChanged = false;
     // prioritize baseline sel. when editing baselines
     if (gSession->params.editableRange == EditableRange::BASELINE)
@@ -154,21 +154,21 @@ PlotDfgram::PlotDfgram()
 
     // graphs in the "main" layer; in the display order
     bgGraph_ = addGraph();
-    bgGraph_->setPen(QPen(colors::pen, 2));
+    bgGraph_->setPen(QPen{colors::pen, 2});
 
     dgramGraph_ = addGraph();
     dgramGraph_->setLineStyle(QCPGraph::LineStyle::lsNone);
     dgramGraph_->setScatterStyle(
-        QCPScatterStyle(QCPScatterStyle::ScatterShape::ssDisc, Qt::gray, 2));
+        QCPScatterStyle{QCPScatterStyle::ScatterShape::ssDisc, Qt::gray, 2});
 
     dgramBgFittedGraph2_ = addGraph();
     dgramBgFittedGraph2_->setVisible(false);
     dgramBgFittedGraph2_->setLineStyle(QCPGraph::LineStyle::lsNone);
     dgramBgFittedGraph2_->setScatterStyle(
-        QCPScatterStyle(QCPScatterStyle::ScatterShape::ssDisc, colors::scatter, 4));
+        QCPScatterStyle{QCPScatterStyle::ScatterShape::ssDisc, colors::scatter, 4});
 
     dgramBgFittedGraph_ = addGraph();
-    dgramBgFittedGraph_->setPen(QPen(Qt::black, 2));
+    dgramBgFittedGraph_->setPen(QPen{Qt::black, 2});
 
     // background layers
     addLayer("bg", layer("baseline"), QCustomPlot::limAbove);
@@ -177,14 +177,14 @@ PlotDfgram::PlotDfgram()
     setCurrentLayer("marks");
 
     guesses_ = addGraph();
-    guesses_->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 8));
+    guesses_->setScatterStyle(QCPScatterStyle{QCPScatterStyle::ssCircle, 8});
     guesses_->setLineStyle(QCPGraph::lsNone);
-    guesses_->setPen(QPen(Qt::darkGray));
+    guesses_->setPen(QPen{Qt::darkGray});
 
     fits_ = addGraph();
-    fits_->setScatterStyle(QCPScatterStyle(QCPScatterStyle::ssCircle, 8));
+    fits_->setScatterStyle(QCPScatterStyle{QCPScatterStyle::ssCircle, 8});
     fits_->setLineStyle(QCPGraph::lsNone);
-    fits_->setPen(QPen(Qt::red));
+    fits_->setPen(QPen{Qt::red});
 }
 
 PlotDfgram::~PlotDfgram()
@@ -210,8 +210,8 @@ void PlotDfgram::addBgItem(const Range& range, const QColor& color)
 {
     setCurrentLayer("bg");
     QCPItemRect* ir = new QCPItemRect{this};
-    ir->setPen(QPen(color));
-    ir->setBrush(QBrush(color));
+    ir->setPen(QPen{color});
+    ir->setBrush(QBrush{color});
     QCPItemPosition* br = ir->bottomRight;
     br->setTypeY(QCPItemPosition::ptViewportRatio);
     br->setCoords(range.max, 1);
@@ -298,7 +298,7 @@ void PlotDfgram::renderAll()
         const Curve& r = fitCurves.at(jP);
         QCPGraph* graph = addGraph();
         reflGraph_.push_back(graph);
-        graph->setPen(QPen(colors::peakFit, 2));
+        graph->setPen(QPen{colors::peakFit, 2});
         graph->setData(QVector<double>::fromStdVector(r.xs()),
                        QVector<double>::fromStdVector(r.ys()));
     }

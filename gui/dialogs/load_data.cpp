@@ -19,6 +19,7 @@
 #include "gui/dialogs/file_dialog.h"
 #include "qcr/base/debug.h" // warning
 #include <QDir>
+#include <QFileInfo>
 #include <QStringBuilder> // for ".." % ..
 
 namespace {
@@ -39,6 +40,8 @@ void loadData::addFiles(QWidget* parent)
     } catch (const Exception& ex) {
         qWarning() << ex.msg();
     }
+    QFileInfo info{fileNames.at(0)};
+    dataDir_ = info.absolutePath();
 }
 
 void loadData::loadCorrFile(QWidget* parent)

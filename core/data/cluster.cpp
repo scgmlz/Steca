@@ -26,10 +26,14 @@ Sequence::Sequence(const std::vector<const Measurement*>& measurements)
 {}
 
 Range Sequence::rangeGma() const {
-    Range ret;
-    for (const Measurement* m : members_)
-        ret.extendBy(gSession->angleMap.get(m->midTth()).rgeGma());
-    return ret;
+    if (gSession->gammaSelection.limit)
+        return gSession->gammaSelection.limitedGammaRange;
+    else {
+        Range ret;
+        for (const Measurement* m : members_)
+            ret.extendBy(gSession->angleMap.get(m->midTth()).rgeGma());
+        return ret;
+    }
 }
 
 Range Sequence::rangeGmaFull() const {

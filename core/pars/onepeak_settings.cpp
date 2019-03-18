@@ -77,7 +77,8 @@ JsonObj OnePeakSettings::toJson() const
 OnePeakSettings OnePeakSettings::fromJson(const JsonObj& obj)
 {
     QString type = obj.loadString("type");
-    if (!functionNames.contains(type)) // validate peak fit function, so we dont get any surprises later.
+    // validate peak fit function, so we dont get any surprises later:
+    if (!functionNames.contains(type))
         THROW(QString("'") + type + "' is not a valid fit function!");
     return {obj.loadRange("range"), type};
 }
