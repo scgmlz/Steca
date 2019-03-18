@@ -31,10 +31,15 @@ namespace {
 void writeFullInfoSequence(
     QTextStream& stream, const OnePeakAllInfos& peakInfos, const QString& separator)
 {
-    for (auto& info : peakInfos.peakInfos())
-        stream << info.alpha() << separator
-               << info.beta()  << separator
-               << info.inten() << "\n";
+    for (auto& info : peakInfos.peakInfos()) {
+        const Mapped& m = info.map();
+        stream << m.at<deg>("alpha") << separator << m.at<deg>("beta")  << separator;
+        if (m.has("intensity"))
+            stream << m.at<double>("intensity");
+        else
+            stream << "nan";
+        stream << "\n";
+    }
 }
 
 //! Writes intensities (only!) for pole figure for one Bragg peak.
@@ -45,7 +50,11 @@ void writeCompactInfoSequence(QTextStream& stream, const OnePeakAllInfos& peakIn
 {
     int count = 0;
     for (auto& info : peakInfos.peakInfos()) {
-        stream << info.inten();
+        const Mapped& m = info.map();
+        if (m.has("intensity"))
+            stream << m.at<double>("intensity");
+        else
+            stream << "nan";
         count = (count+1)%10;
         if (count == 0)
             stream << "\n";

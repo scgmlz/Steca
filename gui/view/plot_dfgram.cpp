@@ -74,7 +74,7 @@ void PlotDfgramOverlay::addRange(const Range& range)
                 gSession->params.defaultPeakFunction.val())};
         const Curve rawCurve = gSession->currentOrAvgeDfgram()->getCurveMinusBg().intersect(range);
         const Fitted fitted = PeakFunction::fromFit(
-            peak.functionName(), rawCurve, RawOutcome{rawCurve});
+            peak.functionName(), rawCurve, analyseRawPeak(rawCurve));
         if (peak.isRaw() || (fitted.success() && fitted.nPar() <= datapointCount)) {
             gSession->peaksSettings.add(range);
             gSession->onPeaks();

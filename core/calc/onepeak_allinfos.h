@@ -17,6 +17,10 @@
 
 #include "core/calc/peak_info.h"
 
+//! Returns fixed-ordered list of parameter values.
+
+std::vector<QVariant> peakData(const PeakInfo&);
+
 //! A list of `PeakInfo`s, associated with _one_ Bragg peak and different orientations alpha,beta.
 
 class OnePeakAllInfos {

@@ -18,7 +18,7 @@
 #include "core/calc/coord_trafos.h"
 #include "core/calc/interpolate_polefig.h"
 #include "core/peakfit/peak_function.h"
-#include "core/peakfit/outcome.h"
+#include "core/typ/mapped.h"
 #include "core/session.h"
 #include "qcr/base/debug.h" // ASSERT
 
@@ -36,42 +36,27 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
     algo::calculateAlphaBeta(alpha, beta, fitrange.center(), gRange.center(),
                              cluster.chi(), cluster.omg(), cluster.phi());
     if (fitrange.isEmpty())
-        return PeakInfo{metadata, alpha, beta, gRange};
+        qFatal("why would the fit range be empty??");
+        // return PeakInfo{metadata, alpha, beta, gRange};
 
     const Dfgram& dfgram = cluster.dfgrams.yield_at(iGamma, &cluster);
 
-    // TODO: the following could be simplified if RawOutcome were replaced by PeakOutcome
-    std::unique_ptr<DoubleWithError> center;
-    std::unique_ptr<DoubleWithError> fwhm;
-    std::unique_ptr<DoubleWithError> intensity;
-    std::unique_ptr<DoubleWithError> gammOverSigma{new DoubleWithError{Q_QNAN, Q_QNAN}};
+    Mapped out;
     if (settings.isRaw()) {
-        const RawOutcome& out = dfgram.getRawOutcome(jP);
-        center    .reset(new DoubleWithError{out.getCenter(),0});
-        fwhm      .reset(new DoubleWithError{out.getFwhm(),0});
-        intensity .reset(new DoubleWithError{out.getIntensity(),0});
+        out = dfgram.getRawOutcome(jP);
     } else {
         const Fitted& pFct = dfgram.getPeakFit(jP);
         const PeakFunction*const peakFit = dynamic_cast<const PeakFunction*>(pFct.fitFunction());
-
-        const DoubleWithError nanVal = {Q_QNAN, Q_QNAN};
-        // if peakFit exists, use it, otherwise use NaNs:
-        const PeakOutcome out = peakFit ? peakFit->outcome(pFct)
-                                        : PeakOutcome{nanVal, nanVal, nanVal, nullptr};
-        center        .reset(new DoubleWithError{out.center});
-        fwhm          .reset(new DoubleWithError{out.fwhm});
-        intensity     .reset(new DoubleWithError{out.intensity});
-        if (out.gammOverSigma)
-            gammOverSigma.reset(new DoubleWithError{*out.gammOverSigma});
+        ASSERT(peakFit);
+        const Mapped& po = peakFit->outcome(pFct);
+        if (po.has("center") && fitrange.contains(po.at<double>("center")))
+            out = po;
     }
-
-    if (!fitrange.contains(center->value())) // TODO/math generalize to fitIsCredible
-        return PeakInfo{metadata, alpha, beta, gRange};
-
-    // TODO pass PeakOutcome instead of 6 components
-    return PeakInfo{metadata, alpha, beta, gRange, intensity->value(), intensity->error(),
-            deg(center->value()), deg(center->error()), fwhm->value(), fwhm->error(),
-            gammOverSigma->value(), gammOverSigma->error()};
+    out.set("alpha", alpha);
+    out.set("beta", beta);
+    out.set("gamma_min", gRange.min);
+    out.set("gamma_max", gRange.max);
+    return PeakInfo{metadata, out};
 }
 
 OnePeakAllInfos computeDirectInfoSequence(int jP)
@@ -83,7 +68,7 @@ OnePeakAllInfos computeDirectInfoSequence(int jP)
         progress.step();
         for (int i=0; i<nGamma; ++i) {
             PeakInfo refInfo = getPeak(jP, *cluster, i);
-            if (!qIsNaN(refInfo.inten()))
+            if (refInfo.has("intensity"))
                 ret.appendPeak(std::move(refInfo));
         }
     }
@@ -104,7 +89,7 @@ AllPeaksAllInfos::AllPeaksAllInfos()
 
 void AllPeaksAllInfos::invalidateAll() const
 {
-    direct      .clear_vector();
+    direct.clear_vector();
     invalidateInterpolated();
 }
 

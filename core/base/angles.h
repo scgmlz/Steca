@@ -15,6 +15,8 @@
 #ifndef ANGLES_H
 #define ANGLES_H
 
+#include <QMetaType>
+
 class rad;
 
 //! An angle in degrees
@@ -33,6 +35,7 @@ public:
 private:
     double val_;
 };
+Q_DECLARE_METATYPE(deg)
 
 //! An angle in radians
 class rad {

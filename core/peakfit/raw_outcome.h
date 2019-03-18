@@ -15,29 +15,11 @@
 #ifndef RAW_OUTCOME_H
 #define RAW_OUTCOME_H
 
+#include "core/typ/mapped.h"
 #include <QtNumeric>
 
 class Curve;
 
-// TODO rather use PeakOutcome to report result of raw analysis;
-//      this will simplify getPeak in all_infos.cpp
-
-//! Minimal outcome of peak analysis: center, width, intensity.
-
-class RawOutcome {
-public:
-    // Can only be constructed by computing it from a Curve.
-    RawOutcome() = delete;
-    RawOutcome(const Curve&);
-    RawOutcome(const RawOutcome&) = delete;
-    RawOutcome(RawOutcome&&) = default;
-    double getCenter() const { return center_; }
-    double getFwhm() const { return fwhm_; }
-    double getIntensity() const { return intensity_; }
-private:
-    double center_ = Q_QNAN;
-    double fwhm_ = Q_QNAN;
-    double intensity_ = Q_QNAN;
-};
+Mapped analyseRawPeak(const Curve&);
 
 #endif // RAW_OUTCOME_H

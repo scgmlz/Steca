@@ -15,44 +15,20 @@
 #ifndef PEAK_INFO_H
 #define PEAK_INFO_H
 
-#include "core/base/angles.h"
-#include "core/typ/range.h"
+#include "core/typ/mapped.h"
 
 class Metadata;
-class OnePeakSettings;
 
 //! Metadata, peak fit results, and pole figure angles.
 
-class PeakInfo final {
+class PeakInfo final : public Mapped {
 public:
-    PeakInfo(const Metadata*,
-             deg alpha, deg beta, Range, double, double /*error*/,
-             deg, deg /*error*/, double, double /*error*/, double, double /*error*/);
-    // used all_infos.cpp 70
-    PeakInfo(deg alpha, deg beta, Range, double, double /*error*/, deg, deg /*error*/,
-             double, double /*error*/); // used interpolate_polefig.cpp 314, 329
-    PeakInfo(const Metadata*, deg alpha, deg beta, Range);
-    PeakInfo(deg alpha, deg beta);
-    PeakInfo(const PeakInfo&) = delete;
-    PeakInfo(PeakInfo&&) = default;
+    PeakInfo(const Metadata* md, const Mapped& outcome)
+        : Mapped{outcome}, md_{md} {}
 
-    deg alpha() const { return alpha_; }
-    deg beta() const { return beta_; }
-    Range rgeGma() const { return rgeGma_; }
-    double inten() const { return inten_; }
-    deg tth() const { return tth_; }
-    double fwhm() const { return fwhm_; }
-    double gammOverSigma() const { return gammOverSigma_; }
-    std::vector<QVariant> peakData() const;
-
-private:
+    const Mapped& map() const { return *dynamic_cast<const Mapped*>(this); }
     const Metadata*const md_;
-    deg alpha_, beta_;
-    Range rgeGma_;
-    double inten_, intenError_;
-    deg tth_, tthError_;
-    double fwhm_, fwhmError_;
-    double gammOverSigma_, gammOverSigmaError_;
 };
+
 
 #endif // PEAK_INFO_H
