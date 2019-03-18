@@ -182,12 +182,15 @@ GammaControls::GammaControls()
     });
     auto* spinmin = new QcrDoubleSpinBox{"adhoc_min", cellmin, 4, 2, -180., 180.};
     auto* spinmax = new QcrDoubleSpinBox{"adhoc_max", cellmax, 4, 2, -180., 180.};
-    auto* limitCheck = new QcrCheckBox{"adhoc_limit", "limit γ range", limitRange};
+    auto* limitCheck = new QcrCheckBox{"adhoc_limit", "restrict γ range to", limitRange};
     spinmin->setSingleStep(0.01);
     spinmax->setSingleStep(0.01);
     limitRange->setHook([spinmax, spinmin](const bool val){
-        if (val)
+        if (val) {
             gSession->gammaSelection.limitedGammaRange = gSession->currentCluster()->rangeGma();
+            spinmax->setMaximum(gSession->currentCluster()->rangeGma().max);
+            spinmin->setMinimum(gSession->currentCluster()->rangeGma().min);
+        }
         gSession->gammaSelection.limit = val;
         gSession->onDetector();
         spinmax->setEnabled(val);
@@ -195,7 +198,6 @@ GammaControls::GammaControls()
     });
     auto layer = new QHBoxLayout;
     layer->addWidget(limitCheck);
-    layer->addWidget(new QLabel{"γ range"});
     layer->addWidget(spinmin);
     layer->addWidget(new QLabel{".."});
     layer->addWidget(spinmax);
