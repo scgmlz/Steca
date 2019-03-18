@@ -33,6 +33,8 @@ public:
 
     QcrCell<int> numSlices {1};
     QcrCell<int> currSlice {1}; // counting from 1, for user convenience
+    Range limitedGammaRange{};
+    bool limit{false};
 };
 
 #endif // GAMMA_SELECTION_H

@@ -20,6 +20,7 @@
 #include "gui/mainwin.h"
 //#include "qcr/base/debug.h"
 #include <QThread> // for sleep for debugging
+#include <qmath.h> //round
 
 //  ***********************************************************************************************
 //! @class DetectorControls (local scope)
@@ -159,13 +160,68 @@ public:
 GammaControls::GammaControls()
     : QcrWidget{"GammaControls"}
 {
-    auto layout = new QHBoxLayout;
-    layout->addWidget(new QLabel{"number of γ slices"});
-    layout->addWidget(new QcrSpinBox
+    auto* line1 = new QHBoxLayout;
+    line1->addWidget(new QLabel{"number of γ slices"});
+    line1->addWidget(new QcrSpinBox
                       {"numSlices", &gSession->gammaSelection.numSlices, 2, false, 1, INT_MAX,
                               "Number of γ slices (0: no slicing, take entire image)" });
-    layout->addStretch(1);
+    line1->addStretch(1);
+
+    auto* cellmin = new QcrCell<double>{0.};
+    auto* cellmax = new QcrCell<double>{0.};
+    auto* limitRange = new QcrCell<bool>{false};
+    cellmin->setCoerce([](const double val){return 0.01*std::round(val/0.01);});
+    cellmax->setCoerce([](const double val){return 0.01*std::round(val/0.01);});
+    cellmin->setHook([](const double val){
+        gSession->gammaSelection.limitedGammaRange.setMin(val);
+        gSession->onDetector();
+    });
+    cellmax->setHook([](const double val){
+        gSession->gammaSelection.limitedGammaRange.setMax(val);
+        gSession->onDetector();
+    });
+    auto* spinmin = new QcrDoubleSpinBox{"adhoc_min", cellmin, 4, 2, -180., 180.};
+    auto* spinmax = new QcrDoubleSpinBox{"adhoc_max", cellmax, 4, 2, -180., 180.};
+    auto* limitCheck = new QcrCheckBox{"adhoc_limit", "restrict γ range to", limitRange};
+    spinmin->setSingleStep(0.01);
+    spinmax->setSingleStep(0.01);
+    limitRange->setHook([=](const bool val){
+        if (val) {
+            gSession->gammaSelection.limitedGammaRange = gSession->currentCluster()->rangeGma();
+            spinmax->setMaximum(gSession->currentCluster()->rangeGma().max);
+            spinmin->setMinimum(gSession->currentCluster()->rangeGma().min);
+        }
+        gSession->gammaSelection.limit = val;
+        gSession->onDetector();
+        spinmax->setEnabled(val);
+        spinmin->setEnabled(val);
+    });
+    auto* line2 = new QHBoxLayout;
+    line2->addWidget(limitCheck);
+    line2->addWidget(spinmin);
+    line2->addWidget(new QLabel{".."});
+    line2->addWidget(spinmax);
+    line2->addWidget(new QLabel{"deg"});
+    line2->addStretch(1);
+
+    auto* layout = new QVBoxLayout;
+    layout->addLayout(line1);
+    layout->addLayout(line2);
+
     setLayout(layout);
+    setRemake([=](){
+        const Cluster* c = gSession->currentCluster();
+        limitCheck->setEnabled(c);
+        spinmax->setEnabled(c && limitRange->val());
+        spinmin->setEnabled(c && limitRange->val());
+        if (!c)
+            return;
+        const Range r = c->rangeGma();
+        spinmin->setMaximum(r.max-0.01);
+        spinmax->setMinimum(r.min+0.01);
+        cellmin->pureSetVal(r.min);
+        cellmax->pureSetVal(r.max);
+    });
 }
 
 //  ***********************************************************************************************
