@@ -160,12 +160,12 @@ public:
 GammaControls::GammaControls()
     : QcrWidget{"GammaControls"}
 {
-    auto layout = new QHBoxLayout;
-    layout->addWidget(new QLabel{"number of γ slices"});
-    layout->addWidget(new QcrSpinBox
+    auto* line1 = new QHBoxLayout;
+    line1->addWidget(new QLabel{"number of γ slices"});
+    line1->addWidget(new QcrSpinBox
                       {"numSlices", &gSession->gammaSelection.numSlices, 2, false, 1, INT_MAX,
                               "Number of γ slices (0: no slicing, take entire image)" });
-    layout->addStretch(1);
+    line1->addStretch(1);
 
     auto* cellmin = new QcrCell<double>{0.};
     auto* cellmax = new QcrCell<double>{0.};
@@ -185,7 +185,7 @@ GammaControls::GammaControls()
     auto* limitCheck = new QcrCheckBox{"adhoc_limit", "restrict γ range to", limitRange};
     spinmin->setSingleStep(0.01);
     spinmax->setSingleStep(0.01);
-    limitRange->setHook([spinmax, spinmin](const bool val){
+    limitRange->setHook([=](const bool val){
         if (val) {
             gSession->gammaSelection.limitedGammaRange = gSession->currentCluster()->rangeGma();
             spinmax->setMaximum(gSession->currentCluster()->rangeGma().max);
@@ -196,27 +196,27 @@ GammaControls::GammaControls()
         spinmax->setEnabled(val);
         spinmin->setEnabled(val);
     });
-    auto layer = new QHBoxLayout;
-    layer->addWidget(limitCheck);
-    layer->addWidget(spinmin);
-    layer->addWidget(new QLabel{".."});
-    layer->addWidget(spinmax);
-    layer->addWidget(new QLabel{"deg"});
-    layer->addStretch(1);
+    auto* line2 = new QHBoxLayout;
+    line2->addWidget(limitCheck);
+    line2->addWidget(spinmin);
+    line2->addWidget(new QLabel{".."});
+    line2->addWidget(spinmax);
+    line2->addWidget(new QLabel{"deg"});
+    line2->addStretch(1);
 
-    auto lay = new QVBoxLayout;
-    lay->addLayout(layout);
-    lay->addLayout(layer);
+    auto* layout = new QVBoxLayout;
+    layout->addLayout(line1);
+    layout->addLayout(line2);
 
-    setLayout(lay);
-    setRemake([cellmin, cellmax, spinmin, spinmax, limitCheck, limitRange](){
+    setLayout(layout);
+    setRemake([=](){
         const Cluster* c = gSession->currentCluster();
         limitCheck->setEnabled(c);
         spinmax->setEnabled(c && limitRange->val());
         spinmin->setEnabled(c && limitRange->val());
         if (!c)
             return;
-        Range r = c->rangeGma();
+        const Range r = c->rangeGma();
         spinmin->setMaximum(r.max-0.01);
         spinmax->setMinimum(r.min+0.01);
         cellmin->pureSetVal(r.min);
