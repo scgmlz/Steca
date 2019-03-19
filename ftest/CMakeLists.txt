@@ -11,14 +11,9 @@ foreach(test_src ${test_scripts})
     # append "quit" to prevent Steca from dangling (waiting for more input)
     file(APPEND ${test_exe} "quit")
 
-    # create directory where Steca writes its output files
-    set(out_dir "out")
-    file(REMOVE_RECURSE ${out_dir})
-    file(MAKE_DIRECTORY ${out_dir})
-
     # run Steca
     add_test(
         NAME ${test_name}
-        COMMAND ${CMAKE_BINARY_DIR}/main/Steca ${test_exe})
+        COMMAND cmake -D name=${test_name} -P ${CMAKE_CURRENT_SOURCE_DIR}/RunTest.cmake)
 
 endforeach()
