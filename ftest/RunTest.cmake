@@ -41,7 +41,7 @@ execute_process(
     RESULT_VARIABLE res)
 
 if(NOT res)
-    message(DEBUG " --- Steca terminated successfully")
+    message(DEBUG " --- Steca ran successfully")
 else()
     message(FATAL_ERROR "Steca terminated with error: ${res}")
 endif()

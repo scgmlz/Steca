@@ -51,6 +51,7 @@ public:
     static QString exportDir;
 private:
     QcrModalDialog* parent;
+    void queryDirectory();
 };
 
 QString DialogfieldPath::exportDir = QDir::homePath();
@@ -65,11 +66,7 @@ DialogfieldPath::DialogfieldPath(QcrModalDialog* _parent)
     fileEdit = new QcrLineEdit{"file"};
 
     auto* browseBtn = new QcrTextTriggerButton{"selectDir", "Browse..."};
-    browseBtn->trigger()->setTriggerHook(
-        [this]() {
-            dirEdit->setCellValue(
-                file_dialog::queryDirectory(
-                    parent, "Select folder", dirEdit->text())); });
+    browseBtn->trigger()->setTriggerHook( [this](){queryDirectory();} );
 
     auto* grid = new QGridLayout;
     grid->addWidget(new QLabel{"Save to folder:"}, 0, 0, Qt::AlignRight);
@@ -79,6 +76,13 @@ DialogfieldPath::DialogfieldPath(QcrModalDialog* _parent)
     grid->addWidget(fileEdit,                      1, 1);
 
     setLayout(grid);
+}
+
+void DialogfieldPath::queryDirectory()
+{
+    QString res = file_dialog::queryDirectory(parent, "Select folder", dirEdit->text());
+    if (res!="")
+        dirEdit->setCellValue(res);
 }
 
 QString DialogfieldPath::stem() const
