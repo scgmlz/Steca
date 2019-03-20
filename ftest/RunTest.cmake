@@ -13,7 +13,7 @@ if(NOT DEFINED STECA_BINARY_DIR)
 endif()
 
 set(out_dir "${CMAKE_CURRENT_BINARY_DIR}/out/${TEST_NAME}")
-set(ref_dir "${CMAKE_CURRENT_SOURCE_DIR}/ref/${TEST_NAME}")
+set(ref_dir "${STECA_SOURCE_DIR}/ftest/ref/${TEST_NAME}")
 set(Steca "${STECA_BINARY_DIR}/main/Steca")
 set(test_exe "${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME}.cmd")
 
@@ -35,7 +35,7 @@ file(MAKE_DIRECTORY ${out_dir})
 
 set(res FALSE) # without this, a timeout would appear as success
 
-execute_process(COMMAND ${Steca} "${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME}.cmd"
+execute_process(COMMAND "${Steca}" "${test_exe}"
     TIMEOUT 300
     RESULT_VARIABLE res)
 
