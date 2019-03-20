@@ -27,7 +27,7 @@
 
 QcrAction::QcrAction(const QString& text)
     : QAction{text, qApp}
-    , tooltip_ {text}
+    , tooltip_{text}
 {}
 
 //  ***********************************************************************************************
@@ -35,11 +35,11 @@ QcrAction::QcrAction(const QString& text)
 
 QcrTrigger::QcrTrigger(const QString& rawname, const QString& text, const QString& iconFile)
     : QcrRegistered{rawname}
-    , QcrAction {text}
+    , QcrAction{text}
 {
     //QAction::setObjectName(name());
     if (iconFile!="")
-        setIcon(QIcon(iconFile));
+        setIcon(QIcon{iconFile});
     QAction::connect(this, &QAction::triggered,
                      [this]()->void {
                          gLogger->log(name());
@@ -103,9 +103,9 @@ QcrTextTriggerButton::~QcrTextTriggerButton()
 //! @class QcrIconTriggerButton
 
 QcrIconTriggerButton::QcrIconTriggerButton(QcrTrigger* trigger, bool ownsTrigger)
-    : QcrBase {trigger->name()+"Btn"}
+    : QcrBase{trigger->name()+"Btn"}
     , trigger_{trigger}
-    , ownsTrigger_ {ownsTrigger}
+    , ownsTrigger_{ownsTrigger}
 {
     setDefaultAction(trigger);
     setToolButtonStyle(Qt::ToolButtonIconOnly);
@@ -153,7 +153,7 @@ void QcrToggle::initToggle(const QString& iconFile, const QKeySequence& shortcut
     setCheckable(true);
     //QAction::setObjectName(QcrRegistered::name());
     if (iconFile!="")
-        setIcon(QIcon(iconFile));
+        setIcon(QIcon{iconFile});
     doSetValue(cell_->val());
     QAction::connect(this, &QAction::toggled, [this](bool val){
             //qDebug()<<"TOGGLE "<<name()<<"toggled";

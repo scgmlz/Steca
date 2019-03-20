@@ -24,7 +24,7 @@ namespace {
 //! Computes average diffractogram.
 Curve computeAvgCurve(const ActiveClusters*const ac)
 {
-    TakesLongTime __("computeAvgCurve");
+    TakesLongTime __{"computeAvgCurve"};
     // flatten Cluster-Measurement hierarchy into one Sequence
     std::vector<const Measurement*> group;
     for (const Cluster* cluster : ac->clusters.yield())
@@ -47,7 +47,7 @@ Range computeRgeFixedInten(const ActiveClusters*const ac)
 {
     bool trans = false; bool cut = false; // TODO restore (broken after d97148958)
     Range ret;
-    TakesLongTime __("rgeFixedInten");
+    TakesLongTime __{"rgeFixedInten"};
     for (const Cluster* cluster : ac->clusters.yield())
         for (const Measurement* one : cluster->members())
             ret.extendBy(ImageLens(one->image(), trans, cut).rgeInten(false));

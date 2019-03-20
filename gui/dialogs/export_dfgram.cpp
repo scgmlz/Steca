@@ -19,15 +19,14 @@
 #include "gui/mainwin.h"
 
 ExportDfgram::ExportDfgram()
-    : DialogMultisave(
-        gGui, "ExportDfgram", "Diffractogram export", data_export::defaultFormats,
-        "diffractogram", gSession->activeClusters.size()>0)
+    : DialogMultisave{"eDif", gGui, "Diffractogram export", data_export::defaultFormats,
+                      "diffractogram", gSession->activeClusters.size()>0}
 {
 }
 
 int ExportDfgram::multiplicity()
 {
-    return gSession->activeClusters.size() * gSession->gammaSelection.numSlices.val();
+    return gSession->activeClusters.size() *gSession->gammaSelection.numSlices.val();
 }
 
 void ExportDfgram::writeCurrent(QTextStream& stream)
@@ -42,6 +41,6 @@ void ExportDfgram::writeOnefile(QTextStream& stream, const int idx)
 
 void ExportDfgram::writeJointfile(QTextStream& stream)
 {
-    TakesLongTime progress("save diffractograms", multiplicity(), &progressBar);
+    TakesLongTime progress{"save diffractograms", multiplicity(), &progressBar};
     data_export::writeAllDfgrams(stream, progress, format());
 }

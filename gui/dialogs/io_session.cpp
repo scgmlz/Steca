@@ -31,13 +31,13 @@ void ioSession::load(QWidget* parent)
         parent, "Load session", sessionDir_, "Session files (*.ste)");
     if (fileName.isEmpty())
         return;
-    QFile file(fileName);
+    QFile file{fileName};
     if (!(file.open(QIODevice::ReadOnly | QIODevice::Text))) {
         qWarning() << ("Cannot open file for reading: " % fileName);
         return;
     }
     try {
-        TakesLongTime __("loadSession");
+        TakesLongTime __{"loadSession"};
         gSession->sessionFromJson(file.readAll());
     } catch(const Exception& ex) {
         qWarning() << "Could not load session from file " << fileName << ":\n"

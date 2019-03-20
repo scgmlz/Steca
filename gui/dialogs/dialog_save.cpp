@@ -93,14 +93,13 @@ QString DialogfieldPath::stem() const
 //  ***********************************************************************************************
 
 DialogSave::DialogSave(
-    QWidget* _parent, const QString& _name, const QString& _title, const QStringList& _extensions)
-    : QcrModalDialog{_parent, _name}
+    const QString& _name, QWidget* _parent, const QString& _title, const QStringList& _extensions)
+    : QcrModalDialog{_name, _parent, _title}
 {
     // Dialog widget settings
 
     setModal(true);
     setWindowFlags(windowFlags() & ~Qt::WindowContextHelpButtonHint);
-    setWindowTitle(_title);
     progressBar.hide();
 
     // Subwidgets
@@ -181,15 +180,15 @@ QString DialogSave::name2path(QString name) const
 //  ***********************************************************************************************
 
 DialogMultisave::DialogMultisave(
-    QWidget* _parent, const QString& _name, const QString& _title,
+    const QString& _name, QWidget* _parent, const QString& _title,
     const QStringList& _extensions, const QString& _content, const bool _haveMulti)
-    : DialogSave{_parent, _name, _title, _extensions}
+    : DialogSave{_name, _parent, _title, _extensions}
 {
     if (!_haveMulti)
         return; // no multiFileMode menu
-    const QStringList saveModes { {"Current "+_content+" only",
-                                   "All "+_content+"s in one file",
-                                   "All "+_content+"s to numbered files"} };
+    const QStringList saveModes{ {"Current "+_content+" only",
+                                  "All "+_content+"s in one file",
+                                  "All "+_content+"s to numbered files"} };
     auto* saveWhat = new QcrRadioBox{
         "saveMode", "Save What", &currentSaveModeIdx, saveModes, new QVBoxLayout};
     layout->insertWidget(0, saveWhat);
@@ -229,8 +228,8 @@ void DialogMultisave::saveMultifile()
     int n = multiplicity();
     for (int i=0; i<n; ++i) {
         const QString fname = numberedPath(i, n+1);
-        if (QFile(fname).exists())
-                existingPaths << QFileInfo(fname).fileName();
+        if (QFile{fname}.exists())
+            existingPaths << QFileInfo{fname}.fileName();
     }
     if (existingPaths.size()) {
         if (!file_dialog::confirmOverwrite( // TODO correct question text for multiple files

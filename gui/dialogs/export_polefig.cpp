@@ -31,9 +31,9 @@
 //! @class ExportPolefig
 
 ExportPolefig::ExportPolefig()
-    : DialogMultisave(
-        gGui, "ExportPolefig", "Pole figure export",
-        QStringList{"dat", "lst", "csv", "pol"}, "peak", gSession->peaksSettings.size()>0)
+    : DialogMultisave{
+    "ePol", gGui, "Pole figure export",
+        QStringList{"dat", "lst", "csv", "pol"}, "peak", gSession->peaksSettings.size()>0}
 {
     fmt2button["pol"]->setEnabled(gSession->params.interpolParams.isStandardInterpolation());
     fmt2button["pol"]->setToolTip("Intensities only, with reference to interpolated standard grid");
@@ -56,6 +56,6 @@ void ExportPolefig::writeOnefile(QTextStream& stream, const int idx)
 
 void ExportPolefig::writeJointfile(QTextStream& stream)
 {
-    TakesLongTime progress("save pole figures", multiplicity(), &progressBar);
+    TakesLongTime progress{"save pole figures", multiplicity(), &progressBar};
     data_export::writeAllInfoSequence(stream, progress, format());
 }

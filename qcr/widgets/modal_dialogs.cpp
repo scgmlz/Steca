@@ -42,8 +42,8 @@ QcrModal::~QcrModal()
 //  ***********************************************************************************************
 //! @class QcrModalDialog
 
-QcrModalDialog::QcrModalDialog(QWidget* parent, const QString& caption)
-    : QcrModal{"modal"}
+QcrModalDialog::QcrModalDialog(const QString& name, QWidget* parent, const QString& caption)
+    : QcrModal{name}
     , QDialog{parent}
 {
     setWindowTitle(caption);
