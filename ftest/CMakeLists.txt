@@ -14,6 +14,10 @@ foreach(test_src ${test_scripts})
     # run Steca
     add_test(
         NAME ${test_name}
-        COMMAND cmake -D name=${test_name} -P ${CMAKE_CURRENT_SOURCE_DIR}/RunTest.cmake)
+        COMMAND cmake
+          -D TEST_NAME=${test_name}
+          -D STECA_SOURCE_DIR=${CMAKE_SOURCE_DIR}
+          -D STECA_BINARY_DIR=${CMAKE_BINARY_DIR}
+          -P ${CMAKE_CURRENT_SOURCE_DIR}/RunTest.cmake)
 
 endforeach()

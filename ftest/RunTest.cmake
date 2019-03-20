@@ -1,30 +1,45 @@
 cmake_minimum_required(VERSION 3.6 FATAL_ERROR)
 
-if(NOT DEFINED name)
-    message(FATAL_ERROR "test name not specified --- use -D name=...")
+if(NOT DEFINED TEST_NAME)
+    message(FATAL_ERROR "TEST_NAME not specified")
 endif()
 
-message(DEBUG " --- run test ${name}")
+if(NOT DEFINED STECA_SOURCE_DIR)
+    message(FATAL_ERROR "STECA_SOURCE_DIR not specified")
+endif()
 
-set(test_exe "${CMAKE_CURRENT_BINARY_DIR}/${name}.cmd")
+if(NOT DEFINED STECA_BINARY_DIR)
+    message(FATAL_ERROR "STECA_BINARY_DIR not specified")
+endif()
+
+set(out_dir "${CMAKE_CURRENT_BINARY_DIR}/out/${TEST_NAM}")
+set(ref_dir "${CMAKE_CURRENT_SOURCE_DIR}/ref/${TEST_NAM}")
+set(Steca "${STECA_BINARY_DIR}/main/Steca")
+set(test_exe "${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME}.cmd")
+
+message(DEBUG " --- run test ${name}")
+message(DEBUG " --- source dir ${CMAKE_SOURCE_DIR}")
+message(DEBUG " --- current source dir ${CMAKE_CURRENT_SOURCE_DIR}")
+message(DEBUG " --- binary dir ${CMAKE_BINARY_DIR}")
+message(DEBUG " --- current binary dir ${CMAKE_CURRENT_BINARY_DIR}")
+message(DEBUG " --- Steca source dir ${STECA_SOURCE_DIR}")
+message(DEBUG " --- Steca binary dir ${STECA_BINARY_DIR}")
+message(DEBUG " --- out dir: ${out_dir}")
+message(DEBUG " --- ref dir: ${ref_dir}")
+message(DEBUG " --- Steca command: ${Steca}")
+message(DEBUG " --- Test script: ${test_exe}")
 
 # create directory where Steca writes its output files
-set(out_dir "${CMAKE_CURRENT_BINARY_DIR}/out/${name}")
 file(REMOVE_RECURSE ${out_dir})
 file(MAKE_DIRECTORY ${out_dir})
 
-set(ref_dir "${CMAKE_CURRENT_SOURCE_DIR}/ref/${name}")
-
-execute_process(COMMAND /G/Steca/build/main/Steca /G/Steca/ftest/1.cmd
+execute_process(COMMAND ${Steca} "${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME}.cmd"
+    TIMEOUT 300
     RESULT_VARIABLE res)
 
 if(NOT res)
     message(DEBUG " --- Steca terminated successfully")
 else()
-    message(DEBUG " --- Steca command: ${CMAKE_BINARY_DIR}/../main/Steca")
-    message(DEBUG " --- Steca argument: ${test_exe}")
-    message(DEBUG " --- Steca output: ${sout}")
-    message(DEBUG " --- Steca error: ${serr}")
     message(FATAL_ERROR "Steca terminated with error")
 endif()
 

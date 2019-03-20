@@ -32,7 +32,7 @@
 [    8ms main ini] intenAvg on
 [    8ms main ini] intenScale 1
 [        main gui] addFiles
-[        fdia gui] fdia select in/m280580.dat
+[        fdia gui] fdia select @CMAKE_CURRENT_SOURCE_DIR@/in/m280580.dat
 [        fdia gui] @accept fdia
 [   37ms main gui] ## Long time task began:  "addFiles"
 [  510ms main gui] ## Long time task ended:  "addFiles"
@@ -43,6 +43,9 @@
 [  597ms main gui] ## Long time task ended:  "peak fitting"
 [        main gui] exportPolefig
 [        modal gui] saveMode 0
-[        modal gui] file out/1/polefig
+[        modal gui] selectDir
+[        modal gui] fdia select @CMAKE_CURRENT_BINARY_DIR@/out/1
+                    @accept fdia
+[        modal gui] file polefig
 [        modal gui] save
 [        modal gui] @reject modal

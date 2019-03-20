@@ -29,7 +29,7 @@ Logger::Logger(const QString& logFileName)
 
     auto* file = new QFile{logFileName};
     if (!file->open(QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text))
-        qFatal("cannot open log file");
+        qFatal("cannot open log file %s for writing", CSTRI(logFileName));
     log_.setDevice(file);
     startTime_ = QDateTime::currentDateTime();
     setCaller("log");
