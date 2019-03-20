@@ -12,8 +12,8 @@ if(NOT DEFINED STECA_BINARY_DIR)
     message(FATAL_ERROR "STECA_BINARY_DIR not specified")
 endif()
 
-set(out_dir "${CMAKE_CURRENT_BINARY_DIR}/out/${TEST_NAM}")
-set(ref_dir "${CMAKE_CURRENT_SOURCE_DIR}/ref/${TEST_NAM}")
+set(out_dir "${CMAKE_CURRENT_BINARY_DIR}/out/${TEST_NAME}")
+set(ref_dir "${CMAKE_CURRENT_SOURCE_DIR}/ref/${TEST_NAME}")
 set(Steca "${STECA_BINARY_DIR}/main/Steca")
 set(test_exe "${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME}.cmd")
 
