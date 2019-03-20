@@ -33,6 +33,8 @@ message(DEBUG " --- Test script: ${test_exe}")
 file(REMOVE_RECURSE ${out_dir})
 file(MAKE_DIRECTORY ${out_dir})
 
+set(res FALSE) # without this, a timeout would appear as success
+
 execute_process(COMMAND ${Steca} "${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME}.cmd"
     TIMEOUT 300
     RESULT_VARIABLE res)
@@ -40,7 +42,7 @@ execute_process(COMMAND ${Steca} "${CMAKE_CURRENT_BINARY_DIR}/${TEST_NAME}.cmd"
 if(NOT res)
     message(DEBUG " --- Steca terminated successfully")
 else()
-    message(FATAL_ERROR "Steca terminated with error")
+    message(FATAL_ERROR "Steca timed out or terminated with error")
 endif()
 
 file(GLOB out_files "${out_dir}/*")
