@@ -35,14 +35,15 @@ file(MAKE_DIRECTORY ${out_dir})
 
 set(res FALSE) # without this, a timeout would appear as success
 
-execute_process(COMMAND "${Steca}" "${test_exe}"
+execute_process(
+    COMMAND "${Steca}" "${test_exe}"
     TIMEOUT 300
     RESULT_VARIABLE res)
 
 if(NOT res)
     message(DEBUG " --- Steca terminated successfully")
 else()
-    message(FATAL_ERROR "Steca timed out or terminated with error")
+    message(FATAL_ERROR "Steca terminated with error: ${res}")
 endif()
 
 file(GLOB out_files "${out_dir}/*")
