@@ -34,7 +34,7 @@ namespace {
 int Metadata::noNumAttr = 0;
 std::vector<MetaDefinition> Metadata::metaKeys_ = Metadata::metaKeys();
 
-MetaDefinition::MetaDefinition(QString niceName, averageMode avgmode, valueType valtype)
+MetaDefinition::MetaDefinition(const QString& niceName, averageMode avgmode, valueType valtype)
     : name{niceName}
     , mode{avgmode}
     , type{valtype}
@@ -74,7 +74,7 @@ QVariant Metadata::attributeValue(int i) const
     else {
         MetaDefinition metaKey = metaKeys_.at(i);
         if (metaKey.type == valueType::DEG)
-            return double(at<deg>(metaKey.name));
+            return QVariant(at<deg>(metaKey.name));
         else if (metaKey.type == valueType::STRING)
             return at<QString>(metaKey.name);
         else
@@ -143,7 +143,9 @@ Metadata Metadata::computeAverage(const std::vector<const Metadata*>& vec)
 
 namespace {
 enum class iNums {
-    MOTOR = 10,
+    COORD = 3,
+    MOTOR = 7,
+    OMGM = 9,
     NM = 17,
     MONITOR = 17,
     D_MON,
@@ -156,10 +158,14 @@ enum class iNums {
 
 std::vector<MetaDefinition> Metadata::metaKeys() {
     std::vector<MetaDefinition> ret;
-    for (int i=0; i<int(iNums::MOTOR); i++) {
+    for (int i=0; i<int(iNums::COORD); i++)
+        ret.push_back(MetaDefinition{asciiTags.at(i), averageMode::AVGE, valueType::DOUBLE});
+    for (int i=int(iNums::COORD); i<int(iNums::MOTOR); i++)
         ret.push_back(MetaDefinition{asciiTags.at(i), averageMode::AVGE, valueType::DEG});
-    }
-    for (int i=10; i<int(iNums::NM); i++)
+    for (int i=int(iNums::MOTOR); i<int(iNums::OMGM); i++)
+        ret.push_back(MetaDefinition{asciiTags.at(i), averageMode::AVGE, valueType::DOUBLE});
+    ret.push_back(MetaDefinition{asciiTags.at(int(iNums::OMGM)), averageMode::AVGE, valueType::DEG});
+    for (int i=int(iNums::OMGM)+1; i<int(iNums::NM); i++)
         ret.push_back(MetaDefinition{asciiTags.at(i), averageMode::AVGE, valueType::DOUBLE});
     ret.push_back(MetaDefinition{asciiTags.at(int(iNums::MONITOR)), averageMode::LAST, valueType::DOUBLE});
     ret.push_back(MetaDefinition{asciiTags.at(int(iNums::D_MON)), averageMode::SUM, valueType::DOUBLE});

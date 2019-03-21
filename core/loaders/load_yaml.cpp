@@ -25,9 +25,9 @@ using loadYAML::YamlNode;
 
 void readSample(const YamlNode& node, Metadata& metadata)
 {
-    metadata.set("X", deg{node["position"]["xt"]["value"].doubleValue(Q_QNAN)});
-    metadata.set("Y", deg{node["position"]["yt"]["value"].doubleValue(Q_QNAN)});
-    metadata.set("Z", deg{node["position"]["zt"]["value"].doubleValue(Q_QNAN)});
+    metadata.set("X", node["position"]["xt"]["value"].doubleValue(Q_QNAN));
+    metadata.set("Y", node["position"]["yt"]["value"].doubleValue(Q_QNAN));
+    metadata.set("Z", node["position"]["zt"]["value"].doubleValue(Q_QNAN));
     metadata.set("omega", deg{node["orientation"]["omgs"]["value"].doubleValue(Q_QNAN)});
     metadata.set("mid2theta", deg{node["orientation"]["tths"]["value"].doubleValue(Q_QNAN)});
     metadata.set("phi", deg{node["orientation"]["phis"]["value"].doubleValue(Q_QNAN)});
@@ -36,8 +36,8 @@ void readSample(const YamlNode& node, Metadata& metadata)
 
 void readSetup(const YamlNode& node, Metadata& metadata)
 {
-    metadata.set("PST", deg{Q_QNAN}); // node["orientation"]["pst"]["value"].doubleValue(Q_QNAN);
-    metadata.set("SST", deg{Q_QNAN}); // node["orientation"]["sst"]["value"].doubleValue(Q_QNAN);
+    metadata.set("PST", Q_QNAN); // node["orientation"]["pst"]["value"].doubleValue(Q_QNAN);
+    metadata.set("SST", Q_QNAN); // node["orientation"]["sst"]["value"].doubleValue(Q_QNAN);
     metadata.set("OmegaM", deg{node["monochromator"]["omgm"]["value"].doubleValue(Q_QNAN)});
     metadata.set("T", Q_QNAN);
     metadata.set("teload", Q_QNAN);

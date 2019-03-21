@@ -34,7 +34,7 @@ enum class valueType {
 
 class MetaDefinition {
 public:
-    MetaDefinition(QString niceName, averageMode avgmode, valueType valtype);
+    MetaDefinition(const QString& niceName, averageMode avgmode, valueType valtype);
 
     QString name;
     averageMode mode;

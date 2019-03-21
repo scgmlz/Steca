@@ -181,16 +181,16 @@ Rawfile loadCaress(const QString& filePath) {
                 md.set("date", QString::fromStdString(s_date));
                 md.set("comment", QString::fromStdString(s_comment));
 
-                md.set("X", deg{xAxis});
-                md.set("Y", deg{yAxis});
-                md.set("Z", deg{zAxis});
+                md.set("X", xAxis);
+                md.set("Y", yAxis);
+                md.set("Z", zAxis);
 
                 md.set("omega", deg{omgAxis});
                 md.set("mid2theta", deg{tthAxis});
                 md.set("phi", deg{phiAxis});
                 md.set("chi", deg{chiAxis});
-                md.set("PST", deg{pstAxis});
-                md.set("SST", deg{sstAxis});
+                md.set("PST", pstAxis);
+                md.set("SST", sstAxis);
                 md.set("OmegaM", deg{omgmAxis});
 
                 md.set("T", nmT);
