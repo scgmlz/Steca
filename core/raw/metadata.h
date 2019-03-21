@@ -17,10 +17,33 @@
 
 #include <QVariant>
 #include "core/base/angles.h"
+#include "core/typ/mapped.h"
+
+enum class averageMode {
+    AVGE,
+    SUM,
+    FIRST,
+    LAST
+};
+
+enum class valueType {
+    DEG,
+    DOUBLE,
+    STRING
+};
+
+class MetaDefinition {
+public:
+    MetaDefinition(const QString& niceName, averageMode avgmode, valueType valtype);
+
+    QString name;
+    averageMode mode;
+    valueType type;
+};
 
 //! The meta data associated with one Measurement.
 
-class Metadata {
+class Metadata : public Mapped {
 public:
     Metadata();
     Metadata(const Metadata&) = delete;
@@ -32,17 +55,14 @@ public:
     static std::vector<QVariant> attributeNaNs();
     static int size() { return attributeNaNs().size(); }
     static Metadata computeAverage(const std::vector<const Metadata*>& vec);
+    static std::vector<MetaDefinition> metaKeys();
 
     QString attributeStrValue(int) const;
     QVariant attributeValue(int) const;
     std::vector<QVariant> attributeValues() const;
 
-    QString date, comment;
-    deg motorXT, motorYT, motorZT, motorOmg, motorTth, motorPhi, motorChi, motorPST, motorSST,
-        motorOMGM;
-    double nmT, nmTeload, nmTepos, nmTeext, nmXe, nmYe, nmZe; // nm = prehistorically 'new' metadata
-    double monitorCount, deltaMonitorCount;
-    double time, deltaTime;
+    static std::vector<MetaDefinition> metaKeys_;
+    static int noNumAttr;
 };
 
 #endif // METADATA_H

@@ -53,8 +53,10 @@ static void sortColumns(std::vector<double>& xs, std::vector<double>& ys, std::v
 std::vector<QVariant> peakData(const PeakInfo& m)
 {
     std::vector<QVariant> ret;
-    for (const QString& key: {"alpha", "beta", "gamma_min", "gamma_max"})
-        ret.push_back( QVariant(m.at<double>(key)) );
+    for (const QString& key: {"alpha", "beta"})
+        ret.push_back( QVariant(m.at<deg>(key)));
+    for (const QString& key: {"gamma_min", "gamma_max"})
+        ret.push_back( QVariant(m.at<double>(key)));
     for (const QString& key: {"intensity", "center", "fwhm", "gammaOverSigma"}) {
         if (m.has(key)) {
             ret.push_back( QVariant(m.at<double>(key)) );

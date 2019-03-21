@@ -25,9 +25,9 @@ static void loadTiff(
     Rawfile* file, const QString& filePath, deg phi, double monitor, double expTime)
 {
     Metadata md;
-    md.motorPhi = phi;
-    md.monitorCount = monitor;
-    md.time = expTime;
+    md.set("phi", phi);
+    md.set("mon", monitor);
+    md.set("t", expTime);
 
     // see http://www.fileformat.info/format/tiff/egff.htm
 
@@ -127,10 +127,10 @@ static void loadTiff(
 
         // text
         case 269: // DocumentName
-            md.comment = asStr();
+            md.set("comment", asStr());
             break;
         case 306: // DateTime
-            md.date = asStr();
+            md.set("date", asStr());
             break;
             //    default:
             //      TR("* NEW TAG *" << tagId << dataType << dataCount << dataOffset)

@@ -25,33 +25,33 @@ using loadYAML::YamlNode;
 
 void readSample(const YamlNode& node, Metadata& metadata)
 {
-    metadata.motorXT = node["position"]["xt"]["value"].doubleValue(Q_QNAN);
-    metadata.motorYT = node["position"]["yt"]["value"].doubleValue(Q_QNAN);
-    metadata.motorZT = node["position"]["zt"]["value"].doubleValue(Q_QNAN);
-    metadata.motorOmg = node["orientation"]["omgs"]["value"].doubleValue(Q_QNAN);
-    metadata.motorTth = node["orientation"]["tths"]["value"].doubleValue(Q_QNAN);
-    metadata.motorPhi = node["orientation"]["phis"]["value"].doubleValue(Q_QNAN);
-    metadata.motorChi = node["orientation"]["chis"]["value"].doubleValue(Q_QNAN);
+    metadata.set("X", node["position"]["xt"]["value"].doubleValue(Q_QNAN));
+    metadata.set("Y", node["position"]["yt"]["value"].doubleValue(Q_QNAN));
+    metadata.set("Z", node["position"]["zt"]["value"].doubleValue(Q_QNAN));
+    metadata.set("omega", deg{node["orientation"]["omgs"]["value"].doubleValue(Q_QNAN)});
+    metadata.set("mid2theta", deg{node["orientation"]["tths"]["value"].doubleValue(Q_QNAN)});
+    metadata.set("phi", deg{node["orientation"]["phis"]["value"].doubleValue(Q_QNAN)});
+    metadata.set("chi", deg{node["orientation"]["chis"]["value"].doubleValue(Q_QNAN)});
 }
 
 void readSetup(const YamlNode& node, Metadata& metadata)
 {
-    metadata.motorPST = Q_QNAN; // node["orientation"]["pst"]["value"].doubleValue(Q_QNAN);
-    metadata.motorSST = Q_QNAN; // node["orientation"]["sst"]["value"].doubleValue(Q_QNAN);
-    metadata.motorOMGM = node["monochromator"]["omgm"]["value"].doubleValue(Q_QNAN);
-    metadata.nmT = Q_QNAN;
-    metadata.nmTeload = Q_QNAN;
-    metadata.nmTepos = Q_QNAN;
-    metadata.nmTeext = Q_QNAN;
-    metadata.nmXe = Q_QNAN;
-    metadata.nmYe = Q_QNAN;
-    metadata.nmZe = Q_QNAN;
+    metadata.set("PST", Q_QNAN); // node["orientation"]["pst"]["value"].doubleValue(Q_QNAN);
+    metadata.set("SST", Q_QNAN); // node["orientation"]["sst"]["value"].doubleValue(Q_QNAN);
+    metadata.set("OmegaM", deg{node["monochromator"]["omgm"]["value"].doubleValue(Q_QNAN)});
+    metadata.set("T", Q_QNAN);
+    metadata.set("teload", Q_QNAN);
+    metadata.set("tepos", Q_QNAN);
+    metadata.set("teext", Q_QNAN);
+    metadata.set("xe", Q_QNAN);
+    metadata.set("ye", Q_QNAN);
+    metadata.set("ze", Q_QNAN);
 }
 
 void readSingleScan(const YamlNode& node, Metadata& metadata, Rawfile& rawfile)
 {
-    metadata.time         = node["time"].doubleValue(Q_QNAN);
-    metadata.monitorCount = node["monitor"].doubleValue(Q_QNAN);
+    metadata.set("t", node["time"].doubleValue(Q_QNAN));
+    metadata.set("mon", node["monitor"].doubleValue(Q_QNAN));
     const auto image      = node["image"].array2dValue();
 
     const size2d size(image->width, image->height);
@@ -66,8 +66,10 @@ void readScans(const YamlNode& node, Metadata& metadata, Rawfile& rawfile)
     for (const YamlNode& innerNode: node) {
         Metadata metadataCopy(std::move(metadata));
         // Copy the QStrings back, because std::move removes them from metadata:
-        metadata.date    = metadataCopy.date;
-        metadata.comment = metadataCopy.comment;
+        if (metadataCopy.has("date"))
+            metadata.set("date", metadataCopy.at<QString>("date"));
+        if (metadataCopy.has("comment"))
+            metadata.set("comment", metadataCopy.at<QString>("comment"));
         readSingleScan(innerNode, metadataCopy, rawfile);
     }
 }
@@ -78,8 +80,8 @@ void readMeasurement(const YamlNode& node, Rawfile& rawfile)
 {
     Metadata metadata;
 
-    metadata.date    = node["history"]["started"].value();
-    metadata.comment = node["history"]["scan"].value();
+    metadata.set("date", node["history"]["started"].value());
+    metadata.set("comment", node["history"]["scan"].value());
 
     readSample(node["sample"], metadata);
     readSetup(node["setup"], metadata);

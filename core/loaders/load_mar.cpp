@@ -206,14 +206,14 @@ Rawfile loadMar(const QString& filePath) {
 
     Metadata md;
 
-    md.motorOmg = omega;
-    md.motorTth = twoTheta;
-    md.motorPhi = phi;
-    md.motorChi = chi;
+    md.set("omega", deg{omega});
+    md.set("mid2theta", deg{twoTheta});
+    md.set("phi", deg{phi});
+    md.set("chi", deg{chi});
 
-    md.monitorCount = dosen; // ? REVIEW ? md.deltaMonitorCount
-    md.deltaTime = exposureTime;
-    md.time = totalTime;
+    md.set("mon", dosen); // ? REVIEW ? md.deltaMonitorCount
+    md.set("delta_t", exposureTime);
+    md.set("t", totalTime);
 
     // REVIEW ?? pictureOverflow
 
