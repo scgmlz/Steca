@@ -178,33 +178,33 @@ Rawfile loadCaress(const QString& filePath) {
                 // Objekt inizialisieren
                 Metadata md;
 
-                md.date = QString::fromStdString(s_date);
-                md.comment = QString::fromStdString(s_comment);
+                md.set("date", QString::fromStdString(s_date));
+                md.set("comment", QString::fromStdString(s_comment));
 
-                md.motorXT = xAxis;
-                md.motorYT = yAxis;
-                md.motorZT = zAxis;
+                md.set("X", deg{xAxis});
+                md.set("Y", deg{yAxis});
+                md.set("Z", deg{zAxis});
 
-                md.motorOmg = omgAxis;
-                md.motorTth = tthAxis;
-                md.motorPhi = phiAxis;
-                md.motorChi = chiAxis;
-                md.motorPST = pstAxis;
-                md.motorSST = sstAxis;
-                md.motorOMGM = omgmAxis;
+                md.set("omega", deg{omgAxis});
+                md.set("mid2theta", deg{tthAxis});
+                md.set("phi", deg{phiAxis});
+                md.set("chi", deg{chiAxis});
+                md.set("PST", deg{pstAxis});
+                md.set("SST", deg{sstAxis});
+                md.set("OmegaM", deg{omgmAxis});
 
-                md.nmT = nmT;
-                md.nmTeload = nmTeload;
-                md.nmTepos = nmTepos;
-                md.nmTeext = nmTeext;
-                md.nmXe = nmXe;
-                md.nmYe = nmYe;
-                md.nmZe = nmZe;
+                md.set("T", nmT);
+                md.set("teload", nmTeload);
+                md.set("tepos", nmTepos);
+                md.set("teext", nmTeext);
+                md.set("xe", nmXe);
+                md.set("ye", nmYe);
+                md.set("ze", nmZe);
 
-                md.deltaMonitorCount = deltaMon;
-                md.monitorCount = mon;
-                md.deltaTime = deltaTime;
-                md.time = tempTime;
+                md.set("delta_mon", deltaMon);
+                md.set("mon", mon);
+                md.set("delta_t", deltaTime);
+                md.set("t", tempTime);
 
                 ret.addDataset(std::move(md), size, std::move(convertedIntens));
 

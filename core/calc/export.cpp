@@ -106,8 +106,8 @@ void data_export::writeCurve(
         qFatal("curve is empty");
     ASSERT(rgeGma.isValid());
     const Metadata& md = cluster->avgMetadata();
-    stream << "#Comment: " << md.comment << '\n';
-    stream << "#Date: " << md.date << '\n';
+    stream << "#Comment: " << md.at<QString>("comment") << '\n';
+    stream << "#Date: " << md.at<QString>("date") << '\n';
     stream << "#Gamma range min: " << rgeGma.min << '\n';
     stream << "#Gamma range max: " << rgeGma.max << '\n';
 

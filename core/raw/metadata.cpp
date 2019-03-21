@@ -16,77 +16,6 @@
 //#include "qcr/base/debug.h"
 
 namespace {
-enum class eAttr {
-    MOTOR_XT,
-    MOTOR_YT,
-    MOTOR_ZT,
-    MOTOR_OMG,
-    MOTOR_TTH,
-    MOTOR_PHI,
-    MOTOR_CHI,
-    MOTOR_PST,
-    MOTOR_SST,
-    MOTOR_OMGM,
-    T,
-    TELOAD,
-    TEPOS,
-    TEEXT,
-    XE,
-    YE,
-    ZE,
-    MONITOR_COUNT,
-    DELTA_MONITOR_COUNT,
-    TIME,
-    DELTA_TIME,
-
-    NUM_NUMERICAL_ATTRIBUTES,
-
-    // non-numbers must come last
-    DATE = NUM_NUMERICAL_ATTRIBUTES,
-    COMMENT,
-
-    NUM_ALL_ATTRIBUTES
-};
-} // namespace
-
-
-Metadata::Metadata()
-    : date{}
-    , comment {}
-    , motorXT {0}
-    , motorYT {0}
-    , motorZT {0}
-    , motorOmg {0}
-    , motorTth {0}
-    , motorPhi {0}
-    , motorChi {0}
-    , motorPST {0}
-    , motorSST {0}
-    , motorOMGM {0}
-    , nmT {0}
-    , nmTeload {0}
-    , nmTepos {0}
-    , nmTeext {0}
-    , nmXe {0}
-    , nmYe {0}
-    , nmZe {0}
-    , monitorCount {0}
-    , deltaMonitorCount {0}
-    , time {0}
-    , deltaTime {0}
-{}
-
-int Metadata::numAttributes(bool onlyNum)
-{
-    return int(onlyNum ? eAttr::NUM_NUMERICAL_ATTRIBUTES : eAttr::NUM_ALL_ATTRIBUTES);
-}
-
-const QString& Metadata::attributeTag(int i, bool nice)
-{
-    return attributeTags(nice).at(i);
-}
-
-namespace {
 
     const QStringList niceTags = {
         "X",   "Y",   "Z",    "ω",      "mid 2θ", "φ",     "χ",       "PST",
@@ -102,6 +31,32 @@ namespace {
 
 }
 
+int Metadata::noNumAttr = 0;
+std::vector<MetaDefinition> Metadata::metaKeys_ = Metadata::metaKeys();
+
+MetaDefinition::MetaDefinition(QString niceName, averageMode avgmode, valueType valtype)
+    : name{niceName}
+    , mode{avgmode}
+    , type{valtype}
+{
+    if (valtype == valueType::STRING)
+        Metadata::noNumAttr++;
+}
+
+Metadata::Metadata()
+    : Mapped{}
+{}
+
+int Metadata::numAttributes(bool onlyNum)
+{
+    return onlyNum ? metaKeys_.size()-noNumAttr : metaKeys_.size();
+}
+
+const QString& Metadata::attributeTag(int i, bool nice)
+{
+    return attributeTags(nice).at(i);
+}
+
 const QStringList& Metadata::attributeTags(bool nice)
 {
     return nice ? niceTags : asciiTags;
@@ -114,110 +69,103 @@ QString Metadata::attributeStrValue(int i) const
 
 QVariant Metadata::attributeValue(int i) const
 {
-    switch (eAttr(i)) {
-    case eAttr::DATE: return date;
-    case eAttr::COMMENT: return comment;
-    case eAttr::MOTOR_XT: return double(motorXT);
-    case eAttr::MOTOR_YT: return double(motorYT);
-    case eAttr::MOTOR_ZT: return double(motorZT);
-    case eAttr::MOTOR_OMG: return double(motorOmg);
-    case eAttr::MOTOR_TTH: return double(motorTth);
-    case eAttr::MOTOR_PHI: return double(motorPhi);
-    case eAttr::MOTOR_CHI: return double(motorChi);
-    case eAttr::MOTOR_PST: return double(motorPST);
-    case eAttr::MOTOR_SST: return double(motorSST);
-    case eAttr::MOTOR_OMGM: return double(motorOMGM);
-    case eAttr::T: return nmT;
-    case eAttr::TELOAD: return nmTeload;
-    case eAttr::TEPOS: return nmTepos;
-    case eAttr::TEEXT: return nmTeext;
-    case eAttr::XE: return nmXe;
-    case eAttr::YE: return nmYe;
-    case eAttr::ZE: return nmZe;
-    case eAttr::MONITOR_COUNT: return monitorCount;
-    case eAttr::DELTA_MONITOR_COUNT: return deltaMonitorCount;
-    case eAttr::TIME: return time;
-    case eAttr::DELTA_TIME: return deltaTime;
-    default: qFatal("impossible case");
+    if (i >= metaKeys_.size())
+        qFatal("impossible case");
+    else {
+        MetaDefinition metaKey = metaKeys_.at(i);
+        if (metaKey.type == valueType::DEG)
+            return double(at<deg>(metaKey.name));
+        else if (metaKey.type == valueType::STRING)
+            return at<QString>(metaKey.name);
+        else
+            return at<double>(metaKey.name);
     }
 }
 
 std::vector<QVariant> Metadata::attributeValues() const
 {
     std::vector<QVariant> attrs;
-    for (int i=0; i<int(eAttr::NUM_ALL_ATTRIBUTES); ++i)
+    for (int i=0; i<metaKeys_.size(); ++i)
         attrs.push_back(attributeValue(i));
     return attrs;
 }
 
 std::vector<QVariant> Metadata::attributeNaNs()
 {
-    return std::vector<QVariant>(int(eAttr::NUM_ALL_ATTRIBUTES), Q_QNAN);
+    return std::vector<QVariant>(metaKeys_.size(), Q_QNAN);
 }
 
 //! Return average over list of metadata.
 Metadata Metadata::computeAverage(const std::vector<const Metadata*>& vec)
 {
     Metadata ret;
-    const Metadata* firstMd = vec.front();
-    ret.date = firstMd->date;
-    ret.comment = firstMd->comment;
-
-    // sums: delta mon. count and time,
-    // takes the last ones (presumed the maximum) of mon. count and time,
-    // averages the rest
-    for (const Metadata* d : vec) {
-
-        ret.motorXT += d->motorXT;
-        ret.motorYT += d->motorYT;
-        ret.motorZT += d->motorZT;
-
-        ret.motorOmg += d->motorOmg;
-        ret.motorTth += d->motorTth;
-        ret.motorPhi += d->motorPhi;
-        ret.motorChi += d->motorChi;
-
-        ret.motorPST += d->motorPST;
-        ret.motorSST += d->motorSST;
-        ret.motorOMGM += d->motorOMGM;
-
-        ret.nmT += d->nmT;
-        ret.nmTeload += d->nmTeload;
-        ret.nmTepos += d->nmTepos;
-        ret.nmTeext += d->nmTeext;
-        ret.nmXe += d->nmXe;
-        ret.nmYe += d->nmYe;
-        ret.nmZe += d->nmZe;
-
-        ret.deltaMonitorCount += d->deltaMonitorCount;
-        ret.deltaTime += d->deltaTime;
-
-        ret.monitorCount = d->monitorCount;
-        ret.time = d->time;
+    double fac = 1.0/vec.size();
+    for (MetaDefinition metaKey : metaKeys_) {
+        QString key = metaKey.name;
+        switch (metaKey.mode) {
+        case averageMode::FIRST: {
+            const Metadata* firstMd = vec.front();
+            ret.set(key, firstMd->at<QString>(key));
+            break;
+        }
+        case averageMode::LAST: {
+            const Metadata* lastMd = vec.back();
+            ret.set(key, lastMd->at<double>(key));
+            break;
+        }
+        case averageMode::SUM: {
+            double sum = 0;
+            for (const Metadata* d : vec)
+                sum += d->at<double>(key);
+            ret.set(key, sum);
+            break;
+        }
+        case averageMode::AVGE: {
+            double avg = 0;
+            if (metaKey.type == valueType::DOUBLE) {
+                for (const Metadata* d : vec)
+                    avg += d->at<double>(key);
+                avg *= fac;
+                ret.set(key, avg);
+            } else {
+                for (const Metadata* d : vec)
+                    avg += double(d->at<deg>(key));
+                avg *= fac;
+                ret.set(key, deg{avg});
+            }
+            break;
+        }
+        }
     }
 
-    double fac = 1.0 / vec.size();
+    return ret;
+}
 
-    ret.motorXT *= fac;
-    ret.motorYT *= fac;
-    ret.motorZT *= fac;
+namespace {
+enum class iNums {
+    MOTOR = 10,
+    NM = 17,
+    MONITOR = 17,
+    D_MON,
+    TIME,
+    D_TIME,
+    DATE,
+    COMMENT
+};
+}
 
-    ret.motorOmg *= fac;
-    ret.motorTth *= fac;
-    ret.motorPhi *= fac;
-    ret.motorChi *= fac;
-
-    ret.motorPST *= fac;
-    ret.motorSST *= fac;
-    ret.motorOMGM *= fac;
-
-    ret.nmT *= fac;
-    ret.nmTeload *= fac;
-    ret.nmTepos *= fac;
-    ret.nmTeext *= fac;
-    ret.nmXe *= fac;
-    ret.nmYe *= fac;
-    ret.nmZe *= fac;
-
+std::vector<MetaDefinition> Metadata::metaKeys() {
+    std::vector<MetaDefinition> ret;
+    for (int i=0; i<int(iNums::MOTOR); i++) {
+        ret.push_back(MetaDefinition{asciiTags.at(i), averageMode::AVGE, valueType::DEG});
+    }
+    for (int i=10; i<int(iNums::NM); i++)
+        ret.push_back(MetaDefinition{asciiTags.at(i), averageMode::AVGE, valueType::DOUBLE});
+    ret.push_back(MetaDefinition{asciiTags.at(int(iNums::MONITOR)), averageMode::LAST, valueType::DOUBLE});
+    ret.push_back(MetaDefinition{asciiTags.at(int(iNums::D_MON)), averageMode::SUM, valueType::DOUBLE});
+    ret.push_back(MetaDefinition{asciiTags.at(int(iNums::TIME)), averageMode::LAST, valueType::DOUBLE});
+    ret.push_back(MetaDefinition{asciiTags.at(int(iNums::D_TIME)), averageMode::SUM, valueType::DOUBLE});
+    ret.push_back(MetaDefinition{asciiTags.at(int(iNums::DATE)), averageMode::FIRST, valueType::STRING});
+    ret.push_back(MetaDefinition{asciiTags.at(int(iNums::COMMENT)), averageMode::FIRST, valueType::STRING});
     return ret;
 }
