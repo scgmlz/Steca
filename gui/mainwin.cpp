@@ -49,7 +49,7 @@ MainWin::MainWin(const QString& startupScript)
     imageTrafoActions = new ImageTrafoActions;
     menus_ = new Menus(menuBar());
 
-    setWindowIcon(QIcon(":/icon/retroStier"));
+    setWindowIcon(QIcon{":/icon/retroStier"});
     setTabPosition(Qt::AllDockWidgetAreas, QTabWidget::North);
     setAttribute(Qt::WA_DeleteOnClose, true);
 

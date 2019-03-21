@@ -42,8 +42,8 @@ QcrModal::~QcrModal()
 //  ***********************************************************************************************
 //! @class QcrModalDialog
 
-QcrModalDialog::QcrModalDialog(QWidget* parent, const QString& caption)
-    : QcrModal{"modal"}
+QcrModalDialog::QcrModalDialog(const QString& name, QWidget* parent, const QString& caption)
+    : QcrModal{name}
     , QDialog{parent}
 {
     setWindowTitle(caption);
@@ -65,8 +65,7 @@ void QcrModalDialog::onClose(bool ok)
 
 int QcrModalDialog::exec()
 {
-    connect(gConsole, &Console::closeDialog,
-            [this](bool ok){ if (ok) accept(); else reject();});
+    connect(gConsole, &Console::closeDialog, [this](bool ok){ onClose(ok);});
     if (gConsole->hasCommandsOnStack()) {
         open();
         gConsole->commandsFromStack(); // returns after emitting signal closeDialog

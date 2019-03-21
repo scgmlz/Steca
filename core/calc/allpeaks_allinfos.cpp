@@ -61,7 +61,7 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
 
 OnePeakAllInfos computeDirectInfoSequence(int jP)
 {
-    TakesLongTime progress("peak fitting", gSession->activeClusters.size());
+    TakesLongTime progress{"peak fitting", gSession->activeClusters.size()};
     OnePeakAllInfos ret;
     int nGamma = qMax(1, gSession->gammaSelection.numSlices.val());
     for (const Cluster* cluster : gSession->activeClusters.clusters.yield()) {
