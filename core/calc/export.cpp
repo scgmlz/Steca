@@ -112,7 +112,7 @@ void data_export::writeCurve(
     stream << "#Gamma range max: " << rgeGma.max << '\n';
 
     for (int i=0; i<meta::numAttributes(false); ++i)
-        stream << "#" << meta::attributeTag(i, false) << ": "
+        stream << "#" << meta::asciiTag(i) << ": "
                << md.attributeValue(i).toDouble() << '\n';
 
     stream << "#Tth" << separator << "Intensity" << '\n';

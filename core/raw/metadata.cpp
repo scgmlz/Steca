@@ -19,7 +19,7 @@ namespace {
 
 static int noNumAttr = 0;
 
-std::vector<MetaDefinition> metaDefs_ = {
+std::vector<MetaDefinition> metaDefs = {
     {"X", "X", averageMode::AVGE},
     {"Y", "Y", averageMode::AVGE},
     {"Z", "Z", averageMode::AVGE},
@@ -48,11 +48,11 @@ std::vector<MetaDefinition> metaDefs_ = {
 } // namespace
 
 MetaDefinition::MetaDefinition(const QString& name, const QString& niceName, averageMode avgmode)
-    : niceName{niceName}
-    , asciiName{name}
-    , mode{avgmode}
+    : niceName_{niceName}
+    , asciiName_{name}
+    , mode_{avgmode}
 {
-    if (mode == averageMode::FIRST)
+    if (mode_ == averageMode::FIRST)
         noNumAttr++;
 }
 
@@ -71,24 +71,24 @@ QString Metadata::attributeStrValue(int i) const
 
 QVariant Metadata::attributeValue(int i) const
 {
-    if (i >= metaDefs_.size())
+    if (i >= metaDefs.size())
         qFatal("impossible case");
     else
-        return at(metaDefs_.at(i).asciiName);
+        return at(metaDefs.at(i).asciiName_);
 }
 
 std::vector<QVariant> Metadata::attributeValues() const
 {
     std::vector<QVariant> attrs;
-    for (int i=0; i<metaDefs_.size(); ++i)
+    for (int i=0; i<metaDefs.size(); ++i)
         attrs.push_back(attributeValue(i));
     return attrs;
 }
 
 namespace meta {
 
-QStringList asciiTags;
-QStringList niceTags;
+QStringList asciiNames;
+QStringList niceNames;
 
 int size()
 {
@@ -97,34 +97,41 @@ int size()
 
 int numAttributes(bool onlyNum)
 {
-    return onlyNum ? metaDefs_.size()-noNumAttr : metaDefs_.size();
+    return onlyNum ? metaDefs.size()-noNumAttr : metaDefs.size();
 }
 
-const QString& attributeTag(int i, bool nice)
+const QString& asciiTag(int i)
 {
-    return attributeTags(nice).at(i);
+    return metaDefs.at(i).asciiName_;
 }
 
-const QStringList& attributeTags(bool nice)
+const QString& niceTag(int i)
+{
+    return metaDefs.at(i).niceName_;
+}
+
+const QStringList& asciiTags()
 {
     QStringList ret;
-    if (nice) {
-        for (MetaDefinition m : metaDefs_)
-            ret.append(m.niceName);
-        niceTags = ret;
-        return niceTags;
-    } else {
-        for (MetaDefinition m : metaDefs_)
-            ret.append(m.asciiName);
-        asciiTags = ret;
-        return asciiTags;
-    }
+    for (int i=0; i<metaDefs.size(); i++)
+        ret.append(asciiTag(i));
+    asciiNames = ret;
+    return asciiNames;
+}
+
+const QStringList& niceTags()
+{
+    QStringList ret;
+    for (int i=0; i<metaDefs.size(); i++)
+        ret.append(niceTag(i));
+    niceNames = ret;
+    return niceNames;
 }
 
 
 std::vector<QVariant> attributeNaNs()
 {
-    return std::vector<QVariant>(metaDefs_.size(), Q_QNAN);
+    return std::vector<QVariant>(metaDefs.size(), Q_QNAN);
 }
 
 //! Return average over list of metadata.
@@ -132,9 +139,9 @@ Metadata computeAverage(const std::vector<const Metadata*>& vec)
 {
     Metadata ret;
     double fac = 1.0/vec.size();
-    for (MetaDefinition metaDef : metaDefs_) {
-        QString key = metaDef.asciiName;
-        switch (metaDef.mode) {
+    for (MetaDefinition metaDef : metaDefs) {
+        QString key = metaDef.asciiName_;
+        switch (metaDef.mode_) {
         case averageMode::FIRST: {
             const Metadata* firstMd = vec.front();
             ret.set(key, firstMd->get<QString>(key));

@@ -30,9 +30,9 @@ class MetaDefinition {
 public:
     MetaDefinition(const QString& name, const QString& niceName, averageMode avgmode);
 
-    const QString asciiName;
-    const QString niceName;
-    const averageMode mode;
+    const QString asciiName_;
+    const QString niceName_;
+    const averageMode mode_;
 };
 
 //! The meta data associated with one Measurement.
@@ -50,8 +50,10 @@ public:
 
 namespace meta {
 int numAttributes(bool onlyNum);
-const QString& attributeTag(int, bool nice);
-const QStringList& attributeTags(bool nice);
+const QString& asciiTag(int);
+const QString& niceTag(int);
+const QStringList& asciiTags();
+const QStringList& niceTags();
 std::vector<QVariant> attributeNaNs();
 int size();
 Metadata computeAverage(const std::vector<const Metadata*>& vec);

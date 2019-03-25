@@ -46,7 +46,7 @@ QVariant MetatableModel::entry(int row, int col) const
 {
     switch (col) {
     case COL_TAG:
-        return meta::attributeTag(row, true);
+        return meta::niceTag(row);
     case COL_VALUE:
         const Cluster* highlight = gSession->currentCluster();
         if (!highlight)

@@ -166,7 +166,7 @@ QStringList Session::allAsciiKeys() const
     const OnePeakSettings* peak = peaksSettings.selectedPeak();
     if (peak)
         ret += peak->fitParAsciiNames();
-    ret += meta::attributeTags(false);
+    ret += meta::asciiTags();
     return ret;
 }
 
@@ -176,7 +176,7 @@ QStringList Session::allNiceKeys() const
     const OnePeakSettings* peak = peaksSettings.selectedPeak();
     if (peak)
         ret += peak->fitParNiceNames();
-    ret += meta::attributeTags(true);
+    ret += meta::niceTags();
     return ret;
 }
 
