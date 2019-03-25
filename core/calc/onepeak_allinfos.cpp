@@ -53,17 +53,15 @@ static void sortColumns(std::vector<double>& xs, std::vector<double>& ys, std::v
 std::vector<QVariant> peakData(const PeakInfo& m)
 {
     std::vector<QVariant> ret;
-    for (const QString& key: {"alpha", "beta"})
-        ret.push_back( QVariant(m.at<deg>(key)));
-    for (const QString& key: {"gamma_min", "gamma_max"})
-        ret.push_back( QVariant(m.at<double>(key)));
+    for (const QString& key: {"alpha", "beta", "gamma_min", "gamma_max"})
+        ret.push_back( m.at(key));
     for (const QString& key: {"intensity", "center", "fwhm", "gammaOverSigma"}) {
         if (m.has(key)) {
-            ret.push_back( QVariant(m.at<double>(key)) );
-            ret.push_back( QVariant(m.at<double>("sigma_"+key)) );
+            ret.push_back( m.at(key) );
+            ret.push_back( m.at("sigma_"+key) );
         }
     }
-    auto values_to_append = m.md_ ? m.md_->attributeValues() : Metadata::attributeNaNs();
+    auto values_to_append = m.md_ ? m.md_->attributeValues() : meta::attributeNaNs();
     ret.insert(ret.end(), values_to_append.begin(), values_to_append.end());
     return ret;
 }

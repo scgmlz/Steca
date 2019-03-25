@@ -50,8 +50,8 @@ Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const Mapp
     } else
         qFatal("Impossible case");
     std::vector<double> startParams(f->nPar(), 1.);
-    startParams[0] = rawOutcome.at<double>("center");
-    startParams[1] = rawOutcome.at<double>("fwhm");
-    startParams[2] = rawOutcome.at<double>("intensity");
+    startParams[0] = rawOutcome.get<double>("center");
+    startParams[1] = rawOutcome.get<double>("fwhm");
+    startParams[2] = rawOutcome.get<double>("intensity");
     return FitWrapper().execFit(f, curve, startParams, onlyPositiveParams);
 }

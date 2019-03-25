@@ -25,12 +25,12 @@ Measurement::Measurement(
 Range Measurement::rgeInten() const { return image_->rgeInten(); }
 size2d Measurement::imageSize() const { return image_->size(); }
 
-double Measurement::monitorCount() const { return metadata_.at<double>("mon"); }
-double Measurement::deltaMonitorCount() const { return metadata_.at<double>("delta_mon"); }
-double Measurement::time() const { return metadata_.at<double>("t"); }
-double Measurement::deltaTime() const { return metadata_.at<double>("delta_t"); }
+double Measurement::monitorCount() const { return metadata_.get<double>("mon"); }
+double Measurement::deltaMonitorCount() const { return metadata_.get<double>("delta_mon"); }
+double Measurement::time() const { return metadata_.get<double>("t"); }
+double Measurement::deltaTime() const { return metadata_.get<double>("delta_t"); }
 
-deg Measurement::midTth() const { return metadata_.at<deg>("mid2theta"); }
-deg Measurement::omg() const { return metadata_.at<deg>("omega"); }
-deg Measurement::phi() const { return metadata_.at<deg>("phi"); }
-deg Measurement::chi() const { return metadata_.at<deg>("chi"); }
+deg Measurement::midTth() const { return metadata_.get<deg>("mid2theta"); }
+deg Measurement::omg() const { return metadata_.get<deg>("omega"); }
+deg Measurement::phi() const { return metadata_.get<deg>("phi"); }
+deg Measurement::chi() const { return metadata_.get<deg>("chi"); }

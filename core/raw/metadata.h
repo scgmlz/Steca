@@ -26,19 +26,13 @@ enum class averageMode {
     LAST
 };
 
-enum class valueType {
-    DEG,
-    DOUBLE,
-    STRING
-};
-
 class MetaDefinition {
 public:
-    MetaDefinition(const QString& niceName, averageMode avgmode, valueType valtype);
+    MetaDefinition(const QString& name, const QString& niceName, averageMode avgmode);
 
-    QString name;
-    averageMode mode;
-    valueType type;
+    const QString asciiName_;
+    const QString niceName_;
+    const averageMode mode_;
 };
 
 //! The meta data associated with one Measurement.
@@ -49,20 +43,20 @@ public:
     Metadata(const Metadata&) = delete;
     Metadata(Metadata&&) = default;
 
-    static int numAttributes(bool onlyNum);
-    static const QString& attributeTag(int, bool nice);
-    static const QStringList& attributeTags(bool nice);
-    static std::vector<QVariant> attributeNaNs();
-    static int size() { return attributeNaNs().size(); }
-    static Metadata computeAverage(const std::vector<const Metadata*>& vec);
-    static std::vector<MetaDefinition> metaKeys();
-
     QString attributeStrValue(int) const;
     QVariant attributeValue(int) const;
     std::vector<QVariant> attributeValues() const;
-
-    static std::vector<MetaDefinition> metaKeys_;
-    static int noNumAttr;
 };
+
+namespace meta {
+int numAttributes(bool onlyNum);
+const QString& asciiTag(int);
+const QString& niceTag(int);
+const QStringList& asciiTags();
+const QStringList& niceTags();
+std::vector<QVariant> attributeNaNs();
+int size();
+Metadata computeAverage(const std::vector<const Metadata*>& vec);
+} // namespace meta
 
 #endif // METADATA_H

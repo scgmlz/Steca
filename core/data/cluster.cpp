@@ -63,7 +63,7 @@ Metadata Sequence::computeAvgMetadata() const
     std::vector<const Metadata*> vecMeta;
     for (const Measurement* m : members_)
         vecMeta.push_back(&m->metadata());
-    return Metadata::computeAverage(vecMeta);
+    return meta::computeAverage(vecMeta);
 }
 
 #define AVG_ONES(what_function)                 \

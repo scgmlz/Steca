@@ -67,9 +67,9 @@ void readScans(const YamlNode& node, Metadata& metadata, Rawfile& rawfile)
         Metadata metadataCopy(std::move(metadata));
         // Copy the QStrings back, because std::move removes them from metadata:
         if (metadataCopy.has("date"))
-            metadata.set("date", metadataCopy.at<QString>("date"));
+            metadata.set("date", metadataCopy.get<QString>("date"));
         if (metadataCopy.has("comment"))
-            metadata.set("comment", metadataCopy.at<QString>("comment"));
+            metadata.set("comment", metadataCopy.get<QString>("comment"));
         readSingleScan(innerNode, metadataCopy, rawfile);
     }
 }
