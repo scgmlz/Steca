@@ -20,24 +20,23 @@ namespace {
 static int noNumAttr = 0;
 
 std::vector<MetaDefinition> metaDefs_ = {
-    {"X", "X", averageMode::AVGE}, {"Y", "Y", averageMode::AVGE},
-    {"Z", "Z", averageMode::AVGE}, {"omega", "ω", averageMode::AVGE},
+    {"X", "X", averageMode::AVGE},              {"Y", "Y", averageMode::AVGE},
+    {"Z", "Z", averageMode::AVGE},              {"omega", "ω", averageMode::AVGE},
     {"mid2theta", "mid 2θ", averageMode::AVGE}, {"phi", "φ", averageMode::AVGE},
-    {"chi", "χ", averageMode::AVGE}, {"PST", "PST", averageMode::AVGE},
-    {"SST", "SST", averageMode::AVGE}, {"OmegaM", "ΩM", averageMode::AVGE},
-    {"T", "T", averageMode::AVGE}, {"teload", "teload", averageMode::AVGE},
-    {"tepos", "tepos", averageMode::AVGE}, {"teext", "teext", averageMode::AVGE},
-    {"xe", "xe", averageMode::AVGE}, {"ye", "ye", averageMode::AVGE},
-    {"ze", "ze", averageMode::AVGE}, {"mon", "mon", averageMode::LAST},
-    {"delta_mon", "Δmon", averageMode::SUM}, {"t", "t", averageMode::LAST},
-    {"delta_t", "Δt", averageMode::SUM}, {"date", "date", averageMode::FIRST},
+    {"chi", "χ", averageMode::AVGE},            {"PST", "PST", averageMode::AVGE},
+    {"SST", "SST", averageMode::AVGE},          {"OmegaM", "ΩM", averageMode::AVGE},
+    {"T", "T", averageMode::AVGE},              {"teload", "teload", averageMode::AVGE},
+    {"tepos", "tepos", averageMode::AVGE},      {"teext", "teext", averageMode::AVGE},
+    {"xe", "xe", averageMode::AVGE},            {"ye", "ye", averageMode::AVGE},
+    {"ze", "ze", averageMode::AVGE},            {"mon", "mon", averageMode::LAST},
+    {"delta_mon", "Δmon", averageMode::SUM},    {"t", "t", averageMode::LAST},
+    {"delta_t", "Δt", averageMode::SUM},        {"date", "date", averageMode::FIRST},
     {"comment", "comment", averageMode::FIRST},
 };
 
 } // namespace
 
-MetaDefinition::MetaDefinition(const QString& name, const QString& niceName,
-                               averageMode avgmode)
+MetaDefinition::MetaDefinition(const QString& name, const QString& niceName, averageMode avgmode)
     : niceName{niceName}
     , asciiName{name}
     , mode{avgmode}
