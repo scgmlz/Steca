@@ -17,33 +17,32 @@
 
 namespace {
 
-int noNumAttr = 0;
+static int noNumAttr = 0;
 
 std::vector<MetaDefinition> metaDefs_ = {
-    {"X", "X", averageMode::AVGE, valueType::DOUBLE}, {"Y", "Y", averageMode::AVGE, valueType::DOUBLE},
-    {"Z", "Z", averageMode::AVGE, valueType::DOUBLE}, {"omega", "ω", averageMode::AVGE, valueType::DEG},
-    {"mid2theta", "mid 2θ", averageMode::AVGE, valueType::DEG}, {"phi", "φ", averageMode::AVGE, valueType::DEG},
-    {"chi", "χ", averageMode::AVGE, valueType::DEG}, {"PST", "PST", averageMode::AVGE, valueType::DOUBLE},
-    {"SST", "SST", averageMode::AVGE, valueType::DOUBLE}, {"OmegaM", "ΩM", averageMode::AVGE, valueType::DEG},
-    {"T", "T", averageMode::AVGE, valueType::DOUBLE}, {"teload", "teload", averageMode::AVGE, valueType::DOUBLE},
-    {"tepos", "tepos", averageMode::AVGE, valueType::DOUBLE}, {"teext", "teext", averageMode::AVGE, valueType::DOUBLE},
-    {"xe", "xe", averageMode::AVGE, valueType::DOUBLE}, {"ye", "ye", averageMode::AVGE, valueType::DOUBLE},
-    {"ze", "ze", averageMode::AVGE, valueType::DOUBLE}, {"mon", "mon", averageMode::LAST, valueType::DOUBLE},
-    {"delta_mon", "Δmon", averageMode::SUM, valueType::DOUBLE}, {"t", "t", averageMode::LAST, valueType::DOUBLE},
-    {"delta_t", "Δt", averageMode::SUM, valueType::DOUBLE}, {"date", "date", averageMode::FIRST, valueType::STRING},
-    {"comment", "comment", averageMode::FIRST, valueType::STRING},
+    {"X", "X", averageMode::AVGE}, {"Y", "Y", averageMode::AVGE},
+    {"Z", "Z", averageMode::AVGE}, {"omega", "ω", averageMode::AVGE},
+    {"mid2theta", "mid 2θ", averageMode::AVGE}, {"phi", "φ", averageMode::AVGE},
+    {"chi", "χ", averageMode::AVGE}, {"PST", "PST", averageMode::AVGE},
+    {"SST", "SST", averageMode::AVGE}, {"OmegaM", "ΩM", averageMode::AVGE},
+    {"T", "T", averageMode::AVGE}, {"teload", "teload", averageMode::AVGE},
+    {"tepos", "tepos", averageMode::AVGE}, {"teext", "teext", averageMode::AVGE},
+    {"xe", "xe", averageMode::AVGE}, {"ye", "ye", averageMode::AVGE},
+    {"ze", "ze", averageMode::AVGE}, {"mon", "mon", averageMode::LAST},
+    {"delta_mon", "Δmon", averageMode::SUM}, {"t", "t", averageMode::LAST},
+    {"delta_t", "Δt", averageMode::SUM}, {"date", "date", averageMode::FIRST},
+    {"comment", "comment", averageMode::FIRST},
 };
 
 } // namespace
 
 MetaDefinition::MetaDefinition(const QString& name, const QString& niceName,
-                               averageMode avgmode, valueType valtype)
+                               averageMode avgmode)
     : niceName{niceName}
     , asciiName{name}
     , mode{avgmode}
-    , type{valtype}
 {
-    if (valtype == valueType::STRING)
+    if (mode == averageMode::FIRST)
         noNumAttr++;
 }
 
@@ -123,9 +122,9 @@ Metadata computeAverage(const std::vector<const Metadata*>& vec)
 {
     Metadata ret;
     double fac = 1.0/vec.size();
-    for (MetaDefinition metaKey : metaDefs_) {
-        QString key = metaKey.asciiName;
-        switch (metaKey.mode) {
+    for (MetaDefinition metaDef : metaDefs_) {
+        QString key = metaDef.asciiName;
+        switch (metaDef.mode) {
         case averageMode::FIRST: {
             const Metadata* firstMd = vec.front();
             ret.set(key, firstMd->get<QString>(key));
@@ -144,17 +143,18 @@ Metadata computeAverage(const std::vector<const Metadata*>& vec)
             break;
         }
         case averageMode::AVGE: {
-            double avg = 0;
-            if (metaKey.type == valueType::DOUBLE) {
+            if (vec.front()->at(key).canConvert<double>()) {
+                double avg = 0;
                 for (const Metadata* d : vec)
                     avg += d->get<double>(key);
                 avg *= fac;
                 ret.set(key, avg);
             } else {
+                deg avg = 0;
                 for (const Metadata* d : vec)
-                    avg += double(d->get<deg>(key));
+                    avg += d->get<deg>(key);
                 avg *= fac;
-                ret.set(key, deg{avg});
+                ret.set(key, avg);
             }
             break;
         }

@@ -26,20 +26,13 @@ enum class averageMode {
     LAST
 };
 
-enum class valueType {
-    DEG,
-    DOUBLE,
-    STRING
-};
-
 class MetaDefinition {
 public:
-    MetaDefinition(const QString& name, const QString& niceName, averageMode avgmode, valueType valtype);
+    MetaDefinition(const QString& name, const QString& niceName, averageMode avgmode);
 
     const QString asciiName;
     const QString niceName;
     const averageMode mode;
-    const valueType type;
 };
 
 //! The meta data associated with one Measurement.
