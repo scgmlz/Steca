@@ -33,9 +33,9 @@ void writeFullInfoSequence(
 {
     for (auto& info : peakInfos.peakInfos()) {
         const Mapped& m = info.map();
-        stream << m.at<deg>("alpha") << separator << m.at<deg>("beta")  << separator;
+        stream << m.get<deg>("alpha") << separator << m.get<deg>("beta")  << separator;
         if (m.has("intensity"))
-            stream << m.at<double>("intensity");
+            stream << m.get<double>("intensity");
         else
             stream << "nan";
         stream << "\n";
@@ -52,7 +52,7 @@ void writeCompactInfoSequence(QTextStream& stream, const OnePeakAllInfos& peakIn
     for (auto& info : peakInfos.peakInfos()) {
         const Mapped& m = info.map();
         if (m.has("intensity"))
-            stream << m.at<double>("intensity");
+            stream << m.get<double>("intensity");
         else
             stream << "nan";
         count = (count+1)%10;
@@ -106,8 +106,8 @@ void data_export::writeCurve(
         qFatal("curve is empty");
     ASSERT(rgeGma.isValid());
     const Metadata& md = cluster->avgMetadata();
-    stream << "#Comment: " << md.at<QString>("comment") << '\n';
-    stream << "#Date: " << md.at<QString>("date") << '\n';
+    stream << "#Comment: " << md.get<QString>("comment") << '\n';
+    stream << "#Date: " << md.get<QString>("date") << '\n';
     stream << "#Gamma range min: " << rgeGma.min << '\n';
     stream << "#Gamma range max: " << rgeGma.max << '\n';
 

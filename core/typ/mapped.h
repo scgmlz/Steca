@@ -31,7 +31,8 @@ public:
     void set(const QString& key, T value);
     bool has(const QString& key) const { return find(key)!=end(); }
     template<typename T>
-    T at(const QString& key) const;
+    T get(const QString& key) const;
+    QVariant at(const QString& key) const { return super::at(key); }
 };
 
 template<typename T>
@@ -42,7 +43,7 @@ void Mapped::set(const QString& key, T value)
 }
 
 template<typename T>
-T Mapped::at(const QString& key) const
+T Mapped::get(const QString& key) const
 {
     const QVariant& entry = super::at(key);
     ASSERT(entry.canConvert<T>());

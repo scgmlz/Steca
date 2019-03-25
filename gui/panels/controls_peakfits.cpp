@@ -158,9 +158,9 @@ void PeakfitOutcomeView::refresh()
 
     int jP = gSession->peaksSettings.selectedIndex();
     const Mapped& outcome = dfgram->getRawOutcome(jP);
-    showRawOutcomeX_.setText(safeRealText(outcome.at<double>("center")));
-    showRawOutcomeD_.setText(safeRealText(outcome.at<double>("fwhm")));
-    showRawOutcomeY_.setText(safeRealText(outcome.at<double>("intensity")));
+    showRawOutcomeX_.setText(safeRealText(outcome.get<double>("center")));
+    showRawOutcomeD_.setText(safeRealText(outcome.get<double>("fwhm")));
+    showRawOutcomeY_.setText(safeRealText(outcome.get<double>("intensity")));
 
     if (peak->isRaw())
         return enable(true, false, false);
@@ -170,12 +170,12 @@ void PeakfitOutcomeView::refresh()
     // if peakFit exists, use it, otherwise use NaNs:
     const Mapped out = peakFit ? peakFit->outcome(pFct) : Mapped{};
 
-    showFittedX_ .setText(par2text(out.at<double>("center"),out.at<double>("sigma_center")));
-    showFittedD_ .setText(par2text(out.at<double>("fwhm"), out.at<double>("sigma_fwhm")));
-    showFittedY_ .setText(par2text(out.at<double>("intensity"), out.at<double>("sigma_intensity")));
+    showFittedX_ .setText(par2text(out.get<double>("center"),out.get<double>("sigma_center")));
+    showFittedD_ .setText(par2text(out.get<double>("fwhm"), out.get<double>("sigma_fwhm")));
+    showFittedY_ .setText(par2text(out.get<double>("intensity"), out.get<double>("sigma_intensity")));
     if (out.has("gammaOverSigma"))
         showFittedSG_.setText(
-            par2text(out.at<double>("gammaOverSigma"), out.at<double>("sigma_gammaOverSigma")));
+            par2text(out.get<double>("gammaOverSigma"), out.get<double>("sigma_gammaOverSigma")));
 
     enable(true, true, out.has("gammaOverSigma"));
 }
