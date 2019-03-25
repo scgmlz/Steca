@@ -68,6 +68,8 @@ QVariant BigtableModel::data(const QModelIndex& index, int role) const
         const QVariant var = rows_.at(row).row.at(col-1);
         if (var.canConvert<double>() && qIsNaN(var.toDouble()))
             return {}; // show blank field instead of NAN
+        if (var.canConvert<deg>())
+            return double(var.value<deg>());
         return var;
     }
     case Qt::TextAlignmentRole: {

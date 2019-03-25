@@ -166,7 +166,7 @@ QStringList Session::allAsciiKeys() const
     const OnePeakSettings* peak = peaksSettings.selectedPeak();
     if (peak)
         ret += peak->fitParAsciiNames();
-    ret += Metadata::attributeTags(false);
+    ret += meta::attributeTags(false);
     return ret;
 }
 
@@ -176,7 +176,7 @@ QStringList Session::allNiceKeys() const
     const OnePeakSettings* peak = peaksSettings.selectedPeak();
     if (peak)
         ret += peak->fitParNiceNames();
-    ret += Metadata::attributeTags(true);
+    ret += meta::attributeTags(true);
     return ret;
 }
 
@@ -184,7 +184,7 @@ QStringList Session::numericAsciiKeys() const
 {
     QStringList ret = allAsciiKeys();
     // TODO remove non-numeric keys from the onset
-    for (int i=0; i< (Metadata::numAttributes(false) - Metadata::numAttributes(true)); ++i)
+    for (int i=0; i< (meta::numAttributes(false) - meta::numAttributes(true)); ++i)
         ret.removeLast(); // remove all tags that are not numbers
     return ret;
 }
@@ -193,7 +193,7 @@ QStringList Session::numericNiceKeys() const
 {
     QStringList ret = allNiceKeys();
     // TODO remove non-numeric keys from the onset
-    for (int i=0; i< (Metadata::numAttributes(false) - Metadata::numAttributes(true)); ++i)
+    for (int i=0; i< (meta::numAttributes(false) - meta::numAttributes(true)); ++i)
         ret.removeLast(); // remove all tags that are not numbers
     return ret;
 }

@@ -50,20 +50,18 @@ public:
     Metadata(const Metadata&) = delete;
     Metadata(Metadata&&) = default;
 
-    static int numAttributes(bool onlyNum);
-    static const QString& attributeTag(int, bool nice);
-    static const QStringList& attributeTags(bool nice);
-    static std::vector<QVariant> attributeNaNs();
-    static int size() { return attributeNaNs().size(); }
-    static Metadata computeAverage(const std::vector<const Metadata*>& vec);
-    static std::vector<MetaDefinition> metaKeys();
-
     QString attributeStrValue(int) const;
     QVariant attributeValue(int) const;
     std::vector<QVariant> attributeValues() const;
-
-    static std::vector<MetaDefinition> metaKeys_;
-    static int noNumAttr;
 };
+
+namespace meta {
+int numAttributes(bool onlyNum);
+const QString& attributeTag(int, bool nice);
+const QStringList& attributeTags(bool nice);
+std::vector<QVariant> attributeNaNs();
+int size();
+Metadata computeAverage(const std::vector<const Metadata*>& vec);
+} // namespace meta
 
 #endif // METADATA_H

@@ -17,22 +17,9 @@
 
 namespace {
 
-    const QStringList niceTags = {
-        "X",   "Y",   "Z",    "ω",      "mid 2θ", "φ",     "χ",       "PST",
-        "SST", "ΩM",  "T",    "teload", "tepos",  "teext", "xe",      "ye",
-        "ze",  "mon", "Δmon", "t",      "Δt",     "date",  "comment",
-    };
+int noNumAttr = 0;
 
-    const QStringList asciiTags = {
-        "X",   "Y",      "Z",         "omega",  "mid2theta", "phi",   "chi",     "PST",
-        "SST", "OmegaM", "T",         "teload", "tepos",     "teext", "xe",      "ye",
-        "ze",  "mon",    "delta_mon", "t",      "delta_t",   "date",  "comment",
-    };
-
-}
-
-int Metadata::noNumAttr = 0;
-std::vector<MetaDefinition> Metadata::metaKeys_ = {
+std::vector<MetaDefinition> metaDefs_ = {
     {"X", "X", averageMode::AVGE, valueType::DOUBLE}, {"Y", "Y", averageMode::AVGE, valueType::DOUBLE},
     {"Z", "Z", averageMode::AVGE, valueType::DOUBLE}, {"omega", "ω", averageMode::AVGE, valueType::DEG},
     {"mid2theta", "mid 2θ", averageMode::AVGE, valueType::DEG}, {"phi", "φ", averageMode::AVGE, valueType::DEG},
@@ -47,6 +34,8 @@ std::vector<MetaDefinition> Metadata::metaKeys_ = {
     {"comment", "comment", averageMode::FIRST, valueType::STRING},
 };
 
+} // namespace
+
 MetaDefinition::MetaDefinition(const QString& name, const QString& niceName,
                                averageMode avgmode, valueType valtype)
     : niceName{niceName}
@@ -55,60 +44,86 @@ MetaDefinition::MetaDefinition(const QString& name, const QString& niceName,
     , type{valtype}
 {
     if (valtype == valueType::STRING)
-        Metadata::noNumAttr++;
+        noNumAttr++;
 }
 
 Metadata::Metadata()
     : Mapped{}
 {}
 
-int Metadata::numAttributes(bool onlyNum)
-{
-    return onlyNum ? metaKeys_.size()-noNumAttr : metaKeys_.size();
-}
-
-const QString& Metadata::attributeTag(int i, bool nice)
-{
-    return attributeTags(nice).at(i);
-}
-
-const QStringList& Metadata::attributeTags(bool nice)
-{
-    return nice ? niceTags : asciiTags;
-}
-
 QString Metadata::attributeStrValue(int i) const
 {
-    return attributeValue(i).toString();
+    QVariant v = attributeValue(i);
+    if (v.canConvert<deg>())
+        return QString::number(double(v.value<deg>()));
+    else
+        return v.toString();
 }
 
 QVariant Metadata::attributeValue(int i) const
 {
-    if (i >= metaKeys_.size())
+    if (i >= metaDefs_.size())
         qFatal("impossible case");
     else
-        return at(metaKeys_.at(i).asciiName);
+        return at(metaDefs_.at(i).asciiName);
 }
 
 std::vector<QVariant> Metadata::attributeValues() const
 {
     std::vector<QVariant> attrs;
-    for (int i=0; i<metaKeys_.size(); ++i)
+    for (int i=0; i<metaDefs_.size(); ++i)
         attrs.push_back(attributeValue(i));
     return attrs;
 }
 
-std::vector<QVariant> Metadata::attributeNaNs()
+namespace meta {
+
+QStringList asciiTags;
+QStringList niceTags;
+
+int size()
 {
-    return std::vector<QVariant>(metaKeys_.size(), Q_QNAN);
+    return attributeNaNs().size();
+}
+
+int numAttributes(bool onlyNum)
+{
+    return onlyNum ? metaDefs_.size()-noNumAttr : metaDefs_.size();
+}
+
+const QString& attributeTag(int i, bool nice)
+{
+    return attributeTags(nice).at(i);
+}
+
+const QStringList& attributeTags(bool nice)
+{
+    QStringList ret;
+    if (nice) {
+        for (MetaDefinition m : metaDefs_)
+            ret.append(m.niceName);
+        niceTags = ret;
+        return niceTags;
+    } else {
+        for (MetaDefinition m : metaDefs_)
+            ret.append(m.asciiName);
+        asciiTags = ret;
+        return asciiTags;
+    }
+}
+
+
+std::vector<QVariant> attributeNaNs()
+{
+    return std::vector<QVariant>(metaDefs_.size(), Q_QNAN);
 }
 
 //! Return average over list of metadata.
-Metadata Metadata::computeAverage(const std::vector<const Metadata*>& vec)
+Metadata computeAverage(const std::vector<const Metadata*>& vec)
 {
     Metadata ret;
     double fac = 1.0/vec.size();
-    for (MetaDefinition metaKey : metaKeys_) {
+    for (MetaDefinition metaKey : metaDefs_) {
         QString key = metaKey.asciiName;
         switch (metaKey.mode) {
         case averageMode::FIRST: {
@@ -148,3 +163,4 @@ Metadata Metadata::computeAverage(const std::vector<const Metadata*>& vec)
 
     return ret;
 }
+} // namespace meta
