@@ -121,12 +121,12 @@ void searchPoints(deg alpha, deg beta, deg radius, const OnePeakAllInfos& infos,
 {
     // TODO REVIEW Use value trees to improve performance.
     // qDebug() << "DEB searchPts " << alpha << beta;
-    for (const PeakInfo& info : infos.peakInfos()) {
+    for (const Mapped& info : infos.peakInfos()) {
         // qDebug() << "  candidate " << info.alpha() << info.beta();
         if (inRadius(info.get<deg>("alpha"), info.get<deg>("beta"), alpha, beta, radius)) {
-            const Mapped& m = info.map();
-            if (m.has("intensity"))
-                itfs.push_back(itf_t(m.get<double>("intensity"), m.get<double>("center"), m.get<double>("fwhm")));
+            if (info.has("intensity"))
+                itfs.push_back(itf_t(info.get<double>("intensity"), info.get<double>("center"),
+                                     info.get<double>("fwhm")));
         }
     }
 }
@@ -134,7 +134,7 @@ void searchPoints(deg alpha, deg beta, deg radius, const OnePeakAllInfos& infos,
 //! Searches closest InfoSequence to given alpha and beta in quadrants.
 void searchInQuadrants(
     const Quadrants& quadrants, deg alpha, deg beta, deg searchRadius, const OnePeakAllInfos& infos,
-    std::vector<const PeakInfo*>& foundInfos, std::vector<double>& distances)
+    std::vector<const Mapped*>& foundInfos, std::vector<double>& distances)
 {
     ASSERT(quadrants.size() <= NUM_QUADRANTS);
     // Take only peak infos with beta within +/- BETA_LIMIT degrees into
@@ -148,7 +148,7 @@ void searchInQuadrants(
     std::fill(foundInfos.begin(), foundInfos.end(), nullptr);
 
     // Find infos closest to given alpha and beta in each quadrant.
-    for (const PeakInfo& info : infos.peakInfos()) {
+    for (const Mapped& info : infos.peakInfos()) {
         // TODO REVIEW We could do better with value trees than looping over all infos.
         deg deltaBeta = calculateDeltaBeta(info.get<deg>("beta"), beta);
         if (fabs(deltaBeta) > BETA_LIMIT)
@@ -169,7 +169,7 @@ void searchInQuadrants(
 }
 
 itf_t inverseDistanceWeighing(
-    const std::vector<double>& distances, const std::vector<const PeakInfo*>& infos)
+    const std::vector<double>& distances, const std::vector<const Mapped*>& infos)
 {
     int N = NUM_QUADRANTS;
     // Generally, only distances.count() == values.count() > 0 is needed for this
@@ -181,10 +181,9 @@ itf_t inverseDistanceWeighing(
     for (int i=0; i<N; ++i) {
         if (distances.at(i) == .0) {
             // Points coincide; no need to interpolate.
-            const PeakInfo* info = infos.at(i);
-            const Mapped& m = info->map();
-            if (m.has("intensity"))
-                return itf_t{m.get<double>("intensity"), m.get<double>("center"), m.get<double>("fwhm")};
+            const Mapped* m = infos.at(i);
+            if (m->has("intensity"))
+                return itf_t{m->get<double>("intensity"), m->get<double>("center"), m->get<double>("fwhm")};
             qFatal("inverseDistanceWeighing: no intensity given (#1)");
             return { Q_QNAN, Q_QNAN, Q_QNAN };
         }
@@ -196,14 +195,13 @@ itf_t inverseDistanceWeighing(
     double height = 0;
     double fwhm = 0;
     for (int i=0; i<N; ++i) {
-        const PeakInfo* info = infos.at(i);
-        const Mapped& m = info->map();
-        if (!m.has("intensity"))
+        const Mapped* m = infos.at(i);
+        if (!m->has("intensity"))
             qFatal("inverseDistanceWeighing: no intensity given (#2)");
         double d = inverseDistances.at(i);
-        offset += m.get<double>("center") * d;
-        height += m.get<double>("intensity") * d;
-        fwhm   += m.get<double>("fwhm") * d;
+        offset += m->get<double>("center") * d;
+        height += m->get<double>("intensity") * d;
+        fwhm   += m->get<double>("fwhm") * d;
     }
 
     return { double(height/inverseDistanceSum),
@@ -214,7 +212,7 @@ itf_t inverseDistanceWeighing(
 //! Interpolates peak infos to a single point using idw.
 itf_t interpolateValues(deg searchRadius, const OnePeakAllInfos& infos, deg alpha, deg beta)
 {
-    std::vector<const PeakInfo*> interpolationInfos;
+    std::vector<const Mapped*> interpolationInfos;
     std::vector<double> distances;
     searchInQuadrants(
         allQuadrants(), alpha, beta, searchRadius, infos, interpolationInfos, distances);
@@ -232,7 +230,7 @@ itf_t interpolateValues(deg searchRadius, const OnePeakAllInfos& infos, deg alph
             ? 180 - alpha
             : -alpha;
         double newBeta = beta < 180 ? beta + 180 : beta - 180;
-        std::vector<const PeakInfo*> renewedSearch;
+        std::vector<const Mapped*> renewedSearch;
         std::vector<double> newDistance;
         searchInQuadrants(
             { newQ }, newAlpha, newBeta, searchRadius, infos, renewedSearch, newDistance);
@@ -299,7 +297,7 @@ OnePeakAllInfos algo::interpolateInfos(const OnePeakAllInfos& direct)
                 Mapped m;
                 m.set("alpha", alpha);
                 m.set("beta", beta);
-                ret.appendPeak(PeakInfo{nullptr, m});
+                ret.appendPeak(std::move(m));
                 continue;
             }
 
@@ -324,14 +322,14 @@ OnePeakAllInfos algo::interpolateInfos(const OnePeakAllInfos& direct)
                     for (int i=iBegin; i<iEnd; ++i)
                         avg += itfs.at(i);
 
-                    Mapped m = direct.peakInfos().front().map();
+                    Mapped m = direct.peakInfos().front();
                     ASSERT(m.has("gamma_min"));
                     m.set("alpha", alpha);
                     m.set("beta", beta);
                     m.set("center", avg.tth / n);
                     m.set("intensity", avg.inten / n);
                     m.set("fwhm", avg.fwhm / n);
-                    ret.appendPeak(PeakInfo{nullptr, m});
+                    ret.appendPeak(std::move(m));
                     continue;
                 }
 
@@ -340,21 +338,21 @@ OnePeakAllInfos algo::interpolateInfos(const OnePeakAllInfos& direct)
                     Mapped m;
                     m.set("alpha", alpha);
                     m.set("beta", beta);
-                    ret.appendPeak(PeakInfo{nullptr, m});
+                    ret.appendPeak(std::move(m));
                     continue;
                 }
             }
 
             // Use idw, if alpha > avgAlphaMax OR averaging failed (too small avgRadius?).
             itf_t itf = interpolateValues(idwRadius, direct, alpha, beta);
-            Mapped m = direct.peakInfos().front().map();
+            Mapped m = direct.peakInfos().front();
             ASSERT(m.has("gamma_min"));
             m.set("alpha", alpha);
             m.set("beta", beta);
             m.set("center", itf.tth);
             m.set("intensity", itf.inten);
             m.set("fwhm", itf.fwhm);
-            ret.appendPeak(PeakInfo{nullptr, m});
+            ret.appendPeak(std::move(m));
         }
     }
     //qDebug() << "interpolation ended";

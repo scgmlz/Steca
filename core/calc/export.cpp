@@ -32,10 +32,9 @@ void writeFullInfoSequence(
     QTextStream& stream, const OnePeakAllInfos& peakInfos, const QString& separator)
 {
     for (auto& info : peakInfos.peakInfos()) {
-        const Mapped& m = info.map();
-        stream << m.get<deg>("alpha") << separator << m.get<deg>("beta")  << separator;
-        if (m.has("intensity"))
-            stream << m.get<double>("intensity");
+        stream << info.get<deg>("alpha") << separator << info.get<deg>("beta")  << separator;
+        if (info.has("intensity"))
+            stream << info.get<double>("intensity");
         else
             stream << "nan";
         stream << "\n";
@@ -50,9 +49,8 @@ void writeCompactInfoSequence(QTextStream& stream, const OnePeakAllInfos& peakIn
 {
     int count = 0;
     for (auto& info : peakInfos.peakInfos()) {
-        const Mapped& m = info.map();
-        if (m.has("intensity"))
-            stream << m.get<double>("intensity");
+        if (info.has("intensity"))
+            stream << info.get<double>("intensity");
         else
             stream << "nan";
         count = (count+1)%10;

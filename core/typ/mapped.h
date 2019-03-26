@@ -33,6 +33,7 @@ public:
     template<typename T>
     T get(const QString& key) const;
     QVariant at(const QString& key) const { return super::at(key); }
+    void insert(const Mapped* map) { super::insert(map->begin(), map->end()); }
 };
 
 template<typename T>

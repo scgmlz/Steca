@@ -25,7 +25,7 @@
 namespace {
 
 //! Fits peak to the given gamma gRange and constructs a PeakInfo.
-PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
+Mapped getPeak(int jP, const Cluster& cluster, int iGamma)
 {
     const OnePeakSettings& settings = gSession->peaksSettings.at(jP);
     const Range& fitrange = settings.range();
@@ -56,7 +56,8 @@ PeakInfo getPeak(int jP, const Cluster& cluster, int iGamma)
     out.set("beta", beta);
     out.set("gamma_min", gRange.min);
     out.set("gamma_max", gRange.max);
-    return PeakInfo{metadata, out};
+    out.insert(metadata);
+    return out;
 }
 
 OnePeakAllInfos computeDirectInfoSequence(int jP)
@@ -67,7 +68,7 @@ OnePeakAllInfos computeDirectInfoSequence(int jP)
     for (const Cluster* cluster : gSession->activeClusters.clusters.yield()) {
         progress.step();
         for (int i=0; i<nGamma; ++i) {
-            PeakInfo refInfo = getPeak(jP, *cluster, i);
+            Mapped refInfo = getPeak(jP, *cluster, i);
             if (refInfo.has("intensity"))
                 ret.appendPeak(std::move(refInfo));
         }

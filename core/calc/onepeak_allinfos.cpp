@@ -50,7 +50,7 @@ static void sortColumns(std::vector<double>& xs, std::vector<double>& ys, std::v
 
 } // namespace
 
-std::vector<QVariant> peakData(const PeakInfo& m)
+std::vector<QVariant> peakData(const Mapped& m)
 {
     std::vector<QVariant> ret;
     for (const QString& key: {"alpha", "beta", "gamma_min", "gamma_max"})
@@ -61,12 +61,12 @@ std::vector<QVariant> peakData(const PeakInfo& m)
             ret.push_back( m.at("sigma_"+key) );
         }
     }
-    auto values_to_append = m.md_ ? m.md_->attributeValues() : meta::attributeNaNs();
+    auto values_to_append = meta::metaValues(m);
     ret.insert(ret.end(), values_to_append.begin(), values_to_append.end());
     return ret;
 }
 
-void OnePeakAllInfos::appendPeak(PeakInfo&& info)
+void OnePeakAllInfos::appendPeak(Mapped&& info)
 {
     peakInfos_.push_back(std::move(info));
 }
@@ -82,7 +82,7 @@ void OnePeakAllInfos::get4(const int indexX, const int indexY,
     ys.resize(n);
 
     for (int i=0; i<n; ++i) {
-        const PeakInfo& peakInfo = peakInfos_.at(i);
+        const Mapped& peakInfo = peakInfos_.at(i);
         const std::vector<QVariant> row = peakData(peakInfo);
         xs[i] = row.at(indexX).toDouble();
         ys[i] = row.at(indexY).toDouble();
@@ -96,7 +96,7 @@ void OnePeakAllInfos::get4(const int indexX, const int indexY,
         ysLow.resize(n);
         ysHig.resize(n);
         for (int i=0; i<n; ++i) {
-            const PeakInfo& peakInfo = peakInfos_.at(is.at(i));
+            const Mapped& peakInfo = peakInfos_.at(is.at(i));
             const std::vector<QVariant> row = peakData(peakInfo);
             double sigma = row.at(indexY+1).toDouble(); // SIGMA_X has tag position of X plus 1
             double y = ys.at(i);
@@ -120,7 +120,7 @@ void OnePeakAllInfos::getValuesAndSigma(const size_t indexX, const size_t indexY
     ys.resize(n);
 
     for (size_t i=0; i<n; ++i) {
-        const PeakInfo& peakInfo = peakInfos_.at(i);
+        const Mapped& peakInfo = peakInfos_.at(i);
         const std::vector<QVariant> row = peakData(peakInfo);
         xs[i] = row.at(indexX).toDouble();
         ys[i] = row.at(indexY).toDouble();
@@ -134,7 +134,7 @@ void OnePeakAllInfos::getValuesAndSigma(const size_t indexX, const size_t indexY
 
         ysSigma.resize(n);
         for (auto i : is) {
-            const PeakInfo& peakInfo = peakInfos_.at(is.at(i));
+            const Mapped& peakInfo = peakInfos_.at(is.at(i));
             const std::vector<QVariant> row = peakData(peakInfo);
             ysSigma[i] = row.at(indexY+1).toDouble(); // SIGMA_X has tag position of X plus 1
         }
