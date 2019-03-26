@@ -57,6 +57,7 @@ const QStringList& niceTags();
 std::vector<QVariant> attributeNaNs();
 int size();
 Metadata computeAverage(const std::vector<const Metadata*>& vec);
+std::vector<QVariant> metaValues(const Mapped metamap);
 } // namespace meta
 
 #endif // METADATA_H

@@ -180,4 +180,17 @@ Metadata computeAverage(const std::vector<const Metadata*>& vec)
 
     return ret;
 }
+
+std::vector<QVariant> metaValues(const Mapped map)
+{
+    std::vector<QVariant> attr;
+    for (int i=0; i<metaDefs.size(); i++) {
+        QString key = metaDefs.at(i).asciiName_;
+        if (map.has(key))
+            attr.push_back(map.at(key));
+        else
+            attr.push_back(Q_QNAN);
+    }
+    return attr;
+}
 } // namespace meta
