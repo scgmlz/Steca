@@ -31,11 +31,11 @@
 
 Triggers::Triggers()
 {
-    about          .setTriggerHook([](){ AboutBox().exec(); });
-    baserangeAdd   .setTriggerHook([](){ AddRangeBox("baseline").exec(); });
+    about          .setTriggerHook([](){ AboutBox{}.exec(); });
+    baserangeAdd   .setTriggerHook([](){ AddRangeBox{"baseline"}.exec(); });
     baserangesClear.setTriggerHook([](){ gSession->baseline.clear();          });
     baserangeRemove.setTriggerHook([](){ gSession->baseline.removeSelected(); });
-    peakAdd        .setTriggerHook([](){ AddRangeBox("peak").exec(); });
+    peakAdd        .setTriggerHook([](){ AddRangeBox{"peak"}.exec(); });
     addFiles       .setTriggerHook([](){ loadData::addFiles(gGui); });
     checkUpdate    .setTriggerHook([](){ CheckUpdate _(gGui); });
     clearSession   .setTriggerHook([](){ gSession->clear(); });
@@ -45,7 +45,7 @@ Triggers::Triggers()
     exportBigtable .setTriggerHook([](){ ExportBigtable{}.exec(); });
     exportDiagram  .setTriggerHook([](){ ExportDiagram{}.exec(); });
     loadSession    .setTriggerHook([](){ ioSession::load(gGui); });
-    online         .setTriggerHook([](){ QDesktopServices::openUrl(QUrl(STECA2_PAGES_URL)); });
+    online         .setTriggerHook([](){ QDesktopServices::openUrl(QUrl{STECA2_PAGES_URL}); });
     peakRemove     .setTriggerHook([](){ gSession->peaksSettings.removeSelected(); });
     peaksClear     .setTriggerHook([](){ gSession->peaksSettings.clear();          });
     quit           .setTriggerHook([](){ gGui->QMainWindow::deleteLater(); });
@@ -59,8 +59,8 @@ Triggers::Triggers()
     // Remakes (others are set more conveniently in Mainwindow::refresh):
     corrFile.setRemake([this]() {
             bool hasCorr = gSession->hasCorrFile();
-            corrFile.setIcon(QIcon(hasCorr ? ":/icon/rem" : ":/icon/add"));
-            QString text = QString(hasCorr ? "Remove" : "Add") + " correction file";
+            corrFile.setIcon(QIcon{hasCorr ? ":/icon/rem" : ":/icon/add"});
+            QString text = QString{hasCorr ? "Remove" : "Add"} + " correction file";
             corrFile.setText(text);
             corrFile.setToolTip(text.toLower()); });
 }

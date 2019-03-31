@@ -14,8 +14,9 @@
 
 #include "gui/panels/controls_peakfits.h"
 #include "core/session.h"
+#include "core/fitengine/double_with_error.h"
 #include "core/peakfit/peak_function.h"
-#include "core/peakfit/outcome.h"
+#include "core/typ/mapped.h"
 #include "qcr/widgets/tables.h"
 #include "qcr/widgets/controls.h"
 #include "gui/mainwin.h"
@@ -27,8 +28,9 @@ namespace {
 
 QString safeRealText(double val, int prec=4) {
     return qIsFinite(val) ? QString::number(val, 'g', prec) : "NaN"; }
-QString par2text(const DoubleWithError& par) {
-    return safeRealText(par.value(),4) + "+-" + safeRealText(par.roundedError(4),4); }
+QString par2text(double val, double err) {
+    return safeRealText(val,4) + "+-" + safeRealText(
+        DoubleWithError(val,err).roundedError(4),4); }
 
 } // namespace
 
@@ -155,28 +157,27 @@ void PeakfitOutcomeView::refresh()
     ASSERT(dfgram); // the entire tab should be disabled if there is no active cluster
 
     int jP = gSession->peaksSettings.selectedIndex();
-    const RawOutcome& outcome = dfgram->getRawOutcome(jP);
-    showRawOutcomeX_.setText(safeRealText(outcome.getCenter()));
-    showRawOutcomeD_.setText(safeRealText(outcome.getFwhm()));
-    showRawOutcomeY_.setText(safeRealText(outcome.getIntensity()));
+    const Mapped& outcome = dfgram->getRawOutcome(jP);
+    showRawOutcomeX_.setText(safeRealText(outcome.get<double>("center")));
+    showRawOutcomeD_.setText(safeRealText(outcome.get<double>("fwhm")));
+    showRawOutcomeY_.setText(safeRealText(outcome.get<double>("intensity")));
 
     if (peak->isRaw())
         return enable(true, false, false);
     const Fitted& pFct = dfgram->getPeakFit(jP);
     const PeakFunction*const peakFit = dynamic_cast<const PeakFunction*>(pFct.fitFunction());
 
-    const DoubleWithError nanVal = {Q_QNAN, Q_QNAN};
     // if peakFit exists, use it, otherwise use NaNs:
-    const PeakOutcome out = peakFit ? peakFit->outcome(pFct)
-                                    : PeakOutcome{nanVal, nanVal, nanVal, nullptr};
+    const Mapped out = peakFit ? peakFit->outcome(pFct) : Mapped{};
 
-    showFittedX_ .setText(par2text(out.center));
-    showFittedD_ .setText(par2text(out.fwhm));
-    showFittedY_ .setText(par2text(out.intensity));
-    if (!!out.gammOverSigma)
-        showFittedSG_.setText(par2text(*out.gammOverSigma));
+    showFittedX_ .setText(par2text(out.get<double>("center"),out.get<double>("sigma_center")));
+    showFittedD_ .setText(par2text(out.get<double>("fwhm"), out.get<double>("sigma_fwhm")));
+    showFittedY_ .setText(par2text(out.get<double>("intensity"), out.get<double>("sigma_intensity")));
+    if (out.has("gammaOverSigma"))
+        showFittedSG_.setText(
+            par2text(out.get<double>("gammaOverSigma"), out.get<double>("sigma_gammaOverSigma")));
 
-    enable(true, true, !!out.gammOverSigma);
+    enable(true, true, out.has("gammaOverSigma"));
 }
 
 void PeakfitOutcomeView::enable(bool haveRaw, bool haveFit, bool haveSoG)
@@ -237,18 +238,19 @@ ControlsPeakfits::ControlsPeakfits()
 
     box->addWidget(new TableView(new PeaksModel{}));
     box->addWidget(comboPeakFct);
-    box->addWidget(new RangeControl("peak",
-                                    []()->const Range* {
-                                        const OnePeakSettings* p = gSession->peaksSettings.selectedPeak();
-                                        return p ? &p->range() : nullptr; },
-                                    [](double val, bool namelyMax){
-                                        OnePeakSettings* p = gSession->peaksSettings.selectedPeak();
-                                        ASSERT(p);
-                                        if (namelyMax)
-                                            p->setMax(val);
-                                        else
-                                            p->setMax(val);
-                                        gSession->onPeaks(); }
+    box->addWidget(new RangeControl(
+                       "peak",
+                       []()->const Range* {
+                           const OnePeakSettings* p = gSession->peaksSettings.selectedPeak();
+                           return p ? &p->range() : nullptr; },
+                       [](double val, bool namelyMax){
+                           OnePeakSettings* p = gSession->peaksSettings.selectedPeak();
+                           ASSERT(p);
+                           if (namelyMax)
+                               p->setMax(val);
+                           else
+                               p->setMax(val);
+                           gSession->onPeaks(); }
                        ));
     box->addWidget(new PeakfitOutcomeView);
     box->addStretch(1000);

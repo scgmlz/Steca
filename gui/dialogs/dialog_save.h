@@ -31,7 +31,7 @@ class DialogSave : public QcrModalDialog {
 public:
     DialogSave() = delete;
     DialogSave(const DialogSave&) = delete;
-    DialogSave(QWidget* _parent, const QString& _name, const QString& _title,
+    DialogSave(const QString& _name, QWidget* _parent, const QString& _title,
                const QStringList& _extensions);
 
 protected:
@@ -54,7 +54,7 @@ private:
 
 class DialogMultisave : public DialogSave {
 public:
-    DialogMultisave(QWidget* _parent, const QString& _name, const QString& _title,
+    DialogMultisave(const QString& _name, QWidget* _parent, const QString& _title,
                     const QStringList& _extensions, const QString& _content, const bool _haveMulti);
 private:
     void save() final;

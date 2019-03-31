@@ -17,32 +17,47 @@
 
 #include <QVariant>
 #include "core/base/angles.h"
+#include "core/typ/mapped.h"
+
+enum class averageMode {
+    AVGE,
+    SUM,
+    FIRST,
+    LAST
+};
+
+class MetaDefinition {
+public:
+    MetaDefinition(const QString& name, const QString& niceName, averageMode avgmode);
+
+    const QString asciiName_;
+    const QString niceName_;
+    const averageMode mode_;
+};
 
 //! The meta data associated with one Measurement.
 
-class Metadata {
+class Metadata : public Mapped {
 public:
     Metadata();
     Metadata(const Metadata&) = delete;
     Metadata(Metadata&&) = default;
 
-    static int numAttributes(bool onlyNum);
-    static const QString& attributeTag(int, bool nice);
-    static const QStringList& attributeTags(bool nice);
-    static std::vector<QVariant> attributeNaNs();
-    static int size() { return attributeNaNs().size(); }
-    static Metadata computeAverage(const std::vector<const Metadata*>& vec);
-
     QString attributeStrValue(int) const;
     QVariant attributeValue(int) const;
     std::vector<QVariant> attributeValues() const;
-
-    QString date, comment;
-    deg motorXT, motorYT, motorZT, motorOmg, motorTth, motorPhi, motorChi, motorPST, motorSST,
-        motorOMGM;
-    double nmT, nmTeload, nmTepos, nmTeext, nmXe, nmYe, nmZe; // nm = prehistorically 'new' metadata
-    double monitorCount, deltaMonitorCount;
-    double time, deltaTime;
 };
+
+namespace meta {
+int numAttributes(bool onlyNum);
+const QString& asciiTag(int);
+const QString& niceTag(int);
+const QStringList& asciiTags();
+const QStringList& niceTags();
+std::vector<QVariant> attributeNaNs();
+int size();
+Metadata computeAverage(const std::vector<const Metadata*>& vec);
+std::vector<QVariant> metaValues(const Mapped metamap);
+} // namespace meta
 
 #endif // METADATA_H

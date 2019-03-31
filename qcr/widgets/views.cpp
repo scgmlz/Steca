@@ -19,7 +19,7 @@ QcrIcon::QcrIcon(const QString& fileName)
     : QcrBase{"icon:"+fileName}
 {
     int h = sizeHint().height();
-    setPixmap(QIcon(fileName).pixmap(QSize(h, h)));
+    setPixmap(QIcon{fileName}.pixmap(QSize{h, h}));
 }
 
 QcrLineDisplay::QcrLineDisplay(std::function<QString()> freshText)

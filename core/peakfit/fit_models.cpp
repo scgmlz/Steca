@@ -14,8 +14,9 @@
 
 #include "core/peakfit/fit_models.h"
 #include "core/typ/curve.h"
+#include "core/fitengine/double_with_error.h"
 #include "core/fitengine/fit_wrapper.h"
-#include "core/peakfit/outcome.h"
+#include "core/typ/mapped.h"
 #include <cerf.h>
 #include <qmath.h>
 #define SQR(x) ((x)*(x))
@@ -139,14 +140,20 @@ void Voigt::setDY(const double* P, const int nXY, const double* X, double* Jacob
     }
 }
 
-PeakOutcome Voigt::outcome(const Fitted& F) const
+Mapped Voigt::outcome(const Fitted& F) const
 {
     double fwhm = FindFwhm::fromFitted(F).value();
-    return {
-        {F.parValAt(0), F.parErrAt(0)},
-        DoubleWithError{fwhm, fwhm / F.parValAt(1) * F.parErrAt(1)},
-        {F.parValAt(2), F.parErrAt(2)},
-        std::unique_ptr<DoubleWithError>(new DoubleWithError{F.parValAt(3), F.parErrAt(3)}) };
+
+    Mapped ret;
+    ret.set("center", F.parValAt(0));
+    ret.set("sigma_center", F.parErrAt(0));
+    ret.set("intensity", F.parValAt(1));
+    ret.set("sigma_intensity", F.parErrAt(1));
+    ret.set("fwhm", fwhm);
+    ret.set("sigma_fwhm", fwhm / F.parValAt(1) * F.parErrAt(1));
+    ret.set("gammaOverSigma", F.parValAt(3));
+    ret.set("sigma_gammaOverSigma", F.parErrAt(3));
+    return ret;
 }
 
 //  ***********************************************************************************************

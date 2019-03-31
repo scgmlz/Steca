@@ -34,7 +34,7 @@ private:
     void setActivated(int row, bool on) { gSession->params.smallMetaSelection.set(row, on); }
 
     int columnCount() const final { return NUM_COLUMNS; }
-    int rowCount() const final { return Metadata::numAttributes(true); }
+    int rowCount() const final { return meta::numAttributes(true); }
 
     QVariant entry(int, int) const final;
     QVariant headerData(int, Qt::Orientation, int) const { return {}; }
@@ -46,7 +46,7 @@ QVariant MetatableModel::entry(int row, int col) const
 {
     switch (col) {
     case COL_TAG:
-        return Metadata::attributeTag(row, true);
+        return meta::niceTag(row);
     case COL_VALUE:
         const Cluster* highlight = gSession->currentCluster();
         if (!highlight)
@@ -83,7 +83,7 @@ MetatableView::MetatableView()
 SubframeMetadata::SubframeMetadata()
     : QcrDockWidget{"metadata"}
 {
-    for (int i=0; i<Metadata::size(); ++i)
+    for (int i=0; i<meta::size(); ++i)
         gSession->params.smallMetaSelection.vec.push_back({false});
     setFeatures(DockWidgetMovable);
     setWindowTitle("Metadata");

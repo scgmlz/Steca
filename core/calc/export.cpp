@@ -31,10 +31,14 @@ namespace {
 void writeFullInfoSequence(
     QTextStream& stream, const OnePeakAllInfos& peakInfos, const QString& separator)
 {
-    for (auto& info : peakInfos.peakInfos())
-        stream << info.alpha() << separator
-               << info.beta()  << separator
-               << info.inten() << "\n";
+    for (auto& info : peakInfos.peakInfos()) {
+        stream << info.get<deg>("alpha") << separator << info.get<deg>("beta")  << separator;
+        if (info.has("intensity"))
+            stream << info.get<double>("intensity");
+        else
+            stream << "nan";
+        stream << "\n";
+    }
 }
 
 //! Writes intensities (only!) for pole figure for one Bragg peak.
@@ -45,7 +49,10 @@ void writeCompactInfoSequence(QTextStream& stream, const OnePeakAllInfos& peakIn
 {
     int count = 0;
     for (auto& info : peakInfos.peakInfos()) {
-        stream << info.inten();
+        if (info.has("intensity"))
+            stream << info.get<double>("intensity");
+        else
+            stream << "nan";
         count = (count+1)%10;
         if (count == 0)
             stream << "\n";
@@ -97,13 +104,13 @@ void data_export::writeCurve(
         qFatal("curve is empty");
     ASSERT(rgeGma.isValid());
     const Metadata& md = cluster->avgMetadata();
-    stream << "#Comment: " << md.comment << '\n';
-    stream << "#Date: " << md.date << '\n';
+    stream << "#Comment: " << md.get<QString>("comment") << '\n';
+    stream << "#Date: " << md.get<QString>("date") << '\n';
     stream << "#Gamma range min: " << rgeGma.min << '\n';
     stream << "#Gamma range max: " << rgeGma.max << '\n';
 
-    for (int i=0; i<Metadata::numAttributes(false); ++i)
-        stream << "#" << Metadata::attributeTag(i, false) << ": "
+    for (int i=0; i<meta::numAttributes(false); ++i)
+        stream << "#" << meta::asciiTag(i) << ": "
                << md.attributeValue(i).toDouble() << '\n';
 
     stream << "#Tth" << separator << "Intensity" << '\n';

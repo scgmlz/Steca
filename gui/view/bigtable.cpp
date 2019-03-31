@@ -46,8 +46,8 @@ void BigtableModel::refresh()
     beginResetModel();
     rows_.clear();
     if (const OnePeakAllInfos* peakInfos = gSession->peaksOutcome.currentInfoSequence())
-        for (const PeakInfo& r : peakInfos->peakInfos())
-            rows_.push_back(XRow(rows_.size()+1, r.peakData()));
+        for (const Mapped& r : peakInfos->peakInfos())
+            rows_.push_back(XRow(rows_.size()+1, peakData(r)));
     sortData();
     endResetModel();
 }
@@ -68,6 +68,8 @@ QVariant BigtableModel::data(const QModelIndex& index, int role) const
         const QVariant var = rows_.at(row).row.at(col-1);
         if (var.canConvert<double>() && qIsNaN(var.toDouble()))
             return {}; // show blank field instead of NAN
+        if (var.canConvert<deg>())
+            return double(var.value<deg>());
         return var;
     }
     case Qt::TextAlignmentRole: {

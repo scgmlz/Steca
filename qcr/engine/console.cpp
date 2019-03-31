@@ -209,7 +209,7 @@ Console::Result Console::wrappedCommand(const QString& line)
         return Result::ok; // nothing to do
     QString cmd, arg;
     strOp::splitOnce(command, cmd, arg);
-    // qDebug() << "wrapped command: " << command;
+    // qDebug() << "registry=" << registry()->name() << " --- wrapped command: " << command;
     if (cmd[0]=='@') {
         if (cmd=="@ls") {
             const CommandRegistry* reg = registry();

@@ -15,19 +15,26 @@
 #include "core/peakfit/peak_function.h"
 #include "core/fitengine/fit_wrapper.h"
 #include "core/peakfit/fit_models.h"
-#include "core/peakfit/outcome.h"
-#include "core/peakfit/raw_outcome.h"
+#include "core/typ/mapped.h"
 // #include "qcr/base/debug.h"
 
-PeakOutcome PeakFunction::outcome(const Fitted& F) const
+Mapped PeakFunction::outcome(const Fitted& F) const
 {
-    return {
-        {F.parValAt(0), F.parErrAt(0)},
-        {F.parValAt(1), F.parErrAt(1)},
-        {F.parValAt(2), F.parErrAt(2)} };
+    if (!F.success())
+        return {};
+    Mapped ret;
+    ret.set("center", F.parValAt(0));
+    ret.set("sigma_center", F.parErrAt(0));
+    ret.set("fwhm", F.parValAt(1));
+    ret.set("sigma_fwhm", F.parErrAt(1));
+    ret.set("intensity", F.parValAt(2));
+    ret.set("sigma_intensity", F.parErrAt(2));
+    return ret;
 }
 
-Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const RawOutcome& rawOutcome)
+//! Fits given `curve` with model given by `name` and with starting values `rawOutcome`.
+
+Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const Mapped& rawOutcome)
 {
     const PeakFunction* f;
     bool onlyPositiveParams = false;
@@ -43,8 +50,8 @@ Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const RawO
     } else
         qFatal("Impossible case");
     std::vector<double> startParams(f->nPar(), 1.);
-    startParams[0] = rawOutcome.getCenter();
-    startParams[1] = rawOutcome.getFwhm();
-    startParams[2] = rawOutcome.getIntensity();
+    startParams[0] = rawOutcome.get<double>("center");
+    startParams[1] = rawOutcome.get<double>("fwhm");
+    startParams[2] = rawOutcome.get<double>("intensity");
     return FitWrapper().execFit(f, curve, startParams, onlyPositiveParams);
 }

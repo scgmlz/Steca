@@ -47,8 +47,8 @@ void ImageTrafoActions::doImageRotate()
     default:
         qFatal("impossible rotation");
     }
-    rotateImage.setIcon(QIcon(rotateIconFile));
-    mirrorImage.setIcon(QIcon(mirrorIconFile));
+    rotateImage.setIcon(QIcon{rotateIconFile});
+    mirrorImage.setIcon(QIcon{mirrorIconFile});
 }
 
 void ImageTrafoActions::setImageMirror(bool on)

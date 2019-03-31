@@ -40,7 +40,7 @@ public:
     void setY(const double* P, const int nXY, const double* X, double* Y) const final;
     void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
     int nPar() const final { return 4; }
-    PeakOutcome outcome(const Fitted&) const final;
+    Mapped outcome(const Fitted&) const final;
 };
 
 #endif // FIT_MODELS_H

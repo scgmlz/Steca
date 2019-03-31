@@ -23,8 +23,8 @@
 #include <QStringBuilder> // for ".." % ..
 
 namespace {
-QDir dataDir_ {QDir::homePath()};
-const QString dataFormats {"Data files (*.dat *.yaml *.mar*);;All files (*.*)"};
+QDir dataDir_{QDir::homePath()};
+const QString dataFormats{"Data files (*.dat *.yaml *.mar*);;All files (*.*)"};
 } // namespace
 
 void loadData::addFiles(QWidget* parent)
@@ -34,7 +34,7 @@ void loadData::addFiles(QWidget* parent)
     // gGui->repaint();
     if (fileNames.isEmpty())
         return;
-    TakesLongTime __("addFiles");
+    TakesLongTime __{"addFiles"};
     try {
         gSession->dataset.addGivenFiles(fileNames);
     } catch (const Exception& ex) {

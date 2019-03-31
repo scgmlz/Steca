@@ -15,7 +15,11 @@
 #ifndef ONEPEAK_ALLINFOS_H
 #define ONEPEAK_ALLINFOS_H
 
-#include "core/calc/peak_info.h"
+#include "core/typ/mapped.h"
+
+//! Returns fixed-ordered list of parameter values.
+
+std::vector<QVariant> peakData(const Mapped&);
 
 //! A list of `PeakInfo`s, associated with _one_ Bragg peak and different orientations alpha,beta.
 
@@ -25,9 +29,9 @@ public:
     OnePeakAllInfos(const OnePeakAllInfos&) = delete;
     OnePeakAllInfos(OnePeakAllInfos&&) = default;
 
-    void appendPeak(PeakInfo&&);
+    void appendPeak(Mapped&&);
 
-    const std::vector<PeakInfo>& peakInfos() const { return peakInfos_; }
+    const std::vector<Mapped>& peakInfos() const { return peakInfos_; }
     void get4(const int idxX, const int idxY,
               std::vector<double>& xs, std::vector<double>& ys,
               std::vector<double>& ysLow, std::vector<double>& ysHig) const;
@@ -35,7 +39,7 @@ public:
               std::vector<double>& xs, std::vector<double>& ys,
               std::vector<double>& ysSigma) const;
 private:
-    std::vector<PeakInfo> peakInfos_;
+    std::vector<Mapped> peakInfos_;
 };
 
 #endif // ONEPEAK_ALLINFOS_H
