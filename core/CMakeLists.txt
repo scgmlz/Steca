@@ -17,7 +17,6 @@ message(STATUS "core to be linked with yaml:    ${yaml_LIBRARIES}")
 target_link_libraries(${lib}
     PUBLIC
     qcr
-    devtools
     PRIVATE
     LevMar
     caress_loader

@@ -3,7 +3,7 @@
 //  Steca: stress and texture calculator
 //
 //! @file      devtools/numdiff.h
-//! @brief     Defines function readFile
+//! @brief     Defines function compareFiles
 //!
 //! @homepage  https://github.com/scgmlz/Steca
 //! @license   GNU General Public License v3 or higher (see COPYING)
@@ -19,7 +19,7 @@
 
 namespace numdiff {
 
-bool compareFiles(std::string, std::string, double);
+void compareFiles(std::string, std::string, double);
 
 }
 

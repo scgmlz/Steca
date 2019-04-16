@@ -63,14 +63,16 @@ double compareLines(std::string line1, std::string line2)
 }
 } //namespace
 
-bool numdiff::compareFiles(std::string filepath1, std::string filepath2, double maxtol)
+void numdiff::compareFiles(std::string filepath1, std::string filepath2, double maxtol)
 {
     double tol = 0;
 
     std::ifstream in1(filepath1);
     std::ifstream in2(filepath2);
-    if (!in1 || !in2)
-        return false; //the two files must exist
+    if (!in1 || !in2) {
+        std::cout << "file does not exist\n";
+        exit(1); //the two files must exist
+    }
 
     std::string ln1;
     std::string ln2;
@@ -84,5 +86,8 @@ bool numdiff::compareFiles(std::string filepath1, std::string filepath2, double 
     }
     std::cout << "tol insg: " << tol << std::endl;
 
-    return tol<maxtol;
+    if (tol < maxtol)
+        exit(0);
+    else
+        exit(1);
 }
