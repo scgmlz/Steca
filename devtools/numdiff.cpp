@@ -12,7 +12,6 @@
 //
 //  ***********************************************************************************************
 
-#include "devtools/numdiff.h"
 #include <fstream>
 #include <vector>
 #include <iostream>
@@ -63,7 +62,7 @@ double compareLines(std::string line1, std::string line2)
 }
 } //namespace
 
-void numdiff::compareFiles(std::string filepath1, std::string filepath2, double maxtol)
+void compareFiles(std::string filepath1, std::string filepath2, double maxtol)
 {
     double tol = 0;
 
@@ -91,3 +90,18 @@ void numdiff::compareFiles(std::string filepath1, std::string filepath2, double 
     else
         exit(1);
 }
+
+int main(int argc, char* argv[])
+{
+    if (argc != 4) {
+        std::cout << "Missing arguments. Please enter numdiff <filePath1> <filePath2> <maximum Tolerance>\n";
+        exit(1);
+    } else {
+        std::string filePath1(argv[1]);
+        std::string filePath2(argv[2]);
+        double maxTol = std::atof(argv[3]);
+        compareFiles(filePath1, filePath2, maxTol);
+    }
+}
+
+

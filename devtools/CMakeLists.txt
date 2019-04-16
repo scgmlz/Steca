@@ -1,10 +1,13 @@
-set(lib devtools)
+if(WIN32)
+    add_executable(numdiff WIN32 numdiff.cpp)
+else()
+    add_executable(numdiff numdiff.cpp)
+endif()
 
-file(GLOB_RECURSE sources *.cpp)
-add_library(${lib} ${sources})
-
-target_include_directories(${lib}
+target_include_directories(numdiff
     PRIVATE
-    ${CMAKE_SOURCE_DIR}
-    ${SMAKE_SOURCE_DIR}/3rdparty
-    )
+    ${CMAKE_SOURCE_DIR})
+
+if(WIN32)
+    include(PackIFW)
+endif()
