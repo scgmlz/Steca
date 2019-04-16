@@ -19,6 +19,8 @@
 #include <math.h>
 
 namespace {
+int row = 1;
+
 double relativeDiff(double x, double y)
 {
     if (x==0 && y==0)
@@ -41,8 +43,12 @@ double compareLines(std::string line1, std::string line2)
     while (std::getline(streamLine2, word2, ' '))
         wordsOfLine2.push_back(word2);
 
-    if (wordsOfLine1.size() != wordsOfLine2.size())
-        exit(1); //lines must have same number of words
+    if (wordsOfLine1.size() != wordsOfLine2.size()) {
+        std::cerr << "In line " << row << " different number of words.\n"
+                  << "Line of first file has " << wordsOfLine1.size() << " words,\n"
+                  << "whereas line of second file has " << wordsOfLine2.size() << "\n";
+        exit(1);
+    }
 
     for (int i=0; i<wordsOfLine1.size(); i++) {
         try {
@@ -53,8 +59,11 @@ double compareLines(std::string line1, std::string line2)
         } catch (const std::invalid_argument& e) {
             //if not double, then compares as strings
             std::string word = wordsOfLine1.at(i);
-            if (word.compare(wordsOfLine2.at(i)) != 0)
+            if (word.compare(wordsOfLine2.at(i)) != 0) {
+                std::cerr << "In line " << row << " words at " << i << " are not equal\n"
+                          << "words: " << word << " | " << wordsOfLine2.at(i) << "\n";
                 exit(1);
+            }
         }
     }
 
@@ -65,6 +74,7 @@ double compareLines(std::string line1, std::string line2)
 void compareFiles(std::string filepath1, std::string filepath2, double maxtol)
 {
     double tol = 0;
+    row =1;
 
     std::ifstream in1(filepath1);
     std::ifstream in2(filepath2);
@@ -75,26 +85,28 @@ void compareFiles(std::string filepath1, std::string filepath2, double maxtol)
 
     std::string ln1;
     std::string ln2;
-    int x = 1; //wich line is read
     while(std::getline(in1, ln1) && std::getline(in2, ln2)) {
         double tolerance = compareLines(ln1, ln2);
         if (tolerance != 0)
-            std::cout << tolerance << " in line " << x << std::endl;
+            std::cout << tolerance << " in line " << row << std::endl;
         tol += tolerance;
-        x++;
+        row++;
     }
-    std::cout << "tol insg: " << tol << std::endl;
+    std::cout << "total tolerance: " << tol << std::endl;
 
     if (tol < maxtol)
         exit(0);
-    else
+    else {
+        std::cerr << "The total tolerance " << tol << " is greater than the maximum tolerance "
+                  << maxtol << "\n";
         exit(1);
+    }
 }
 
 int main(int argc, char* argv[])
 {
     if (argc != 4) {
-        std::cout << "Missing arguments. Please enter numdiff <filePath1> <filePath2> <maximum Tolerance>\n";
+        std::cerr << "Missing arguments. Please enter numdiff <filePath1> <filePath2> <maximum Tolerance>\n";
         exit(1);
     } else {
         std::string filePath1(argv[1]);
