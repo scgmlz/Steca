@@ -58,7 +58,8 @@ std::vector<QVariant> peakData(const Mapped& m)
     for (const QString& key: {"intensity", "center", "fwhm", "gammaOverSigma"}) {
         if (m.has(key)) {
             ret.push_back( m.at(key) );
-            ret.push_back( m.at("sigma_"+key) );
+            if (m.has("sigma_"+key))
+                ret.push_back( m.at("sigma_"+key) );
         }
     }
     auto values_to_append = meta::metaValues(m);
