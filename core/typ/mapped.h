@@ -39,7 +39,7 @@ public:
 template<typename T>
 void Mapped::set(const QString& key, T value)
 {
-    ASSERT(!has(key));
+    //ASSERT(!has(key));
     super::operator[](key) = QVariant::fromValue<T>(value);
 }
 
