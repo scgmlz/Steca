@@ -66,7 +66,8 @@ QVariant BigtableModel::data(const QModelIndex& index, int role) const
         if (0 == col)
             return rows_.at(row).n;
         const QVariant var = rows_.at(row).row.at(col-1);
-        if (var.canConvert<double>() && qIsNaN(var.toDouble()))
+        if ((var.canConvert<double>() && qIsNaN(var.toDouble())) ||
+            (var.canConvert<deg>() && qIsNaN(double(var.value<deg>())) ))
             return {}; // show blank field instead of NAN
         if (var.canConvert<deg>())
             return double(var.value<deg>());
