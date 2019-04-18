@@ -41,6 +41,7 @@ std::vector<MetaDefinition> metaDefs = {
     {"delta_mon", "Δmon", averageMode::SUM},
     {"t", "t", averageMode::LAST},
     {"delta_t", "Δt", averageMode::SUM},
+    {"measure_t", "measure_t", averageMode::FIRST},
     {"numMeasurement", "numMeasurement", averageMode::FIRST},
     {"date", "date", averageMode::FIRST},
     {"comment", "comment", averageMode::FIRST},
