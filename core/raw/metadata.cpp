@@ -17,7 +17,7 @@
 
 namespace {
 
-static int noNumAttr = 0;
+static int noNumAttr = 2;
 
 std::vector<MetaDefinition> metaDefs = {
     {"X", "X", averageMode::AVGE},
@@ -41,6 +41,7 @@ std::vector<MetaDefinition> metaDefs = {
     {"delta_mon", "Δmon", averageMode::SUM},
     {"t", "t", averageMode::LAST},
     {"delta_t", "Δt", averageMode::SUM},
+    {"numMeasurement", "numMeasurement", averageMode::FIRST},
     {"date", "date", averageMode::FIRST},
     {"comment", "comment", averageMode::FIRST},
 };
@@ -51,10 +52,7 @@ MetaDefinition::MetaDefinition(const QString& name, const QString& niceName, ave
     : niceName_{niceName}
     , asciiName_{name}
     , mode_{avgmode}
-{
-    if (mode_ == averageMode::FIRST)
-        noNumAttr++;
-}
+{}
 
 Metadata::Metadata()
     : Mapped{}
@@ -144,12 +142,12 @@ Metadata computeAverage(const std::vector<const Metadata*>& vec)
         switch (metaDef.mode_) {
         case averageMode::FIRST: {
             const Metadata* firstMd = vec.front();
-            ret.set(key, firstMd->get<QString>(key));
+            ret.set(key, firstMd->at(key));
             break;
         }
         case averageMode::LAST: {
             const Metadata* lastMd = vec.back();
-            ret.set(key, lastMd->get<double>(key));
+            ret.set(key, lastMd->at(key));
             break;
         }
         case averageMode::SUM: {
