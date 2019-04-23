@@ -12,6 +12,7 @@
 //
 //  ***********************************************************************************************
 
+#include "core/base/angles.h"
 #include "core/peakfit/peak_function.h"
 #include "core/fitengine/fit_wrapper.h"
 #include "core/peakfit/fit_models.h"
@@ -23,8 +24,8 @@ Mapped PeakFunction::outcome(const Fitted& F) const
     if (!F.success())
         return {};
     Mapped ret;
-    ret.set("center", F.parValAt(0));
-    ret.set("sigma_center", F.parErrAt(0));
+    ret.set("center", deg{F.parValAt(0)});
+    ret.set("sigma_center", deg{F.parErrAt(0)});
     ret.set("fwhm", F.parValAt(1));
     ret.set("sigma_fwhm", F.parErrAt(1));
     ret.set("intensity", F.parValAt(2));
@@ -50,7 +51,7 @@ Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const Mapp
     } else
         qFatal("Impossible case");
     std::vector<double> startParams(f->nPar(), 1.);
-    startParams[0] = rawOutcome.get<double>("center");
+    startParams[0] = double(rawOutcome.get<deg>("center"));
     startParams[1] = rawOutcome.get<double>("fwhm");
     startParams[2] = rawOutcome.get<double>("intensity");
     return FitWrapper().execFit(f, curve, startParams, onlyPositiveParams);
