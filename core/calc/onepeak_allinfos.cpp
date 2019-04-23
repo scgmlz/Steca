@@ -124,11 +124,11 @@ void OnePeakAllInfos::getValuesAndSigma(const size_t indexX, const size_t indexY
         const Mapped& peakInfo = peakInfos_.at(i);
         const std::vector<QVariant> row = peakData(peakInfo);
         if (row.at(indexX).canConvert<deg>())
-            xs[i] = double(row.at(indexX).value<deg>());
+            xs[i] = row.at(indexX).value<deg>();
         else
             xs[i] = row.at(indexX).toDouble();
         if (row.at(indexY).canConvert<deg>())
-            ys[i] = double(row.at(indexY).value<deg>());
+            ys[i] = row.at(indexY).value<deg>();
         else
             ys[i] = row.at(indexY).toDouble();
     }
@@ -144,7 +144,7 @@ void OnePeakAllInfos::getValuesAndSigma(const size_t indexX, const size_t indexY
             const Mapped& peakInfo = peakInfos_.at(is.at(i));
             const std::vector<QVariant> row = peakData(peakInfo);
             if (row.at(indexY+1).canConvert<deg>())
-                ysSigma[i] = double(row.at(indexY+1).value<deg>());
+                ysSigma[i] = row.at(indexY+1).value<deg>();
             else
                 ysSigma[i] = row.at(indexY+1).toDouble(); // SIGMA_X has tag position of X plus 1
         }
