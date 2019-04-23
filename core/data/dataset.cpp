@@ -180,6 +180,8 @@ void Dataset::updateClusters()
 {
     allClusters.clear();
     hasIncomplete_ = false;
+    int measureNum = 1;
+    double measureTime =0;
     for (Datafile& file : files_) {
         file.clusters_.clear();
         for (int i=0; i<file.numMeasurements(); i+=binning.val()) {
@@ -189,8 +191,13 @@ void Dataset::updateClusters()
                     break;
             }
             std::vector<const Measurement*> group;
-            for (int ii=i; ii<file.numMeasurements() && ii<i+binning.val(); ii++)
+            for (int ii=i; ii<file.numMeasurements() && ii<i+binning.val(); ii++) {
+                file.raw_.setMeasurementNum(ii, measureNum);
+                file.raw_.setMeasurementTime(ii, measureTime);
+                measureTime += file.raw_.measurements().at(ii)->deltaTime();
                 group.push_back(file.raw_.measurements().at(ii));
+                measureNum++;
+            }
             std::unique_ptr<Cluster> cluster(new Cluster(group, file, allClusters.size(), i));
             file.clusters_.push_back(cluster.get());
             allClusters.push_back(std::move(cluster));
