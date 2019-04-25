@@ -31,7 +31,7 @@ private:
     int highlighted() const final { return highlighted_; }
     void onHighlight(int i) final { highlighted_ = i; }
     bool activated(int row) const { return gSession->params.smallMetaSelection.isSelected(row); }
-    void setActivated(int row, bool on) { gSession->params.smallMetaSelection.set(row, on); }
+    void setActivated(int row, bool on);
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return meta::numAttributes(true); }
@@ -42,6 +42,14 @@ private:
 
     int highlighted_ {0};
 };
+
+void MetatableModel::setActivated(int row, bool on)
+{
+    if (meta::getMetaMode(row) != metaMode::CONSTANT)
+        gSession->params.smallMetaSelection.set(row, on);
+    else if (gSession->params.smallMetaSelection.isSelected(row))
+        gSession->params.smallMetaSelection.set(row, false);
+}
 
 QVariant MetatableModel::entry(int row, int col) const
 {
