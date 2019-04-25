@@ -38,6 +38,7 @@ private:
 
     QVariant entry(int, int) const final;
     QVariant headerData(int, Qt::Orientation, int) const { return {}; }
+    QColor foregroundColor(int, int) const final;
 
     int highlighted_ {0};
 };
@@ -54,6 +55,18 @@ QVariant MetatableModel::entry(int row, int col) const
         return highlight->avgMetadata().attributeStrValue(row);
     }
     return "";
+}
+
+QColor MetatableModel::foregroundColor(int row, int col) const
+{
+    switch (meta::getMetaMode(row)) {
+    case metaMode::CONSTANT:
+        return QColor(Qt::black);
+    case metaMode::FILE_DEPENDENT:
+        return QColor(Qt::darkMagenta);
+    case metaMode::MEASUREMENT_DEPENDENT:
+        return QColor(Qt::darkBlue);
+    }
 }
 
 //  ***********************************************************************************************

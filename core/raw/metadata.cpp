@@ -13,6 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/raw/metadata.h"
+#include "core/session.h"
 //#include "qcr/base/debug.h"
 
 namespace {
@@ -49,10 +50,12 @@ std::vector<MetaDefinition> metaDefs = {
 
 } // namespace
 
-MetaDefinition::MetaDefinition(const QString& name, const QString& niceName, averageMode avgmode)
+MetaDefinition::MetaDefinition(const QString& name, const QString& niceName, averageMode avgmode,
+                               metaMode mM)
     : niceName_{niceName}
     , asciiName_{name}
     , mode_{avgmode}
+    , metaMode_{mM}
 {}
 
 Metadata::Metadata()
@@ -88,6 +91,8 @@ namespace meta {
 
 QStringList asciiNames;
 QStringList niceNames;
+std::vector<int> selectedMD;
+std::vector<int> selectedFD;
 
 int size()
 {
@@ -192,4 +197,56 @@ std::vector<QVariant> metaValues(const Mapped map)
     }
     return attr;
 }
+
+void setMetaMode(int i, metaMode mM)
+{
+    metaDefs.at(i).metaMode_ = mM;
+}
+
+metaMode getMetaMode(int i)
+{
+    return metaDefs.at(i).metaMode_;
+}
+
+void clearMetaModes()
+{
+    for (MetaDefinition m : metaDefs) {
+        m.metaMode_ = metaMode::CONSTANT;
+    }
+}
+
+int numSelectedFileDependent()
+{
+    selectedFD.clear();
+    for (int i=0; i<metaDefs.size(); i++) {
+        if (getMetaMode(i) == metaMode::FILE_DEPENDENT &&
+                gSession->params.smallMetaSelection.isSelected(i) ) {
+            selectedFD.push_back(i);
+        }
+    }
+    return selectedFD.size();
+}
+
+int numSelectedMeasurementDependent()
+{
+    selectedMD.clear();
+    for (int i=0; i<metaDefs.size(); i++) {
+        if (getMetaMode(i) == metaMode::MEASUREMENT_DEPENDENT &&
+                gSession->params.smallMetaSelection.isSelected(i) ) {
+            selectedMD.push_back(i);
+        }
+    }
+    return selectedMD.size();
+}
+
+int selectedOfFileDependent(int i)
+{
+    return selectedFD.at(i);
+}
+
+int selectedOfMeasurementDependent(int i)
+{
+    return selectedMD.at(i);
+}
+
 } // namespace meta
