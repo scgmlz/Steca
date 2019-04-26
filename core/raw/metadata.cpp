@@ -210,8 +210,8 @@ metaMode getMetaMode(int i)
 
 void clearMetaModes()
 {
-    for (MetaDefinition m : metaDefs) {
-        m.metaMode_ = metaMode::CONSTANT;
+    for (int m=0; m<metaDefs.size(); m++) {
+       setMetaMode(m, metaMode::CONSTANT);
     }
 }
 

@@ -31,7 +31,7 @@ private:
     int highlighted() const final { return highlighted_; }
     void onHighlight(int i) final { highlighted_ = i; }
     bool activated(int row) const { return gSession->params.smallMetaSelection.isSelected(row); }
-    void setActivated(int row, bool on);
+    void setActivated(int row, bool on) { gSession->params.smallMetaSelection.set(row, on); }
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return meta::numAttributes(true); }
@@ -39,17 +39,11 @@ private:
     QVariant entry(int, int) const final;
     QVariant headerData(int, Qt::Orientation, int) const { return {}; }
     QColor foregroundColor(int, int) const final;
+    void onClicked(const QModelIndex& cell) final;
+    QVariant data(const QModelIndex &index, int role) const final;
 
     int highlighted_ {0};
 };
-
-void MetatableModel::setActivated(int row, bool on)
-{
-    if (meta::getMetaMode(row) != metaMode::CONSTANT)
-        gSession->params.smallMetaSelection.set(row, on);
-    else if (gSession->params.smallMetaSelection.isSelected(row))
-        gSession->params.smallMetaSelection.set(row, false);
-}
 
 QVariant MetatableModel::entry(int row, int col) const
 {
@@ -74,6 +68,33 @@ QColor MetatableModel::foregroundColor(int row, int col) const
         return QColor(Qt::darkMagenta);
     case metaMode::MEASUREMENT_DEPENDENT:
         return QColor(Qt::darkBlue);
+    }
+}
+
+void MetatableModel::onClicked(const QModelIndex& cell)
+{
+    TableModel::setHighlightedCell(cell);
+    int row = cell.row();
+    int col = cell.column();
+    if (col==1 && meta::getMetaMode(row) != metaMode::CONSTANT) {
+        activateAndLog(row, !activated(row));
+        gRoot->remakeAll();
+    }
+}
+
+QVariant MetatableModel::data(const QModelIndex& index, int role) const
+{
+    int row = index.row();
+    int col = index.column();
+    if (col < 0 || col >= columnCount() || row < 0 || row >= rowCount())
+        return {};
+    if (role != Qt::CheckStateRole)
+        return CheckTableModel::data(index, role);
+    else {
+        if (col==1 && meta::getMetaMode(row)!=metaMode::CONSTANT)
+            return state(row);
+        else
+            return {};
     }
 }
 
