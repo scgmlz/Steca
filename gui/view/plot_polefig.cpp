@@ -41,7 +41,9 @@ std::vector<PolefigPoint> computePoints(const bool flat, const bool withHighligh
         for (const Mapped& m : allPeaks->peakInfos()) {
             bool highlight = false;
             if (withHighlight)
-                highlight = false; // TODO find out whether this comes from highlighted cluster
+                highlight = m.get<int>("numMeasurement") ==
+                        gSession->dataset.highlight().cluster()->
+                        avgMetadata().get<int>("numMeasurement");
             ret.push_back({m.get<deg>("alpha"), m.get<deg>("beta"),
                            m.get<double>("intensity")/rgeMax, highlight});
         }
