@@ -26,13 +26,21 @@ enum class averageMode {
     LAST
 };
 
+enum class metaMode {
+    CONSTANT,
+    FILE_DEPENDENT,
+    MEASUREMENT_DEPENDENT
+};
+
 class MetaDefinition {
 public:
-    MetaDefinition(const QString& name, const QString& niceName, averageMode avgmode);
+    MetaDefinition(const QString& name, const QString& niceName, averageMode avgmode,
+                   metaMode mM = metaMode::CONSTANT);
 
     const QString asciiName_;
     const QString niceName_;
     const averageMode mode_;
+    metaMode metaMode_;
 };
 
 //! The meta data associated with one Measurement.
@@ -58,6 +66,13 @@ std::vector<QVariant> attributeNaNs();
 int size();
 Metadata computeAverage(const std::vector<const Metadata*>& vec);
 std::vector<QVariant> metaValues(const Mapped metamap);
+void setMetaMode(int i, metaMode mM);
+metaMode getMetaMode(int);
+void clearMetaModes();
+int numSelectedFileDependent();
+int selectedOfFileDependent(int);
+int numSelectedMeasurementDependent();
+int selectedOfMeasurementDependent(int);
 } // namespace meta
 
 #endif // METADATA_H
