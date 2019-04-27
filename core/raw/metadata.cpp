@@ -52,8 +52,8 @@ std::vector<MetaDefinition> metaDefs = {
 
 MetaDefinition::MetaDefinition(const QString& name, const QString& niceName, averageMode avgmode,
                                metaMode mM)
-    : niceName_{niceName}
-    , asciiName_{name}
+    : asciiName_{name}
+    , niceName_{niceName}
     , mode_{avgmode}
     , metaMode_{mM}
 {}
