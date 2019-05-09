@@ -53,6 +53,7 @@ void OnePeakSettings::setPeakFunction(const QString& name)
 
 void OnePeakSettings::onFunction()
 {
+    if (functionName_!="Raw") {
     fitParAsciiNames_ = QStringList{ "intensity", "sigma_intensity",
                                      "center", "sigma_center",
                                      "fwhm", "sigma_fwhm" };
@@ -63,6 +64,10 @@ void OnePeakSettings::onFunction()
     if (functionName_=="Voigt") {
         fitParAsciiNames_ << "Gamma/Sigma" << "sigma_Gamma/Sigma";
         fitParNiceNames_  << "Γ/Σ" << "σ(Γ/Σ)";
+    }
+    } else {
+        fitParAsciiNames_ = QStringList{"intensity", "center", "fwhm"};
+        fitParNiceNames_ = QStringList{"intensity", "2θ", "fwhm"};
     }
 }
 

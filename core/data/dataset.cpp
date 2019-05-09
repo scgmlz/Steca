@@ -168,6 +168,7 @@ void Dataset::onFileChanged()
         cnt += file.numMeasurements();
     }
     updateClusters();
+    updateMetaModes();
 }
 
 void Dataset::onClusteringChanged()
@@ -180,6 +181,8 @@ void Dataset::updateClusters()
 {
     allClusters.clear();
     hasIncomplete_ = false;
+    int measureNum = 1;
+    double measureTime =0;
     for (Datafile& file : files_) {
         file.clusters_.clear();
         for (int i=0; i<file.numMeasurements(); i+=binning.val()) {
@@ -189,8 +192,13 @@ void Dataset::updateClusters()
                     break;
             }
             std::vector<const Measurement*> group;
-            for (int ii=i; ii<file.numMeasurements() && ii<i+binning.val(); ii++)
+            for (int ii=i; ii<file.numMeasurements() && ii<i+binning.val(); ii++) {
+                file.raw_.setMeasurementNum(ii, measureNum);
+                file.raw_.setMeasurementTime(ii, measureTime);
+                measureTime += file.raw_.measurements().at(ii)->deltaTime();
                 group.push_back(file.raw_.measurements().at(ii));
+                measureNum++;
+            }
             std::unique_ptr<Cluster> cluster(new Cluster(group, file, allClusters.size(), i));
             file.clusters_.push_back(cluster.get());
             allClusters.push_back(std::move(cluster));
@@ -240,4 +248,38 @@ bool Dataset::hasFile(const QString& fileName) const
         if (fileInfo == file.raw_.fileInfo())
             return true;
     return false;
+}
+
+void Dataset::updateMetaModes() const
+{
+    meta::clearMetaModes();
+    int metasize = meta::numAttributes(false);
+    for (int f=0; f<files_.size(); f++) {
+        const Datafile& file = files_.at(f);
+        for (int m=0; m<metasize; m++) {
+            if (meta::getMetaMode(m) == metaMode::MEASUREMENT_DEPENDENT)
+                continue;
+            else {
+                std::vector<const Measurement*> measurements = file.raw_.measurements();
+                for (int i=0; i<file.raw_.numMeasurements()-1; i++) {
+                    if (measurements.at(i)->metadata().attributeValue(m) ==
+                            measurements.at(i+1)->metadata().attributeValue(m))
+                        continue;
+                    else
+                        meta::setMetaMode(m, metaMode::MEASUREMENT_DEPENDENT);
+                }
+                if (meta::getMetaMode(m) == metaMode::FILE_DEPENDENT)
+                    continue;
+                else {
+                    if (f<files_.size()-1 &&
+                            files_.at(f).raw_.measurements().at(0)->metadata().attributeValue(m) ==
+                            files_.at(f+1).raw_.measurements().at(0)->metadata().attributeValue(m)
+                            || f==files_.size()-1)
+                        continue;
+                    else
+                        meta::setMetaMode(m, metaMode::FILE_DEPENDENT);
+                }
+            }
+        }
+    }
 }

@@ -12,6 +12,7 @@
 //
 //  ***********************************************************************************************
 
+#include "core/base/angles.h"
 #include "core/peakfit/fit_models.h"
 #include "core/typ/curve.h"
 #include "core/fitengine/double_with_error.h"
@@ -145,8 +146,8 @@ Mapped Voigt::outcome(const Fitted& F) const
     double fwhm = FindFwhm::fromFitted(F).value();
 
     Mapped ret;
-    ret.set("center", F.parValAt(0));
-    ret.set("sigma_center", F.parErrAt(0));
+    ret.set("center", deg{F.parValAt(0)});
+    ret.set("sigma_center", deg{F.parErrAt(0)});
     ret.set("intensity", F.parValAt(1));
     ret.set("sigma_intensity", F.parErrAt(1));
     ret.set("fwhm", fwhm);

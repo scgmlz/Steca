@@ -109,9 +109,14 @@ void data_export::writeCurve(
     stream << "#Gamma range min: " << rgeGma.min << '\n';
     stream << "#Gamma range max: " << rgeGma.max << '\n';
 
-    for (int i=0; i<meta::numAttributes(false); ++i)
-        stream << "#" << meta::asciiTag(i) << ": "
-               << md.attributeValue(i).toDouble() << '\n';
+    for (int i=0; i<meta::numAttributes(false); ++i) {
+        stream << "#" << meta::asciiTag(i) << ": ";
+        QVariant attr = md.attributeValue(i);
+        if (attr.canConvert<deg>())
+            stream << attr.value<deg>() << '\n';
+        else
+            stream << attr.value<double>() << '\n';
+    }
 
     stream << "#Tth" << separator << "Intensity" << '\n';
     for (int i=0; i<curve.xs().size(); ++i)

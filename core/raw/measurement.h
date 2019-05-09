@@ -46,6 +46,8 @@ public:
 
     const Image& image() const { return *image_; }
     size2d imageSize() const;
+    void setMeasurementNum(int i) { metadata_.set("numMeasurement", i); }
+    void setMeasurementTime(double t) { metadata_.set("measure_t", t); }
 
 private:
     const int position_; //! position in file_
