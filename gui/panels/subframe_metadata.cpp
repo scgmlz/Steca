@@ -69,6 +69,7 @@ QColor MetatableModel::foregroundColor(int row, int col) const
     case metaMode::MEASUREMENT_DEPENDENT:
         return QColor(Qt::darkBlue);
     }
+    qFatal("MetatableModel::foregroundColor impossible case");
 }
 
 void MetatableModel::onClicked(const QModelIndex& cell)

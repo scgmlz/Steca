@@ -259,27 +259,21 @@ void Dataset::updateMetaModes() const
         for (int m=0; m<metasize; m++) {
             if (meta::getMetaMode(m) == metaMode::MEASUREMENT_DEPENDENT)
                 continue;
-            else {
-                std::vector<const Measurement*> measurements = file.raw_.measurements();
-                for (int i=0; i<file.raw_.numMeasurements()-1; i++) {
-                    if (measurements.at(i)->metadata().attributeValue(m) ==
-                            measurements.at(i+1)->metadata().attributeValue(m))
-                        continue;
-                    else
-                        meta::setMetaMode(m, metaMode::MEASUREMENT_DEPENDENT);
-                }
-                if (meta::getMetaMode(m) == metaMode::FILE_DEPENDENT)
+            std::vector<const Measurement*> measurements = file.raw_.measurements();
+            for (int i=0; i<file.raw_.numMeasurements()-1; i++) {
+                if (measurements.at(i)->metadata().attributeValue(m) ==
+                    measurements.at(i+1)->metadata().attributeValue(m))
                     continue;
-                else {
-                    if (f<files_.size()-1 &&
-                            files_.at(f).raw_.measurements().at(0)->metadata().attributeValue(m) ==
-                            files_.at(f+1).raw_.measurements().at(0)->metadata().attributeValue(m)
-                            || f==files_.size()-1)
-                        continue;
-                    else
-                        meta::setMetaMode(m, metaMode::FILE_DEPENDENT);
-                }
+                meta::setMetaMode(m, metaMode::MEASUREMENT_DEPENDENT);
             }
+            if (meta::getMetaMode(m) == metaMode::FILE_DEPENDENT)
+                continue;
+            if (f>=files_.size()-1)
+                continue;
+            if (files_.at(f).raw_.measurements().at(0)->metadata().attributeValue(m) ==
+                files_.at(f+1).raw_.measurements().at(0)->metadata().attributeValue(m))
+                continue;
+            meta::setMetaMode(m, metaMode::FILE_DEPENDENT);
         }
     }
 }
