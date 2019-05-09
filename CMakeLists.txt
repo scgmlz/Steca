@@ -86,6 +86,7 @@ message(STATUS "3rdparty libraries all found or configured")
 
 configure_file("manifest.h.in" "${CMAKE_BINARY_DIR}/manifest.h")
 
+add_subdirectory(devtools)
 add_subdirectory(qcr)
 add_subdirectory(core)
 add_subdirectory(gui)

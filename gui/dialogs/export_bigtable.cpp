@@ -12,6 +12,7 @@
 //
 //  ***********************************************************************************************
 
+#include "core/base/angles.h"
 #include "core/calc/export.h"
 #include "gui/dialogs/export_bigtable.h"
 #include "gui/mainwin.h"
@@ -34,7 +35,9 @@ void writeBigtable(QTextStream& stream, const QString& separator)
     // write data table
     for (const std::vector<const QVariant*>& row: data) {
         for (const QVariant* var: row) {
-            if (var->canConvert<double>())
+            if (var->canConvert<deg>())
+                stream << var->value<deg>();
+            else if (var->canConvert<double>())
                 stream << var->toDouble();
             else
                 stream << var->toString();

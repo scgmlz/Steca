@@ -27,6 +27,8 @@ public:
     Rawfile& operator=(Rawfile&&) = default;
 
     void addDataset(Metadata&&, const size2d&, std::vector<float> &&);
+    void setMeasurementNum(int i, int j) { measurements_.at(i).setMeasurementNum(j); }
+    void setMeasurementTime(int i, double t) { measurements_.at(i).setMeasurementTime(t); }
 
     std::vector<const Measurement*> const measurements() const;
     int numMeasurements() const { return measurements_.size(); }

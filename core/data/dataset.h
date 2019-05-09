@@ -118,6 +118,7 @@ private:
     void onClusteringChanged();
     void updateClusters();
     void updateActiveClusters();
+    void updateMetaModes() const;
 
     bool hasFile(const QString& fileName) const;
 };
