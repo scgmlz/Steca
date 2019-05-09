@@ -273,7 +273,8 @@ void Dataset::updateMetaModes() const
             if (files_.at(f).raw_.measurements().at(0)->metadata().attributeValue(m) ==
                 files_.at(f+1).raw_.measurements().at(0)->metadata().attributeValue(m))
                 continue;
-            meta::setMetaMode(m, metaMode::FILE_DEPENDENT);
+            if (meta::getMetaMode(m) != metaMode::MEASUREMENT_DEPENDENT)
+                meta::setMetaMode(m, metaMode::FILE_DEPENDENT);
         }
     }
 }

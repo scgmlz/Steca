@@ -63,7 +63,7 @@ QVariant FilesModel::entry(int row, int col) const
     else if (col>=COL_ATTRS &&
              col < COL_ATTRS+meta::numSelectedFileDependent()) {
         int cn = gSession->dataset.fileAt(row).offset_;
-        const Cluster& cluster = *gSession->dataset.allClusters.at(cn+1);
+        const Cluster& cluster = *gSession->dataset.allClusters.at(cn);
         return cluster.avgMetadata().attributeStrValue(
                     meta::selectedOfFileDependent(col-COL_ATTRS));
     } else
