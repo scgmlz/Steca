@@ -148,8 +148,8 @@ Mapped Voigt::outcome(const Fitted& F) const
     Mapped ret;
     ret.set("center", deg{F.parValAt(0)});
     ret.set("sigma_center", deg{F.parErrAt(0)});
-    ret.set("intensity", F.parValAt(1));
-    ret.set("sigma_intensity", F.parErrAt(1));
+    ret.set("intensity", F.parValAt(2));
+    ret.set("sigma_intensity", F.parErrAt(2));
     ret.set("fwhm", fwhm);
     ret.set("sigma_fwhm", fwhm / F.parValAt(1) * F.parErrAt(1));
     ret.set("gammaOverSigma", F.parValAt(3));
