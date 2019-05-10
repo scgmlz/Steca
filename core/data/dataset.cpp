@@ -183,8 +183,10 @@ void Dataset::updateClusters()
     hasIncomplete_ = false;
     int measureNum = 1;
     double measureTime =0;
+    int clusterOffset = 0;
     for (Datafile& file : files_) {
         file.clusters_.clear();
+        file.clusterOffset_ = clusterOffset;
         for (int i=0; i<file.numMeasurements(); i+=binning.val()) {
             if (i+binning.val()>file.numMeasurements()) {
                 hasIncomplete_ = true;
@@ -202,6 +204,7 @@ void Dataset::updateClusters()
             std::unique_ptr<Cluster> cluster(new Cluster(group, file, allClusters.size(), i));
             file.clusters_.push_back(cluster.get());
             allClusters.push_back(std::move(cluster));
+            clusterOffset++;
         }
     }
     gSession->activeClusters.invalidate();
