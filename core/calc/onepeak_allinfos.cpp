@@ -55,7 +55,7 @@ std::vector<QVariant> peakData(const Mapped& m)
     std::vector<QVariant> ret;
     for (const QString& key: {"alpha", "beta", "gamma_min", "gamma_max"})
         ret.push_back( m.at(key));
-    for (const QString& key: {"intensity", "center", "fwhm", "gammaOverSigma"}) {
+    for (const QString& key: {"intensity", "center", "fwhm", "gaussianity"}) {
         if (m.has(key)) {
             ret.push_back( m.at(key) );
             if (m.has("sigma_"+key))

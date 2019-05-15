@@ -138,7 +138,7 @@ PeakfitOutcomeView::PeakfitOutcomeView()
     grid->addWidget(&showRawOutcomeY_, 3, 1);
     grid->addWidget(&showFittedY_, 3, 2);
 
-    grid->addWidget(new QLabel{"γ/σ"}, 4, 0);
+    grid->addWidget(new QLabel{"gaussianity"}, 4, 0);
     grid->addWidget(&showFittedSG_, 4, 2);
 
     grid->setColumnStretch(4, 1);
@@ -173,11 +173,11 @@ void PeakfitOutcomeView::refresh()
     showFittedX_ .setText(par2text(out.get<deg>("center"), out.get<deg>("sigma_center")));
     showFittedD_ .setText(par2text(out.get<double>("fwhm"), out.get<double>("sigma_fwhm")));
     showFittedY_ .setText(par2text(out.get<double>("intensity"), out.get<double>("sigma_intensity")));
-    if (out.has("gammaOverSigma"))
+    if (out.has("gaussianity"))
         showFittedSG_.setText(
-            par2text(out.get<double>("gammaOverSigma"), out.get<double>("sigma_gammaOverSigma")));
+            par2text(out.get<double>("gaussianity"), out.get<double>("sigma_gaussianity")));
 
-    enable(true, true, out.has("gammaOverSigma"));
+    enable(true, true, out.has("gaussianity"));
 }
 
 void PeakfitOutcomeView::enable(bool haveRaw, bool haveFit, bool haveSoG)
