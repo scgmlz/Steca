@@ -80,15 +80,6 @@ Curve Curve::intersect(const Ranges& ranges) const
     return ret;
 }
 
-//! Subtracts a background that is given as a funtion y(x).
-Curve Curve::subtract(const std::function<double(double)>& func) const
-{
-    Curve ret = *this;
-    for (int i=0; i<size(); ++i)
-        ret.ys_[i] = ys_[i] - func(xs_.at(i));
-    return ret;
-}
-
 int Curve::idxMax() const
 {
     if (isEmpty())
