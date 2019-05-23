@@ -124,6 +124,7 @@ void MainWin::refresh()
     triggers->peakRemove.setEnabled(hasPeak);
     triggers->peaksClear.setEnabled(hasPeak);
     triggers->removeFile.setEnabled(hasData);
+    triggers->clearFiles.setEnabled(hasData);
     menus_->export_->setEnabled(hasData);
     menus_->image_->setEnabled(hasData);
     menus_->dgram_->setEnabled(hasData);
