@@ -29,6 +29,7 @@ public:
     QcrTrigger baserangeRemove {"baserangeRemove", "Remove baseline range", ":/icon/rem"};
     QcrTrigger baserangesClear {"baserangesClear", "Clear baseline ranges", ":/icon/clear"};
     QcrTrigger addFiles {"addFiles", "Add files...", ":/icon/add", Qt::CTRL | Qt::Key_O};
+    QcrTrigger clearFiles {"clearFiles", "Clear files", ":/icon/clear"};
     QcrTrigger checkUpdate {"checkUpdate", "Check for update"};
     QcrTrigger clearSession {"clearSession", "Clear session"};
     QcrTrigger corrFile {"loadCorr", "Add correction file...", ":/icon/add",
