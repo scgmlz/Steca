@@ -13,9 +13,9 @@
 //  ***********************************************************************************************
 
 #include "gui/panels/controls_baseline.h"
-#include "qcr/base/debug.h" // ASSERT
-#include "qcr/widgets/controls.h"
-#include "qcr/widgets/tables.h"
+#include "QCR/base/debug.h" // ASSERT
+#include "QCR/widgets/controls.h"
+#include "QCR/widgets/tables.h"
 #include "core/session.h"
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"

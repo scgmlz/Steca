@@ -20,7 +20,7 @@
 #include "core/peakfit/peak_function.h"
 #include "core/typ/mapped.h"
 #include "core/session.h"
-#include "qcr/base/debug.h" // ASSERT
+#include "QCR/base/debug.h" // ASSERT
 
 namespace {
 

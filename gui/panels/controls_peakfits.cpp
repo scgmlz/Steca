@@ -17,12 +17,12 @@
 #include "core/fitengine/double_with_error.h"
 #include "core/peakfit/peak_function.h"
 #include "core/typ/mapped.h"
-#include "qcr/widgets/tables.h"
-#include "qcr/widgets/controls.h"
+#include "QCR/widgets/tables.h"
+#include "QCR/widgets/controls.h"
 #include "gui/mainwin.h"
 #include "gui/actions/triggers.h"
 #include "gui/view/range_control.h"
-//#include "qcr/base/debug.h"
+//#include "QCR/base/debug.h"
 
 namespace {
 

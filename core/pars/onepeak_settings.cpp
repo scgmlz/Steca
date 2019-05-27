@@ -15,7 +15,7 @@
 #include "core/pars/onepeak_settings.h"
 #include "core/session.h"
 #include "core/base/exception.h"
-#include "qcr/base/debug.h"
+#include "QCR/base/debug.h"
 
 const QStringList OnePeakSettings::functionNames = { "Raw", "Gaussian", "Lorentzian", "Voigt" };
 

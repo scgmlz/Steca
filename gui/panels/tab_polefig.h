@@ -15,7 +15,7 @@
 #ifndef TAB_POLEFIG_H
 #define TAB_POLEFIG_H
 
-#include "qcr/widgets/views.h"
+#include "QCR/widgets/views.h"
 
 //! Mainframe tab to plot a polefigure plot, with associated controls.
 

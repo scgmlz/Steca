@@ -15,7 +15,7 @@
 #include "core/base/angles.h"
 #include "core/peakfit/raw_outcome.h"
 #include "core/typ/curve.h"
-#include "qcr/base/debug.h"
+#include "QCR/base/debug.h"
 #include <qmath.h>
 
 //! Computes raw peak characteristics.

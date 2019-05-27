@@ -15,7 +15,7 @@
 #ifndef POPUP_DIAGRAM_H
 #define POPUP_DIAGRAM_H
 
-#include "qcr/engine/mixin.h"
+#include "QCR/engine/mixin.h"
 #include "popup_base_dialog.h"
 
 //! Popup display of the present XY diagram.

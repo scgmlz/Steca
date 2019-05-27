@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "export.h"
-#include "qcr/base/debug.h"
+#include "QCR/base/debug.h"
 #include "core/base/async.h"
 #include "core/calc/onepeak_allinfos.h"
 #include "core/data/cluster.h"

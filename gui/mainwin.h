@@ -15,7 +15,7 @@
 #ifndef MAINWIN_H
 #define MAINWIN_H
 
-#include "qcr/widgets/views.h"
+#include "QCR/widgets/views.h"
 
 extern class MainWin* gGui; //!< global pointer to _the_ main window
 

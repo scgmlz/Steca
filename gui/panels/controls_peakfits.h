@@ -15,7 +15,7 @@
 #ifndef CONTROLS_PEAKFITS_H
 #define CONTROLS_PEAKFITS_H
 
-#include "qcr/widgets/views.h"
+#include "QCR/widgets/views.h"
 
 //! A widget with controls to view and change the detector detector.
 

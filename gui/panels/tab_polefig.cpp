@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "gui/panels/tab_polefig.h"
-#include "qcr/widgets/controls.h"
+#include "QCR/widgets/controls.h"
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"
 #include "gui/view/plot_polefig.h"

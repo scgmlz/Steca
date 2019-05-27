@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "qcr/base/string_ops.h"
+#include "QCR/base/string_ops.h"
 #include "core/base/exception.h"
 #include "core/raw/rawfile.h"
 #include <QDataStream>

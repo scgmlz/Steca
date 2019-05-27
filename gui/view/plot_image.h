@@ -15,7 +15,7 @@
 #ifndef PLOT_IMAGE_H
 #define PLOT_IMAGE_H
 
-#include "qcr/widgets/views.h"
+#include "QCR/widgets/views.h"
 
 //! Displays a 2d detector image, and possibly some overlay. Used in ImageTab.
 

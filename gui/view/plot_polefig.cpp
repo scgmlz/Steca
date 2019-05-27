@@ -15,7 +15,7 @@
 #include "gui/view/plot_polefig.h"
 #include "core/session.h"
 #include "core/base/angles.h"
-//#include "qcr/base/debug.h"
+//#include "QCR/base/debug.h"
 #include "QCustomPlot/qcustomplot.h"
 
 namespace {

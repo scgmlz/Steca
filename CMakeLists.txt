@@ -71,6 +71,8 @@ message(STATUS
 find_package(Cerf MODULE REQUIRED)
 message(STATUS "libcerf: FOUND=${Cerf_FOUND}, VERSION=${Cerf_VERSION}, LIB=${Cerf_LIBRARIES}, "
     "IS_CPP=${Cerf_IS_CPP}")
+find_package(QCR MODULE REQUIRED)
+message(STATUS "libcerf: FOUND=${QCR_FOUND}, VERSION=${QCR_VERSION}, LIB=${QCR_LIBRARIES}")
 
 # how to build 3rd party libraries:
 set(LIB_MAN OFF)
@@ -87,7 +89,6 @@ message(STATUS "3rdparty libraries all found or configured")
 configure_file("manifest.h.in" "${CMAKE_BINARY_DIR}/manifest.h")
 
 add_subdirectory(devtools)
-add_subdirectory(qcr)
 add_subdirectory(core)
 add_subdirectory(gui)
 add_subdirectory(main)

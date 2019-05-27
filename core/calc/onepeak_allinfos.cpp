@@ -14,7 +14,7 @@
 
 #include "core/calc/onepeak_allinfos.h"
 #include "core/session.h"
-#include "qcr/base/debug.h" // ASSERT
+#include "QCR/base/debug.h" // ASSERT
 
 namespace {
 

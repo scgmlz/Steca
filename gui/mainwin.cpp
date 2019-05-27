@@ -25,9 +25,9 @@
 #include "gui/panels/subframe_files.h"
 #include "gui/panels/subframe_metadata.h"
 #include "gui/panels/subframe_setup.h"
-#include "qcr/engine/console.h"
-#include "qcr/engine/logger.h"
-//#include "qcr/base/debug.h"
+#include "QCR/engine/console.h"
+#include "QCR/engine/logger.h"
+//#include "QCR/base/debug.h"
 #include <QApplication>
 #include <QProgressBar>
 #include <QSettings>

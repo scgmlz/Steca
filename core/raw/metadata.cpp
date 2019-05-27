@@ -14,7 +14,7 @@
 
 #include "core/raw/metadata.h"
 #include "core/session.h"
-//#include "qcr/base/debug.h"
+//#include "QCR/base/debug.h"
 
 namespace {
 

@@ -14,7 +14,7 @@
 
 #include "gui/panels/subframe_metadata.h"
 #include "core/session.h"
-#include "qcr/widgets/tables.h"
+#include "QCR/widgets/tables.h"
 
 //  ***********************************************************************************************
 //! @class MetatableModel (local scope)

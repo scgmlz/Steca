@@ -13,12 +13,12 @@
 //  ***********************************************************************************************
 
 #include "gui/panels/controls_detector.h"
-#include "qcr/widgets/controls.h"
+#include "QCR/widgets/controls.h"
 #include "core/session.h"
 #include "gui/actions/image_trafo_actions.h"
 #include "gui/view/toggles.h"
 #include "gui/mainwin.h"
-//#include "qcr/base/debug.h"
+//#include "QCR/base/debug.h"
 #include <QThread> // for sleep for debugging
 #include <qmath.h> //round
 

@@ -16,7 +16,7 @@
 #define DATASET_H
 
 #include "core/data/cluster.h"
-#include "qcr/engine/cell.h"
+#include "QCR/engine/cell.h"
 #include "core/raw/rawfile.h"
 #include <memory>
 

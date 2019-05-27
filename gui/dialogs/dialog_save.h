@@ -15,8 +15,8 @@
 #ifndef DIALOG_SAVE_H
 #define DIALOG_SAVE_H
 
-#include "qcr/widgets/controls.h"
-#include "qcr/widgets/modal_dialogs.h"
+#include "QCR/widgets/controls.h"
+#include "QCR/widgets/modal_dialogs.h"
 #include <QButtonGroup>
 #include <QGroupBox>
 #include <QProgressBar>

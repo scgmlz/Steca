@@ -13,8 +13,8 @@
 //  ***********************************************************************************************
 
 #include "core/peakfit/peak_function.h"
-#include "qcr/base/qcrexception.h"
-#include "qcr/engine/console.h"
+#include "QCR/base/qcrexception.h"
+#include "QCR/engine/console.h"
 #include "gui/view/plot_dfgram.h"
 #include "core/session.h"
 #include "gui/view/toggles.h"

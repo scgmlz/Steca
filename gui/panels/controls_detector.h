@@ -15,7 +15,7 @@
 #ifndef CONTROLS_DETECTOR_H
 #define CONTROLS_DETECTOR_H
 
-#include "qcr/widgets/views.h"
+#include "QCR/widgets/views.h"
 
 //! Aggregated control widgets that govern the detector setup.
 

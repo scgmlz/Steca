@@ -15,8 +15,8 @@
 #include "core/data/cluster.h"
 #include "core/loaders/loaders.h"
 #include "core/session.h"
-#include "qcr/engine/mixin.h" // remakeAll
-#include "qcr/base/debug.h" // ASSERT
+#include "QCR/engine/mixin.h" // remakeAll
+#include "QCR/base/debug.h" // ASSERT
 #include <algorithm>
 
 //  ***********************************************************************************************

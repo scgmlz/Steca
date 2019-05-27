@@ -22,7 +22,7 @@
 #include "gui/dialogs/dialog_save.h"
 #include "gui/dialogs/file_dialog.h"
 #include "gui/mainwin.h"
-#include "qcr/base/debug.h"
+#include "QCR/base/debug.h"
 #include <QGroupBox>
 #include <algorithm>
 

@@ -17,7 +17,7 @@
 #include "core/fitengine/fit_wrapper.h"
 #include "core/peakfit/fit_models.h"
 #include "core/typ/mapped.h"
-// #include "qcr/base/debug.h"
+// #include "QCR/base/debug.h"
 
 Mapped PeakFunction::outcome(const Fitted& F) const
 {

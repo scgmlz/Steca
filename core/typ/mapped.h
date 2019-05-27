@@ -15,7 +15,7 @@
 #ifndef MAPPED_H
 #define MAPPED_H
 
-#include "qcr/base/debug.h"
+#include "QCR/base/debug.h"
 #include <QVariant>
 #include <map>
 

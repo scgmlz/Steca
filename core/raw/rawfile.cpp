@@ -14,7 +14,7 @@
 
 #include "core/base/exception.h"
 #include "core/raw/rawfile.h"
-#include "qcr/base/debug.h"
+#include "QCR/base/debug.h"
 #include <QStringBuilder> // for ".." % ..
 
 Rawfile::Rawfile(const QString& fileName)

@@ -16,6 +16,5 @@ set(inc_dirs
     ${CMAKE_BINARY_DIR} # for testdata.h
     )
 
-add_subdirectory(qcr/local)
 add_subdirectory(core/local)
 add_subdirectory(core/linked)

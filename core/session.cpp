@@ -19,7 +19,7 @@
 
 #include "core/session.h"
 #include "core/base/exception.h"
-#include "qcr/base/debug.h" // ASSERT
+#include "QCR/base/debug.h" // ASSERT
 #include <QJsonDocument>
 
 Session* gSession; //!< global, for data handling

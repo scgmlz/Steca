@@ -14,8 +14,8 @@
 
 #include "gui/panels/subframe_clusters.h"
 #include "core/session.h"
-#include "qcr/widgets/tables.h"
-//#include "qcr/base/debug.h"
+#include "QCR/widgets/tables.h"
+//#include "QCR/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class ActiveClustersModel (local scope)

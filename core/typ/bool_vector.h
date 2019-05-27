@@ -15,7 +15,7 @@
 #ifndef BOOL_VECTOR_H
 #define BOOL_VECTOR_H
 
-#include "qcr/engine/cell.h"
+#include "QCR/engine/cell.h"
 #include "core/typ/lazy_data.h"
 #include <vector>
 

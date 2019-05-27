@@ -15,7 +15,7 @@
 #ifndef BIGTABLE_H
 #define BIGTABLE_H
 
-#include "qcr/widgets/tables.h"
+#include "QCR/widgets/tables.h"
 
 //! Model for the BigtableView view.
 

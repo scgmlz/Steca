@@ -17,7 +17,7 @@
 
 #include "core/raw/image.h"
 #include "core/raw/rawfile.h"
-#include "qcr/engine/cell.h"
+#include "QCR/engine/cell.h"
 #include "core/typ/lazy_data.h"
 #include <memory>
 

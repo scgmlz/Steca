@@ -15,7 +15,7 @@
 #include "gui/view/bigtable.h"
 #include "core/session.h"
 #include "gui/mainwin.h"
-#include "qcr/base/debug.h"
+#include "QCR/base/debug.h"
 #include <QApplication>
 #include <QClipboard>
 #include <QHeaderView>
