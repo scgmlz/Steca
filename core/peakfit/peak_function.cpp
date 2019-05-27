@@ -39,7 +39,7 @@ Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const Mapp
 {
     const PeakFunction* f;
     bool onlyPositiveParams = false;
-    if        (name=="Raw") {
+    if (name=="Raw") {
         return {};
     } else if (name=="Gaussian") {
         f = new Gaussian;
@@ -54,5 +54,8 @@ Fitted PeakFunction::fromFit(const QString& name, const Curve& curve, const Mapp
     startParams[0] = double(rawOutcome.get<deg>("center"));
     startParams[1] = rawOutcome.get<double>("fwhm");
     startParams[2] = rawOutcome.get<double>("intensity");
+    if (name=="Voigt") {
+        startParams[3] = startParams[1]/10;
+    }
     return FitWrapper().execFit(f, curve, startParams, onlyPositiveParams);
 }

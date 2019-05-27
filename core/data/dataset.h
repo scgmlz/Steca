@@ -40,6 +40,8 @@ public:
     bool activated() const { return activated_; }
 
     int offset_;  //!< first index in total list of `Measurement`s
+    int clusterOffset_;  //!< first index in list of all `Cluster`s
+                         //!< set by Dataset::updateClusters
 
 private:
     friend class Dataset;

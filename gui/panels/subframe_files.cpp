@@ -62,7 +62,7 @@ QVariant FilesModel::entry(int row, int col) const
         return file.name();
     else if (col>=COL_ATTRS &&
              col < COL_ATTRS+meta::numSelectedFileDependent()) {
-        int cn = gSession->dataset.fileAt(row).offset_;
+        int cn = gSession->dataset.fileAt(row).clusterOffset_;
         const Cluster& cluster = *gSession->dataset.allClusters.at(cn);
         return cluster.avgMetadata().attributeStrValue(
                     meta::selectedOfFileDependent(col-COL_ATTRS));
@@ -145,6 +145,7 @@ SubframeFiles::SubframeFiles()
     dataControls->addStretch();
     dataControls->addWidget(new QcrIconTriggerButton{&gGui->triggers->addFiles});
     dataControls->addWidget(new QcrIconTriggerButton{&gGui->triggers->removeFile});
+    dataControls->addWidget(new QcrIconTriggerButton{&gGui->triggers->clearFiles});
 
     auto* corrFileView = new QcrLineDisplay{[]()->QString {
             return gSession->corrset.fileName(); }};
