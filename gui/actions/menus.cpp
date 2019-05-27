@@ -35,6 +35,7 @@ Menus::Menus(QMenuBar* mbar)
         "&File",
         {   &triggers->addFiles,
                 &triggers->removeFile,
+                &triggers->clearFiles,
                 separator(),
                 &triggers->corrFile,
                 &toggles->enableCorr,
