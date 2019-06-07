@@ -261,7 +261,8 @@ void PlotDfgram::renderAll()
     // calculate peaks
     std::vector<Curve> fitCurves;
     for (int jP=0; jP<gSession->peaksSettings.size(); ++jP)
-        fitCurves.push_back(dfgram->getPeakAsCurve(jP));
+        if (curveMinusBg.rgeX().contains(gSession->peaksSettings.at(jP).range()))
+            fitCurves.push_back(dfgram->getPeakAsCurve(jP));
 
     const Range& tthRange = dfgram->curve.rgeX();
     Range intenRange;
