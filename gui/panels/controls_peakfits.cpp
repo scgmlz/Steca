@@ -156,6 +156,9 @@ void PeakfitOutcomeView::refresh()
     const Dfgram* dfgram = gSession->currentOrAvgeDfgram();
     ASSERT(dfgram); // the entire tab should be disabled if there is no active cluster
 
+    if (!dfgram->curve.rgeX().contains(peak->range()))
+        return enable(false, false, false);
+
     int jP = gSession->peaksSettings.selectedIndex();
     const Mapped& outcome = dfgram->getRawOutcome(jP);
     showRawOutcomeX_.setText(safeRealText(outcome.get<deg>("center")));
