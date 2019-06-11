@@ -39,7 +39,11 @@ Mapped getPeak(int jP, const Cluster& cluster, int iGamma)
         qFatal("why would the fit range be empty??");
         // return PeakInfo{metadata, alpha, beta, gRange};
 
+
     const Dfgram& dfgram = cluster.dfgrams.yield_at(iGamma, &cluster);
+
+    if(!dfgram.curve.rgeX().contains(fitrange))
+        return {};
 
     Mapped out;
     if (settings.isRaw()) {
@@ -49,8 +53,8 @@ Mapped getPeak(int jP, const Cluster& cluster, int iGamma)
         const PeakFunction*const peakFit = dynamic_cast<const PeakFunction*>(pFct.fitFunction());
         ASSERT(peakFit);
         const Mapped& po = peakFit->outcome(pFct);
-        if (po.has("center") && fitrange.contains(po.get<deg>("center")))
-            out = po;
+        if (!po.has("center") || !fitrange.contains(po.get<deg>("center")))
+            return {};
     }
     out.set("alpha", alpha);
     out.set("beta", beta);
