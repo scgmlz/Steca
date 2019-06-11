@@ -42,7 +42,8 @@ Mapped getPeak(int jP, const Cluster& cluster, int iGamma)
 
     const Dfgram& dfgram = cluster.dfgrams.yield_at(iGamma, &cluster);
 
-    if(!dfgram.curve.rgeX().contains(fitrange))
+
+    if(!settings.range().contains(fitrange))
         return {};
 
     Mapped out;
@@ -53,7 +54,7 @@ Mapped getPeak(int jP, const Cluster& cluster, int iGamma)
         const PeakFunction*const peakFit = dynamic_cast<const PeakFunction*>(pFct.fitFunction());
         ASSERT(peakFit);
         const Mapped& po = peakFit->outcome(pFct);
-        if (!po.has("center") || !fitrange.contains(po.get<deg>("center")))
+        if (!(po.has("center") && fitrange.contains(po.get<deg>("center"))))
             return {};
     }
     out.set("alpha", alpha);
