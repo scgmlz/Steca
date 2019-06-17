@@ -180,6 +180,8 @@ QStringList Session::allNiceKeys() const
     return ret;
 }
 
+
+
 QStringList Session::numericAsciiKeys() const
 {
     QStringList ret = allAsciiKeys();

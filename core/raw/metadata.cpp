@@ -126,12 +126,13 @@ const QStringList& asciiTags()
 const QStringList& niceTags()
 {
     QStringList ret;
-    for (int i=0; i<metaDefs.size(); i++)
-        ret.append(niceTag(i));
+    for (int i=0; i<metaDefs.size(); i++) {
+        if (getMetaMode(i) !=  metaMode::CONSTANT)
+            ret.append(niceTag(i));
+    }
     niceNames = ret;
     return niceNames;
 }
-
 
 std::vector<QVariant> attributeNaNs()
 {
@@ -196,6 +197,20 @@ std::vector<QVariant> metaValues(const Mapped map)
             attr.push_back(Q_QNAN);
     }
     return attr;
+}
+
+int getConversion(int id)
+{
+    int cpt = 0, i;
+    for (i=0; i<metaDefs.size(); i++) {
+        if (getMetaMode(i) !=  metaMode::CONSTANT) {
+            if (cpt == id) {
+                break;
+            }
+            cpt ++;
+        }
+    }
+    return i + 12;
 }
 
 void setMetaMode(int i, metaMode mM)

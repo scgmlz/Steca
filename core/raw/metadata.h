@@ -66,6 +66,7 @@ std::vector<QVariant> attributeNaNs();
 int size();
 Metadata computeAverage(const std::vector<const Metadata*>& vec);
 std::vector<QVariant> metaValues(const Mapped metamap);
+int getConversion(int id);
 void setMetaMode(int i, metaMode mM);
 metaMode getMetaMode(int);
 void clearMetaModes();
