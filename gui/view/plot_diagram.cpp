@@ -88,13 +88,21 @@ void PlotDiagram::refresh()
 
     graph_->clearData();
 
-    int idxX = gSession->params.diagramX.val();
-    int idxY = gSession->params.diagramY.val();
+    int max = gSession->numericNiceKeys().size();
+    int difference = max - meta::numMeasurementNotConstant();
 
-    if(idxX > 11)
-        idxX = meta::getConversion(gSession->params.diagramX.val() - 12);
-    if(idxY > 11)
-        idxY = meta::getConversion(gSession->params.diagramY.val() - 12);
+    int idxX = gSession->params.diagramX.val();
+    if (idxX >  max)
+        idxX = 0;
+
+    int idxY = gSession->params.diagramY.val();
+    if (idxY > max)
+        idxY = 0;
+
+    if(idxX >= difference)
+        idxX = meta::getConversion(gSession->params.diagramX.val(), difference);
+    if(idxY >= difference)
+        idxY = meta::getConversion(gSession->params.diagramY.val(), difference);
 
     std::vector<double> xs, ys, ysSigma;
     gSession->peaksOutcome.currentInfoSequence()->getValuesAndSigma(idxX, idxY, xs, ys, ysSigma);

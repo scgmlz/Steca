@@ -123,12 +123,17 @@ const QStringList& asciiTags()
     return asciiNames;
 }
 
-const QStringList& niceTags()
+const QStringList& niceTags(bool restricted)
 {
     QStringList ret;
     for (int i=0; i<metaDefs.size(); i++) {
-        if (getMetaMode(i) !=  metaMode::CONSTANT)
+        if (restricted) {
+            if (getMetaMode(i) !=  metaMode::CONSTANT)
+                ret.append(niceTag(i));
+        }
+        else {
             ret.append(niceTag(i));
+        }
     }
     niceNames = ret;
     return niceNames;
@@ -199,9 +204,10 @@ std::vector<QVariant> metaValues(const Mapped map)
     return attr;
 }
 
-int getConversion(int id)
+int getConversion(int id, int difference)
 {
-    int cpt = 0, i;
+    int cpt = 0, i = 0;
+    id = id - difference;
     for (i=0; i<metaDefs.size(); i++) {
         if (getMetaMode(i) !=  metaMode::CONSTANT) {
             if (cpt == id) {
@@ -210,7 +216,16 @@ int getConversion(int id)
             cpt ++;
         }
     }
-    return i + 12;
+    return i + difference;
+}
+
+int numMeasurementNotConstant()
+{
+    int cpt = 0;
+    for (int i=0; i<metaDefs.size(); i++)
+        if (getMetaMode(i) !=  metaMode::CONSTANT)
+            cpt ++;
+    return cpt - (meta::numAttributes(false) - meta::numAttributes(true));
 }
 
 void setMetaMode(int i, metaMode mM)

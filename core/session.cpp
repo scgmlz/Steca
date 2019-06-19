@@ -170,17 +170,15 @@ QStringList Session::allAsciiKeys() const
     return ret;
 }
 
-QStringList Session::allNiceKeys() const
+QStringList Session::allNiceKeys(bool restricted) const
 {
     QStringList ret { "α", "β", "γ_min", "γ_max" };
     const OnePeakSettings* peak = peaksSettings.selectedPeak();
     if (peak)
         ret += peak->fitParNiceNames();
-    ret += meta::niceTags();
+    ret += meta::niceTags(restricted);
     return ret;
 }
-
-
 
 QStringList Session::numericAsciiKeys() const
 {
@@ -193,7 +191,7 @@ QStringList Session::numericAsciiKeys() const
 
 QStringList Session::numericNiceKeys() const
 {
-    QStringList ret = allNiceKeys();
+    QStringList ret = allNiceKeys(true);
     // TODO remove non-numeric keys from the onset
     for (int i=0; i< (meta::numAttributes(false) - meta::numAttributes(true)); ++i)
         ret.removeLast(); // remove all tags that are not numbers

@@ -82,7 +82,7 @@ void ColumnSelectorView::onData()
 {
     // TODO: replace the following ad-hoc statement by proper lazy evaluation.
     // Then revert to standard remake mechanism for this class and for BigTableView.
-    gSession->params.bigMetaSelection.replaceKeys(gSession->allNiceKeys(), false);
+    gSession->params.bigMetaSelection.replaceKeys(gSession->allNiceKeys(false), false);
     model_->refreshModel();
     emit model_->layoutChanged(); // TODO merge into base class ?
     updateScroll();
