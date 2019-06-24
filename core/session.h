@@ -56,7 +56,7 @@ public:
     size2d imageSize() const;
 
     QStringList allAsciiKeys() const;
-    QStringList allNiceKeys() const;
+    QStringList allNiceKeys(bool restricted) const;
     QStringList numericAsciiKeys() const;
     QStringList numericNiceKeys() const;
     bool hasSigma(int index) const;
