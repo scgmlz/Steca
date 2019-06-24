@@ -127,12 +127,8 @@ const QStringList& niceTags(bool restricted)
 {
     QStringList ret;
     for (int i=0; i<metaDefs.size(); i++) {
-        if (restricted && getMetaMode(i) !=  metaMode::CONSTANT) {
+        if ( !(restricted && getMetaMode(i) ==  metaMode::CONSTANT) )
             ret.append(niceTag(i));
-        }
-        else if (!restricted) {
-            ret.append(niceTag(i));
-        }
     }
     niceNames = ret;
     return niceNames;
