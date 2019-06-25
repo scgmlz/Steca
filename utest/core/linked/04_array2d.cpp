@@ -1,13 +1,14 @@
-#include "gtest/gtest.h"
+#define CATCH_CONFIG_MAIN
 #include "core/typ/size2d.h"
+#include "3rdparty/catch2/catch.hpp"
 
-TEST(Array2d, Size2d) {
+TEST_CASE( "Array2d - Size2d", "[04_array2d]" ) {
     size2d sz;
-    EXPECT_TRUE((0 == sz.w && 0 == sz.h && sz.isEmpty() && 0 == sz.count()));
+    CHECK((0 == sz.w && 0 == sz.h && sz.isEmpty() && 0 == sz.count()));
 
     size2d sz1(1, 2);
-    EXPECT_TRUE((1 == sz1.w && 2 == sz1.h && !sz1.isEmpty() && 2 == sz1.count()));
+    CHECK((1 == sz1.w && 2 == sz1.h && !sz1.isEmpty() && 2 == sz1.count()));
 
     sz = sz1.transposed();
-    EXPECT_TRUE((sz.w == sz1.h && sz.h == sz1.w));
+    CHECK((sz.w == sz1.h && sz.h == sz1.w));
 }
