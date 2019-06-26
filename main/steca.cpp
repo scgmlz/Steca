@@ -21,11 +21,11 @@
 
 #include "core/session.h"
 #include "manifest.h"
-#include "gui/view/msg_handler.h"
 #include "gui/dialogs/file_dialog.h"
 #include "gui/mainwin.h"
 #include "QCR/engine/console.h"
 #include "QCR/engine/logger.h"
+#include "QCR/services/msg_handler.h"
 //#include "QCR/base/debug.h"
 
 #include "clara.hpp"
