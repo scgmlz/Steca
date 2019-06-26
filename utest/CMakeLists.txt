@@ -8,9 +8,10 @@ function(my_cxx_test name source libs)
     cxx_test_with_flags("${name}" "${cxx_default}" "${libs}" "${source}" ${ARGN})
 endfunction()
 
+add_library(catch2 core/catch2.cpp)
+target_include_directories(catch2 PRIVATE ${CMAKE_SOURCE_DIR})
+
 set(inc_dirs
-    ${gtest_SOURCE_DIR}/include
-    ${gtest_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}/ThirdParty
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_BINARY_DIR} # for testdata.h

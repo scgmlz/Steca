@@ -98,12 +98,6 @@ message(STATUS "Steca components all configured")
 include(CTest)
 if(BUILD_TESTING) # option defined by CTest and enabled by default
     add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND}) # => 'make check' is alias for 'ctest'
-    set(gtest_force_shared_crt ON
-        CACHE bool "Use shared(DLL) run-time lib even when Google Test is built as static lib.")
-    set(gtest_disable_pthreads ON)
-    message(STATUS "now configuring gtest")
-    add_subdirectory(3rdparty/gtest)
-    message(STATUS "gtest configured")
     configure_file(testdata/testdata.h.in ${CMAKE_BINARY_DIR}/testdata.h @ONLY)
     add_subdirectory(utest)
     add_subdirectory(ftest)

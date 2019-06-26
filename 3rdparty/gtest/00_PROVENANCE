@@ -1,7 +1,0 @@
-[24apr18]
-from website https://github.com/google/googletest/releases
-downloaded https://github.com/google/googletest/archive/release-1.8.0.tar.gz
-unpacking yields googletest-release-1.8.0
-we only use the subdirectory googletest
-moved it to ThirdParty/common/gtest/gtest-1.8.0
-removed subdirectory samples
