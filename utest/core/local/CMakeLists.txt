@@ -14,5 +14,5 @@ foreach(test_src ${test_sources})
     my_cxx_test(${test_name} ${test_src} "")
     # TODO: Qt only needed as include directory, not as linked library
     target_include_directories(${test_name} PRIVATE ${inc_dirs})
-    target_link_libraries(${test_name} PRIVATE gtest_main Qt5::Core)
+    target_link_libraries(${test_name} catch2 Qt5::Core)
 endforeach(test_src)

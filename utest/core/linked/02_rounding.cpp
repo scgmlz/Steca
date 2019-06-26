@@ -1,8 +1,7 @@
-#define CATCH_CONFIG_MAIN
 #include "core/fitengine/double_with_error.h"
 #include "3rdparty/catch2/catch.hpp"
 
-TEST_CASE( "Rounding - FitParError", "[02_rounding]" ) {
+TEST_CASE( "Rounding - FitParError", "" ) {
     DoubleWithError A{33., 5127.1234};
     CHECK(5127 == A.roundedError(4));
     CHECK(5130 == A.roundedError(3));

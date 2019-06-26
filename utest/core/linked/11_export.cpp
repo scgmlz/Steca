@@ -1,10 +1,9 @@
 // test functions from unnamed namespaces in gui/output
 
-#define CATCH_CONFIG_MAIN
 #include "core/calc/export.h"
 #include "3rdparty/catch2/catch.hpp"
 
-TEST_CASE( "AnonymousOutput - NumberedFileName", "[11_export]" ) {
+TEST_CASE( "AnonymousOutput - NumberedFileName", "" ) {
     using namespace data_export;
     //ASSERT_DEATH(numberedFileName("bla",1,1), "");
     CHECK("1" == numberedFileName("%d",1,1));

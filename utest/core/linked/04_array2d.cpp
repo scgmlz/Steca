@@ -1,8 +1,7 @@
-#define CATCH_CONFIG_MAIN
 #include "core/typ/size2d.h"
 #include "3rdparty/catch2/catch.hpp"
 
-TEST_CASE( "Array2d - Size2d", "[04_array2d]" ) {
+TEST_CASE( "Array2d - Size2d", "" ) {
     size2d sz;
     CHECK((0 == sz.w && 0 == sz.h && sz.isEmpty() && 0 == sz.count()));
 

@@ -1,4 +1,3 @@
-#define CATCH_CONFIG_MAIN
 #include "core/typ/json.h"
 #include "core/typ/range.h"
 #include <vector>
@@ -8,7 +7,7 @@ static bool RANGE_EQ(Range const& r1, Range const& r2) {
     return r1.min == r2.min && r1.max == r2.max;
 }
 
-TEST_CASE( "Range - Trivia", "[06_range]" ) {
+TEST_CASE( "Range - Trivia", "" ) {
     Range r0;
     CHECK(qIsNaN(r0.min));
     CHECK(qIsNaN(r0.max));
@@ -22,7 +21,7 @@ TEST_CASE( "Range - Trivia", "[06_range]" ) {
     CHECK(7 == r4.max);
 }
 
-TEST_CASE( "Range - Validity", "[06_range]" ) {
+TEST_CASE( "Range - Validity", "" ) {
     Range r;
     CHECK(!r.isValid());
     r.min = 0;
@@ -35,7 +34,7 @@ TEST_CASE( "Range - Validity", "[06_range]" ) {
     CHECK(r.isValid());
 }
 
-TEST_CASE( "Range - IsEmpty", "[06_range]" ) {
+TEST_CASE( "Range - IsEmpty", "" ) {
     CHECK(Range().isEmpty());
 
     Range r(0,0);
@@ -48,7 +47,7 @@ TEST_CASE( "Range - IsEmpty", "[06_range]" ) {
     CHECK(r.isEmpty());
 }
 
-TEST_CASE( "Range - Width", "[06_range]" ) {
+TEST_CASE( "Range - Width", "" ) {
     CHECK(qIsNaN(Range().width()));
     CHECK(0 == Range(0,0).width());
     CHECK(qIsInf(Range(0, Q_INFINITY).width()));
@@ -63,14 +62,14 @@ TEST_CASE( "Range - Width", "[06_range]" ) {
     CHECK(r.isEmpty());
 }
 
-TEST_CASE( "Range - Center", "[06_range]" ) {
+TEST_CASE( "Range - Center", "" ) {
     CHECK(qIsNaN(Range().center()));
     CHECK(0 == Range(0,0).center());
     CHECK(qIsNaN(Range(0, Q_QNAN).center()));
     CHECK(qIsInf(Range(0, Q_INFINITY).center()));
 }
 
-TEST_CASE( "Range - Safe", "[06_range]" ) {
+TEST_CASE( "Range - Safe", "" ) {
     auto r = Range::safeFrom(2, 3);
     CHECK(RANGE_EQ(r, Range(2, 3)));
     r = Range::safeFrom(3, 2);
@@ -81,7 +80,7 @@ TEST_CASE( "Range - Safe", "[06_range]" ) {
     CHECK(RANGE_EQ(r, Range(3, 4)));
 }
 
-TEST_CASE( "Range - Extend", "[06_range]" ) {
+TEST_CASE( "Range - Extend", "" ) {
     auto r = Range(1, 2);
     r.extendBy(-1);
     CHECK(RANGE_EQ(r, Range(-1, 2)));
@@ -89,7 +88,7 @@ TEST_CASE( "Range - Extend", "[06_range]" ) {
     CHECK(RANGE_EQ(r, Range(-1, 4)));
 }
 
-TEST_CASE( "Range - Contains", "[06_range]" ) {
+TEST_CASE( "Range - Contains", "" ) {
     auto r = Range(-1, +1);
 
     CHECK(!Range().contains(r));
@@ -108,7 +107,7 @@ TEST_CASE( "Range - Contains", "[06_range]" ) {
     CHECK(!r.contains(Range(-2, 0)));
 }
 
-TEST_CASE( "Range - Intersects", "[06_range]" ) {
+TEST_CASE( "Range - Intersects", "" ) {
     auto r = Range(-1, +1);
 
     CHECK(!Range().intersects(r));
@@ -121,7 +120,7 @@ TEST_CASE( "Range - Intersects", "[06_range]" ) {
     CHECK(r.intersects(Range(-2, 0)));
 }
 
-TEST_CASE( "Range - Intersect", "[06_range]" ) {
+TEST_CASE( "Range - Intersect", "" ) {
     auto r = Range(-1, +1);
 
     CHECK(!Range().intersect(r).isValid());

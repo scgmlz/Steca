@@ -1,11 +1,11 @@
-#define CATCH_CONFIG_MAIN
+#include <iostream>
 #include "core/loaders/loaders.h"
 #include "core/session.h"
 #include "core/base/exception.h"
 #include "testdata.h"
 #include "3rdparty/catch2/catch.hpp"
 
-TEST_CASE( "IO - Caress", "[10_io]" ) {
+TEST_CASE( "IO - Caress", "" ) {
     try {
         load::loadRawfile(TESTDATADIR "/caress.dat");
     } catch (Exception& ex) {

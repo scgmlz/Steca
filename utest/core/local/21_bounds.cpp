@@ -2,14 +2,13 @@
 
 // written in order to find out what lowerBound(..) and upperBound(..) are computing
 
-#define CATCH_CONFIG_MAIN
 #define LOCAL_CODE_ONLY
 #include "core/data/angle_map.cpp"
 #include "3rdparty/catch2/catch.hpp"
 
 const double e=1e-15;
 
-TEST_CASE( "Bounds - LowerBound", "[21_bounds]" ) {
+TEST_CASE( "Bounds - LowerBound", "" ) {
     for (int n = 2; n<12; ++n) {
         std::vector<deg> v(n);
         for (int i=0; i<n; ++i)

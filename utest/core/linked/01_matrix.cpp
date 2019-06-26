@@ -1,9 +1,8 @@
-#define CATCH_CONFIG_MAIN
 #include "core/calc/matrix.h"
 #include "3rdparty/catch2/catch.hpp"
 
 
-TEST_CASE( "MatrixTest - BasicOperations", "[01_matrix]" ) {
+TEST_CASE( "MatrixTest - BasicOperations", "" ) {
     mat3r m1(0, 1, 2, 3, 4, 5, 6, 7, 8);
     mat3r mt(0, 3, 6, 1, 4, 7, 2, 5, 8);
     mat3r mc(m1);

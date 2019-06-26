@@ -12,13 +12,12 @@
 //
 //  ***********************************************************************************************
 
-#define CATCH_CONFIG_MAIN
 #include "core/typ/lazy_data.h"
 #include <cmath>
 #include "3rdparty/catch2/catch.hpp"
 
 // Minimal example to test and demonstrate usage of Cached.
-TEST_CASE( "Caches - Simple", "[08_caches]" ) {
+TEST_CASE( "Caches - Simple", "" ) {
     static int N = 42; // Auxiliary, to let the remake function depend on something.
     auto f = []()->int{ return N++; }; // The remake function. A complicated computation.
     lazy_data::Cached<int> cache{ f };
@@ -30,7 +29,7 @@ TEST_CASE( "Caches - Simple", "[08_caches]" ) {
 
 // Test and demonstrate usage of Cached, with remake argument.
 // Payload is double, argument is int.
-TEST_CASE( "Caches - SimpleWithArg", "[08_caches]" ) {
+TEST_CASE( "Caches - SimpleWithArg", "" ) {
     auto f = [](int i)->double{ return sqrt(i); }; // The remake function.
     lazy_data::Cached<double,int> cache{ f };
     CHECK(sqrt(2) == cache.yield(2)); // recompute
@@ -40,7 +39,7 @@ TEST_CASE( "Caches - SimpleWithArg", "[08_caches]" ) {
 }
 
 // Minimal example to test and demonstrate usage of VectorCache.
-TEST_CASE( "Caches - Vector", "[08_caches]" ) {
+TEST_CASE( "Caches - Vector", "" ) {
     static int N = 10; // Auxiliary, to let the remake function depend on something.
     auto n = []()->int{ return 3; };           // The size function.
     auto f = [](int i)->int{ return N+i; }; // The remake function. A complicated computation.
