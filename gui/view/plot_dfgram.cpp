@@ -108,11 +108,11 @@ void PlotDfgramOverlay::setFromCommand(const QString& arg)
     if (args[0]=="add") {
         if (args.size()<3)
             THROW("Missing arguments to command 'add'");
-        addRange(Range(strOp::to_d(args[1]), strOp::to_d(args[2])));
+        addRange(Range(qcr::str::to_d(args[1]), qcr::str::to_d(args[2])));
     } else if (args[0]=="sel") {
         if (args.size()<2)
             THROW("Missing argument to command 'sel'");
-        selectRange(strOp::to_d(args[1]));
+        selectRange(qcr::str::to_d(args[1]));
     } else
         THROW("Unexpected dfgram command");
 }
