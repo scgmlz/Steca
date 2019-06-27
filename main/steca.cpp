@@ -130,7 +130,7 @@ int main(int argc, char* argv[]) {
     }
     std::cout << "Log file will be written to " << CSTRI(logFileName) << "\n";
     QcrLogger logger{logFileName};
-    Console console;
+    QcrConsole console;
     QLoggingCategory::setFilterRules("*.debug=true\nqt.*.debug=false");
     qInstallMessageHandler(messageHandler);
 
