@@ -26,9 +26,9 @@
 
 //! The model for FilesView
 
-class FilesModel : public CheckTableModel { // < QAbstractTableModel < QAbstractItemModel
+class FilesModel : public QcrCheckTableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
-    FilesModel() : CheckTableModel{"datafiles"} {}
+    FilesModel() : QcrCheckTableModel{"datafiles"} {}
 
     enum {COL_CHECK=1, COL_NAME, COL_ATTRS};
 
@@ -103,7 +103,7 @@ QVariant FilesModel::headerData(int col, Qt::Orientation ori, int role) const
 
 //! Main item in `SubframeFiles`: View and control the list of `DataFile`s
 
-class FilesView : public CheckTableView {
+class FilesView : public QcrCheckTableView {
 public:
     FilesView();
 private:
@@ -111,7 +111,7 @@ private:
     void onData() override;
 };
 
-FilesView::FilesView() : CheckTableView{new FilesModel{}}
+FilesView::FilesView() : QcrCheckTableView{new FilesModel{}}
 {
     setSelectionMode(QAbstractItemView::NoSelection);
     onData();
