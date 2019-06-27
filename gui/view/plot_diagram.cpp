@@ -92,11 +92,11 @@ void PlotDiagram::refresh()
     int difference = max - meta::numMeasurementNotConstant();
 
     int idxX = gSession->params.diagramX.val();
-    if (idxX >  max)
+    if (idxX >  max || idxX < 0)
         idxX = 0;
 
     int idxY = gSession->params.diagramY.val();
-    if (idxY > max)
+    if (idxY > max || idxY < 0)
         idxY = 0;
 
     if(idxX >= difference)
