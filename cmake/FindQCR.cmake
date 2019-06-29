@@ -11,13 +11,9 @@
 # Copyright 2019 Joachim Wuttke, Forschungszentrum Jülich.
 # Redistribution permitted.
 
-find_path(QCR_INCLUDE_DIR QCR/base/qcrexception.h)
+find_path(QCR_INCLUDE_DIR QCR/widgets/mainwindow.h)
 find_library(QCR_LIBRARIES NAMES QCR QCR)
 
 include(FindPackageHandleStandardArgs)
 find_package_handle_standard_args(QCR DEFAULT_MSG QCR_LIBRARIES QCR_INCLUDE_DIR)
 mark_as_advanced(QCR_INCLUDE_DIR QCR_LIBRARIES)
-
-if(NOT QCR_FOUND)
-    return()
-endif()
