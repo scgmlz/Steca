@@ -13,9 +13,9 @@
 //  ***********************************************************************************************
 
 #include "core/peakfit/peak_function.h"
-#include "QCR/base/qcrexception.h"
 #include "QCR/engine/console.h"
 #include "gui/view/plot_dfgram.h"
+#include "core/base/exception.h"
 #include "core/session.h"
 #include "gui/view/toggles.h"
 #include "gui/mainwin.h"
@@ -107,14 +107,14 @@ void PlotDfgramOverlay::setFromCommand(const QString& arg)
     QStringList args = arg.split(' ');
     if (args[0]=="add") {
         if (args.size()<3)
-            throw QcrException{"Missing arguments to command 'add'"};
-        addRange(Range(strOp::to_d(args[1]), strOp::to_d(args[2])));
+            THROW("Missing arguments to command 'add'");
+        addRange(Range(qcr::str::to_d(args[1]), qcr::str::to_d(args[2])));
     } else if (args[0]=="sel") {
         if (args.size()<2)
-            throw QcrException{"Missing argument to command 'sel'"};
-        selectRange(strOp::to_d(args[1]));
+            THROW("Missing argument to command 'sel'");
+        selectRange(qcr::str::to_d(args[1]));
     } else
-        throw QcrException{"Unexpected dfgram command"};
+        THROW("Unexpected dfgram command");
 }
 
 //! Returns color to be used when the mouse is marking a range.

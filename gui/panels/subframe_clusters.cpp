@@ -22,9 +22,9 @@
 
 //! The model for ActiveClustersView.
 
-class ActiveClustersModel : public CheckTableModel { // < QAbstractTableModel < QAbstractItemModel
+class ActiveClustersModel : public QcrCheckTableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
-    ActiveClustersModel() : CheckTableModel{"measurement"} {}
+    ActiveClustersModel() : QcrCheckTableModel{"measurement"} {}
     int columnCount() const final {
         return COL_ATTRS + meta::numSelectedMeasurementDependent(); }
 
@@ -125,7 +125,7 @@ QVariant ActiveClustersModel::headerData(int col, Qt::Orientation ori, int role)
 
 //! Main item in SubframeMeasurement: View and control of measurements list.
 
-class ActiveClustersView : public CheckTableView { // < QTreeView < QAbstractItemView
+class ActiveClustersView : public QcrCheckTableView { // < QTreeView < QAbstractItemView
 public:
     ActiveClustersView();
 private:
@@ -134,7 +134,7 @@ private:
 };
 
 ActiveClustersView::ActiveClustersView()
-    : CheckTableView{new ActiveClustersModel{}}
+    : QcrCheckTableView{new ActiveClustersModel{}}
 {
     setSelectionMode(QAbstractItemView::NoSelection);
     onData();

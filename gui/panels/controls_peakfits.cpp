@@ -39,9 +39,9 @@ QString par2text(double val, double err) {
 
 //! Model for table of peaks.
 
-class PeaksModel : public TableModel {
+class PeaksModel : public QcrTableModel {
 public:
-    PeaksModel() : TableModel{"peaks"} {}
+    PeaksModel() : QcrTableModel{"peaks"} {}
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return gSession->peaksSettings.size(); }
@@ -236,7 +236,7 @@ ControlsPeakfits::ControlsPeakfits()
     topControls->addWidget(new QcrIconTriggerButton{&gGui->triggers->peaksClear});
     box->addLayout(topControls);
 
-    box->addWidget(new TableView(new PeaksModel{}));
+    box->addWidget(new QcrTableView(new PeaksModel{}));
     box->addWidget(comboPeakFct);
     box->addWidget(new RangeControl(
                        "peak",
