@@ -15,7 +15,7 @@
 #ifndef TAB_BIGTABLE_H
 #define TAB_BIGTABLE_H
 
-#include "qcr/widgets/views.h"
+#include "QCR/widgets/views.h"
 
 //! Tabular display of fit results and metadata, with associated controls.
 

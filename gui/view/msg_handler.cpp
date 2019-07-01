@@ -12,8 +12,8 @@
 //
 //  ***********************************************************************************************
 
-#include "qcr/engine/logger.h"
-#include "qcr/engine/console.h"
+#include "QCR/engine/logger.h"
+#include "QCR/engine/console.h"
 #include <QApplication>
 #include <QMessageBox>
 #include <QtGlobal> // no auto rm

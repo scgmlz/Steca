@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "gui/panels/tab_bigtable.h"
-#include "qcr/widgets/tables.h"
+#include "QCR/widgets/tables.h"
 #include "core/session.h"
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"
@@ -21,16 +21,16 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QButtonGroup>
-//#include "qcr/base/debug.h"
+//#include "QCR/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class ColumnSelectorModel (local scope)
 
 //! The model for MetadatView.
 
-class ColumnSelectorModel : public CheckTableModel {
+class ColumnSelectorModel : public QcrCheckTableModel {
 public:
-    ColumnSelectorModel() : CheckTableModel{"colSel"} {}
+    ColumnSelectorModel() : QcrCheckTableModel{"colSel"} {}
 
 private:
     int highlighted() const final { return highlighted_; }
@@ -60,7 +60,7 @@ QVariant ColumnSelectorModel::entry(int row, int col) const
 
 //! Main item in SubframeMetadata: View and control the list of Metadata.
 
-class ColumnSelectorView : public CheckTableView {
+class ColumnSelectorView : public QcrCheckTableView {
 public:
     ColumnSelectorView();
     void onData() override;
@@ -69,7 +69,7 @@ private:
 };
 
 ColumnSelectorView::ColumnSelectorView()
-    : CheckTableView{new ColumnSelectorModel{}}
+    : QcrCheckTableView{new ColumnSelectorModel{}}
 {
     setColumnWidth(0, 0);
     setColumnWidth(1,  .5*mWidth());

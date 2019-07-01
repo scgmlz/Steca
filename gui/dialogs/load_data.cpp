@@ -17,7 +17,7 @@
 #include "core/base/async.h"
 #include "core/base/exception.h"
 #include "gui/dialogs/file_dialog.h"
-#include "qcr/base/debug.h" // warning
+#include "QCR/base/debug.h" // warning
 #include <QDir>
 #include <QFileInfo>
 #include <QStringBuilder> // for ".." % ..

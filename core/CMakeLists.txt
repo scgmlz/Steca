@@ -16,7 +16,8 @@ message(STATUS "core to be linked with yaml:    ${yaml_LIBRARIES}")
 
 target_link_libraries(${lib}
     PUBLIC
-    qcr
+    QCR
+    Qt5::Widgets # depends on Qt5::Gui which depends on Qt5::Core
     PRIVATE
     LevMar
     caress_loader

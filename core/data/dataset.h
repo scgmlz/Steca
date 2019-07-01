@@ -16,7 +16,7 @@
 #define DATASET_H
 
 #include "core/data/cluster.h"
-#include "qcr/engine/cell.h"
+#include "QCR/engine/cell.h"
 #include "core/raw/rawfile.h"
 #include <memory>
 
@@ -40,6 +40,8 @@ public:
     bool activated() const { return activated_; }
 
     int offset_;  //!< first index in total list of `Measurement`s
+    int clusterOffset_;  //!< first index in list of all `Cluster`s
+                         //!< set by Dataset::updateClusters
 
 private:
     friend class Dataset;
@@ -118,6 +120,7 @@ private:
     void onClusteringChanged();
     void updateClusters();
     void updateActiveClusters();
+    void updateMetaModes() const;
 
     bool hasFile(const QString& fileName) const;
 };

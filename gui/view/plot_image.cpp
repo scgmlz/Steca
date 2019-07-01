@@ -16,7 +16,7 @@
 #include "core/session.h"
 #include "gui/mainwin.h"
 #include "gui/view/toggles.h"
-//#include "qcr/base/debug.h"
+//#include "QCR/base/debug.h"
 #include <QPainter>
 
 namespace {

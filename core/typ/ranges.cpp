@@ -15,7 +15,7 @@
 #include "core/typ/ranges.h"
 #include "core/base/exception.h"
 #include "core/typ/json.h"
-#include "qcr/base/debug.h"
+#include "QCR/base/debug.h"
 
 
 void Ranges::clear() {

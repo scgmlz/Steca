@@ -15,7 +15,7 @@
 #ifndef CONTROLS_INTERPOLATION_H
 #define CONTROLS_INTERPOLATION_H
 
-#include "qcr/widgets/views.h"
+#include "QCR/widgets/views.h"
 
 //! A widget with controls to change the interpolation fitting.
 

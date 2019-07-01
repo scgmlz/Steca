@@ -15,7 +15,7 @@
 #ifndef RANGE_CONTROL_H
 #define RANGE_CONTROL_H
 
-#include "qcr/widgets/views.h"
+#include "QCR/widgets/views.h"
 
 //! A horizontal row with labels and spin boxes to view and change one peak fit range.
 

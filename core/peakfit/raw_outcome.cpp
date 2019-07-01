@@ -12,9 +12,10 @@
 //
 //  ***********************************************************************************************
 
+#include "core/base/angles.h"
 #include "core/peakfit/raw_outcome.h"
 #include "core/typ/curve.h"
-#include "qcr/base/debug.h"
+#include "QCR/base/debug.h"
 #include <qmath.h>
 
 //! Computes raw peak characteristics.
@@ -40,7 +41,7 @@ Mapped analyseRawPeak(const Curve& curve)
     stdv = sqrt( stdv/intensity - center*center );
     intensity *= curve.rgeX().width() / curve.size();
     Mapped ret;
-    ret.set("center", center);
+    ret.set("center", deg{center});
     ret.set("intensity", intensity);
     ret.set("fwhm", sqrt(8*log(2))*stdv);
     return ret;

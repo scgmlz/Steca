@@ -14,16 +14,16 @@
 
 #include "gui/panels/subframe_metadata.h"
 #include "core/session.h"
-#include "qcr/widgets/tables.h"
+#include "QCR/widgets/tables.h"
 
 //  ***********************************************************************************************
 //! @class MetatableModel (local scope)
 
 //! The model for MetadatView.
 
-class MetatableModel : public CheckTableModel {
+class MetatableModel : public QcrCheckTableModel {
 public:
-    MetatableModel() : CheckTableModel{"meta"} {}
+    MetatableModel() : QcrCheckTableModel{"meta"} {}
 
     enum { COL_CHECK = 1, COL_TAG, COL_VALUE, NUM_COLUMNS };
 
@@ -38,6 +38,9 @@ private:
 
     QVariant entry(int, int) const final;
     QVariant headerData(int, Qt::Orientation, int) const { return {}; }
+    QColor foregroundColor(int, int) const final;
+    void onClicked(const QModelIndex& cell) final;
+    QVariant data(const QModelIndex &index, int role) const final;
 
     int highlighted_ {0};
 };
@@ -56,12 +59,52 @@ QVariant MetatableModel::entry(int row, int col) const
     return "";
 }
 
+QColor MetatableModel::foregroundColor(int row, int col) const
+{
+    switch (meta::getMetaMode(row)) {
+    case metaMode::CONSTANT:
+        return QColor(Qt::black);
+    case metaMode::FILE_DEPENDENT:
+        return QColor(Qt::darkMagenta);
+    case metaMode::MEASUREMENT_DEPENDENT:
+        return QColor(Qt::darkBlue);
+    }
+    qFatal("MetatableModel::foregroundColor impossible case");
+}
+
+void MetatableModel::onClicked(const QModelIndex& cell)
+{
+    QcrTableModel::setHighlightedCell(cell);
+    int row = cell.row();
+    int col = cell.column();
+    if (col==1 && meta::getMetaMode(row) != metaMode::CONSTANT) {
+        activateAndLog(row, !activated(row));
+        gRoot->remakeAll();
+    }
+}
+
+QVariant MetatableModel::data(const QModelIndex& index, int role) const
+{
+    int row = index.row();
+    int col = index.column();
+    if (col < 0 || col >= columnCount() || row < 0 || row >= rowCount())
+        return {};
+    if (role != Qt::CheckStateRole)
+        return QcrCheckTableModel::data(index, role);
+    else {
+        if (col==1 && meta::getMetaMode(row)!=metaMode::CONSTANT)
+            return state(row);
+        else
+            return {};
+    }
+}
+
 //  ***********************************************************************************************
 //! @class MetatableView (local scope)
 
 //! Main item in SubframeMetadata: View and control the list of Metadata.
 
-class MetatableView : public CheckTableView {
+class MetatableView : public QcrCheckTableView {
 public:
     MetatableView();
 private:
@@ -69,7 +112,7 @@ private:
 };
 
 MetatableView::MetatableView()
-    : CheckTableView{new MetatableModel}
+    : QcrCheckTableView{new MetatableModel}
 {
     setColumnWidth(0, 0);
     setColumnWidth(1,  .5*mWidth());

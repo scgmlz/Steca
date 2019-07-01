@@ -15,7 +15,7 @@
 #ifndef MAPPED_H
 #define MAPPED_H
 
-#include "qcr/base/debug.h"
+#include "QCR/base/debug.h"
 #include <QVariant>
 #include <map>
 
@@ -39,7 +39,6 @@ public:
 template<typename T>
 void Mapped::set(const QString& key, T value)
 {
-    ASSERT(!has(key));
     super::operator[](key) = QVariant::fromValue<T>(value);
 }
 

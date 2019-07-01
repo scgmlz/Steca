@@ -14,7 +14,7 @@
 
 #include "core/data/collect_intensities.h"
 #include "core/session.h"
-#include "qcr/base/debug.h"
+#include "QCR/base/debug.h"
 #include <qmath.h>
 
 namespace {

@@ -37,6 +37,7 @@ Triggers::Triggers()
     baserangeRemove.setTriggerHook([](){ gSession->baseline.removeSelected(); });
     peakAdd        .setTriggerHook([](){ AddRangeBox{"peak"}.exec(); });
     addFiles       .setTriggerHook([](){ loadData::addFiles(gGui); });
+    clearFiles     .setTriggerHook([](){ gSession->dataset.clear(); });
     checkUpdate    .setTriggerHook([](){ CheckUpdate _(gGui); });
     clearSession   .setTriggerHook([](){ gSession->clear(); });
     corrFile       .setTriggerHook([](){ loadData::loadCorrFile(gGui); });

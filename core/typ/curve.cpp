@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/typ/curve.h"
-#include "qcr/base/debug.h"
+#include "QCR/base/debug.h"
 
 void Curve::clear()
 {
@@ -77,15 +77,6 @@ Curve Curve::intersect(const Ranges& ranges) const
             ++xi;
         }
     }
-    return ret;
-}
-
-//! Subtracts a background that is given as a funtion y(x).
-Curve Curve::subtract(const std::function<double(double)>& func) const
-{
-    Curve ret = *this;
-    for (int i=0; i<size(); ++i)
-        ret.ys_[i] = ys_[i] - func(xs_.at(i));
     return ret;
 }
 

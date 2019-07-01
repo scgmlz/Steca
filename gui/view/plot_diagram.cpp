@@ -16,9 +16,9 @@
 #include "gui/view/plot_diagram.h"
 #include "core/session.h"
 #include "gui/mainwin.h"
-#include "qcr/widgets/controls.h"
+#include "QCR/widgets/controls.h"
 #include <algorithm>
-//#include "qcr/base/debug.h"
+//#include "QCR/base/debug.h"
 
 namespace {
 

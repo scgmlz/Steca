@@ -13,8 +13,8 @@
 //  ***********************************************************************************************
 
 #include "gui/panels/subframe_files.h"
-#include "qcr/widgets/controls.h"
-#include "qcr/widgets/tables.h"
+#include "QCR/widgets/controls.h"
+#include "QCR/widgets/tables.h"
 #include "core/session.h"
 #include "gui/view/toggles.h"
 #include "gui/actions/triggers.h"
@@ -26,9 +26,11 @@
 
 //! The model for FilesView
 
-class FilesModel : public CheckTableModel { // < QAbstractTableModel < QAbstractItemModel
+class FilesModel : public QcrCheckTableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
-    FilesModel() : CheckTableModel{"datafiles"} {}
+    FilesModel() : QcrCheckTableModel{"datafiles"} {}
+
+    enum {COL_CHECK=1, COL_NAME, COL_ATTRS};
 
 private:
     void setActivated(int i, bool on) final { gSession->dataset.fileAt(i).setFileActivation(on); }
@@ -39,10 +41,12 @@ private:
     Qt::CheckState state(int i) const final {
         return gSession->dataset.fileAt(i).clusterState(); }
 
-    int columnCount() const final { return 3; }
+    int columnCount() const final {
+        return COL_ATTRS + meta::numSelectedFileDependent(); }
     int rowCount() const final { return gSession->dataset.countFiles(); }
     QVariant entry(int, int) const final;
     QString tooltip(int, int) const final;
+    QVariant headerData(int, Qt::Orientation, int) const final;
 };
 
 int FilesModel::highlighted() const
@@ -54,9 +58,16 @@ int FilesModel::highlighted() const
 QVariant FilesModel::entry(int row, int col) const
 {
     const Datafile& file = gSession->dataset.fileAt(row);
-    if(col == 2)
+    if(col == COL_NAME)
         return file.name();
-    return {};
+    else if (col>=COL_ATTRS &&
+             col < COL_ATTRS+meta::numSelectedFileDependent()) {
+        int cn = gSession->dataset.fileAt(row).clusterOffset_;
+        const Cluster& cluster = *gSession->dataset.allClusters.at(cn);
+        return cluster.avgMetadata().attributeStrValue(
+                    meta::selectedOfFileDependent(col-COL_ATTRS));
+    } else
+        return {};
 }
 
 QString FilesModel::tooltip(int row, int col) const
@@ -71,18 +82,52 @@ QString FilesModel::tooltip(int row, int col) const
     return {};
 }
 
+QVariant FilesModel::headerData(int col, Qt::Orientation ori, int role) const
+{
+    if (ori!=Qt::Horizontal)
+        return {};
+    if (role != Qt::DisplayRole)
+        return {};
+    if (col==COL_NAME)
+        return "file name";
+    else if (col>=COL_ATTRS &&
+             col < COL_ATTRS+meta::numSelectedFileDependent())
+        return meta::niceTag(
+            meta::selectedOfFileDependent(col-COL_ATTRS));
+    return {};
+}
+
 
 //  ***********************************************************************************************
 //! @class FilesView (local scope)
 
 //! Main item in `SubframeFiles`: View and control the list of `DataFile`s
 
-class FilesView : public CheckTableView {
+class FilesView : public QcrCheckTableView {
 public:
-    FilesView() : CheckTableView {new FilesModel} {}
+    FilesView();
 private:
     FilesModel* model() { return static_cast<FilesModel*>(model_); }
+    void onData() override;
 };
+
+FilesView::FilesView() : QcrCheckTableView{new FilesModel{}}
+{
+    setSelectionMode(QAbstractItemView::NoSelection);
+    onData();
+}
+
+void FilesView::onData()
+{
+    setHeaderHidden(!meta::numSelectedFileDependent());
+    setColumnWidth(0, 0);
+    setColumnWidth(1,  3*dWidth());
+    for (int i=2; i<model_->columnCount(); ++i)
+        setColumnWidth(i, 7.*dWidth());
+    model_->refreshModel();
+    emit model_->layoutChanged();
+    updateScroll();
+}
 
 
 //  ***********************************************************************************************
@@ -100,6 +145,7 @@ SubframeFiles::SubframeFiles()
     dataControls->addStretch();
     dataControls->addWidget(new QcrIconTriggerButton{&gGui->triggers->addFiles});
     dataControls->addWidget(new QcrIconTriggerButton{&gGui->triggers->removeFile});
+    dataControls->addWidget(new QcrIconTriggerButton{&gGui->triggers->clearFiles});
 
     auto* corrFileView = new QcrLineDisplay{[]()->QString {
             return gSession->corrset.fileName(); }};

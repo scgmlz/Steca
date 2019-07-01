@@ -14,10 +14,10 @@
 
 #include "file_dialog.h"
 #include "core/loaders/loaders.h"
-#include "qcr/base/debug.h"
-#include "qcr/base/string_ops.h"
-#include "qcr/engine/console.h"
-#include "qcr/widgets/modal_dialogs.h"
+#include "QCR/base/debug.h"
+#include "QCR/base/string_ops.h"
+#include "QCR/engine/console.h"
+#include "QCR/widgets/modal_dialogs.h"
 #include <QFileSystemModel>
 #include <QMessageBox>
 #include <QSortFilterProxyModel>

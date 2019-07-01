@@ -12,7 +12,7 @@
 //
 //  ***********************************************************************************************
 
-#include "qcr/base/string_ops.h"
+#include "QCR/base/string_ops.h"
 #include "core/base/exception.h"
 #include "core/raw/rawfile.h"
 #include <QDataStream>
@@ -276,7 +276,7 @@ Rawfile loadTiffDat(const QString& filePath) {
             // load one dataseq
             loadTiff(&ret, dir.filePath(tiffFileName), phi, monitor, expTime);
         } catch (const Exception& ex) {
-            THROW("File "+filePath+": cannot load image number "+strOp::to_s(iline)
+            THROW("File "+filePath+": cannot load image number "+qcr::str::to_s(iline)
                   +" ("+tiffFileName + "): " + ex.msg());
         }
     }

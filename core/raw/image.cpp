@@ -14,7 +14,7 @@
 
 #include "core/raw/image.h"
 #include "core/base/exception.h"
-#include "qcr/base/debug.h"
+#include "QCR/base/debug.h"
 
 Image::Image(const size2d& size, float val)
     : size_{size}

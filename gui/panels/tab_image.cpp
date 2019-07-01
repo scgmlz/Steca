@@ -18,8 +18,8 @@
 #include "gui/mainwin.h"
 #include "gui/view/plot_image.h"
 #include "gui/view/toggles.h"
-#include "qcr/widgets/controls.h"
-//#include "qcr/base/debug.h"
+#include "QCR/widgets/controls.h"
+//#include "QCR/base/debug.h"
 #include <qmath.h>
 
 namespace {

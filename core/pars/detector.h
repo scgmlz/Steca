@@ -17,7 +17,7 @@
 
 #include "core/typ/range.h"
 #include "core/typ/size2d.h"
-#include "qcr/engine/cell.h"
+#include "QCR/engine/cell.h"
 #include <array>
 
 //! Detector detector.

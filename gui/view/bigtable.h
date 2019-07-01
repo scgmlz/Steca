@@ -15,11 +15,11 @@
 #ifndef BIGTABLE_H
 #define BIGTABLE_H
 
-#include "qcr/widgets/tables.h"
+#include "QCR/widgets/tables.h"
 
 //! Model for the BigtableView view.
 
-class BigtableModel : public TableModel {
+class BigtableModel : public QcrTableModel {
 public:
     BigtableModel();
     BigtableModel(const BigtableModel&) = delete;
@@ -60,7 +60,7 @@ private:
 
 //! A data table view, for use in the 'Points' tab of an output Frame.
 
-class BigtableView : public TableView {
+class BigtableView : public QcrTableView {
 public:
     BigtableView();
     BigtableView(const BigtableView&) = delete;

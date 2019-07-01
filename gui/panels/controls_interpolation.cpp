@@ -14,7 +14,7 @@
 
 #include "gui/panels/controls_interpolation.h"
 #include "core/session.h"
-#include "qcr/widgets/controls.h"
+#include "QCR/widgets/controls.h"
 
 ControlsInterpolation::ControlsInterpolation()
     : QcrWidget{"ControlsInterpolation"}

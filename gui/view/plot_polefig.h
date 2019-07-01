@@ -15,8 +15,8 @@
 #ifndef PLOT_POLEFIG_H
 #define PLOT_POLEFIG_H
 
-#include "qcr/engine/cell.h"
-#include "qcr/widgets/views.h"
+#include "QCR/engine/cell.h"
+#include "QCR/widgets/views.h"
 #include <memory>
 
 struct PolefigPoint {

@@ -20,7 +20,7 @@
 #include "core/peakfit/peak_function.h"
 #include "core/typ/mapped.h"
 #include "core/session.h"
-#include "qcr/base/debug.h" // ASSERT
+#include "QCR/base/debug.h" // ASSERT
 
 namespace {
 
@@ -49,7 +49,7 @@ Mapped getPeak(int jP, const Cluster& cluster, int iGamma)
         const PeakFunction*const peakFit = dynamic_cast<const PeakFunction*>(pFct.fitFunction());
         ASSERT(peakFit);
         const Mapped& po = peakFit->outcome(pFct);
-        if (po.has("center") && fitrange.contains(po.get<double>("center")))
+        if (po.has("center") && fitrange.contains(po.get<deg>("center")))
             out = po;
     }
     out.set("alpha", alpha);

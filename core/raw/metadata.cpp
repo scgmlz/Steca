@@ -13,11 +13,12 @@
 //  ***********************************************************************************************
 
 #include "core/raw/metadata.h"
-//#include "qcr/base/debug.h"
+#include "core/session.h"
+//#include "QCR/base/debug.h"
 
 namespace {
 
-static int noNumAttr = 0;
+static int noNumAttr = 2;
 
 std::vector<MetaDefinition> metaDefs = {
     {"X", "X", averageMode::AVGE},
@@ -41,20 +42,21 @@ std::vector<MetaDefinition> metaDefs = {
     {"delta_mon", "Δmon", averageMode::SUM},
     {"t", "t", averageMode::LAST},
     {"delta_t", "Δt", averageMode::SUM},
+    {"measure_t", "measure_t", averageMode::FIRST},
+    {"numMeasurement", "numMeasurement", averageMode::FIRST},
     {"date", "date", averageMode::FIRST},
     {"comment", "comment", averageMode::FIRST},
 };
 
 } // namespace
 
-MetaDefinition::MetaDefinition(const QString& name, const QString& niceName, averageMode avgmode)
-    : niceName_{niceName}
-    , asciiName_{name}
+MetaDefinition::MetaDefinition(
+    const QString& name, const QString& niceName, averageMode avgmode, metaMode mM)
+    : asciiName_{name}
+    , niceName_{niceName}
     , mode_{avgmode}
-{
-    if (mode_ == averageMode::FIRST)
-        noNumAttr++;
-}
+    , metaMode_{mM}
+{}
 
 Metadata::Metadata()
     : Mapped{}
@@ -89,6 +91,8 @@ namespace meta {
 
 QStringList asciiNames;
 QStringList niceNames;
+std::vector<int> selectedMD;
+std::vector<int> selectedFD;
 
 int size()
 {
@@ -144,12 +148,12 @@ Metadata computeAverage(const std::vector<const Metadata*>& vec)
         switch (metaDef.mode_) {
         case averageMode::FIRST: {
             const Metadata* firstMd = vec.front();
-            ret.set(key, firstMd->get<QString>(key));
+            ret.set(key, firstMd->at(key));
             break;
         }
         case averageMode::LAST: {
             const Metadata* lastMd = vec.back();
-            ret.set(key, lastMd->get<double>(key));
+            ret.set(key, lastMd->at(key));
             break;
         }
         case averageMode::SUM: {
@@ -193,4 +197,56 @@ std::vector<QVariant> metaValues(const Mapped map)
     }
     return attr;
 }
+
+void setMetaMode(int i, metaMode mM)
+{
+    metaDefs.at(i).metaMode_ = mM;
+}
+
+metaMode getMetaMode(int i)
+{
+    return metaDefs.at(i).metaMode_;
+}
+
+void clearMetaModes()
+{
+    for (int m=0; m<metaDefs.size(); m++) {
+       setMetaMode(m, metaMode::CONSTANT);
+    }
+}
+
+int numSelectedFileDependent()
+{
+    selectedFD.clear();
+    for (int i=0; i<metaDefs.size(); i++) {
+        if (getMetaMode(i) == metaMode::FILE_DEPENDENT &&
+                gSession->params.smallMetaSelection.isSelected(i) ) {
+            selectedFD.push_back(i);
+        }
+    }
+    return selectedFD.size();
+}
+
+int numSelectedMeasurementDependent()
+{
+    selectedMD.clear();
+    for (int i=0; i<metaDefs.size(); i++) {
+        if (getMetaMode(i) == metaMode::MEASUREMENT_DEPENDENT &&
+                gSession->params.smallMetaSelection.isSelected(i) ) {
+            selectedMD.push_back(i);
+        }
+    }
+    return selectedMD.size();
+}
+
+int selectedOfFileDependent(int i)
+{
+    return selectedFD.at(i);
+}
+
+int selectedOfMeasurementDependent(int i)
+{
+    return selectedMD.at(i);
+}
+
 } // namespace meta

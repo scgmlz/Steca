@@ -15,7 +15,7 @@
 #ifndef TAB_DIAGRAM_H
 #define TAB_DIAGRAM_H
 
-#include "qcr/widgets/views.h"
+#include "QCR/widgets/views.h"
 
 //! Mainframe tab to plot a pair of fit results or metadata, with associated controls.
 

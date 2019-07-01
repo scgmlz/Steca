@@ -15,8 +15,8 @@
 #ifndef TAB_IMAGE_H
 #define TAB_IMAGE_H
 
-#include "qcr/widgets/views.h"
-#include "qcr/engine/cell.h"
+#include "QCR/widgets/views.h"
+#include "QCR/engine/cell.h"
 #include "core/raw/measurement.h"
 #include "core/raw/image.h"
 

@@ -15,8 +15,8 @@
 #include "core/data/cluster.h"
 #include "core/loaders/loaders.h"
 #include "core/session.h"
-#include "qcr/engine/mixin.h" // remakeAll
-#include "qcr/base/debug.h" // ASSERT
+#include "QCR/engine/mixin.h" // remakeAll
+#include "QCR/base/debug.h" // ASSERT
 #include <algorithm>
 
 //  ***********************************************************************************************
@@ -168,6 +168,7 @@ void Dataset::onFileChanged()
         cnt += file.numMeasurements();
     }
     updateClusters();
+    updateMetaModes();
 }
 
 void Dataset::onClusteringChanged()
@@ -180,8 +181,12 @@ void Dataset::updateClusters()
 {
     allClusters.clear();
     hasIncomplete_ = false;
+    int measureNum = 1;
+    double measureTime =0;
+    int clusterOffset = 0;
     for (Datafile& file : files_) {
         file.clusters_.clear();
+        file.clusterOffset_ = clusterOffset;
         for (int i=0; i<file.numMeasurements(); i+=binning.val()) {
             if (i+binning.val()>file.numMeasurements()) {
                 hasIncomplete_ = true;
@@ -189,11 +194,17 @@ void Dataset::updateClusters()
                     break;
             }
             std::vector<const Measurement*> group;
-            for (int ii=i; ii<file.numMeasurements() && ii<i+binning.val(); ii++)
+            for (int ii=i; ii<file.numMeasurements() && ii<i+binning.val(); ii++) {
+                file.raw_.setMeasurementNum(ii, measureNum);
+                file.raw_.setMeasurementTime(ii, measureTime);
+                measureTime += file.raw_.measurements().at(ii)->deltaTime();
                 group.push_back(file.raw_.measurements().at(ii));
+                measureNum++;
+            }
             std::unique_ptr<Cluster> cluster(new Cluster(group, file, allClusters.size(), i));
             file.clusters_.push_back(cluster.get());
             allClusters.push_back(std::move(cluster));
+            clusterOffset++;
         }
     }
     gSession->activeClusters.invalidate();
@@ -240,4 +251,33 @@ bool Dataset::hasFile(const QString& fileName) const
         if (fileInfo == file.raw_.fileInfo())
             return true;
     return false;
+}
+
+void Dataset::updateMetaModes() const
+{
+    meta::clearMetaModes();
+    int metasize = meta::numAttributes(false);
+    for (int f=0; f<files_.size(); f++) {
+        const Datafile& file = files_.at(f);
+        for (int m=0; m<metasize; m++) {
+            if (meta::getMetaMode(m) == metaMode::MEASUREMENT_DEPENDENT)
+                continue;
+            std::vector<const Measurement*> measurements = file.raw_.measurements();
+            for (int i=0; i<file.raw_.numMeasurements()-1; i++) {
+                if (measurements.at(i)->metadata().attributeValue(m) ==
+                    measurements.at(i+1)->metadata().attributeValue(m))
+                    continue;
+                meta::setMetaMode(m, metaMode::MEASUREMENT_DEPENDENT);
+            }
+            if (meta::getMetaMode(m) == metaMode::FILE_DEPENDENT)
+                continue;
+            if (f>=files_.size()-1)
+                continue;
+            if (files_.at(f).raw_.measurements().at(0)->metadata().attributeValue(m) ==
+                files_.at(f+1).raw_.measurements().at(0)->metadata().attributeValue(m))
+                continue;
+            if (meta::getMetaMode(m) != metaMode::MEASUREMENT_DEPENDENT)
+                meta::setMetaMode(m, metaMode::FILE_DEPENDENT);
+        }
+    }
 }

@@ -13,9 +13,9 @@
 //  ***********************************************************************************************
 
 #include "gui/panels/controls_baseline.h"
-#include "qcr/base/debug.h" // ASSERT
-#include "qcr/widgets/controls.h"
-#include "qcr/widgets/tables.h"
+#include "QCR/base/debug.h" // ASSERT
+#include "QCR/widgets/controls.h"
+#include "QCR/widgets/tables.h"
 #include "core/session.h"
 #include "gui/actions/triggers.h"
 #include "gui/mainwin.h"
@@ -26,9 +26,9 @@
 
 //! Model for BaseRangesView.
 
-class BaseRangesModel : public TableModel {
+class BaseRangesModel : public QcrTableModel {
 public:
-    BaseRangesModel() : TableModel("baseline") {}
+    BaseRangesModel() : QcrTableModel("baseline") {}
 
     enum { COL_RANGE = 1, NUM_COLUMNS };
 
@@ -81,9 +81,9 @@ QVariant BaseRangesModel::data(const QModelIndex& index, int role) const
 
 //! List view of user-defined Bragg peaks.
 
-class BaseRangesView : public TableView {
+class BaseRangesView : public QcrTableView {
 public:
-    BaseRangesView() : TableView{new BaseRangesModel} {}
+    BaseRangesView() : QcrTableView{new BaseRangesModel} {}
 };
 
 //  ***********************************************************************************************

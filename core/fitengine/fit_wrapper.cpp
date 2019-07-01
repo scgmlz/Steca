@@ -15,7 +15,7 @@
 #include "core/fitengine/fit_wrapper.h"
 #include "LevMar/LM/levmar.h"
 #include "core/typ/curve.h"
-#include "qcr/base/debug.h" // ASSERT
+#include "QCR/base/debug.h" // ASSERT
 #include <qmath.h>
 
 Fitted FitWrapper::execFit(

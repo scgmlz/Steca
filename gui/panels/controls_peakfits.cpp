@@ -17,12 +17,12 @@
 #include "core/fitengine/double_with_error.h"
 #include "core/peakfit/peak_function.h"
 #include "core/typ/mapped.h"
-#include "qcr/widgets/tables.h"
-#include "qcr/widgets/controls.h"
+#include "QCR/widgets/tables.h"
+#include "QCR/widgets/controls.h"
 #include "gui/mainwin.h"
 #include "gui/actions/triggers.h"
 #include "gui/view/range_control.h"
-//#include "qcr/base/debug.h"
+//#include "QCR/base/debug.h"
 
 namespace {
 
@@ -39,9 +39,9 @@ QString par2text(double val, double err) {
 
 //! Model for table of peaks.
 
-class PeaksModel : public TableModel {
+class PeaksModel : public QcrTableModel {
 public:
-    PeaksModel() : TableModel{"peaks"} {}
+    PeaksModel() : QcrTableModel{"peaks"} {}
 
     int columnCount() const final { return NUM_COLUMNS; }
     int rowCount() const final { return gSession->peaksSettings.size(); }
@@ -138,7 +138,7 @@ PeakfitOutcomeView::PeakfitOutcomeView()
     grid->addWidget(&showRawOutcomeY_, 3, 1);
     grid->addWidget(&showFittedY_, 3, 2);
 
-    grid->addWidget(new QLabel{"γ/σ"}, 4, 0);
+    grid->addWidget(new QLabel{"gaussianity"}, 4, 0);
     grid->addWidget(&showFittedSG_, 4, 2);
 
     grid->setColumnStretch(4, 1);
@@ -158,7 +158,7 @@ void PeakfitOutcomeView::refresh()
 
     int jP = gSession->peaksSettings.selectedIndex();
     const Mapped& outcome = dfgram->getRawOutcome(jP);
-    showRawOutcomeX_.setText(safeRealText(outcome.get<double>("center")));
+    showRawOutcomeX_.setText(safeRealText(outcome.get<deg>("center")));
     showRawOutcomeD_.setText(safeRealText(outcome.get<double>("fwhm")));
     showRawOutcomeY_.setText(safeRealText(outcome.get<double>("intensity")));
 
@@ -170,14 +170,14 @@ void PeakfitOutcomeView::refresh()
     // if peakFit exists, use it, otherwise use NaNs:
     const Mapped out = peakFit ? peakFit->outcome(pFct) : Mapped{};
 
-    showFittedX_ .setText(par2text(out.get<double>("center"),out.get<double>("sigma_center")));
+    showFittedX_ .setText(par2text(out.get<deg>("center"), out.get<deg>("sigma_center")));
     showFittedD_ .setText(par2text(out.get<double>("fwhm"), out.get<double>("sigma_fwhm")));
     showFittedY_ .setText(par2text(out.get<double>("intensity"), out.get<double>("sigma_intensity")));
-    if (out.has("gammaOverSigma"))
+    if (out.has("gaussianity"))
         showFittedSG_.setText(
-            par2text(out.get<double>("gammaOverSigma"), out.get<double>("sigma_gammaOverSigma")));
+            par2text(out.get<double>("gaussianity"), out.get<double>("sigma_gaussianity")));
 
-    enable(true, true, out.has("gammaOverSigma"));
+    enable(true, true, out.has("gaussianity"));
 }
 
 void PeakfitOutcomeView::enable(bool haveRaw, bool haveFit, bool haveSoG)
@@ -236,7 +236,7 @@ ControlsPeakfits::ControlsPeakfits()
     topControls->addWidget(new QcrIconTriggerButton{&gGui->triggers->peaksClear});
     box->addLayout(topControls);
 
-    box->addWidget(new TableView(new PeaksModel{}));
+    box->addWidget(new QcrTableView(new PeaksModel{}));
     box->addWidget(comboPeakFct);
     box->addWidget(new RangeControl(
                        "peak",

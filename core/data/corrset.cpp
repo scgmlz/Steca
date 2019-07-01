@@ -15,8 +15,8 @@
 #include "core/data/corrset.h"
 #include "core/loaders/loaders.h"
 #include "core/session.h"
-#include "qcr/engine/mixin.h" // remakeAll
-#include "qcr/base/debug.h"
+#include "QCR/engine/mixin.h" // remakeAll
+#include "QCR/base/debug.h"
 
 namespace {
 

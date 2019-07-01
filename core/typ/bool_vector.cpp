@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/typ/bool_vector.h"
-#include "qcr/base/debug.h"
+#include "QCR/base/debug.h"
 
 namespace {
 

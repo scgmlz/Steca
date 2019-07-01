@@ -15,7 +15,7 @@
 #ifndef THETA_SELECTION_H
 #define THETA_SELECTION_H
 
-#include "qcr/engine/cell.h"
+#include "QCR/engine/cell.h"
 
 // TODO replace this entirely by synchronized range display in Dfgram and Image
 

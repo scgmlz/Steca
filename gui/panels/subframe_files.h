@@ -15,7 +15,7 @@
 #ifndef SUBFRAME_FILES_H
 #define SUBFRAME_FILES_H
 
-#include "qcr/widgets/views.h"
+#include "QCR/widgets/views.h"
 
 //! Part of the main window that controls the data and correction files.
 class SubframeFiles : public QcrDockWidget {

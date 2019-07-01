@@ -14,19 +14,19 @@
 
 #include "gui/panels/subframe_clusters.h"
 #include "core/session.h"
-#include "qcr/widgets/tables.h"
-//#include "qcr/base/debug.h"
+#include "QCR/widgets/tables.h"
+//#include "QCR/base/debug.h"
 
 //  ***********************************************************************************************
 //! @class ActiveClustersModel (local scope)
 
 //! The model for ActiveClustersView.
 
-class ActiveClustersModel : public CheckTableModel { // < QAbstractTableModel < QAbstractItemModel
+class ActiveClustersModel : public QcrCheckTableModel { // < QAbstractTableModel < QAbstractItemModel
 public:
-    ActiveClustersModel() : CheckTableModel{"measurement"} {}
+    ActiveClustersModel() : QcrCheckTableModel{"measurement"} {}
     int columnCount() const final {
-        return COL_ATTRS + gSession->params.smallMetaSelection.numSelected(); }
+        return COL_ATTRS + meta::numSelectedMeasurementDependent(); }
 
     enum { COL_CHECK=1, COL_NUMBER, COL_ATTRS };
 
@@ -63,9 +63,9 @@ QVariant ActiveClustersModel::entry(int row, int col) const
              ret += "-" + QString::number(cluster.totalOffset()+cluster.size());
          return ret;
      } else if (col>=COL_ATTRS &&
-                col < COL_ATTRS+gSession->params.smallMetaSelection.numSelected()) {
+                col < COL_ATTRS+meta::numSelectedMeasurementDependent()) {
          return cluster.avgMetadata().attributeStrValue(
-             gSession->params.smallMetaSelection.selectedOf(col-COL_ATTRS));
+                     meta::selectedOfMeasurementDependent(col-COL_ATTRS));
      } else
          return {};
 }
@@ -113,9 +113,9 @@ QVariant ActiveClustersModel::headerData(int col, Qt::Orientation ori, int role)
     if (col==COL_NUMBER)
         return "#";
     else if (col>=COL_ATTRS &&
-             col < COL_ATTRS+gSession->params.smallMetaSelection.numSelected())
+             col < COL_ATTRS+meta::numSelectedMeasurementDependent())
         return meta::niceTag(
-            gSession->params.smallMetaSelection.selectedOf(col-COL_ATTRS));
+            meta::selectedOfMeasurementDependent(col-COL_ATTRS));
     return {};
 }
 
@@ -125,7 +125,7 @@ QVariant ActiveClustersModel::headerData(int col, Qt::Orientation ori, int role)
 
 //! Main item in SubframeMeasurement: View and control of measurements list.
 
-class ActiveClustersView : public CheckTableView { // < QTreeView < QAbstractItemView
+class ActiveClustersView : public QcrCheckTableView { // < QTreeView < QAbstractItemView
 public:
     ActiveClustersView();
 private:
@@ -134,7 +134,7 @@ private:
 };
 
 ActiveClustersView::ActiveClustersView()
-    : CheckTableView{new ActiveClustersModel{}}
+    : QcrCheckTableView{new ActiveClustersModel{}}
 {
     setSelectionMode(QAbstractItemView::NoSelection);
     onData();
@@ -142,7 +142,7 @@ ActiveClustersView::ActiveClustersView()
 
 void ActiveClustersView::onData()
 {
-    setHeaderHidden(!gSession->params.smallMetaSelection.numSelected());
+    setHeaderHidden(!meta::numSelectedMeasurementDependent());
     setColumnWidth(0, 0);
     setColumnWidth(1,  3*dWidth());
     for (int i=2; i<model_->columnCount(); ++i)

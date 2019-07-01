@@ -15,7 +15,7 @@
 #ifndef SUBFRAME_DFGRAM_H
 #define SUBFRAME_DFGRAM_H
 
-#include "qcr/widgets/controls.h"
+#include "QCR/widgets/controls.h"
 
 //! Part of the main window that contains a diffractogram, with associated controls.
 

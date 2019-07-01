@@ -15,7 +15,7 @@
 #include "core/data/collect_intensities.h"
 #include "core/data/cluster.h"
 #include "core/session.h"
-#include "qcr/base/debug.h"
+#include "QCR/base/debug.h"
 
 QJsonObject ThetaSelection::toJson() const
 {

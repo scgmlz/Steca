@@ -15,7 +15,7 @@
 #include "gui/view/bigtable.h"
 #include "core/session.h"
 #include "gui/mainwin.h"
-#include "qcr/base/debug.h"
+#include "QCR/base/debug.h"
 #include <QApplication>
 #include <QClipboard>
 #include <QHeaderView>
@@ -27,7 +27,7 @@
 //! The first column contains row numbers. The remaining numCols columns contain data.
 
 BigtableModel::BigtableModel()
-    : TableModel{"data#"}
+    : QcrTableModel{"data#"}
 {
     gGui->bigtableModel = this; // for use in export dialog
 }
@@ -66,7 +66,8 @@ QVariant BigtableModel::data(const QModelIndex& index, int role) const
         if (0 == col)
             return rows_.at(row).n;
         const QVariant var = rows_.at(row).row.at(col-1);
-        if (var.canConvert<double>() && qIsNaN(var.toDouble()))
+        if ((var.canConvert<double>() && qIsNaN(var.toDouble())) ||
+            (var.canConvert<deg>() && qIsNaN(double(var.value<deg>())) ))
             return {}; // show blank field instead of NAN
         if (var.canConvert<deg>())
             return double(var.value<deg>());
@@ -183,7 +184,7 @@ std::vector<std::vector<const QVariant*>> BigtableModel::getData() const
 //!  @class BigtableView
 
 BigtableView::BigtableView()
-    : TableView{new BigtableModel}
+    : QcrTableView{new BigtableModel}
 {
     setHeader(new QHeaderView{Qt::Horizontal});
     setAlternatingRowColors(true);

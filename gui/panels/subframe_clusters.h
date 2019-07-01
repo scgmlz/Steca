@@ -15,7 +15,7 @@
 #ifndef SUBFRAME_CLUSTERS_H
 #define SUBFRAME_CLUSTERS_H
 
-#include "qcr/widgets/views.h"
+#include "QCR/widgets/views.h"
 
 //! Part of the main window that controls the measurements selection.
 

@@ -13,7 +13,7 @@
 //  ***********************************************************************************************
 
 #include "core/base/angles.h"
-#include "qcr/base/debug.h" // ASSERT
+#include "QCR/base/debug.h" // ASSERT
 #include <vector>
 
 namespace {

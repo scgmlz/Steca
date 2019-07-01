@@ -12,6 +12,7 @@
 //
 //  ***********************************************************************************************
 
+#include "core/base/angles.h"
 #include "core/peakfit/fit_models.h"
 #include "core/typ/curve.h"
 #include "core/fitengine/double_with_error.h"
@@ -26,6 +27,8 @@
 class FindFwhm : public FitFunction {
 public:
     static DoubleWithError fromFitted(const Fitted& F);
+    static double getFwhm(double sigma, double gamma);
+    static double getSigma(const Fitted& F, double fwhm, bool fwhmOrGauss);
     void setY(const double* P, const int nXY, const double* X, double* Y) const final;
     void setDY(const double* P, const int nXY, const double* X, double* Jacobian) const final;
     int nPar() const final { return 1; }
@@ -120,7 +123,7 @@ inline void derivative(
 }
 
 double voigt_of_P(double x, const double *P) {
-    return P[2] * voigt(x-P[0], P[1], P[1]*P[3]);
+    return P[2] * voigt(x-P[0], P[1], P[3]);
 }
 
 } // namespace
@@ -142,17 +145,21 @@ void Voigt::setDY(const double* P, const int nXY, const double* X, double* Jacob
 
 Mapped Voigt::outcome(const Fitted& F) const
 {
-    double fwhm = FindFwhm::fromFitted(F).value();
+    double fwhm = FindFwhm::getFwhm(F.parValAt(1), F.parValAt(3));
+    double sigma_fwhm = FindFwhm::getSigma(F, fwhm, 0);
+    double gaussianity = qAbs(F.parValAt(1))/qSqrt(qPow(F.parValAt(1), 2) + qPow(F.parValAt(3), 2));
+    double sigma_gaussianity = FindFwhm::getSigma(F, fwhm, 1);
 
     Mapped ret;
-    ret.set("center", F.parValAt(0));
-    ret.set("sigma_center", F.parErrAt(0));
-    ret.set("intensity", F.parValAt(1));
-    ret.set("sigma_intensity", F.parErrAt(1));
+    ret.set("center", deg{F.parValAt(0)});
+    ret.set("sigma_center", deg{F.parErrAt(0)});
+    ret.set("intensity", F.parValAt(2));
+    ret.set("sigma_intensity", F.parErrAt(2));
     ret.set("fwhm", fwhm);
-    ret.set("sigma_fwhm", fwhm / F.parValAt(1) * F.parErrAt(1));
-    ret.set("gammaOverSigma", F.parValAt(3));
-    ret.set("sigma_gammaOverSigma", F.parErrAt(3));
+    ret.set("sigma_fwhm", sigma_fwhm);
+    ret.set("gaussianity", gaussianity);
+    ret.set("sigma_gaussianity", sigma_gaussianity);
+
     return ret;
 }
 
@@ -185,3 +192,27 @@ DoubleWithError FindFwhm::fromFitted(const Fitted& F) {
     Fitted res = FitWrapper().execFit(new FindFwhm{F}, curve, {1});
     return {fabs(res.parValAt(0)), res.parErrAt(0)};
 }
+
+double FindFwhm::getFwhm(double sigma, double gamma){
+    return 2 * voigt_hwhm(sigma, gamma);
+}
+
+double FindFwhm::getSigma(const Fitted& F, double fwhm, bool fwhmOrGauss){
+    double sigma = F.parValAt(1);
+    double gamma = F.parValAt(3);
+    double sigma_d;
+    double gamma_d;
+
+    if (fwhmOrGauss) {
+        sigma_d = qPow(sigma, 2)/qPow((qPow(sigma, 2)) + qPow(gamma, 2), 3/2);
+        gamma_d = sigma * (-gamma/qSqrt(qPow(sigma, 2) + qPow(gamma, 2))) * 1/(qPow(sigma, 2) + qPow(gamma, 2));
+    }
+    else {
+        double max_s = qMax(qPow(10,-60), qAbs(sigma)*qPow(10,-15));
+        double max_g = qMax(qPow(10,-60), qAbs(gamma)*qPow(10,-15));
+        sigma_d = (FindFwhm::getFwhm(sigma+max_s, gamma) - fwhm)/max_s;
+        gamma_d = (FindFwhm::getFwhm(sigma, gamma+max_g) - fwhm)/max_g;
+    }
+    return qSqrt(qPow(sigma_d, 2) * qPow(F.parErrAt(1), 2) + qPow(gamma_d, 2) * qPow(F.parErrAt(3), 2));
+}
+

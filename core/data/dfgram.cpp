@@ -16,7 +16,7 @@
 #include "core/peakfit/peak_function.h"
 #include "core/peakfit/polynom.h"
 #include "core/session.h"
-//#include "qcr/base/debug.h"
+//#include "QCR/base/debug.h"
 
 namespace {
 

@@ -24,9 +24,9 @@
 #include "gui/view/msg_handler.h"
 #include "gui/dialogs/file_dialog.h"
 #include "gui/mainwin.h"
-#include "qcr/engine/console.h"
-#include "qcr/engine/logger.h"
-//#include "qcr/base/debug.h"
+#include "QCR/engine/console.h"
+#include "QCR/engine/logger.h"
+//#include "QCR/base/debug.h"
 
 #include "clara.hpp"
 
@@ -129,8 +129,8 @@ int main(int argc, char* argv[]) {
         }
     }
     std::cout << "Log file will be written to " << CSTRI(logFileName) << "\n";
-    Logger logger{logFileName};
-    Console console;
+    QcrLogger logger{logFileName};
+    QcrConsole console;
     QLoggingCategory::setFilterRules("*.debug=true\nqt.*.debug=false");
     qInstallMessageHandler(messageHandler);
 

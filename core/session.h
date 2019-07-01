@@ -29,10 +29,8 @@
 
 extern class Session* gSession;
 
-//! Companion of MainWin and MainWin, holds data and data-related settings.
-
-//! One instance of this class coexists with the main window. It is accessible from everywhere
-//! through the global pointer gSession.
+//! Holds data and data-related settings.
+//! Singleton, accessible from everywhere through the global pointer gSession.
 
 class Session {
 public:
